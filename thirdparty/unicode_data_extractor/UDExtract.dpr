@@ -793,10 +793,20 @@ begin
                 AddNumber(StartCode, Nominator, Denominator);
               end;
 
+              if Line.Count < 10 then
+                Continue;
+              // 7) read mirrored character
+              S := Line[9];
+              if S = 'Y' then
+                AddToCategories(StartCode, ccMirroring)
+              else
+              if S <> 'N' then
+                FatalError('Unknown mirroring character');
+
               if Line.Count < 13 then
                 Continue;
               SetLength(AMapping, 1);
-              // 7) read simple upper case mapping (only 1 to 1 mappings)
+              // 8) read simple upper case mapping (only 1 to 1 mappings)
               if Length(Line[12]) > 0 then
               begin
                 AMapping[0] := StrToInt('$' + Line[12]);
@@ -805,7 +815,7 @@ begin
 
               if Line.Count < 14 then
                 Continue;
-              // 8) read simple lower case mapping
+              // 9) read simple lower case mapping
               if Length(Line[13]) > 0 then
               begin
                 AMapping[0] := StrToInt('$' + Line[13]);
@@ -814,7 +824,7 @@ begin
 
               if Line.Count < 15 then
                 Continue;
-              // 9) read title case mapping
+              // 10) read title case mapping
               if Length(Line[14]) > 0 then
               begin
                 AMapping[0] := StrToInt('$' + Line[14]);
