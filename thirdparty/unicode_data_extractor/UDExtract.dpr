@@ -69,7 +69,7 @@ const
   //       These are:
   //       - Mn, NSM for non-spacing mark
   //       - Zp, B for paragraph separator
-  CategoriesStrings: array[0..88] of CategoryString = (
+  CategoriesStrings: array[0..87] of CategoryString = (
     // normative categories
     (Name: 'Lu';  Category: ccLetterUppercase),           // letter, upper case
     (Name: 'Ll';  Category: ccLetterLowercase),           // letter, lower case
@@ -133,7 +133,6 @@ const
     (Name: 'Qm';  Category: ccQuotationMark),             // quote marks
     (Name: 'Quotation_Mark'; Category: ccQuotationMark),
     (Name: 'Mr';  Category: ccMirroring),                 // mirroring
-    (Name: 'Ss';  Category: ccSpaceOther),                // space, other
     (Name: 'Cp';  Category: ccAssigned),                  // assigned character (there is a definition in the Unicode standard)
     //'Luu' // letter unique upper case
     (Name: 'Bidi_Control'; Category: ccBidiControl),
@@ -652,15 +651,17 @@ procedure ParseData;
 
 var
   Lines,
-  Line: TStringList;
-  I, J: Integer;
+  Line,
+  SymCharacters: TStringList;
+  I, J, SymIndex: Integer;
   RangePending: Boolean;
   StartCode,
   EndCode: Cardinal;
 
   // decomposition parsing
   S,
-  Buffer: string;
+  Buffer,
+  Name, SymName: string;
   Head,
   Tail: PChar;
 
@@ -672,175 +673,201 @@ var
   AMapping: TUCS4Array;
   
 begin
-  Lines := TStringList.Create;
+  Lines := nil;
+  SymCharacters := nil;
+  Line := nil;
   try
+    Lines := TStringList.Create;
+    SymCharacters := TStringList.Create;
+    Line := TStringList.Create;
+
     // Unicode data files are about 600K in size, so don't hesitate and load them in one rush.
     Lines.LoadFromFile(SourceFileName);
-    Line := TStringList.Create;
-    try
-      // Go for each line, organization is one line for a code point or two consecutive lines
-      // for a range of code points.
-      RangePending := False;
-      StartCode := 0;
-      for I := 0 to Lines.Count - 1 do
+
+    // Go for each line, organization is one line for a code point or two consecutive lines
+    // for a range of code points.
+    RangePending := False;
+    StartCode := 0;
+    for I := 0 to Lines.Count - 1 do
+    begin
+      SplitLine(Lines[I], Line);
+      // continue only if the line is not empty
+      if Line.Count > 1 then
       begin
-        SplitLine(Lines[I], Line);
-        // continue only if the line is not empty
-        if Line.Count > 0 then
+        Name := UpperCase(Line[1]);
+        // Line contains now up to 15 entries, starting with the code point value
+        if RangePending then
         begin
-          // Line contains now up to 15 entries, starting with the code point value
-          if RangePending then
-          begin
-            // last line was a range start, so this one must be the range end
-            if Pos(', LAST>', UpperCase(Line[1])) = 0 then
-              FatalError(Format('Range end expected in line %d.', [I + 1]));
-            EndCode := StrToInt('$' + Line[0]);
+          // last line was a range start, so this one must be the range end
+          if Pos(', LAST>', Name) = 0 then
+            FatalError(Format('Range end expected in line %d.', [I + 1]));
+          EndCode := StrToInt('$' + Line[0]);
 
-            // register general category
-            AddRangeToCategories(StartCode, EndCode, AnsiString(Line[2]));
+          // register general category
+          AddRangeToCategories(StartCode, EndCode, AnsiString(Line[2]));
 
-            // register bidirectional category
-            AddRangeToCategories(StartCode, EndCode, AnsiString(Line[4]));
+          // register bidirectional category
+          AddRangeToCategories(StartCode, EndCode, AnsiString(Line[4]));
 
-            // mark the range as containing assigned code points
-            AddRangeToCategories(StartCode, EndCode, ccAssigned);
-            RangePending := False;
-          end
+          // mark the range as containing assigned code points
+          AddRangeToCategories(StartCode, EndCode, ccAssigned);
+          RangePending := False;
+        end
+        else
+        begin
+          StartCode := StrToInt('$' + Line[0]);
+          // check for the start of a range
+          if Pos(', FIRST>', Name) > 0 then
+            RangePending := True
           else
           begin
-            StartCode := StrToInt('$' + Line[0]);
-            // check for the start of a range
-            if Pos(', FIRST>', UpperCase(Line[1])) > 0 then
-              RangePending := True
-            else
+            // normal case, one code point must be parsed
+
+            // 1) categorize code point as being assinged
+            AddToCategories(StartCode, ccAssigned);
+
+            // 2) find symmetric shapping characters
+            // replace LEFT by RIGHT and vice-versa
+            SymName := StringReplace(Name, 'LEFT', 'LLEEFFTT', [rfReplaceAll]);
+            SymName := StringReplace(SymName, 'RIGHT', 'LEFT', [rfReplaceAll]);
+            SymName := StringReplace(SymName, 'LLEEFFTT', 'RIGHT', [rfReplaceAll]);
+            if Name <> SymName then
             begin
-              // normal case, one code point must be parsed
-
-              // 1) categorize code point as being assinged
-              AddToCategories(StartCode, ccAssigned);
-
-              if Line.Count < 3 then
-                Continue;
-              // 2) categorize the general character class
-              AddToCategories(StartCode, AnsiString(Line[2]));
-
-              if Line.Count < 4 then
-                Continue;
-              // 3) register canonical combining class
-              AddCanonicalCombiningClass(StartCode, StrToInt(Line[3]));
-
-              if Line.Count < 5 then
-                Continue;
-              // 4) categorize the bidirectional character class
-              AddToCategories(StartCode, AnsiString(Line[4]));
-
-              if Line.Count < 6 then
-                Continue;
-              // 5) if the character can be decomposed then keep its decomposed parts
-              //    and add it to the can-be-decomposed category
-              S := Line[5];
-              // consider only canonical decomposition mappings
-              J := Pos('<', S);
-              if (J = 0) and (Length(S) > 0) then
+              SymIndex := SymCharacters.IndexOf(SymName);
+              if SymIndex >= 0 then
               begin
-                DecompTempSize := 0;
-                Head := PChar(S);
-                while Head^ <> #0 do
-                begin
-                  Tail := Head;
-                  while IsHexDigit(Tail^) do
-                    Inc(Tail);
-                  SetString(Buffer, Head, Tail - Head);
-                  if Length(Buffer) > 1 then
-                    DecompTemp[DecompTempSize] := StrToInt('$' + Buffer)
-                  else
-                    DecompTemp[DecompTempSize] := 0;
-                  Inc(DecompTempSize);
+                AddToCategories(StartCode, ccSymmetric);
+                AddToCategories(Cardinal(SymCharacters.Objects[SymIndex]), ccSymmetric);
+              end
+              else
+                SymCharacters.AddObject(Name, TObject(StartCode));
+            end;
 
-                  if Tail^ = #0 then
-                    Break;
-                  Head := Tail + 1;
-                end;
+            if Line.Count < 3 then
+              Continue;
+            // 3) categorize the general character class
+            AddToCategories(StartCode, AnsiString(Line[2]));
 
-                // If there is more than one code in the temporary decomposition
-                // array then add the character with its decomposition.
-                // (outchy) latest unicode data have aliases to link items having the same decompositions
-                //if DecompTempSize > 1 then
-                  AddDecomposition(StartCode);
+            if Line.Count < 4 then
+              Continue;
+            // 4) register canonical combining class
+            AddCanonicalCombiningClass(StartCode, StrToInt(Line[3]));
+
+            if Line.Count < 5 then
+              Continue;
+            // 5) categorize the bidirectional character class
+            AddToCategories(StartCode, AnsiString(Line[4]));
+
+            if Line.Count < 6 then
+              Continue;
+            // 6) if the character can be decomposed then keep its decomposed parts
+            //    and add it to the can-be-decomposed category
+            S := Line[5];
+            // consider only canonical decomposition mappings
+            J := Pos('<', S);
+            if (J = 0) and (Length(S) > 0) then
+            begin
+              DecompTempSize := 0;
+              Head := PChar(S);
+              while Head^ <> #0 do
+              begin
+                Tail := Head;
+                while IsHexDigit(Tail^) do
+                  Inc(Tail);
+                SetString(Buffer, Head, Tail - Head);
+                if Length(Buffer) > 1 then
+                  DecompTemp[DecompTempSize] := StrToInt('$' + Buffer)
+                else
+                  DecompTemp[DecompTempSize] := 0;
+                Inc(DecompTempSize);
+
+                if Tail^ = #0 then
+                  Break;
+                Head := Tail + 1;
               end;
 
-              if Line.Count < 9 then
-                Break;
-              // 6) examine if there is a numeric representation of this code
-              if Length(Line[8]) > 0 then
+              // If there is more than one code in the temporary decomposition
+              // array then add the character with its decomposition.
+              // (outchy) latest unicode data have aliases to link items having the same decompositions
+              //if DecompTempSize > 1 then
+              AddDecomposition(StartCode);
+            end
+            else
+            begin
+              // TODO: handle Compatibility Formatting Tags
+            end;
+
+            if Line.Count < 9 then
+              Break;
+            // 7) examine if there is a numeric representation of this code
+            if Length(Line[8]) > 0 then
+            begin
+              Head := PChar(Line[8]);
+              Tail := Head;
+              while CharIsNumberChar(Tail^) do
+                Inc(Tail);
+              SetString(S, Head, Tail - Head);
+              Nominator := StrToInt(S);
+              Denominator := 1;
+              if Tail^ = '/' then
               begin
-                Head := PChar(Line[8]);
-                Tail := Head;
+                Inc(Tail);
+                Head := Tail;
                 while CharIsNumberChar(Tail^) do
                   Inc(Tail);
                 SetString(S, Head, Tail - Head);
-                Nominator := StrToInt(S);
-                Denominator := 1;
-                if Tail^ = '/' then
-                begin
-                  Inc(Tail);
-                  Head := Tail;
-                  while CharIsNumberChar(Tail^) do
-                    Inc(Tail);
-                  SetString(S, Head, Tail - Head);
-                  Denominator := StrToInt(S);
-                end;
-                AddNumber(StartCode, Nominator, Denominator);
+                Denominator := StrToInt(S);
               end;
+              AddNumber(StartCode, Nominator, Denominator);
+            end;
 
-              if Line.Count < 10 then
-                Continue;
-              // 7) read mirrored character
-              S := Line[9];
-              if S = 'Y' then
-                AddToCategories(StartCode, ccMirroring)
-              else
-              if S <> 'N' then
-                FatalError('Unknown mirroring character');
+            if Line.Count < 10 then
+              Continue;
+            // 8) read mirrored character
+            S := Line[9];
+            if S = 'Y' then
+              AddToCategories(StartCode, ccMirroring)
+            else
+            if S <> 'N' then
+              FatalError('Unknown mirroring character');
 
-              if Line.Count < 13 then
-                Continue;
-              SetLength(AMapping, 1);
-              // 8) read simple upper case mapping (only 1 to 1 mappings)
-              if Length(Line[12]) > 0 then
-              begin
-                AMapping[0] := StrToInt('$' + Line[12]);
-                AddUpperCase(StartCode, AMapping);
-              end;
+            if Line.Count < 13 then
+              Continue;
+            SetLength(AMapping, 1);
+            // 9) read simple upper case mapping (only 1 to 1 mappings)
+            if Length(Line[12]) > 0 then
+            begin
+              AMapping[0] := StrToInt('$' + Line[12]);
+              AddUpperCase(StartCode, AMapping);
+            end;
 
-              if Line.Count < 14 then
-                Continue;
-              // 9) read simple lower case mapping
-              if Length(Line[13]) > 0 then
-              begin
-                AMapping[0] := StrToInt('$' + Line[13]);
-                AddLowerCase(StartCode, AMapping);
-              end;
+            if Line.Count < 14 then
+              Continue;
+            // 10) read simple lower case mapping
+            if Length(Line[13]) > 0 then
+            begin
+              AMapping[0] := StrToInt('$' + Line[13]);
+              AddLowerCase(StartCode, AMapping);
+            end;
 
-              if Line.Count < 15 then
-                Continue;
-              // 10) read title case mapping
-              if Length(Line[14]) > 0 then
-              begin
-                AMapping[0] := StrToInt('$' + Line[14]);
-                AddTitleCase(StartCode, AMapping);
-              end;
+            if Line.Count < 15 then
+              Continue;
+            // 11) read title case mapping
+            if Length(Line[14]) > 0 then
+            begin
+              AMapping[0] := StrToInt('$' + Line[14]);
+              AddTitleCase(StartCode, AMapping);
             end;
           end;
         end;
-        if not Verbose then
-          Write(Format(#13'  %d%% done', [Round(100 * I / Lines.Count)]));
       end;
-    finally
-      Line.Free;
+      if not Verbose then
+        Write(Format(#13'  %d%% done', [Round(100 * I / Lines.Count)]));
     end;
   finally
     Lines.Free;
+    Line.Free;
+    SymCharacters.Free;
   end;
   if not Verbose then
     Writeln;

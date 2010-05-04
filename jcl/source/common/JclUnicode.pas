@@ -280,7 +280,6 @@ type
     ccHexDigit,              // Characters commonly used for the representation of hexadecimal numbers, plus their compatibility equivalents.
     ccQuotationMark,         // Punctuation characters that function as quotation marks.
     ccMirroring,
-    ccSpaceOther,
     ccAssigned,              // means there is a definition in the Unicode standard
     ccASCIIHexDigit,         // ASCII characters commonly used for the representation of hexadecimal numbers
     ccBidiControl,           // Format control characters which have specific functions in the Unicode Bidirectional Algorithm [UAX9].
@@ -1281,7 +1280,6 @@ function UnicodeIsCommonNumberSeparator(C: UCS4): Boolean;
 function UnicodeIsBoundaryNeutral(C: UCS4): Boolean;
 function UnicodeIsSegmentSeparator(C: UCS4): Boolean;
 function UnicodeIsOtherNeutrals(C: UCS4): Boolean;
-function UnicodeIsSpaceOther(C: UCS4): Boolean;
 function UnicodeIsAssigned(C: UCS4): Boolean;
 function UnicodeIsASCIIHexDigit(C: UCS4): Boolean;
 function UnicodeIsBidiControl(C: UCS4): Boolean;
@@ -1397,7 +1395,7 @@ const
   {$ENDIF FPC}
   // some predefined sets to shorten parameter lists below and ease repeative usage
   ClassLetter = [ccLetterUppercase, ccLetterLowercase, ccLetterTitlecase, ccLetterModifier, ccLetterOther];
-  ClassSpace = [ccSeparatorSpace, ccSpaceOther];
+  ClassSpace = [ccSeparatorSpace];
   ClassPunctuation = [ccPunctuationConnector, ccPunctuationDash, ccPunctuationOpen, ccPunctuationClose,
     ccPunctuationOther, ccPunctuationInitialQuote, ccPunctuationFinalQuote];
   ClassMark = [ccMarkNonSpacing, ccMarkSpacingCombining, ccMarkEnclosing];
@@ -6879,11 +6877,6 @@ end;
 function UnicodeIsOtherNeutrals(C: UCS4): Boolean;
 begin
   Result := CategoryLookup(C, [ccOtherNeutrals]);
-end;
-
-function UnicodeIsSpaceOther(C: UCS4): Boolean;
-begin
-  Result := CategoryLookup(C, [ccSpaceOther]);
 end;
 
 function UnicodeIsAssigned(C: UCS4): Boolean;
