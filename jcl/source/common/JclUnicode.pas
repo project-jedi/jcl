@@ -1457,6 +1457,12 @@ begin
   {$ENDIF UNICODE_ZLIB_DATA}
 end;
 
+function StreamReadChar(Stream: TStream): Cardinal;
+begin
+  Result := 0;
+  Stream.ReadBuffer(Result, 3);
+end;
+
 //----------------- support for character categories -----------------------------------------------
 
 // Character category data is quite a large block since every defined character in Unicode is assigned at least
@@ -1514,8 +1520,8 @@ begin
             SetLength(Buffer, Size);
             for J := 0 to Size - 1 do
             begin
-              Buffer[J].Start := Stream.ReadInteger;
-              Buffer[J].Stop := Stream.ReadInteger;
+              Buffer[J].Start := StreamReadChar(Stream);
+              Buffer[J].Stop := StreamReadChar(Stream);
             end;
 
             // c) go through every range and add the current category to each code point
@@ -1536,6 +1542,7 @@ begin
               end;
           end;
         end;
+        // Assert(Stream.Position = Stream.Size);
       finally
         Stream.Free;
       end;
@@ -1598,7 +1605,7 @@ begin
         for I := 0 to Size - 1 do
         begin
           // a) read actual code point
-          Code := Stream.ReadInteger;
+          Code := StreamReadChar(Stream);
           Assert(Code < $1000000, LoadResString(@RsCasedUnicodeChar));
 
           // if there is no high byte entry in the first stage table then create one
@@ -1611,39 +1618,39 @@ begin
             SetLength(CaseMapping[First, Second], 256);
 
           // b) read fold case array
-          Size := Stream.ReadInteger;
+          Size := Stream.ReadByte;
           if Size > 0 then
           begin
             SetLength(CaseMapping[First, Second, Third, ctFold], Size);
             for J := 0 to Size - 1 do
-              CaseMapping[First, Second, Third, ctFold, J] := Stream.ReadInteger;
+              CaseMapping[First, Second, Third, ctFold, J] := StreamReadChar(Stream);
           end;
           // c) read lower case array
-          Size := Stream.ReadInteger;
+          Size := Stream.ReadByte;
           if Size > 0 then
           begin
             SetLength(CaseMapping[First, Second, Third, ctLower], Size);
             for J := 0 to Size - 1 do
-              CaseMapping[First, Second, Third, ctLower, J] := Stream.ReadInteger;
+              CaseMapping[First, Second, Third, ctLower, J] := StreamReadChar(Stream);
           end;
           // d) read title case array
-          Size := Stream.ReadInteger;
+          Size := Stream.ReadByte;
           if Size > 0 then
           begin
             SetLength(CaseMapping[First, Second, Third, ctTitle], Size);
             for J := 0 to Size - 1 do
-              CaseMapping[First, Second, Third, ctTitle, J] := Stream.ReadInteger;
+              CaseMapping[First, Second, Third, ctTitle, J] := StreamReadChar(Stream);
           end;
           // e) read upper case array
-          Size := Stream.ReadInteger;
+          Size := Stream.ReadByte;
           if Size > 0 then
           begin
             SetLength(CaseMapping[First, Second, Third, ctUpper], Size);
             for J := 0 to Size - 1 do
-              CaseMapping[First, Second, Third, ctUpper, J] := Stream.ReadInteger;
+              CaseMapping[First, Second, Third, ctUpper, J] := StreamReadChar(Stream);
           end;
         end;
-
+        Assert(Stream.Position = Stream.Size);
       finally
         Stream.Free;
       end;
@@ -1774,7 +1781,7 @@ begin
         Size := Stream.ReadInteger;
         for I := 0 to Size - 1 do
         begin
-          Code := Stream.ReadInteger;
+          Code := StreamReadChar(Stream);
 
           Assert((Code and not $40000000) < $1000000, LoadResString(@RsDecomposedUnicodeChar));
 
@@ -1792,12 +1799,12 @@ begin
             if CompatibleDecompositions[First, Second] = nil then
               SetLength(CompatibleDecompositions[First, Second], 256);
 
-            Size := Stream.ReadInteger;
+            Size := Stream.ReadByte;
             if Size > 0 then
             begin
               SetLength(CompatibleDecompositions[First, Second, Third], Size);
               for J := 0 to Size - 1 do
-                CompatibleDecompositions[First, Second, Third, J] := Stream.ReadInteger;
+                CompatibleDecompositions[First, Second, Third, J] := StreamReadChar(Stream);
             end;
           end
           else
@@ -1807,15 +1814,16 @@ begin
             if CanonicalDecompositions[First, Second] = nil then
               SetLength(CanonicalDecompositions[First, Second], 256);
 
-            Size := Stream.ReadInteger;
+            Size := Stream.ReadByte;
             if Size > 0 then
             begin
               SetLength(CanonicalDecompositions[First, Second, Third], Size);
               for J := 0 to Size - 1 do
-                CanonicalDecompositions[First, Second, Third, J] := Stream.ReadInteger;
+                CanonicalDecompositions[First, Second, Third, J] := StreamReadChar(Stream);
             end;
           end;
         end;
+        Assert(Stream.Position = Stream.Size);
       finally
         Stream.Free;
       end;
@@ -1919,17 +1927,17 @@ begin
         while Stream.Position < Stream.Size do
         begin
           // a) determine which class is stored here
-          I := Stream.ReadInteger;
+          I := Stream.ReadByte;
           // b) determine how many ranges are assigned to this class
-          Size := Stream.ReadInteger;
+          Size := Stream.ReadByte;
           // c) read start and stop code of each range
           if Size > 0 then
           begin
             SetLength(Buffer, Size);
             for J := 0 to Size - 1 do
             begin
-              Buffer[J].Start := Stream.ReadInteger;
-              Buffer[J].Stop := Stream.ReadInteger;
+              Buffer[J].Start := StreamReadChar(Stream);
+              Buffer[J].Stop := StreamReadChar(Stream);
             end;
 
             // d) put this class in every of the code points just loaded
@@ -1950,6 +1958,7 @@ begin
               end;
           end;
         end;
+        // Assert(Stream.Position = Stream.Size);
       finally
         Stream.Free;
       end;
@@ -2011,7 +2020,7 @@ begin
         // another one which maps a code point to one of the numbers in the first array.
 
         // a) determine size of numbers array
-        Size := Stream.ReadInteger;
+        Size := Stream.ReadByte;
         SetLength(Numbers, Size);
         // b) read numbers data
         for I := 0 to Size - 1 do
@@ -2025,9 +2034,10 @@ begin
         // d) read index data
         for I := 0 to Size - 1 do
         begin
-          NumberCodes[I].Code := Stream.ReadInteger;
-          NumberCodes[I].Index := Stream.ReadInteger;
+          NumberCodes[I].Code := StreamReadChar(Stream);
+          NumberCodes[I].Index := Stream.ReadByte;
         end;
+        Assert(Stream.Position = Stream.Size);
       finally
         Stream.Free;
       end;
@@ -2105,15 +2115,16 @@ begin
         // b) read data
         for I := 0 to Size - 1 do
         begin
-          Compositions[I].Code := Stream.ReadInteger;
-          Size := Stream.ReadInteger;
+          Compositions[I].Code := StreamReadChar(Stream);
+          Size := Stream.ReadByte;
           if Size > MaxCompositionSize then
             MaxCompositionSize := Size;
           SetLength(Compositions[I].Next, Size - 1);
-          Compositions[I].First := Stream.ReadInteger;
+          Compositions[I].First := StreamReadChar(Stream);
           for J := 0 to Size - 2 do
-            Compositions[I].Next[J] := Stream.ReadInteger;
+            Compositions[I].Next[J] := StreamReadChar(Stream);
         end;
+        Assert(Stream.Position = Stream.Size);
       finally
         Stream.Free;
       end;

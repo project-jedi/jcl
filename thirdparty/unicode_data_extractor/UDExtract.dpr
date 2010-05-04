@@ -1278,7 +1278,18 @@ var
 
   //---------------------------------------------------------------------------
 
-  procedure WriteResourceByte(Value: Byte);
+  procedure WriteResourceByte(Value: Cardinal);
+
+  begin
+    if Value <= $FF then
+      ResourceStream.WriteBuffer(Value, 1)
+    else
+      FatalError('byte out of bound');
+  end;
+
+  //---------------------------------------------------------------------------
+
+  procedure WriteResourceCardinal(Value: Cardinal);
 
   begin
     ResourceStream.WriteBuffer(Value, SizeOf(Value));
@@ -1286,15 +1297,18 @@ var
 
   //---------------------------------------------------------------------------
 
-  procedure WriteResourceLong(Value: Cardinal);
+  procedure WriteResourceChar(Value: Cardinal);
 
   begin
-    ResourceStream.WriteBuffer(Value, SizeOf(Value));
+    if Value < $1000000 then
+      ResourceStream.WriteBuffer(Value, 3)
+    else
+      FatalError('character out of bound');
   end;
 
   //---------------------------------------------------------------------------
 
-  procedure WriteResourceArray(Values: array of Cardinal);
+  procedure WriteResourceCharArray(Values: array of Cardinal);
 
   // loops through Values and writes them into the target file
 
@@ -1303,7 +1317,7 @@ var
 
   begin
     for I := Low(Values) to High(Values) do
-      WriteResourceLong(Values[I]);
+      WriteResourceChar(Values[I]);
   end;
 
   //---------------------------------------------------------------------------
@@ -1390,12 +1404,12 @@ begin
         //    be more than 256 categories)
         WriteResourceByte(Ord(Category));
         // b) tell how many ranges are assigned
-        WriteResourceLong(Length(Ranges));
+        WriteResourceCardinal(Length(Ranges));
         // c) write start and stop code of each range
         for J := Low(Ranges) to High(Ranges) do
         begin
-          WriteResourceLong(Ranges[J].Start);
-          WriteResourceLong(Ranges[J].Stop);
+          WriteResourceChar(Ranges[J].Start);
+          WriteResourceChar(Ranges[J].Stop);
         end;
       end;
     end;
@@ -1410,25 +1424,25 @@ begin
     WriteTextLine('{');
     CreateResource;
     // record how many case mapping entries we have
-    WriteResourceLong(Length(CaseMapping));
+    WriteResourceCardinal(Length(CaseMapping));
     for I := 0 to High(CaseMapping) do
       with CaseMapping[I] do
       begin
         // store every available case mapping, consider one-to-many mappings
         // a) write actual code point
-        WriteResourceLong(Code);
+        WriteResourceChar(Code);
         // b) write lower case
-        WriteResourceLong(Length(Fold));
-        WriteResourceArray(Fold);
+        WriteResourceByte(Length(Fold));
+        WriteResourceCharArray(Fold);
         // c) write lower case
-        WriteResourceLong(Length(Lower));
-        WriteResourceArray(Lower);
+        WriteResourceByte(Length(Lower));
+        WriteResourceCharArray(Lower);
         // d) write title case
-        WriteResourceLong(Length(Title));
-        WriteResourceArray(Title);
+        WriteResourceByte(Length(Title));
+        WriteResourceCharArray(Title);
         // e) write upper case
-        WriteResourceLong(Length(Upper));
-        WriteResourceArray(Upper);
+        WriteResourceByte(Length(Upper));
+        WriteResourceCharArray(Upper);
       end;
     FlushResource;
     WriteTextLine('}');
@@ -1442,13 +1456,13 @@ begin
     WriteTextLine('{');
     CreateResource;
     // record how many decomposition entries we have
-    WriteResourceLong(Length(Decompositions));
+    WriteResourceCardinal(Length(Decompositions));
     for I := 0 to High(Decompositions) do
       with Decompositions[I] do
       begin
-        WriteResourceLong(Code);
-        WriteResourceLong(Length(Decompositions));
-        WriteResourceArray(Decompositions);
+        WriteResourceChar(Code);
+        WriteResourceByte(Length(Decompositions));
+        WriteResourceCharArray(Decompositions);
       end;
     FlushResource;
     WriteTextLine('}');
@@ -1465,14 +1479,14 @@ begin
       if Length(Ranges) > 0 then
       begin
         // a) record which class is stored here
-        WriteResourceLong(I);
+        WriteResourceByte(I);
         // b) tell how many ranges are assigned
-        WriteResourceLong(Length(Ranges));
+        WriteResourceByte(Length(Ranges));
         // c) write start and stop code of each range
         for J := Low(Ranges) to High(Ranges) do
         begin
-          WriteResourceLong(Ranges[J].Start);
-          WriteResourceLong(Ranges[J].Stop);
+          WriteResourceChar(Ranges[J].Start);
+          WriteResourceChar(Ranges[J].Stop);
         end;
       end;
     end;
@@ -1488,18 +1502,18 @@ begin
     WriteTextLine('{');
     CreateResource;
     // first, write the number definitions (size, values)
-    WriteResourceLong(Length(Numbers));
+    WriteResourceByte(Length(Numbers));
     for I := 0 to High(Numbers) do
     begin
-      WriteResourceLong(Cardinal(Numbers[I].Numerator));
-      WriteResourceLong(Cardinal(Numbers[I].Denominator));
+      WriteResourceCardinal(Cardinal(Numbers[I].Numerator));
+      WriteResourceCardinal(Cardinal(Numbers[I].Denominator));
     end;
     // second, write the number mappings (size, values)
-    WriteResourceLong(Length(NumberCodes));
+    WriteResourceCardinal(Length(NumberCodes));
     for I := 0 to High(NumberCodes) do
     begin
-      WriteResourceLong(NumberCodes[I].Code);
-      WriteResourceLong(NumberCodes[I].Index);
+      WriteResourceChar(NumberCodes[I].Code);
+      WriteResourceByte(NumberCodes[I].Index);
     end;
     FlushResource;
     WriteTextLine('}');
@@ -1513,13 +1527,13 @@ begin
     WriteTextLine('{');
     CreateResource;
     // first, write the number of compositions
-    WriteResourceLong(Length(Compositions));
+    WriteResourceCardinal(Length(Compositions));
     for I := 0 to High(Compositions) do
       with Compositions[I] do
     begin
-      WriteResourceLong(Code);
-      WriteResourceLong(Length(Decompositions));
-      WriteResourceArray(Decompositions);
+      WriteResourceChar(Code);
+      WriteResourceByte(Length(Decompositions));
+      WriteResourceCharArray(Decompositions);
     end;
     FlushResource;
     WriteTextLine('}');
