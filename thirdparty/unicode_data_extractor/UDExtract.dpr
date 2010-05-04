@@ -20,9 +20,11 @@ uses
   JclStreams;
 
 type
+  TDecompositions = array of Cardinal;
+
   TDecomposition = record
     Code: Cardinal;
-    Decompositions: array of Cardinal;
+    Decompositions: TDecompositions;
   end;
 
   // collect of case mappings for each code point which is cased
@@ -175,10 +177,6 @@ var
   Verbose: Boolean;
   ZLibCompress: Boolean;
   BZipCompress: Boolean;
-
-  // array used to collect a decomposition before adding it to the decomposition table
-  DecompTemp: array[0..63] of Cardinal;
-  DecompTempSize: Integer;
 
   // character category ranges
   Categories: array[TCharacterCategory] of TCharacterSet;
@@ -443,11 +441,11 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure AddDecomposition(Code: Cardinal);
+procedure AddDecomposition(Code: Cardinal; Decomposition: TDecompositions);
 
 var
   I, J: Integer;
-  
+
 begin
   AddToCategories(Code, ccComposed);
 
@@ -469,13 +467,13 @@ begin
       FillChar(Decompositions[I], SizeOf(TDecomposition), 0);
     end;
   end;
-  
+
   // insert or replace a decomposition
-  if Length(Decompositions[I].Decompositions) <> DecompTempSize then
-    SetLength(Decompositions[I].Decompositions, DecompTempSize);
+  if Length(Decompositions[I].Decompositions) <> Length(Decomposition) then
+    SetLength(Decompositions[I].Decompositions, Length(Decomposition));
 
   Decompositions[I].Code := Code;
-  Move(DecompTemp[0], Decompositions[I].Decompositions[0], DecompTempSize * SizeOf(Cardinal));
+  Move(Decomposition[0], Decompositions[I].Decompositions[0], Length(Decomposition) * SizeOf(Cardinal));
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -652,18 +650,16 @@ procedure ParseData;
 var
   Lines,
   Line,
-  SymCharacters: TStringList;
+  SymCharacters,
+  DecompositionsStr,
+  NumberStr: TStringList;
   I, J, SymIndex: Integer;
   RangePending: Boolean;
   StartCode,
   EndCode: Cardinal;
 
-  // decomposition parsing
-  S,
-  Buffer,
   Name, SymName: string;
-  Head,
-  Tail: PChar;
+  Decompositions: TDecompositions;
 
   // number representation
   Nominator,
@@ -676,10 +672,14 @@ begin
   Lines := nil;
   SymCharacters := nil;
   Line := nil;
+  DecompositionsStr := nil;
+  NumberStr := nil;
   try
     Lines := TStringList.Create;
     SymCharacters := TStringList.Create;
     Line := TStringList.Create;
+    DecompositionsStr := TStringList.Create;
+    NumberStr := TStringList.Create;
 
     // Unicode data files are about 600K in size, so don't hesitate and load them in one rush.
     Lines.LoadFromFile(SourceFileName);
@@ -762,73 +762,49 @@ begin
               Continue;
             // 6) if the character can be decomposed then keep its decomposed parts
             //    and add it to the can-be-decomposed category
-            S := Line[5];
+            StrToStrings(Line[5], NativeSpace, DecompositionsStr, False);
             // consider only canonical decomposition mappings
-            J := Pos('<', S);
-            if (J = 0) and (Length(S) > 0) then
-            begin
-              DecompTempSize := 0;
-              Head := PChar(S);
-              while Head^ <> #0 do
-              begin
-                Tail := Head;
-                while IsHexDigit(Tail^) do
-                  Inc(Tail);
-                SetString(Buffer, Head, Tail - Head);
-                if Length(Buffer) > 1 then
-                  DecompTemp[DecompTempSize] := StrToInt('$' + Buffer)
-                else
-                  DecompTemp[DecompTempSize] := 0;
-                Inc(DecompTempSize);
-
-                if Tail^ = #0 then
-                  Break;
-                Head := Tail + 1;
-              end;
+            if (DecompositionsStr.Count > 0) and (Pos('<', DecompositionsStr.Strings[0]) = 0) then
+            begin              SetLength(Decompositions, DecompositionsStr.Count);
+              for J := 0 to DecompositionsStr.Count - 1 do
+                Decompositions[J] := StrToInt('$' + DecompositionsStr.Strings[J]);
 
               // If there is more than one code in the temporary decomposition
               // array then add the character with its decomposition.
               // (outchy) latest unicode data have aliases to link items having the same decompositions
               //if DecompTempSize > 1 then
-              AddDecomposition(StartCode);
-            end
-            else
-            begin
-              // TODO: handle Compatibility Formatting Tags
+              AddDecomposition(StartCode, Decompositions);
             end;
 
             if Line.Count < 9 then
               Break;
             // 7) examine if there is a numeric representation of this code
-            if Length(Line[8]) > 0 then
+            StrToStrings(Line[8], '/', NumberStr, False);
+            if NumberStr.Count = 1 then
             begin
-              Head := PChar(Line[8]);
-              Tail := Head;
-              while CharIsNumberChar(Tail^) do
-                Inc(Tail);
-              SetString(S, Head, Tail - Head);
-              Nominator := StrToInt(S);
+              Nominator := StrToInt(NumberStr.Strings[0]);
               Denominator := 1;
-              if Tail^ = '/' then
-              begin
-                Inc(Tail);
-                Head := Tail;
-                while CharIsNumberChar(Tail^) do
-                  Inc(Tail);
-                SetString(S, Head, Tail - Head);
-                Denominator := StrToInt(S);
-              end;
               AddNumber(StartCode, Nominator, Denominator);
-            end;
+            end
+            else
+            if NumberStr.Count = 2 then
+            begin
+              Nominator := StrToInt(NumberStr.Strings[0]);
+              Denominator := StrToInt(NumberStr.Strings[1]);
+              AddNumber(StartCode, Nominator, Denominator);
+            end
+            else
+            if NumberStr.Count <> 0 then
+              FatalError('Unknown number ' + Line[8]);
 
             if Line.Count < 10 then
               Continue;
             // 8) read mirrored character
-            S := Line[9];
-            if S = 'Y' then
+            SymName := Line[9];
+            if SymName = 'Y' then
               AddToCategories(StartCode, ccMirroring)
             else
-            if S <> 'N' then
+            if SymName <> 'N' then
               FatalError('Unknown mirroring character');
 
             if Line.Count < 13 then
@@ -868,6 +844,8 @@ begin
     Lines.Free;
     Line.Free;
     SymCharacters.Free;
+    DecompositionsStr.Free;
+    NumberStr.Free;
   end;
   if not Verbose then
     Writeln;
@@ -1123,22 +1101,33 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure DecomposeIt(const D: TDecomposition);
+function DecomposeIt(const S: TDecompositions): TDecompositions;
 
 var
-  I, J: Integer;
-  
-begin
-  for I := 0 to High(D.Decompositions) do
+  I, J, K: Integer;
+  Sub: TDecompositions;
+
+  procedure AddResult(Code: Cardinal);
+  var
+    L: Integer;
   begin
-    J := FindDecomposition(D.Decompositions[I]);
-    if J > -1 then
-      DecomposeIt(Decompositions[J])
-    else
+    L := Length(Result);
+    SetLength(Result, L + 1);
+    Result[L] := Code;
+  end;
+
+begin
+  for I := Low(S) to High(S) do
+  begin
+    J := FindDecomposition(S[I]);
+    if J >= 0 then
     begin
-      DecompTemp[DecompTempSize] := D.Decompositions[I];
-      Inc(DecompTempSize);
-    end;
+      Sub := DecomposeIt(Decompositions[J].Decompositions);
+      for K := Low(Sub) to High(Sub) do
+        AddResult(Sub[K]);
+    end
+    else
+      AddResult(S[I]);
   end;
 end;
 
@@ -1150,14 +1139,15 @@ procedure ExpandDecompositions;
 
 var
   I: Integer;
+  S: TDecompositions;
   
 begin
-  for I := 0 to High(Decompositions) do
+  for I := Low(Decompositions) to High(Decompositions) do
   begin
-    DecompTempSize := 0;
-    DecomposeIt(Decompositions[I]);
-    if DecompTempSize > 0 then
-      AddDecomposition(Decompositions[I].Code);
+    // avoid side effects by creating a new array
+    SetLength(S, 0);
+    S := DecomposeIt(Decompositions[I].Decompositions);
+    Decompositions[I].Decompositions := S;
   end;
 end;
 
