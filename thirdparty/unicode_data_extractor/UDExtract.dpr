@@ -24,6 +24,7 @@ type
 
   TDecomposition = record
     Code: Cardinal;
+    Tag: TCompatibilityFormattingTag; 
     Decompositions: TDecompositions;
   end;
 
@@ -166,6 +167,26 @@ const
     (Name: 'Pattern_White_Space'; Category: ccPatternWhiteSpace),
     (Name: 'Pattern_Syntax'; Category: ccPatternSyntax)
     );
+
+const
+  DecompositionTags: array [TCompatibilityFormattingTag] of string =
+    ('',            // cftCanonical
+     '<font>',      // cftFont
+     '<noBreak>',   // cftNoBreak
+     '<initial>',   // cftInitial
+     '<medial>',    // cftMedial
+     '<final>',     // cftFinal
+     '<isolated>',  // cftIsolated
+     '<circle>',    // cftCircle
+     '<super>',     // cftSuper
+     '<sub>',       // cftSub
+     '<vertical>',  // cftVertical
+     '<wide>',      // cftWide
+     '<narrow>',    // cftNarrow
+     '<small>',     // cftSmall
+     '<square>',    // cftSquare
+     '<fraction>',  // cftFraction
+     '<compat>');   // cftCompat
 
 var
   SourceFileName,
@@ -441,7 +462,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure AddDecomposition(Code: Cardinal; Decomposition: TDecompositions);
+procedure AddDecomposition(Code: Cardinal; Tag: TCompatibilityFormattingTag; Decomposition: TDecompositions);
 
 var
   I, J: Integer;
@@ -473,6 +494,7 @@ begin
     SetLength(Decompositions[I].Decompositions, Length(Decomposition));
 
   Decompositions[I].Code := Code;
+  Decompositions[I].Tag := Tag;
   Move(Decomposition[0], Decompositions[I].Decompositions[0], Length(Decomposition) * SizeOf(Cardinal));
 end;
 
@@ -657,7 +679,7 @@ var
   RangePending: Boolean;
   StartCode,
   EndCode: Cardinal;
-
+  K, Tag: TCompatibilityFormattingTag;
   Name, SymName: string;
   Decompositions: TDecompositions;
 
@@ -763,9 +785,27 @@ begin
             // 6) if the character can be decomposed then keep its decomposed parts
             //    and add it to the can-be-decomposed category
             StrToStrings(Line[5], NativeSpace, DecompositionsStr, False);
-            // consider only canonical decomposition mappings
+            Tag := cftCanonical;
+            if (DecompositionsStr.Count > 0) and (Pos('<', DecompositionsStr.Strings[0]) > 0) then
+            begin
+              for K := Low(DecompositionTags) to High(DecompositionTags) do
+              begin
+                if DecompositionTags[K] = DecompositionsStr.Strings[0] then
+                begin
+                  Tag := K;
+                  Break;
+                end;
+              end;
+              if Tag = cftCanonical then
+                FatalError('Unknown decomposition tag ' + DecompositionsStr.Strings[0]);
+              if Tag = cftNoBreak then
+                AddToCategories(StartCode, ccNonBreaking);
+              DecompositionsStr.Delete(0);
+            end;
             if (DecompositionsStr.Count > 0) and (Pos('<', DecompositionsStr.Strings[0]) = 0) then
-            begin              SetLength(Decompositions, DecompositionsStr.Count);
+            begin
+              // consider only canonical decomposition mappings
+              SetLength(Decompositions, DecompositionsStr.Count);
               for J := 0 to DecompositionsStr.Count - 1 do
                 Decompositions[J] := StrToInt('$' + DecompositionsStr.Strings[J]);
 
@@ -773,7 +813,7 @@ begin
               // array then add the character with its decomposition.
               // (outchy) latest unicode data have aliases to link items having the same decompositions
               //if DecompTempSize > 1 then
-              AddDecomposition(StartCode, Decompositions);
+              AddDecomposition(StartCode, Tag, Decompositions);
             end;
 
             if Line.Count < 9 then
@@ -1452,6 +1492,7 @@ begin
       begin
         WriteResourceChar(Code);
         WriteResourceByte(Length(Decompositions));
+        WriteResourceByte(Byte(Tag));
         WriteResourceCharArray(Decompositions);
       end;
     FlushResource;

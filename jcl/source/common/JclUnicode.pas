@@ -322,6 +322,27 @@ type
     nfKD    // compatibility decomposition
   );
 
+  // 16 compatibility formatting tags are defined:
+  TCompatibilityFormattingTag = (
+    cftCanonical, // default when no CFT is explicited
+    cftFont,      // Font variant (for example, a blackletter form)
+    cftNoBreak,   // No-break version of a space or hyphen
+    cftInitial,   // Initial presentation form (Arabic)
+    cftMedial,    // Medial presentation form (Arabic)
+    cftFinal,     // Final presentation form (Arabic)
+    cftIsolated,  // Isolated presentation form (Arabic)
+    cftCircle,    // Encircled form
+    cftSuper,     // Superscript form
+    cftSub,       // Subscript form
+    cftVertical,  // Vertical layout presentation form
+    cftWide,      // Wide (or zenkaku) compatibility character
+    cftNarrow,    // Narrow (or hankaku) compatibility character
+    cftSmall,     // Small variant form (CNS compatibility)
+    cftSquare,    // CJK squared font variant
+    cftFraction,  // Vulgar fraction form
+    cftCompat     //	Otherwise unspecified compatibility character
+  );
+
   // used to hold information about the start and end
   // position of a unicodeblock.
   TUnicodeBlockRange = record
@@ -1751,7 +1772,11 @@ const
   SCount = LCount * NCount;   // 11172
 
 type
-  TDecompositions = array of array of TUCS4Array;
+  TDecomposition = record
+    Tag: TCompatibilityFormattingTag;
+    Leaves: TUCS4Array;
+  end;
+  TDecompositions = array of array of TDecomposition;
   TDecompositionsArray = array [Byte] of TDecompositions;
 
 var
@@ -1802,9 +1827,10 @@ begin
             Size := Stream.ReadByte;
             if Size > 0 then
             begin
-              SetLength(CompatibleDecompositions[First, Second, Third], Size);
+              CompatibleDecompositions[First, Second, Third].Tag := TCompatibilityFormattingTag(Stream.ReadByte);
+              SetLength(CompatibleDecompositions[First, Second, Third].Leaves, Size);
               for J := 0 to Size - 1 do
-                CompatibleDecompositions[First, Second, Third, J] := StreamReadChar(Stream);
+                CompatibleDecompositions[First, Second, Third].Leaves[J] := StreamReadChar(Stream);
             end;
           end
           else
@@ -1817,9 +1843,10 @@ begin
             Size := Stream.ReadByte;
             if Size > 0 then
             begin
-              SetLength(CanonicalDecompositions[First, Second, Third], Size);
+              CanonicalDecompositions[First, Second, Third].Tag := TCompatibilityFormattingTag(Stream.ReadByte);
+              SetLength(CanonicalDecompositions[First, Second, Third].Leaves, Size);
               for J := 0 to Size - 1 do
-                CanonicalDecompositions[First, Second, Third, J] := StreamReadChar(Stream);
+                CanonicalDecompositions[First, Second, Third].Leaves[J] := StreamReadChar(Stream);
             end;
           end;
         end;
@@ -1875,25 +1902,25 @@ begin
       // Check first stage table whether there is a particular block and
       // (if so) then whether there is a decomposition or not.
       if (CompatibleDecompositions[First] = nil) or (CompatibleDecompositions[First, Second] = nil)
-        or (CompatibleDecompositions[First, Second, Third] = nil) then
+        or (CompatibleDecompositions[First, Second, Third].Leaves = nil) then
       begin
         // if there is no compatibility decompositions try canonical
         if (CanonicalDecompositions[First] = nil) or (CanonicalDecompositions[First, Second] = nil)
-          or (CanonicalDecompositions[First, Second, Third] = nil) then
+          or (CanonicalDecompositions[First, Second, Third].Leaves = nil) then
           Result := nil
         else
-          Result := CanonicalDecompositions[First, Second, Third];
+          Result := CanonicalDecompositions[First, Second, Third].Leaves;
       end
       else
-        Result := CompatibleDecompositions[First, Second, Third];
+        Result := CompatibleDecompositions[First, Second, Third].Leaves;
     end
     else
     begin
       if (CanonicalDecompositions[First] = nil) or (CanonicalDecompositions[First, Second] = nil)
-        or (CanonicalDecompositions[First, Second, Third] = nil) then
+        or (CanonicalDecompositions[First, Second, Third].Leaves = nil) then
         Result := nil
       else
-        Result := CanonicalDecompositions[First, Second, Third];
+        Result := CanonicalDecompositions[First, Second, Third].Leaves;
     end;
   end;
 end;
