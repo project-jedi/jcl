@@ -28,7 +28,7 @@
         <value>native</value>
       </property>
     </setting>
-    <setting path="" mask="*.zip *.res *.RES *.dcr *.exe *.dll *.obj *.tlb *.edi *.resources *.chm *.chw *.dls *.e32" recurse="yes" dironly="no">
+    <setting path="" mask="*.zip *.res *.RES *.dcr *.exe *.dll *.obj *.tlb *.resources *.chm *.chw *.dls *.e32" recurse="yes" dironly="no">
       <property name="svn:mime-type">
         <value>application/octet-stream</value>
       </property>

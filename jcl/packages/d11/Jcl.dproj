@@ -95,14 +95,6 @@
     <DCCReference Include="..\..\source\common\JclCompression.pas"/>
     <DCCReference Include="..\..\source\common\JclCounter.pas"/>
     <DCCReference Include="..\..\source\common\JclDateTime.pas"/>
-    <DCCReference Include="..\..\source\common\JclEDI.pas"/>
-    <DCCReference Include="..\..\source\common\JclEDISEF.pas"/>
-    <DCCReference Include="..\..\source\common\JclEDITranslators.pas"/>
-    <DCCReference Include="..\..\source\common\JclEDIXML.pas"/>
-    <DCCReference Include="..\..\source\common\JclEDI_ANSIX12.pas"/>
-    <DCCReference Include="..\..\source\common\JclEDI_ANSIX12_Ext.pas"/>
-    <DCCReference Include="..\..\source\common\JclEDI_UNEDIFACT.pas"/>
-    <DCCReference Include="..\..\source\common\JclEDI_UNEDIFACT_Ext.pas"/>
     <DCCReference Include="..\..\source\common\JclExprEval.pas"/>
     <DCCReference Include="..\..\source\common\JclFileUtils.pas"/>
     <DCCReference Include="..\..\source\common\JclIniFiles.pas"/>
