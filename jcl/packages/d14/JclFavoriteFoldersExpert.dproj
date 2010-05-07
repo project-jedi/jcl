@@ -1,11 +1,11 @@
-	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{3BF49751-D079-4734-9AB6-F333FA52FDBA}</ProjectGuid>
 			<MainSource>JclFavoriteFoldersExpert.dpk</MainSource>
 			<ProjectVersion>12.0</ProjectVersion>
 			<Config Condition="'$(Config)'==''">Release</Config>
 			<DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-			<DCC_Define>BCB;RELEASE</DCC_Define>
+			<DCC_Define>BCB;WIN32;CONDITIONALEXPRESSIONS;VER210;RELEASE</DCC_Define>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
 			<Base>true</Base>

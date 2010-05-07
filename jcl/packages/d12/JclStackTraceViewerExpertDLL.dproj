@@ -1,11 +1,11 @@
-	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{851E8773-ADE0-479D-94F9-FE3AAB64A847}</ProjectGuid>
 			<MainSource>JclStackTraceViewerExpertDLL.dpr</MainSource>
 			<ProjectVersion>12.0</ProjectVersion>
 			<Config Condition="'$(Config)'==''">Release</Config>
 			<DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-			<DCC_Define>BCB;RELEASE</DCC_Define>
+			<DCC_Define>BCB;WIN32;CONDITIONALEXPRESSIONS;VER200;RELEASE</DCC_Define>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
 			<Base>true</Base>

@@ -1,4 +1,4 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectGuid>{2AE59B42-1430-423F-99D0-FB8F17DF798B}</ProjectGuid>
     <MainSource>JclDeveloperTools.dpk</MainSource>
@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
     <DCC_UsePackage>rtl;Jcl;JclContainers</DCC_UsePackage>
-    <DCC_Define>BCB;RELEASE</DCC_Define>
+    <DCC_Define>BCB;WIN32;CONDITIONALEXPRESSIONS;VER180;VER185;RELEASE</DCC_Define>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Version>7.0</Version>
