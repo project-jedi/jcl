@@ -2857,7 +2857,7 @@ begin
   if (FHeader.Flags and JCL_GZIP_FLAG_NAME) <> 0 then
     FOriginalFileName := TFileName(ReadCString);
   if (FHeader.Flags and JCL_GZIP_FLAG_COMMENT) <> 0 then
-    FComment := ReadCString;
+    FComment := string(ReadCString);
 
   if CheckHeaderCRC then
   begin
