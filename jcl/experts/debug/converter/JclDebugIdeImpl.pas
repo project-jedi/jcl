@@ -115,7 +115,7 @@ type
     procedure SetProjectState(Index: TDebugExpertAction; const AProject: IOTAProject; Value: TDebugExpertState);
     function GetProjectActions(const AProject: IOTAProject): TDebugExpertActions;
     procedure UpdateMenuItems(const ActiveProject: IOTAProject; AMenuItem: TMenuItem; CheckTag: Integer);
-    procedure UpdateMenuCheckState(Sender: TObject; DebugExpertAction: TDebugExpertAction);
+    procedure UpdateMenuCheckState(Sender: TMenuItem; DebugExpertAction: TDebugExpertAction);
   public
     constructor Create; reintroduce;
     procedure AfterCompile(const Project: IOTAProject; Succeeded: Boolean);
@@ -659,7 +659,7 @@ begin
   end;
 end;
 
-procedure TJclDebugExtension.UpdateMenuCheckState(Sender: TObject; DebugExpertAction: TDebugExpertAction);
+procedure TJclDebugExtension.UpdateMenuCheckState(Sender: TMenuItem; DebugExpertAction: TDebugExpertAction);
 var
   CheckTag: Integer;
   ActiveProject: IOTAProject;
@@ -670,7 +670,7 @@ begin
       CheckTag := DebugExpertStateToInt(ProjectStates[DebugExpertAction, ActiveProject])
     else
       CheckTag := DebugExpertStateToInt(GlobalStates[DebugExpertAction]);
-    UpdateMenuItems(ActiveProject, Sender as TMenuItem, CheckTag);
+    UpdateMenuItems(ActiveProject, Sender, CheckTag);
   except
     on ExceptionObj: TObject do
       JclExpertShowExceptionDialog(ExceptionObj);
@@ -860,12 +860,12 @@ end;
 
 procedure TJclDebugExtension.DeleteMapFileMenuClick(Sender: TObject);
 begin
-  UpdateMenuCheckState(Sender, deDeleteMapFile);
+  UpdateMenuCheckState(Sender as TMenuItem, deDeleteMapFile);
 end;
 
 procedure TJclDebugExtension.DeleteMapFileMenuDropDown(Sender: TObject);
 begin
-  UpdateMenuCheckState(Sender, deDeleteMapFile);
+  UpdateMenuCheckState((Sender as TPopupMenu).Items, deDeleteMapFile);
 end;
 
 procedure TJclDebugExtension.DeleteMapFileSubMenuClick(Sender: TObject);
@@ -931,12 +931,12 @@ end;
 
 procedure TJclDebugExtension.GenerateJdbgMenuClick(Sender: TObject);
 begin
-  UpdateMenuCheckState(Sender, deGenerateJdbg);
+  UpdateMenuCheckState(Sender as TMenuItem, deGenerateJdbg);
 end;
 
 procedure TJclDebugExtension.GenerateJdbgMenuDropDown(Sender: TObject);
 begin
-  UpdateMenuCheckState(Sender, deGenerateJdbg);
+  UpdateMenuCheckState((Sender as TPopupMenu).Items, deGenerateJdbg);
 end;
 
 procedure TJclDebugExtension.GenerateJdbgSubMenuClick(Sender: TObject);
@@ -1062,12 +1062,12 @@ end;
 
 procedure TJclDebugExtension.InsertJdbgMenuClick(Sender: TObject);
 begin
-  UpdateMenuCheckState(Sender, deInsertJdbg);
+  UpdateMenuCheckState(Sender as TMenuItem, deInsertJdbg);
 end;
 
 procedure TJclDebugExtension.InsertJdbgMenuDropDown(Sender: TObject);
 begin
-  UpdateMenuCheckState(Sender, deInsertJdbg);
+  UpdateMenuCheckState((Sender as TPopupMenu).Items, deInsertJdbg);
 end;
 
 procedure TJclDebugExtension.InsertJdbgSubMenuClick(Sender: TObject);
