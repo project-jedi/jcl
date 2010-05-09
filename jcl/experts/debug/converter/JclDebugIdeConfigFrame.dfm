@@ -2,7 +2,7 @@ object JclDebugIdeConfigFrame: TJclDebugIdeConfigFrame
   Left = 0
   Top = 0
   Width = 369
-  Height = 375
+  Height = 436
   AutoScroll = True
   TabOrder = 0
   TabStop = True
@@ -44,5 +44,13 @@ object JclDebugIdeConfigFrame: TJclDebugIdeConfigFrame
       'RsDataDefaultEnabled'
       'RsDataAlwaysEnabled')
     TabOrder = 2
+  end
+  object CheckBoxQuiet: TCheckBox
+    Left = 3
+    Top = 408
+    Width = 347
+    Height = 17
+    Caption = 'RsQuiet'
+    TabOrder = 3
   end
 end

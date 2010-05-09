@@ -285,6 +285,7 @@ resourcestring
   RsDebugInsertJdbg = 'Insert JDBG data into the binary';
   RsDeleteMapFile = 'Delete map files after conversion';
   RsEInvalidDebugExpertState = '%d is not a valid debug expert state';
+  RsQuiet = 'Do not show dialogs or log entries';
 
 //=== JclDebugIdeResult.pas ==================================================
 resourcestring

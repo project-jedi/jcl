@@ -43,6 +43,7 @@ type
     RadioGroupGenerateJdbg: TRadioGroup;
     RadioGroupInsertJdbg: TRadioGroup;
     RadioGroupDeleteMapFile: TRadioGroup;
+    CheckBoxQuiet: TCheckBox;
   private
     function GetGenerateJdbgState: TDebugExpertState;
     function GetInsertJdbgState: TDebugExpertState;
@@ -50,12 +51,15 @@ type
     procedure SetGenerateJdbgState(Value: TDebugExpertState);
     procedure SetInsertJdbgState(Value: TDebugExpertState);
     procedure SetDeleteMapFileState(Value: TDebugExpertState);
+    function GetQuiet: Boolean;
+    procedure SetQuiet(const Value: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
 
     property GenerateJdbgState: TDebugExpertState read GetGenerateJdbgState write SetGenerateJdbgState;
     property InsertJdbgState: TDebugExpertState read GetInsertJdbgState write SetInsertJdbgState;
     property DeleteMapFileState: TDebugExpertState read GetDeleteMapFileState write SetDeleteMapFileState;
+    property Quiet: Boolean read GetQuiet write SetQuiet;
   end;
 
 function DebugExpertStateToInt(Value: TDebugExpertState): Integer;
@@ -203,6 +207,8 @@ begin
   RadioGroupDeleteMapFile.Items.Strings[1] := LoadResString(@RsDefaultDisabled);
   RadioGroupDeleteMapFile.Items.Strings[2] := LoadResString(@RsDefaultEnabled);
   RadioGroupDeleteMapFile.Items.Strings[3] := LoadResString(@RsAlwaysEnabled);
+
+  CheckBoxQuiet.Caption := LoadResString(@RsQuiet);
 end;
 
 function TJclDebugIdeConfigFrame.GetGenerateJdbgState: TDebugExpertState;
@@ -220,6 +226,11 @@ begin
   Result := IntToDebugExpertState(RadioGroupDeleteMapFile.ItemIndex);
 end;
 
+function TJclDebugIdeConfigFrame.GetQuiet: Boolean;
+begin
+  Result := CheckBoxQuiet.Checked;
+end;
+
 procedure TJclDebugIdeConfigFrame.SetGenerateJdbgState(Value: TDebugExpertState);
 begin
   RadioGroupGenerateJdbg.ItemIndex := DebugExpertStateToInt(Value);
@@ -233,6 +244,11 @@ end;
 procedure TJclDebugIdeConfigFrame.SetDeleteMapFileState(Value: TDebugExpertState);
 begin
   RadioGroupDeleteMapFile.ItemIndex := DebugExpertStateToInt(Value);
+end;
+
+procedure TJclDebugIdeConfigFrame.SetQuiet(const Value: Boolean);
+begin
+  CheckBoxQuiet.Checked := Value;
 end;
 
 {$IFDEF UNITVERSIONING}
