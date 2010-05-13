@@ -507,7 +507,7 @@ function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
   StartColor, EndColor: TColor; ADirection: TGradientDirection): Boolean; overload;
 
 function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
-  RegionBitmapMode: TJclRegionBitmapMode): HRGN;
+  RegionBitmapMode: TJclRegionBitmapMode; UseAlphaChannel: Boolean = False): HRGN;
 procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer; Window: THandle = HWND_DESKTOP); overload;
 procedure ScreenShot(bm: TBitmap; IncludeTaskBar: Boolean = True); overload;
 function MapWindowRect(hWndFrom, hWndTo: THandle; ARect: TRect):TRect;
@@ -1986,12 +1986,14 @@ begin
 end;
 
 function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
-  RegionBitmapMode: TJclRegionBitmapMode): HRGN;
+  RegionBitmapMode: TJclRegionBitmapMode; UseAlphaChannel: Boolean): HRGN;
 var
-  FBitmap: TBitmap;
-  X, Y: Integer;
+  LBitmap: TBitmap;
+  X, Y, Width: Integer;
   StartX: Integer;
   Region: HRGN;
+  P: PBGRA;
+  Mask: TColor;
 begin
   Result := 0;
 
@@ -2001,63 +2003,77 @@ begin
   if (Bitmap.Width = 0) or (Bitmap.Height = 0) then
     Exit;
 
-  FBitmap := TBitmap.Create;
+  if UseAlphaChannel then
+  begin
+    Mask := TColor($FF000000);
+    // A region can represent only full transparent alpha values
+    RegionColor := 0;
+  end
+  else
+  begin
+    Mask := TColor($00FFFFFF);
+    RegionColor := ColorToRGB(RegionColor);
+  end;
+
+  LBitmap := TBitmap.Create;
   try
-    FBitmap.Assign(Bitmap);
+    LBitmap.Assign(Bitmap);
+    LBitmap.PixelFormat := pf32bit;
 
-    for Y := 0 to FBitmap.Height - 1 do
+    Width := LBitmap.Width;
+    for Y := 0 to LBitmap.Height - 1 do
     begin
+      P := LBitmap.ScanLine[Y];
       X := 0;
-      while X < FBitmap.Width do
+      while X < Width do
       begin
-
         if RegionBitmapMode = rmExclude then
         begin
-          while FBitmap.Canvas.Pixels[X,Y] = RegionColor do
+          while (TColor(P^) and Mask) = RegionColor do
           begin
             Inc(X);
-            if X = FBitmap.Width then
+            Inc(P);
+            if X = Width then
               Break;
           end;
         end
         else
         begin
-          while FBitmap.Canvas.Pixels[X,Y] <> RegionColor do
+          while (TColor(P^) and Mask) <> RegionColor do
           begin
             Inc(X);
-            if X = FBitmap.Width then
+            Inc(P);
+            if X = Width then
               Break;
           end;
         end;
 
-        if X = FBitmap.Width then
+        if X = Width then
           Break;
 
         StartX := X;
         if RegionBitmapMode = rmExclude then
         begin
-          while FBitmap.Canvas.Pixels[X,Y] <> RegionColor do
+          while (X < Width) and ((TColor(P^) and Mask) <> RegionColor) do
           begin
-            if X = FBitmap.Width then
-              Break;
             Inc(X);
+            Inc(P);
           end;
         end
         else
         begin
-          while FBitmap.Canvas.Pixels[X,Y] = RegionColor do
+          while (X < Width) and ((TColor(P^) and Mask) = RegionColor) do
           begin
-            if X = FBitmap.Width then
-              Break;
             Inc(X);
+            Inc(P);
           end;
         end;
 
+        Region := CreateRectRgn(StartX, Y, X, Y + 1);
         if Result = 0 then
-          Result := CreateRectRgn(StartX, Y, X, Y + 1)
+          Result := Region
         else
         begin
-          Region := CreateRectRgn(StartX, Y, X, Y + 1);
           if Region <> 0 then
           begin
             CombineRgn(Result, Result, Region, RGN_OR);
@@ -2067,7 +2083,7 @@ begin
       end;
     end;
   finally
-    FBitmap.Free;
+    LBitmap.Free;
   end;
 end;
 
