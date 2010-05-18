@@ -995,6 +995,8 @@ procedure AddIgnoredExceptionByName(const AExceptionClassName: string);
 procedure RemoveIgnoredException(const ExceptionClass: TClass);
 procedure RemoveIgnoredExceptionByName(const AExceptionClassName: string);
 function IsIgnoredException(const ExceptionClass: TClass): Boolean;
+// function to add additional system modules to be included in the stack trace
+procedure AddModule(const ModuleName: string);
 
 {$IFDEF UNITVERSIONING}
 const
@@ -4389,12 +4391,14 @@ end;
 type
   TJclGlobalModulesList = class(TObject)
   private
+    FAddedModules: TStringList;
     FHookedModules: TJclModuleArray;
     FLock: TJclCriticalSection;
     FModulesList: TJclModuleInfoList;
   public
     constructor Create;
     destructor Destroy; override;
+    procedure AddModule(const ModuleName: string);
     function CreateModulesList: TJclModuleInfoList;
     procedure FreeModulesList(var ModulesList: TJclModuleInfoList);
     function ValidateAddress(Addr: Pointer): Boolean;
@@ -4412,7 +4416,29 @@ destructor TJclGlobalModulesList.Destroy;
 begin
   FreeAndNil(FLock);
   FreeAndNil(FModulesList);
+  FreeAndNil(FAddedModules);
   inherited Destroy;
+end;
+
+procedure TJclGlobalModulesList.AddModule(const ModuleName: string);
+var
+  IsMultiThreaded: Boolean;
+begin
+  IsMultiThreaded := IsMultiThread;
+  if IsMultiThreaded then
+    FLock.Enter;
+  try
+    if not Assigned(FAddedModules) then
+    begin
+      FAddedModules := TStringList.Create;
+      FAddedModules.Sorted := True;
+      FAddedModules.Duplicates := dupIgnore;
+    end;
+    FAddedModules.Add(ModuleName);
+  finally
+    if IsMultiThreaded then
+      FLock.Leave;
+  end;
 end;
 
 function TJclGlobalModulesList.CreateModulesList: TJclModuleInfoList;
@@ -4420,6 +4446,7 @@ var
   I: Integer;
   SystemModulesOnly: Boolean;
   IsMultiThreaded: Boolean;
+  AddedModuleHandle: HMODULE;
 begin
   IsMultiThreaded := IsMultiThread;
   if IsMultiThreaded then
@@ -4433,6 +4460,14 @@ begin
       if SystemModulesOnly and JclHookedExceptModulesList(FHookedModules) then
         for I := Low(FHookedModules) to High(FHookedModules) do
           Result.AddModule(FHookedModules[I], True);
+      if Assigned(FAddedModules) then
+        for I := 0 to FAddedModules.Count - 1 do
+        begin
+          AddedModuleHandle := GetModuleHandle(PChar(FAddedModules[I]));
+          if (AddedModuleHandle <> 0) and
+            not Assigned(Result.ModuleFromAddress[Pointer(AddedModuleHandle)]) then
+            Result.AddModule(AddedModuleHandle, True);
+        end;
       if stStaticModuleList in JclStackTrackingOptions then
         FModulesList := Result;
     end
@@ -5487,6 +5522,11 @@ begin
       IgnoredExceptionClassNamesCritSect.Leave;
     end;
   end;
+end;
+
+procedure AddModule(const ModuleName: string);
+begin
+  GlobalModulesList.AddModule(ModuleName);
 end;
 
 procedure DoExceptNotify(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean;
