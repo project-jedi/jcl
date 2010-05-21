@@ -4144,11 +4144,11 @@ end;
 
 function TJclStringBuilder.Remove(StartIndex, Length: SizeInt): TJclStringBuilder;
 begin
-  if (StartIndex < 0) or (Length < 0) or (StartIndex + Length > FLength) then
+  if (StartIndex < 0) or (Length < 0) or (StartIndex + Length >= FLength) then
     raise ArgumentOutOfRangeException.CreateRes(@RsArgumentOutOfRange);
   if Length > 0 then
   begin
-    MoveChar(FChars[StartIndex + Length], FChars[StartIndex], Length);
+    MoveChar(FChars[StartIndex + Length], FChars[StartIndex], FLength - (StartIndex + Length));
     Dec(FLength, Length);
   end;
   Result := Self;
