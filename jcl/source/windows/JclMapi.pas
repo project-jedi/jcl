@@ -607,9 +607,12 @@ begin
       FMapiVersion := RegReadStringDef(HKEY_LOCAL_MACHINE, MessageSubsytemKey, 'MAPIXVER', '');
     end;
     FAnyClientInstalled := FMapiInstalled;
+    if RegKeyExists(HKEY_CURRENT_USER, MailClientsKey) then
+      DefaultValue := RegReadStringDef(HKEY_CURRENT_USER, MailClientsKey, '', '');
     if RegKeyExists(HKEY_LOCAL_MACHINE, MailClientsKey) then
     begin
-      DefaultValue := RegReadStringDef(HKEY_LOCAL_MACHINE, MailClientsKey, '', '');
+      if DefaultValue = '' then
+        DefaultValue := RegReadStringDef(HKEY_LOCAL_MACHINE, MailClientsKey, '', '');
       if RegGetKeyNames(HKEY_LOCAL_MACHINE, MailClientsKey, SL) then
       begin
         SetLength(FClients, SL.Count);
