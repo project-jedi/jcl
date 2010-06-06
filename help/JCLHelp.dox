@@ -25143,7 +25143,7 @@ Value2.9=%NSSYM% %TYPEL%
 
 [Configurations\HLP\{C81B476F-5DE3-416C-A73A-9674B8ECC110}\Basic]
 CreatePrintableDocumentation=0
-HelpCompiler=C:\Program Files\hlp compiler\HCRTF.EXE
+HelpCompiler=C:\Program Files\Microsoft Help Workshop\HCRTF.EXE
 HLPFilename=..\jcl\help\JclHelp.hlp
 OutputFile=
 
