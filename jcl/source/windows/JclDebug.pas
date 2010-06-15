@@ -634,7 +634,7 @@ type
     FDelayedTrace: Boolean;
     FInStackTracing: Boolean;
     FRaw: Boolean;
-    FStackOffset: TJclAddr;
+    FStackOffset: Int64;
     function GetItems(Index: Integer): TJclStackInfoItem;
     function NextStackFrame(var StackFrame: PStackFrame; var StackInfo: TStackInfo): Boolean;
     procedure StoreToList(const StackInfo: TStackInfo);
@@ -5074,7 +5074,7 @@ begin
     //CopyMemory(FStackData, StackPtr, StackDataSize);
   end;
 
-  FStackOffset := TJclAddr(FStackData) - TJclAddr(StackPtr);
+  FStackOffset := Int64(FStackData) - Int64(StackPtr);
   FFramePointer := Pointer(TJclAddr(FFramePointer) + FStackOffset);
   TopOfStack := TopOfStack + FStackOffset;
 end;
