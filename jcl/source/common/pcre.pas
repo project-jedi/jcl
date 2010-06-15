@@ -662,6 +662,11 @@ function pcre_refcount; external;
 function pcre_study; external;
 function pcre_version; external;
 
+procedure __llmul;
+asm
+  JMP System.__llmul
+end;
+
 type
   size_t = Longint;
 
