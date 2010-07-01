@@ -385,8 +385,11 @@ var
   sd: PSID;
   AccountNameLen, DomainNameLen: DWORD;
   SidNameUse: SID_NAME_USE;
+  AccountName, DomainName: string;
 begin
   Result := '';
+  AccountName := '';
+  DomainName := '';
   rd2 := 0;
 
   if RID = wkrEveryOne then
@@ -408,15 +411,19 @@ begin
     AccountNameLen := 0;
     DomainNameLen := 0;
     SidNameUse := SidTypeUnknown;
-    if not LookupAccountSID(PChar(Server), sd, PChar(Result), AccountNameLen,
-      nil, DomainNameLen, SidNameUse) then
-      SetLength(Result, AccountNamelen);
+    if not LookupAccountSID(PChar(Server), sd, PChar(AccountName), AccountNameLen,
+      PChar(DomainName), DomainNameLen, SidNameUse) then
+    begin
+      SetLength(AccountName, AccountNamelen);
+      SetLength(DomainName, DomainNameLen);
+    end;
 
-    if LookupAccountSID(PChar(Server), sd, PChar(Result), AccountNameLen,
-      nil, DomainNameLen, sidNameUse) then
-      StrResetLength(Result)
+    if LookupAccountSID(PChar(Server), sd, PChar(AccountName), AccountNameLen,
+      PChar(DomainName), DomainNameLen, sidNameUse) then
+      StrResetLength(AccountName)
     else
       RaiseLastOSError;
+    Result := AccountName;
   finally
     FreeSID(sd);
   end;
