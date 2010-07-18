@@ -1163,6 +1163,7 @@ resourcestring
 
   // TJclFileVersionInfo
   RsFileUtilsNoVersionInfo = 'File contains no version information';
+  RsFileUtilsFileDoesNotExist = 'The file %s does not exist';
   RsFileUtilsLanguageIndex = 'Illegal language index';
   RsFileUtilsEmptyValue = 'No value was supplied';
   RsFileUtilsValueNotFound = 'The value %s was not found.';

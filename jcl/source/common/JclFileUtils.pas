@@ -4868,6 +4868,8 @@ var
   Handle: DWORD;
   Size: DWORD;
 begin
+  if not FileExists(FileName) then
+    raise EJclFileVersionInfoError.CreateResFmt(@RsFileUtilsFileDoesNotExist, [FileName]);
   Handle := 0;
   Size := GetFileVersionInfoSize(PChar(FileName), Handle);
   if Size = 0 then
