@@ -1,4 +1,4 @@
-{**************************************************************************************************}
+﻿{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -173,9 +173,17 @@ const
 
 const
   {$EXTERNALSYM ZLIB_VERSION}
-  ZLIB_VERSION = '1.2.3';
+  ZLIB_VERSION = '1.2.5';
   {$EXTERNALSYM ZLIB_VERNUM}
-  ZLIB_VERNUM = $1230;
+  ZLIB_VERNUM = $1250;
+  {$EXTERNALSYM ZLIB_VER_MAJOR}
+  ZLIB_VER_MAJOR = 1;
+  {$EXTERNALSYM ZLIB_VER_MINOR}
+  ZLIB_VER_MINOR = 2;
+  {$EXTERNALSYM ZLIB_VER_REVISION}
+  ZLIB_VER_REVISION = 5;
+  {$EXTERNALSYM ZLIB_VER_SUBREVISION}
+  ZLIB_VER_SUBREVISION = 0;
 
 {*
      The 'zlib' compression library provides in-memory compression and
@@ -307,6 +315,8 @@ const
   Z_FINISH        = 4;
   {$EXTERNALSYM Z_BLOCK}
   Z_BLOCK         = 5;
+  {$EXTERNALSYM Z_TREES}
+  Z_TREES         = 6;
 
 {* Allowed flush values; see deflate() and inflate() below for details *}
 
@@ -349,14 +359,18 @@ const
   Z_HUFFMAN_ONLY       = 2;
   {$EXTERNALSYM Z_RLE}
   Z_RLE                = 3;
+  {$EXTERNALSYM Z_FIXED}
+  Z_FIXED              = 4;
   {$EXTERNALSYM Z_DEFAULT_STRATEGY}
   Z_DEFAULT_STRATEGY   = 0;
 {* compression strategy; see deflateInit2() below for details *}
 
   {$EXTERNALSYM Z_BINARY}
   Z_BINARY  = 0;
+  {$EXTERNALSYM Z_TEXT}
+  Z_TEXT    = 1;
   {$EXTERNALSYM Z_ASCII}
-  Z_ASCII   = 1;
+  Z_ASCII   = Z_TEXT;
   {$EXTERNALSYM Z_UNKNOWN}
   Z_UNKNOWN = 2;
 {* Possible values of the data_type field (though see inflate()) *}
@@ -367,8 +381,6 @@ const
 
   {$EXTERNALSYM Z_NULL}
   Z_NULL  = 0;  {* for initializing zalloc, zfree, opaque *}
-
-{* for compatibility with versions < 1.0.2 *}
 
                         {* basic functions *}
 
