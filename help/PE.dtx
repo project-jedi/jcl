@@ -623,7 +623,15 @@ Description:
 Donator:
   Petr Vones
 --------------------------------------------------------------------------------
-@@TJclPeImportLibItem.ThunkData
+@@TJclPeImportLibItem.ThunkData32
+Summary:
+  TODO
+Description:
+  TODO
+Donator:
+  Petr Vones
+--------------------------------------------------------------------------------
+@@TJclPeImportLibItem.ThunkData64
 Summary:
   TODO
 Description:
@@ -2159,7 +2167,23 @@ See also:
 Donator:
   Petr Vones
 --------------------------------------------------------------------------------
-@@TJclPeImage.OptionalHeader
+@@TJclPeImage.OptionalHeader32
+Summary:
+  Allows access to the image optional header.
+Description:
+  Read OptionalHeader to gain access to the optional header of the loaded PE file.
+  The optional header contains fields standard to all COFF implementations, Windows
+  specific fields such as the target subsytem and allows access to all data
+  directories. Generally speaking, it provides all information for the Windows
+  loader to successfully load the image. Note that not all valid PE image files
+  have an optional header. Specifically an object file (.obj) doesn't necessarily
+  have one (that's why it's called optional). See "Portable Executable and Common
+  Object File Format Specification" Revision 6.0 February 1999 in the MSDN library
+  for a description of the fields in the returned record.
+Donator:
+  Petr Vones
+--------------------------------------------------------------------------------
+@@TJclPeImage.OptionalHeader64
 Summary:
   Allows access to the image optional header.
 Description:
