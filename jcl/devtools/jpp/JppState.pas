@@ -43,9 +43,9 @@
 // Modifications by Robert Rossmair:  Addition of TTriState type, TriState methods
 unit JppState;
 
-interface
-
 {$I jcl.inc}
+
+interface
 
 uses
   SysUtils, Classes,
@@ -355,11 +355,11 @@ begin
     PI := GetPropInfo(Self, ASymbol);
     if Assigned(PI) then
     begin
-      {$IFDEF DELPHI8_UP}   	  
+      {$IFDEF COMPILER8_UP}
       PV := GetPropValue(Self, PI);
-      {$ELSE}
+      {$ELSE ~COMPILER8_UP}
       PV := GetPropValue(Self, PI^.Name);
-      {$ENDIF}
+      {$ENDIF ~COMPILER8_UP}
       if Boolean(PV) then
         Result := ttDefined
       else
@@ -484,17 +484,17 @@ begin
     if Assigned(PI) then
     begin
       if Value = ttDefined then
-        {$IFDEF DELPHI8_UP}   	  
+        {$IFDEF COMPILER8_UP}
         SetPropValue(Self, PI, True)
-        {$ELSE}
+        {$ELSE ~COMPILER8_UP}
         SetPropValue(Self, PI^.Name, True)
-        {$ENDIF}
+        {$ENDIF ~COMPILER8_UP}
       else
-        {$IFDEF DELPHI8_UP}   	  
+        {$IFDEF COMPILER8_UP}
         SetPropValue(Self, PI, False);
-		{$ELSE}
+        {$ELSE ~COMPILER8_UP}
         SetPropValue(Self, PI^.Name, False);
-		{$ENDIF}
+        {$ENDIF ~COMPILER8_UP}
       Exit;
     end;
   end;
