@@ -1720,6 +1720,14 @@ type
     class function ArchiveName: string; override;
   end;
 
+  TJclPpmdDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
+  protected
+    function GetCLSID: TGUID; override;
+  public
+    class function ArchiveExtensions: string; override;
+    class function ArchiveName: string; override;
+  end;
+
 //sevenzip classes for updates (read and write)
 type
   TJclSevenzipUpdateArchive = class(TJclOutOfPlaceUpdateArchive, IInterface)
@@ -7960,6 +7968,23 @@ end;
 function TJclAPMDecompressArchive.GetCLSID: TGUID;
 begin
   Result := CLSID_CFormatAPM;
+end;
+
+//=== { TJclPpmdDecompressArchive } ==========================================
+
+class function TJclPpmdDecompressArchive.ArchiveExtensions: string;
+begin
+  Result := LoadResString(@RsCompressionPpmdExtensions);
+end;
+
+class function TJclPpmdDecompressArchive.ArchiveName: string;
+begin
+  Result := LoadResString(@RsCompressionPpmdName);
+end;
+
+function TJclPpmdDecompressArchive.GetCLSID: TGUID;
+begin
+  Result := CLSID_CFormatPpmd;
 end;
 
 //=== { TJclSevenzipUpdateArchive } ==========================================
