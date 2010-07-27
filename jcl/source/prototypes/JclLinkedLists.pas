@@ -160,7 +160,7 @@ type
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,APtr,Pointer,GetPointer,SetPointer)*)
 
-(*$JPPEXPANDMACRO JCLLINKEDLISTITRINT(TJclPtrLinkedListIterator,IJclPtrIterator,IJclPtrList,IJclPtrEqualityComparer,TJclPtrLinkedListItem,,AValue,Pointer,nil,GetPointer,SetPointer)*)
+(*$JPPEXPANDMACRO JCLLINKEDLISTITRINT(TJclPtrLinkedListIterator,IJclPtrIterator,IJclPtrList,IJclPtrEqualityComparer,TJclPtrLinkedListItem,,APtr,Pointer,nil,GetPointer,SetPointer)*)
 
 (*$JPPEXPANDMACRO JCLLINKEDLISTTYPESINT(TJclLinkedListItem,TObject)*)
 
@@ -372,7 +372,7 @@ begin
 end;
 
 {$JPPDEFINEMACRO ITEMFREE(Item)Item := nil}
-(*$JPPEXPANDMACRO JCLLINKEDLISTITRIMP(TJclPtrLinkedListIterator,IJclPtrIterator,IJclPtrList,IJclPtrEqualityComparer,TJclPtrLinkedListItem,,AValue,Pointer,nil,GetPointer,SetPointer)*)
+(*$JPPEXPANDMACRO JCLLINKEDLISTITRIMP(TJclPtrLinkedListIterator,IJclPtrIterator,IJclPtrList,IJclPtrEqualityComparer,TJclPtrLinkedListItem,,APtr,Pointer,nil,GetPointer,SetPointer)*)
 {$JPPUNDEFMACRO ITEMFREE(Item)}
 
 {$JPPEXPANDMACRO JCLLINKEDLISTIMP(TJclLinkedList,TJclLinkedListItem,IJclCollection,IJclList,IJclIterator,TJclLinkedListIterator,; AOwnsObjects: Boolean,AOwnsObjects,,AObject,TObject,nil,GetObject,SetObject,FreeObject)}
