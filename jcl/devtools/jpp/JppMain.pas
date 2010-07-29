@@ -55,7 +55,7 @@ uses
   JppParser;
 
 procedure Syntax;
-procedure Params(ACommandLine: PChar);
+procedure Params(State: TPppState; ACommandLine: PChar);
 
 implementation
 
@@ -180,9 +180,8 @@ begin
   S := Result;
 end;
 
-procedure Params(ACommandLine: PChar);
+procedure Params(State: TPppState; ACommandLine: PChar);
 var
-  pppState: TPppState;
   StripLength: Integer; // RR
   Prefix, ReplaceString: string; // RR
   N: Integer;
@@ -216,16 +215,16 @@ var
       case cp^ of
         '+':
           begin
-            pppState.Options := pppState.Options + [AOpt];
+            State.Options := State.Options + [AOpt];
             Result := cp + 1;
           end;
         '-':
           begin
-            pppState.Options := pppState.Options - [AOpt];
+            State.Options := State.Options - [AOpt];
             Result := cp + 1;
           end;
       else
-        pppState.Options := pppState.Options + [AOpt];
+        State.Options := State.Options + [AOpt];
         Result := cp;
       end;
     end;
@@ -255,7 +254,7 @@ var
           begin
             cp := ReadStringDoubleQuotedMaybe(CheckOpt(cp + 1, poProcessIncludes), tmp);
             for i := 0 to ListItemCount(tmp, DirSeparator) - 1 do
-              pppState.AddFileToExclusionList(ListGetItem(tmp, DirSeparator, i));
+              State.AddFileToExclusionList(ListGetItem(tmp, DirSeparator, i));
           end;
 
         'c':
@@ -274,14 +273,14 @@ var
           begin
             Inc(cp);
             cp := ReadStringDoubleQuotedMaybe(cp, tmp);
-            pppState.AddToSearchPath(ExpandUNCFileName(tmp));
+            State.AddToSearchPath(ExpandUNCFileName(tmp));
           end;
 
         'd':
           begin
             Inc(cp);
             StrIdent(cp, tmp);
-            pppState.Define(tmp);
+            State.Define(tmp);
           end;
 
         'r':
@@ -295,7 +294,7 @@ var
           begin
             Inc(cp);
             StrIdent(cp, tmp);
-            pppState.Undef(tmp);
+            State.Undef(tmp);
           end;
 
         'x', 'X': // RR
@@ -348,7 +347,7 @@ var
 
               if FileName = NewName then
                 ChangeFileExt(NewName, ProcessedExtension);
-              Process(pppState, FileName, NewName);
+              Process(State, FileName, NewName);
             except
               on e: Exception do
                 Writeln(Format('Error: %s %s', [e.Message, FileName]));
@@ -368,17 +367,14 @@ var
 begin
   cp := ACommandLine;
   StripLength := 0;
-  pppState := nil;
   ReplaceStrings := nil;
   try
-    pppState := TPppState.Create;
     ReplaceStrings := TStringList.Create;
     repeat
       cp := HandleOptions(cp);
       cp := HandleFiles(cp);
     until cp^ = #0;
   finally
-    pppState.Free;
     ReplaceStrings.Free;
   end;
 end;
