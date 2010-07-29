@@ -65,7 +65,7 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\experts\repository';
+    LogPath: 'JCL\devtools\jpp';
     Extra: '';
     Data: nil
     );

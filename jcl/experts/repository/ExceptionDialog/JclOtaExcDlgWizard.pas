@@ -38,20 +38,20 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclIDEUtils, JclOtaExcDlgParams, JclOtaWizardForm;
+  JclIDEUtils, JclExcDlgTemplates, JclOtaWizardForm;
 
 type
   TJclOtaExcDlgForm = class(TJclWizardForm)
     procedure FormCreate(Sender: TObject);
   private
-    FParams: TJclOtaExcDlgParams;
+    FParams: TJclExcDlgParams;
   public
     constructor Create(AOwner: TComponent;
-      AParams: TJclOtaExcDlgParams); reintroduce;
-    property Params: TJclOtaExcDlgParams read FParams;
+      AParams: TJclExcDlgParams); reintroduce;
+    property Params: TJclExcDlgParams read FParams;
   end;
 
-function ExcDlgWizard(var AParams: TJclOtaExcDlgParams): Boolean;
+function ExcDlgWizard(var AParams: TJclExcDlgParams): Boolean;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -76,7 +76,7 @@ uses
   JclOtaExcDlgTraceFrame, JclOtaExcDlgThreadFrame,
   JclOtaExcDlgIgnoreFrame;
 
-function ExcDlgWizard(var AParams: TJclOtaExcDlgParams): Boolean;
+function ExcDlgWizard(var AParams: TJclExcDlgParams): Boolean;
 var
   OwnsParams: Boolean;
   AForm: TJclOtaExcDlgForm;
@@ -87,7 +87,7 @@ begin
   if not Assigned(AParams) then
   begin
     OwnsParams := True;
-    AParams := TJclOtaExcDlgParams.Create;
+    AParams := TJclExcDlgParams.Create;
   end;
   try
     AForm := TJclOtaExcDlgForm.Create(Application, AParams);
@@ -105,7 +105,7 @@ end;
 //=== { TJclOtaExcDlgForm.pas } ==============================================
 
 constructor TJclOtaExcDlgForm.Create(AOwner: TComponent;
-  AParams: TJclOtaExcDlgParams);
+  AParams: TJclExcDlgParams);
 begin
   FParams := AParams;
   inherited Create(AOwner);

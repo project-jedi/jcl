@@ -38,7 +38,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclOtaExcDlgParams, JclOtaWizardFrame;
+  JclExcDlgTemplates, JclOtaWizardFrame;
 
 type
   TJclOtaExcDlgTracePage = class(TJclWizardFrame)
@@ -53,16 +53,16 @@ type
     procedure CheckBoxClick(Sender: TObject);
     procedure CheckBoxStackListClick(Sender: TObject);
   private
-    FParams: TJclOtaExcDlgParams;
+    FParams: TJclExcDlgParams;
     procedure UpdatePreview;
     procedure UpdateCheckBoxes;
   public
-    constructor Create(AOwner: TComponent; AParams: TJclOtaExcDlgParams); reintroduce;
+    constructor Create(AOwner: TComponent; AParams: TJclExcDlgParams); reintroduce;
 
     procedure PageActivated(Direction: TJclWizardDirection); override;
     procedure PageDesactivated(Direction: TJclWizardDirection); override;
 
-    property Params: TJclOtaExcDlgParams read FParams write FParams;
+    property Params: TJclExcDlgParams read FParams write FParams;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -97,7 +97,7 @@ begin
 end;
 
 constructor TJclOtaExcDlgTracePage.Create(AOwner: TComponent;
-  AParams: TJclOtaExcDlgParams);
+  AParams: TJclExcDlgParams);
 begin
   FParams := AParams;
   inherited Create(AOwner);

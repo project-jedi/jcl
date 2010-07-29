@@ -38,7 +38,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclOtaExcDlgParams, JclOtaWizardFrame;
+  JclExcDlgTemplates, JclOtaWizardFrame;
 
 type
   TJclOtaExcDlgSystemPage = class(TJclWizardFrame)
@@ -52,14 +52,14 @@ type
     CheckBoxDisableIfDebuggerAttached: TCheckBox;
     procedure CheckBoxModuleListClick(Sender: TObject);
   private
-    FParams: TJclOtaExcDlgParams;
+    FParams: TJclExcDlgParams;
   public
-    constructor Create(AOwner: TComponent; AParams: TJclOtaExcDlgParams); reintroduce;
+    constructor Create(AOwner: TComponent; AParams: TJclExcDlgParams); reintroduce;
 
     procedure PageActivated(Direction: TJclWizardDirection); override;
     procedure PageDesactivated(Direction: TJclWizardDirection); override;
 
-    property Params: TJclOtaExcDlgParams read FParams write FParams;
+    property Params: TJclExcDlgParams read FParams write FParams;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -89,7 +89,7 @@ begin
 end;
 
 constructor TJclOtaExcDlgSystemPage.Create(AOwner: TComponent;
-  AParams: TJclOtaExcDlgParams);
+  AParams: TJclExcDlgParams);
 begin
   FParams := AParams;
   inherited Create(AOwner);

@@ -38,7 +38,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclOtaExcDlgParams, JclOtaWizardFrame;
+  JclExcDlgTemplates, JclOtaWizardFrame;
 
 type
   TJclOtaExcDlgFormPage = class(TJclWizardFrame)
@@ -52,17 +52,17 @@ type
     CheckBoxAutoScrollBars: TCheckBox;
     procedure CheckBoxMailClick(Sender: TObject);
   private
-    FParams: TJclOtaExcDlgParams;
+    FParams: TJclExcDlgParams;
     procedure UpdateMailEdits;
   protected
     function GetSupportsNext: Boolean; override;
   public
-    constructor Create(AOwner: TComponent; AParams: TJclOtaExcDlgParams); reintroduce;
+    constructor Create(AOwner: TComponent; AParams: TJclExcDlgParams); reintroduce;
 
     procedure PageActivated(Direction: TJclWizardDirection); override;
     procedure PageDesactivated(Direction: TJclWizardDirection); override;
 
-    property Params: TJclOtaExcDlgParams read FParams write FParams;
+    property Params: TJclExcDlgParams read FParams write FParams;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -92,7 +92,7 @@ begin
 end;
 
 constructor TJclOtaExcDlgFormPage.Create(AOwner: TComponent;
-  AParams: TJclOtaExcDlgParams);
+  AParams: TJclExcDlgParams);
 begin
   FParams := AParams;
   inherited Create(AOwner);

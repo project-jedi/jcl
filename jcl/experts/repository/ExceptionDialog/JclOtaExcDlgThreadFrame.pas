@@ -38,7 +38,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclOtaExcDlgParams, JclOtaWizardFrame;
+  JclExcDlgTemplates, JclOtaWizardFrame;
 
 type
   TJclOtaExcDlgThreadPage = class(TJclWizardFrame)
@@ -53,18 +53,18 @@ type
     procedure RadioButtonClick(Sender: TObject);
     procedure CheckBoxStackListClick(Sender: TObject);
   private
-    FParams: TJclOtaExcDlgParams;
+    FParams: TJclExcDlgParams;
     FTestThread: TJclDebugThread;
     procedure UpdatePreview;
     procedure UpdateCheckBoxes;
   public
-    constructor Create(AOwner: TComponent; AParams: TJclOtaExcDlgParams); reintroduce;
+    constructor Create(AOwner: TComponent; AParams: TJclExcDlgParams); reintroduce;
     destructor Destroy; override;
 
     procedure PageActivated(Direction: TJclWizardDirection); override;
     procedure PageDesactivated(Direction: TJclWizardDirection); override;
 
-    property Params: TJclOtaExcDlgParams read FParams write FParams;
+    property Params: TJclExcDlgParams read FParams write FParams;
   end;
 
   // in interface to be exported and have basic debug informations based on exports
@@ -132,7 +132,7 @@ begin
 end;
 
 constructor TJclOtaExcDlgThreadPage.Create(AOwner: TComponent;
-  AParams: TJclOtaExcDlgParams);
+  AParams: TJclExcDlgParams);
 begin
   FParams := AParams;
   inherited Create(AOwner);

@@ -52,12 +52,12 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   JclIDEUtils,
-  JclOtaUtils, JclOtaRepositoryUtils, JclOtaExcDlgParams;
+  JclOtaUtils, JclOtaRepositoryUtils, JclExcDlgTemplates;
 
 type
   TJclExcDlgExpert = class(TJclOtaRepositoryExpert)
   public
-    procedure CreateExceptionDialog(const Params: TJclOtaExcDlgParams);
+    procedure CreateExceptionDialog(const Params: TJclExcDlgParams);
   end;
 
   TJclExcDlgDelphiExpert = class(TJclExcDlgExpert)
@@ -96,10 +96,12 @@ uses
   JclOtaResources, JclOtaConsts,
   JclTemplates, JclOtaRepositoryReg, JclOtaExcDlgWizard;
 
+{$R JclOtaExcDlgIcons.res}
+
 //=== { TJclExcDlgExpert } ===================================================
 
 procedure TJclExcDlgExpert.CreateExceptionDialog(
-  const Params: TJclOtaExcDlgParams);
+  const Params: TJclExcDlgParams);
   function LoadTemplate(const FileName: string): string;
   var
     AFileStream: TFileStream;
@@ -197,9 +199,9 @@ end;
 
 procedure TJclExcDlgDelphiExpert.DoExecute(const Personality: TJclBorPersonality);
 var
-  AParams: TJclOtaExcDlgParams;
+  AParams: TJclExcDlgParams;
 begin
-  AParams := TJclOtaExcDlgParams.Create;
+  AParams := TJclExcDlgParams.Create;
   try
     AParams.Languages := [bpDelphi32];
     AParams.Language := bpDelphi32;
@@ -229,9 +231,9 @@ end;
 procedure TJclExcDlgCBuilderExpert.DoExecute(
   const Personality: TJclBorPersonality);
 var
-  AParams: TJclOtaExcDlgParams;
+  AParams: TJclExcDlgParams;
 begin
-  AParams := TJclOtaExcDlgParams.Create;
+  AParams := TJclExcDlgParams.Create;
   try
     AParams.Languages := [bpDelphi32];
     AParams.Language := bpDelphi32;

@@ -26,7 +26,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-unit JclOtaExcDlgParams;
+unit JclExcDlgTemplates;
 
 interface
 
@@ -41,7 +41,7 @@ uses
   JclTemplates;
 
 type
-  TJclOtaExcDlgParams = class(TJclTemplateParams)
+  TJclExcDlgParams = class(TJclTemplateParams)
   private
     FHookDll: Boolean;
     FFileName: string;
@@ -161,7 +161,7 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\experts\repository\ExceptionDialog';
+    LogPath: 'JCL\devtools\jpp';
     Extra: '';
     Data: nil
     );
@@ -169,11 +169,9 @@ const
 
 implementation
 
-{$R JclOtaExcDlgIcons.res}
+//=== { TJclExcDlgParams } ===================================================
 
-//=== { TJclOtaExcDlgParams } ================================================
-
-constructor TJclOtaExcDlgParams.Create;
+constructor TJclExcDlgParams.Create;
 begin
   inherited Create;
 
@@ -221,33 +219,33 @@ begin
   FMainThread := False;
 end;
 
-destructor TJclOtaExcDlgParams.Destroy;
+destructor TJclExcDlgParams.Destroy;
 begin
   FIgnoredExceptions.Free;
   inherited Destroy;
 end;
 
-function TJclOtaExcDlgParams.GetIgnoredException: string;
+function TJclExcDlgParams.GetIgnoredException: string;
 begin
   Result := FIgnoredExceptions.Strings[FIgnoredExceptionsIndex];
 end;
 
-function TJclOtaExcDlgParams.GetIgnoredExceptionsCount: Integer;
+function TJclExcDlgParams.GetIgnoredExceptionsCount: Integer;
 begin
   Result := FIgnoredExceptions.Count;
 end;
 
-function TJclOtaExcDlgParams.GetReportAllThreads: Boolean;
+function TJclExcDlgParams.GetReportAllThreads: Boolean;
 begin
   Result := FAllThreads or FAllRegisteredThreads;
 end;
 
-function TJclOtaExcDlgParams.GetReportExceptionThread: Boolean;
+function TJclExcDlgParams.GetReportExceptionThread: Boolean;
 begin
   Result := FExceptionThread or FMainExceptionThreads;
 end;
 
-function TJclOtaExcDlgParams.GetReportMainThread: Boolean;
+function TJclExcDlgParams.GetReportMainThread: Boolean;
 begin
   Result := FMainThread or FMainExceptionThreads or FAllThreads or FAllRegisteredThreads;
 end;

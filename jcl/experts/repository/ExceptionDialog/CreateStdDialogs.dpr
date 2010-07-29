@@ -35,7 +35,7 @@ uses
   Classes,
   JclIDEUtils,
   JclTemplates in '..\..\..\devtools\jpp\JclTemplates.pas',
-  JclOtaExcDlgParams in 'JclOtaExcDlgParams.pas',
+  JclExcDlgTemplates in '..\..\..\devtools\jpp\JclExcDlgTemplates.pas',
   JppState in '..\..\..\devtools\jpp\JppState.pas',
   JppLexer in '..\..\..\devtools\jpp\JppLexer.pas',
   JppParser in '..\..\..\devtools\jpp\JppParser.pas';
@@ -71,10 +71,10 @@ begin
 end;
 
 var
-  Params: TJclOtaExcDlgParams;
+  Params: TJclExcDlgParams;
 begin
   try
-    Params := TJclOtaExcDlgParams.Create;
+    Params := TJclExcDlgParams.Create;
     try
       Params.ActivePersonality := bpDelphi32;
       Params.FormName := 'ExceptionDialog';

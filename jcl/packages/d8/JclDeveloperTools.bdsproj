@@ -122,7 +122,7 @@
       <Directories Name="PackageDLLOutputDir"></Directories>
       <Directories Name="PackageDCPOutputDir">..\..\lib\d8</Directories>
       <Directories Name="SearchPath">..\..\lib\d8;..\..\source\include</Directories>
-      <Directories Name="Packages">rtl;Jcl;JclContainers</Directories>
+      <Directories Name="Packages">rtl;vcl;Jcl;JclContainers</Directories>
       <Directories Name="Conditionals">WIN32;CONDITIONALEXPRESSIONS;RELEASE</Directories>
       <Directories Name="DebugSourceDirs"></Directories>
       <Directories Name="UsePackages">True</Directories>

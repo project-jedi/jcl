@@ -38,7 +38,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclIDEUtils, JclOtaWizardFrame, JclOtaExcDlgParams, JclOtaConsts, JclOtaUtils;
+  JclIDEUtils, JclOtaWizardFrame, JclExcDlgTemplates, JclOtaConsts, JclOtaUtils;
 
 type
   TJclOtaExcDlgFilePage = class(TJclWizardFrame)
@@ -55,7 +55,7 @@ type
     procedure ButtonFileBrowseClick(Sender: TObject);
     procedure ComboBoxLanguageClick(Sender: TObject);
   private
-    FParams: TJclOtaExcDlgParams;
+    FParams: TJclExcDlgParams;
     procedure AdjustFileExtension;
     function GetSelectedLanguage: TJclBorPersonality;
   protected
@@ -63,12 +63,12 @@ type
     property SelectedLanguage: TJclBorPersonality read GetSelectedLanguage;
   public
     constructor Create(AOwner: TComponent;
-      AParams: TJclOtaExcDlgParams); reintroduce;
+      AParams: TJclExcDlgParams); reintroduce;
 
     procedure PageActivated(Direction: TJclWizardDirection); override;
     procedure PageDesactivated(Direction: TJclWizardDirection); override;
 
-    property Params: TJclOtaExcDlgParams read FParams write FParams;
+    property Params: TJclExcDlgParams read FParams write FParams;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -156,7 +156,7 @@ begin
 end;
 
 constructor TJclOtaExcDlgFilePage.Create(AOwner: TComponent;
-  AParams: TJclOtaExcDlgParams);
+  AParams: TJclExcDlgParams);
 begin
   FParams := AParams;
   inherited Create(AOwner);

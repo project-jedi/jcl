@@ -1,6 +1,5 @@
 USEUNIT("..\..\experts\repository\JclOtaRepositoryUtils.pas");
 USEUNIT("..\..\experts\repository\ExceptionDialog\JclOtaExcDlgRepository.pas");
-USEUNIT("..\..\experts\repository\ExceptionDialog\JclOtaExcDlgParams.pas");
 USEUNIT("..\..\experts\repository\ExceptionDialog\JclOtaExcDlgWizard.pas");
 USEUNIT("..\..\experts\repository\ExceptionDialog\JclOtaExcDlgFileFrame.pas");
 USEUNIT("..\..\experts\repository\ExceptionDialog\JclOtaExcDlgFormFrame.pas");
