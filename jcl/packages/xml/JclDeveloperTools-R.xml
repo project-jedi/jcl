@@ -19,8 +19,8 @@
     <File Name="..\..\devtools\jpp\JppState.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\devtools\jpp\JppLexer.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\devtools\jpp\JppParser.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\devtools\jpp\JclTemplates.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\devtools\jpp\JclExcDlgTemplates.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\devtools\jpp\Templates\JclTemplates.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\devtools\jpp\Templates\JclExcDlgTemplates.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclCompilerUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclDevToolsResources.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclIDEUtils.pas" Targets="all" Formname="" Condition=""/>

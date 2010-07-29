@@ -67,8 +67,8 @@
 			<DCCReference Include="..\..\devtools\jpp\JppState.pas"/>
 			<DCCReference Include="..\..\devtools\jpp\JppLexer.pas"/>
 			<DCCReference Include="..\..\devtools\jpp\JppParser.pas"/>
-			<DCCReference Include="..\..\devtools\jpp\JclTemplates.pas"/>
-			<DCCReference Include="..\..\devtools\jpp\JclExcDlgTemplates.pas"/>
+			<DCCReference Include="..\..\devtools\jpp\Templates\JclTemplates.pas"/>
+			<DCCReference Include="..\..\devtools\jpp\Templates\JclExcDlgTemplates.pas"/>
 			<DCCReference Include="..\..\source\common\JclCompilerUtils.pas"/>
 			<DCCReference Include="..\..\source\common\JclDevToolsResources.pas"/>
 			<DCCReference Include="..\..\source\common\JclIDEUtils.pas"/>

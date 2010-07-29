@@ -131,6 +131,13 @@
             <value>*.bdsproj</value>
             <value>*.hpp</value>
           </property>
+          <setting path="Templates" mask="" recurse="no" dironly="yes">
+            <property name="svn:ignore">
+              <value>__history</value>
+              <value>*.dcu</value>
+              <value>*.hpp</value>
+            </property>
+          </setting>
         </setting>
       </setting>
 

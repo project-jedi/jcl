@@ -11,7 +11,7 @@
       <PathDelim Value="\"/>
       <SearchPaths>
         <IncludeFiles Value="..\..\source\include\"/>
-        <OtherUnitFiles Value=".;..\..\devtools\jpp;..\..\source\common;..\..\source\windows;"/>
+        <OtherUnitFiles Value=".;..\..\devtools\jpp;..\..\devtools\jpp\Templates;..\..\source\common;..\..\source\windows;"/>
         <UnitOutputDirectory Value="..\..\lib\fpc\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Parsing>
@@ -53,11 +53,11 @@
         <UnitName Value="JppParser"/>
       </Item3>
       <Item4>
-        <Filename Value="..\..\devtools\jpp\JclTemplates.pas"/>
+        <Filename Value="..\..\devtools\jpp\Templates\JclTemplates.pas"/>
         <UnitName Value="JclTemplates"/>
       </Item4>
       <Item5>
-        <Filename Value="..\..\devtools\jpp\JclExcDlgTemplates.pas"/>
+        <Filename Value="..\..\devtools\jpp\Templates\JclExcDlgTemplates.pas"/>
         <UnitName Value="JclExcDlgTemplates"/>
       </Item5>
       <Item6>

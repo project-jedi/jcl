@@ -34,8 +34,8 @@ uses
   SysUtils,
   Classes,
   JclIDEUtils,
-  JclTemplates in '..\..\..\devtools\jpp\JclTemplates.pas',
-  JclExcDlgTemplates in '..\..\..\devtools\jpp\JclExcDlgTemplates.pas',
+  JclTemplates in '..\..\..\devtools\jpp\Templates\JclTemplates.pas',
+  JclExcDlgTemplates in '..\..\..\devtools\jpp\Templates\JclExcDlgTemplates.pas',
   JppState in '..\..\..\devtools\jpp\JppState.pas',
   JppLexer in '..\..\..\devtools\jpp\JppLexer.pas',
   JppParser in '..\..\..\devtools\jpp\JppParser.pas';
