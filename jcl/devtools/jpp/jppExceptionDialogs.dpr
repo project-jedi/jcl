@@ -26,7 +26,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-program CreateStdDialogs;
+program jppExceptionDialogs;
 
 {$APPTYPE CONSOLE}
 
@@ -34,11 +34,15 @@ uses
   SysUtils,
   Classes,
   JclIDEUtils,
-  JclTemplates in '..\..\..\devtools\jpp\Templates\JclTemplates.pas',
-  JclExcDlgTemplates in '..\..\..\devtools\jpp\Templates\JclExcDlgTemplates.pas',
-  JppState in '..\..\..\devtools\jpp\JppState.pas',
-  JppLexer in '..\..\..\devtools\jpp\JppLexer.pas',
-  JppParser in '..\..\..\devtools\jpp\JppParser.pas';
+  JclTemplates in 'Templates\JclTemplates.pas',
+  JclExcDlgTemplates in 'Templates\JclExcDlgTemplates.pas',
+  JppState in 'JppState.pas',
+  JppLexer in 'JppLexer.pas',
+  JppParser in 'JppParser.pas';
+
+const
+  TemplateDirectory = '..\experts\repository\ExceptionDialog\Templates\';
+  StdDlgsDirectory = '..\experts\repository\ExceptionDialog\StandardDialogs\';
 
 function LoadTemplate(const FileName: TFileName): string;
 var
@@ -100,16 +104,16 @@ begin
       Params.CodeDetails := True;
       Params.VirtualAddress := True;
 
-      SaveFile('StandardDialogs\ExceptDlg.pas', GetFinalSourceContent(ApplyTemplate(LoadTemplate('Templates\ExceptDlg.Delphi32.pas'), Params), 'ExceptDlg', 'ExceptionDialog', 'TForm'));
-      SaveFile('StandardDialogs\ExceptDlg.dfm', GetFinalSourceContent(ApplyTemplate(LoadTemplate('Templates\ExceptDlg.Delphi32.dfm'), Params), 'ExceptDlg', 'ExceptionDialog', 'TForm'));
+      SaveFile(StdDlgsDirectory + 'ExceptDlg.pas', GetFinalSourceContent(ApplyTemplate(LoadTemplate(TemplateDirectory + 'ExceptDlg.Delphi32.pas'), Params), 'ExceptDlg', 'ExceptionDialog', 'TForm'));
+      SaveFile(StdDlgsDirectory + 'ExceptDlg.dfm', GetFinalSourceContent(ApplyTemplate(LoadTemplate(TemplateDirectory + 'ExceptDlg.Delphi32.dfm'), Params), 'ExceptDlg', 'ExceptionDialog', 'TForm'));
 
       Params.FormName := 'ExceptionDialogMail';
       Params.SendEMail := True;
       Params.EMailAddress := 'name@domain.ext';
       Params.EMailSubject := 'email subject';
 
-      SaveFile('StandardDialogs\ExceptDlgMail.pas', GetFinalSourceContent(ApplyTemplate(LoadTemplate('Templates\ExceptDlg.Delphi32.pas'), Params), 'ExceptDlgMail', 'ExceptionDialogMail', 'TForm'));
-      SaveFile('StandardDialogs\ExceptDlgMail.dfm', GetFinalSourceContent(ApplyTemplate(LoadTemplate('Templates\ExceptDlg.Delphi32.dfm'), Params), 'ExceptDlgMail', 'ExceptionDialogMail', 'TForm'));
+      SaveFile(StdDlgsDirectory + 'ExceptDlgMail.pas', GetFinalSourceContent(ApplyTemplate(LoadTemplate(TemplateDirectory + 'ExceptDlg.Delphi32.pas'), Params), 'ExceptDlgMail', 'ExceptionDialogMail', 'TForm'));
+      SaveFile(StdDlgsDirectory + 'ExceptDlgMail.dfm', GetFinalSourceContent(ApplyTemplate(LoadTemplate(TemplateDirectory + 'ExceptDlg.Delphi32.dfm'), Params), 'ExceptDlgMail', 'ExceptionDialogMail', 'TForm'));
     finally
       Params.Free;
     end;
