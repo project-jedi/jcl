@@ -38,10 +38,10 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   JclIDEUtils,
-  JclOtaTemplates;
+  JclTemplates;
 
 type
-  TJclOtaExcDlgParams = class(TJclOtaTemplateParams)
+  TJclOtaExcDlgParams = class(TJclTemplateParams)
   private
     FHookDll: Boolean;
     FFileName: string;

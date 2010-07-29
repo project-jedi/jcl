@@ -20,13 +20,13 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
 
-unit JclOtaTemplates;
+unit JclTemplates;
 
 interface
 
@@ -37,11 +37,10 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclIDEUtils,
   JppState;
 
 type
-  TJclOtaTemplateParams = class(TPppState)
+  TJclTemplateParams = class(TPppState)
   public
     constructor Create;
   end;
@@ -58,8 +57,7 @@ function GetFinalHeaderContent(const Content, ModuleIdent, FormIdent,
 function GetFinalSourceContent(const Content, ModuleIdent, FormIdent,
   AncestorIdent: string): string;
 
-function ApplyTemplate(const Template: string;
-  const Params: TJclOtaTemplateParams): string;
+function ApplyTemplate(const Template: string; const Params: TJclTemplateParams): string;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -81,9 +79,9 @@ uses
   JclStrings, JclSysUtils,
   JppParser;
 
-//=== { TJclOtaTemplateParams } ==============================================
+//=== { TJclTemplateParams } =================================================
 
-constructor TJclOtaTemplateParams.Create;
+constructor TJclTemplateParams.Create;
 begin
   inherited Create;
   Options := Options + [poProcessDefines, poProcessMacros, poProcessValues];
@@ -111,8 +109,7 @@ begin
   Result := StringReplace(Result, ModulePattern, ModuleIdent, [rfReplaceAll, rfIgnoreCase]);
 end;
 
-function ApplyTemplate(const Template: string;
-  const Params: TJclOtaTemplateParams): string;
+function ApplyTemplate(const Template: string; const Params: TJclTemplateParams): string;
 var
   JppParser: TJppParser;
 begin

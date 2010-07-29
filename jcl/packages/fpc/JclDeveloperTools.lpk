@@ -39,7 +39,7 @@
     <Description Value="JEDI Code Library Developer Tools package"/>
     <License Value="Copyright (C) 1999, 2009 Project JEDI"/>
     <Version Major="2" Minor="2" Release="0" Build="3537"/>
-    <Files Count="9">
+    <Files Count="10">
       <Item1>
         <Filename Value="..\..\devtools\jpp\JppState.pas"/>
         <UnitName Value="JppState"/>
@@ -53,29 +53,33 @@
         <UnitName Value="JppParser"/>
       </Item3>
       <Item4>
-        <Filename Value="..\..\source\common\JclCompilerUtils.pas"/>
-        <UnitName Value="JclCompilerUtils"/>
+        <Filename Value="..\..\devtools\jpp\JclTemplates.pas"/>
+        <UnitName Value="JclTemplates"/>
       </Item4>
       <Item5>
-        <Filename Value="..\..\source\common\JclDevToolsResources.pas"/>
-        <UnitName Value="JclDevToolsResources"/>
+        <Filename Value="..\..\source\common\JclCompilerUtils.pas"/>
+        <UnitName Value="JclCompilerUtils"/>
       </Item5>
       <Item6>
-        <Filename Value="..\..\source\common\JclIDEUtils.pas"/>
-        <UnitName Value="JclIDEUtils"/>
+        <Filename Value="..\..\source\common\JclDevToolsResources.pas"/>
+        <UnitName Value="JclDevToolsResources"/>
       </Item6>
       <Item7>
-        <Filename Value="..\..\source\common\JclUsesUtils.pas"/>
-        <UnitName Value="JclUsesUtils"/>
+        <Filename Value="..\..\source\common\JclIDEUtils.pas"/>
+        <UnitName Value="JclIDEUtils"/>
       </Item7>
       <Item8>
-        <Filename Value="..\..\source\windows\JclHelpUtils.pas"/>
-        <UnitName Value="JclHelpUtils"/>
+        <Filename Value="..\..\source\common\JclUsesUtils.pas"/>
+        <UnitName Value="JclUsesUtils"/>
       </Item8>
       <Item9>
+        <Filename Value="..\..\source\windows\JclHelpUtils.pas"/>
+        <UnitName Value="JclHelpUtils"/>
+      </Item9>
+      <Item10>
         <Filename Value="..\..\source\windows\MSHelpServices_TLB.pas"/>
         <UnitName Value="MSHelpServices_TLB"/>
-      </Item9>
+      </Item10>
     </Files>
     <RequiredPkgs Count="3">
       <Item1>

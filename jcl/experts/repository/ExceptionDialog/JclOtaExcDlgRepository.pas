@@ -94,7 +94,7 @@ uses
   Windows,
   JclStrings, JclFileUtils, JclRegistry,
   JclOtaResources, JclOtaConsts,
-  JclOtaTemplates, JclOtaRepositoryReg, JclOtaExcDlgWizard;
+  JclTemplates, JclOtaRepositoryReg, JclOtaExcDlgWizard;
 
 //=== { TJclExcDlgExpert } ===================================================
 

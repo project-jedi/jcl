@@ -34,7 +34,7 @@ uses
   SysUtils,
   Classes,
   JclIDEUtils,
-  JclOtaTemplates in '..\JclOtaTemplates.pas',
+  JclTemplates in '..\..\..\devtools\jpp\JclTemplates.pas',
   JclOtaExcDlgParams in 'JclOtaExcDlgParams.pas',
   JppState in '..\..\..\devtools\jpp\JppState.pas',
   JppLexer in '..\..\..\devtools\jpp\JppLexer.pas',
