@@ -54,6 +54,7 @@ uses
 type
   TItrStart = (isFirst, isLast);
 
+
   TJclIntfLinkedListItem = class
   public
     Value: IInterface;
@@ -306,14 +307,16 @@ type
     {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-{$IFDEF SUPPORTS_UNICODE_STRING}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   TJclUnicodeStrLinkedListItem = class
   public
     Value: UnicodeString;
     Next: TJclUnicodeStrLinkedListItem;
     Previous: TJclUnicodeStrLinkedListItem;
   end;
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   TJclUnicodeStrLinkedList = class(TJclUnicodeStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclContainer, IJclStrContainer, IJclUnicodeStrContainer, IJclUnicodeStrFlatContainer, IJclUnicodeStrEqualityComparer,
     IJclUnicodeStrCollection, IJclUnicodeStrList)
@@ -357,7 +360,9 @@ type
     procedure SetString(Index: Integer; const AString: UnicodeString);
     function SubList(First, Count: Integer): IJclUnicodeStrList;
   end;
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   TJclUnicodeStrLinkedListIterator = class(TJclAbstractIterator, IJclUnicodeStrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   private
@@ -390,7 +395,17 @@ type
     property Current: UnicodeString read GetString;
     {$ENDIF SUPPORTS_FOR_IN}
   end;
-{$ENDIF SUPPORTS_UNICODE_STRING}
+  {$ENDIF SUPPORTS_UNICODE_STRING}
+
+  {$IFDEF CONTAINER_ANSISTR}
+  TJclStrLinkedListItem = TJclAnsiStrLinkedListItem;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TJclStrLinkedListItem = TJclWideStrLinkedListItem;
+  {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  TJclStrLinkedListItem = TJclUnicodeStrLinkedListItem;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   {$IFDEF CONTAINER_ANSISTR}
   TJclStrLinkedList = TJclAnsiStrLinkedList;
@@ -400,6 +415,16 @@ type
   {$ENDIF CONTAINER_WIDESTR}
   {$IFDEF CONTAINER_UNICODESTR}
   TJclStrLinkedList = TJclUnicodeStrLinkedList;
+  {$ENDIF CONTAINER_UNICODESTR}
+
+  {$IFDEF CONTAINER_ANSISTR}
+  TJclStrLinkedListIterator = TJclAnsiStrLinkedListIterator;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TJclStrLinkedListIterator = TJclWideStrLinkedListIterator;
+  {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  TJclStrLinkedListIterator = TJclUnicodeStrLinkedListIterator;
   {$ENDIF CONTAINER_UNICODESTR}
 
   TJclSingleLinkedListItem = class
@@ -654,15 +679,35 @@ type
     {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  {$IFDEF MATH_EXTENDED_PRECISION}
-  TJclFloatLinkedList = TJclExtendedLinkedList;
-  {$ENDIF MATH_EXTENDED_PRECISION}
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TJclFloatLinkedListItem = TJclSingleLinkedListItem;
+  {$ENDIF MATH_SINGLE_PRECISION}
   {$IFDEF MATH_DOUBLE_PRECISION}
-  TJclFloatLinkedList = TJclDoubleLinkedList;
+  TJclFloatLinkedListItem = TJclDoubleLinkedListItem;
   {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TJclFloatLinkedListItem = TJclExtendedLinkedListItem;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+
   {$IFDEF MATH_SINGLE_PRECISION}
   TJclFloatLinkedList = TJclSingleLinkedList;
   {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TJclFloatLinkedList = TJclDoubleLinkedList;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TJclFloatLinkedList = TJclExtendedLinkedList;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TJclFloatLinkedListIterator = TJclSingleLinkedListIterator;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TJclFloatLinkedListIterator = TJclDoubleLinkedListIterator;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TJclFloatLinkedListIterator = TJclExtendedLinkedListIterator;
+  {$ENDIF MATH_EXTENDED_PRECISION}
 
   TJclIntegerLinkedListItem = class
   public
@@ -1230,6 +1275,7 @@ implementation
 
 uses
   SysUtils;
+
 
 //=== { TJclIntfLinkedList } ==================================================
 
@@ -2163,7 +2209,6 @@ begin
   AssignPropertiesTo(Result);
 end;
 
-
 //=== { TJclIntfLinkedListIterator } ============================================================
 
 constructor TJclIntfLinkedListIterator.Create(const AOwnList: IJclIntfList; ACursor: TJclIntfLinkedListItem; AValid: Boolean; AStart: TItrStart);
@@ -2486,7 +2531,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 //=== { TJclAnsiStrLinkedList } ==================================================
 
@@ -5931,6 +5975,9 @@ begin
   AssignPropertiesTo(Result);
 end;
 
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
+{$IFDEF SUPPORTS_UNICODE_STRING}
 //=== { TJclUnicodeStrLinkedListIterator } ============================================================
 
 constructor TJclUnicodeStrLinkedListIterator.Create(const AOwnList: IJclUnicodeStrList; ACursor: TJclUnicodeStrLinkedListItem; AValid: Boolean; AStart: TItrStart);

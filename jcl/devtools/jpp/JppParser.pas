@@ -233,10 +233,15 @@ begin
           SetLength(ParamNames, Length(ParamNames) + 1);
           ParamNames[High(ParamNames)] := Copy(MacroText, J, I - J);
           StrReplace(ParamNames[High(ParamNames)], '\,', ',', [rfReplaceAll]);
+          if (I < Length(MacroText)) and (MacroText[I] = ')') then
+          begin
+            J := I;
+            Break;
+          end;
           if (I < Length(MacroText)) and (MacroText[I] = ',') then
             Inc(I);
           J := I;
-        until (J > Length(MacroText)) or (MacroText[J] = ')');
+        until J > Length(MacroText);
       end;
       if J <= Length(MacroText) then
       begin
@@ -276,7 +281,7 @@ end;
 procedure TJppParser.AddResult(const S: string; FixIndent: Boolean);
 var
   I, J: Integer;
-  LinePrefix, AResult: string;
+  LinePrefix, AResult, Line: string;
   TempMemoryStream: TMemoryStream;
   TempStringStream: TJclAutoStream;
   TempLexer: TJppLexer;
@@ -298,7 +303,12 @@ begin
             Break;
           ptJppDefineMacro,
           ptJppExpandMacro,
-          ptJppUndefMacro,
+          ptJppUndefMacro:
+            if poProcessMacros in State.Options then
+            begin
+              Recurse := True;
+              Break;
+            end;
           ptJppGetStrValue,
           ptJppGetIntValue,
           ptJppGetBoolValue,
@@ -306,6 +316,7 @@ begin
           ptJppSetIntValue,
           ptJppSetBoolValue,
           ptJppLoop:
+            if poProcessValues in State.Options then
             begin
               Recurse := True;
               Break;
@@ -371,7 +382,11 @@ begin
       // fix line offsets
       if LinePrefix <> '' then
         for I := 1 to Lines.Count - 1 do
-          Lines.Strings[I] := LinePrefix + Lines.Strings[I];
+      begin
+        Line := Lines.Strings[I];
+        if Line <> '' then
+          Lines.Strings[I] := LinePrefix + Line;
+      end;
       AResult := StringsToStr(Lines, NativeLineBreak);
     finally
       Lines.Free;
@@ -689,6 +704,7 @@ begin
     State.IntegerValues[IndexName] := RepeatIndex;
     AddResult(RepeatText);
   end;
+  State.IntegerValues[IndexName] := -1;
   NextToken;
 end;
 

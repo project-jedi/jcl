@@ -1,4 +1,4 @@
-﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{2AE59B42-1430-423F-99D0-FB8F17DF798B}</ProjectGuid>
 			<MainSource>JclDeveloperTools.dpk</MainSource>
@@ -67,8 +67,24 @@
 			<DCCReference Include="..\..\devtools\jpp\JppState.pas"/>
 			<DCCReference Include="..\..\devtools\jpp\JppLexer.pas"/>
 			<DCCReference Include="..\..\devtools\jpp\JppParser.pas"/>
-			<DCCReference Include="..\..\devtools\jpp\Templates\JclTemplates.pas"/>
+			<DCCReference Include="..\..\devtools\jpp\Templates\JclAlgorithmsTemplates.pas"/>
+			<DCCReference Include="..\..\devtools\jpp\Templates\JclArrayListsTemplates.pas"/>
+			<DCCReference Include="..\..\devtools\jpp\Templates\JclArraySetsTemplates.pas"/>
+			<DCCReference Include="..\..\devtools\jpp\Templates\JclBinaryTreesTemplates.pas"/>
+			<DCCReference Include="..\..\devtools\jpp\Templates\JclContainer1DTemplates.pas"/>
+			<DCCReference Include="..\..\devtools\jpp\Templates\JclContainer2DTemplates.pas"/>
+			<DCCReference Include="..\..\devtools\jpp\Templates\JclContainerIntfTemplates.pas"/>
+			<DCCReference Include="..\..\devtools\jpp\Templates\JclContainerKnownMaps.pas"/>
+			<DCCReference Include="..\..\devtools\jpp\Templates\JclContainerKnownTypes.pas"/>
+			<DCCReference Include="..\..\devtools\jpp\Templates\JclContainerTemplates.pas"/>
+			<DCCReference Include="..\..\devtools\jpp\Templates\JclContainerTypes.pas"/>
 			<DCCReference Include="..\..\devtools\jpp\Templates\JclExcDlgTemplates.pas"/>
+			<DCCReference Include="..\..\devtools\jpp\Templates\JclLinkedListsTemplates.pas"/>
+			<DCCReference Include="..\..\devtools\jpp\Templates\JclQueuesTemplates.pas"/>
+			<DCCReference Include="..\..\devtools\jpp\Templates\JclStacksTemplates.pas"/>
+			<DCCReference Include="..\..\devtools\jpp\Templates\JclTemplates.pas"/>
+			<DCCReference Include="..\..\devtools\jpp\Templates\JclTreesTemplates.pas"/>
+			<DCCReference Include="..\..\devtools\jpp\Templates\JclVectorsTemplates.pas"/>
 			<DCCReference Include="..\..\source\common\JclCompilerUtils.pas"/>
 			<DCCReference Include="..\..\source\common\JclDevToolsResources.pas"/>
 			<DCCReference Include="..\..\source\common\JclIDEUtils.pas"/>

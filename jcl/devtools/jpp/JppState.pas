@@ -94,6 +94,10 @@ type
     function GetOptions: TPppOptions;
     procedure SetOptions(AOptions: TPppOptions);
 
+    function FindMacro(const AMacroName: string): IJclStrList;
+    function AssociateParameters(const ParamNames: IJclStrList;
+      const ParamValues: TDynStringArray): TDynWideStringArray;
+
     function GetBoolValue(const Name: string): Boolean; override;
     function GetDefine(const ASymbol: string): TTriState; override;
     function GetIntegerValue(const Name: string): Integer; override;
@@ -121,13 +125,15 @@ type
     procedure AddFileToExclusionList(const AName: string);
     function IsFileExcluded(const AName: string): Boolean;
 
-    function ExpandMacro(const AName: string; const ParamValues: TDynStringArray): string;
+    function ExpandMacro(const AName: string; const ParamValues: TDynStringArray): string; virtual;
     procedure DefineMacro(const AName: string; const ParamNames: TDynStringArray;
       const Value: string);
     procedure UndefMacro(const AName: string; const ParamNames: TDynStringArray);
 
     property Options: TPppOptions read GetOptions write SetOptions;
   end;
+
+  TPppStateClass = class of TPppState;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -181,68 +187,67 @@ begin
   InternalPeekSearchPath.Add(AName);
 end;
 
+function TPppState.AssociateParameters(const ParamNames: IJclStrList;
+  const ParamValues: TDynStringArray): TDynWideStringArray;
+var
+  StrParams: TStrings;
+  AssociationByName: Boolean;
+  Index, ParamIndex: Integer;
+  AParamName, AParamText: string;
+begin
+  SetLength(Result, Length(ParamValues));
+  AssociationByName := True;
+  StrParams := TStringList.Create;
+  try
+    for Index := Low(ParamValues) to High(ParamValues) do
+    begin
+      StrParams.Add(ParamValues[Index]);
+      AParamName := StrParams.Names[Index];
+      if AParamName <> '' then
+      begin
+        // verify parameter names
+        ParamIndex := ParamNames.IndexOf(AParamName);
+        if ParamIndex < 0 then
+          AssociationByName := False;
+      end
+      else
+        AssociationByName := False;
+    end;
+    for Index := Low(ParamValues) to High(ParamValues) do
+    begin
+      if AssociationByName then
+        AParamText := StrParams.Values[ParamNames.Strings[Index]]
+      else
+        AParamText := StrParams.Strings[Index];
+      Result[Index] := WideString(AParamText);
+    end;
+  finally
+    StrParams.Free;
+  end;
+end;
+
 function TPppState.ExpandMacro(const AName: string;
   const ParamValues: TDynStringArray): string;
 var
-  AMacros: IJclStrIntfMap;
   AMacro: IJclStrList;
-  AMacroNames: IJclStrIterator;
-  AMacroName, AMacroText, AParamName, AParamText: string;
-  Index, ParamIndex: Integer;
+  AMacroName, AMacroText: string;
+  Index: Integer;
   Params: array of TVarRec;
-  StrParams: TStrings;
-  AssociationByName: Boolean;
+  AMacroParams: TDynWideStringArray;
 begin
-  AMacros := InternalPeekMacros;
   AMacroName := Format('%s`%d', [AName, Length(ParamValues)]);
-  AMacroNames := AMacros.KeySet.First;
-  while AMacroNames.HasNext do
+  AMacro := FindMacro(AMacroName);
+  // the macro text is the last item, previous items are the macro parameter names
+  AMacroText := AMacro.Strings[AMacro.Size - 1];
+  AMacroParams := AssociateParameters(AMacro.SubList(0, AMacro.Size - 1), ParamValues);
+
+  SetLength(Params, Length(ParamValues));
+  for Index := Low(ParamValues) to High(ParamValues) do
   begin
-    if JclStrings.StrSame(AMacroNames.Next, AMacroName) then
-    begin
-      AMacro := AMacros.Items[AMacroNames.GetString] as IJclStrList;
-      // the macro text is the last item, previous items are the macro parameter names
-      AMacroText := AMacro.Strings[AMacro.Size - 1];
-      AssociationByName := True;
-      StrParams := TStringList.Create;
-      try
-        for Index := Low(ParamValues) to High(ParamValues) do
-        begin
-          StrParams.Add(ParamValues[Index]);
-          AParamName := StrParams.Names[Index];
-          if AParamName <> '' then
-          begin
-            // verify parameter names
-            ParamIndex := AMacro.IndexOf(AParamName);
-            if (ParamIndex < 0) or (ParamIndex > (AMacro.Size - 1)) then
-              AssociationByName := False;
-          end
-          else
-            AssociationByName := False;
-        end;
-        SetLength(Params, Length(ParamValues));
-        for Index := Low(ParamValues) to High(ParamValues) do
-        begin
-          if AssociationByName then
-            AParamText := StrParams.Values[AMacro.Strings[Index]]
-          else
-            AParamText := StrParams.Strings[Index];
-          {$IFDEF SUPPORTS_UNICODE}
-          Params[Index].VType := vtPWideChar;
-          Params[Index].VPWideChar := PWideChar(AParamText);
-          {$ELSE ~SUPPORTS_UNICODE}
-          Params[Index].VType := vtPChar;
-          Params[Index].VPChar := PAnsiChar(AParamText);
-          {$ENDIF ~SUPPORTS_UNICODE}
-        end;
-        Result := Format(AMacroText, Params);
-      finally
-        StrParams.Free;
-      end;
-      Exit;
-    end;
+    Params[Index].VType := vtPWideChar;
+    Params[Index].VPWideChar := PWideChar(AMacroParams[Index]);
   end;
-  raise EPppState.CreateFmt('unknown macro "%s"', [AMacroName]);
+  Result := Format(AMacroText, Params);
 end;
 
 procedure TPppState.Define(const ASymbol: string);
@@ -301,6 +306,24 @@ begin
   if not Found then
     raise EPppState.CreateFmt('File not found: %s', [AName]);
   Result := TFileStream.Create(fn, fmOpenRead or fmShareDenyWrite);
+end;
+
+function TPppState.FindMacro(const AMacroName: string): IJclStrList;
+var
+  AMacros: IJclStrIntfMap;
+  AMacroNames: IJclStrIterator;
+begin
+  AMacros := InternalPeekMacros;
+  AMacroNames := AMacros.KeySet.First;
+  while AMacroNames.HasNext do
+  begin
+    if JclStrings.StrSame(AMacroNames.Next, AMacroName) then
+    begin
+      Result := AMacros.Items[AMacroNames.GetString] as IJclStrList;
+      Exit;
+    end;
+  end;
+  raise EPppState.CreateFmt('unknown macro "%s"', [AMacroName]);
 end;
 
 function TPppState.GetBoolValue(const Name: string): Boolean;

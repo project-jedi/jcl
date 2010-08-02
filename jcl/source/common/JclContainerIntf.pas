@@ -69,6 +69,7 @@ type
   // function pointer types
 
   // apply functions Type -> Type
+
   TIntfApplyFunction = function(const AInterface: IInterface): IInterface;
   TAnsiStrApplyFunction = function(const AString: AnsiString): AnsiString;
   TWideStrApplyFunction = function(const AString: WideString): WideString;
@@ -106,6 +107,7 @@ type
   {$ENDIF SUPPORTS_GENERICS}
 
   // comparison functions Type -> Type -> Integer
+
   TIntfCompare = function(const Obj1, Obj2: IInterface): Integer;
   TAnsiStrCompare = function(const Obj1, Obj2: AnsiString): Integer;
   TWideStrCompare = function(const Obj1, Obj2: WideString): Integer;
@@ -135,7 +137,7 @@ type
   {$ENDIF MATH_EXTENDED_PRECISION}
   TIntegerCompare = function(Obj1, Obj2: Integer): Integer;
   TCardinalCompare = function(Obj1, Obj2: Cardinal): Integer;
-  TInt64Compare = function(Obj1, Obj2: Int64): Integer;
+  TInt64Compare = function(const Obj1, Obj2: Int64): Integer;
   TPtrCompare = function(Obj1, Obj2: Pointer): Integer;
   TCompare = function(Obj1, Obj2: TObject): Integer;
   {$IFDEF SUPPORTS_GENERICS}
@@ -143,6 +145,7 @@ type
   {$ENDIF SUPPORTS_GENERICS}
 
   // comparison for equality functions Type -> Type -> Boolean
+
   TIntfEqualityCompare = function(const Obj1, Obj2: IInterface): Boolean;
   TAnsiStrEqualityCompare = function(const Obj1, Obj2: AnsiString): Boolean;
   TWideStrEqualityCompare = function(const Obj1, Obj2: WideString): Boolean;
@@ -180,6 +183,7 @@ type
   {$ENDIF SUPPORTS_GENERICS}
 
   // hash functions Type -> Integer
+
   TIntfHashConvert = function(const AInterface: IInterface): Integer;
   TAnsiStrHashConvert = function(const AString: AnsiString): Integer;
   TWideStrHashConvert = function(const AString: WideString): Integer;
@@ -354,6 +358,7 @@ type
   IJclFloatContainer = IJclSingleContainer;
   {$ENDIF MATH_SINGLE_PRECISION}
 
+
   IJclIntfEqualityComparer = interface
     ['{5CC2DF51-BE56-4D02-A171-31BAAC097632}']
     function GetEqualityCompare: TIntfEqualityCompare;
@@ -378,7 +383,7 @@ type
     property EqualityCompare: TWideStrEqualityCompare read GetEqualityCompare write SetEqualityCompare;
   end;
 
-{$IFDEF SUPPORTS_UNICODE_STRING}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   IJclUnicodeStrEqualityComparer = interface
     ['{EDFCC1C7-79DB-4F58-BD64-5016B44EEAC0}']
     function GetEqualityCompare: TUnicodeStrEqualityCompare;
@@ -386,7 +391,7 @@ type
     function ItemsEqual(const A, B: UnicodeString): Boolean;
     property EqualityCompare: TUnicodeStrEqualityCompare read GetEqualityCompare write SetEqualityCompare;
   end;
-{$ENDIF SUPPORTS_UNICODE_STRING}
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrEqualityComparer = IJclAnsiStrEqualityComparer;
@@ -422,15 +427,15 @@ type
     property EqualityCompare: TExtendedEqualityCompare read GetEqualityCompare write SetEqualityCompare;
   end;
 
-  {$IFDEF MATH_EXTENDED_PRECISION}
-  IJclFloatEqualityComparer = IJclExtendedEqualityComparer;
-  {$ENDIF MATH_EXTENDED_PRECISION}
-  {$IFDEF MATH_DOUBLE_PRECISION}
-  IJclFloatEqualityComparer = IJclDoubleEqualityComparer;
-  {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_SINGLE_PRECISION}
   IJclFloatEqualityComparer = IJclSingleEqualityComparer;
   {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  IJclFloatEqualityComparer = IJclDoubleEqualityComparer;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  IJclFloatEqualityComparer = IJclExtendedEqualityComparer;
+  {$ENDIF MATH_EXTENDED_PRECISION}
 
   IJclIntegerEqualityComparer = interface
     ['{AABC35E6-A779-4A44-B748-27BFCB34FDFB}']
@@ -482,6 +487,7 @@ type
   end;
   {$ENDIF SUPPORTS_GENERICS}
 
+
   IJclIntfComparer = interface
     ['{EB41B843-184B-420D-B5DA-27D055B4CD55}']
     function GetCompare: TIntfCompare;
@@ -506,7 +512,7 @@ type
     property Compare: TWideStrCompare read GetCompare write SetCompare;
   end;
 
-{$IFDEF SUPPORTS_UNICODE_STRING}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   IJclUnicodeStrComparer = interface
     ['{E81E2705-0CA0-4DBD-BECC-5F9AA623A6E4}']
     function GetCompare: TUnicodeStrCompare;
@@ -514,7 +520,7 @@ type
     function ItemsCompare(const A, B: UnicodeString): Integer;
     property Compare: TUnicodeStrCompare read GetCompare write SetCompare;
   end;
-{$ENDIF SUPPORTS_UNICODE_STRING}
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrComparer = IJclAnsiStrComparer;
@@ -550,15 +556,15 @@ type
     property Compare: TExtendedCompare read GetCompare write SetCompare;
   end;
 
-  {$IFDEF MATH_EXTENDED_PRECISION}
-  IJclFloatComparer = IJclExtendedComparer;
-  {$ENDIF MATH_EXTENDED_PRECISION}
-  {$IFDEF MATH_DOUBLE_PRECISION}
-  IJclFloatComparer = IJclDoubleComparer;
-  {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_SINGLE_PRECISION}
   IJclFloatComparer = IJclSingleComparer;
   {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  IJclFloatComparer = IJclDoubleComparer;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  IJclFloatComparer = IJclExtendedComparer;
+  {$ENDIF MATH_EXTENDED_PRECISION}
 
   IJclIntegerComparer = interface
     ['{362C3A6A-CBC1-4D5F-8652-158913DC9865}']
@@ -610,6 +616,7 @@ type
   end;
   {$ENDIF SUPPORTS_GENERICS}
 
+
   IJclIntfHashConverter = interface
     ['{7BAA0791-3B45-4D0F-9CD8-D13B81694786}']
     function GetHashConvert: TIntfHashConvert;
@@ -634,7 +641,7 @@ type
     property HashConvert: TWideStrHashConvert read GetHashConvert write SetHashConvert;
   end;
 
-{$IFDEF SUPPORTS_UNICODE_STRING}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   IJclUnicodeStrHashConverter = interface
     ['{08CD8171-DBAF-405F-9802-46D955C8BBE6}']
     function GetHashConvert: TUnicodeStrHashConvert;
@@ -642,7 +649,7 @@ type
     function Hash(const AString: UnicodeString): Integer;
     property HashConvert: TUnicodeStrHashConvert read GetHashConvert write SetHashConvert;
   end;
-{$ENDIF SUPPORTS_UNICODE_STRING}
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrHashConverter = IJclAnsiStrHashConverter;
@@ -678,15 +685,15 @@ type
     property HashConvert: TExtendedHashConvert read GetHashConvert write SetHashConvert;
   end;
 
-  {$IFDEF MATH_EXTENDED_PRECISION}
-  IJclFloatHashConverter = IJclExtendedHashConverter;
-  {$ENDIF MATH_EXTENDED_PRECISION}
-  {$IFDEF MATH_DOUBLE_PRECISION}
-  IJclFloatHashConverter = IJclDoubleHashConverter;
-  {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_SINGLE_PRECISION}
   IJclFloatHashConverter = IJclSingleHashConverter;
   {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  IJclFloatHashConverter = IJclDoubleHashConverter;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  IJclFloatHashConverter = IJclExtendedHashConverter;
+  {$ENDIF MATH_EXTENDED_PRECISION}
 
   IJclIntegerHashConverter = interface
     ['{92C540B2-C16C-47E4-995A-644BE71878B1}']
@@ -716,7 +723,7 @@ type
     ['{D704CC67-CFED-44E6-9504-65D5E468FCAF}']
     function GetHashConvert: TPtrHashConvert;
     procedure SetHashConvert(Value: TPtrHashConvert);
-    function Hash(Ptr: Pointer): Integer;
+    function Hash(APtr: Pointer): Integer;
     property HashConvert: TPtrHashConvert read GetHashConvert write SetHashConvert;
   end;
 
@@ -833,6 +840,7 @@ type
   end;
   {$ENDIF SUPPORTS_GENERICS}
 
+
   IJclIntfIterator = interface(IJclAbstractIterator)
     ['{E121A98A-7C43-4587-806B-9189E8B2F106}']
     function Add(const AInterface: IInterface): Boolean;
@@ -899,7 +907,7 @@ type
     {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-{$IFDEF SUPPORTS_UNICODE_STRING}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   IJclUnicodeStrIterator = interface(IJclAbstractIterator)
     ['{B913FFDC-792A-48FB-B58E-763EFDEBA15C}']
     function Add(const AString: UnicodeString): Boolean;
@@ -921,7 +929,7 @@ type
     property Current: UnicodeString read GetString;
     {$ENDIF SUPPORTS_FOR_IN}
   end;
-{$ENDIF SUPPORTS_UNICODE_STRING}
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrIterator = IJclAnsiStrIterator;
@@ -999,15 +1007,15 @@ type
     {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  {$IFDEF MATH_EXTENDED_PRECISION}
-  IJclFloatIterator = IJclExtendedIterator;
-  {$ENDIF MATH_EXTENDED_PRECISION}
-  {$IFDEF MATH_DOUBLE_PRECISION}
-  IJclFloatIterator = IJclDoubleIterator;
-  {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_SINGLE_PRECISION}
   IJclFloatIterator = IJclSingleIterator;
   {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  IJclFloatIterator = IJclDoubleIterator;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  IJclFloatIterator = IJclExtendedIterator;
+  {$ENDIF MATH_EXTENDED_PRECISION}
 
   IJclIntegerIterator = interface(IJclAbstractIterator)
     ['{1406A991-4574-48A1-83FE-2EDCA03908BE}']
@@ -1143,6 +1151,7 @@ type
   end;
   {$ENDIF SUPPORTS_GENERICS}
 
+
   IJclIntfTreeIterator = interface(IJclIntfIterator)
     ['{C97379BF-C6A9-4A90-9D7A-152E9BAD314F}']
     function AddChild(const AInterface: IInterface): Boolean;
@@ -1197,7 +1206,7 @@ type
     property Children[Index: Integer]: WideString read GetChild write SetChild;
   end;
 
-{$IFDEF SUPPORTS_UNICODE_STRING}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   IJclUnicodeStrTreeIterator = interface(IJclUnicodeStrIterator)
     ['{0B0A60DE-0403-4EE1-B1F0-10D849924CF8}']
     function AddChild(const AString: UnicodeString): Boolean;
@@ -1215,7 +1224,7 @@ type
     procedure SetChild(Index: Integer; const AString: UnicodeString);
     property Children[Index: Integer]: UnicodeString read GetChild write SetChild;
   end;
-{$ENDIF SUPPORTS_UNICODE_STRING}
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrTreeIterator = IJclAnsiStrTreeIterator;
@@ -1281,15 +1290,15 @@ type
     property Children[Index: Integer]: Extended read GetChild write SetChild;
   end;
 
-  {$IFDEF MATH_EXTENDED_PRECISION}
-  IJclFloatTreeIterator = IJclExtendedTreeIterator;
-  {$ENDIF MATH_EXTENDED_PRECISION}
-  {$IFDEF MATH_DOUBLE_PRECISION}
-  IJclFloatTreeIterator = IJclDoubleTreeIterator;
-  {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_SINGLE_PRECISION}
   IJclFloatTreeIterator = IJclSingleTreeIterator;
   {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  IJclFloatTreeIterator = IJclDoubleTreeIterator;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  IJclFloatTreeIterator = IJclExtendedTreeIterator;
+  {$ENDIF MATH_EXTENDED_PRECISION}
 
   IJclIntegerTreeIterator = interface(IJclIntegerIterator)
     ['{88EDC5C5-CA41-41AF-9838-AA19D07E69F5}']
@@ -1401,6 +1410,7 @@ type
   end;
   {$ENDIF SUPPORTS_GENERICS}
 
+
   IJclIntfBinaryTreeIterator = interface(IJclIntfTreeIterator)
     ['{8BE874B2-0075-4EE0-8F49-665FC894D923}']
     function HasLeft: Boolean;
@@ -1425,7 +1435,7 @@ type
     function Right: WideString;
   end;
 
-{$IFDEF SUPPORTS_UNICODE_STRING}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   IJclUnicodeStrBinaryTreeIterator = interface(IJclUnicodeStrTreeIterator)
     ['{CA32B126-AD4B-4C33-BC47-52B09FE093BE}']
     function HasLeft: Boolean;
@@ -1433,7 +1443,7 @@ type
     function Left: UnicodeString;
     function Right: UnicodeString;
   end;
-{$ENDIF SUPPORTS_UNICODE_STRING}
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrBinaryTreeIterator = IJclAnsiStrBinaryTreeIterator;
@@ -1469,15 +1479,15 @@ type
     function Right: Extended;
   end;
 
-  {$IFDEF MATH_EXTENDED_PRECISION}
-  IJclFloatBinaryTreeIterator = IJclExtendedBinaryTreeIterator;
-  {$ENDIF MATH_EXTENDED_PRECISION}
-  {$IFDEF MATH_DOUBLE_PRECISION}
-  IJclFloatBinaryTreeIterator = IJclDoubleBinaryTreeIterator;
-  {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_SINGLE_PRECISION}
   IJclFloatBinaryTreeIterator = IJclSingleBinaryTreeIterator;
   {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  IJclFloatBinaryTreeIterator = IJclDoubleBinaryTreeIterator;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  IJclFloatBinaryTreeIterator = IJclExtendedBinaryTreeIterator;
+  {$ENDIF MATH_EXTENDED_PRECISION}
 
   IJclIntegerBinaryTreeIterator = interface(IJclIntegerTreeIterator)
     ['{FE2BF57D-D10D-4B0C-903D-BB61700FBA0A}']
@@ -1528,6 +1538,7 @@ type
     function Right: T;
   end;
   {$ENDIF SUPPORTS_GENERICS}
+
 
   IJclIntfCollection = interface(IJclContainer)
     ['{8E178463-4575-487A-B4D5-DC2AED3C7ACA}']
@@ -1595,7 +1606,7 @@ type
     {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-{$IFDEF SUPPORTS_UNICODE_STRING}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   IJclUnicodeStrCollection = interface(IJclUnicodeStrFlatContainer)
     ['{82EA7DDE-4EBF-4E0D-A380-CAF8A24C1A0D}']
     function Add(const AString: UnicodeString): Boolean;
@@ -1617,7 +1628,7 @@ type
     function GetEnumerator: IJclUnicodeStrIterator;
     {$ENDIF SUPPORTS_FOR_IN}
   end;
-{$ENDIF SUPPORTS_UNICODE_STRING}
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrCollection = IJclAnsiStrCollection;
@@ -1695,15 +1706,15 @@ type
     {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  {$IFDEF MATH_EXTENDED_PRECISION}
-  IJclFloatCollection = IJclExtendedCollection;
-  {$ENDIF MATH_EXTENDED_PRECISION}
-  {$IFDEF MATH_DOUBLE_PRECISION}
-  IJclFloatCollection = IJclDoubleCollection;
-  {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_SINGLE_PRECISION}
   IJclFloatCollection = IJclSingleCollection;
   {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  IJclFloatCollection = IJclDoubleCollection;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  IJclFloatCollection = IJclExtendedCollection;
+  {$ENDIF MATH_EXTENDED_PRECISION}
 
   IJclIntegerCollection = interface(IJclContainer)
     ['{AF69890D-22D1-4D89-8FFD-5FAD7E0638BA}']
@@ -1841,6 +1852,7 @@ type
   //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
+
   IJclIntfList = interface(IJclIntfCollection)
     ['{E14EDA4B-1DAA-4013-9E6C-CDCB365C7CF9}']
     function Delete(Index: Integer): IInterface;
@@ -1883,7 +1895,7 @@ type
     property Strings[Key: Integer]: WideString read GetString write SetString; default;
   end;
 
-{$IFDEF SUPPORTS_UNICODE_STRING}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   IJclUnicodeStrList = interface(IJclUnicodeStrCollection)
     ['{F4307EB4-D66E-4656-AC56-50883D0F2C83}']
     function Delete(Index: Integer): UnicodeString;
@@ -1897,7 +1909,7 @@ type
     function SubList(First, Count: Integer): IJclUnicodeStrList;
     property Strings[Key: Integer]: UnicodeString read GetString write SetString; default;
   end;
-{$ENDIF SUPPORTS_UNICODE_STRING}
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrList = IJclAnsiStrList;
@@ -1951,15 +1963,15 @@ type
     property Values[Key: Integer]: Extended read GetValue write SetValue; default;
   end;
 
-  {$IFDEF MATH_EXTENDED_PRECISION}
-  IJclFloatList = IJclExtendedList;
-  {$ENDIF MATH_EXTENDED_PRECISION}
-  {$IFDEF MATH_DOUBLE_PRECISION}
-  IJclFloatList = IJclDoubleList;
-  {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_SINGLE_PRECISION}
   IJclFloatList = IJclSingleList;
   {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  IJclFloatList = IJclDoubleList;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  IJclFloatList = IJclExtendedList;
+  {$ENDIF MATH_EXTENDED_PRECISION}
 
   IJclIntegerList = interface(IJclIntegerCollection)
     ['{339BE91B-557D-4CE0-A854-1CBD4FE31725}']
@@ -2048,6 +2060,7 @@ type
   {$ENDIF SUPPORTS_GENERICS}
 
   // Pointer functions for sort algorithms
+
   TIntfSortProc = procedure(const AList: IJclIntfList; L, R: Integer; AComparator: TIntfCompare);
   TAnsiStrSortProc = procedure(const AList: IJclAnsiStrList; L, R: Integer; AComparator: TAnsiStrCompare);
   TWideStrSortProc = procedure(const AList: IJclWideStrList; L, R: Integer; AComparator: TWideStrCompare);
@@ -2066,6 +2079,15 @@ type
   TSingleSortProc = procedure(const AList: IJclSingleList; L, R: Integer; AComparator: TSingleCompare);
   TDoubleSortProc = procedure(const AList: IJclDoubleList; L, R: Integer; AComparator: TDoubleCompare);
   TExtendedSortProc = procedure(const AList: IJclExtendedList; L, R: Integer; AComparator: TExtendedCompare);
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TFloatSortProc = TSingleSortProc;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TFloatSortProc = TDoubleSortProc;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TFloatSortProc = TExtendedSortProc;
+  {$ENDIF MATH_EXTENDED_PRECISION}
   TIntegerSortProc = procedure(const AList: IJclIntegerList; L, R: Integer; AComparator: TIntegerCompare);
   TCardinalSortProc = procedure(const AList: IJclCardinalList; L, R: Integer; AComparator: TCardinalCompare);
   TInt64SortProc = procedure(const AList: IJclInt64List; L, R: Integer; AComparator: TInt64Compare);
@@ -2074,6 +2096,7 @@ type
   {$IFDEF SUPPORTS_GENERICS}
   TSortProc<T> = procedure(const AList: IJclList<T>; L, R: Integer; AComparator: TCompare<T>);
   {$ENDIF SUPPORTS_GENERICS}
+
 
   IJclIntfArray = interface(IJclIntfList)
     ['{B055B427-7817-43FC-97D4-AD1845643D63}']
@@ -2096,14 +2119,14 @@ type
     property Strings[Index: Integer]: WideString read GetString write SetString; default;
   end;
 
-{$IFDEF SUPPORTS_UNICODE_STRING}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   IJclUnicodeStrArray = interface(IJclUnicodeStrList)
     ['{24312E5B-B61D-485C-9E57-AC36C93D8159}']
     function GetString(Index: Integer): UnicodeString;
     procedure SetString(Index: Integer; const AString: UnicodeString);
     property Strings[Index: Integer]: UnicodeString read GetString write SetString; default;
   end;
-{$ENDIF SUPPORTS_UNICODE_STRING}
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrArray = IJclAnsiStrArray;
@@ -2136,15 +2159,15 @@ type
     property Values[Index: Integer]: Extended read GetValue write SetValue; default;
   end;
 
-  {$IFDEF MATH_EXTENDED_PRECISION}
-  IJclFloatArray = IJclExtendedArray;
-  {$ENDIF MATH_EXTENDED_PRECISION}
-  {$IFDEF MATH_DOUBLE_PRECISION}
-  IJclFloatArray = IJclDoubleArray;
-  {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_SINGLE_PRECISION}
   IJclFloatArray = IJclSingleArray;
   {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  IJclFloatArray = IJclDoubleArray;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  IJclFloatArray = IJclExtendedArray;
+  {$ENDIF MATH_EXTENDED_PRECISION}
 
   IJclIntegerArray = interface(IJclIntegerList)
     ['{2B7C8B33-C0BD-4EC3-9764-63866E174781}']
@@ -2190,6 +2213,7 @@ type
   end;
   {$ENDIF SUPPORTS_GENERICS}
 
+
   IJclIntfSet = interface(IJclIntfCollection)
     ['{E2D28852-9774-49B7-A739-5DBA2B705924}']
     procedure Intersect(const ACollection: IJclIntfCollection);
@@ -2211,14 +2235,14 @@ type
     procedure Union(const ACollection: IJclWideStrCollection);
   end;
 
-{$IFDEF SUPPORTS_UNICODE_STRING}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   IJclUnicodeStrSet = interface(IJclUnicodeStrCollection)
     ['{440E9BCB-341F-40B6-8AED-479B2E98C92A}']
     procedure Intersect(const ACollection: IJclUnicodeStrCollection);
     procedure Subtract(const ACollection: IJclUnicodeStrCollection);
     procedure Union(const ACollection: IJclUnicodeStrCollection);
   end;
-{$ENDIF SUPPORTS_UNICODE_STRING}
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrSet = IJclAnsiStrSet;
@@ -2251,15 +2275,15 @@ type
     procedure Union(const ACollection: IJclExtendedCollection);
   end;
 
-  {$IFDEF MATH_EXTENDED_PRECISION}
-  IJclFloatSet = IJclExtendedSet;
-  {$ENDIF MATH_EXTENDED_PRECISION}
-  {$IFDEF MATH_DOUBLE_PRECISION}
-  IJclFloatSet = IJclDoubleSet;
-  {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_SINGLE_PRECISION}
   IJclFloatSet = IJclSingleSet;
   {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  IJclFloatSet = IJclDoubleSet;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  IJclFloatSet = IJclExtendedSet;
+  {$ENDIF MATH_EXTENDED_PRECISION}
 
   IJclIntegerSet = interface(IJclIntegerCollection)
     ['{5E4D29AF-F508-465B-9008-D11FF82F25FE}']
@@ -2307,6 +2331,7 @@ type
 
   TJclTraverseOrder = (toPreOrder, toOrder, toPostOrder);
 
+
   IJclIntfTree = interface(IJclIntfCollection)
     ['{5A21688F-113D-41B4-A17C-54BDB0BD6559}']
     function GetRoot: IJclIntfTreeIterator;
@@ -2334,7 +2359,7 @@ type
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 
-{$IFDEF SUPPORTS_UNICODE_STRING}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   IJclUnicodeStrTree = interface(IJclUnicodeStrCollection)
     ['{A378BC36-1FB1-4330-A335-037DD370E81B}']
     function GetRoot: IJclUnicodeStrTreeIterator;
@@ -2343,7 +2368,7 @@ type
     property Root: IJclUnicodeStrTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
-{$ENDIF SUPPORTS_UNICODE_STRING}
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrTree = IJclAnsiStrTree;
@@ -2382,15 +2407,15 @@ type
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 
-  {$IFDEF MATH_EXTENDED_PRECISION}
-  IJclFloatTree = IJclExtendedTree;
-  {$ENDIF MATH_EXTENDED_PRECISION}
-  {$IFDEF MATH_DOUBLE_PRECISION}
-  IJclFloatTree = IJclDoubleTree;
-  {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_SINGLE_PRECISION}
   IJclFloatTree = IJclSingleTree;
   {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  IJclFloatTree = IJclDoubleTree;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  IJclFloatTree = IJclExtendedTree;
+  {$ENDIF MATH_EXTENDED_PRECISION}
 
   IJclIntegerTree = interface(IJclIntegerCollection)
     ['{40A6F934-E5F3-4C74-AC02-227035C8C3C6}']
@@ -2448,6 +2473,7 @@ type
   end;
   {$ENDIF SUPPORTS_GENERICS}
 
+
   IJclIntfIntfMap = interface(IJclContainer)
     ['{01D05399-4A05-4F3E-92F4-0C236BE77019}']
     procedure Clear;
@@ -2460,19 +2486,13 @@ type
     function KeySet: IJclIntfSet;
     function MapEquals(const AMap: IJclIntfIntfMap): Boolean;
     procedure PutAll(const AMap: IJclIntfIntfMap);
-    procedure PutValue(const Key, Value: IInterface);
+    procedure PutValue(const Key: IInterface; const Value: IInterface);
     function Remove(const Key: IInterface): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
     property Items[const Key: IInterface]: IInterface read GetValue write PutValue;
       {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
-
-  (*IJclMultiIntfIntfMap = interface(IJclIntfIntfMap)
-    ['{497775A5-D3F1-49FC-A641-15CC9E77F3D0}']
-    function GetValues(const Key: IInterface): IJclIntfIterator;
-    function Count(const Key: IInterface): Integer;
-  end;*)
 
   IJclAnsiStrIntfMap = interface(IJclAnsiStrContainer)
     ['{A4788A96-281A-4924-AA24-03776DDAAD8A}']
@@ -2514,7 +2534,7 @@ type
       {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
-{$IFDEF SUPPORTS_UNICODE_STRING}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   IJclUnicodeStrIntfMap = interface(IJclUnicodeStrContainer)
     ['{C83D4F5E-8E66-41E9-83F6-338B44F24BE6}']
     procedure Clear;
@@ -2534,7 +2554,7 @@ type
     property Items[const Key: UnicodeString]: IInterface read GetValue write PutValue;
       {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
-{$ENDIF SUPPORTS_UNICODE_STRING}
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrIntfMap = IJclAnsiStrIntfMap;
@@ -2586,7 +2606,7 @@ type
       {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
-{$IFDEF SUPPORTS_UNICODE_STRING}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   IJclIntfUnicodeStrMap = interface(IJclUnicodeStrContainer)
     ['{40F8B873-B763-4A3C-8EC4-31DB3404BF73}']
     procedure Clear;
@@ -2606,7 +2626,7 @@ type
     property Items[const Key: IInterface]: UnicodeString read GetValue write PutValue;
       {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
-{$ENDIF SUPPORTS_UNICODE_STRING}
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   IJclIntfStrMap = IJclIntfAnsiStrMap;
@@ -2630,7 +2650,7 @@ type
     function KeySet: IJclAnsiStrSet;
     function MapEquals(const AMap: IJclAnsiStrAnsiStrMap): Boolean;
     procedure PutAll(const AMap: IJclAnsiStrAnsiStrMap);
-    procedure PutValue(const Key, Value: AnsiString);
+    procedure PutValue(const Key: AnsiString; const Value: AnsiString);
     function Remove(const Key: AnsiString): AnsiString;
     function Size: Integer;
     function Values: IJclAnsiStrCollection;
@@ -2650,7 +2670,7 @@ type
     function KeySet: IJclWideStrSet;
     function MapEquals(const AMap: IJclWideStrWideStrMap): Boolean;
     procedure PutAll(const AMap: IJclWideStrWideStrMap);
-    procedure PutValue(const Key, Value: WideString);
+    procedure PutValue(const Key: WideString; const Value: WideString);
     function Remove(const Key: WideString): WideString;
     function Size: Integer;
     function Values: IJclWideStrCollection;
@@ -2658,7 +2678,7 @@ type
       {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
-{$IFDEF SUPPORTS_UNICODE_STRING}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   IJclUnicodeStrUnicodeStrMap = interface(IJclUnicodeStrContainer)
     ['{557E1CBD-06AC-41C2-BAED-253709CBD0AE}']
     procedure Clear;
@@ -2671,14 +2691,14 @@ type
     function KeySet: IJclUnicodeStrSet;
     function MapEquals(const AMap: IJclUnicodeStrUnicodeStrMap): Boolean;
     procedure PutAll(const AMap: IJclUnicodeStrUnicodeStrMap);
-    procedure PutValue(const Key, Value: UnicodeString);
+    procedure PutValue(const Key: UnicodeString; const Value: UnicodeString);
     function Remove(const Key: UnicodeString): UnicodeString;
     function Size: Integer;
     function Values: IJclUnicodeStrCollection;
     property Items[const Key: UnicodeString]: UnicodeString read GetValue write PutValue;
       {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
-{$ENDIF SUPPORTS_UNICODE_STRING}
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrStrMap = IJclAnsiStrAnsiStrMap;
@@ -2742,7 +2762,7 @@ type
     function KeySet: IJclSingleSet;
     function MapEquals(const AMap: IJclSingleSingleMap): Boolean;
     procedure PutAll(const AMap: IJclSingleSingleMap);
-    procedure PutValue(const Key, Value: Single);
+    procedure PutValue(const Key: Single; const Value: Single);
     function Remove(const Key: Single): Single;
     function Size: Integer;
     function Values: IJclSingleCollection;
@@ -2802,7 +2822,7 @@ type
     function KeySet: IJclDoubleSet;
     function MapEquals(const AMap: IJclDoubleDoubleMap): Boolean;
     procedure PutAll(const AMap: IJclDoubleDoubleMap);
-    procedure PutValue(const Key, Value: Double);
+    procedure PutValue(const Key: Double; const Value: Double);
     function Remove(const Key: Double): Double;
     function Size: Integer;
     function Values: IJclDoubleCollection;
@@ -2862,7 +2882,7 @@ type
     function KeySet: IJclExtendedSet;
     function MapEquals(const AMap: IJclExtendedExtendedMap): Boolean;
     procedure PutAll(const AMap: IJclExtendedExtendedMap);
-    procedure PutValue(const Key, Value: Extended);
+    procedure PutValue(const Key: Extended; const Value: Extended);
     function Remove(const Key: Extended): Extended;
     function Size: Integer;
     function Values: IJclExtendedCollection;
@@ -2870,21 +2890,35 @@ type
       {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
-  {$IFDEF MATH_EXTENDED_PRECISION}
-  IJclFloatIntfMap = IJclExtendedIntfMap;
-  IJclIntfFloatMap = IJclIntfExtendedMap;
-  IJclFloatFloatMap = IJclExtendedExtendedMap;
-  {$ENDIF MATH_EXTENDED_PRECISION}
-  {$IFDEF MATH_DOUBLE_PRECISION}
-  IJclFloatIntfMap = IJclDoubleIntfMap;
-  IJclIntfFloatMap = IJclIntfDoubleMap;
-  IJclFloatFloatMap = IJclDoubleDoubleMap;
-  {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_SINGLE_PRECISION}
   IJclFloatIntfMap = IJclSingleIntfMap;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  IJclFloatIntfMap = IJclDoubleIntfMap;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  IJclFloatIntfMap = IJclExtendedIntfMap;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+
+  {$IFDEF MATH_SINGLE_PRECISION}
   IJclIntfFloatMap = IJclIntfSingleMap;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  IJclIntfFloatMap = IJclIntfDoubleMap;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  IJclIntfFloatMap = IJclIntfExtendedMap;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+
+  {$IFDEF MATH_SINGLE_PRECISION}
   IJclFloatFloatMap = IJclSingleSingleMap;
   {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  IJclFloatFloatMap = IJclDoubleDoubleMap;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  IJclFloatFloatMap = IJclExtendedExtendedMap;
+  {$ENDIF MATH_EXTENDED_PRECISION}
 
   IJclIntegerIntfMap = interface(IJclContainer)
     ['{E535FE65-AC88-49D3-BEF2-FB30D92C2FA6}']
@@ -2938,7 +2972,7 @@ type
     function KeySet: IJclIntegerSet;
     function MapEquals(const AMap: IJclIntegerIntegerMap): Boolean;
     procedure PutAll(const AMap: IJclIntegerIntegerMap);
-    procedure PutValue(Key, Value: Integer);
+    procedure PutValue(Key: Integer; Value: Integer);
     function Remove(Key: Integer): Integer;
     function Size: Integer;
     function Values: IJclIntegerCollection;
@@ -2998,7 +3032,7 @@ type
     function KeySet: IJclCardinalSet;
     function MapEquals(const AMap: IJclCardinalCardinalMap): Boolean;
     procedure PutAll(const AMap: IJclCardinalCardinalMap);
-    procedure PutValue(Key, Value: Cardinal);
+    procedure PutValue(Key: Cardinal; Value: Cardinal);
     function Remove(Key: Cardinal): Cardinal;
     function Size: Integer;
     function Values: IJclCardinalCollection;
@@ -3058,7 +3092,7 @@ type
     function KeySet: IJclInt64Set;
     function MapEquals(const AMap: IJclInt64Int64Map): Boolean;
     procedure PutAll(const AMap: IJclInt64Int64Map);
-    procedure PutValue(const Key, Value: Int64);
+    procedure PutValue(const Key: Int64; const Value: Int64);
     function Remove(const Key: Int64): Int64;
     function Size: Integer;
     function Values: IJclInt64Collection;
@@ -3118,7 +3152,7 @@ type
     function KeySet: IJclPtrSet;
     function MapEquals(const AMap: IJclPtrPtrMap): Boolean;
     procedure PutAll(const AMap: IJclPtrPtrMap);
-    procedure PutValue(Key, Value: Pointer);
+    procedure PutValue(Key: Pointer; Value: Pointer);
     function Remove(Key: Pointer): Pointer;
     function Size: Integer;
     function Values: IJclPtrCollection;
@@ -3186,7 +3220,7 @@ type
       {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
-{$IFDEF SUPPORTS_UNICODE_STRING}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   IJclUnicodeStrMap = interface(IJclUnicodeStrContainer)
     ['{4328E033-9B92-40C6-873D-A6982CFC2B95}']
     procedure Clear;
@@ -3206,7 +3240,7 @@ type
     property Items[const Key: UnicodeString]: TObject read GetValue write PutValue;
       {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
-{$ENDIF SUPPORTS_UNICODE_STRING}
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrMap = IJclAnsiStrMap;
@@ -3278,15 +3312,15 @@ type
       {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
-  {$IFDEF MATH_EXTENDED_PRECISION}
-  IJclFloatMap = IJclExtendedMap;
-  {$ENDIF MATH_EXTENDED_PRECISION}
-  {$IFDEF MATH_DOUBLE_PRECISION}
-  IJclFloatMap = IJclDoubleMap;
-  {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_SINGLE_PRECISION}
   IJclFloatMap = IJclSingleMap;
   {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  IJclFloatMap = IJclDoubleMap;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  IJclFloatMap = IJclExtendedMap;
+  {$ENDIF MATH_EXTENDED_PRECISION}
 
   IJclIntegerMap = interface(IJclContainer)
     ['{D6FA5D64-A4AF-4419-9981-56BA79BF8770}']
@@ -3380,13 +3414,20 @@ type
     function KeySet: IJclSet;
     function MapEquals(const AMap: IJclMap): Boolean;
     procedure PutAll(const AMap: IJclMap);
-    procedure PutValue(Key, Value: TObject);
+    procedure PutValue(Key: TObject; Value: TObject);
     function Remove(Key: TObject): TObject;
     function Size: Integer;
     function Values: IJclCollection;
     property Items[Key: TObject]: TObject read GetValue write PutValue;
       {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
+
+
+  (*IJclMultiIntfIntfMap = interface(IJclIntfIntfMap)
+    ['{497775A5-D3F1-49FC-A641-15CC9E77F3D0}']
+    function GetValues(const Key: IInterface): IJclIntfIterator;
+    function Count(const Key: IInterface): Integer;
+  end;*)
 
   {$IFDEF SUPPORTS_GENERICS}
   IHashable = interface
@@ -3413,6 +3454,7 @@ type
       {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
   {$ENDIF SUPPORTS_GENERICS}
+
 
   IJclIntfQueue = interface(IJclContainer)
     ['{B88756FE-5553-4106-957E-3E33120BFA99}']
@@ -3447,7 +3489,7 @@ type
     function Size: Integer;
   end;
 
-{$IFDEF SUPPORTS_UNICODE_STRING}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   IJclUnicodeStrQueue = interface(IJclUnicodeStrContainer)
     ['{94A09E52-424A-486E-846B-9C2C52DC3A8F}']
     procedure Clear;
@@ -3458,7 +3500,7 @@ type
     function Peek: UnicodeString;
     function Size: Integer;
   end;
-{$ENDIF SUPPORTS_UNICODE_STRING}
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrQueue = IJclAnsiStrQueue;
@@ -3503,15 +3545,15 @@ type
     function Size: Integer;
   end;
 
-  {$IFDEF MATH_EXTENDED_PRECISION}
-  IJclFloatQueue = IJclExtendedQueue;
-  {$ENDIF MATH_EXTENDED_PRECISION}
-  {$IFDEF MATH_DOUBLE_PRECISION}
-  IJclFloatQueue = IJclDoubleQueue;
-  {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_SINGLE_PRECISION}
   IJclFloatQueue = IJclSingleQueue;
   {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  IJclFloatQueue = IJclDoubleQueue;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  IJclFloatQueue = IJclExtendedQueue;
+  {$ENDIF MATH_EXTENDED_PRECISION}
 
   IJclIntegerQueue = interface(IJclContainer)
     ['{4C4E174E-5D19-44CE-A248-B5589A9B68DF}']
@@ -3581,6 +3623,7 @@ type
   end;
   {$ENDIF SUPPORTS_GENERICS}
 
+
   IJclIntfIntfSortedMap = interface(IJclIntfIntfMap)
     ['{265A6EB2-4BB3-459F-8813-360FD32A4971}']
     function FirstKey: IInterface;
@@ -3608,7 +3651,7 @@ type
     function TailMap(const FromKey: WideString): IJclWideStrIntfSortedMap;
   end;
 
-{$IFDEF SUPPORTS_UNICODE_STRING}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   IJclUnicodeStrIntfSortedMap = interface(IJclUnicodeStrIntfMap)
     ['{25FDE916-730D-449A-BA29-852D8A0470B6}']
     function FirstKey: UnicodeString;
@@ -3617,7 +3660,7 @@ type
     function SubMap(const FromKey, ToKey: UnicodeString): IJclUnicodeStrIntfSortedMap;
     function TailMap(const FromKey: UnicodeString): IJclUnicodeStrIntfSortedMap;
   end;
-{$ENDIF SUPPORTS_UNICODE_STRING}
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrIntfSortedMap = IJclAnsiStrIntfSortedMap;
@@ -3647,7 +3690,7 @@ type
     function TailMap(const FromKey: IInterface): IJclIntfWideStrSortedMap;
   end;
 
-{$IFDEF SUPPORTS_UNICODE_STRING}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   IJclIntfUnicodeStrSortedMap = interface(IJclIntfUnicodeStrMap)
     ['{B0B0CB9B-268B-40D2-94A8-0B8B5BE2E1AC}']
     function FirstKey: IInterface;
@@ -3656,7 +3699,7 @@ type
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfUnicodeStrSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfUnicodeStrSortedMap;
   end;
-{$ENDIF SUPPORTS_UNICODE_STRING}
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   IJclIntfStrSortedMap = IJclIntfAnsiStrSortedMap;
@@ -3686,7 +3729,7 @@ type
     function TailMap(const FromKey: WideString): IJclWideStrWideStrSortedMap;
   end;
 
-{$IFDEF SUPPORTS_UNICODE_STRING}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   IJclUnicodeStrUnicodeStrSortedMap = interface(IJclUnicodeStrUnicodeStrMap)
     ['{D8EACC5D-B31E-47A8-9CC9-32B15A79CACA}']
     function FirstKey: UnicodeString;
@@ -3695,7 +3738,7 @@ type
     function SubMap(const FromKey, ToKey: UnicodeString): IJclUnicodeStrUnicodeStrSortedMap;
     function TailMap(const FromKey: UnicodeString): IJclUnicodeStrUnicodeStrSortedMap;
   end;
-{$ENDIF SUPPORTS_UNICODE_STRING}
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrStrSortedMap = IJclAnsiStrAnsiStrSortedMap;
@@ -3788,21 +3831,35 @@ type
     function TailMap(const FromKey: Extended): IJclExtendedExtendedSortedMap;
   end;
 
-  {$IFDEF MATH_EXTENDED_PRECISION}
-  IJclFloatIntfSortedMap = IJclExtendedIntfSortedMap;
-  IJclIntfFloatSortedMap = IJclIntfExtendedSortedMap;
-  IJclFloatFloatSortedMap = IJclExtendedExtendedSortedMap;
-  {$ENDIF MATH_EXTENDED_PRECISION}
-  {$IFDEF MATH_DOUBLE_PRECISION}
-  IJclFloatIntfSortedMap = IJclDoubleIntfSortedMap;
-  IJclIntfFloatSortedMap = IJclIntfDoubleSortedMap;
-  IJclFloatFloatSortedMap = IJclDoubleDoubleSortedMap;
-  {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_SINGLE_PRECISION}
   IJclFloatIntfSortedMap = IJclSingleIntfSortedMap;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  IJclFloatIntfSortedMap = IJclDoubleIntfSortedMap;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  IJclFloatIntfSortedMap = IJclExtendedIntfSortedMap;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+
+  {$IFDEF MATH_SINGLE_PRECISION}
   IJclIntfFloatSortedMap = IJclIntfSingleSortedMap;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  IJclIntfFloatSortedMap = IJclIntfDoubleSortedMap;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  IJclIntfFloatSortedMap = IJclIntfExtendedSortedMap;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+
+  {$IFDEF MATH_SINGLE_PRECISION}
   IJclFloatFloatSortedMap = IJclSingleSingleSortedMap;
   {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  IJclFloatFloatSortedMap = IJclDoubleDoubleSortedMap;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  IJclFloatFloatSortedMap = IJclExtendedExtendedSortedMap;
+  {$ENDIF MATH_EXTENDED_PRECISION}
 
   IJclIntegerIntfSortedMap = interface(IJclIntegerIntfMap)
     ['{8B22802C-61F2-4DA5-B1E9-DBB7840E7996}']
@@ -3939,7 +3996,7 @@ type
     function TailMap(const FromKey: WideString): IJclWideStrSortedMap;
   end;
 
-{$IFDEF SUPPORTS_UNICODE_STRING}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   IJclUnicodeStrSortedMap = interface(IJclUnicodeStrMap)
     ['{5510B8FC-3439-4211-8D1F-5EDD9A56D3E3}']
     function FirstKey: UnicodeString;
@@ -3948,7 +4005,7 @@ type
     function SubMap(const FromKey, ToKey: UnicodeString): IJclUnicodeStrSortedMap;
     function TailMap(const FromKey: UnicodeString): IJclUnicodeStrSortedMap;
   end;
-{$ENDIF SUPPORTS_UNICODE_STRING}
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrSortedMap = IJclAnsiStrSortedMap;
@@ -3987,15 +4044,15 @@ type
     function TailMap(const FromKey: Extended): IJclExtendedSortedMap;
   end;
 
-  {$IFDEF MATH_EXTENDED_PRECISION}
-  IJclFloatSortedMap = IJclExtendedSortedMap;
-  {$ENDIF MATH_EXTENDED_PRECISION}
-  {$IFDEF MATH_DOUBLE_PRECISION}
-  IJclFloatSortedMap = IJclDoubleSortedMap;
-  {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_SINGLE_PRECISION}
   IJclFloatSortedMap = IJclSingleSortedMap;
   {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  IJclFloatSortedMap = IJclDoubleSortedMap;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  IJclFloatSortedMap = IJclExtendedSortedMap;
+  {$ENDIF MATH_EXTENDED_PRECISION}
 
   IJclIntegerSortedMap = interface(IJclIntegerMap)
     ['{DD7B4C5E-6D51-44CC-9328-B38396A7E1C9}']
@@ -4042,6 +4099,7 @@ type
     function TailMap(FromKey: TObject): IJclSortedMap;
   end;
 
+
   {$IFDEF SUPPORTS_GENERICS}
   IJclSortedMap<TKey,TValue> = interface(IJclMap<TKey,TValue>)
     ['{C62B75C4-891B-442E-A5D6-9954E75A5C0C}']
@@ -4052,6 +4110,7 @@ type
     function TailMap(const FromKey: TKey): IJclSortedMap<TKey,TValue>;
   end;
   {$ENDIF SUPPORTS_GENERICS}
+
 
   IJclIntfSortedSet = interface(IJclIntfSet)
     ['{159BE5A7-7349-42FF-BE55-9CA1B9DBA991}']
@@ -4074,14 +4133,14 @@ type
     function TailSet(const Start: WideString): IJclWideStrSortedSet;
   end;
 
-{$IFDEF SUPPORTS_UNICODE_STRING}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   IJclUnicodeStrSortedSet = interface(IJclUnicodeStrSet)
     ['{172BCD6F-D23C-4014-9C8C-A77A27D6E881}']
     function HeadSet(const Finish: UnicodeString): IJclUnicodeStrSortedSet;
     function SubSet(const Start, Finish: UnicodeString): IJclUnicodeStrSortedSet;
     function TailSet(const Start: UnicodeString): IJclUnicodeStrSortedSet;
   end;
-{$ENDIF SUPPORTS_UNICODE_STRING}
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrSortedSet = IJclAnsiStrSortedSet;
@@ -4114,15 +4173,15 @@ type
     function TailSet(const Start: Extended): IJclExtendedSortedSet;
   end;
 
-  {$IFDEF MATH_EXTENDED_PRECISION}
-  IJclFloatSortedSet = IJclExtendedSortedSet;
-  {$ENDIF MATH_EXTENDED_PRECISION}
-  {$IFDEF MATH_DOUBLE_PRECISION}
-  IJclFloatSortedSet = IJclDoubleSortedSet;
-  {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_SINGLE_PRECISION}
   IJclFloatSortedSet = IJclSingleSortedSet;
   {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  IJclFloatSortedSet = IJclDoubleSortedSet;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  IJclFloatSortedSet = IJclExtendedSortedSet;
+  {$ENDIF MATH_EXTENDED_PRECISION}
 
   IJclIntegerSortedSet = interface(IJclIntegerSet)
     ['{E086C54B-4FA3-426D-AC4E-FF8E8CA3D663}']
@@ -4168,6 +4227,7 @@ type
   end;
   {$ENDIF SUPPORTS_GENERICS}
 
+
   IJclIntfStack = interface(IJclContainer)
     ['{CA1DC7A1-8D8F-4A5D-81D1-0FE32E9A4E84}']
     procedure Clear;
@@ -4201,7 +4261,7 @@ type
     function Size: Integer;
   end;
 
-{$IFDEF SUPPORTS_UNICODE_STRING}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   IJclUnicodeStrStack = interface(IJclUnicodeStrContainer)
     ['{BC046C3D-E3D2-42BA-A96D-054834A70404}']
     procedure Clear;
@@ -4212,7 +4272,7 @@ type
     function Push(const AString: UnicodeString): Boolean;
     function Size: Integer;
   end;
-{$ENDIF SUPPORTS_UNICODE_STRING}
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrStack = IJclAnsiStrStack;
@@ -4257,15 +4317,15 @@ type
     function Size: Integer;
   end;
 
-  {$IFDEF MATH_EXTENDED_PRECISION}
-  IJclFloatStack = IJclExtendedStack;
-  {$ENDIF MATH_EXTENDED_PRECISION}
-  {$IFDEF MATH_DOUBLE_PRECISION}
-  IJclFloatStack = IJclDoubleStack;
-  {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_SINGLE_PRECISION}
   IJclFloatStack = IJclSingleStack;
   {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  IJclFloatStack = IJclDoubleStack;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  IJclFloatStack = IJclExtendedStack;
+  {$ENDIF MATH_EXTENDED_PRECISION}
 
   IJclIntegerStack = interface(IJclContainer)
     ['{9190BF0E-5B0C-4D6C-A107-20A933C9B56A}']

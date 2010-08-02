@@ -54,6 +54,7 @@ uses
 type
   TItrStart = (isFirst, isLast);
 
+
   TJclIntfArrayList = class(TJclIntfAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
      IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntfEqualityComparer,
      IJclIntfCollection, IJclIntfList, IJclIntfArray)
@@ -297,7 +298,7 @@ type
     {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-{$IFDEF SUPPORTS_UNICODE_STRING}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   TJclUnicodeStrArrayList = class(TJclUnicodeStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
      IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer, IJclUnicodeStrContainer, IJclUnicodeStrFlatContainer, IJclUnicodeStrEqualityComparer,
      IJclUnicodeStrCollection, IJclUnicodeStrList, IJclUnicodeStrArray)
@@ -346,7 +347,9 @@ type
     procedure SetString(Index: Integer; const AString: UnicodeString);
     function SubList(First, Count: Integer): IJclUnicodeStrList;
   end;
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   TJclUnicodeStrArrayIterator = class(TJclAbstractIterator, IJclUnicodeStrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   private
@@ -378,7 +381,7 @@ type
     property Current: UnicodeString read GetString;
     {$ENDIF SUPPORTS_FOR_IN}
   end;
-{$ENDIF SUPPORTS_UNICODE_STRING}
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   TJclStrArrayList = TJclAnsiStrArrayList;
@@ -388,6 +391,16 @@ type
   {$ENDIF CONTAINER_WIDESTR}
   {$IFDEF CONTAINER_UNICODESTR}
   TJclStrArrayList = TJclUnicodeStrArrayList;
+  {$ENDIF CONTAINER_UNICODESTR}
+
+  {$IFDEF CONTAINER_ANSISTR}
+  TJclStrArrayIterator = TJclAnsiStrArrayIterator;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TJclStrArrayIterator = TJclWideStrArrayIterator;
+  {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  TJclStrArrayIterator = TJclUnicodeStrArrayIterator;
   {$ENDIF CONTAINER_UNICODESTR}
 
   TJclSingleArrayList = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -633,15 +646,25 @@ type
     {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  {$IFDEF MATH_EXTENDED_PRECISION}
-  TJclFloatArrayList = TJclExtendedArrayList;
-  {$ENDIF MATH_EXTENDED_PRECISION}
-  {$IFDEF MATH_DOUBLE_PRECISION}
-  TJclFloatArrayList = TJclDoubleArrayList;
-  {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_SINGLE_PRECISION}
   TJclFloatArrayList = TJclSingleArrayList;
   {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TJclFloatArrayList = TJclDoubleArrayList;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TJclFloatArrayList = TJclExtendedArrayList;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TJclFloatArrayIterator = TJclSingleArrayIterator;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TJclFloatArrayIterator = TJclDoubleArrayIterator;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TJclFloatArrayIterator = TJclExtendedArrayIterator;
+  {$ENDIF MATH_EXTENDED_PRECISION}
 
   TJclIntegerArrayList = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
      IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntegerEqualityComparer,
@@ -1193,6 +1216,7 @@ implementation
 
 uses
   SysUtils;
+
 
 //=== { TJclIntfArrayList } ======================================================
 
@@ -4313,6 +4337,9 @@ begin
   AssignPropertiesTo(Result);
 end;
 
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
+{$IFDEF SUPPORTS_UNICODE_STRING}
 //=== { TJclUnicodeStrArrayIterator } ===============================================================
 
 constructor TJclUnicodeStrArrayIterator.Create(const AOwnList: IJclUnicodeStrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
@@ -4467,7 +4494,6 @@ begin
   FOwnList.SetString(FCursor, AString);
 end;
 {$ENDIF SUPPORTS_UNICODE_STRING}
-
 
 //=== { TJclSingleArrayList } ======================================================
 

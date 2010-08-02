@@ -198,7 +198,7 @@ type
   end;
 
   TJclAnsiStrTree = class(TJclAnsiStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclAnsiStrEqualityComparer, IJclStrContainer, IJclAnsiStrContainer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclAnsiStrEqualityComparer, IJclStrContainer, IJclAnsiStrContainer, IJclAnsiStrFlatContainer,
     IJclAnsiStrCollection, IJclAnsiStrTree)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -327,7 +327,7 @@ type
   end;
 
   TJclWideStrTree = class(TJclWideStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclWideStrEqualityComparer, IJclStrContainer, IJclWideStrContainer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclWideStrEqualityComparer, IJclStrContainer, IJclWideStrContainer, IJclWideStrFlatContainer,
     IJclWideStrCollection, IJclWideStrTree)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -441,7 +441,7 @@ type
     function GetPreviousCursor: TJclWideStrTreeNode; override;
   end;
 
-{$IFDEF SUPPORTS_UNICODE_STRING}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   TJclUnicodeStrTreeNode = class
   public
     Value: UnicodeString;
@@ -455,9 +455,11 @@ type
     function IndexOfChild(AChild: TJclUnicodeStrTreeNode): Integer;
     function IndexOfValue(const AString: UnicodeString; const AEqualityComparer: IJclUnicodeStrEqualityComparer): Integer;
   end;
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   TJclUnicodeStrTree = class(TJclUnicodeStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclUnicodeStrEqualityComparer, IJclStrContainer, IJclUnicodeStrContainer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclUnicodeStrEqualityComparer, IJclStrContainer, IJclUnicodeStrContainer, IJclUnicodeStrFlatContainer,
     IJclUnicodeStrCollection, IJclUnicodeStrTree)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -504,7 +506,9 @@ type
     property Root: IJclUnicodeStrTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   TJclUnicodeStrTreeIterator = class(TJclAbstractIterator, IJclUnicodeStrIterator, IJclUnicodeStrTreeIterator)
   protected
     FCursor: TJclUnicodeStrTreeNode;
@@ -570,7 +574,17 @@ type
     function GetNextSibling: TJclUnicodeStrTreeNode; override;
     function GetPreviousCursor: TJclUnicodeStrTreeNode; override;
   end;
-{$ENDIF SUPPORTS_UNICODE_STRING}
+  {$ENDIF SUPPORTS_UNICODE_STRING}
+
+  {$IFDEF CONTAINER_ANSISTR}
+  TJclStrTreeNode = TJclAnsiStrTreeNode;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TJclStrTreeNode = TJclWideStrTreeNode;
+  {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  TJclStrTreeNode = TJclUnicodeStrTreeNode;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   {$IFDEF CONTAINER_ANSISTR}
   TJclStrTree = TJclAnsiStrTree;
@@ -580,6 +594,22 @@ type
   {$ENDIF CONTAINER_WIDESTR}
   {$IFDEF CONTAINER_UNICODESTR}
   TJclStrTree = TJclUnicodeStrTree;
+  {$ENDIF CONTAINER_UNICODESTR}
+
+  {$IFDEF CONTAINER_ANSISTR}
+  TJclStrTreeIterator = TJclAnsiStrTreeIterator;
+  TJclPreOrderStrTreeIterator = TJclPreOrderAnsiStrTreeIterator;
+  TJclPostOrderStrTreeIterator = TJclPostOrderAnsiStrTreeIterator;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TJclStrTreeIterator = TJclWideStrTreeIterator;
+  TJclPreOrderStrTreeIterator = TJclPreOrderWideStrTreeIterator;
+  TJclPostOrderStrTreeIterator = TJclPostOrderWideStrTreeIterator;
+  {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  TJclStrTreeIterator = TJclUnicodeStrTreeIterator;
+  TJclPreOrderStrTreeIterator = TJclPreOrderUnicodeStrTreeIterator;
+  TJclPostOrderStrTreeIterator = TJclPostOrderUnicodeStrTreeIterator;
   {$ENDIF CONTAINER_UNICODESTR}
 
   TJclSingleTreeNode = class
@@ -969,15 +999,41 @@ type
     function GetPreviousCursor: TJclExtendedTreeNode; override;
   end;
 
-  {$IFDEF MATH_EXTENDED_PRECISION}
-  TJclFloatTree = TJclExtendedTree;
-  {$ENDIF MATH_EXTENDED_PRECISION}
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TJclFloatTreeNode = TJclSingleTreeNode;
+  {$ENDIF MATH_SINGLE_PRECISION}
   {$IFDEF MATH_DOUBLE_PRECISION}
-  TJclFloatTree = TJclDoubleTree;
+  TJclFloatTreeNode = TJclDoubleTreeNode;
   {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TJclFloatTreeNode = TJclExtendedTreeNode;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+
   {$IFDEF MATH_SINGLE_PRECISION}
   TJclFloatTree = TJclSingleTree;
   {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TJclFloatTree = TJclDoubleTree;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TJclFloatTree = TJclExtendedTree;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TJclFloatTreeIterator = TJclSingleTreeIterator;
+  TJclPreOrderFloatTreeIterator = TJclPreOrderSingleTreeIterator;
+  TJclPostOrderFloatTreeIterator = TJclPostOrderSingleTreeIterator;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TJclFloatTreeIterator = TJclDoubleTreeIterator;
+  TJclPreOrderFloatTreeIterator = TJclPreOrderDoubleTreeIterator;
+  TJclPostOrderFloatTreeIterator = TJclPostOrderDoubleTreeIterator;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TJclFloatTreeIterator = TJclExtendedTreeIterator;
+  TJclPreOrderFloatTreeIterator = TJclPreOrderExtendedTreeIterator;
+  TJclPostOrderFloatTreeIterator = TJclPostOrderExtendedTreeIterator;
+  {$ENDIF MATH_EXTENDED_PRECISION}
 
   TJclIntegerTreeNode = class
   public
@@ -1814,6 +1870,7 @@ implementation
 
 uses
   SysUtils;
+
 
 //=== { TJclIntfTreeNode } =======================================================
 
@@ -6067,7 +6124,9 @@ begin
       Exit;
   Result := -1;
 end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
 //=== { TJclUnicodeStrTree } =======================================================
 
 constructor TJclUnicodeStrTree.Create();
@@ -6657,6 +6716,9 @@ begin
   AssignPropertiesTo(Result);
 end;
 
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
+{$IFDEF SUPPORTS_UNICODE_STRING}
 //=== { TJclUnicodeStrTreeIterator } ===========================================================
 
 constructor TJclUnicodeStrTreeIterator.Create(OwnTree: TJclUnicodeStrTree; ACursor: TJclUnicodeStrTreeNode; AValid: Boolean; AStart: TItrStart);

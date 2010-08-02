@@ -29,7 +29,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                          $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -48,6 +48,7 @@ uses
   JclBase, JclContainerIntf;
 
 // Compare functions
+
 function IntfSimpleCompare(const Obj1, Obj2: IInterface): Integer;
 function AnsiStrSimpleCompare(const Obj1, Obj2: AnsiString): Integer;
 function WideStrSimpleCompare(const Obj1, Obj2: WideString): Integer;
@@ -68,6 +69,7 @@ function SimpleCompare(Obj1, Obj2: TObject): Integer;
 function IntegerCompare(Obj1, Obj2: TObject): Integer;
 
 // Compare functions for equality
+
 function IntfSimpleEqualityCompare(const Obj1, Obj2: IInterface): Boolean;
 function AnsiStrSimpleEqualityCompare(const Obj1, Obj2: AnsiString): Boolean;
 function WideStrSimpleEqualityCompare(const Obj1, Obj2: WideString): Boolean;
@@ -86,6 +88,7 @@ function PtrSimpleEqualityCompare(Obj1, Obj2: Pointer): Boolean;
 function SimpleEqualityCompare(Obj1, Obj2: TObject): Boolean;
 
 // Apply algorithms
+
 procedure Apply(const First: IJclIntfIterator; Count: Integer; F: TIntfApplyFunction); overload;
 procedure Apply(const First: IJclAnsiStrIterator; Count: Integer; F: TAnsiStrApplyFunction); overload;
 procedure Apply(const First: IJclWideStrIterator; Count: Integer; F: TWideStrApplyFunction); overload;
@@ -102,6 +105,7 @@ procedure Apply(const First: IJclPtrIterator; Count: Integer; F: TPtrApplyFuncti
 procedure Apply(const First: IJclIterator; Count: Integer; F: TApplyFunction); overload;
 
 // Find algorithms
+
 function Find(const First: IJclIntfIterator; Count: Integer; const AInterface: IInterface;
   AComparator: TIntfCompare): IJclIntfIterator; overload;
 function Find(const First: IJclIntfIterator; Count: Integer; const AInterface: IInterface;
@@ -117,6 +121,8 @@ function Find(const First: IJclWideStrIterator; Count: Integer; const AString: W
 {$IFDEF SUPPORTS_UNICODE_STRING}
 function Find(const First: IJclUnicodeStrIterator; Count: Integer; const AString: UnicodeString;
   AComparator: TUnicodeStrCompare): IJclUnicodeStrIterator; overload;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+{$IFDEF SUPPORTS_UNICODE_STRING}
 function Find(const First: IJclUnicodeStrIterator; Count: Integer; const AString: UnicodeString;
   AEqualityComparator: TUnicodeStrEqualityCompare): IJclUnicodeStrIterator; overload;
 {$ENDIF SUPPORTS_UNICODE_STRING}
@@ -154,6 +160,7 @@ function Find(const First: IJclIterator; Count: Integer; AObject: TObject;
   AEqualityComparator: TEqualityCompare): IJclIterator; overload;
 
 // CountObject algorithms
+
 function CountObject(const First: IJclIntfIterator; Count: Integer;
   const AInterface: IInterface; AComparator: TIntfCompare): Integer; overload;
 function CountObject(const First: IJclIntfIterator; Count: Integer;
@@ -169,6 +176,8 @@ function CountObject(const First: IJclWideStrIterator; Count: Integer;
 {$IFDEF SUPPORTS_UNICODE_STRING}
 function CountObject(const First: IJclUnicodeStrIterator; Count: Integer;
   const AString: UnicodeString; AComparator: TUnicodeStrCompare): Integer; overload;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+{$IFDEF SUPPORTS_UNICODE_STRING}
 function CountObject(const First: IJclUnicodeStrIterator; Count: Integer;
   const AString: UnicodeString; AEqualityComparator: TUnicodeStrEqualityCompare): Integer; overload;
 {$ENDIF SUPPORTS_UNICODE_STRING}
@@ -206,6 +215,7 @@ function CountObject(const First: IJclIterator; Count: Integer;
   AObject: TObject; AEqualityComparator: TEqualityCompare): Integer; overload;
 
 // Copy algorithms
+
 procedure Copy(const First: IJclIntfIterator; Count: Integer;
   const Output: IJclIntfIterator); overload;
 procedure Copy(const First: IJclAnsiStrIterator; Count: Integer;
@@ -234,6 +244,7 @@ procedure Copy(const First: IJclIterator; Count: Integer;
   const Output: IJclIterator); overload;
 
 // Generate algorithms
+
 procedure Generate(const List: IJclIntfList; Count: Integer; const AInterface: IInterface); overload;
 procedure Generate(const List: IJclAnsiStrList; Count: Integer; const AString: AnsiString); overload;
 procedure Generate(const List: IJclWideStrList; Count: Integer; const AString: WideString); overload;
@@ -250,6 +261,7 @@ procedure Generate(const List: IJclPtrList; Count: Integer; APtr: Pointer); over
 procedure Generate(const List: IJclList; Count: Integer; AObject: TObject); overload;
 
 // Fill algorithms
+
 procedure Fill(const First: IJclIntfIterator; Count: Integer; const AInterface: IInterface); overload;
 procedure Fill(const First: IJclAnsiStrIterator; Count: Integer; const AString: AnsiString); overload;
 procedure Fill(const First: IJclWideStrIterator; Count: Integer; const AString: WideString); overload;
@@ -266,6 +278,7 @@ procedure Fill(const First: IJclPtrIterator; Count: Integer; APtr: Pointer); ove
 procedure Fill(const First: IJclIterator; Count: Integer; AObject: TObject); overload;
 
 // Reverse algorithms
+
 procedure Reverse(const First, Last: IJclIntfIterator); overload;
 procedure Reverse(const First, Last: IJclAnsiStrIterator); overload;
 procedure Reverse(const First, Last: IJclWideStrIterator); overload;
@@ -280,6 +293,7 @@ procedure Reverse(const First, Last: IJclCardinalIterator); overload;
 procedure Reverse(const First, Last: IJclInt64Iterator); overload;
 procedure Reverse(const First, Last: IJclPtrIterator); overload;
 procedure Reverse(const First, Last: IJclIterator); overload;
+
 
 procedure QuickSort(const AList: IJclIntfList; L, R: Integer; AComparator: TIntfCompare); overload;
 procedure QuickSort(const AList: IJclAnsiStrList; L, R: Integer; AComparator: TAnsiStrCompare); overload;
@@ -313,6 +327,7 @@ var
   SortProc: TSortProc = QuickSort;
 
 // Sort algorithms
+
 procedure Sort(const AList: IJclIntfList; First, Last: Integer; AComparator: TIntfCompare); overload;
 procedure Sort(const AList: IJclAnsiStrList; First, Last: Integer; AComparator: TAnsiStrCompare); overload;
 procedure Sort(const AList: IJclWideStrList; First, Last: Integer; AComparator: TWideStrCompare); overload;
@@ -612,6 +627,7 @@ begin
   Result := Integer(Obj1) = Integer(Obj2);
 end;
 
+
 procedure Apply(const First: IJclIntfIterator; Count: Integer; F: TIntfApplyFunction);
 var
   I: Integer;
@@ -746,6 +762,7 @@ begin
       Break;
 end;
 
+
 function Find(const First: IJclIntfIterator; Count: Integer;
   const AInterface: IInterface; AComparator: TIntfCompare): IJclIntfIterator;
 var
@@ -879,7 +896,9 @@ begin
     else
       Break;
 end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
 function Find(const First: IJclUnicodeStrIterator; Count: Integer;
   const AString: UnicodeString; AEqualityComparator: TUnicodeStrEqualityCompare): IJclUnicodeStrIterator;
 var
@@ -1204,6 +1223,7 @@ begin
       Break;
 end;
 
+
 function CountObject(const First: IJclIntfIterator; Count: Integer;
   const AInterface: IInterface; AComparator: TIntfCompare): Integer;
 var
@@ -1295,7 +1315,9 @@ begin
     else
       Break;
 end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
 function CountObject(const First: IJclUnicodeStrIterator; Count: Integer;
   const AString: UnicodeString; AEqualityComparator: TUnicodeStrEqualityCompare): Integer;
 var
@@ -1518,6 +1540,7 @@ begin
       Break;
 end;
 
+
 procedure Copy(const First: IJclIntfIterator; Count: Integer;
   const Output: IJclIntfIterator);
 var
@@ -1700,6 +1723,7 @@ begin
       Break;
 end;
 
+
 procedure Generate(const List: IJclIntfList; Count: Integer;
   const AInterface: IInterface);
 var
@@ -1821,6 +1845,7 @@ begin
   for I := 0 to Count - 1 do
     List.Add(AObject);
 end;
+
 
 procedure Fill(const First: IJclIntfIterator; Count: Integer;
   const AInterface: IInterface);
@@ -2003,6 +2028,7 @@ begin
     else
       Break;
 end;
+
 
 procedure Reverse(const First, Last: IJclIntfIterator);
 var
@@ -2209,6 +2235,7 @@ begin
     Last.SetObject(Obj);
   end;
 end;
+
 
 procedure QuickSort(const AList: IJclIntfList; L, R: Integer;
   AComparator: TIntfCompare);
@@ -2643,6 +2670,7 @@ begin
     L := I;
   until I >= R;
 end;
+
 
 procedure Sort(const AList: IJclIntfList; First, Last: Integer; AComparator: TIntfCompare);
 begin

@@ -52,136 +52,25 @@ uses
 type
   TItrStart = (isFirst, isLast);
 
-(*$JPPEXPANDMACRO JCLLINKEDLISTTYPESINT(TJclIntfLinkedListItem,IInterface)*)
+(*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
+  {$JPPEXPANDMACRO JCLLINKEDLISTTYPESINT(,)}
 
-(*$JPPEXPANDMACRO JCLLINKEDLISTINT(TJclIntfLinkedListItem,TJclIntfLinkedList,TJclIntfAbstractContainer,IJclIntfCollection,IJclIntfList,IJclIntfIterator, IJclIntfEqualityComparer\,,
-  protected
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,const ,AInterface,IInterface,GetObject,SetObject)*)
+  {$JPPEXPANDMACRO JCLLINKEDLISTINT(,,,,,,,,,,,,,,)}
 
-(*$JPPEXPANDMACRO JCLLINKEDLISTITRINT(TJclIntfLinkedListIterator,IJclIntfIterator,IJclIntfList,IJclIntfEqualityComparer,TJclIntfLinkedListItem,const ,AInterface,IInterface,nil,GetObject,SetObject)*)
-
-(*$JPPEXPANDMACRO JCLLINKEDLISTTYPESINT(TJclAnsiStrLinkedListItem,AnsiString)*)
-
-(*$JPPEXPANDMACRO JCLLINKEDLISTINT(TJclAnsiStrLinkedListItem,TJclAnsiStrLinkedList,TJclAnsiStrAbstractCollection,IJclAnsiStrCollection,IJclAnsiStrList,IJclAnsiStrIterator, IJclStrContainer\, IJclAnsiStrContainer\, IJclAnsiStrFlatContainer\, IJclAnsiStrEqualityComparer\,,
-  protected
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;, override;,,const ,AString,AnsiString,GetString,SetString)*)
-
-(*$JPPEXPANDMACRO JCLLINKEDLISTITRINT(TJclAnsiStrLinkedListIterator,IJclAnsiStrIterator,IJclAnsiStrList,IJclAnsiStrEqualityComparer,TJclAnsiStrLinkedListItem,const ,AString,AnsiString,'',GetString,SetString)*)
-
-(*$JPPEXPANDMACRO JCLLINKEDLISTTYPESINT(TJclWideStrLinkedListItem,WideString)*)
-
-(*$JPPEXPANDMACRO JCLLINKEDLISTINT(TJclWideStrLinkedListItem,TJclWideStrLinkedList,TJclWideStrAbstractCollection,IJclWideStrCollection,IJclWideStrList,IJclWideStrIterator, IJclStrContainer\, IJclWideStrContainer\, IJclWideStrFlatContainer\, IJclWideStrEqualityComparer\,,
-  protected
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;, override;,,const ,AString,WideString,GetString,SetString)*)
-
-(*$JPPEXPANDMACRO JCLLINKEDLISTITRINT(TJclWideStrLinkedListIterator,IJclWideStrIterator,IJclWideStrList,IJclWideStrEqualityComparer,TJclWideStrLinkedListItem,const ,AString,WideString,'',GetString,SetString)*)
-
-{$IFDEF SUPPORTS_UNICODE_STRING}
-(*$JPPEXPANDMACRO JCLLINKEDLISTTYPESINT(TJclUnicodeStrLinkedListItem,UnicodeString)*)
-
-(*$JPPEXPANDMACRO JCLLINKEDLISTINT(TJclUnicodeStrLinkedListItem,TJclUnicodeStrLinkedList,TJclUnicodeStrAbstractCollection,IJclUnicodeStrCollection,IJclUnicodeStrList,IJclUnicodeStrIterator, IJclStrContainer\, IJclUnicodeStrContainer\, IJclUnicodeStrFlatContainer\, IJclUnicodeStrEqualityComparer\,,
-  protected
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;, override;,,const ,AString,UnicodeString,GetString,SetString)*)
-
-(*$JPPEXPANDMACRO JCLLINKEDLISTITRINT(TJclUnicodeStrLinkedListIterator,IJclUnicodeStrIterator,IJclUnicodeStrList,IJclUnicodeStrEqualityComparer,TJclUnicodeStrLinkedListItem,const ,AString,UnicodeString,'',GetString,SetString)*)
-{$ENDIF SUPPORTS_UNICODE_STRING}
-
-  {$IFDEF CONTAINER_ANSISTR}
-  TJclStrLinkedList = TJclAnsiStrLinkedList;
-  {$ENDIF CONTAINER_ANSISTR}
-  {$IFDEF CONTAINER_WIDESTR}
-  TJclStrLinkedList = TJclWideStrLinkedList;
-  {$ENDIF CONTAINER_WIDESTR}
-  {$IFDEF CONTAINER_UNICODESTR}
-  TJclStrLinkedList = TJclUnicodeStrLinkedList;
-  {$ENDIF CONTAINER_UNICODESTR}
-
-(*$JPPEXPANDMACRO JCLLINKEDLISTTYPESINT(TJclSingleLinkedListItem,Single)*)
-
-(*$JPPEXPANDMACRO JCLLINKEDLISTINT(TJclSingleLinkedListItem,TJclSingleLinkedList,TJclSingleAbstractContainer,IJclSingleCollection,IJclSingleList,IJclSingleIterator, IJclSingleContainer\, IJclSingleEqualityComparer\,,
-  protected
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,const ,AValue,Single,GetValue,SetValue)*)
-
-(*$JPPEXPANDMACRO JCLLINKEDLISTITRINT(TJclSingleLinkedListIterator,IJclSingleIterator,IJclSingleList,IJclSingleEqualityComparer,TJclSingleLinkedListItem,const ,AValue,Single,0.0,GetValue,SetValue)*)
-
-(*$JPPEXPANDMACRO JCLLINKEDLISTTYPESINT(TJclDoubleLinkedListItem,Double)*)
-
-(*$JPPEXPANDMACRO JCLLINKEDLISTINT(TJclDoubleLinkedListItem,TJclDoubleLinkedList,TJclDoubleAbstractContainer,IJclDoubleCollection,IJclDoubleList,IJclDoubleIterator, IJclDoubleContainer\, IJclDoubleEqualityComparer\,,
-  protected
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,const ,AValue,Double,GetValue,SetValue)*)
-
-(*$JPPEXPANDMACRO JCLLINKEDLISTITRINT(TJclDoubleLinkedListIterator,IJclDoubleIterator,IJclDoubleList,IJclDoubleEqualityComparer,TJclDoubleLinkedListItem,const ,AValue,Double,0.0,GetValue,SetValue)*)
-
-(*$JPPEXPANDMACRO JCLLINKEDLISTTYPESINT(TJclExtendedLinkedListItem,Extended)*)
-
-(*$JPPEXPANDMACRO JCLLINKEDLISTINT(TJclExtendedLinkedListItem,TJclExtendedLinkedList,TJclExtendedAbstractContainer,IJclExtendedCollection,IJclExtendedList,IJclExtendedIterator, IJclExtendedContainer\, IJclExtendedEqualityComparer\,,
-  protected
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,const ,AValue,Extended,GetValue,SetValue)*)
-
-(*$JPPEXPANDMACRO JCLLINKEDLISTITRINT(TJclExtendedLinkedListIterator,IJclExtendedIterator,IJclExtendedList,IJclExtendedEqualityComparer,TJclExtendedLinkedListItem,const ,AValue,Extended,0.0,GetValue,SetValue)*)
-
-  {$IFDEF MATH_EXTENDED_PRECISION}
-  TJclFloatLinkedList = TJclExtendedLinkedList;
-  {$ENDIF MATH_EXTENDED_PRECISION}
-  {$IFDEF MATH_DOUBLE_PRECISION}
-  TJclFloatLinkedList = TJclDoubleLinkedList;
-  {$ENDIF MATH_DOUBLE_PRECISION}
-  {$IFDEF MATH_SINGLE_PRECISION}
-  TJclFloatLinkedList = TJclSingleLinkedList;
-  {$ENDIF MATH_SINGLE_PRECISION}
-
-(*$JPPEXPANDMACRO JCLLINKEDLISTTYPESINT(TJclIntegerLinkedListItem,Integer)*)
-
-(*$JPPEXPANDMACRO JCLLINKEDLISTINT(TJclIntegerLinkedListItem,TJclIntegerLinkedList,TJclIntegerAbstractContainer,IJclIntegerCollection,IJclIntegerList,IJclIntegerIterator, IJclIntegerEqualityComparer\,,
-  protected
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,AValue,Integer,GetValue,SetValue)*)
-
-(*$JPPEXPANDMACRO JCLLINKEDLISTITRINT(TJclIntegerLinkedListIterator,IJclIntegerIterator,IJclIntegerList,IJclIntegerEqualityComparer,TJclIntegerLinkedListItem,,AValue,Integer,0,GetValue,SetValue)*)
-
-(*$JPPEXPANDMACRO JCLLINKEDLISTTYPESINT(TJclCardinalLinkedListItem,Cardinal)*)
-
-(*$JPPEXPANDMACRO JCLLINKEDLISTINT(TJclCardinalLinkedListItem,TJclCardinalLinkedList,TJclCardinalAbstractContainer,IJclCardinalCollection,IJclCardinalList,IJclCardinalIterator, IJclCardinalEqualityComparer\,,
-  protected
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,AValue,Cardinal,GetValue,SetValue)*)
-
-(*$JPPEXPANDMACRO JCLLINKEDLISTITRINT(TJclCardinalLinkedListIterator,IJclCardinalIterator,IJclCardinalList,IJclCardinalEqualityComparer,TJclCardinalLinkedListItem,,AValue,Cardinal,0,GetValue,SetValue)*)
-
-(*$JPPEXPANDMACRO JCLLINKEDLISTTYPESINT(TJclInt64LinkedListItem,Int64)*)
-
-(*$JPPEXPANDMACRO JCLLINKEDLISTINT(TJclInt64LinkedListItem,TJclInt64LinkedList,TJclInt64AbstractContainer,IJclInt64Collection,IJclInt64List,IJclInt64Iterator, IJclInt64EqualityComparer\,,
-  protected
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,const ,AValue,Int64,GetValue,SetValue)*)
-
-(*$JPPEXPANDMACRO JCLLINKEDLISTITRINT(TJclInt64LinkedListIterator,IJclInt64Iterator,IJclInt64List,IJclInt64EqualityComparer,TJclInt64LinkedListItem,const ,AValue,Int64,0,GetValue,SetValue)*)
-
-(*$JPPEXPANDMACRO JCLLINKEDLISTTYPESINT(TJclPtrLinkedListItem,Pointer)*)
-
-(*$JPPEXPANDMACRO JCLLINKEDLISTINT(TJclPtrLinkedListItem,TJclPtrLinkedList,TJclPtrAbstractContainer,IJclPtrCollection,IJclPtrList,IJclPtrIterator, IJclPtrEqualityComparer\,,
-  protected
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,APtr,Pointer,GetPointer,SetPointer)*)
-
-(*$JPPEXPANDMACRO JCLLINKEDLISTITRINT(TJclPtrLinkedListIterator,IJclPtrIterator,IJclPtrList,IJclPtrEqualityComparer,TJclPtrLinkedListItem,,APtr,Pointer,nil,GetPointer,SetPointer)*)
-
-(*$JPPEXPANDMACRO JCLLINKEDLISTTYPESINT(TJclLinkedListItem,TObject)*)
-
-(*$JPPEXPANDMACRO JCLLINKEDLISTINT(TJclLinkedListItem,TJclLinkedList,TJclAbstractContainer,IJclCollection,IJclList,IJclIterator, IJclObjectOwner\, IJclEqualityComparer\,,
-  protected
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,; AOwnsObjects: Boolean,,AObject,TObject,GetObject,SetObject)*)
-
-(*$JPPEXPANDMACRO JCLLINKEDLISTITRINT(TJclLinkedListIterator,IJclIterator,IJclList,IJclEqualityComparer,TJclLinkedListItem,,AObject,TObject,nil,GetObject,SetObject)*)
-
+  {$JPPEXPANDMACRO JCLLINKEDLISTITRINT(,,,,,,,,,,)}
+*)
   {$IFDEF SUPPORTS_GENERICS}
-(*$JPPEXPANDMACRO JCLLINKEDLISTTYPESINT(TJclLinkedListItem<T>,T)*)
+  (*$JPPEXPANDMACRO JCLLINKEDLISTTYPESINT(TJclLinkedListItem<T>,T)*)
 
   TJclLinkedListIterator<T> = class;
 
-(*$JPPEXPANDMACRO JCLLINKEDLISTINT(TLinkedListItem,TJclLinkedList<T>,TJclAbstractContainer<T>,IJclCollection<T>,IJclList<T>,IJclIterator<T>, IJclItemOwner<T>\, IJclEqualityComparer<T>\,,
-  protected
-    type
-      TLinkedListItem = TJclLinkedListItem<T>;
-      TLinkedListIterator = TJclLinkedListIterator<T>;,,; AOwnsItems: Boolean,const ,AItem,T,GetItem,SetItem)*)
+  (*$JPPEXPANDMACRO JCLLINKEDLISTINT(TLinkedListItem,TJclLinkedList<T>,TJclAbstractContainer<T>,IJclCollection<T>,IJclList<T>,IJclIterator<T>, IJclItemOwner<T>\, IJclEqualityComparer<T>\,,
+protected
+  type
+    TLinkedListItem = TJclLinkedListItem<T>;
+    TLinkedListIterator = TJclLinkedListIterator<T>;,,; AOwnsItems: Boolean,const ,AItem,T,GetItem,SetItem)*)
 
-(*$JPPEXPANDMACRO JCLLINKEDLISTITRINT(TJclLinkedListIterator<T>,IJclIterator<T>,IJclList<T>,IJclEqualityComparer<T>,TJclLinkedList<T>.TLinkedListItem,const ,AItem,T,Default(T),GetItem,SetItem)*)
+  (*$JPPEXPANDMACRO JCLLINKEDLISTITRINT(TJclLinkedListIterator<T>,IJclIterator<T>,IJclList<T>,IJclEqualityComparer<T>,TJclLinkedList<T>.TLinkedListItem,const ,AItem,T,Default(T),GetItem,SetItem)*)
 
   // E = External helper to compare items
   // GetHashCode is never called
@@ -241,159 +130,16 @@ implementation
 uses
   SysUtils;
 
-{$JPPEXPANDMACRO JCLLINKEDLISTIMP(TJclIntfLinkedList,TJclIntfLinkedListItem,IJclIntfCollection,IJclIntfList,IJclIntfIterator,TJclIntfLinkedListIterator,,,const ,AInterface,IInterface,nil,GetObject,SetObject,FreeObject)}
+(*$JPPLOOP TRUETYPEINDEX TRUETYPECOUNT
+{$JPPEXPANDMACRO JCLLINKEDLISTIMP(,,,,,,,,,,,,,,)}
 
-function TJclIntfLinkedList.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntfLinkedList.Create(nil);
-  AssignPropertiesTo(Result);
-end;
-
-{$JPPDEFINEMACRO ITEMFREE(Item)Item := nil}
-(*$JPPEXPANDMACRO JCLLINKEDLISTITRIMP(TJclIntfLinkedListIterator,IJclIntfIterator,IJclIntfList,IJclIntfEqualityComparer,TJclIntfLinkedListItem,const ,AInterface,IInterface,nil,GetObject,SetObject)*)
-{$JPPUNDEFMACRO ITEMFREE(Item)}
-
-{$JPPEXPANDMACRO JCLLINKEDLISTIMP(TJclAnsiStrLinkedList,TJclAnsiStrLinkedListItem,IJclAnsiStrCollection,IJclAnsiStrList,IJclAnsiStrIterator,TJclAnsiStrLinkedListIterator,,,const ,AString,AnsiString,'',GetString,SetString,FreeString)}
-
-function TJclAnsiStrLinkedList.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclAnsiStrLinkedList.Create(nil);
-  AssignPropertiesTo(Result);
-end;
-
-{$JPPDEFINEMACRO ITEMFREE(Item)Item := ''}
-(*$JPPEXPANDMACRO JCLLINKEDLISTITRIMP(TJclAnsiStrLinkedListIterator,IJclAnsiStrIterator,IJclAnsiStrList,IJclAnsiStrEqualityComparer,TJclAnsiStrLinkedListItem,const ,AString,AnsiString,'',GetString,SetString)*)
-{$JPPUNDEFMACRO ITEMFREE(Item)}
-
-{$JPPEXPANDMACRO JCLLINKEDLISTIMP(TJclWideStrLinkedList,TJclWideStrLinkedListItem,IJclWideStrCollection,IJclWideStrList,IJclWideStrIterator,TJclWideStrLinkedListIterator,,,const ,AString,WideString,'',GetString,SetString,FreeString)}
-
-function TJclWideStrLinkedList.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclWideStrLinkedList.Create(nil);
-  AssignPropertiesTo(Result);
-end;
-
-{$JPPDEFINEMACRO ITEMFREE(Item)Item := ''}
-(*$JPPEXPANDMACRO JCLLINKEDLISTITRIMP(TJclWideStrLinkedListIterator,IJclWideStrIterator,IJclWideStrList,IJclWideStrEqualityComparer,TJclWideStrLinkedListItem,const ,AString,WideString,'',GetString,SetString)*)
-{$JPPUNDEFMACRO ITEMFREE(Item)}
-
-{$IFDEF SUPPORTS_UNICODE_STRING}
-{$JPPEXPANDMACRO JCLLINKEDLISTIMP(TJclUnicodeStrLinkedList,TJclUnicodeStrLinkedListItem,IJclUnicodeStrCollection,IJclUnicodeStrList,IJclUnicodeStrIterator,TJclUnicodeStrLinkedListIterator,,,const ,AString,UnicodeString,'',GetString,SetString,FreeString)}
-
-function TJclUnicodeStrLinkedList.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclUnicodeStrLinkedList.Create(nil);
-  AssignPropertiesTo(Result);
-end;
-
-{$JPPDEFINEMACRO ITEMFREE(Item)Item := ''}
-(*$JPPEXPANDMACRO JCLLINKEDLISTITRIMP(TJclUnicodeStrLinkedListIterator,IJclUnicodeStrIterator,IJclUnicodeStrList,IJclUnicodeStrEqualityComparer,TJclUnicodeStrLinkedListItem,const ,AString,UnicodeString,'',GetString,SetString)*)
-{$JPPUNDEFMACRO ITEMFREE(Item)}
-{$ENDIF SUPPORTS_UNICODE_STRING}
-
-{$JPPEXPANDMACRO JCLLINKEDLISTIMP(TJclSingleLinkedList,TJclSingleLinkedListItem,IJclSingleCollection,IJclSingleList,IJclSingleIterator,TJclSingleLinkedListIterator,,,const ,AValue,Single,0.0,GetValue,SetValue,FreeSingle)}
-
-function TJclSingleLinkedList.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclSingleLinkedList.Create(nil);
-  AssignPropertiesTo(Result);
-end;
-
-{$JPPDEFINEMACRO ITEMFREE(Item)Item := 0.0}
-(*$JPPEXPANDMACRO JCLLINKEDLISTITRIMP(TJclSingleLinkedListIterator,IJclSingleIterator,IJclSingleList,IJclSingleEqualityComparer,TJclSingleLinkedListItem,const ,AValue,Single,0.0,GetValue,SetValue)*)
-{$JPPUNDEFMACRO ITEMFREE(Item)}
-
-{$JPPEXPANDMACRO JCLLINKEDLISTIMP(TJclDoubleLinkedList,TJclDoubleLinkedListItem,IJclDoubleCollection,IJclDoubleList,IJclDoubleIterator,TJclDoubleLinkedListIterator,,,const ,AValue,Double,0.0,GetValue,SetValue,FreeDouble)}
-
-function TJclDoubleLinkedList.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclDoubleLinkedList.Create(nil);
-  AssignPropertiesTo(Result);
-end;
-
-{$JPPDEFINEMACRO ITEMFREE(Item)Item := 0.0}
-(*$JPPEXPANDMACRO JCLLINKEDLISTITRIMP(TJclDoubleLinkedListIterator,IJclDoubleIterator,IJclDoubleList,IJclDoubleEqualityComparer,TJclDoubleLinkedListItem,const ,AValue,Double,0.0,GetValue,SetValue)*)
-{$JPPUNDEFMACRO ITEMFREE(Item)}
-
-{$JPPEXPANDMACRO JCLLINKEDLISTIMP(TJclExtendedLinkedList,TJclExtendedLinkedListItem,IJclExtendedCollection,IJclExtendedList,IJclExtendedIterator,TJclExtendedLinkedListIterator,,,const ,AValue,Extended,0.0,GetValue,SetValue,FreeExtended)}
-
-function TJclExtendedLinkedList.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclExtendedLinkedList.Create(nil);
-  AssignPropertiesTo(Result);
-end;
-
-{$JPPDEFINEMACRO ITEMFREE(Item)Item := 0.0}
-(*$JPPEXPANDMACRO JCLLINKEDLISTITRIMP(TJclExtendedLinkedListIterator,IJclExtendedIterator,IJclExtendedList,IJclExtendedEqualityComparer,TJclExtendedLinkedListItem,const ,AValue,Extended,0.0,GetValue,SetValue)*)
-{$JPPUNDEFMACRO ITEMFREE(Item)}
-
-{$JPPEXPANDMACRO JCLLINKEDLISTIMP(TJclIntegerLinkedList,TJclIntegerLinkedListItem,IJclIntegerCollection,IJclIntegerList,IJclIntegerIterator,TJclIntegerLinkedListIterator,,,,AValue,Integer,0,GetValue,SetValue,FreeInteger)}
-
-function TJclIntegerLinkedList.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntegerLinkedList.Create(nil);
-  AssignPropertiesTo(Result);
-end;
-
-{$JPPDEFINEMACRO ITEMFREE(Item)Item := 0}
-(*$JPPEXPANDMACRO JCLLINKEDLISTITRIMP(TJclIntegerLinkedListIterator,IJclIntegerIterator,IJclIntegerList,IJclIntegerEqualityComparer,TJclIntegerLinkedListItem,,AValue,Integer,0,GetValue,SetValue)*)
-{$JPPUNDEFMACRO ITEMFREE(Item)}
-
-{$JPPEXPANDMACRO JCLLINKEDLISTIMP(TJclCardinalLinkedList,TJclCardinalLinkedListItem,IJclCardinalCollection,IJclCardinalList,IJclCardinalIterator,TJclCardinalLinkedListIterator,,,,AValue,Cardinal,0,GetValue,SetValue,FreeCardinal)}
-
-function TJclCardinalLinkedList.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclCardinalLinkedList.Create(nil);
-  AssignPropertiesTo(Result);
-end;
-
-{$JPPDEFINEMACRO ITEMFREE(Item)Item := 0}
-(*$JPPEXPANDMACRO JCLLINKEDLISTITRIMP(TJclCardinalLinkedListIterator,IJclCardinalIterator,IJclCardinalList,IJclCardinalEqualityComparer,TJclCardinalLinkedListItem,,AValue,Cardinal,0,GetValue,SetValue)*)
-{$JPPUNDEFMACRO ITEMFREE(Item)}
-
-{$JPPEXPANDMACRO JCLLINKEDLISTIMP(TJclInt64LinkedList,TJclInt64LinkedListItem,IJclInt64Collection,IJclInt64List,IJclInt64Iterator,TJclInt64LinkedListIterator,,,const ,AValue,Int64,0,GetValue,SetValue,FreeInt64)}
-
-function TJclInt64LinkedList.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclInt64LinkedList.Create(nil);
-  AssignPropertiesTo(Result);
-end;
-
-{$JPPDEFINEMACRO ITEMFREE(Item)Item := 0}
-(*$JPPEXPANDMACRO JCLLINKEDLISTITRIMP(TJclInt64LinkedListIterator,IJclInt64Iterator,IJclInt64List,IJclInt64EqualityComparer,TJclInt64LinkedListItem,const ,AValue,Int64,0,GetValue,SetValue)*)
-{$JPPUNDEFMACRO ITEMFREE(Item)}
-
-{$JPPEXPANDMACRO JCLLINKEDLISTIMP(TJclPtrLinkedList,TJclPtrLinkedListItem,IJclPtrCollection,IJclPtrList,IJclPtrIterator,TJclPtrLinkedListIterator,,,,APtr,Pointer,nil,GetPointer,SetPointer,FreePointer)}
-
-function TJclPtrLinkedList.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclPtrLinkedList.Create(nil);
-  AssignPropertiesTo(Result);
-end;
-
-{$JPPDEFINEMACRO ITEMFREE(Item)Item := nil}
-(*$JPPEXPANDMACRO JCLLINKEDLISTITRIMP(TJclPtrLinkedListIterator,IJclPtrIterator,IJclPtrList,IJclPtrEqualityComparer,TJclPtrLinkedListItem,,APtr,Pointer,nil,GetPointer,SetPointer)*)
-{$JPPUNDEFMACRO ITEMFREE(Item)}
-
-{$JPPEXPANDMACRO JCLLINKEDLISTIMP(TJclLinkedList,TJclLinkedListItem,IJclCollection,IJclList,IJclIterator,TJclLinkedListIterator,; AOwnsObjects: Boolean,AOwnsObjects,,AObject,TObject,nil,GetObject,SetObject,FreeObject)}
-
-function TJclLinkedList.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclLinkedList.Create(nil, False);
-  AssignPropertiesTo(Result);
-end;
-
-{$JPPDEFINEMACRO ITEMFREE(AObject)(FownList as IJclObjectOwner).FreeObject(AObject)}
-(*$JPPEXPANDMACRO JCLLINKEDLISTITRIMP(TJclLinkedListIterator,IJclIterator,IJclList,IJclEqualityComparer,TJclLinkedListItem,,AObject,TObject,nil,GetObject,SetObject)*)
-{$JPPUNDEFMACRO ITEMFREE(AObject)}
-
+{$JPPEXPANDMACRO JCLLINKEDLISTITRIMP(,,,,,,,,,,,)}
+*)
 {$IFDEF SUPPORTS_GENERICS}
 
 {$JPPEXPANDMACRO JCLLINKEDLISTIMP(TJclLinkedList<T>,TLinkedListItem,IJclCollection<T>,IJclList<T>,IJclIterator<T>,TLinkedListIterator,; AOwnsItems: Boolean,AOwnsItems,const ,AItem,T,Default(T),GetItem,SetItem,FreeItem)}
 
-{$JPPDEFINEMACRO ITEMFREE(AItem)(FownList as IJclItemOwner<T>).FreeItem(AItem)}
-(*$JPPEXPANDMACRO JCLLINKEDLISTITRIMP(TJclLinkedListIterator<T>,IJclIterator<T>,IJclList<T>,IJclEqualityComparer<T>,TJclLinkedList<T>.TLinkedListItem,const ,AItem,T,Default(T),GetItem,SetItem)*)
-{$JPPUNDEFMACRO ITEMFREE(AObject)}
+(*$JPPEXPANDMACRO JCLLINKEDLISTITRIMP(TJclLinkedListIterator<T>,IJclIterator<T>,IJclList<T>,IJclEqualityComparer<T>,TJclLinkedList<T>.TLinkedListItem,const ,AItem,T,Default(T),GetItem,SetItem,(FownList as IJclItemOwner<T>).FreeItem(FCursor.Value);)*)
 
 //=== { TJclLinkedListE<T> } =================================================
 

@@ -19,8 +19,24 @@
     <File Name="..\..\devtools\jpp\JppState.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\devtools\jpp\JppLexer.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\devtools\jpp\JppParser.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\devtools\jpp\Templates\JclTemplates.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\devtools\jpp\Templates\JclAlgorithmsTemplates.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\devtools\jpp\Templates\JclArrayListsTemplates.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\devtools\jpp\Templates\JclArraySetsTemplates.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\devtools\jpp\Templates\JclBinaryTreesTemplates.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\devtools\jpp\Templates\JclContainer1DTemplates.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\devtools\jpp\Templates\JclContainer2DTemplates.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\devtools\jpp\Templates\JclContainerIntfTemplates.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\devtools\jpp\Templates\JclContainerKnownMaps.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\devtools\jpp\Templates\JclContainerKnownTypes.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\devtools\jpp\Templates\JclContainerTemplates.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\devtools\jpp\Templates\JclContainerTypes.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\devtools\jpp\Templates\JclExcDlgTemplates.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\devtools\jpp\Templates\JclLinkedListsTemplates.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\devtools\jpp\Templates\JclQueuesTemplates.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\devtools\jpp\Templates\JclStacksTemplates.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\devtools\jpp\Templates\JclTemplates.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\devtools\jpp\Templates\JclTreesTemplates.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\devtools\jpp\Templates\JclVectorsTemplates.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclCompilerUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclDevToolsResources.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclIDEUtils.pas" Targets="all" Formname="" Condition=""/>

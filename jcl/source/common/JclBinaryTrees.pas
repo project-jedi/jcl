@@ -53,6 +53,7 @@ uses
 type
   TItrStart = (isFirst, isLast, isRoot);
 
+
   TJclIntfBinaryNode = class
   public
     Value: IInterface;
@@ -449,8 +450,7 @@ type
     function GetPreviousCursor: TJclWideStrBinaryNode; override;
   end;
 
-
-{$IFDEF SUPPORTS_UNICODE_STRING}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   TJclUnicodeStrBinaryNode = class
   public
     Value: UnicodeString;
@@ -458,7 +458,9 @@ type
     Right: TJclUnicodeStrBinaryNode;
     Parent: TJclUnicodeStrBinaryNode;
   end;
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   TJclUnicodeStrBinaryTree = class(TJclUnicodeStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclStrContainer, IJclUnicodeStrContainer, IJclUnicodeStrFlatContainer, IJclUnicodeStrEqualityComparer, IJclUnicodeStrComparer,
     IJclUnicodeStrCollection, IJclUnicodeStrTree)
@@ -507,7 +509,9 @@ type
     property Root: IJclUnicodeStrTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   TJclUnicodeStrBinaryTreeIterator = class(TJclAbstractIterator, IJclUnicodeStrIterator, IJclUnicodeStrTreeIterator, IJclUnicodeStrBinaryTreeIterator)
   protected
     FCursor: TJclUnicodeStrBinaryNode;
@@ -582,7 +586,17 @@ type
     function GetNextCursor: TJclUnicodeStrBinaryNode; override;
     function GetPreviousCursor: TJclUnicodeStrBinaryNode; override;
   end;
-{$ENDIF SUPPORTS_UNICODE_STRING}
+  {$ENDIF SUPPORTS_UNICODE_STRING}
+
+  {$IFDEF CONTAINER_ANSISTR}
+  TJclStrBinaryNode = TJclAnsiStrBinaryNode;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TJclStrBinaryNode = TJclWideStrBinaryNode;
+  {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  TJclStrBinaryNode = TJclUnicodeStrBinaryNode;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   {$IFDEF CONTAINER_ANSISTR}
   TJclStrBinaryTree = TJclAnsiStrBinaryTree;
@@ -592,6 +606,25 @@ type
   {$ENDIF CONTAINER_WIDESTR}
   {$IFDEF CONTAINER_UNICODESTR}
   TJclStrBinaryTree = TJclUnicodeStrBinaryTree;
+  {$ENDIF CONTAINER_UNICODESTR}
+
+  {$IFDEF CONTAINER_ANSISTR}
+  TJclStrBinaryTreeIterator = TJclAnsiStrBinaryTreeIterator;
+  TJclPreOrderStrBinaryTreeIterator = TJclPreOrderAnsiStrBinaryTreeIterator;
+  TJclInOrderStrBinaryTreeIterator = TJclInOrderAnsiStrBinaryTreeIterator;
+  TJclPostOrderStrBinaryTreeIterator = TJclPostOrderAnsiStrBinaryTreeIterator;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TJclStrBinaryTreeIterator = TJclWideStrBinaryTreeIterator;
+  TJclPreOrderStrBinaryTreeIterator = TJclPreOrderWideStrBinaryTreeIterator;
+  TJclInOrderStrBinaryTreeIterator = TJclInOrderWideStrBinaryTreeIterator;
+  TJclPostOrderStrBinaryTreeIterator = TJclPostOrderWideStrBinaryTreeIterator;
+  {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  TJclStrBinaryTreeIterator = TJclUnicodeStrBinaryTreeIterator;
+  TJclPreOrderStrBinaryTreeIterator = TJclPreOrderUnicodeStrBinaryTreeIterator;
+  TJclInOrderStrBinaryTreeIterator = TJclInOrderUnicodeStrBinaryTreeIterator;
+  TJclPostOrderStrBinaryTreeIterator = TJclPostOrderUnicodeStrBinaryTreeIterator;
   {$ENDIF CONTAINER_UNICODESTR}
 
   TJclSingleBinaryNode = class
@@ -990,15 +1023,44 @@ type
     function GetPreviousCursor: TJclExtendedBinaryNode; override;
   end;
 
-  {$IFDEF MATH_EXTENDED_PRECISION}
-  TJclFloatBinaryTree = TJclExtendedBinaryTree;
-  {$ENDIF MATH_EXTENDED_PRECISION}
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TJclFloatBinaryNode = TJclSingleBinaryNode;
+  {$ENDIF MATH_SINGLE_PRECISION}
   {$IFDEF MATH_DOUBLE_PRECISION}
-  TJclFloatBinaryTree = TJclDoubleBinaryTree;
+  TJclFloatBinaryNode = TJclDoubleBinaryNode;
   {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TJclFloatBinaryNode = TJclExtendedBinaryNode;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+
   {$IFDEF MATH_SINGLE_PRECISION}
   TJclFloatBinaryTree = TJclSingleBinaryTree;
   {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TJclFloatBinaryTree = TJclDoubleBinaryTree;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TJclFloatBinaryTree = TJclExtendedBinaryTree;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TJclFloatBinaryTreeIterator = TJclSingleBinaryTreeIterator;
+  TJclPreOrderFloatBinaryTreeIterator = TJclPreOrderSingleBinaryTreeIterator;
+  TJclInOrderFloatBinaryTreeIterator = TJclInOrderSingleBinaryTreeIterator;
+  TJclPostOrderFloatBinaryTreeIterator = TJclPostOrderSingleBinaryTreeIterator;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TJclFloatBinaryTreeIterator = TJclDoubleBinaryTreeIterator;
+  TJclPreOrderFloatBinaryTreeIterator = TJclPreOrderDoubleBinaryTreeIterator;
+  TJclInOrderFloatBinaryTreeIterator = TJclInOrderDoubleBinaryTreeIterator;
+  TJclPostOrderFloatBinaryTreeIterator = TJclPostOrderDoubleBinaryTreeIterator;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TJclFloatBinaryTreeIterator = TJclExtendedBinaryTreeIterator;
+  TJclPreOrderFloatBinaryTreeIterator = TJclPreOrderExtendedBinaryTreeIterator;
+  TJclInOrderFloatBinaryTreeIterator = TJclInOrderExtendedBinaryTreeIterator;
+  TJclPostOrderFloatBinaryTreeIterator = TJclPostOrderExtendedBinaryTreeIterator;
+  {$ENDIF MATH_EXTENDED_PRECISION}
 
   TJclIntegerBinaryNode = class
   public
@@ -1861,6 +1923,7 @@ implementation
 
 uses
   SysUtils;
+
 
 //=== { TJclIntfBinaryTree } =================================================
 
@@ -7117,6 +7180,9 @@ begin
   AssignPropertiesTo(Result);
 end;
 
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
+{$IFDEF SUPPORTS_UNICODE_STRING}
 //=== { TJclUnicodeStrBinaryTreeIterator } ===========================================================
 
 constructor TJclUnicodeStrBinaryTreeIterator.Create(const AOwnTree: IJclUnicodeStrCollection; ACursor: TJclUnicodeStrBinaryNode; AValid: Boolean; AStart: TItrStart);
@@ -19707,6 +19773,7 @@ begin
       Result := Result.Left;
   end;
 end;
+
 
 {$IFDEF SUPPORTS_GENERICS}
 //=== { TJclBinaryTree<T> } =================================================

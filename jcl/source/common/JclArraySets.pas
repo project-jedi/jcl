@@ -52,6 +52,7 @@ uses
   JclBase, JclAbstractContainers, JclContainerIntf, JclArrayLists, JclSynch;
 
 type
+
   TJclIntfArraySet = class(TJclIntfArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntfEqualityComparer, IJclIntfComparer,
     IJclIntfCollection, IJclIntfList, IJclIntfArray, IJclIntfSet)
@@ -112,7 +113,7 @@ type
     procedure Union(const ACollection: IJclWideStrCollection);
   end;
 
-{$IFDEF SUPPORTS_UNICODE_STRING}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
   TJclUnicodeStrArraySet = class(TJclUnicodeStrArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer, IJclUnicodeStrContainer, IJclUnicodeStrFlatContainer, IJclUnicodeStrEqualityComparer, IJclUnicodeStrComparer,
     IJclUnicodeStrCollection, IJclUnicodeStrList, IJclUnicodeStrArray, IJclUnicodeStrSet)
@@ -132,7 +133,7 @@ type
     procedure Subtract(const ACollection: IJclUnicodeStrCollection);
     procedure Union(const ACollection: IJclUnicodeStrCollection);
   end;
-{$ENDIF SUPPORTS_UNICODE_STRING}
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   TJclStrArraySet = TJclAnsiStrArraySet;
@@ -204,15 +205,15 @@ type
     procedure Union(const ACollection: IJclExtendedCollection);
   end;
 
-  {$IFDEF MATH_EXTENDED_PRECISION}
-  TJclFloatArraySet = TJclExtendedArraySet;
-  {$ENDIF MATH_EXTENDED_PRECISION}
-  {$IFDEF MATH_DOUBLE_PRECISION}
-  TJclFloatArraySet = TJclDoubleArraySet;
-  {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_SINGLE_PRECISION}
   TJclFloatArraySet = TJclSingleArraySet;
   {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TJclFloatArraySet = TJclDoubleArraySet;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TJclFloatArraySet = TJclExtendedArraySet;
+  {$ENDIF MATH_EXTENDED_PRECISION}
 
   TJclIntegerArraySet = class(TJclIntegerArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntegerEqualityComparer, IJclIntegerComparer,
@@ -394,6 +395,7 @@ implementation
 
 uses
   SysUtils;
+
 
 //=== { TJclIntfArraySet } ====================================================
 
@@ -963,6 +965,7 @@ begin
   Result := TJclUnicodeStrArraySet.Create(Size);
   AssignPropertiesTo(Result);
 end;
+
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
 //=== { TJclSingleArraySet } ====================================================

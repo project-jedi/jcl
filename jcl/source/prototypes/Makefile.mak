@@ -5,6 +5,7 @@
 #
 
 jpp		= ..\..\devtools\jpp.exe
+jppContainers	= ..\..\devtools\jppContainers.exe
 touch		= $(MAKEDIR)\touch.exe
 
 Options			= -c -dJCL -dSUPPORTS_DEFAULTPARAMS -dSUPPORTS_INT64
@@ -116,7 +117,7 @@ JclVectors.pas: \
 	$(touch) $@
 
 {.}.pas{..\common}.pas:
-	$(jpp) $(ContainerOptions) $<
+	$(jppContainers) $(ContainerOptions) $<
 
 {.}.pas{..\windows}.pas:
 	$(jpp) $(WinOptions) $<

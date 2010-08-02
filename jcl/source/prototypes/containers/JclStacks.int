@@ -1,23 +1,23 @@
-(*$JPPDEFINEMACRO JCLSTACKINT(SELFCLASSNAME, STACKINTERFACENAME, ANCESTORCLASSNAME, DYNARRAYTYPE,
+(*$JPPDEFINEMACRO JCLSTACKINT(SELFCLASSNAME, STACKINTERFACENAME, ANCESTORCLASSNAME, DYNARRAYTYPENAME,
   INTERFACEADDITIONAL, SECTIONADDITIONAL, OWNERSHIPDECLARATION, CONSTKEYWORD, PARAMETERNAME, TYPENAME)
-  SELFCLASSNAME = class(ANCESTORCLASSNAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer,INTERFACEADDITIONAL
-    STACKINTERFACENAME)SECTIONADDITIONAL
-  private
-    FElements: DYNARRAYTYPE;
-  protected
-    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-  public
-    constructor Create(ACapacity: IntegerOWNERSHIPDECLARATION);
-    destructor Destroy; override;
-    { IJclPackable }
-    procedure SetCapacity(Value: Integer); override;
-    { STACKINTERFACENAME }
-    procedure Clear;
-    function Contains(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
-    function Empty: Boolean;
-    function Peek: TYPENAME;
-    function Pop: TYPENAME;
-    function Push(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
-    function Size: Integer;
-  end;*)
+SELFCLASSNAME = class(ANCESTORCLASSNAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer,INTERFACEADDITIONAL
+  STACKINTERFACENAME)SECTIONADDITIONAL
+private
+  FElements: DYNARRAYTYPENAME;
+protected
+  procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+public
+  constructor Create(ACapacity: IntegerOWNERSHIPDECLARATION);
+  destructor Destroy; override;
+  { IJclPackable }
+  procedure SetCapacity(Value: Integer); override;
+  { STACKINTERFACENAME }
+  procedure Clear;
+  function Contains(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
+  function Empty: Boolean;
+  function Peek: TYPENAME;
+  function Pop: TYPENAME;
+  function Push(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
+  function Size: Integer;
+end;*)

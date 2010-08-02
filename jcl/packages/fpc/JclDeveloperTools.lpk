@@ -39,7 +39,7 @@
     <Description Value="JEDI Code Library Developer Tools package"/>
     <License Value="Copyright (C) 1999, 2009 Project JEDI"/>
     <Version Major="2" Minor="2" Release="0" Build="3537"/>
-    <Files Count="11">
+    <Files Count="27">
       <Item1>
         <Filename Value="..\..\devtools\jpp\JppState.pas"/>
         <UnitName Value="JppState"/>
@@ -53,37 +53,101 @@
         <UnitName Value="JppParser"/>
       </Item3>
       <Item4>
-        <Filename Value="..\..\devtools\jpp\Templates\JclTemplates.pas"/>
-        <UnitName Value="JclTemplates"/>
+        <Filename Value="..\..\devtools\jpp\Templates\JclAlgorithmsTemplates.pas"/>
+        <UnitName Value="JclAlgorithmsTemplates"/>
       </Item4>
       <Item5>
-        <Filename Value="..\..\devtools\jpp\Templates\JclExcDlgTemplates.pas"/>
-        <UnitName Value="JclExcDlgTemplates"/>
+        <Filename Value="..\..\devtools\jpp\Templates\JclArrayListsTemplates.pas"/>
+        <UnitName Value="JclArrayListsTemplates"/>
       </Item5>
       <Item6>
-        <Filename Value="..\..\source\common\JclCompilerUtils.pas"/>
-        <UnitName Value="JclCompilerUtils"/>
+        <Filename Value="..\..\devtools\jpp\Templates\JclArraySetsTemplates.pas"/>
+        <UnitName Value="JclArraySetsTemplates"/>
       </Item6>
       <Item7>
-        <Filename Value="..\..\source\common\JclDevToolsResources.pas"/>
-        <UnitName Value="JclDevToolsResources"/>
+        <Filename Value="..\..\devtools\jpp\Templates\JclBinaryTreesTemplates.pas"/>
+        <UnitName Value="JclBinaryTreesTemplates"/>
       </Item7>
       <Item8>
-        <Filename Value="..\..\source\common\JclIDEUtils.pas"/>
-        <UnitName Value="JclIDEUtils"/>
+        <Filename Value="..\..\devtools\jpp\Templates\JclContainer1DTemplates.pas"/>
+        <UnitName Value="JclContainer1DTemplates"/>
       </Item8>
       <Item9>
-        <Filename Value="..\..\source\common\JclUsesUtils.pas"/>
-        <UnitName Value="JclUsesUtils"/>
+        <Filename Value="..\..\devtools\jpp\Templates\JclContainer2DTemplates.pas"/>
+        <UnitName Value="JclContainer2DTemplates"/>
       </Item9>
       <Item10>
-        <Filename Value="..\..\source\windows\JclHelpUtils.pas"/>
-        <UnitName Value="JclHelpUtils"/>
+        <Filename Value="..\..\devtools\jpp\Templates\JclContainerIntfTemplates.pas"/>
+        <UnitName Value="JclContainerIntfTemplates"/>
       </Item10>
       <Item11>
+        <Filename Value="..\..\devtools\jpp\Templates\JclContainerKnownMaps.pas"/>
+        <UnitName Value="JclContainerKnownMaps"/>
+      </Item11>
+      <Item12>
+        <Filename Value="..\..\devtools\jpp\Templates\JclContainerKnownTypes.pas"/>
+        <UnitName Value="JclContainerKnownTypes"/>
+      </Item12>
+      <Item13>
+        <Filename Value="..\..\devtools\jpp\Templates\JclContainerTemplates.pas"/>
+        <UnitName Value="JclContainerTemplates"/>
+      </Item13>
+      <Item14>
+        <Filename Value="..\..\devtools\jpp\Templates\JclContainerTypes.pas"/>
+        <UnitName Value="JclContainerTypes"/>
+      </Item14>
+      <Item15>
+        <Filename Value="..\..\devtools\jpp\Templates\JclExcDlgTemplates.pas"/>
+        <UnitName Value="JclExcDlgTemplates"/>
+      </Item15>
+      <Item16>
+        <Filename Value="..\..\devtools\jpp\Templates\JclLinkedListsTemplates.pas"/>
+        <UnitName Value="JclLinkedListsTemplates"/>
+      </Item16>
+      <Item17>
+        <Filename Value="..\..\devtools\jpp\Templates\JclQueuesTemplates.pas"/>
+        <UnitName Value="JclQueuesTemplates"/>
+      </Item17>
+      <Item18>
+        <Filename Value="..\..\devtools\jpp\Templates\JclStacksTemplates.pas"/>
+        <UnitName Value="JclStacksTemplates"/>
+      </Item18>
+      <Item19>
+        <Filename Value="..\..\devtools\jpp\Templates\JclTemplates.pas"/>
+        <UnitName Value="JclTemplates"/>
+      </Item19>
+      <Item20>
+        <Filename Value="..\..\devtools\jpp\Templates\JclTreesTemplates.pas"/>
+        <UnitName Value="JclTreesTemplates"/>
+      </Item20>
+      <Item21>
+        <Filename Value="..\..\devtools\jpp\Templates\JclVectorsTemplates.pas"/>
+        <UnitName Value="JclVectorsTemplates"/>
+      </Item21>
+      <Item22>
+        <Filename Value="..\..\source\common\JclCompilerUtils.pas"/>
+        <UnitName Value="JclCompilerUtils"/>
+      </Item22>
+      <Item23>
+        <Filename Value="..\..\source\common\JclDevToolsResources.pas"/>
+        <UnitName Value="JclDevToolsResources"/>
+      </Item23>
+      <Item24>
+        <Filename Value="..\..\source\common\JclIDEUtils.pas"/>
+        <UnitName Value="JclIDEUtils"/>
+      </Item24>
+      <Item25>
+        <Filename Value="..\..\source\common\JclUsesUtils.pas"/>
+        <UnitName Value="JclUsesUtils"/>
+      </Item25>
+      <Item26>
+        <Filename Value="..\..\source\windows\JclHelpUtils.pas"/>
+        <UnitName Value="JclHelpUtils"/>
+      </Item26>
+      <Item27>
         <Filename Value="..\..\source\windows\MSHelpServices_TLB.pas"/>
         <UnitName Value="MSHelpServices_TLB"/>
-      </Item11>
+      </Item27>
     </Files>
     <RequiredPkgs Count="3">
       <Item1>
