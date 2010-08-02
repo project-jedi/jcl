@@ -324,6 +324,7 @@ var
   AliasTypeAttributes: PKnownTypeAttributes;
   AliasMapAttributes: PKnownMapAttributes;
 begin
+  SetLength(AMacroParams, 0);
   FindContainerParams(AName, InterfaceParamsClass, ImplementationParamsClass);
   if InterfaceParamsClass <> nil then
   begin
@@ -448,13 +449,21 @@ begin
             begin
               PropInfo := GetPropInfo(ImplementationParams, AMacro.Strings[Index]);
               if Assigned(PropInfo) then
+                {$IFDEF COMPILER8_UP}
                 AMacroParams[Index] := GetPropValue(ImplementationParams, PropInfo);
+                {$ELSE ~COMPILER8_UP}
+                AMacroParams[Index] := GetPropValue(ImplementationParams, AMacro.Strings[Index]);
+                {$ENDIF ~COMPILER8_UP}
             end
             else
             begin
               PropInfo := GetPropInfo(InterfaceParams, AMacro.Strings[Index]);
               if Assigned(PropInfo) then
+                {$IFDEF COMPILER8_UP}
                 AMacroParams[Index] := GetPropValue(InterfaceParams, PropInfo);
+                {$ELSE ~COMPILER8_UP}
+                AMacroParams[Index] := GetPropValue(InterfaceParams, AMacro.Strings[Index]);
+                {$ENDIF ~COMPILER8_UP}
             end;
           end;
           Params[Index].VType := vtPWideChar;
