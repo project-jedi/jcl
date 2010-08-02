@@ -1,11 +1,11 @@
 object frmMain: TfrmMain
   Left = 300
   Top = 115
-  ClientWidth = 462
-  ClientHeight = 334
   Caption = 'JclPCRE Demo'
+  ClientHeight = 334
+  ClientWidth = 462
   Color = clBtnFace
-  Constraints.MinHeight = 370
+  Constraints.MinHeight = 361
   Constraints.MinWidth = 470
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -198,14 +198,13 @@ object frmMain: TfrmMain
   end
   object sbMain: TStatusBar
     Left = 0
-    Top = 324
+    Top = 315
     Width = 462
     Height = 19
     Panels = <
       item
         Width = 50
       end>
-    SimplePanel = False
   end
   object alMain: TActionList
     Left = 144
