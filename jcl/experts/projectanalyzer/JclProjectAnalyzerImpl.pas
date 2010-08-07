@@ -23,7 +23,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-unit ProjAnalyzerImpl;
+unit JclProjectAnalyzerImpl;
 
 {$I jcl.inc}
 
@@ -34,7 +34,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclOtaUtils, ProjAnalyzerFrm;
+  JclOtaUtils, JclProjectAnalyzerFrm;
 
 type
   TJclProjectAnalyzerExpert = class(TJclOTAExpert)
@@ -105,7 +105,7 @@ const
 
 implementation
 
-{$R ProjAnalyzerIcon.res}
+{$R JclProjectAnalyzerIcon.res}
 
 uses
   Variants,

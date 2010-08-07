@@ -14,7 +14,7 @@
     <Package Name="JclBaseExpert-D" Targets="all" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\experts\projectanalyzer\ProjAnalyzerFrm.pas" Targets="runtimeIDE" Formname="ProjectAnalyzerForm" Condition=""/>
-    <File Name="..\..\experts\projectanalyzer\ProjAnalyzerImpl.pas" Targets="runtimeIDE" Formname="" Condition=""/>
+    <File Name="..\..\experts\projectanalyzer\JclProjectAnalyzerFrm.pas" Targets="runtimeIDE" Formname="ProjectAnalyzerForm" Condition=""/>
+    <File Name="..\..\experts\projectanalyzer\JclProjectAnalyzerImpl.pas" Targets="runtimeIDE" Formname="" Condition=""/>
   </Contains>
 </Package>

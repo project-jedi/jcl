@@ -1,4 +1,4 @@
-﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{6E22E269-A58C-41B6-BB1C-57670E460887}</ProjectGuid>
 			<MainSource>JclProjectAnalysisExpertDLL.dpr</MainSource>
@@ -67,8 +67,8 @@
 			<DCCReference Include="designide.dcp"/>
 			<DCCReference Include="Jcl.dcp"/>
 			<DCCReference Include="JclBaseExpert.dcp"/>
-			<DCCReference Include="..\..\experts\projectanalyzer\ProjAnalyzerFrm.pas"/>
-			<DCCReference Include="..\..\experts\projectanalyzer\ProjAnalyzerImpl.pas"/>
+			<DCCReference Include="..\..\experts\projectanalyzer\JclProjectAnalyzerFrm.pas"/>
+			<DCCReference Include="..\..\experts\projectanalyzer\JclProjectAnalyzerImpl.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>

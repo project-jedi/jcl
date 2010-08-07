@@ -23,7 +23,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-unit ProjAnalyzerFrm;
+unit JclProjectAnalyzerFrm;
 
 interface
 
