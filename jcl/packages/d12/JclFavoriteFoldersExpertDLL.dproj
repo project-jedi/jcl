@@ -1,4 +1,4 @@
-﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{DCDB1939-E79B-4AF6-855E-78310CAF8467}</ProjectGuid>
 			<MainSource>JclFavoriteFoldersExpertDLL.dpr</MainSource>
@@ -66,7 +66,7 @@
 			<DCCReference Include="Jcl.dcp"/>
 			<DCCReference Include="JclVcl.dcp"/>
 			<DCCReference Include="JclBaseExpert.dcp"/>
-			<DCCReference Include="..\..\experts\favfolders\IdeOpenDlgFavoriteUnit.pas"/>
+			<DCCReference Include="..\..\experts\favfolders\JclIdeOpenDlgFavoriteUnit.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>

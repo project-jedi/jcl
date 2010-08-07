@@ -23,7 +23,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-unit IdeOpenDlgFavoriteUnit;
+unit JclIdeOpenDlgFavoriteUnit;
 
 interface
 

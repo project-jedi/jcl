@@ -15,6 +15,6 @@
     <Package Name="JclBaseExpert-D" Targets="all" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\experts\favfolders\IdeOpenDlgFavoriteUnit.pas" Targets="designtimeIDE" Formname="" Condition=""/>
+    <File Name="..\..\experts\favfolders\JclIdeOpenDlgFavoriteUnit.pas" Targets="designtimeIDE" Formname="" Condition=""/>
   </Contains>
 </Package>
