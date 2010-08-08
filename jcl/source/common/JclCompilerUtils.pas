@@ -1096,11 +1096,11 @@ begin
       Option := Options.Strings[OptionIndex];
       if IsPathOption(Option, SwitchLen) then
       begin
-
         StrToStrings(StrTrimQuotes(Copy(Option, SwitchLen + 1, Length(Option) - SwitchLen)), PathSep, PathList);
-        // change to relative paths to avoid DCC32 126 character path limit
-        for PathIndex := 0 to PathList.Count - 1 do
-          PathList.Strings[PathIndex] := PathGetRelativePath(CurrentFolder, ExpandFileName(PathList[PathIndex]));
+        if LongPathBug then
+          // change to relative paths to avoid DCC32 126 character path limit
+          for PathIndex := 0 to PathList.Count - 1 do
+            PathList.Strings[PathIndex] := PathGetRelativePath(CurrentFolder, ExpandFileName(PathList[PathIndex]));
         if PathList.Count > 0 then
           Arguments := Format('%s %s"%s"', [Arguments, Copy(Option, 1, SwitchLen),
             StringsToStr(PathList, PathSep)]);
