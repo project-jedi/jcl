@@ -1,4 +1,5 @@
 USEUNIT("..\..\experts\repository\JclOtaRepositoryUtils.pas");
+USEUNIT("..\..\experts\repository\JclOtaRepositoryReg.pas");
 USEUNIT("..\..\experts\repository\ExceptionDialog\JclOtaExcDlgRepository.pas");
 USEUNIT("..\..\experts\repository\ExceptionDialog\JclOtaExcDlgWizard.pas");
 USEUNIT("..\..\experts\repository\ExceptionDialog\JclOtaExcDlgFileFrame.pas");
@@ -8,7 +9,6 @@ USEUNIT("..\..\experts\repository\ExceptionDialog\JclOtaExcDlgLogFrame.pas");
 USEUNIT("..\..\experts\repository\ExceptionDialog\JclOtaExcDlgTraceFrame.pas");
 USEUNIT("..\..\experts\repository\ExceptionDialog\JclOtaExcDlgThreadFrame.pas");
 USEUNIT("..\..\experts\repository\ExceptionDialog\JclOtaExcDlgIgnoreFrame.pas");
-USEUNIT("..\..\experts\repository\JclOtaRepositoryReg.pas");
 USEDEF("JclRepositoryExpertDLL.def");
 Project file
 DllEntryPoint

@@ -1,4 +1,4 @@
-﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{D93FF823-44C6-49D4-B9B3-30F1F60082F5}</ProjectGuid>
 			<MainSource>JclRepositoryExpertDLL.dpr</MainSource>
@@ -70,6 +70,7 @@
 			<DCCReference Include="JclBaseExpert.dcp"/>
 			<DCCReference Include="JclDeveloperTools.dcp"/>
 			<DCCReference Include="..\..\experts\repository\JclOtaRepositoryUtils.pas"/>
+			<DCCReference Include="..\..\experts\repository\JclOtaRepositoryReg.pas"/>
 			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgRepository.pas"/>
 			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgWizard.pas"/>
 			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgFileFrame.pas"/>
@@ -79,7 +80,6 @@
 			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgTraceFrame.pas"/>
 			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgThreadFrame.pas"/>
 			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgIgnoreFrame.pas"/>
-			<DCCReference Include="..\..\experts\repository\JclOtaRepositoryReg.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>

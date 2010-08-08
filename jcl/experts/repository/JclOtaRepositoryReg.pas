@@ -71,7 +71,7 @@ implementation
 uses
   Windows,
   JclStrings, JclFileUtils, JclRegistry,
-  JclOtaResources, JclOtaConsts, JclTemplates, JclOtaExcDlgWizard;
+  JclOtaResources, JclOtaConsts, JclTemplates;
 
 type
   TExpertRecord = record

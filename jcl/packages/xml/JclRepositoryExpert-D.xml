@@ -17,6 +17,7 @@
   </Requires>
   <Contains>
     <File Name="..\..\experts\repository\JclOtaRepositoryUtils.pas" Targets="runtimeIDE" Formname="" Condition=""/>
+    <File Name="..\..\experts\repository\JclOtaRepositoryReg.pas" Targets="runtimeIDE" Formname="" Condition=""/>
     <File Name="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgRepository.pas" Targets="runtimeIDE" Formname="" Condition=""/>
     <File Name="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgWizard.pas" Targets="runtimeIDE" Formname="JclOtaExcDlgForm" Condition=""/>
     <File Name="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgFileFrame.pas" Targets="runtimeIDE" Formname="JclOtaExcDlgFilePage: TFrame" Condition=""/>
@@ -26,6 +27,5 @@
     <File Name="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgTraceFrame.pas" Targets="runtimeIDE" Formname="JclOtaExcDlgTracePage: TFrame" Condition=""/>
     <File Name="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgThreadFrame.pas" Targets="runtimeIDE" Formname="JclOtaExcDlgThreadPage: TFrame" Condition=""/>
     <File Name="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgIgnoreFrame.pas" Targets="runtimeIDE" Formname="JclOtaExcDlgIgnoredPage: TFrame" Condition=""/>
-    <File Name="..\..\experts\repository\JclOtaRepositoryReg.pas" Targets="runtimeIDE" Formname="" Condition=""/>
   </Contains>
 </Package>
