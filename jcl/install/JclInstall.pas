@@ -524,6 +524,16 @@ begin
       Result := Format(S + 'DLL%s0%3:s', [VersionNumberStr, BaseName, VersionNumberStr, ProjectSourceFileExtension]);
 end;
 
+function SortFileNameA2Z(List: TStringList; Index1, Index2: Integer): Integer;
+begin
+  Result := CompareText(List.Strings[Index1], List.Strings[Index2]);
+end;
+
+function SortFileNameZ2A(List: TStringList; Index1, Index2: Integer): Integer;
+begin
+  Result := -CompareText(List.Strings[Index1], List.Strings[Index2]);
+end;
+
 //=== { TJclInstallation } ===================================================
 
 constructor TJclInstallation.Create(JclDistribution: TJclDistribution;
@@ -1378,10 +1388,43 @@ var
     function CheckHppFiles: Boolean;
     var
       SaveDir, Options: string;
+      UnitList, CppFile: TStrings;
+      I: Integer;
     begin
       SaveDir := GetCurrentDir;
-      SetCurrentDir(Format('%sinstall%sHeaderTest', [Distribution.JclPath, DirDelimiter]));
       try
+        SetCurrentDir(Distribution.JclPath);
+
+        UnitList := TStringList.Create;
+        CppFile := TStringList.Create;
+        try
+          for I := Low(JclSrcPaths) to High(JclSrcPaths) do
+            BuildFileList(PathAddSeparator(JclSrcPaths[I]) + '*.pas', faAnyFile, UnitList, False);
+          // these headers are known to fail
+          UnitList.Delete(UnitList.IndexOf('JclDotNet.pas'));
+          UnitList.Delete(UnitList.IndexOf('JclNTFS.pas'));
+          UnitList.Delete(UnitList.IndexOf('mscorlib_TLB.pas'));
+
+          SetCurrentDir(Format('%sinstall%sHeaderTest', [Distribution.JclPath, DirDelimiter]));
+
+          TStringList(UnitList).CustomSort(SortFileNameA2Z);
+          CppFile.Clear;
+          CppFile.Add('#pragma hdrstop');
+          for I := 0 to UnitList.Count - 1 do
+            CppFile.Add(Format('#include <%s>', [ChangeFileExt(UnitList.Strings[I], '.hpp')]));
+          CppFile.SaveToFile('jcl_a2z.cpp');
+
+          TStringList(UnitList).CustomSort(SortFileNameZ2A);
+          CppFile.Clear;
+          CppFile.Add('#pragma hdrstop');
+          for I := 0 to UnitList.Count - 1 do
+            CppFile.Add(Format('#include <%s>', [ChangeFileExt(UnitList.Strings[I], '.hpp')]));
+          CppFile.SaveToFile('jcl_z2a.cpp');
+        finally
+          UnitList.Free;
+          CppFile.Free;
+        end;
+
         Target.BCC32.Options.Clear;
         Target.BCC32.Options.Add('-c'); // compile only
         Target.BCC32.Options.Add('-Ve'); // compatibility
@@ -1397,14 +1440,6 @@ var
         Target.BCC32.Options.Add('-w-par'); // warning
         Target.BCC32.Options.Add('-w-aus'); // warning
         Target.BCC32.AddPathOption('I', Format('%sinclude%s%s%s%s%sinclude%s%s', [Distribution.JclPath, DirSeparator, Distribution.JclSourcePath, DirSeparator, Target.RootDir, DirDelimiter, DirSeparator, Target.VclIncludeDir]));
-        Target.BCC32.Options.Add('-DTEST_COMMON');
-        {$IFDEF MSWINDOWS}
-        Target.BCC32.Options.Add('-DTEST_WINDOWS');
-        {$ENDIF MSWINDOWS}
-        {$IFDEF UNIX}
-        Target.BCC32.Options.Add('-DTEST_UNIX');
-        {$ENDIF UNIX}
-        Target.BCC32.Options.Add('-DTEST_VCL');
         Options := StringsToStr(Target.BCC32.Options, NativeSpace);
         Result := Target.BCC32.Execute(Options + ' "jcl_a2z.cpp"')
           and Target.BCC32.Execute(Options + ' "jcl_z2a.cpp"'); 
@@ -2240,15 +2275,6 @@ begin
 end;
 
 function TJclInstallation.CompileLibraryUnits(const SubDir: string; Debug: Boolean): Boolean;
-var
-  UnitList: TStrings;
-  Compiler: TJclDCC32;
-
-
-  function CompileUnits: Boolean;
-  begin
-    Result := Compiler.Execute(StringsToStr(UnitList, ' '));
-  end;
 
   function CopyFiles(Files: TStrings; const TargetDir: string; Overwrite: Boolean = True): Boolean;
   var
@@ -2276,7 +2302,7 @@ var
     end;
   end;
 
-  function CopyHppFiles(const TargetDir: string): Boolean;
+  function CopyHppFiles(UnitList: TStrings; const TargetDir: string): Boolean;
   var
     I: Integer;
     FileName: string;
@@ -2301,7 +2327,8 @@ var
 var
   UnitType, LibDescriptor, SaveDir, UnitOutputDir, Path, ExclusionFileName: string;
   Index, ExcIndex: Integer;
-  Exclusions: TStrings;
+  UnitList, Exclusions: TStrings;
+  Compiler: TJclDCC32;
 begin
   Result := True;
   if Debug then
@@ -2309,6 +2336,7 @@ begin
   LibDescriptor := Format(LoadResString(@RsLogLibDescriptor), [SubDir, UnitType, TargetName]);
   WriteLog(Format(LoadResString(@RsLogBuilding), [LibDescriptor]));
   Path := Distribution.JclPath + SubDir;
+
   UnitList := TStringList.Create;
   try
     BuildFileList(PathAddSeparator(Path) + '*.pas', faAnyFile, UnitList);
@@ -2413,7 +2441,7 @@ begin
     Compiler.AddPathOption('I', Distribution.JclIncludeDir);
     Compiler.AddPathOption('U', Distribution.JclSourcePath);
     Compiler.AddPathOption('R', Distribution.JclSourcePath);
-    
+
     SaveDir := GetCurrentDir;
     Result := SetCurrentDir(Path);
     {$IFDEF WIN32}
@@ -2423,12 +2451,12 @@ begin
     {$ENDIF}
     try
       WriteLog('');
-      Result := Result and CompileUnits;
+      Result := Result and Compiler.Execute(StringsToStr(UnitList, ' '));
       CopyResFiles(UnitOutputDir);
       if OptionChecked[joJCLCopyHppFiles] then
       begin
         MarkOptionBegin(joJCLCopyHppFiles);
-        Result := Result and CopyHppFiles(Target.VclIncludeDir);
+        Result := Result and CopyHppFiles(UnitList, Target.VclIncludeDir);
         MarkOptionEnd(joJCLCopyHppFiles, Result);
       end;
     finally
@@ -2437,6 +2465,7 @@ begin
   finally
     UnitList.Free;
   end;
+
   if not Result then
     WriteLog(LoadResString(@RsLogFailed));
 end;
