@@ -92,13 +92,10 @@ type
         joJCLEnvDebugDCUPath,
       joJCLMake,
         joJCLMakeRelease,
-          joJCLMakeReleaseVCL,
         joJCLMakeDebug,
-          joJCLMakeDebugVCL,
         joJCLCopyHppFiles,
         joJCLCheckHppFiles,
       joJCLPackages,
-        joJCLVclPackage,
         joJCLDualPackages,
         joJCLCopyPackagesHppFiles,
         joJCLMapCreate,
@@ -372,13 +369,10 @@ var
       (Id: -1; Caption: @RsCaptionEnvDebugDCUPath;         Hint: @RsHintEnvDebugDCUPath), // joEnvDebugDCUPath
       (Id: -1; Caption: @RsCaptionMake;                    Hint: @RsHintMake), // joMake
       (Id: -1; Caption: @RsCaptionMakeRelease;             Hint: @RsHintMakeRelease), // joMakeRelease
-      (Id: -1; Caption: @RsCaptionMakeVCL;                 Hint: @RsHintMakeReleaseVCL), // joMakeReleaseVCL
       (Id: -1; Caption: @RsCaptionMakeDebug;               Hint: @RsHintMakeDebug), // joMakeDebug
-      (Id: -1; Caption: @RsCaptionMakeVCL;                 Hint: @RsHintMakeDebugVCL), // joMakeDebugVCL
       (Id: -1; Caption: @RsCaptionCopyHppFiles;            Hint: @RsHintCopyHppFiles), // joCopyHppFiles
       (Id: -1; Caption: @RsCaptionCheckHppFiles;           Hint: @RsHintCheckHppFiles), // joCheckHppFiles
       (Id: -1; Caption: @RsCaptionPackages;                Hint: @RsHintPackages), // joPackages
-      (Id: -1; Caption: @RsCaptionVclPackage;              Hint: @RsHintVclPackage), // joVclPackage
       (Id: -1; Caption: @RsCaptionDualPackages;            Hint: @RsHintDualPackages), // joDualPackages
       (Id: -1; Caption: @RsCaptionCopyPackagesHppFiles;    Hint: @RsHintCopyPackagesHppFiles), // joCopyPackagesHppFiles
       (Id: -1; Caption: @RsCaptionMapCreate;               Hint: @RsHintMapCreate), // joMapCreate
@@ -809,12 +803,6 @@ procedure TJclInstallation.Init;
     AddOption(joJCLMakeRelease, [goStandAloneParent, goExpandable, goChecked], Parent);
     AddOption(joJCLMakeDebug, [goStandAloneParent, goExpandable, goChecked], Parent);
 
-    if Target.SupportsVCL then
-    begin
-      AddOption(joJCLMakeReleaseVCL, [goChecked], joJCLMakeRelease);
-      AddOption(joJCLMakeDebugVCL, [goChecked], joJCLMakeDebug);
-    end;
-
     if bpBCBuilder32 in Target.Personalities then
     begin
       AddOption(joJCLCopyHppFiles, [goChecked], OptionData[joJCLMake].Id,
@@ -869,8 +857,6 @@ procedure TJclInstallation.Init;
 
   procedure AddPackageOptions(Parent: TInstallerOption);
   begin
-    if RuntimeInstallation and Target.SupportsVCL then
-      AddOption(joJCLVclPackage, [goChecked], Parent);
     if (bpBCBuilder32 in Target.Personalities) and RunTimeInstallation then
     begin
       if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 4) then
@@ -1122,8 +1108,7 @@ var
     Result := True;
 
     {$IFDEF MSWINDOWS}
-    if (not OptionChecked[joJCLPackages] or (Target.SupportsVCL and not OptionChecked[joJCLVCLPackage])) and
-      Assigned(GUI) and not Target.IsTurboExplorer then
+    if not OptionChecked[joJCLPackages] and Assigned(GUI) and not Target.IsTurboExplorer then
       Result := GUI.Dialog(LoadResString(@RsWarningPackageNodeNotSelected), dtConfirmation, [drYes, drNo]) = drYes;
     {$ENDIF MSWINDOWS}
 
@@ -1418,8 +1403,7 @@ var
         {$IFDEF UNIX}
         Target.BCC32.Options.Add('-DTEST_UNIX');
         {$ENDIF UNIX}
-        if OptionChecked[joJCLMakeReleaseVCL] or OptionChecked[joJCLMakeDebugVCL] then
-          Target.BCC32.Options.Add('-DTEST_VCL');
+        Target.BCC32.Options.Add('-DTEST_VCL');
         Options := StringsToStr(Target.BCC32.Options, NativeSpace);
         Result := Target.BCC32.Execute(Options + ' "jcl_a2z.cpp"')
           and Target.BCC32.Execute(Options + ' "jcl_z2a.cpp"'); 
@@ -1441,11 +1425,7 @@ var
 
         for I := Low(JclSourceDirs) to High(JclSourceDirs) do
         begin
-          if (JclSourceDirs[I] = JclSrcDirVcl) and OptionChecked[joJCLMakeReleaseVCL] then
-            MarkOptionBegin(joJCLMakeReleaseVCL);
           Result := Result and CompileLibraryUnits(JclSourceDirs[I], False);
-          if (JclSourceDirs[I] = JclSrcDirVcl) and OptionChecked[joJCLMakeReleaseVCL] then
-            MarkOptionEnd(joJCLMakeReleaseVCL, Result);
         end;
         MarkOptionEnd(joJCLMakeRelease, Result);
       end;
@@ -1455,11 +1435,7 @@ var
         MarkOptionBegin(joJCLMakeDebug);
         for I := Low(JclSourceDirs) to High(JclSourceDirs) do
         begin
-          if (JclSourceDirs[I] = JclSrcDirVcl) and OptionChecked[joJCLMakeDebugVCL] then
-            MarkOptionBegin(joJCLMakeDebugVCL);
           Result := Result and CompileLibraryUnits(JclSourceDirs[I], True);
-          if (JclSourceDirs[I] = JclSrcDirVcl) and OptionChecked[joJCLMakeDebugVCL] then
-            MarkOptionEnd(joJCLMakeDebugVCL, Result);
         end;
         MarkOptionEnd(joJCLMakeDebug, Result);
       end;
@@ -1487,12 +1463,8 @@ var
         and CompilePackage(FullPackageFileName(Target, JclContainersDpk))
         and CompilePackage(FullPackageFileName(Target, JclDeveloperToolsDpk));
 
-      if Result and OptionChecked[joJCLVclPackage] then
-      begin
-        MarkOptionBegin(joJCLVclPackage);
+      if Result and Target.SupportsVCL then
         Result := Result and CompilePackage(FullPackageFileName(Target, JclVclDpk));
-        MarkOptionEnd(joJCLVclPackage, Result);
-      end;
 
       MarkOptionEnd(joJCLPackages, Result);
     end;

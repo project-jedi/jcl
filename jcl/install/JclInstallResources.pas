@@ -117,13 +117,11 @@ resourcestring
   RsCaptionMake          = 'Make library units';
   RsCaptionMakeRelease   = 'Release';
   RsCaptionMakeDebug     = 'Debug';
-  RsCaptionMakeVCL       = 'Visual Component Library';
   RsCaptionCopyHppFiles  = 'Copy HPP files to %s';
   RsCaptionCheckHppFiles = 'Check HPP files';
 
   // packages
   RsCaptionPackages             = 'Packages';
-  RsCaptionVclPackage           = 'VCL Package';
   RsCaptionDualPackages         = 'Dual packages';
   RsCaptionCopyPackagesHppFiles = 'Output HPP files to %s';
 
@@ -231,16 +229,13 @@ resourcestring
   // make units
   RsHintMake            = 'Generate .dcu files.' + NativeLineBreak + 'Recommended.';
   RsHintMakeRelease     = 'Make precompiled units for release, i.e. optimized, w/o debug information.';
-  RsHintMakeReleaseVcl  = 'Make precompiled VCL units for release';
   RsHintMakeDebug       = 'Make precompiled units for debugging, i.e.optimization off, debug information included.' + NativeLineBreak +
     'When installed, available through Project Options|Compiler|Use Debug DCUs.';
-  RsHintMakeDebugVcl    = 'Make precompiled VCL units for debugging';
   RsHintCopyHppFiles    = 'Copy .hpp files into C++Builder''s include path.';
   RsHintCheckHppFiles   = 'Compile some C++ source files to verify JCL headers';
 
   // packages
   RsHintPackages             = 'Build and eventually install JCL runtime packages and optional IDE experts.';
-  RsHintVclPackage           = 'Build JCL runtime package containing VCL extensions';
   RsHintDualPackages         = 'The same package introduce code for Delphi Win32 and C++Builder Win32';
   RsHintCopyPackagesHppFiles = 'Output .hpp files into C++Builder''s include path instead of ' +
     'the source paths.';
@@ -275,7 +270,7 @@ resourcestring
   RsHintMakeDemos = 'Make JCL demo applications';
 
 // warning messages
-  RsWarningPackageNodeNotSelected = 'The "Packages" or "VCL package" nodes are not selected.' + sLineBreak +
+  RsWarningPackageNodeNotSelected = 'The "Packages" node is not selected.' + sLineBreak +
     'Various libraries (including the JVCL) require JCL packages to be compiled' + sLineBreak +
     'Do you want to continue without compiling JCL packages?';
   RsWarningCreatePath = 'The path where %s files will be created doesn''t exists.' + sLineBreak +
