@@ -49,6 +49,7 @@ type
     FKnownTypeAttributes: PKnownTypeAttributes;
     FOnKnownTypeChange: TNotifyEvent;
     function GetCustomTypeAttribute(Index: TTypeAttributeID): string;
+    function GetTypeName: string;
   protected
     function GetFloatType: Boolean;
     function GetKnownType: Boolean;
@@ -67,7 +68,7 @@ type
     property KnownTypeAttributes: PKnownTypeAttributes read FKnownTypeAttributes;
     property CustomTypeAttributes[Index: TTypeAttributeID]: string read GetCustomTypeAttribute;
     property TypeAttributes[Index: TTypeAttributeID]: string read GetTypeAttribute write SetTypeAttribute;
-    property TypeName: string read FCustomTypeAttributes[taTypeName] write SetTypeName stored True;
+    property TypeName: string read GetTypeName write SetTypeName stored True;
     property OwnershipDeclaration: string read GetOwnershipDeclaration;
     property OnKnownTypeChange: TNotifyEvent read FOnKnownTypeChange write FOnKnownTypeChange;
   end;
@@ -221,6 +222,11 @@ begin
     System.Error(reRangeError);
     Result := '';
   end;
+end;
+
+function TJclContainerTypeInfo.GetTypeName: string;
+begin
+  Result := FCustomTypeAttributes[taTypeName];
 end;
 
 function TJclContainerTypeInfo.GetCustomTypeAttribute(Index: TTypeAttributeID): string;
