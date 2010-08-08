@@ -725,11 +725,7 @@ implementation
 uses
   SysUtils;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclIntfArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclIntfArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfIntfSortedMap,TJclIntfIntfSortedEntry,IJclIntfIntfMap,IJclIntfIntfSortedMap,IJclIntfSet,IJclIntfIterator,IJclIntfCollection,,,,const ,IInterface,nil,const ,IInterface,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfIntfSortedMap,TJclIntfIntfSortedEntry,IJclIntfIntfMap,IJclIntfIntfSortedMap,IJclIntfSet,IJclIntfIterator,IJclIntfCollection,,,,const ,IInterface,nil,const ,IInterface,nil,TJclIntfArraySet.Create(FSize),TJclIntfArrayList.Create(FSize))}
 
 function TJclIntfIntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -759,11 +755,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclAnsiStrArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclIntfArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclAnsiStrIntfSortedMap,TJclAnsiStrIntfSortedEntry,IJclAnsiStrIntfMap,IJclAnsiStrIntfSortedMap,IJclAnsiStrSet,IJclAnsiStrIterator,IJclIntfCollection,,,,const ,AnsiString,'',const ,IInterface,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclAnsiStrIntfSortedMap,TJclAnsiStrIntfSortedEntry,IJclAnsiStrIntfMap,IJclAnsiStrIntfSortedMap,IJclAnsiStrSet,IJclAnsiStrIterator,IJclIntfCollection,,,,const ,AnsiString,'',const ,IInterface,nil,TJclAnsiStrArraySet.Create(FSize),TJclIntfArrayList.Create(FSize))}
 
 function TJclAnsiStrIntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -799,11 +791,7 @@ begin
     Result := 0;
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclIntfArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclAnsiStrArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfAnsiStrSortedMap,TJclIntfAnsiStrSortedEntry,IJclIntfAnsiStrMap,IJclIntfAnsiStrSortedMap,IJclIntfSet,IJclIntfIterator,IJclAnsiStrCollection,,,,const ,IInterface,nil,const ,AnsiString,'')}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfAnsiStrSortedMap,TJclIntfAnsiStrSortedEntry,IJclIntfAnsiStrMap,IJclIntfAnsiStrSortedMap,IJclIntfSet,IJclIntfIterator,IJclAnsiStrCollection,,,,const ,IInterface,nil,const ,AnsiString,'',TJclIntfArraySet.Create(FSize),TJclAnsiStrArrayList.Create(FSize))}
 
 function TJclIntfAnsiStrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -839,11 +827,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclAnsiStrArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclAnsiStrArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclAnsiStrAnsiStrSortedMap,TJclAnsiStrAnsiStrSortedEntry,IJclAnsiStrAnsiStrMap,IJclAnsiStrAnsiStrSortedMap,IJclAnsiStrSet,IJclAnsiStrIterator,IJclAnsiStrCollection,,,,const ,AnsiString,'',const ,AnsiString,'')}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclAnsiStrAnsiStrSortedMap,TJclAnsiStrAnsiStrSortedEntry,IJclAnsiStrAnsiStrMap,IJclAnsiStrAnsiStrSortedMap,IJclAnsiStrSet,IJclAnsiStrIterator,IJclAnsiStrCollection,,,,const ,AnsiString,'',const ,AnsiString,'',TJclAnsiStrArraySet.Create(FSize),TJclAnsiStrArrayList.Create(FSize))}
 
 function TJclAnsiStrAnsiStrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -873,11 +857,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclWideStrArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclIntfArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclWideStrIntfSortedMap,TJclWideStrIntfSortedEntry,IJclWideStrIntfMap,IJclWideStrIntfSortedMap,IJclWideStrSet,IJclWideStrIterator,IJclIntfCollection,,,,const ,WideString,'',const ,IInterface,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclWideStrIntfSortedMap,TJclWideStrIntfSortedEntry,IJclWideStrIntfMap,IJclWideStrIntfSortedMap,IJclWideStrSet,IJclWideStrIterator,IJclIntfCollection,,,,const ,WideString,'',const ,IInterface,nil,TJclWideStrArraySet.Create(FSize),TJclIntfArrayList.Create(FSize))}
 
 function TJclWideStrIntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -913,11 +893,7 @@ begin
     Result := 0;
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclIntfArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclWideStrArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfWideStrSortedMap,TJclIntfWideStrSortedEntry,IJclIntfWideStrMap,IJclIntfWideStrSortedMap,IJclIntfSet,IJclIntfIterator,IJclWideStrCollection,,,,const ,IInterface,nil,const ,WideString,'')}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfWideStrSortedMap,TJclIntfWideStrSortedEntry,IJclIntfWideStrMap,IJclIntfWideStrSortedMap,IJclIntfSet,IJclIntfIterator,IJclWideStrCollection,,,,const ,IInterface,nil,const ,WideString,'',TJclIntfArraySet.Create(FSize),TJclWideStrArrayList.Create(FSize))}
 
 function TJclIntfWideStrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -953,11 +929,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclWideStrArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclWideStrArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclWideStrWideStrSortedMap,TJclWideStrWideStrSortedEntry,IJclWideStrWideStrMap,IJclWideStrWideStrSortedMap,IJclWideStrSet,IJclWideStrIterator,IJclWideStrCollection,,,,const ,WideString,'',const ,WideString,'')}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclWideStrWideStrSortedMap,TJclWideStrWideStrSortedEntry,IJclWideStrWideStrMap,IJclWideStrWideStrSortedMap,IJclWideStrSet,IJclWideStrIterator,IJclWideStrCollection,,,,const ,WideString,'',const ,WideString,'',TJclWideStrArraySet.Create(FSize),TJclWideStrArrayList.Create(FSize))}
 
 function TJclWideStrWideStrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -988,11 +960,7 @@ begin
 end;
 
 {$IFDEF SUPPORTS_UNICODE_STRING}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclUnicodeStrArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclIntfArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclUnicodeStrIntfSortedMap,TJclUnicodeStrIntfSortedEntry,IJclUnicodeStrIntfMap,IJclUnicodeStrIntfSortedMap,IJclUnicodeStrSet,IJclUnicodeStrIterator,IJclIntfCollection,,,,const ,UnicodeString,'',const ,IInterface,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclUnicodeStrIntfSortedMap,TJclUnicodeStrIntfSortedEntry,IJclUnicodeStrIntfMap,IJclUnicodeStrIntfSortedMap,IJclUnicodeStrSet,IJclUnicodeStrIterator,IJclIntfCollection,,,,const ,UnicodeString,'',const ,IInterface,nil,TJclUnicodeStrArraySet.Create(FSize),TJclIntfArrayList.Create(FSize))}
 
 function TJclUnicodeStrIntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1028,11 +996,7 @@ begin
     Result := 0;
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclIntfArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclUnicodeStrArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfUnicodeStrSortedMap,TJclIntfUnicodeStrSortedEntry,IJclIntfUnicodeStrMap,IJclIntfUnicodeStrSortedMap,IJclIntfSet,IJclIntfIterator,IJclUnicodeStrCollection,,,,const ,IInterface,nil,const ,UnicodeString,'')}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfUnicodeStrSortedMap,TJclIntfUnicodeStrSortedEntry,IJclIntfUnicodeStrMap,IJclIntfUnicodeStrSortedMap,IJclIntfSet,IJclIntfIterator,IJclUnicodeStrCollection,,,,const ,IInterface,nil,const ,UnicodeString,'',TJclIntfArraySet.Create(FSize),TJclUnicodeStrArrayList.Create(FSize))}
 
 function TJclIntfUnicodeStrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1068,11 +1032,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclUnicodeStrArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclUnicodeStrArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclUnicodeStrUnicodeStrSortedMap,TJclUnicodeStrUnicodeStrSortedEntry,IJclUnicodeStrUnicodeStrMap,IJclUnicodeStrUnicodeStrSortedMap,IJclUnicodeStrSet,IJclUnicodeStrIterator,IJclUnicodeStrCollection,,,,const ,UnicodeString,'',const ,UnicodeString,'')}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclUnicodeStrUnicodeStrSortedMap,TJclUnicodeStrUnicodeStrSortedEntry,IJclUnicodeStrUnicodeStrMap,IJclUnicodeStrUnicodeStrSortedMap,IJclUnicodeStrSet,IJclUnicodeStrIterator,IJclUnicodeStrCollection,,,,const ,UnicodeString,'',const ,UnicodeString,'',TJclUnicodeStrArraySet.Create(FSize),TJclUnicodeStrArrayList.Create(FSize))}
 
 function TJclUnicodeStrUnicodeStrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1103,11 +1063,7 @@ begin
 end;
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclSingleArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclIntfArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclSingleIntfSortedMap,TJclSingleIntfSortedEntry,IJclSingleIntfMap,IJclSingleIntfSortedMap,IJclSingleSet,IJclSingleIterator,IJclIntfCollection,,,,const ,Single,0.0,const ,IInterface,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclSingleIntfSortedMap,TJclSingleIntfSortedEntry,IJclSingleIntfMap,IJclSingleIntfSortedMap,IJclSingleSet,IJclSingleIterator,IJclIntfCollection,,,,const ,Single,0.0,const ,IInterface,nil,TJclSingleArraySet.Create(FSize),TJclIntfArrayList.Create(FSize))}
 
 function TJclSingleIntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1143,11 +1099,7 @@ begin
     Result := 0;
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclIntfArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclSingleArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfSingleSortedMap,TJclIntfSingleSortedEntry,IJclIntfSingleMap,IJclIntfSingleSortedMap,IJclIntfSet,IJclIntfIterator,IJclSingleCollection,,,,const ,IInterface,nil,const ,Single,0.0)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfSingleSortedMap,TJclIntfSingleSortedEntry,IJclIntfSingleMap,IJclIntfSingleSortedMap,IJclIntfSet,IJclIntfIterator,IJclSingleCollection,,,,const ,IInterface,nil,const ,Single,0.0,TJclIntfArraySet.Create(FSize),TJclSingleArrayList.Create(FSize))}
 
 function TJclIntfSingleSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1183,11 +1135,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclSingleArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclSingleArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclSingleSingleSortedMap,TJclSingleSingleSortedEntry,IJclSingleSingleMap,IJclSingleSingleSortedMap,IJclSingleSet,IJclSingleIterator,IJclSingleCollection,,,,const ,Single,0.0,const ,Single,0.0)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclSingleSingleSortedMap,TJclSingleSingleSortedEntry,IJclSingleSingleMap,IJclSingleSingleSortedMap,IJclSingleSet,IJclSingleIterator,IJclSingleCollection,,,,const ,Single,0.0,const ,Single,0.0,TJclSingleArraySet.Create(FSize),TJclSingleArrayList.Create(FSize))}
 
 function TJclSingleSingleSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1217,11 +1165,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclDoubleArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclIntfArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclDoubleIntfSortedMap,TJclDoubleIntfSortedEntry,IJclDoubleIntfMap,IJclDoubleIntfSortedMap,IJclDoubleSet,IJclDoubleIterator,IJclIntfCollection,,,,const ,Double,0.0,const ,IInterface,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclDoubleIntfSortedMap,TJclDoubleIntfSortedEntry,IJclDoubleIntfMap,IJclDoubleIntfSortedMap,IJclDoubleSet,IJclDoubleIterator,IJclIntfCollection,,,,const ,Double,0.0,const ,IInterface,nil,TJclDoubleArraySet.Create(FSize),TJclIntfArrayList.Create(FSize))}
 
 function TJclDoubleIntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1257,11 +1201,7 @@ begin
     Result := 0;
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclIntfArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclDoubleArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfDoubleSortedMap,TJclIntfDoubleSortedEntry,IJclIntfDoubleMap,IJclIntfDoubleSortedMap,IJclIntfSet,IJclIntfIterator,IJclDoubleCollection,,,,const ,IInterface,nil,const ,Double,0.0)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfDoubleSortedMap,TJclIntfDoubleSortedEntry,IJclIntfDoubleMap,IJclIntfDoubleSortedMap,IJclIntfSet,IJclIntfIterator,IJclDoubleCollection,,,,const ,IInterface,nil,const ,Double,0.0,TJclIntfArraySet.Create(FSize),TJclDoubleArrayList.Create(FSize))}
 
 function TJclIntfDoubleSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1297,11 +1237,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclDoubleArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclDoubleArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclDoubleDoubleSortedMap,TJclDoubleDoubleSortedEntry,IJclDoubleDoubleMap,IJclDoubleDoubleSortedMap,IJclDoubleSet,IJclDoubleIterator,IJclDoubleCollection,,,,const ,Double,0.0,const ,Double,0.0)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclDoubleDoubleSortedMap,TJclDoubleDoubleSortedEntry,IJclDoubleDoubleMap,IJclDoubleDoubleSortedMap,IJclDoubleSet,IJclDoubleIterator,IJclDoubleCollection,,,,const ,Double,0.0,const ,Double,0.0,TJclDoubleArraySet.Create(FSize),TJclDoubleArrayList.Create(FSize))}
 
 function TJclDoubleDoubleSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1331,11 +1267,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclExtendedArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclIntfArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclExtendedIntfSortedMap,TJclExtendedIntfSortedEntry,IJclExtendedIntfMap,IJclExtendedIntfSortedMap,IJclExtendedSet,IJclExtendedIterator,IJclIntfCollection,,,,const ,Extended,0.0,const ,IInterface,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclExtendedIntfSortedMap,TJclExtendedIntfSortedEntry,IJclExtendedIntfMap,IJclExtendedIntfSortedMap,IJclExtendedSet,IJclExtendedIterator,IJclIntfCollection,,,,const ,Extended,0.0,const ,IInterface,nil,TJclExtendedArraySet.Create(FSize),TJclIntfArrayList.Create(FSize))}
 
 function TJclExtendedIntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1371,11 +1303,7 @@ begin
     Result := 0;
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclIntfArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclExtendedArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfExtendedSortedMap,TJclIntfExtendedSortedEntry,IJclIntfExtendedMap,IJclIntfExtendedSortedMap,IJclIntfSet,IJclIntfIterator,IJclExtendedCollection,,,,const ,IInterface,nil,const ,Extended,0.0)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfExtendedSortedMap,TJclIntfExtendedSortedEntry,IJclIntfExtendedMap,IJclIntfExtendedSortedMap,IJclIntfSet,IJclIntfIterator,IJclExtendedCollection,,,,const ,IInterface,nil,const ,Extended,0.0,TJclIntfArraySet.Create(FSize),TJclExtendedArrayList.Create(FSize))}
 
 function TJclIntfExtendedSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1411,11 +1339,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclExtendedArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclExtendedArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclExtendedExtendedSortedMap,TJclExtendedExtendedSortedEntry,IJclExtendedExtendedMap,IJclExtendedExtendedSortedMap,IJclExtendedSet,IJclExtendedIterator,IJclExtendedCollection,,,,const ,Extended,0.0,const ,Extended,0.0)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclExtendedExtendedSortedMap,TJclExtendedExtendedSortedEntry,IJclExtendedExtendedMap,IJclExtendedExtendedSortedMap,IJclExtendedSet,IJclExtendedIterator,IJclExtendedCollection,,,,const ,Extended,0.0,const ,Extended,0.0,TJclExtendedArraySet.Create(FSize),TJclExtendedArrayList.Create(FSize))}
 
 function TJclExtendedExtendedSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1445,11 +1369,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclIntegerArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclIntfArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntegerIntfSortedMap,TJclIntegerIntfSortedEntry,IJclIntegerIntfMap,IJclIntegerIntfSortedMap,IJclIntegerSet,IJclIntegerIterator,IJclIntfCollection,,,,,Integer,0,const ,IInterface,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntegerIntfSortedMap,TJclIntegerIntfSortedEntry,IJclIntegerIntfMap,IJclIntegerIntfSortedMap,IJclIntegerSet,IJclIntegerIterator,IJclIntfCollection,,,,,Integer,0,const ,IInterface,nil,TJclIntegerArraySet.Create(FSize),TJclIntfArrayList.Create(FSize))}
 
 function TJclIntegerIntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1485,11 +1405,7 @@ begin
     Result := 0;
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclIntfArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclIntegerArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfIntegerSortedMap,TJclIntfIntegerSortedEntry,IJclIntfIntegerMap,IJclIntfIntegerSortedMap,IJclIntfSet,IJclIntfIterator,IJclIntegerCollection,,,,const ,IInterface,nil,,Integer,0)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfIntegerSortedMap,TJclIntfIntegerSortedEntry,IJclIntfIntegerMap,IJclIntfIntegerSortedMap,IJclIntfSet,IJclIntfIterator,IJclIntegerCollection,,,,const ,IInterface,nil,,Integer,0,TJclIntfArraySet.Create(FSize),TJclIntegerArrayList.Create(FSize))}
 
 function TJclIntfIntegerSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1525,11 +1441,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclIntegerArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclIntegerArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntegerIntegerSortedMap,TJclIntegerIntegerSortedEntry,IJclIntegerIntegerMap,IJclIntegerIntegerSortedMap,IJclIntegerSet,IJclIntegerIterator,IJclIntegerCollection,,,,,Integer,0,,Integer,0)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntegerIntegerSortedMap,TJclIntegerIntegerSortedEntry,IJclIntegerIntegerMap,IJclIntegerIntegerSortedMap,IJclIntegerSet,IJclIntegerIterator,IJclIntegerCollection,,,,,Integer,0,,Integer,0,TJclIntegerArraySet.Create(FSize),TJclIntegerArrayList.Create(FSize))}
 
 function TJclIntegerIntegerSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1559,11 +1471,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclCardinalArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclIntfArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclCardinalIntfSortedMap,TJclCardinalIntfSortedEntry,IJclCardinalIntfMap,IJclCardinalIntfSortedMap,IJclCardinalSet,IJclCardinalIterator,IJclIntfCollection,,,,,Cardinal,0,const ,IInterface,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclCardinalIntfSortedMap,TJclCardinalIntfSortedEntry,IJclCardinalIntfMap,IJclCardinalIntfSortedMap,IJclCardinalSet,IJclCardinalIterator,IJclIntfCollection,,,,,Cardinal,0,const ,IInterface,nil,TJclCardinalArraySet.Create(FSize),TJclIntfArrayList.Create(FSize))}
 
 function TJclCardinalIntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1599,11 +1507,7 @@ begin
     Result := 0;
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclIntfArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclCardinalArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfCardinalSortedMap,TJclIntfCardinalSortedEntry,IJclIntfCardinalMap,IJclIntfCardinalSortedMap,IJclIntfSet,IJclIntfIterator,IJclCardinalCollection,,,,const ,IInterface,nil,,Cardinal,0)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfCardinalSortedMap,TJclIntfCardinalSortedEntry,IJclIntfCardinalMap,IJclIntfCardinalSortedMap,IJclIntfSet,IJclIntfIterator,IJclCardinalCollection,,,,const ,IInterface,nil,,Cardinal,0,TJclIntfArraySet.Create(FSize),TJclCardinalArrayList.Create(FSize))}
 
 function TJclIntfCardinalSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1639,11 +1543,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclCardinalArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclCardinalArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclCardinalCardinalSortedMap,TJclCardinalCardinalSortedEntry,IJclCardinalCardinalMap,IJclCardinalCardinalSortedMap,IJclCardinalSet,IJclCardinalIterator,IJclCardinalCollection,,,,,Cardinal,0,,Cardinal,0)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclCardinalCardinalSortedMap,TJclCardinalCardinalSortedEntry,IJclCardinalCardinalMap,IJclCardinalCardinalSortedMap,IJclCardinalSet,IJclCardinalIterator,IJclCardinalCollection,,,,,Cardinal,0,,Cardinal,0,TJclCardinalArraySet.Create(FSize),TJclCardinalArrayList.Create(FSize))}
 
 function TJclCardinalCardinalSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1673,11 +1573,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclInt64ArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclIntfArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclInt64IntfSortedMap,TJclInt64IntfSortedEntry,IJclInt64IntfMap,IJclInt64IntfSortedMap,IJclInt64Set,IJclInt64Iterator,IJclIntfCollection,,,,const ,Int64,0,const ,IInterface,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclInt64IntfSortedMap,TJclInt64IntfSortedEntry,IJclInt64IntfMap,IJclInt64IntfSortedMap,IJclInt64Set,IJclInt64Iterator,IJclIntfCollection,,,,const ,Int64,0,const ,IInterface,nil,TJclInt64ArraySet.Create(FSize),TJclIntfArrayList.Create(FSize))}
 
 function TJclInt64IntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1713,11 +1609,7 @@ begin
     Result := 0;
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclIntfArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclInt64ArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfInt64SortedMap,TJclIntfInt64SortedEntry,IJclIntfInt64Map,IJclIntfInt64SortedMap,IJclIntfSet,IJclIntfIterator,IJclInt64Collection,,,,const ,IInterface,nil,const ,Int64,0)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfInt64SortedMap,TJclIntfInt64SortedEntry,IJclIntfInt64Map,IJclIntfInt64SortedMap,IJclIntfSet,IJclIntfIterator,IJclInt64Collection,,,,const ,IInterface,nil,const ,Int64,0,TJclIntfArraySet.Create(FSize),TJclInt64ArrayList.Create(FSize))}
 
 function TJclIntfInt64SortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1753,11 +1645,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclInt64ArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclInt64ArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclInt64Int64SortedMap,TJclInt64Int64SortedEntry,IJclInt64Int64Map,IJclInt64Int64SortedMap,IJclInt64Set,IJclInt64Iterator,IJclInt64Collection,,,,const ,Int64,0,const ,Int64,0)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclInt64Int64SortedMap,TJclInt64Int64SortedEntry,IJclInt64Int64Map,IJclInt64Int64SortedMap,IJclInt64Set,IJclInt64Iterator,IJclInt64Collection,,,,const ,Int64,0,const ,Int64,0,TJclInt64ArraySet.Create(FSize),TJclInt64ArrayList.Create(FSize))}
 
 function TJclInt64Int64SortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1787,11 +1675,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclPtrArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclIntfArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclPtrIntfSortedMap,TJclPtrIntfSortedEntry,IJclPtrIntfMap,IJclPtrIntfSortedMap,IJclPtrSet,IJclPtrIterator,IJclIntfCollection,,,,,Pointer,nil,const ,IInterface,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclPtrIntfSortedMap,TJclPtrIntfSortedEntry,IJclPtrIntfMap,IJclPtrIntfSortedMap,IJclPtrSet,IJclPtrIterator,IJclIntfCollection,,,,,Pointer,nil,const ,IInterface,nil,TJclPtrArraySet.Create(FSize),TJclIntfArrayList.Create(FSize))}
 
 function TJclPtrIntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1827,11 +1711,7 @@ begin
     Result := 0;
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclIntfArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclPtrArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfPtrSortedMap,TJclIntfPtrSortedEntry,IJclIntfPtrMap,IJclIntfPtrSortedMap,IJclIntfSet,IJclIntfIterator,IJclPtrCollection,,,,const ,IInterface,nil,,Pointer,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfPtrSortedMap,TJclIntfPtrSortedEntry,IJclIntfPtrMap,IJclIntfPtrSortedMap,IJclIntfSet,IJclIntfIterator,IJclPtrCollection,,,,const ,IInterface,nil,,Pointer,nil,TJclIntfArraySet.Create(FSize),TJclPtrArrayList.Create(FSize))}
 
 function TJclIntfPtrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1867,11 +1747,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclPtrArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclPtrArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclPtrPtrSortedMap,TJclPtrPtrSortedEntry,IJclPtrPtrMap,IJclPtrPtrSortedMap,IJclPtrSet,IJclPtrIterator,IJclPtrCollection,,,,,Pointer,nil,,Pointer,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclPtrPtrSortedMap,TJclPtrPtrSortedEntry,IJclPtrPtrMap,IJclPtrPtrSortedMap,IJclPtrSet,IJclPtrIterator,IJclPtrCollection,,,,,Pointer,nil,,Pointer,nil,TJclPtrArraySet.Create(FSize),TJclPtrArrayList.Create(FSize))}
 
 function TJclPtrPtrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1901,12 +1777,8 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclIntfArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclArrayList.Create(Param, False)}
 {$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfSortedMap,TJclIntfSortedEntry,IJclIntfMap,IJclIntfSortedMap,IJclIntfSet,IJclIntfIterator,IJclCollection,,; AOwnsValues: Boolean,
-  FOwnsValues := AOwnsValues;,const ,IInterface,nil,,TObject,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+  FOwnsValues := AOwnsValues;,const ,IInterface,nil,,TObject,nil,TJclIntfArraySet.Create(FSize),TJclArrayList.Create(FSize, False))}
 
 function TJclIntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1961,12 +1833,8 @@ begin
     Result := 0;
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclAnsiStrArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclArrayList.Create(Param, False)}
 {$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclAnsiStrSortedMap,TJclAnsiStrSortedEntry,IJclAnsiStrMap,IJclAnsiStrSortedMap,IJclAnsiStrSet,IJclAnsiStrIterator,IJclCollection,,; AOwnsValues: Boolean,
-  FOwnsValues := AOwnsValues;,const ,AnsiString,'',,TObject,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+  FOwnsValues := AOwnsValues;,const ,AnsiString,'',,TObject,nil,TJclAnsiStrArraySet.Create(FSize),TJclArrayList.Create(FSize, False))}
 
 function TJclAnsiStrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -2015,12 +1883,8 @@ begin
     Result := 0;
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclWideStrArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclArrayList.Create(Param, False)}
 {$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclWideStrSortedMap,TJclWideStrSortedEntry,IJclWideStrMap,IJclWideStrSortedMap,IJclWideStrSet,IJclWideStrIterator,IJclCollection,,; AOwnsValues: Boolean,
-  FOwnsValues := AOwnsValues;,const ,WideString,'',,TObject,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+  FOwnsValues := AOwnsValues;,const ,WideString,'',,TObject,nil,TJclWideStrArraySet.Create(FSize),TJclArrayList.Create(FSize, False))}
 
 function TJclWideStrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -2070,12 +1934,8 @@ begin
 end;
 
 {$IFDEF SUPPORTS_UNICODE_STRING}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclUnicodeStrArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclArrayList.Create(Param, False)}
 {$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclUnicodeStrSortedMap,TJclUnicodeStrSortedEntry,IJclUnicodeStrMap,IJclUnicodeStrSortedMap,IJclUnicodeStrSet,IJclUnicodeStrIterator,IJclCollection,,; AOwnsValues: Boolean,
-  FOwnsValues := AOwnsValues;,const ,UnicodeString,'',,TObject,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+  FOwnsValues := AOwnsValues;,const ,UnicodeString,'',,TObject,nil,TJclUnicodeStrArraySet.Create(FSize),TJclArrayList.Create(FSize, False))}
 
 function TJclUnicodeStrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -2125,12 +1985,8 @@ begin
 end;
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclSingleArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclArrayList.Create(Param, False)}
 {$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclSingleSortedMap,TJclSingleSortedEntry,IJclSingleMap,IJclSingleSortedMap,IJclSingleSet,IJclSingleIterator,IJclCollection,,; AOwnsValues: Boolean,
-  FOwnsValues := AOwnsValues;,const ,Single,0.0,,TObject,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+  FOwnsValues := AOwnsValues;,const ,Single,0.0,,TObject,nil,TJclSingleArraySet.Create(FSize),TJclArrayList.Create(FSize, False))}
 
 function TJclSingleSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -2179,12 +2035,8 @@ begin
     Result := 0;
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclDoubleArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclArrayList.Create(Param, False)}
 {$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclDoubleSortedMap,TJclDoubleSortedEntry,IJclDoubleMap,IJclDoubleSortedMap,IJclDoubleSet,IJclDoubleIterator,IJclCollection,,; AOwnsValues: Boolean,
-  FOwnsValues := AOwnsValues;,const ,Double,0.0,,TObject,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+  FOwnsValues := AOwnsValues;,const ,Double,0.0,,TObject,nil,TJclDoubleArraySet.Create(FSize),TJclArrayList.Create(FSize, False))}
 
 function TJclDoubleSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -2233,12 +2085,8 @@ begin
     Result := 0;
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclExtendedArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclArrayList.Create(Param, False)}
 {$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclExtendedSortedMap,TJclExtendedSortedEntry,IJclExtendedMap,IJclExtendedSortedMap,IJclExtendedSet,IJclExtendedIterator,IJclCollection,,; AOwnsValues: Boolean,
-  FOwnsValues := AOwnsValues;,const ,Extended,0.0,,TObject,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+  FOwnsValues := AOwnsValues;,const ,Extended,0.0,,TObject,nil,TJclExtendedArraySet.Create(FSize),TJclArrayList.Create(FSize, False))}
 
 function TJclExtendedSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -2287,12 +2135,8 @@ begin
     Result := 0;
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclIntegerArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclArrayList.Create(Param, False)}
 {$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntegerSortedMap,TJclIntegerSortedEntry,IJclIntegerMap,IJclIntegerSortedMap,IJclIntegerSet,IJclIntegerIterator,IJclCollection,,; AOwnsValues: Boolean,
-  FOwnsValues := AOwnsValues;,,Integer,0,,TObject,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+  FOwnsValues := AOwnsValues;,,Integer,0,,TObject,nil,TJclIntegerArraySet.Create(FSize),TJclArrayList.Create(FSize, False))}
 
 function TJclIntegerSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -2341,12 +2185,8 @@ begin
     Result := 0;
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclCardinalArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclArrayList.Create(Param, False)}
 {$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclCardinalSortedMap,TJclCardinalSortedEntry,IJclCardinalMap,IJclCardinalSortedMap,IJclCardinalSet,IJclCardinalIterator,IJclCollection,,; AOwnsValues: Boolean,
-  FOwnsValues := AOwnsValues;,,Cardinal,0,,TObject,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+  FOwnsValues := AOwnsValues;,,Cardinal,0,,TObject,nil,TJclCardinalArraySet.Create(FSize),TJclArrayList.Create(FSize, False))}
 
 function TJclCardinalSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -2395,12 +2235,8 @@ begin
     Result := 0;
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclInt64ArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclArrayList.Create(Param, False)}
 {$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclInt64SortedMap,TJclInt64SortedEntry,IJclInt64Map,IJclInt64SortedMap,IJclInt64Set,IJclInt64Iterator,IJclCollection,,; AOwnsValues: Boolean,
-  FOwnsValues := AOwnsValues;,const ,Int64,0,,TObject,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+  FOwnsValues := AOwnsValues;,const ,Int64,0,,TObject,nil,TJclInt64ArraySet.Create(FSize),TJclArrayList.Create(FSize, False))}
 
 function TJclInt64SortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -2449,12 +2285,8 @@ begin
     Result := 0;
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclPtrArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclArrayList.Create(Param, False)}
 {$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclPtrSortedMap,TJclPtrSortedEntry,IJclPtrMap,IJclPtrSortedMap,IJclPtrSet,IJclPtrIterator,IJclCollection,,; AOwnsValues: Boolean,
-  FOwnsValues := AOwnsValues;,,Pointer,nil,,TObject,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+  FOwnsValues := AOwnsValues;,,Pointer,nil,,TObject,nil,TJclPtrArraySet.Create(FSize),TJclArrayList.Create(FSize, False))}
 
 function TJclPtrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -2503,13 +2335,9 @@ begin
     Result := 0;
 end;
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclArraySet.Create(Param, False)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclArrayList.Create(Param, False)}
 {$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclSortedMap,TJclSortedEntry,IJclMap,IJclSortedMap,IJclSet,IJclIterator,IJclCollection,; AOwnsKeys: Boolean,; AOwnsValues: Boolean,
   FOwnsKeys := AOwnsKeys;
-  FOwnsValues := AOwnsValues;,,TObject,nil,,TObject,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+  FOwnsValues := AOwnsValues;,,TObject,nil,,TObject,nil,TJclArraySet.Create(FSize, False),TJclArrayList.Create(FSize, False))}
 
 function TJclSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -2579,13 +2407,9 @@ end;
 
 {$IFDEF SUPPORTS_GENERICS}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)CreateEmptyArraySet(Param, False)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)CreateEmptyArrayList(Param, False)}
 {$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclSortedMap<TKey\,TValue>,TSortedEntry,IJclMap<TKey\,TValue>,IJclSortedMap<TKey\,TValue>,IJclSet<TKey>,IJclIterator<TKey>,IJclCollection<TValue>,; AOwnsKeys: Boolean,; AOwnsValues: Boolean,
   FOwnsKeys := AOwnsKeys;
-  FOwnsValues := AOwnsValues;,const ,TKey,Default(TKey),const ,TValue,Default(TValue))}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+  FOwnsValues := AOwnsValues;,const ,TKey,Default(TKey),const ,TValue,Default(TValue),CreateEmptyArraySet(FSize, False),CreateEmptyArrayList(FSize, False))}
 
 function TJclSortedMap<TKey,TValue>.FreeKey(var Key: TKey): TKey;
 begin

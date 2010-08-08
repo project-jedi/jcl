@@ -768,11 +768,7 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclIntfIntfBucket,nil,nil)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclIntfArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclIntfArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfIntfHashMap,TJclIntfIntfBucket,IJclIntfIntfMap,IJclIntfSet,IJclIntfIterator,IJclIntfCollection,,,,const ,IInterface,nil,const ,IInterface,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfIntfHashMap,TJclIntfIntfBucket,IJclIntfIntfMap,IJclIntfSet,IJclIntfIterator,IJclIntfCollection,,,,const ,IInterface,nil,const ,IInterface,nil,TJclIntfArraySet.Create(FSize),TJclIntfArrayList.Create(FSize))}
 
 function TJclIntfIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -804,11 +800,7 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclAnsiStrIntfBucket,'',nil)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclAnsiStrArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclIntfArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclAnsiStrIntfHashMap,TJclAnsiStrIntfBucket,IJclAnsiStrIntfMap,IJclAnsiStrSet,IJclAnsiStrIterator,IJclIntfCollection,,,,const ,AnsiString,'',const ,IInterface,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclAnsiStrIntfHashMap,TJclAnsiStrIntfBucket,IJclAnsiStrIntfMap,IJclAnsiStrSet,IJclAnsiStrIterator,IJclIntfCollection,,,,const ,AnsiString,'',const ,IInterface,nil,TJclAnsiStrArraySet.Create(FSize),TJclIntfArrayList.Create(FSize))}
 
 function TJclAnsiStrIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -840,11 +832,7 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclIntfAnsiStrBucket,nil,'')}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclIntfArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclAnsiStrArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfAnsiStrHashMap,TJclIntfAnsiStrBucket,IJclIntfAnsiStrMap,IJclIntfSet,IJclIntfIterator,IJclAnsiStrCollection,,,,const ,IInterface,nil,const ,AnsiString,'')}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfAnsiStrHashMap,TJclIntfAnsiStrBucket,IJclIntfAnsiStrMap,IJclIntfSet,IJclIntfIterator,IJclAnsiStrCollection,,,,const ,IInterface,nil,const ,AnsiString,'',TJclIntfArraySet.Create(FSize),TJclAnsiStrArrayList.Create(FSize))}
 
 function TJclIntfAnsiStrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -881,11 +869,7 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclAnsiStrAnsiStrBucket,'','')}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclAnsiStrArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclAnsiStrArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclAnsiStrAnsiStrHashMap,TJclAnsiStrAnsiStrBucket,IJclAnsiStrAnsiStrMap,IJclAnsiStrSet,IJclAnsiStrIterator,IJclAnsiStrCollection,,,,const ,AnsiString,'',const ,AnsiString,'')}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclAnsiStrAnsiStrHashMap,TJclAnsiStrAnsiStrBucket,IJclAnsiStrAnsiStrMap,IJclAnsiStrSet,IJclAnsiStrIterator,IJclAnsiStrCollection,,,,const ,AnsiString,'',const ,AnsiString,'',TJclAnsiStrArraySet.Create(FSize),TJclAnsiStrArrayList.Create(FSize))}
 
 function TJclAnsiStrAnsiStrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -917,11 +901,7 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclWideStrIntfBucket,'',nil)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclWideStrArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclIntfArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclWideStrIntfHashMap,TJclWideStrIntfBucket,IJclWideStrIntfMap,IJclWideStrSet,IJclWideStrIterator,IJclIntfCollection,,,,const ,WideString,'',const ,IInterface,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclWideStrIntfHashMap,TJclWideStrIntfBucket,IJclWideStrIntfMap,IJclWideStrSet,IJclWideStrIterator,IJclIntfCollection,,,,const ,WideString,'',const ,IInterface,nil,TJclWideStrArraySet.Create(FSize),TJclIntfArrayList.Create(FSize))}
 
 function TJclWideStrIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -953,11 +933,7 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclIntfWideStrBucket,nil,'')}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclIntfArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclWideStrArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfWideStrHashMap,TJclIntfWideStrBucket,IJclIntfWideStrMap,IJclIntfSet,IJclIntfIterator,IJclWideStrCollection,,,,const ,IInterface,nil,const ,WideString,'')}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfWideStrHashMap,TJclIntfWideStrBucket,IJclIntfWideStrMap,IJclIntfSet,IJclIntfIterator,IJclWideStrCollection,,,,const ,IInterface,nil,const ,WideString,'',TJclIntfArraySet.Create(FSize),TJclWideStrArrayList.Create(FSize))}
 
 function TJclIntfWideStrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -994,11 +970,7 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclWideStrWideStrBucket,'','')}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclWideStrArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclWideStrArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclWideStrWideStrHashMap,TJclWideStrWideStrBucket,IJclWideStrWideStrMap,IJclWideStrSet,IJclWideStrIterator,IJclWideStrCollection,,,,const ,WideString,'',const ,WideString,'')}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclWideStrWideStrHashMap,TJclWideStrWideStrBucket,IJclWideStrWideStrMap,IJclWideStrSet,IJclWideStrIterator,IJclWideStrCollection,,,,const ,WideString,'',const ,WideString,'',TJclWideStrArraySet.Create(FSize),TJclWideStrArrayList.Create(FSize))}
 
 function TJclWideStrWideStrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1031,11 +1003,7 @@ end;
 {$IFDEF SUPPORTS_UNICODE_STRING}
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclUnicodeStrIntfBucket,'',nil)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclUnicodeStrArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclIntfArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclUnicodeStrIntfHashMap,TJclUnicodeStrIntfBucket,IJclUnicodeStrIntfMap,IJclUnicodeStrSet,IJclUnicodeStrIterator,IJclIntfCollection,,,,const ,UnicodeString,'',const ,IInterface,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclUnicodeStrIntfHashMap,TJclUnicodeStrIntfBucket,IJclUnicodeStrIntfMap,IJclUnicodeStrSet,IJclUnicodeStrIterator,IJclIntfCollection,,,,const ,UnicodeString,'',const ,IInterface,nil,TJclUnicodeStrArraySet.Create(FSize),TJclIntfArrayList.Create(FSize))}
 
 function TJclUnicodeStrIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1067,11 +1035,7 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclIntfUnicodeStrBucket,nil,'')}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclIntfArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclUnicodeStrArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfUnicodeStrHashMap,TJclIntfUnicodeStrBucket,IJclIntfUnicodeStrMap,IJclIntfSet,IJclIntfIterator,IJclUnicodeStrCollection,,,,const ,IInterface,nil,const ,UnicodeString,'')}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfUnicodeStrHashMap,TJclIntfUnicodeStrBucket,IJclIntfUnicodeStrMap,IJclIntfSet,IJclIntfIterator,IJclUnicodeStrCollection,,,,const ,IInterface,nil,const ,UnicodeString,'',TJclIntfArraySet.Create(FSize),TJclUnicodeStrArrayList.Create(FSize))}
 
 function TJclIntfUnicodeStrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1108,11 +1072,7 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclUnicodeStrUnicodeStrBucket,'','')}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclUnicodeStrArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclUnicodeStrArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclUnicodeStrUnicodeStrHashMap,TJclUnicodeStrUnicodeStrBucket,IJclUnicodeStrUnicodeStrMap,IJclUnicodeStrSet,IJclUnicodeStrIterator,IJclUnicodeStrCollection,,,,const ,UnicodeString,'',const ,UnicodeString,'')}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclUnicodeStrUnicodeStrHashMap,TJclUnicodeStrUnicodeStrBucket,IJclUnicodeStrUnicodeStrMap,IJclUnicodeStrSet,IJclUnicodeStrIterator,IJclUnicodeStrCollection,,,,const ,UnicodeString,'',const ,UnicodeString,'',TJclUnicodeStrArraySet.Create(FSize),TJclUnicodeStrArrayList.Create(FSize))}
 
 function TJclUnicodeStrUnicodeStrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1146,11 +1106,7 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclSingleIntfBucket,0.0,nil)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclSingleArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclIntfArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclSingleIntfHashMap,TJclSingleIntfBucket,IJclSingleIntfMap,IJclSingleSet,IJclSingleIterator,IJclIntfCollection,,,,const ,Single,0.0,const ,IInterface,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclSingleIntfHashMap,TJclSingleIntfBucket,IJclSingleIntfMap,IJclSingleSet,IJclSingleIterator,IJclIntfCollection,,,,const ,Single,0.0,const ,IInterface,nil,TJclSingleArraySet.Create(FSize),TJclIntfArrayList.Create(FSize))}
 
 function TJclSingleIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1182,11 +1138,7 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclIntfSingleBucket,nil,0.0)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclIntfArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclSingleArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfSingleHashMap,TJclIntfSingleBucket,IJclIntfSingleMap,IJclIntfSet,IJclIntfIterator,IJclSingleCollection,,,,const ,IInterface,nil,const ,Single,0.0)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfSingleHashMap,TJclIntfSingleBucket,IJclIntfSingleMap,IJclIntfSet,IJclIntfIterator,IJclSingleCollection,,,,const ,IInterface,nil,const ,Single,0.0,TJclIntfArraySet.Create(FSize),TJclSingleArrayList.Create(FSize))}
 
 function TJclIntfSingleHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1223,11 +1175,7 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclSingleSingleBucket,0.0,0.0)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclSingleArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclSingleArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclSingleSingleHashMap,TJclSingleSingleBucket,IJclSingleSingleMap,IJclSingleSet,IJclSingleIterator,IJclSingleCollection,,,,const ,Single,0.0,const ,Single,0.0)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclSingleSingleHashMap,TJclSingleSingleBucket,IJclSingleSingleMap,IJclSingleSet,IJclSingleIterator,IJclSingleCollection,,,,const ,Single,0.0,const ,Single,0.0,TJclSingleArraySet.Create(FSize),TJclSingleArrayList.Create(FSize))}
 
 function TJclSingleSingleHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1259,11 +1207,7 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclDoubleIntfBucket,0.0,nil)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclDoubleArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclIntfArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclDoubleIntfHashMap,TJclDoubleIntfBucket,IJclDoubleIntfMap,IJclDoubleSet,IJclDoubleIterator,IJclIntfCollection,,,,const ,Double,0.0,const ,IInterface,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclDoubleIntfHashMap,TJclDoubleIntfBucket,IJclDoubleIntfMap,IJclDoubleSet,IJclDoubleIterator,IJclIntfCollection,,,,const ,Double,0.0,const ,IInterface,nil,TJclDoubleArraySet.Create(FSize),TJclIntfArrayList.Create(FSize))}
 
 function TJclDoubleIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1295,11 +1239,7 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclIntfDoubleBucket,nil,0.0)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclIntfArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclDoubleArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfDoubleHashMap,TJclIntfDoubleBucket,IJclIntfDoubleMap,IJclIntfSet,IJclIntfIterator,IJclDoubleCollection,,,,const ,IInterface,nil,const ,Double,0.0)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfDoubleHashMap,TJclIntfDoubleBucket,IJclIntfDoubleMap,IJclIntfSet,IJclIntfIterator,IJclDoubleCollection,,,,const ,IInterface,nil,const ,Double,0.0,TJclIntfArraySet.Create(FSize),TJclDoubleArrayList.Create(FSize))}
 
 function TJclIntfDoubleHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1336,11 +1276,7 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclDoubleDoubleBucket,0.0,0.0)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclDoubleArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclDoubleArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclDoubleDoubleHashMap,TJclDoubleDoubleBucket,IJclDoubleDoubleMap,IJclDoubleSet,IJclDoubleIterator,IJclDoubleCollection,,,,const ,Double,0.0,const ,Double,0.0)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclDoubleDoubleHashMap,TJclDoubleDoubleBucket,IJclDoubleDoubleMap,IJclDoubleSet,IJclDoubleIterator,IJclDoubleCollection,,,,const ,Double,0.0,const ,Double,0.0,TJclDoubleArraySet.Create(FSize),TJclDoubleArrayList.Create(FSize))}
 
 function TJclDoubleDoubleHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1372,11 +1308,7 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclExtendedIntfBucket,0.0,nil)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclExtendedArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclIntfArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclExtendedIntfHashMap,TJclExtendedIntfBucket,IJclExtendedIntfMap,IJclExtendedSet,IJclExtendedIterator,IJclIntfCollection,,,,const ,Extended,0.0,const ,IInterface,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclExtendedIntfHashMap,TJclExtendedIntfBucket,IJclExtendedIntfMap,IJclExtendedSet,IJclExtendedIterator,IJclIntfCollection,,,,const ,Extended,0.0,const ,IInterface,nil,TJclExtendedArraySet.Create(FSize),TJclIntfArrayList.Create(FSize))}
 
 function TJclExtendedIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1408,11 +1340,7 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclIntfExtendedBucket,nil,0.0)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclIntfArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclExtendedArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfExtendedHashMap,TJclIntfExtendedBucket,IJclIntfExtendedMap,IJclIntfSet,IJclIntfIterator,IJclExtendedCollection,,,,const ,IInterface,nil,const ,Extended,0.0)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfExtendedHashMap,TJclIntfExtendedBucket,IJclIntfExtendedMap,IJclIntfSet,IJclIntfIterator,IJclExtendedCollection,,,,const ,IInterface,nil,const ,Extended,0.0,TJclIntfArraySet.Create(FSize),TJclExtendedArrayList.Create(FSize))}
 
 function TJclIntfExtendedHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1449,11 +1377,7 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclExtendedExtendedBucket,0.0,0.0)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclExtendedArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclExtendedArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclExtendedExtendedHashMap,TJclExtendedExtendedBucket,IJclExtendedExtendedMap,IJclExtendedSet,IJclExtendedIterator,IJclExtendedCollection,,,,const ,Extended,0.0,const ,Extended,0.0)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclExtendedExtendedHashMap,TJclExtendedExtendedBucket,IJclExtendedExtendedMap,IJclExtendedSet,IJclExtendedIterator,IJclExtendedCollection,,,,const ,Extended,0.0,const ,Extended,0.0,TJclExtendedArraySet.Create(FSize),TJclExtendedArrayList.Create(FSize))}
 
 function TJclExtendedExtendedHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1485,11 +1409,7 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclIntegerIntfBucket,0,nil)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclIntegerArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclIntfArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntegerIntfHashMap,TJclIntegerIntfBucket,IJclIntegerIntfMap,IJclIntegerSet,IJclIntegerIterator,IJclIntfCollection,,,,,Integer,0,const ,IInterface,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntegerIntfHashMap,TJclIntegerIntfBucket,IJclIntegerIntfMap,IJclIntegerSet,IJclIntegerIterator,IJclIntfCollection,,,,,Integer,0,const ,IInterface,nil,TJclIntegerArraySet.Create(FSize),TJclIntfArrayList.Create(FSize))}
 
 function TJclIntegerIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1521,11 +1441,7 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclIntfIntegerBucket,nil,0)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclIntfArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclIntegerArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfIntegerHashMap,TJclIntfIntegerBucket,IJclIntfIntegerMap,IJclIntfSet,IJclIntfIterator,IJclIntegerCollection,,,,const ,IInterface,nil,,Integer,0)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfIntegerHashMap,TJclIntfIntegerBucket,IJclIntfIntegerMap,IJclIntfSet,IJclIntfIterator,IJclIntegerCollection,,,,const ,IInterface,nil,,Integer,0,TJclIntfArraySet.Create(FSize),TJclIntegerArrayList.Create(FSize))}
 
 function TJclIntfIntegerHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1562,11 +1478,7 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclIntegerIntegerBucket,0,0)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclIntegerArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclIntegerArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntegerIntegerHashMap,TJclIntegerIntegerBucket,IJclIntegerIntegerMap,IJclIntegerSet,IJclIntegerIterator,IJclIntegerCollection,,,,,Integer,0,,Integer,0)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntegerIntegerHashMap,TJclIntegerIntegerBucket,IJclIntegerIntegerMap,IJclIntegerSet,IJclIntegerIterator,IJclIntegerCollection,,,,,Integer,0,,Integer,0,TJclIntegerArraySet.Create(FSize),TJclIntegerArrayList.Create(FSize))}
 
 function TJclIntegerIntegerHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1598,11 +1510,7 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclCardinalIntfBucket,0,nil)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclCardinalArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclIntfArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclCardinalIntfHashMap,TJclCardinalIntfBucket,IJclCardinalIntfMap,IJclCardinalSet,IJclCardinalIterator,IJclIntfCollection,,,,,Cardinal,0,const ,IInterface,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclCardinalIntfHashMap,TJclCardinalIntfBucket,IJclCardinalIntfMap,IJclCardinalSet,IJclCardinalIterator,IJclIntfCollection,,,,,Cardinal,0,const ,IInterface,nil,TJclCardinalArraySet.Create(FSize),TJclIntfArrayList.Create(FSize))}
 
 function TJclCardinalIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1634,11 +1542,7 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclIntfCardinalBucket,nil,0)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclIntfArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclCardinalArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfCardinalHashMap,TJclIntfCardinalBucket,IJclIntfCardinalMap,IJclIntfSet,IJclIntfIterator,IJclCardinalCollection,,,,const ,IInterface,nil,,Cardinal,0)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfCardinalHashMap,TJclIntfCardinalBucket,IJclIntfCardinalMap,IJclIntfSet,IJclIntfIterator,IJclCardinalCollection,,,,const ,IInterface,nil,,Cardinal,0,TJclIntfArraySet.Create(FSize),TJclCardinalArrayList.Create(FSize))}
 
 function TJclIntfCardinalHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1675,11 +1579,7 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclCardinalCardinalBucket,0,0)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclCardinalArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclCardinalArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclCardinalCardinalHashMap,TJclCardinalCardinalBucket,IJclCardinalCardinalMap,IJclCardinalSet,IJclCardinalIterator,IJclCardinalCollection,,,,,Cardinal,0,,Cardinal,0)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclCardinalCardinalHashMap,TJclCardinalCardinalBucket,IJclCardinalCardinalMap,IJclCardinalSet,IJclCardinalIterator,IJclCardinalCollection,,,,,Cardinal,0,,Cardinal,0,TJclCardinalArraySet.Create(FSize),TJclCardinalArrayList.Create(FSize))}
 
 function TJclCardinalCardinalHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1711,11 +1611,7 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclInt64IntfBucket,0,nil)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclInt64ArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclIntfArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclInt64IntfHashMap,TJclInt64IntfBucket,IJclInt64IntfMap,IJclInt64Set,IJclInt64Iterator,IJclIntfCollection,,,,const ,Int64,0,const ,IInterface,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclInt64IntfHashMap,TJclInt64IntfBucket,IJclInt64IntfMap,IJclInt64Set,IJclInt64Iterator,IJclIntfCollection,,,,const ,Int64,0,const ,IInterface,nil,TJclInt64ArraySet.Create(FSize),TJclIntfArrayList.Create(FSize))}
 
 function TJclInt64IntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1747,11 +1643,7 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclIntfInt64Bucket,nil,0)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclIntfArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclInt64ArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfInt64HashMap,TJclIntfInt64Bucket,IJclIntfInt64Map,IJclIntfSet,IJclIntfIterator,IJclInt64Collection,,,,const ,IInterface,nil,const ,Int64,0)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfInt64HashMap,TJclIntfInt64Bucket,IJclIntfInt64Map,IJclIntfSet,IJclIntfIterator,IJclInt64Collection,,,,const ,IInterface,nil,const ,Int64,0,TJclIntfArraySet.Create(FSize),TJclInt64ArrayList.Create(FSize))}
 
 function TJclIntfInt64HashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1788,11 +1680,7 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclInt64Int64Bucket,0,0)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclInt64ArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclInt64ArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclInt64Int64HashMap,TJclInt64Int64Bucket,IJclInt64Int64Map,IJclInt64Set,IJclInt64Iterator,IJclInt64Collection,,,,const ,Int64,0,const ,Int64,0)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclInt64Int64HashMap,TJclInt64Int64Bucket,IJclInt64Int64Map,IJclInt64Set,IJclInt64Iterator,IJclInt64Collection,,,,const ,Int64,0,const ,Int64,0,TJclInt64ArraySet.Create(FSize),TJclInt64ArrayList.Create(FSize))}
 
 function TJclInt64Int64HashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1824,11 +1712,7 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclPtrIntfBucket,nil,nil)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclPtrArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclIntfArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclPtrIntfHashMap,TJclPtrIntfBucket,IJclPtrIntfMap,IJclPtrSet,IJclPtrIterator,IJclIntfCollection,,,,,Pointer,nil,const ,IInterface,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclPtrIntfHashMap,TJclPtrIntfBucket,IJclPtrIntfMap,IJclPtrSet,IJclPtrIterator,IJclIntfCollection,,,,,Pointer,nil,const ,IInterface,nil,TJclPtrArraySet.Create(FSize),TJclIntfArrayList.Create(FSize))}
 
 function TJclPtrIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1860,11 +1744,7 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclIntfPtrBucket,nil,nil)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclIntfArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclPtrArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfPtrHashMap,TJclIntfPtrBucket,IJclIntfPtrMap,IJclIntfSet,IJclIntfIterator,IJclPtrCollection,,,,const ,IInterface,nil,,Pointer,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfPtrHashMap,TJclIntfPtrBucket,IJclIntfPtrMap,IJclIntfSet,IJclIntfIterator,IJclPtrCollection,,,,const ,IInterface,nil,,Pointer,nil,TJclIntfArraySet.Create(FSize),TJclPtrArrayList.Create(FSize))}
 
 function TJclIntfPtrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1901,11 +1781,7 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclPtrPtrBucket,nil,nil)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclPtrArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclPtrArrayList.Create(Param)}
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclPtrPtrHashMap,TJclPtrPtrBucket,IJclPtrPtrMap,IJclPtrSet,IJclPtrIterator,IJclPtrCollection,,,,,Pointer,nil,,Pointer,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclPtrPtrHashMap,TJclPtrPtrBucket,IJclPtrPtrMap,IJclPtrSet,IJclPtrIterator,IJclPtrCollection,,,,,Pointer,nil,,Pointer,nil,TJclPtrArraySet.Create(FSize),TJclPtrArrayList.Create(FSize))}
 
 function TJclPtrPtrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1937,12 +1813,8 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclIntfBucket,nil,nil)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclIntfArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclArrayList.Create(Param, False)}
 {$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfHashMap,TJclIntfBucket,IJclIntfMap,IJclIntfSet,IJclIntfIterator,IJclCollection,; AOwnsValues: Boolean,,
-  FOwnsValues := AOwnsValues;,const ,IInterface,nil,,TObject,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+  FOwnsValues := AOwnsValues;,const ,IInterface,nil,,TObject,nil,TJclIntfArraySet.Create(FSize),TJclArrayList.Create(FSize, False))}
 
 function TJclIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -1992,12 +1864,8 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclAnsiStrBucket,'',nil)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclAnsiStrArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclArrayList.Create(Param, False)}
 {$JPPEXPANDMACRO JCLHASHMAPIMP(TJclAnsiStrHashMap,TJclAnsiStrBucket,IJclAnsiStrMap,IJclAnsiStrSet,IJclAnsiStrIterator,IJclCollection,; AOwnsValues: Boolean,,
-  FOwnsValues := AOwnsValues;,const ,AnsiString,'',,TObject,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+  FOwnsValues := AOwnsValues;,const ,AnsiString,'',,TObject,nil,TJclAnsiStrArraySet.Create(FSize),TJclArrayList.Create(FSize, False))}
 
 function TJclAnsiStrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -2042,12 +1910,8 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclWideStrBucket,'',nil)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclWideStrArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclArrayList.Create(Param, False)}
 {$JPPEXPANDMACRO JCLHASHMAPIMP(TJclWideStrHashMap,TJclWideStrBucket,IJclWideStrMap,IJclWideStrSet,IJclWideStrIterator,IJclCollection,; AOwnsValues: Boolean,,
-  FOwnsValues := AOwnsValues;,const ,WideString,'',,TObject,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+  FOwnsValues := AOwnsValues;,const ,WideString,'',,TObject,nil,TJclWideStrArraySet.Create(FSize),TJclArrayList.Create(FSize, False))}
 
 function TJclWideStrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -2093,12 +1957,8 @@ end;
 {$IFDEF SUPPORTS_UNICODE_STRING}
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclUnicodeStrBucket,'',nil)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclUnicodeStrArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclArrayList.Create(Param, False)}
 {$JPPEXPANDMACRO JCLHASHMAPIMP(TJclUnicodeStrHashMap,TJclUnicodeStrBucket,IJclUnicodeStrMap,IJclUnicodeStrSet,IJclUnicodeStrIterator,IJclCollection,; AOwnsValues: Boolean,,
-  FOwnsValues := AOwnsValues;,const ,UnicodeString,'',,TObject,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+  FOwnsValues := AOwnsValues;,const ,UnicodeString,'',,TObject,nil,TJclUnicodeStrArraySet.Create(FSize),TJclArrayList.Create(FSize, False))}
 
 function TJclUnicodeStrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -2144,12 +2004,8 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclSingleBucket,0.0,nil)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclSingleArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclArrayList.Create(Param, False)}
 {$JPPEXPANDMACRO JCLHASHMAPIMP(TJclSingleHashMap,TJclSingleBucket,IJclSingleMap,IJclSingleSet,IJclSingleIterator,IJclCollection,; AOwnsValues: Boolean,,
-  FOwnsValues := AOwnsValues;,const ,Single,0.0,,TObject,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+  FOwnsValues := AOwnsValues;,const ,Single,0.0,,TObject,nil,TJclSingleArraySet.Create(FSize),TJclArrayList.Create(FSize, False))}
 
 function TJclSingleHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -2194,12 +2050,8 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclDoubleBucket,0.0,nil)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclDoubleArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclArrayList.Create(Param, False)}
 {$JPPEXPANDMACRO JCLHASHMAPIMP(TJclDoubleHashMap,TJclDoubleBucket,IJclDoubleMap,IJclDoubleSet,IJclDoubleIterator,IJclCollection,; AOwnsValues: Boolean,,
-  FOwnsValues := AOwnsValues;,const ,Double,0.0,,TObject,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+  FOwnsValues := AOwnsValues;,const ,Double,0.0,,TObject,nil,TJclDoubleArraySet.Create(FSize),TJclArrayList.Create(FSize, False))}
 
 function TJclDoubleHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -2244,12 +2096,8 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclExtendedBucket,0.0,nil)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclExtendedArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclArrayList.Create(Param, False)}
 {$JPPEXPANDMACRO JCLHASHMAPIMP(TJclExtendedHashMap,TJclExtendedBucket,IJclExtendedMap,IJclExtendedSet,IJclExtendedIterator,IJclCollection,; AOwnsValues: Boolean,,
-  FOwnsValues := AOwnsValues;,const ,Extended,0.0,,TObject,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+  FOwnsValues := AOwnsValues;,const ,Extended,0.0,,TObject,nil,TJclExtendedArraySet.Create(FSize),TJclArrayList.Create(FSize, False))}
 
 function TJclExtendedHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -2294,12 +2142,8 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclIntegerBucket,0,nil)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclIntegerArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclArrayList.Create(Param, False)}
 {$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntegerHashMap,TJclIntegerBucket,IJclIntegerMap,IJclIntegerSet,IJclIntegerIterator,IJclCollection,; AOwnsValues: Boolean,,
-  FOwnsValues := AOwnsValues;,,Integer,0,,TObject,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+  FOwnsValues := AOwnsValues;,,Integer,0,,TObject,nil,TJclIntegerArraySet.Create(FSize),TJclArrayList.Create(FSize, False))}
 
 function TJclIntegerHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -2344,12 +2188,8 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclCardinalBucket,0,nil)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclCardinalArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclArrayList.Create(Param, False)}
 {$JPPEXPANDMACRO JCLHASHMAPIMP(TJclCardinalHashMap,TJclCardinalBucket,IJclCardinalMap,IJclCardinalSet,IJclCardinalIterator,IJclCollection,; AOwnsValues: Boolean,,
-  FOwnsValues := AOwnsValues;,,Cardinal,0,,TObject,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+  FOwnsValues := AOwnsValues;,,Cardinal,0,,TObject,nil,TJclCardinalArraySet.Create(FSize),TJclArrayList.Create(FSize, False))}
 
 function TJclCardinalHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -2394,12 +2234,8 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclInt64Bucket,0,nil)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclInt64ArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclArrayList.Create(Param, False)}
 {$JPPEXPANDMACRO JCLHASHMAPIMP(TJclInt64HashMap,TJclInt64Bucket,IJclInt64Map,IJclInt64Set,IJclInt64Iterator,IJclCollection,; AOwnsValues: Boolean,,
-  FOwnsValues := AOwnsValues;,const ,Int64,0,,TObject,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+  FOwnsValues := AOwnsValues;,const ,Int64,0,,TObject,nil,TJclInt64ArraySet.Create(FSize),TJclArrayList.Create(FSize, False))}
 
 function TJclInt64HashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -2444,12 +2280,8 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclPtrBucket,nil,nil)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclPtrArraySet.Create(Param)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclArrayList.Create(Param, False)}
 {$JPPEXPANDMACRO JCLHASHMAPIMP(TJclPtrHashMap,TJclPtrBucket,IJclPtrMap,IJclPtrSet,IJclPtrIterator,IJclCollection,; AOwnsValues: Boolean,,
-  FOwnsValues := AOwnsValues;,,Pointer,nil,,TObject,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+  FOwnsValues := AOwnsValues;,,Pointer,nil,,TObject,nil,TJclPtrArraySet.Create(FSize),TJclArrayList.Create(FSize, False))}
 
 function TJclPtrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -2494,13 +2326,9 @@ end;
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclBucket,nil,nil)}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclArraySet.Create(Param, False)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclArrayList.Create(Param, False)}
 {$JPPEXPANDMACRO JCLHASHMAPIMP(TJclHashMap,TJclBucket,IJclMap,IJclSet,IJclIterator,IJclCollection,; AOwnsKeys: Boolean,; AOwnsValues: Boolean,
   FOwnsKeys := AOwnsKeys;
-  FOwnsValues := AOwnsValues;,,TObject,nil,,TObject,nil)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+  FOwnsValues := AOwnsValues;,,TObject,nil,,TObject,nil,TJclArraySet.Create(FSize, False),TJclArrayList.Create(FSize, False))}
 
 function TJclHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
@@ -2564,13 +2392,9 @@ end;
 {$IFDEF SUPPORTS_GENERICS}
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclBucket<TKey\, TValue>,Default(TKey),Default(TValue))}
 
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)CreateEmptyArraySet(Param, False)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)CreateEmptyArrayList(Param, False)}
 {$JPPEXPANDMACRO JCLHASHMAPIMP(TJclHashMap<TKey\, TValue>,TBucket,IJclMap<TKey\, TValue>,IJclSet<TKey>,IJclIterator<TKey>,IJclCollection<TValue>,; AOwnsKeys: Boolean,; AOwnsValues: Boolean,
   FOwnsKeys := AOwnsKeys;
-  FOwnsValues := AOwnsValues;,const ,TKey,Default(TKey),const ,TValue,Default(TValue))}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
-{$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
+  FOwnsValues := AOwnsValues;,const ,TKey,Default(TKey),const ,TValue,Default(TValue),CreateEmptyArraySet(FSize, False),CreateEmptyArrayList(FSize, False))}
 
 function TJclHashMap<TKey, TValue>.FreeKey(var Key: TKey): TKey;
 begin
