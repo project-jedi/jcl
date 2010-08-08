@@ -300,11 +300,11 @@ resourcestring
   RsLogAddLibrarySearchPath2 = 'Added "%s;%s" to library search path.';
   RsLogAddLibrarySearchPath1 = 'Added "%s" to library search path.';
   RsLogFailedAddLibrarySearchPath = 'Failed to add library search paths.';
-  RsLogDelLibrarySearchPath3 = 'Removed "%s;%s;%s" from library search path.';
+  RsLogDelLibrarySearchPath2 = 'Removed "%s;%s" from library search path.';
   RsLogFailedDelLibrarySearchPath = 'Failed to remove library search path.';
   RsLogAddCppSearchPath2 = 'Added "%s;%s" to cpp search path.';
   RsLogFailedAddCppSearchPath = 'Failed to add cpp search paths.';
-  RsLogDelCppSearchPath3 = 'Removed "%s;%s;%s" from cpp search path.';
+  RsLogDelCppSearchPath2 = 'Removed "%s;%s" from cpp search path.';
   RsLogFailedDelCppSearchPath = 'Failed to remove cpp search path.';
   RsLogAddLibraryBrowsingPath = 'Added "%s" to library browsing path.';
   RsLogFailedAddLibraryBrowsingPath = 'Failed to add library browsing path';
