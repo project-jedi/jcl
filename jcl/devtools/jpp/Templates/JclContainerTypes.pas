@@ -127,14 +127,16 @@ type
     kaKeyDefaultValue,
     kaKeyIteratorInterfaceName,
     kaKeySetInterfaceName,
+    kaKeyArraySetClassName,
     vaValueTypeName,
     vaValueOwnershipParameter,
     vaValueConstKeyword,
     vaValueDefaultValue,
     vaValueCollectionInterfaceName,
+    vaValueArrayListClassName,
     maMapInterfaceName,
     maMapInterfaceGUID,
-    maMapAncestorName,
+    maMapInterfaceAncestorName,
     maSortedMapInterfaceName,
     maSortedMapInterfaceGUID);
     //maHashMapEntryTypeName,
@@ -153,9 +155,9 @@ type
   TKnownTypeAttributes = TTypeAttributes;
   PKnownTypeAttributes = ^TKnownTypeAttributes;
 
-  TKeyAttributeID = kaKeyTypeName..kaKeySetInterfaceName;
+  TKeyAttributeID = kaKeyTypeName..kaKeyArraySetClassName;
 
-  TValueAttributeID = vaValueTypeName..vaValueCollectionInterfaceName;
+  TValueAttributeID = vaValueTypeName..vaValueArrayListClassName;
 
   TMapAttributeID = maMapInterfaceName..maSortedMapInterfaceGUID; // maSortedMapAncestorClassName;
 
@@ -258,19 +260,21 @@ const
       {KeyConstKeyword} taConstKeyword,
       {KeyDefaultValue} taDefaultValue,
       {KeyIteratorInterfaceName} taIteratorInterfaceName,
-      {KeySetInterfaceName} taSetInterfaceName);
+      {KeySetInterfaceName} taSetInterfaceName,
+      {KeyArraySetClassName} taArraySetClassName);
 
   ValueAttributeInfos: array [TValueAttributeID] of TTypeAttributeID =
     ( {ValueTypeName} taTypeName,
       {ValueOwnershipParameter} taOwnershipParameter,
       {ValueConstKeyword} taConstKeyword,
       {ValueDefaultValue} taDefaultValue,
-      {ValueCollectionInterfaceName} taCollectionInterfaceName);
+      {ValueCollectionInterfaceName} taCollectionInterfaceName,
+      {ValueArrayListClassName} taArrayListClassName);
 
   MapAttributeInfos: array [TMapAttributeID] of TTypeAttributeInfo =
     ( {MapInterfaceName} (IsGUID: False; DefaultValue: 'TJcl%s%sMap'),
       {MapInterfaceGUID} (IsGUID: True; DefaultValue: ''),
-      {MapInterfaceAncestor} (IsGUID: False; DefaultValue: 'IJclContainer'),
+      {MapInterfaceAncestorName} (IsGUID: False; DefaultValue: 'IJclContainer'),
       {SortedMapInterfaceName} (IsGUID: False; DefaultValue: 'TJcl%s%sSortedMap'),
       {SortedMapInterfaceGUID} (IsGUID: True; DefaultValue: '') );
       //{HashMapEntryTypeName} (IsGUID: False; DefaultValue: 'TJcl%s%sHashEntry'),

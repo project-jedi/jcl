@@ -44,7 +44,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclIntfIntfMap',
         {maMapInterfaceGUID} '{01D05399-4A05-4F3E-92F4-0C236BE77019}',
-        {maMapAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclContainer',
         {maSortedMapInterfaceName} 'IJclIntfIntfSortedMap',
         {maSortedMapInterfaceGUID} '{265A6EB2-4BB3-459F-8813-360FD32A4971}');
         //{maHashMapEntryTypeName} 'TJclIntfIntfHashEntry',
@@ -61,7 +61,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclAnsiStrIntfMap',
         {maMapInterfaceGUID} '{A4788A96-281A-4924-AA24-03776DDAAD8A}',
-        {maMapAncestorName} 'IJclAnsiStrContainer',
+        {maMapInterfaceAncestorName} 'IJclAnsiStrContainer',
         {maSortedMapInterfaceName} 'IJclAnsiStrIntfSortedMap',
         {maSortedMapInterfaceGUID} '{706D1C91-5416-4FDC-B6B1-F4C1E8CFCD38}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -78,7 +78,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclWideStrIntfMap',
         {maMapInterfaceGUID} '{C959AB76-9CF0-4C2C-A2C6-8A1846563FAF}',
-        {maMapAncestorName} 'IJclWideStrContainer',
+        {maMapInterfaceAncestorName} 'IJclWideStrContainer',
         {maSortedMapInterfaceName} 'IJclWideStrIntfSortedMap',
         {maSortedMapInterfaceGUID} '{299FDCFD-2DB7-4D64-BF18-EE3668316430}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -95,7 +95,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclUnicodeStrIntfMap',
         {maMapInterfaceGUID} '{C83D4F5E-8E66-41E9-83F6-338B44F24BE6}',
-        {maMapAncestorName} 'IJclUnicodeStrContainer',
+        {maMapInterfaceAncestorName} 'IJclUnicodeStrContainer',
         {maSortedMapInterfaceName} 'IJclUnicodeStrIntfSortedMap',
         {maSortedMapInterfaceGUID} '{25FDE916-730D-449A-BA29-852D8A0470B6}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -112,7 +112,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclStrIntfMap',
         {maMapInterfaceGUID} '',
-        {maMapAncestorName} 'IJclStrContainer',
+        {maMapInterfaceAncestorName} 'IJclStrContainer',
         {maSortedMapInterfaceName} 'IJclStrIntfSortedMap',
         {maSortedMapInterfaceGUID} '' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -129,7 +129,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclIntfAnsiStrMap',
         {maMapInterfaceGUID} '{B10E324A-1D98-42FF-B9B4-7F99044591B2}',
-        {maMapAncestorName} 'IJclAnsiStrContainer',
+        {maMapInterfaceAncestorName} 'IJclAnsiStrContainer',
         {maSortedMapInterfaceName} 'IJclIntfAnsiStrSortedMap',
         {maSortedMapInterfaceGUID} '{96E6AC5E-8C40-4795-9C8A-CFD098B58680}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -146,7 +146,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclIntfWideStrMap',
         {maMapInterfaceGUID} '{D9FD7887-B840-4636-8A8F-E586663E332C}',
-        {maMapAncestorName} 'IJclWideStrContainer',
+        {maMapInterfaceAncestorName} 'IJclWideStrContainer',
         {maSortedMapInterfaceName} 'IJclIntfWideStrSortedMap',
         {maSortedMapInterfaceGUID} '{FBE3AD2E-2781-4DC0-9E80-027027380E21}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -163,7 +163,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclIntfUnicodeStrMap',
         {maMapInterfaceGUID} '{40F8B873-B763-4A3C-8EC4-31DB3404BF73}',
-        {maMapAncestorName} 'IJclUnicodeStrContainer',
+        {maMapInterfaceAncestorName} 'IJclUnicodeStrContainer',
         {maSortedMapInterfaceName} 'IJclIntfUnicodeStrSortedMap',
         {maSortedMapInterfaceGUID} '{B0B0CB9B-268B-40D2-94A8-0B8B5BE2E1AC}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -180,7 +180,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclIntfStrMap',
         {maMapInterfaceGUID} '',
-        {maMapAncestorName} 'IJclStrContainer',
+        {maMapInterfaceAncestorName} 'IJclStrContainer',
         {maSortedMapInterfaceName} 'IJclIntfStrSortedMap',
         {maSortedMapInterfaceGUID} '' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -197,7 +197,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclAnsiStrAnsiStrMap',
         {maMapInterfaceGUID} '{A4788A96-281A-4924-AA24-03776DDAAD8A}',
-        {maMapAncestorName} 'IJclAnsiStrContainer',
+        {maMapInterfaceAncestorName} 'IJclAnsiStrContainer',
         {maSortedMapInterfaceName} 'IJclAnsiStrAnsiStrSortedMap',
         {maSortedMapInterfaceGUID} '{4F457799-5D03-413D-A46C-067DC4200CC3}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -214,7 +214,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclWideStrWideStrMap',
         {maMapInterfaceGUID} '{8E8D2735-C4FB-4F00-8802-B2102BCE3644}',
-        {maMapAncestorName} 'IJclWideStrContainer',
+        {maMapInterfaceAncestorName} 'IJclWideStrContainer',
         {maSortedMapInterfaceName} 'IJclWideStrWideStrSortedMap',
         {maSortedMapInterfaceGUID} '{3B0757B2-2290-4AFA-880D-F9BA600E501E}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -231,7 +231,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclUnicodeStrUnicodeStrMap',
         {maMapInterfaceGUID} '{557E1CBD-06AC-41C2-BAED-253709CBD0AE}',
-        {maMapAncestorName} 'IJclUnicodeStrContainer',
+        {maMapInterfaceAncestorName} 'IJclUnicodeStrContainer',
         {maSortedMapInterfaceName} 'IJclUnicodeStrUnicodeStrSortedMap',
         {maSortedMapInterfaceGUID} '{D8EACC5D-B31E-47A8-9CC9-32B15A79CACA}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -248,7 +248,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclStrStrMap',
         {maMapInterfaceGUID} '',
-        {maMapAncestorName} 'IJclStrContainer',
+        {maMapInterfaceAncestorName} 'IJclStrContainer',
         {maSortedMapInterfaceName} 'IJclStrStrSortedMap',
         {maSortedMapInterfaceGUID} '' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -265,7 +265,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclSingleIntfMap',
         {maMapInterfaceGUID} '{5F5E9E8B-E648-450B-B6C0-0EC65CC2D0BA}',
-        {maMapAncestorName} 'IJclSingleContainer',
+        {maMapInterfaceAncestorName} 'IJclSingleContainer',
         {maSortedMapInterfaceName} 'IJclSingleIntfSortedMap',
         {maSortedMapInterfaceGUID} '{83D57068-7B8E-453E-B35B-2AB4B594A7A9}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -282,7 +282,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclIntfSingleMap',
         {maMapInterfaceGUID} '{234D1618-FB0E-46F5-A70D-5106163A90F7}',
-        {maMapAncestorName} 'IJclSingleContainer',
+        {maMapInterfaceAncestorName} 'IJclSingleContainer',
         {maSortedMapInterfaceName} 'IJclIntfSingleSortedMap',
         {maSortedMapInterfaceGUID} '{B07FA192-3466-4F2A-BBF0-2DC0100B08A8}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -299,7 +299,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclSingleSingleMap',
         {maMapInterfaceGUID} '{AEB0008F-F3CF-4055-A7F3-A330D312F03F}',
-        {maMapAncestorName} 'IJclSingleContainer',
+        {maMapInterfaceAncestorName} 'IJclSingleContainer',
         {maSortedMapInterfaceName} 'IJclSingleSingleSortedMap',
         {maSortedMapInterfaceGUID} '{7C6EA0B4-959D-44D5-915F-99DFC1753B00}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -316,7 +316,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclDoubleIntfMap',
         {maMapInterfaceGUID} '{08968FFB-36C6-4FBA-BC09-3DCA2B5D7A50}',
-        {maMapAncestorName} 'IJclDoubleContainer',
+        {maMapInterfaceAncestorName} 'IJclDoubleContainer',
         {maSortedMapInterfaceName} 'IJclDoubleIntfSortedMap',
         {maSortedMapInterfaceGUID} '{F36C5F4F-4F8C-4943-AA35-41623D3C21E9}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -333,7 +333,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclIntfDoubleMap',
         {maMapInterfaceGUID} '{B23DAF6A-6DC5-4DDD-835C-CD4633DDA010}',
-        {maMapAncestorName} 'IJclDoubleContainer',
+        {maMapInterfaceAncestorName} 'IJclDoubleContainer',
         {maSortedMapInterfaceName} 'IJclIntfDoubleSortedMap',
         {maSortedMapInterfaceGUID} '{0F16ADAE-F499-4857-B5EA-6F3CC9009DBA}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -350,7 +350,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclDoubleDoubleMap',
         {maMapInterfaceGUID} '{329A03B8-0B6B-4FE3-87C5-4B63447A5FFD}',
-        {maMapAncestorName} 'IJclDoubleContainer',
+        {maMapInterfaceAncestorName} 'IJclDoubleContainer',
         {maSortedMapInterfaceName} 'IJclDoubleDoubleSortedMap',
         {maSortedMapInterfaceGUID} '{855C858B-74CF-4338-872B-AF88A02DB537}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -367,7 +367,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclExtendedIntfMap',
         {maMapInterfaceGUID} '{7C0731E0-C9AB-4378-B1B0-8CE3DD60AD41}',
-        {maMapAncestorName} 'IJclExtendedContainer',
+        {maMapInterfaceAncestorName} 'IJclExtendedContainer',
         {maSortedMapInterfaceName} 'IJclExtendedIntfSortedMap',
         {maSortedMapInterfaceGUID} '{A30B8835-A319-4776-9A11-D1EEF60B9C26}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -384,7 +384,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclIntfExtendedMap',
         {maMapInterfaceGUID} '{479FCE5A-2D8A-44EE-96BC-E8DA3187DBD8}',
-        {maMapAncestorName} 'IJclExtendedContainer',
+        {maMapInterfaceAncestorName} 'IJclExtendedContainer',
         {maSortedMapInterfaceName} 'IJclIntfExtendedSortedMap',
         {maSortedMapInterfaceGUID} '{3493D6C4-3075-48B6-8E99-CB0000D3978C}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -401,7 +401,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclExtendedExtendedMap',
         {maMapInterfaceGUID} '{962C2B09-8CF5-44E8-A21A-4A7DAFB72A11}',
-        {maMapAncestorName} 'IJclExtendedContainer',
+        {maMapInterfaceAncestorName} 'IJclExtendedContainer',
         {maSortedMapInterfaceName} 'IJclExtendedExtendedSortedMap',
         {maSortedMapInterfaceGUID} '{8CAA505C-D9BB-47E7-92EC-6043DC4AF42C}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -418,7 +418,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclFloatIntfMap',
         {maMapInterfaceGUID} '',
-        {maMapAncestorName} 'IJclFloatContainer',
+        {maMapInterfaceAncestorName} 'IJclFloatContainer',
         {maSortedMapInterfaceName} 'IJclFloatIntfSortedMap',
         {maSortedMapInterfaceGUID} '' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -435,7 +435,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclIntfFloatMap',
         {maMapInterfaceGUID} '',
-        {maMapAncestorName} 'IJclFloatContainer',
+        {maMapInterfaceAncestorName} 'IJclFloatContainer',
         {maSortedMapInterfaceName} 'IJclIntfFloatSortedMap',
         {maSortedMapInterfaceGUID} '' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -452,7 +452,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclFloatFloatMap',
         {maMapInterfaceGUID} '',
-        {maMapAncestorName} 'IJclFloatContainer',
+        {maMapInterfaceAncestorName} 'IJclFloatContainer',
         {maSortedMapInterfaceName} 'IJclFloatFloatSortedMap',
         {maSortedMapInterfaceGUID} '{8CAA505C-D9BB-47E7-92EC-6043DC4AF42C}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -469,7 +469,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclIntegerIntfMap',
         {maMapInterfaceGUID} '{E535FE65-AC88-49D3-BEF2-FB30D92C2FA6}',
-        {maMapAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclContainer',
         {maSortedMapInterfaceName} 'IJclIntegerIntfSortedMap',
         {maSortedMapInterfaceGUID} '{8B22802C-61F2-4DA5-B1E9-DBB7840E7996}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -486,7 +486,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclIntfIntegerMap',
         {maMapInterfaceGUID} '{E01DA012-BEE0-4259-8E30-0A7A1A87BED0}',
-        {maMapAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclContainer',
         {maSortedMapInterfaceName} 'IJclIntfIntegerSortedMap',
         {maSortedMapInterfaceGUID} '{8D3C9B7E-772D-409B-A58C-0CABFAFDEFF0}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -503,7 +503,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclIntegerIntegerMap',
         {maMapInterfaceGUID} '{23A46BC0-DF8D-4BD2-89D2-4DACF1EC73A1}',
-        {maMapAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclContainer',
         {maSortedMapInterfaceName} 'IJclIntegerIntegerSortedMap',
         {maSortedMapInterfaceGUID} '{8A8BA17A-F468-469C-AF99-77D64C802F7A}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -520,7 +520,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclCardinalIntfMap',
         {maMapInterfaceGUID} '{80D39FB1-0D10-49CE-8AF3-1CD98A1D4F6C}',
-        {maMapAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclContainer',
         {maSortedMapInterfaceName} 'IJclCardinalIntfSortedMap',
         {maSortedMapInterfaceGUID} '{BAE97425-4F2E-461B-88DD-F83D27657AFA}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -537,7 +537,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclIntfCardinalMap',
         {maMapInterfaceGUID} '{E1A724AB-6BDA-45F0-AE21-5E7E789A751B}',
-        {maMapAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclContainer',
         {maSortedMapInterfaceName} 'IJclIntfCardinalSortedMap',
         {maSortedMapInterfaceGUID} '{BC66BACF-23AE-48C4-9573-EDC3B5110BE7}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -554,7 +554,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclCardinalCardinalMap',
         {maMapInterfaceGUID} '{1CD3F54C-F92F-4AF4-82B2-0829C08AA83B}',
-        {maMapAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclContainer',
         {maSortedMapInterfaceName} 'IJclCardinalCardinalSortedMap',
         {maSortedMapInterfaceGUID} '{182ACDA4-7D74-4D29-BB5C-4C8189DA774E}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -571,7 +571,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclInt64IntfMap',
         {maMapInterfaceGUID} '{B64FB2D1-8D45-4367-B950-98D3D05AC6A0}',
-        {maMapAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclContainer',
         {maSortedMapInterfaceName} 'IJclInt64IntfSortedMap',
         {maSortedMapInterfaceGUID} '{24391756-FB02-4901-81E3-A37738B73DAD}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -588,7 +588,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclIntfInt64Map',
         {maMapInterfaceGUID} '{9886BEE3-D15B-45D2-A3FB-4D3A0ADEC8AC}',
-        {maMapAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclContainer',
         {maSortedMapInterfaceName} 'IJclIntfInt64SortedMap',
         {maSortedMapInterfaceGUID} '{6E2AB647-59CC-4609-82E8-6AE75AED80CA}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -605,7 +605,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclInt64Int64Map',
         {maMapInterfaceGUID} '{EF2A2726-408A-4984-9971-DDC1B6EFC9F5}',
-        {maMapAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclContainer',
         {maSortedMapInterfaceName} 'IJclInt64Int64SortedMap',
         {maSortedMapInterfaceGUID} '{168581D2-9DD3-46D0-934E-EA0CCE5E3C0C}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -622,7 +622,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclPtrIntfMap',
         {maMapInterfaceGUID} '{B7C48542-39A0-453F-8F03-8C8CFAB0DCCF}',
-        {maMapAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclContainer',
         {maSortedMapInterfaceName} 'IJclPtrIntfSortedMap',
         {maSortedMapInterfaceGUID} '{6D7B8042-3CBC-4C8F-98B5-69AFAA104532}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -639,7 +639,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclIntfPtrMap',
         {maMapInterfaceGUID} '{DA51D823-58DB-4D7C-9B8E-07E0FD560B57}',
-        {maMapAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclContainer',
         {maSortedMapInterfaceName} 'IJclIntfPtrSortedMap',
         {maSortedMapInterfaceGUID} '{B054BDA2-536F-4C16-B6BB-BB64FA0818B3}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -656,7 +656,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclPtrPtrMap',
         {maMapInterfaceGUID} '{1200CB0F-A766-443F-9030-5A804C11B798}',
-        {maMapAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclContainer',
         {maSortedMapInterfaceName} 'IJclPtrPtrSortedMap',
         {maSortedMapInterfaceGUID} '{F1FAE922-0212-41D0-BB4E-76A8AB2CAB86}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -673,7 +673,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclIntfMap',
         {maMapInterfaceGUID} '{C70570C6-EDDB-47B4-9003-C637B486731D}',
-        {maMapAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclContainer',
         {maSortedMapInterfaceName} 'IJclIntfSortedMap',
         {maSortedMapInterfaceGUID} '{3CED1477-B958-4109-9BDA-7C84B9E063B2}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -690,7 +690,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclAnsiStrMap',
         {maMapInterfaceGUID} '{A7D0A882-6952-496D-A258-23D47DDCCBC4}',
-        {maMapAncestorName} 'IJclAnsiStrContainer',
+        {maMapInterfaceAncestorName} 'IJclAnsiStrContainer',
         {maSortedMapInterfaceName} 'IJclAnsiStrSortedMap',
         {maSortedMapInterfaceGUID} '{573F98E3-EBCD-4F28-8F35-96A7366CBF47}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -707,7 +707,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclWideStrMap',
         {maMapInterfaceGUID} '{ACE8E6B4-5A56-4753-A2C6-BAE195A56B63}',
-        {maMapAncestorName} 'IJclWideStrContainer',
+        {maMapInterfaceAncestorName} 'IJclWideStrContainer',
         {maSortedMapInterfaceName} 'IJclWideStrSortedMap',
         {maSortedMapInterfaceGUID} '{B3021EFC-DE25-4B4B-A896-ACE823CD5C01}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -724,7 +724,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclUnicodeStrMap',
         {maMapInterfaceGUID} '{4328E033-9B92-40C6-873D-A6982CFC2B95}',
-        {maMapAncestorName} 'IJclUnicodeStrContainer',
+        {maMapInterfaceAncestorName} 'IJclUnicodeStrContainer',
         {maSortedMapInterfaceName} 'IJclUnicodeStrSortedMap',
         {maSortedMapInterfaceGUID} '{5510B8FC-3439-4211-8D1F-5EDD9A56D3E3}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -741,7 +741,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclStrMap',
         {maMapInterfaceGUID} '',
-        {maMapAncestorName} 'IJclStrContainer',
+        {maMapInterfaceAncestorName} 'IJclStrContainer',
         {maSortedMapInterfaceName} 'IJclStrSortedMap',
         {maSortedMapInterfaceGUID} '' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -758,7 +758,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclSingleMap',
         {maMapInterfaceGUID} '{C501920A-F252-4F94-B142-1F05AE06C3D2}',
-        {maMapAncestorName} 'IJclSingleContainer',
+        {maMapInterfaceAncestorName} 'IJclSingleContainer',
         {maSortedMapInterfaceName} 'IJclSingleSortedMap',
         {maSortedMapInterfaceGUID} '{8C1A12BE-A7F2-4351-90B7-25DB0AAF5F94}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -775,7 +775,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclDoubleMap',
         {maMapInterfaceGUID} '{B1B994AC-49C9-418B-814B-43BAD706F355}',
-        {maMapAncestorName} 'IJclDoubleContainer',
+        {maMapInterfaceAncestorName} 'IJclDoubleContainer',
         {maSortedMapInterfaceName} 'IJclDoubleSortedMap',
         {maSortedMapInterfaceGUID} '{8018D66B-AA54-4016-84FC-3E780FFCC38B}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -792,7 +792,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclExtendedMap',
         {maMapInterfaceGUID} '{3BCC8C87-A186-45E8-9B37-0B8E85120434}',
-        {maMapAncestorName} 'IJclExtendedContainer',
+        {maMapInterfaceAncestorName} 'IJclExtendedContainer',
         {maSortedMapInterfaceName} 'IJclExtendedSortedMap',
         {maSortedMapInterfaceGUID} '{2B82C65A-B3EF-477D-BEC0-3D8620A226B1}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -809,7 +809,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclFloatMap',
         {maMapInterfaceGUID} '',
-        {maMapAncestorName} 'IJclFloatContainer',
+        {maMapInterfaceAncestorName} 'IJclFloatContainer',
         {maSortedMapInterfaceName} 'IJclFloatSortedMap',
         {maSortedMapInterfaceGUID} '' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -826,7 +826,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclIntegerMap',
         {maMapInterfaceGUID} '{D6FA5D64-A4AF-4419-9981-56BA79BF8770}',
-        {maMapAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclContainer',
         {maSortedMapInterfaceName} 'IJclIntegerSortedMap',
         {maSortedMapInterfaceGUID} '{DD7B4C5E-6D51-44CC-9328-B38396A7E1C9}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -843,7 +843,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclCardinalMap',
         {maMapInterfaceGUID} '{A2F92F4F-11CB-4DB2-932F-F10A14237126}',
-        {maMapAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclContainer',
         {maSortedMapInterfaceName} 'IJclCardinalSortedMap',
         {maSortedMapInterfaceGUID} '{4AEAF81F-D72E-4499-B10E-3D017F39915E}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -860,7 +860,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclInt64Map',
         {maMapInterfaceGUID} '{4C720CE0-7A7C-41D5-BFC1-8D58A47E648F}',
-        {maMapAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclContainer',
         {maSortedMapInterfaceName} 'IJclInt64SortedMap',
         {maSortedMapInterfaceGUID} '{06C03F90-7DE9-4043-AA56-AAE071D8BD50}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -877,7 +877,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclPtrMap',
         {maMapInterfaceGUID} '{2FE029A9-026C-487D-8204-AD3A28BD2FA2}',
-        {maMapAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclContainer',
         {maSortedMapInterfaceName} 'IJclPtrSortedMap',
         {maSortedMapInterfaceGUID} '{578918DB-6A4A-4A9D-B44E-AE3E8FF70818}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',
@@ -894,7 +894,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclMap',
         {maMapInterfaceGUID} '{A7D0A882-6952-496D-A258-23D47DDCCBC4}',
-        {maMapAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclContainer',
         {maSortedMapInterfaceName} 'IJclSortedMap',
         {maSortedMapInterfaceGUID} '{F317A70F-7851-49C2-9DCF-092D8F4D4F98}' );
         //{maHashMapEntryTypeName} 'TJclHashEntry',

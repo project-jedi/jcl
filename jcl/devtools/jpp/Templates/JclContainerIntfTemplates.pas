@@ -270,7 +270,7 @@ type
     function AliasAttributeIDs: TAllTypeAttributeIDs; override;
   published
     property InterfaceName: string index maMapInterfaceName read GetMapAttribute write SetMapAttribute stored IsMapAttributeStored;
-    property AncestorName: string index maMapAncestorName read GetMapAttribute write SetMapAttribute stored IsMapAttributeStored;
+    property AncestorName: string index maMapInterfaceAncestorName read GetMapAttribute write SetMapAttribute stored IsMapAttributeStored;
     property GUID: string index maMapInterfaceGUID read GetMapAttribute write SetMapAttribute stored IsMapAttributeStored;
     property ConstKeyword: string index kaKeyConstKeyword read GetKeyAttribute write SetKeyAttribute stored False;
     property TypeName: string index kaKeyTypeName read GetKeyAttribute write SetKeyAttribute stored False;
