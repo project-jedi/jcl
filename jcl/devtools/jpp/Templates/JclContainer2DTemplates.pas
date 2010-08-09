@@ -55,6 +55,8 @@ type
     procedure SetKeyAttribute(Index: TKeyAttributeID; const Value: string);
     procedure SetValueAttribute(Index: TValueAttributeID;
       const Value: string);
+    function GetKeyOwnershipDeclaration: string;
+    function GetValueOwnershipDeclaration: string;
   protected
     function GetKnownMap: Boolean;
     function GetMapAttribute(Index: TMapAttributeID): string;
@@ -71,13 +73,17 @@ type
     property MapAttributes[Index: TMapAttributeID]: string read GetMapAttribute write SetMapAttribute;
     property KeyAttributes[Index: TKeyAttributeID]: string read GetKeyAttribute write SetKeyAttribute;
     property KeyTypeInfo: TJclContainerTypeInfo read FKeyTypeInfo;
+    property KeyOwnershipDeclaration: string read GetKeyOwnershipDeclaration;
     property ValueAttributes[Index: TValueAttributeID]: string read GetValueAttribute write SetValueAttribute;
     property ValueTypeInfo: TJclContainerTypeInfo read FValueTypeInfo;
+    property ValueOwnershipDeclaration: string read GetValueOwnershipDeclaration;
   end;
 
   TJclMapInterfaceParams = class(TJclInterfaceParams)
   private
     FMapInfo: TJclContainerMapInfo;
+    function GetKeyOwnershipDeclaration: string;
+    function GetValueOwnershipDeclaration: string;
   protected
     function GetKeyAttribute(Index: TKeyAttributeID): string;
     function GetMapAttribute(Index: TMapAttributeID): string;
@@ -87,28 +93,67 @@ type
     procedure SetMapAttribute(Index: TMapAttributeID; const Value: string);
     procedure SetValueAttribute(Index: TValueAttributeID; const Value: string);
   public
+    property KeyOwnershipDeclaration: string read GetKeyOwnershipDeclaration;
     property MapInfo: TJclContainerMapInfo read FMapInfo write FMapInfo;
+    property ValueOwnershipDeclaration: string read GetValueOwnershipDeclaration;
   end;
 
   TJclMapClassInterfaceParams = class(TJclMapInterfaceParams)
   protected
+    FInterfaceAdditional: string;
+    FSectionAdditional: string;
+    function GetInterfaceAdditional: string; virtual;
+    function GetSectionAdditional: string; virtual;
+    function GetComparisonSectionAdditional: string; virtual; abstract;
   public
+    property InterfaceAdditional: string read GetInterfaceAdditional write FInterfaceAdditional;
+    property SectionAdditional: string read GetSectionAdditional write FSectionAdditional;
+    property KeyTypeName: string index kaKeyTypeName read GetKeyAttribute write SetKeyAttribute stored False;
+    property ValueTypeName: string index vaValueTypeName read GetValueAttribute write SetValueAttribute stored False;
   end;
 
   TJclMapImplementationParams = class(TJclImplementationParams)
   private
+    function GetKeyOwnershipDeclaration: string;
+    function GetValueOwnershipDeclaration: string;
+    function GetMapInfo: TJclContainerMapInfo;
   protected
+    function GetKeyAttribute(Index: TKeyAttributeID): string;
+    function GetMapAttribute(Index: TMapAttributeID): string;
+    function GetValueAttribute(Index: TValueAttributeID): string;
+    procedure SetKeyAttribute(Index: TKeyAttributeID; const Value: string);
+    procedure SetMapAttribute(Index: TMapAttributeID; const Value: string);
+    procedure SetValueAttribute(Index: TValueAttributeID; const Value: string);
   public
+    property KeyOwnershipDeclaration: string read GetKeyOwnershipDeclaration;
+    property ValueOwnershipDeclaration: string read GetValueOwnershipDeclaration;
+    property MapInfo: TJclContainerMapInfo read GetMapInfo;
   end;
 
   TJclMapClassImplementationParams = class(TJclMapImplementationParams)
   protected
+    FCreateKeySet: string;
+    FCreateValueCollection: string;
     FMacroFooter: string;
+    FOwnershipAssignments: string;
+    function GetCreateKeySet: string;
+    function GetCreateValueCollection: string;
+    function GetOwnershipAssignment: string;
     function GetSelfClassName: string; virtual; abstract;
   public
+    function GetConstructorParameters: string; virtual; abstract;
     function GetMacroFooter: string; override;
     procedure ResetDefault(Value: Boolean); override;
     property MacroFooter: string read GetMacroFooter write FMacroFooter;
+    property KeyTypeName: string index kaKeyTypeName read GetKeyAttribute write SetKeyAttribute stored False;
+    property KeyDefault: string index kaKeyDefaultValue read GetKeyAttribute write SetKeyAttribute stored False;
+    property KeyArraySetClassName: string index kaKeyArraySetClassName read GetKeyAttribute write SetKeyAttribute stored False;
+    property ValueTypeName: string index vaValueTypeName read GetValueAttribute write SetValueAttribute stored False;
+    property ValueDefault: string index vaValueDefaultValue read GetValueAttribute write SetValueAttribute stored False;
+    property ValueArrayListClassName: string index vaValueArrayListClassName read GetValueAttribute write SetValueAttribute stored False;
+    property OwnershipAssignments: string read GetOwnershipAssignment write FOwnershipAssignments;
+    property CreateKeySet: string read GetCreateKeySet write FCreateKeySet;
+    property CreateValueCollection: string read GetCreateValueCollection write FCreateValueCollection;
   end;
 
 {$IFNDEF TYPEINFO_ON}
@@ -182,6 +227,13 @@ begin
   end;
 end;
 
+function TJclContainerMapInfo.GetKeyOwnershipDeclaration: string;
+begin
+  Result := GetKeyAttribute(kaKeyOwnershipParameter);
+  if Result <> '' then
+    Result := 'AOwnsKeys: Boolean';
+end;
+
 function TJclContainerMapInfo.GetKnownMap: Boolean;
 var
   Index: TMapAttributeID;
@@ -229,6 +281,13 @@ begin
     Error(reRangeError);
     Result := '';
   end;
+end;
+
+function TJclContainerMapInfo.GetValueOwnershipDeclaration: string;
+begin
+  Result := GetValueAttribute(vaValueOwnershipParameter);
+  if Result <> '' then
+    Result := 'AOwnsValues: Boolean';
 end;
 
 function TJclContainerMapInfo.IsMapAttributeStored(Index: TMapAttributeID): Boolean;
@@ -335,6 +394,13 @@ begin
   Result := MapInfo.KeyAttributes[Index];
 end;
 
+function TJclMapInterfaceParams.GetKeyOwnershipDeclaration: string;
+begin
+  Result := MapInfo.KeyOwnershipDeclaration;
+  if Result <> '' then
+    Result := '; ' + Result;
+end;
+
 function TJclMapInterfaceParams.GetMapAttribute(
   Index: TMapAttributeID): string;
 begin
@@ -345,6 +411,13 @@ function TJclMapInterfaceParams.GetValueAttribute(
   Index: TValueAttributeID): string;
 begin
   Result := MapInfo.ValueAttributes[Index];
+end;
+
+function TJclMapInterfaceParams.GetValueOwnershipDeclaration: string;
+begin
+  Result := MapInfo.ValueOwnershipDeclaration;
+  if Result <> '' then
+    Result := '; ' + Result;
 end;
 
 function TJclMapInterfaceParams.IsMapAttributeStored(
@@ -371,24 +444,180 @@ begin
   MapInfo.ValueAttributes[Index] := Value;
 end;
 
+//=== { TJclMapClassInterfaceParams } ========================================
+
+function TJclMapClassInterfaceParams.GetInterfaceAdditional: string;
+begin
+  Result := FInterfaceAdditional;
+  if Result = '' then
+  begin
+    if MapInfo.KeyTypeInfo.StringType or MapInfo.ValueTypeInfo.StringType then
+      Result := ' IJclStrContainer,';
+    if MapInfo.KeyTypeInfo.TypeAttributes[taContainerInterfaceName] <> '' then
+      Result := Format('%s %s,', [Result, MapInfo.KeyTypeInfo.TypeAttributes[taContainerInterfaceName]])
+    else
+    if MapInfo.ValueTypeInfo.TypeAttributes[taContainerInterfaceName] <> '' then
+      Result := Format('%s %s,', [Result, MapInfo.ValueTypeInfo.TypeAttributes[taContainerInterfaceName]]);
+    if MapInfo.KeyTypeInfo.TObjectType then
+      Result := Result + ' IJclKeyOwner,';
+    if MapInfo.ValueTypeInfo.TObjectType then
+      Result := Result + ' IJclValueOwner,';
+  end;
+end;
+
+function TJclMapClassInterfaceParams.GetSectionAdditional: string;
+begin
+  Result := FSectionAdditional;
+  if (Result = '') and MapInfo.KnownMap then
+  begin
+    Result := NativeLineBreak +
+              'protected' + NativeLineBreak +
+              '  function CreateEmptyContainer: TJclAbstractContainerBase; override;' + NativeLineBreak;
+
+    if not MapInfo.KeyTypeInfo.TObjectType then
+      Result := Format('%s  function FreeKey(var Key: %s): %s;' + NativeLineBreak,
+                       [Result, KeyTypeName, KeyTypeName]);
+    if not MapInfo.ValueTypeInfo.TObjectType then
+      Result := Format('%s  function FreeValue(var Value: %s): %s;' + NativeLineBreak,
+                       [Result, ValueTypeName, ValueTypeName]);
+
+    Result := Result + GetComparisonSectionAdditional;
+
+    if MapInfo.KeyTypeInfo.TObjectType or MapInfo.ValueTypeInfo.TObjectType then
+    begin
+      if MapInfo.ValueTypeInfo.TObjectType then
+        Result := '  FOwnsValues: Boolean;' + Result;
+      if MapInfo.KeyTypeInfo.TObjectType then
+        Result := '  FOwnsKeys: Boolean;' + NativeLineBreak + Result;
+      Result := NativeLineBreak + 'private' + NativeLineBreak + Result + NativeLineBreak + 'public' + NativeLineBreak;
+      if MapInfo.KeyTypeInfo.TObjectType then
+        Result := Result + '  { IJclKeyOwner }' + NativeLineBreak +
+                  '  function FreeKey(var Key: TObject): TObject;' + NativeLineBreak +
+                  '  function GetOwnsKeys: Boolean;' + NativeLineBreak +
+                  '  property OwnsKeys: Boolean read FOwnsKeys;';
+      if MapInfo.KeyTypeInfo.TObjectType and MapInfo.ValueTypeInfo.TObjectType then
+        Result := Result + NativeLineBreak;
+      if MapInfo.ValueTypeInfo.TObjectType then
+        Result := Result + '  { IJclValueOwner }' + NativeLineBreak +
+                  '  function FreeValue(var Value: TObject): TObject;' + NativeLineBreak +
+                  '  function GetOwnsValues: Boolean;' + NativeLineBreak +
+                  '  property OwnsValues: Boolean read FOwnsValues;';
+    end;
+  end
+end;
+
+//=== { TJclMapImplementationParams } ========================================
+
+function TJclMapImplementationParams.GetKeyAttribute(
+  Index: TKeyAttributeID): string;
+begin
+  Result := (InterfaceParams as TJclMapInterfaceParams).GetKeyAttribute(Index);
+end;
+
+function TJclMapImplementationParams.GetKeyOwnershipDeclaration: string;
+begin
+  Result := (InterfaceParams as TJclMapInterfaceParams).GetKeyOwnershipDeclaration;
+end;
+
+function TJclMapImplementationParams.GetMapAttribute(
+  Index: TMapAttributeID): string;
+begin
+  Result := (InterfaceParams as TJclMapInterfaceParams).GetMapAttribute(Index);
+end;
+
+function TJclMapImplementationParams.GetMapInfo: TJclContainerMapInfo;
+begin
+  Result := (InterfaceParams as TJclMapInterfaceParams).MapInfo;
+end;
+
+function TJclMapImplementationParams.GetValueAttribute(
+  Index: TValueAttributeID): string;
+begin
+  Result := (InterfaceParams as TJclMapInterfaceParams).GetValueAttribute(Index);
+end;
+
+function TJclMapImplementationParams.GetValueOwnershipDeclaration: string;
+begin
+  Result := (InterfaceParams as TJclMapInterfaceParams).GetValueOwnershipDeclaration;
+end;
+
+procedure TJclMapImplementationParams.SetKeyAttribute(Index: TKeyAttributeID;
+  const Value: string);
+begin
+  (InterfaceParams as TJclMapInterfaceParams).SetKeyAttribute(Index, Value);
+end;
+
+procedure TJclMapImplementationParams.SetMapAttribute(Index: TMapAttributeID;
+  const Value: string);
+begin
+  (InterfaceParams as TJclMapInterfaceParams).SetMapAttribute(Index, Value);
+end;
+
+procedure TJclMapImplementationParams.SetValueAttribute(
+  Index: TValueAttributeID; const Value: string);
+begin
+  (InterfaceParams as TJclMapInterfaceParams).SetValueAttribute(Index, Value);
+end;
+
 //=== { TJclMapClassImplementationParams } ===================================
 
-function TJclMapClassImplementationParams.GetMacroFooter: string;
-//var
-//  Ownership, SelfClassName, ConstructorParameters: string;
+function TJclMapClassImplementationParams.GetCreateKeySet: string;
+var
+  Ownership: string;
 begin
-  {if GetTypeAttribute(taOwnershipParameter) <> '' then
-    Ownership := 'False'
-  else
-    Ownership := '';
+  Result := FCreateKeySet;
+  if Result = '' then
+  begin
+    if MapInfo.KeyTypeInfo.TypeAttributes[taOwnershipParameter] <> '' then
+      Ownership := ', False'
+    else
+      Ownership := '';
+    Result := Format('%s.Create(FSize%s)', [KeyArraySetClassName, Ownership]);
+  end;
+end;
 
-  SelfClassName := GetSelfClassName;
-  ConstructorParameters := GetConstructorParameters;
+function TJclMapClassImplementationParams.GetCreateValueCollection: string;
+var
+  Ownership: string;
+begin
+  Result := FCreateValueCollection;
+  if Result = '' then
+  begin
+    if MapInfo.ValueTypeInfo.TypeAttributes[taOwnershipParameter] <> '' then
+      Ownership := ', False'
+    else
+      Ownership := '';
+    Result := Format('%s.Create(FSize%s)', [ValueArrayListClassName, Ownership]);
+  end;
+end;
 
+function TJclMapClassImplementationParams.GetMacroFooter: string;
+var
+  Ownership, SelfClassName, ConstructorParameters,
+  FuncBody: string;
+begin
   Result := FMacroFooter;
 
-  if (Result = '') and TypeInfo.KnownType then
+  if (Result = '') and MapInfo.KnownMap then
   begin
+    if GetKeyAttribute(kaKeyOwnershipParameter) <> '' then
+    begin
+      if GetValueAttribute(vaValueOwnershipParameter) <> '' then
+        Ownership := 'False, False'
+      else
+        Ownership := 'False';
+    end
+    else
+    begin
+      if GetValueAttribute(vaValueOwnershipParameter) <> '' then
+        Ownership := 'False'
+      else
+        Ownership := '';
+    end;
+
+    SelfClassName := GetSelfClassName;
+    ConstructorParameters := GetConstructorParameters;
+
     if (ConstructorParameters <> '') and (Ownership <> '') then
       ConstructorParameters := ConstructorParameters + ', ' + Ownership
     else
@@ -403,16 +632,101 @@ begin
                      '  AssignPropertiesTo(Result);' + NativeLineBreak +
                      'end;' + NativeLineBreak,
                      [SelfClassName, SelfClassName, ConstructorParameters]);
-  end;}
-  Result := '';
+
+    if MapInfo.KeyTypeInfo.TObjectType then
+      FuncBody := Format('  if FOwnsKeys then' + NativeLineBreak +
+                         '  begin' + NativeLineBreak +
+                         '    Result := %s;' + NativeLineBreak +
+                         '    FreeAndNil(Key);' + NativeLineBreak +
+                         '  end' + NativeLineBreak +
+                         '  else' + NativeLineBreak +
+                         '  begin' + NativeLineBreak +
+                         '    Result := Key;' + NativeLineBreak +
+                         '    Key := %s;' + NativeLineBreak +
+                         '  end;' + NativeLineBreak,
+                         [KeyDefault, KeyDefault])
+    else
+      FuncBody := Format('  Result := Key;' + NativeLineBreak +
+                         '  Key := %s;' + NativeLineBreak, [KeyDefault]);
+
+    Result := Format('%s' + NativeLineBreak +
+                     'function %s.FreeKey(var Key: %s): %s;' + NativeLineBreak +
+                     'begin' + NativeLineBreak +
+                     '%s' +
+                     'end;' +  NativeLineBreak,
+                     [Result, SelfClassName, KeyTypeName, KeyTypeName, FuncBody]);
+
+    if MapInfo.ValueTypeInfo.TObjectType then
+      FuncBody := Format('  if FOwnsValues then' + NativeLineBreak +
+                         '  begin' + NativeLineBreak +
+                         '    Result := %s;' + NativeLineBreak +
+                         '    FreeAndNil(Value);' + NativeLineBreak +
+                         '  end' + NativeLineBreak +
+                         '  else' + NativeLineBreak +
+                         '  begin' + NativeLineBreak +
+                         '    Result := Value;' + NativeLineBreak +
+                         '    Value := %s;' + NativeLineBreak +
+                         '  end;' + NativeLineBreak,
+                         [ValueDefault, ValueDefault])
+    else
+      FuncBody := Format('  Result := Value;' + NativeLineBreak +
+                         '  Value := %s;' + NativeLineBreak, [ValueDefault]);
+
+    Result := Format('%s' + NativeLineBreak +
+                     'function %s.FreeValue(var Value: %s): %s;' + NativeLineBreak +
+                     'begin' + NativeLineBreak +
+                     '%s' +
+                     'end;' + NativeLineBreak,
+                     [Result, SelfClassName, ValueTypeName, ValueTypeName, FuncBody]);
+
+    if MapInfo.KeyTypeInfo.TObjectType then
+    begin
+      Result := Format('%s' + NativeLineBreak +
+                       'function %s.GetOwnsKeys: Boolean;' + NativeLineBreak +
+                       'begin' + NativeLineBreak +
+                       '  Result := FOwnsKeys;' + NativeLineBreak +
+                       'end;' + NativeLineBreak,
+                       [Result, SelfClassName]);
+    end;
+
+    if MapInfo.ValueTypeInfo.TObjectType then
+    begin
+      Result := Format('%s' + NativeLineBreak +
+                       'function %s.GetOwnsValues: Boolean;' + NativeLineBreak +
+                       'begin' + NativeLineBreak +
+                       '  Result := FOwnsValues;' + NativeLineBreak +
+                       'end;' + NativeLineBreak,
+                       [Result, SelfClassName]);
+    end;
+  end;
+end;
+
+function TJclMapClassImplementationParams.GetOwnershipAssignment: string;
+begin
+  Result := FOwnershipAssignments;
+  if Result = '' then
+  begin
+    if MapInfo.KeyTypeInfo.TObjectType then
+      Result := NativeLineBreak + '  FOwnsKeys := AOwnsKeys;';
+    if MapInfo.ValueTypeInfo.TObjectType then
+      Result := Result + NativeLineBreak + '  FOwnsValues := AOwnsValues;';
+  end;
 end;
 
 procedure TJclMapClassImplementationParams.ResetDefault(Value: Boolean);
 begin
   inherited ResetDefault(Value);
+  FCreateKeySet := '';
+  FCreateValueCollection := '';
   FMacroFooter := '';
+  FOwnershipAssignments := '';
   if not Value then
+  begin
+    FCreateKeySet := GetCreateKeySet;
+    FCreateValueCollection := GetCreateValueCollection;
     FMacroFooter := GetMacroFooter;
+    FOwnershipAssignments := GetOwnershipAssignment;
+  end;
 end;
 
 initialization

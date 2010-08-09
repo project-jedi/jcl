@@ -79,8 +79,10 @@
 			<DCCReference Include="..\..\devtools\jpp\Templates\JclContainerTemplates.pas"/>
 			<DCCReference Include="..\..\devtools\jpp\Templates\JclContainerTypes.pas"/>
 			<DCCReference Include="..\..\devtools\jpp\Templates\JclExcDlgTemplates.pas"/>
+			<DCCReference Include="..\..\devtools\jpp\Templates\JclHashMapsTemplates.pas"/>
 			<DCCReference Include="..\..\devtools\jpp\Templates\JclLinkedListsTemplates.pas"/>
 			<DCCReference Include="..\..\devtools\jpp\Templates\JclQueuesTemplates.pas"/>
+			<DCCReference Include="..\..\devtools\jpp\Templates\JclSortedMapsTemplates.pas"/>
 			<DCCReference Include="..\..\devtools\jpp\Templates\JclStacksTemplates.pas"/>
 			<DCCReference Include="..\..\devtools\jpp\Templates\JclTemplates.pas"/>
 			<DCCReference Include="..\..\devtools\jpp\Templates\JclTreesTemplates.pas"/>

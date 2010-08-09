@@ -1,47 +1,47 @@
 (*$JPPDEFINEMACRO JCLHASHMAPTYPESINT(ENTRYTYPENAME, BUCKETTYPENAME, KEYTYPENAME, VALUETYPENAME)
-  ENTRYTYPENAME = record
-    Key: KEYTYPENAME;
-    Value: VALUETYPENAME;
-  end;
+ENTRYTYPENAME = record
+  Key: KEYTYPENAME;
+  Value: VALUETYPENAME;
+end;
 
-  BUCKETTYPENAME = class
-  public
-    Size: Integer;
-    Entries: array of ENTRYTYPENAME;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
-  end;*)
+BUCKETTYPENAME = class
+public
+  Size: Integer;
+  Entries: array of ENTRYTYPENAME;
+  procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+end;*)
 (*$JPPDEFINEMACRO JCLHASHMAPINT(BUCKETTYPENAME, SELFCLASSNAME, ANCESTORNAME, MAPINTERFACENAME, KEYSETINTERFACENAME, VALUECOLLECTIONINTERFACENAME,
   INTERFACEADDITIONAL, SECTIONADDITIONAL, KEYOWNERSHIPDECLARATION, VALUEOWNERSHIPDECLARATION,
   KEYCONSTKEYWORD, KEYTYPENAME, VALUECONSTKEYWORD, VALUETYPENAME)
-  SELFCLASSNAME = class(ANCESTORNAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,INTERFACEADDITIONAL
-    MAPINTERFACENAME)SECTIONADDITIONAL
-  private
-    FBuckets: array of BUCKETTYPENAME;
-    FHashFunction: TJclHashFunction;
-  protected
-    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-  public
-    constructor Create(ACapacity: IntegerVALUEOWNERSHIPDECLARATIONKEYOWNERSHIPDECLARATION);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
-    { IJclPackable }
-    procedure Pack; override;
-    procedure SetCapacity(Value: Integer); override;
-    { MAPINTERFACENAME }
-    procedure Clear;
-    function ContainsKey(KEYCONSTKEYWORDKey: KEYTYPENAME): Boolean;
-    function ContainsValue(VALUECONSTKEYWORDValue: VALUETYPENAME): Boolean;
-    function Extract(KEYCONSTKEYWORDKey: KEYTYPENAME): VALUETYPENAME;
-    function GetValue(KEYCONSTKEYWORDKey: KEYTYPENAME): VALUETYPENAME;
-    function IsEmpty: Boolean;
-    function KeyOfValue(VALUECONSTKEYWORDValue: VALUETYPENAME): KEYTYPENAME;
-    function KeySet: KEYSETINTERFACENAME;
-    function MapEquals(const AMap: MAPINTERFACENAME): Boolean;
-    procedure PutAll(const AMap: MAPINTERFACENAME);
-    procedure PutValue(KEYCONSTKEYWORDKey: KEYTYPENAME; VALUECONSTKEYWORDValue: VALUETYPENAME);
-    function Remove(KEYCONSTKEYWORDKey: KEYTYPENAME): VALUETYPENAME;
-    function Size: Integer;
-    function Values: VALUECOLLECTIONINTERFACENAME;
-  end;*)
+SELFCLASSNAME = class(ANCESTORNAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,INTERFACEADDITIONAL
+  MAPINTERFACENAME)SECTIONADDITIONAL
+private
+  FBuckets: array of BUCKETTYPENAME;
+  FHashFunction: TJclHashFunction;
+protected
+  procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+public
+  constructor Create(ACapacity: IntegerVALUEOWNERSHIPDECLARATIONKEYOWNERSHIPDECLARATION);
+  destructor Destroy; override;
+  property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+  { IJclPackable }
+  procedure Pack; override;
+  procedure SetCapacity(Value: Integer); override;
+  { MAPINTERFACENAME }
+  procedure Clear;
+  function ContainsKey(KEYCONSTKEYWORDKey: KEYTYPENAME): Boolean;
+  function ContainsValue(VALUECONSTKEYWORDValue: VALUETYPENAME): Boolean;
+  function Extract(KEYCONSTKEYWORDKey: KEYTYPENAME): VALUETYPENAME;
+  function GetValue(KEYCONSTKEYWORDKey: KEYTYPENAME): VALUETYPENAME;
+  function IsEmpty: Boolean;
+  function KeyOfValue(VALUECONSTKEYWORDValue: VALUETYPENAME): KEYTYPENAME;
+  function KeySet: KEYSETINTERFACENAME;
+  function MapEquals(const AMap: MAPINTERFACENAME): Boolean;
+  procedure PutAll(const AMap: MAPINTERFACENAME);
+  procedure PutValue(KEYCONSTKEYWORDKey: KEYTYPENAME; VALUECONSTKEYWORDValue: VALUETYPENAME);
+  function Remove(KEYCONSTKEYWORDKey: KEYTYPENAME): VALUETYPENAME;
+  function Size: Integer;
+  function Values: VALUECOLLECTIONINTERFACENAME;
+end;*)

@@ -271,10 +271,11 @@ var
   Index: TAllTypeAttributeID;
 begin
   for Index := Low(TAllTypeAttributeID) to High(TAllTypeAttributeID) do
-    if (Index <> taTypeName) and (GlobalTypeAttributeHandlers[Index] = nil) and
+    if (Index <> taTypeName) and (Index <> maMapAncestorClassName) and
        // exclude key and value attribute ID that are aliases to standard type ID
        ((Index < Low(TKeyAttributeID)) or (Index > High(TKeyAttributeID))) and
-       ((Index < Low(TValueAttributeID)) or (Index > High(TValueAttributeID))) then
+       ((Index < Low(TValueAttributeID)) or (Index > High(TValueAttributeID))) and
+       (GlobalTypeAttributeHandlers[Index] = nil) then
       raise EJclContainerException.CreateFmt('No handler found for attribute %s',
                                              [GetEnumName(TypeInfo(TAllTypeAttributeID), Integer(Index))]);
 end;

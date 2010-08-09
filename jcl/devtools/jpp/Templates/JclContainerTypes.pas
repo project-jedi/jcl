@@ -20,7 +20,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -124,7 +124,12 @@ type
     kaKeyTypeName,
     kaKeyOwnershipParameter,
     kaKeyConstKeyword,
+    kaKeyParameterName,
     kaKeyDefaultValue,
+    kaKeySimpleCompareFunctionName,
+    kaKeySimpleEqualityCompareFunctionName,
+    kaKeySimpleHashConvertFunctionName,
+    kaKeyBaseContainerClassName,
     kaKeyIteratorInterfaceName,
     kaKeySetInterfaceName,
     kaKeyArraySetClassName,
@@ -132,20 +137,22 @@ type
     vaValueOwnershipParameter,
     vaValueConstKeyword,
     vaValueDefaultValue,
+    vaValueSimpleCompareFunctionName,
+    vaValueSimpleEqualityCompareFunctionName,
+    vaValueBaseContainerClassName,
     vaValueCollectionInterfaceName,
     vaValueArrayListClassName,
     maMapInterfaceName,
     maMapInterfaceGUID,
     maMapInterfaceAncestorName,
     maSortedMapInterfaceName,
-    maSortedMapInterfaceGUID);
-    //maHashMapEntryTypeName,
-    //maHashMapBucketTypeName,
-    //maHashMapClassName,
-    //maHashMapAncestorClassName,
-    //maSortedMapEntryTypeName,
-    //maSortedMapClassName,
-    //maSortedMapAncestorClassName);
+    maSortedMapInterfaceGUID,
+    maMapAncestorClassName,
+    maHashMapEntryTypeName,
+    maHashMapBucketTypeName,
+    maHashMapClassName,
+    maSortedMapEntryTypeName,
+    maSortedMapClassName);
   TAllTypeAttributeIDs = set of TAllTypeAttributeID;
 
   TTypeAttributeID = taTypeName..taStackClassName;
@@ -159,7 +166,7 @@ type
 
   TValueAttributeID = vaValueTypeName..vaValueArrayListClassName;
 
-  TMapAttributeID = maMapInterfaceName..maSortedMapInterfaceGUID; // maSortedMapAncestorClassName;
+  TMapAttributeID = maMapInterfaceName..maSortedMapClassName;
 
   TMapAttributes = array [TMapAttributeID] of string;
 
@@ -258,7 +265,12 @@ const
     ( {KeyTypeName} taTypeName,
       {KeyOwnershipParameter} taOwnershipParameter,
       {KeyConstKeyword} taConstKeyword,
+      {KeyParameterName} taParameterName,
       {KeyDefaultValue} taDefaultValue,
+      {KeySimpleCompareFunctionName} taSimpleCompareFunctionName,
+      {KeySimpleEqualityCompareFunctionName} taSimpleEqualityCompareFunctionName,
+      {KeySimpleHashConvertFunctionName} taSimpleHashConvertFunctionName,
+      {KeyBaseContainerClassName} taBaseContainer,
       {KeyIteratorInterfaceName} taIteratorInterfaceName,
       {KeySetInterfaceName} taSetInterfaceName,
       {KeyArraySetClassName} taArraySetClassName);
@@ -268,6 +280,9 @@ const
       {ValueOwnershipParameter} taOwnershipParameter,
       {ValueConstKeyword} taConstKeyword,
       {ValueDefaultValue} taDefaultValue,
+      {ValueSimpleCompareFunctionName} taSimpleCompareFunctionName,
+      {ValueSimpleEqualityCompareFunctionName} taSimpleEqualityCompareFunctionName,
+      {ValueBaseContainerClassName} taBaseContainer,
       {ValueCollectionInterfaceName} taCollectionInterfaceName,
       {ValueArrayListClassName} taArrayListClassName);
 
@@ -276,14 +291,13 @@ const
       {MapInterfaceGUID} (IsGUID: True; DefaultValue: ''),
       {MapInterfaceAncestorName} (IsGUID: False; DefaultValue: 'IJclContainer'),
       {SortedMapInterfaceName} (IsGUID: False; DefaultValue: 'TJcl%s%sSortedMap'),
-      {SortedMapInterfaceGUID} (IsGUID: True; DefaultValue: '') );
-      //{HashMapEntryTypeName} (IsGUID: False; DefaultValue: 'TJcl%s%sHashEntry'),
-      //{HashMapBucketTypeName} (IsGUID: False; DefaultValue: 'TJcl%s%sHashBucket'),
-      //{HashMapClassName} (IsGUID: False; DefaultValue: 'TJcl%s%sHashMap'),
-      //{HashMapAncestorClassName} (IsGUID: False; DefaultValue: 'TJclContainer'),
-      //{SortedMapEntryTypeName} (IsGUID: False; DefaultValue: 'TJcl%s%sSortedEntry'),
-      //{SortedMapClassName} (IsGUID: False; DefaultValue: 'TJcl%s%sSortedMap'),
-      //{SortedMapAncestorClassName} (IsGUID: False; DefaultValue: 'TJclContainer') );
+      {SortedMapInterfaceGUID} (IsGUID: True; DefaultValue: ''),
+      {MapAncestorClassName} (IsGUID: False; DefaultValue: 'TJclContainer'),
+      {HashMapEntryTypeName} (IsGUID: False; DefaultValue: 'TJcl%s%sHashEntry'),
+      {HashMapBucketTypeName} (IsGUID: False; DefaultValue: 'TJcl%s%sHashBucket'),
+      {HashMapClassName} (IsGUID: False; DefaultValue: 'TJcl%s%sHashMap'),
+      {SortedMapEntryTypeName} (IsGUID: False; DefaultValue: 'TJcl%s%sSortedEntry'),
+      {SortedMapClassName} (IsGUID: False; DefaultValue: 'TJcl%s%sSortedMap') );
 
 type
   EJclContainerException = class(EJclError);

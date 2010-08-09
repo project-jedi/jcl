@@ -31,8 +31,10 @@
     <File Name="..\..\devtools\jpp\Templates\JclContainerTemplates.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\devtools\jpp\Templates\JclContainerTypes.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\devtools\jpp\Templates\JclExcDlgTemplates.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\devtools\jpp\Templates\JclHashMapsTemplates.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\devtools\jpp\Templates\JclLinkedListsTemplates.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\devtools\jpp\Templates\JclQueuesTemplates.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\devtools\jpp\Templates\JclSortedMapsTemplates.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\devtools\jpp\Templates\JclStacksTemplates.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\devtools\jpp\Templates\JclTemplates.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\devtools\jpp\Templates\JclTreesTemplates.pas" Targets="all" Formname="" Condition=""/>

@@ -65,7 +65,9 @@ uses
   JclTreesTemplates in 'Templates\JclTreesTemplates.pas',
   JclContainer1DTemplates in 'Templates\JclContainer1DTemplates.pas',
   JclContainer2DTemplates in 'Templates\JclContainer2DTemplates.pas',
-  JclContainerKnownMaps in 'Templates\JclContainerKnownMaps.pas';
+  JclContainerKnownMaps in 'Templates\JclContainerKnownMaps.pas',
+  JclHashMapsTemplates in 'Templates\JclHashMapsTemplates.pas',
+  JclSortedMapsTemplates in 'Templates\JclSortedMapsTemplates.pas';
 
 var
   CommandLine: string;
