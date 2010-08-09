@@ -711,6 +711,7 @@ uses
   AnsiStrings,
   {$ENDIF HAS_UNIT_ANSISTRINGS}
   JclStringConversions, JclUnicode,
+  JclAlgorithms,
   SysUtils;
 
 //=== { TJclAbstractLockable } ===============================================
@@ -1163,7 +1164,7 @@ begin
   if Assigned(FHashConvert) then
     Result := FHashConvert(AInterface)
   else
-    Result := Integer(AInterface);
+    Result := IntfSimpleHashConvert(AInterface);
 end;
 
 function TJclIntfAbstractContainer.ItemsCompare(const A, B: IInterface): Integer;
@@ -1171,13 +1172,7 @@ begin
   if Assigned(FCompare) then
     Result := FCompare(A, B)
   else
-  if Integer(A) > Integer(B) then
-    Result := 1
-  else
-  if Integer(A) < Integer(B) then
-    Result := -1
-  else
-    Result := 0;
+    Result := IntfSimpleCompare(A, B);
 end;
 
 function TJclIntfAbstractContainer.ItemsEqual(const A, B: IInterface): Boolean;
@@ -1188,7 +1183,7 @@ begin
   if Assigned(FCompare) then
     Result := FCompare(A, B) = 0
   else
-    Result := Integer(A) = Integer(B);
+    Result := IntfSimpleEqualityCompare(A, B);
 end;
 
 procedure TJclIntfAbstractContainer.SetCompare(Value: TIntfCompare);
@@ -1269,98 +1264,25 @@ begin
 end;
 
 function TJclAnsiStrAbstractContainer.Hash(const AString: AnsiString): Integer;
-// from "Fast Hashing of Variable-Length Text Strings", Peter K. Pearson, 1990
-// http://portal.acm.org/citation.cfm?id=78978
-type
-  TIntegerHash = packed record
-    case Byte of
-      0: (H1, H2, H3, H4: Byte);
-      1: (H: Integer);
-      2: (C: UCS4);
-  end;
-var
-  I, J: Integer;
-  C1: Byte;
-  C2, IntegerHash: TIntegerHash;
-  CA: TUCS4Array;
 begin
   if Assigned(FHashConvert) then
     Result := FHashConvert(AString)
   else
   begin
-    IntegerHash.H1 := 0;
-    IntegerHash.H2 := 1;
-    IntegerHash.H3 := 2;
-    IntegerHash.H4 := 3;
     case FEncoding of
       seISO:
-        begin
-          if FCaseSensitive then
-          begin
-            for I := 1 to Length(AString) do
-            begin
-              C1 := Ord(AString[I]);
-              IntegerHash.H1 := BytePermTable[IntegerHash.H1 xor C1];
-              IntegerHash.H2 := BytePermTable[IntegerHash.H2 xor C1];
-              IntegerHash.H3 := BytePermTable[IntegerHash.H3 xor C1];
-              IntegerHash.H4 := BytePermTable[IntegerHash.H4 xor C1];
-            end;
-          end
-          else
-          begin
-            // case insensitive
-            for I := 1 to Length(AString) - 1 do
-            begin
-              C1 := Ord(JclAnsiStrings.CharUpper(AString[I]));
-              IntegerHash.H1 := BytePermTable[IntegerHash.H1 xor C1];
-              IntegerHash.H2 := BytePermTable[IntegerHash.H2 xor C1];
-              IntegerHash.H3 := BytePermTable[IntegerHash.H3 xor C1];
-              IntegerHash.H4 := BytePermTable[IntegerHash.H4 xor C1];
-            end;  
-          end;
-        end;
+        if FCaseSensitive then
+          Result := AnsiStrSimpleHashConvert(AString)
+        else
+          Result := AnsiStrSimpleHashConvertI(AString);
       seUTF8:
-        begin
-          if FCaseSensitive then
-          begin
-            I := 1;
-            while I < Length(AString) do
-            begin
-              C2.C := UTF8GetNextChar(AString, I);
-              if I = -1 then
-                raise EJclUnexpectedEOSequenceError.Create;
-              IntegerHash.H1 := BytePermTable[IntegerHash.H1 xor C2.H1];
-              IntegerHash.H2 := BytePermTable[IntegerHash.H2 xor C2.H2];
-              IntegerHash.H3 := BytePermTable[IntegerHash.H3 xor C2.H3];
-              IntegerHash.H4 := BytePermTable[IntegerHash.H4 xor C2.H4];
-            end;
-          end
-          else
-          begin
-            // case insensitive
-            I := 1;
-            SetLength(CA, 0);
-            while I < Length(AString) do
-            begin
-              C2.C := UTF8GetNextChar(AString, I);
-              CA := UnicodeCaseFold(C2.C);
-              for J := Low(CA) to High(CA) do
-              begin
-                C2.C := CA[J];
-                if I = -1 then
-                  raise EJclUnexpectedEOSequenceError.Create;
-                IntegerHash.H1 := BytePermTable[IntegerHash.H1 xor C2.H1];
-                IntegerHash.H2 := BytePermTable[IntegerHash.H2 xor C2.H2];
-                IntegerHash.H3 := BytePermTable[IntegerHash.H3 xor C2.H3];
-                IntegerHash.H4 := BytePermTable[IntegerHash.H4 xor C2.H4];
-              end;
-            end;
-          end;
-        end;
+        if FCaseSensitive then
+          Result := AnsiStrSimpleHashConvertU(AString)
+        else
+          Result := AnsiStrSimpleHashConvertUI(AString);
     else
       raise EJclOperationNotSupportedError.Create;
     end;
-    Result := IntegerHash.H;
   end;
 end;
 
@@ -1371,12 +1293,11 @@ begin
   else
   begin
     case FEncoding of
-      seISO:
+      seISO, seUTF8:
         if FCaseSensitive then
-          Result := CompareStr(A, B)
+          Result := AnsiStrSimpleCompare(A, B)
         else
-          Result := CompareText(A, B);
-      //seUTF8:
+          Result := AnsiStrSimpleCompareI(A, B);
     else
       raise EJclOperationNotSupportedError.Create;
     end;
@@ -1393,12 +1314,11 @@ begin
   else
   begin
     case FEncoding of
-      seISO:
+      seISO, seUTF8:
         if FCaseSensitive then
-          Result := CompareStr(A, B) = 0
+          Result := AnsiStrSimpleEqualityCompare(A, B)
         else
-          Result := CompareText(A, B) = 0;
-      //seUTF8:
+          Result := AnsiStrSimpleEqualityCompareI(A, B);
     else
       raise EJclOperationNotSupportedError.Create;
     end;
@@ -1469,71 +1389,20 @@ begin
 end;
 
 function TJclWideStrAbstractContainer.Hash(const AString: WideString): Integer;
-// from "Fast Hashing of Variable-Length Text Strings", Peter K. Pearson, 1990
-// http://portal.acm.org/citation.cfm?id=78978
-type
-  TIntegerHash = packed record
-    case Byte of
-      0: (H1, H2, H3, H4: Byte);
-      1: (H: Integer);
-      2: (C: UCS4);
-  end;
-var
-  I, J: Integer;
-  C2, IntegerHash: TIntegerHash;
-  CA: TUCS4Array;
 begin
   if Assigned(FHashConvert) then
     Result := FHashConvert(AString)
   else
   begin
-    IntegerHash.H1 := 0;
-    IntegerHash.H2 := 1;
-    IntegerHash.H3 := 2;
-    IntegerHash.H4 := 3;
     case FEncoding of
       seUTF16:
-        begin
-          SetLength(CA, 0);
-          if FCaseSensitive then
-          begin
-            I := 1;
-            while I < Length(AString) do
-            begin
-              C2.C := UTF16GetNextChar(AString, I);
-              if I = -1 then
-                raise EJclUnexpectedEOSequenceError.Create;
-              IntegerHash.H1 := BytePermTable[IntegerHash.H1 xor C2.H1];
-              IntegerHash.H2 := BytePermTable[IntegerHash.H2 xor C2.H2];
-              IntegerHash.H3 := BytePermTable[IntegerHash.H3 xor C2.H3];
-              IntegerHash.H4 := BytePermTable[IntegerHash.H4 xor C2.H4];
-            end;
-          end
-          else
-          begin
-            // case insensitive
-            I := 1;
-            while I < Length(AString) do
-            begin
-              C2.C := UTF16GetNextChar(AString, I);
-              CA := UnicodeCaseFold(C2.C);
-              for J := Low(CA) to High(CA) do
-              begin
-                C2.C := CA[J];
-                if I = -1 then
-                  raise EJclUnexpectedEOSequenceError.Create;
-                IntegerHash.H1 := BytePermTable[IntegerHash.H1 xor C2.H1];
-                IntegerHash.H2 := BytePermTable[IntegerHash.H2 xor C2.H2];
-                IntegerHash.H3 := BytePermTable[IntegerHash.H3 xor C2.H3];
-                IntegerHash.H4 := BytePermTable[IntegerHash.H4 xor C2.H4];
-              end;
-            end;
-          end;
-        end;
+        if FCaseSensitive then
+          Result := WideStrSimpleHashConvert(AString)
+        else
+          Result := WideStrSimpleHashConvertI(AString);
     else
       raise EJclOperationNotSupportedError.Create;
     end;
-    Result := IntegerHash.H;
   end;
 end;
 
@@ -1546,9 +1415,9 @@ begin
     case FEncoding of
       seUTF16:
         if FCaseSensitive then
-          Result := JclWideStrings.WideCompareStr(A, B)
+          Result := WideStrSimpleCompare(A, B)
         else
-          Result := JclWideStrings.WideCompareText(A, B);
+          Result := WideStrSimpleCompareI(A, B);
     else
       raise EJclOperationNotSupportedError.Create;
     end;
@@ -1567,9 +1436,9 @@ begin
     case FEncoding of
       seUTF16:
         if FCaseSensitive then
-          Result := JclWideStrings.WideCompareStr(A, B) = 0
+          Result := WideStrSimpleEqualityCompare(A, B)
         else
-          Result := JclWideStrings.WideCompareText(A, B) = 0;
+          Result := WideStrSimpleEqualityCompareI(A, B);
     else
       raise EJclOperationNotSupportedError.Create;
     end;
@@ -1635,65 +1504,14 @@ begin
 end;
 
 function TJclUnicodeStrAbstractContainer.Hash(const AString: UnicodeString): Integer;
-// from "Fast Hashing of Variable-Length Text Strings", Peter K. Pearson, 1990
-// http://portal.acm.org/citation.cfm?id=78978
-type
-  TIntegerHash = packed record
-    case Byte of
-      0: (H1, H2, H3, H4: Byte);
-      1: (H: Integer);
-      2: (C: UCS4);
-  end;
-var
-  I, J: Integer;
-  C2, IntegerHash: TIntegerHash;
-  CA: TUCS4Array;
 begin
   if Assigned(FHashConvert) then
     Result := FHashConvert(AString)
   else
-  begin
-    IntegerHash.H1 := 0;
-    IntegerHash.H2 := 1;
-    IntegerHash.H3 := 2;
-    IntegerHash.H4 := 3;
-    SetLength(CA, 0);
-    if FCaseSensitive then
-    begin
-      I := 1;
-      while I < Length(AString) do
-      begin
-        C2.C := UTF16GetNextChar(AString, I);
-        if I = -1 then
-          raise EJclUnexpectedEOSequenceError.Create;
-        IntegerHash.H1 := BytePermTable[IntegerHash.H1 xor C2.H1];
-        IntegerHash.H2 := BytePermTable[IntegerHash.H2 xor C2.H2];
-        IntegerHash.H3 := BytePermTable[IntegerHash.H3 xor C2.H3];
-        IntegerHash.H4 := BytePermTable[IntegerHash.H4 xor C2.H4];
-      end;
-    end
-    else
-    begin
-      // case insensitive
-      I := 1;
-      while I < Length(AString) do
-      begin
-        C2.C := UTF16GetNextChar(AString, I);
-        CA := UnicodeCaseFold(C2.C);
-        for J := Low(CA) to High(CA) do
-        begin
-          C2.C := CA[J];
-          if I = -1 then
-            raise EJclUnexpectedEOSequenceError.Create;
-          IntegerHash.H1 := BytePermTable[IntegerHash.H1 xor C2.H1];
-          IntegerHash.H2 := BytePermTable[IntegerHash.H2 xor C2.H2];
-          IntegerHash.H3 := BytePermTable[IntegerHash.H3 xor C2.H3];
-          IntegerHash.H4 := BytePermTable[IntegerHash.H4 xor C2.H4];
-        end;
-      end;
-    end;
-    Result := IntegerHash.H;
-  end;
+  if FCaseSensitive then
+    Result := UnicodeStrSimpleHashConvert(AString)
+  else
+    Result := UnicodeStrSimpleHashConvertI(AString);
 end;
 
 
@@ -1703,9 +1521,9 @@ begin
     Result := FCompare(A, B)
   else
   if FCaseSensitive then
-    Result := CompareStr(A, B)
+    Result := UnicodeStrSimpleCompare(A, B)
   else
-    Result := CompareText(A, B);
+    Result := UnicodeStrSimpleCompareI(A, B);
 end;
 
 function TJclUnicodeStrAbstractContainer.ItemsEqual(const A, B: UnicodeString): Boolean;
@@ -1717,9 +1535,9 @@ begin
     Result := FCompare(A, B) = 0
   else
   if FCaseSensitive then
-    Result := CompareStr(A, B) = 0
+    Result := UnicodeStrSimpleEqualityCompare(A, B)
   else
-    Result := CompareText(A, B) = 0;
+    Result := UnicodeStrSimpleEqualityCompareI(A, B);
 end;
 
 procedure TJclUnicodeStrAbstractContainer.SetCompare(Value: TUnicodeStrCompare);
@@ -1782,13 +1600,11 @@ begin
 end;
 
 function TJclSingleAbstractContainer.Hash(const AValue: Single): Integer;
-const
-  A = 0.6180339887; // (sqrt(5) - 1) / 2
 begin
   if Assigned(FHashConvert) then
     Result := FHashConvert(AValue)
   else
-    Result := Round(MaxInt * Frac(AValue * A));
+    Result := SingleSimpleHashConvert(AValue);
 end;
 
 function TJclSingleAbstractContainer.ItemsCompare(const A, B: Single): Integer;
@@ -1880,13 +1696,11 @@ begin
 end;
 
 function TJclDoubleAbstractContainer.Hash(const AValue: Double): Integer;
-const
-  A = 0.6180339887; // (sqrt(5) - 1) / 2
 begin
   if Assigned(FHashConvert) then
     Result := FHashConvert(AValue)
   else
-    Result := Round(MaxInt * Frac(AValue * A));
+    Result := DoubleSimpleHashConvert(AValue);
 end;
 
 function TJclDoubleAbstractContainer.ItemsCompare(const A, B: Double): Integer;
@@ -1978,13 +1792,11 @@ begin
 end;
 
 function TJclExtendedAbstractContainer.Hash(const AValue: Extended): Integer;
-const
-  A = 0.6180339887; // (sqrt(5) - 1) / 2
 begin
   if Assigned(FHashConvert) then
     Result := FHashConvert(AValue)
   else
-    Result := Round(MaxInt * Frac(AValue * A));
+    Result := ExtendedSimpleHashConvert(AValue);
 end;
 
 function TJclExtendedAbstractContainer.ItemsCompare(const A, B: Extended): Integer;
@@ -2074,7 +1886,7 @@ begin
   if Assigned(FHashConvert) then
     Result := FHashConvert(AValue)
   else
-    Result := AValue;
+    Result := IntegerSimpleHashConvert(AValue);
 end;
 
 function TJclIntegerAbstractContainer.ItemsCompare(A, B: Integer): Integer;
@@ -2082,13 +1894,7 @@ begin
   if Assigned(FCompare) then
     Result := FCompare(A, B)
   else
-  if A > B then
-    Result := 1
-  else
-  if A < B then
-    Result := -1
-  else
-    Result := 0;
+    Result := IntegerSimpleCompare(A, B);
 end;
 
 function TJclIntegerAbstractContainer.ItemsEqual(A, B: Integer): Boolean;
@@ -2099,7 +1905,7 @@ begin
   if Assigned(FCompare) then
     Result := FCompare(A, B) = 0
   else
-    Result := A = B;
+    Result := IntegerSimpleEqualityCompare(A, B);
 end;
 
 procedure TJclIntegerAbstractContainer.SetCompare(Value: TIntegerCompare);
@@ -2159,7 +1965,7 @@ begin
   if Assigned(FHashConvert) then
     Result := FHashConvert(AValue)
   else
-    Result := AValue and MaxInt;
+    Result := CardinalSimpleHashConvert(AValue);
 end;
 
 function TJclCardinalAbstractContainer.ItemsCompare(A, B: Cardinal): Integer;
@@ -2167,13 +1973,7 @@ begin
   if Assigned(FCompare) then
     Result := FCompare(A, B)
   else
-  if A > B then
-    Result := 1
-  else
-  if A < B then
-    Result := -1
-  else
-    Result := 0;
+    Result := CardinalSimpleCompare(A, B);
 end;
 
 function TJclCardinalAbstractContainer.ItemsEqual(A, B: Cardinal): Boolean;
@@ -2184,7 +1984,7 @@ begin
   if Assigned(FCompare) then
     Result := FCompare(A, B) = 0
   else
-    Result := A = B;
+    Result := CardinalSimpleEqualityCompare(A, B);
 end;
 
 procedure TJclCardinalAbstractContainer.SetCompare(Value: TCardinalCompare);
@@ -2244,7 +2044,7 @@ begin
   if Assigned(FHashConvert) then
     Result := FHashConvert(AValue)
   else
-    Result := AValue and MaxInt;
+    Result := Int64SimpleHashConvert(AValue);
 end;
 
 function TJclInt64AbstractContainer.ItemsCompare(const A, B: Int64): Integer;
@@ -2252,13 +2052,7 @@ begin
   if Assigned(FCompare) then
     Result := FCompare(A, B)
   else
-  if A > B then
-    Result := 1
-  else
-  if A < B then
-    Result := -1
-  else
-    Result := 0;
+    Result := Int64SimpleCompare(A, B);
 end;
 
 function TJclInt64AbstractContainer.ItemsEqual(const A, B: Int64): Boolean;
@@ -2269,7 +2063,7 @@ begin
   if Assigned(FCompare) then
     Result := FCompare(A, B) = 0
   else
-    Result := A = B;
+    Result := Int64SimpleEqualityCompare(A, B);
 end;
 
 procedure TJclInt64AbstractContainer.SetCompare(Value: TInt64Compare);
@@ -2329,7 +2123,7 @@ begin
   if Assigned(FHashConvert) then
     Result := FHashConvert(APtr)
   else
-    Result := Integer(APtr) and MaxInt;
+    Result := PtrSimpleHashConvert(APtr);
 end;
 
 function TJclPtrAbstractContainer.ItemsCompare(A, B: Pointer): Integer;
@@ -2337,13 +2131,7 @@ begin
   if Assigned(FCompare) then
     Result := FCompare(A, B)
   else
-  if Integer(A) > Integer(B) then
-    Result := 1
-  else
-  if Integer(A) < Integer(B) then
-    Result := -1
-  else
-    Result := 0;
+    Result := PtrSimpleCompare(A, B);
 end;
 
 function TJclPtrAbstractContainer.ItemsEqual(A, B: Pointer): Boolean;
@@ -2354,7 +2142,7 @@ begin
   if Assigned(FCompare) then
     Result := FCompare(A, B) = 0
   else
-    Result := Integer(A) = Integer(B);
+    Result := PtrSimpleEqualityCompare(A, B);
 end;
 procedure TJclPtrAbstractContainer.SetCompare(Value: TPtrCompare);
 begin
@@ -2432,7 +2220,7 @@ begin
   if Assigned(FHashConvert) then
     Result := FHashConvert(AObject)
   else
-    Result := Integer(AObject);
+    Result := SimpleHashConvert(AObject);
 end;
 
 function TJclAbstractContainer.ItemsCompare(A, B: TObject): Integer;
@@ -2440,13 +2228,7 @@ begin
   if Assigned(FCompare) then
     Result := FCompare(A, B)
   else
-  if Integer(A) > Integer(B) then
-    Result := 1
-  else
-  if Integer(A) < Integer(B) then
-    Result := -1
-  else
-    Result := 0;
+    Result := SimpleCompare(A, B);
 end;
 
 function TJclAbstractContainer.ItemsEqual(A, B: TObject): Boolean;
@@ -2457,7 +2239,7 @@ begin
   if Assigned(FCompare) then
     Result := FCompare(A, B) = 0
   else
-    Result := Integer(A) = Integer(B);
+    Result := SimpleEqualityCompare(A, B);
 end;
 
 procedure TJclAbstractContainer.SetCompare(Value: TCompare);

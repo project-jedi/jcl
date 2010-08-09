@@ -102,6 +102,15 @@ type
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
+  (* SIMPLEHASHCONVERTINT(PROCNAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME) *)
+  TJclSimpleHashConvertIntParams = class(TJclAlgorithmsIntParams)
+  published
+    property ProcName: string index taSimpleHashConvertFunctionName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
+    property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
+    property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
+    property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
+  end;
+
   (* FINDINT(PROCNAME, ITRINTERFACENAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME, CALLBACKTYPE, OVERLOAD) *)
   TJclFindIntParams = class(TJclAlgorithmsIntProcParams)
   protected
@@ -335,6 +344,7 @@ begin
   RegisterContainerParams('APPLYINT', TJclApplyIntParams);
   RegisterContainerParams('SIMPLECOMPAREINT', TJclSimpleCompareIntParams);
   RegisterContainerParams('SIMPLEEQUALITYCOMPAREINT', TJclSimpleEqualityCompareIntParams);
+  RegisterContainerParams('SIMPLEHASHCONVERTINT', TJclSimpleHashConvertIntParams);
   RegisterContainerParams('FINDINT', TJclFindIntParams);
   RegisterContainerParams('FINDEQINT', TJclFindEqIntParams);
   RegisterContainerParams('COUNTOBJECTINT', TJclCountObjectIntParams);
