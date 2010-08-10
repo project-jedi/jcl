@@ -1337,16 +1337,7 @@ end;
 procedure InitializeArray(var List: TDynAnsiStringArray; FromIndex, Count: SizeInt); overload;
 {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 begin
-  {$IFDEF FPC}
-  while Count > 0 do
-  begin
-    Initialize(List[FromIndex]);
-    Inc(FromIndex);
-    Dec(Count);
-  end;
-  {$ELSE ~FPC}
   Initialize(List[FromIndex], Count);
-  {$ENDIF ~FPC}
 end;
 
 procedure InitializeArrayAfterMove(var List: TDynAnsiStringArray; FromIndex, ToIndex, Count: SizeInt); overload;

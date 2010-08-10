@@ -1,4 +1,4 @@
-{ **************************************************************************** }
+﻿{ **************************************************************************** }
 {                                                                              }
 {    PppState - Pascal PreProcessor State                                      }
 {    Copyright (c) 2001 Barry Kelly.                                           }
@@ -85,11 +85,13 @@ type
     FStateStack: IJclStack;
     FOptions: TPppOptions;
     procedure InternalPushState(const ExcludedFiles, SearchPath: IJclStrList;
-      const Macros: IJclStrIntfMap; const Defines: IJclStrMap);
+      const Macros: IJclStrIntfMap; const Defines: IJclStrMap; ATriState: TTriState);
     function InternalPeekDefines: IJclStrMap;
     function InternalPeekExcludedFiles: IJclStrList;
     function InternalPeekMacros: IJclStrIntfMap;
     function InternalPeekSearchPath: IJclStrList;
+    function InternalPeekTriState: TTriState;
+    procedure InternalSetTriState(Value: TTriState);
   protected
     function GetOptions: TPppOptions;
     procedure SetOptions(AOptions: TPppOptions);
@@ -115,6 +117,8 @@ type
       in scope. }
     procedure PushState;
     procedure PopState;
+
+    property TriState: TTriState read InternalPeekTriState write InternalSetTriState;
 
     procedure Define(const ASymbol: string);
     procedure Undef(const ASymbol: string);
@@ -160,6 +164,7 @@ type
     ExcludedFiles: IJclStrList;
     Macros: IJclStrIntfMap;
     SearchPath: IJclStrList;
+    TriState: TTriState;
   end;
 
 //=== { TPppState } ==========================================================
@@ -168,7 +173,7 @@ constructor TPppState.Create;
 begin
   FStateStack := TJclStack.Create(16, True);
   InternalPushState(TJclStrArrayList.Create(16), TJclStrArrayList.Create(16),
-    TJclStrIntfHashMap.Create(16), TJclStrHashMap.Create(16, False));
+    TJclStrIntfHashMap.Create(16), TJclStrHashMap.Create(16, False), ttUnknown);
 end;
 
 destructor TPppState.Destroy;
@@ -419,8 +424,15 @@ begin
   Result := (FStateStack.Peek as TSimplePppStateItem).SearchPath;
 end;
 
+function TPppState.InternalPeekTriState: TTriState;
+begin
+  if FStateStack.Empty then
+    raise EPppState.Create('Internal error: PPP State stack is empty');
+  Result := (FStateStack.Peek as TSimplePppStateItem).TriState;
+end;
+
 procedure TPppState.InternalPushState(const ExcludedFiles, SearchPath: IJclStrList;
-  const Macros: IJclStrIntfMap; const Defines: IJclStrMap);
+  const Macros: IJclStrIntfMap; const Defines: IJclStrMap; ATriState: TTriState);
 var
   AStateItem: TSimplePppStateItem;
 begin
@@ -429,7 +441,15 @@ begin
   AStateItem.DefinedKeywords := Defines;
   AStateItem.Macros := Macros;
   AStateItem.SearchPath := SearchPath;
+  AStateItem.TriState := ATriState;
   FStateStack.Push(AStateItem);
+end;
+
+procedure TPppState.InternalSetTriState(Value: TTriState);
+begin
+  if FStateStack.Empty then
+    raise EPppState.Create('Internal error: PPP State stack is empty');
+  (FStateStack.Peek as TSimplePppStateItem).TriState := Value;
 end;
 
 function TPppState.IsFileExcluded(const AName: string): Boolean;
@@ -462,13 +482,15 @@ var
   AExcludedFiles, ASearchPath: IJclStrList;
   ADefines: IJclStrMap;
   AMacros: IJclStrIntfMap;
+  ATriState: TTriState;
 begin
   ADefines := (InternalPeekDefines as IJclIntfCloneable).IntfClone as IJclStrMap;
   AExcludedFiles := (InternalPeekExcludedFiles as IJclIntfCloneable).IntfClone as IJclStrList;
   ASearchPath := (InternalPeekSearchPath as IJclIntfCloneable).IntfClone as IJclStrList;
   AMacros := (InternalPeekMacros as IJclIntfCloneable).IntfClone as IJclStrIntfMap;
+  ATriState := InternalPeekTriState;
 
-  InternalPushState(AExcludedFiles, ASearchPath, AMacros, ADefines);
+  InternalPushState(AExcludedFiles, ASearchPath, AMacros, ADefines, ATriState);
 end;
 
 procedure TPppState.SetOptions(AOptions: TPppOptions);
