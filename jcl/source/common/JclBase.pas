@@ -398,16 +398,21 @@ uses
 
 procedure FinalizeArrayBeforeMove(var List: TDynIInterfaceArray; FromIndex, ToIndex, Count: SizeInt); overload;
 {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-var
-  N: Integer;
 begin
   Assert(Count > 0);
-  N := FromIndex - ToIndex;
-  if N > 0 then
+  if FromIndex < ToIndex then
   begin
-    if N > Count then
-      N := Count;
-    Finalize(List[ToIndex], N);
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
   end;
 end;
 
@@ -458,16 +463,21 @@ end;
 
 procedure FinalizeArrayBeforeMove(var List: TDynStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
 {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-var
-  N: Integer;
 begin
   Assert(Count > 0);
-  N := FromIndex - ToIndex;
-  if N > 0 then
+  if FromIndex < ToIndex then
   begin
-    if N > Count then
-      N := Count;
-    Finalize(List[ToIndex], N);
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
   end;
 end;
 
@@ -577,16 +587,21 @@ end;
 {$IFDEF SUPPORTS_UNICODE_STRING}
 procedure FinalizeArrayBeforeMove(var List: TDynUnicodeStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
 {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-var
-  N: Integer;
 begin
   Assert(Count > 0);
-  N := FromIndex - ToIndex;
-  if N > 0 then
+  if FromIndex < ToIndex then
   begin
-    if N > Count then
-      N := Count;
-    Finalize(List[ToIndex], N);
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
   end;
 end;
 
@@ -639,16 +654,21 @@ end;
 {$IFNDEF FPC}
 procedure FinalizeArrayBeforeMove(var List: TDynAnsiStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
 {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-var
-  N: Integer;
 begin
   Assert(Count > 0);
-  N := FromIndex - ToIndex;
-  if N > 0 then
+  if FromIndex < ToIndex then
   begin
-    if N > Count then
-      N := Count;
-    Finalize(List[ToIndex], N);
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
   end;
 end;
 
@@ -700,16 +720,21 @@ end;
 
 procedure FinalizeArrayBeforeMove(var List: TDynWideStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
 {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-var
-  N: Integer;
 begin
   Assert(Count > 0);
-  N := FromIndex - ToIndex;
-  if N > 0 then
+  if FromIndex < ToIndex then
   begin
-    if N > Count then
-      N := Count;
-    Finalize(List[ToIndex], N);
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
   end;
 end;
 
