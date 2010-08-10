@@ -67,7 +67,7 @@ type
     FAllWhiteSpaceOut: Boolean;
     procedure RemoveOrphanedLineBreaks;
   protected
-    procedure AddResult(const S: string; FixIndent: Boolean = False);
+    procedure AddResult(const S: string; FixIndent: Boolean = False; ForceRecurseTest: Boolean = False);
     function IsExcludedInclude(const FileName: string): Boolean;
 
     procedure NextToken;
@@ -272,7 +272,7 @@ begin
   inherited;
 end;
 
-procedure TJppParser.AddResult(const S: string; FixIndent: Boolean);
+procedure TJppParser.AddResult(const S: string; FixIndent, ForceRecurseTest: Boolean);
 var
   I, J: Integer;
   LinePrefix, AResult, Line: string;
@@ -288,16 +288,29 @@ begin
 
   AResult := S;
   // recurse macro expanding
-  if StrIPos('$JPP', AResult) > 0 then
+  if ForceRecurseTest or (StrIPos('$JPP', AResult) > 0) then
   begin
     Recurse := False;
     TempLexer := TJppLexer.Create(AResult);
     try
+      State.PushState;
       while True do
       begin
         case TempLexer.CurrTok of
           ptEof:
             Break;
+          ptDefine:
+            if poProcessDefines in State.Options then
+              State.Define(TempLexer.TokenAsString);
+          ptUndef:
+            if poProcessDefines in State.Options then
+              State.Undef(TempLexer.TokenAsString);
+          ptIfdef, ptIfndef:
+            if (poProcessDefines in State.Options) and (State.Defines[TempLexer.TokenAsString] in [ttDefined, ttUndef]) then
+            begin
+              Recurse := True;
+              Break;
+            end;
           ptJppDefineMacro,
           ptJppExpandMacro,
           ptJppUndefMacro:
@@ -322,6 +335,7 @@ begin
         TempLexer.NextTok;
       end;
     finally
+      State.PopState;
       TempLexer.Free;
     end;
     if Recurse then
@@ -537,31 +551,6 @@ begin
       State.PopState;
     end;
   end;
-  (*end
-  else
-    if ((Token = ptIfdef) and (ConditionTriState = ttDefined))
-    or ((Token = ptIfndef) and (ConditionTriState = ttUndef)) then
-    begin
-      NextToken;
-      ParseText;
-      if Lexer.CurrTok = ptElse then
-      begin
-        NextToken;
-        Skip;
-      end;
-    end
-    else
-    begin
-      NextToken;
-      Skip;
-      if Lexer.CurrTok = ptElse then
-      begin
-        NextToken;
-        ParseText;
-      end
-      else
-        ;
-    end;*)
   if Lexer.CurrTok <> ptEndif then
     Lexer.Error('$ENDIF expected');
   case ConditionTriState of
@@ -624,7 +613,7 @@ begin
   ParseMacro(MacroText, MacroName, ParamNames, False);
   AResult := State.ExpandMacro(MacroName, ParamNames);
   // add result to buffer
-  AddResult(AResult, True);
+  AddResult(AResult, True, True);
   NextToken;
 end;
 
