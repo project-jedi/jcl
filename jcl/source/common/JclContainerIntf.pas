@@ -68,6 +68,44 @@ const
 type
   // function pointer types
 
+  // iterate functions Type -> (void)
+
+  TIntfIterateProcedure = procedure(const AInterface: IInterface);
+  TAnsiStrIterateProcedure = procedure(const AString: AnsiString);
+  TWideStrIterateProcedure = procedure(const AString: WideString);
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  TUnicodeStrIterateProcedure = procedure(const AString: UnicodeString);
+  {$ENDIF SUPPORTS_UNICODE_STRING}
+  {$IFDEF CONTAINER_ANSISTR}
+  TStrIterateProcedure = TAnsiStrIterateProcedure;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TStrIterateProcedure = TWideStrIterateProcedure;
+  {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  TStrIterateProcedure = TUnicodeStrIterateProcedure;
+  {$ENDIF CONTAINER_UNICODESTR}
+  TSingleIterateProcedure = procedure(const AValue: Single);
+  TDoubleIterateProcedure = procedure(const AValue: Double);
+  TExtendedIterateProcedure = procedure(const AValue: Extended);
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TFloatIterateProcedure = TSingleIterateProcedure;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TFloatIterateProcedure = TDoubleIterateProcedure;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TFloatIterateProcedure = TExtendedIterateProcedure;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+  TIntegerIterateProcedure = procedure(AValue: Integer);
+  TCardinalIterateProcedure = procedure(AValue: Cardinal);
+  TInt64IterateProcedure = procedure(const AValue: Int64);
+  TPtrIterateProcedure = procedure(APtr: Pointer);
+  TIterateProcedure = procedure(AObject: TObject);
+  {$IFDEF SUPPORTS_GENERICS}
+  TIterateProcedure<T> = procedure(const AItem: T);
+  {$ENDIF SUPPORTS_GENERICS}
+
   // apply functions Type -> Type
 
   TIntfApplyFunction = function(const AInterface: IInterface): IInterface;

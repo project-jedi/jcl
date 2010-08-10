@@ -78,6 +78,10 @@ function WideStrSimpleHashConvertI(const AString: WideString): Integer;
 function UnicodeStrSimpleHashConvertI(const AString: UnicodeString): Integer;
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
+// Iterate algorithms
+(*$JPPLOOP TRUETYPEINDEX TRUETYPECOUNT
+{$JPPEXPANDMACRO ITERATEINT(Iterate,,, overload;)}*)
+
 // Apply algorithms
 (*$JPPLOOP TRUETYPEINDEX TRUETYPECOUNT
 {$JPPEXPANDMACRO APPLYINT(Apply,,, overload;)}*)
@@ -138,6 +142,7 @@ type
   private
     //FSortProc: TSortProc;
   public
+    class {$JPPEXPANDMACRO ITERATEINT(Iterate,IJclIterator<T>,TIterateProcedure<T>,)}
     class {$JPPEXPANDMACRO APPLYINT(Apply,IJclIterator<T>,TApplyFunction<T>,)}
     class {$JPPEXPANDMACRO FINDINT(Find,IJclIterator<T>,const ,AItem,T,TCompare<T>, overload;)}
     class {$JPPEXPANDMACRO FINDEQINT(Find,IJclIterator<T>,const ,AItem,T,TEqualityCompare<T>, overload;)}
@@ -762,6 +767,9 @@ begin
 end;
 
 (*$JPPLOOP TRUETYPEINDEX TRUETYPECOUNT
+{$JPPEXPANDMACRO ITERATEIMP(Iterate,,)}
+*)
+(*$JPPLOOP TRUETYPEINDEX TRUETYPECOUNT
 {$JPPEXPANDMACRO APPLYIMP(Apply,,,)}
 *)
 (*$JPPLOOP TRUETYPEINDEX TRUETYPECOUNT
@@ -853,6 +861,8 @@ begin
 end;
 
 {$IFDEF SUPPORTS_GENERICS}
+class {$JPPEXPANDMACRO ITERATEIMP(TJclAlgorithms<T>.Iterate,IJclIterator<T>,TIterateProcedure<T>)}
+
 class {$JPPEXPANDMACRO APPLYIMP(TJclAlgorithms<T>.Apply,IJclIterator<T>,TApplyFunction<T>,SetItem)}
 
 class {$JPPEXPANDMACRO FINDIMP(TJclAlgorithms<T>.Find,IJclIterator<T>,const ,AItem,T,TCompare<T>)}

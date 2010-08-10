@@ -66,6 +66,25 @@ type
     property ProcName: string read GetProcName write SetProcName stored False;
   end;
 
+  (* ITERATEINT(PROCNAME, ITRINTERFACENAME, CALLBACKTYPE, OVERLOAD) *)
+  TJclIterateIntParams = class(TJclAlgorithmsIntProcParams)
+  protected
+    function GetProcName: string; override;
+  published
+    property Overload;
+    property ProcName;
+    property ItrInterfaceName: string index taIteratorInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
+    property CallbackType: string index taIterateProcedureName read GetTypeAttribute write SetTypeAttribute stored False;
+  end;
+
+  (* ITERATEIMP(PROCNAME, ITRINTERFACENAME, CALLBACKTYPE) *)
+  TJclIterateImpParams = class(TJclAlgorithmsImpProcParams)
+  published
+    property ProcName;
+    property ItrInterfaceName: string index taIteratorInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
+    property CallbackType: string index taIterateProcedureName read GetTypeAttribute write SetTypeAttribute stored False;
+  end;
+
   (* APPLYINT(PROCNAME, ITRINTERFACENAME, CALLBACKTYPE, OVERLOAD) *)
   TJclApplyIntParams = class(TJclAlgorithmsIntProcParams)
   protected
@@ -341,6 +360,7 @@ implementation
 
 procedure RegisterJclContainers;
 begin
+  RegisterContainerParams('ITERATEINT', TJclIterateIntParams);
   RegisterContainerParams('APPLYINT', TJclApplyIntParams);
   RegisterContainerParams('SIMPLECOMPAREINT', TJclSimpleCompareIntParams);
   RegisterContainerParams('SIMPLEEQUALITYCOMPAREINT', TJclSimpleEqualityCompareIntParams);
@@ -355,6 +375,7 @@ begin
   RegisterContainerParams('REVERSEINT', TJclReverseIntParams);
   RegisterContainerParams('SORTINT', TJclSortIntParams);
 
+  RegisterContainerParams('ITERATEIMP', TJclIterateImpParams, TJclIterateIntParams);
   RegisterContainerParams('APPLYIMP', TJclApplyImpParams, TJclApplyIntParams);
   RegisterContainerParams('FINDIMP', TJclFindImpParams, TJclFindIntParams);
   RegisterContainerParams('FINDEQIMP', TJclFindEqImpParams, TJclFindEqIntParams);
@@ -390,6 +411,15 @@ end;
 procedure TJclAlgorithmsImpProcParams.SetProcName(const Value: string);
 begin
   (InterfaceParams as TJclAlgorithmsIntProcParams).ProcName := Value;
+end;
+
+//=== { TJclIterateIntParams } ===============================================
+
+function TJclIterateIntParams.GetProcName: string;
+begin
+  Result := inherited GetProcName;
+  if Result = '' then
+    Result := 'Iterate';
 end;
 
 //=== { TJclApplyIntParams } =================================================

@@ -1,3 +1,14 @@
+(*$JPPDEFINEMACRO ITERATEIMP(PROCNAME, ITRINTERFACENAME, CALLBACKTYPE)
+procedure PROCNAME(const First: ITRINTERFACENAME; Count: Integer; F: CALLBACKTYPE);
+var
+  I: Integer;
+begin
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+      F(First.Next)
+    else
+      Break;
+end;*)
 (*$JPPDEFINEMACRO APPLYIMP(PROCNAME, ITRINTERFACENAME, CALLBACKTYPE, SETTERNAME)
 procedure PROCNAME(const First: ITRINTERFACENAME; Count: Integer; F: CALLBACKTYPE);
 var

@@ -64,6 +64,13 @@ const
 type
   // function pointer types
 
+  // iterate functions Type -> (void)
+(*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
+  {$JPPEXPANDMACRO ITERPROCEDURE(,,,)}*)
+  {$IFDEF SUPPORTS_GENERICS}
+  {$JPPEXPANDMACRO ITERPROCEDURE(TIterateProcedure<T>,const ,AItem,T)}
+  {$ENDIF SUPPORTS_GENERICS}
+
   // apply functions Type -> Type
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
   {$JPPEXPANDMACRO APPLYFUNCTION(,,,)}*)

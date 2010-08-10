@@ -126,6 +126,23 @@ function WideStrSimpleHashConvertI(const AString: WideString): Integer;
 function UnicodeStrSimpleHashConvertI(const AString: UnicodeString): Integer;
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
+// Iterate algorithms
+
+procedure Iterate(const First: IJclIntfIterator; Count: Integer; F: TIntfIterateProcedure); overload;
+procedure Iterate(const First: IJclAnsiStrIterator; Count: Integer; F: TAnsiStrIterateProcedure); overload;
+procedure Iterate(const First: IJclWideStrIterator; Count: Integer; F: TWideStrIterateProcedure); overload;
+{$IFDEF SUPPORTS_UNICODE_STRING}
+procedure Iterate(const First: IJclUnicodeStrIterator; Count: Integer; F: TUnicodeStrIterateProcedure); overload;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+procedure Iterate(const First: IJclSingleIterator; Count: Integer; F: TSingleIterateProcedure); overload;
+procedure Iterate(const First: IJclDoubleIterator; Count: Integer; F: TDoubleIterateProcedure); overload;
+procedure Iterate(const First: IJclExtendedIterator; Count: Integer; F: TExtendedIterateProcedure); overload;
+procedure Iterate(const First: IJclIntegerIterator; Count: Integer; F: TIntegerIterateProcedure); overload;
+procedure Iterate(const First: IJclCardinalIterator; Count: Integer; F: TCardinalIterateProcedure); overload;
+procedure Iterate(const First: IJclInt64Iterator; Count: Integer; F: TInt64IterateProcedure); overload;
+procedure Iterate(const First: IJclPtrIterator; Count: Integer; F: TPtrIterateProcedure); overload;
+procedure Iterate(const First: IJclIterator; Count: Integer; F: TIterateProcedure); overload;
+
 // Apply algorithms
 
 procedure Apply(const First: IJclIntfIterator; Count: Integer; F: TIntfApplyFunction); overload;
@@ -389,6 +406,7 @@ type
   private
     //FSortProc: TSortProc;
   public
+    class procedure Iterate(const First: IJclIterator<T>; Count: Integer; F: TIterateProcedure<T>);
     class procedure Apply(const First: IJclIterator<T>; Count: Integer; F: TApplyFunction<T>);
     class function Find(const First: IJclIterator<T>; Count: Integer; const AItem: T;
       AComparator: TCompare<T>): IJclIterator<T>; overload;
@@ -1015,6 +1033,141 @@ end;
 function SimpleHashConvert(AObject: TObject): Integer;
 begin
   Result := Integer(AObject) and MaxInt;
+end;
+
+
+procedure Iterate(const First: IJclIntfIterator; Count: Integer; F: TIntfIterateProcedure);
+var
+  I: Integer;
+begin
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+      F(First.Next)
+    else
+      Break;
+end;
+
+procedure Iterate(const First: IJclAnsiStrIterator; Count: Integer; F: TAnsiStrIterateProcedure);
+var
+  I: Integer;
+begin
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+      F(First.Next)
+    else
+      Break;
+end;
+
+procedure Iterate(const First: IJclWideStrIterator; Count: Integer; F: TWideStrIterateProcedure);
+var
+  I: Integer;
+begin
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+      F(First.Next)
+    else
+      Break;
+end;
+
+{$IFDEF SUPPORTS_UNICODE_STRING}
+procedure Iterate(const First: IJclUnicodeStrIterator; Count: Integer; F: TUnicodeStrIterateProcedure);
+var
+  I: Integer;
+begin
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+      F(First.Next)
+    else
+      Break;
+end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
+procedure Iterate(const First: IJclSingleIterator; Count: Integer; F: TSingleIterateProcedure);
+var
+  I: Integer;
+begin
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+      F(First.Next)
+    else
+      Break;
+end;
+
+procedure Iterate(const First: IJclDoubleIterator; Count: Integer; F: TDoubleIterateProcedure);
+var
+  I: Integer;
+begin
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+      F(First.Next)
+    else
+      Break;
+end;
+
+procedure Iterate(const First: IJclExtendedIterator; Count: Integer; F: TExtendedIterateProcedure);
+var
+  I: Integer;
+begin
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+      F(First.Next)
+    else
+      Break;
+end;
+
+procedure Iterate(const First: IJclIntegerIterator; Count: Integer; F: TIntegerIterateProcedure);
+var
+  I: Integer;
+begin
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+      F(First.Next)
+    else
+      Break;
+end;
+
+procedure Iterate(const First: IJclCardinalIterator; Count: Integer; F: TCardinalIterateProcedure);
+var
+  I: Integer;
+begin
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+      F(First.Next)
+    else
+      Break;
+end;
+
+procedure Iterate(const First: IJclInt64Iterator; Count: Integer; F: TInt64IterateProcedure);
+var
+  I: Integer;
+begin
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+      F(First.Next)
+    else
+      Break;
+end;
+
+procedure Iterate(const First: IJclPtrIterator; Count: Integer; F: TPtrIterateProcedure);
+var
+  I: Integer;
+begin
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+      F(First.Next)
+    else
+      Break;
+end;
+
+procedure Iterate(const First: IJclIterator; Count: Integer; F: TIterateProcedure);
+var
+  I: Integer;
+begin
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+      F(First.Next)
+    else
+      Break;
 end;
 
 
@@ -3125,6 +3278,17 @@ begin
 end;
 
 {$IFDEF SUPPORTS_GENERICS}
+class procedure TJclAlgorithms<T>.Iterate(const First: IJclIterator<T>; Count: Integer; F: TIterateProcedure<T>);
+var
+  I: Integer;
+begin
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+      F(First.Next)
+    else
+      Break;
+end;
+
 class procedure TJclAlgorithms<T>.Apply(const First: IJclIterator<T>; Count: Integer; F: TApplyFunction<T>);
 var
   I: Integer;

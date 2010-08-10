@@ -20,7 +20,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -59,6 +59,7 @@ type
     taArrayName,
     taBaseContainer,
     taBaseCollection,
+    taIterateProcedureName,
     taApplyFunctionName,
     taCompareFunctionName,
     taSimpleCompareFunctionName,
@@ -199,6 +200,7 @@ const
       {ArrayName} (IsGUID: False; DefaultValue: '%ss'),
       {BaseContainer} (IsGUID: False; DefaultValue: ''),
       {BaseCollection} (IsGUID: False; DefaultValue: ''),
+      {IterateProcedureName} (IsGUID: False; DefaultValue: 'T%sIterateFunction'),
       {ApplyFunctionName} (IsGUID: False; DefaultValue: 'T%sApplyFunction'),
       {CompareFunctionName} (IsGUID: False; DefaultValue: 'T%sCompareFunction'),
       {SimpleCompareFunctionName} (IsGUID: False; DefaultValue: '%sSimpleCompare'),

@@ -66,6 +66,17 @@ type
     function GetAncestorName: string; override;
   end;
 
+  (* ITERPROCEDURE(PROCNAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME) *)
+  TJclIterProcedureParams = class(TJclContainerIntf1DParams)
+  public
+    function AliasAttributeIDs: TAllTypeAttributeIDs; override;
+  published
+    property ProcName: string index taIterateProcedureName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
+    property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
+    property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
+    property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
+  end;
+
   (* APPLYFUNCTION(FUNCNAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME) *)
   TJclApplyFunctionParams = class(TJclContainerIntf1DParams)
   public
@@ -350,7 +361,8 @@ implementation
 
 procedure RegisterJclContainers;
 begin
-   RegisterContainerParams('APPLYFUNCTION', TJclApplyFunctionParams);
+  RegisterContainerParams('ITERPROCEDURE', TJclIterProcedureParams);
+  RegisterContainerParams('APPLYFUNCTION', TJclApplyFunctionParams);
   RegisterContainerParams('COMPAREFUNCTION', TJclCompareFunctionParams);
   RegisterContainerParams('EQUALITYCOMPAREFUNCTION', TJclEqualityCompareFunctionParams);
   RegisterContainerParams('HASHFUNCTION', TJclHashFunctionParams);
@@ -414,6 +426,13 @@ begin
     Result := TypeInfo.TypeAttributes[taContainerInterfaceName];
   if Result = '' then
     Result := 'IJclContainer';
+end;
+
+//=== { TJclIterProcedureParams } ============================================
+
+function TJclIterProcedureParams.AliasAttributeIDs: TAllTypeAttributeIDs;
+begin
+  Result := [taIterateProcedureName];
 end;
 
 //=== { TJclApplyFunctionParams } ============================================
