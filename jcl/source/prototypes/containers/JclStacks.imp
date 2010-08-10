@@ -36,18 +36,18 @@ procedure SELFCLASSNAME.Clear;
 var
   I: Integer;
 begin
-  {$JPPEXPANDMACRO WRITEBEGIN}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO LOCK}
     for I := 0 to FSize - 1 do
       RELEASERNAME(FElements[I]);
     FSize := 0;
-  {$JPPEXPANDMACRO WRITEEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.Contains(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 var
   I: Integer;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
     Result := False;
     for I := 0 to FSize - 1 do
       if ItemsEqual(FElements[I], PARAMETERNAME) then
@@ -55,7 +55,7 @@ begin
         Result := True;
         Break;
       end;
-  {$JPPEXPANDMACRO READEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.Empty: Boolean;
@@ -65,19 +65,19 @@ end;
 
 function SELFCLASSNAME.Peek: TYPENAME;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
     Result := DEFAULTVALUE;
     if FSize > 0 then
       Result := FElements[FSize - 1]
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
-  {$JPPEXPANDMACRO READEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.Pop: TYPENAME;
 begin
-  {$JPPEXPANDMACRO WRITEBEGIN}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO LOCK}
     Result := DEFAULTVALUE;
     if FSize > 0 then
     begin
@@ -89,12 +89,12 @@ begin
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
     AutoPack;
-  {$JPPEXPANDMACRO WRITEEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.Push(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 begin
-  {$JPPEXPANDMACRO WRITEBEGIN}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO LOCK}
     if FSize = FCapacity then
       AutoGrow;
     Result := FSize < FCapacity;
@@ -103,17 +103,17 @@ begin
       FElements[FSize] := PARAMETERNAME;
       Inc(FSize);
     end;
-  {$JPPEXPANDMACRO WRITEEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 procedure SELFCLASSNAME.SetCapacity(Value: Integer);
 begin
-  {$JPPEXPANDMACRO WRITEBEGIN}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO LOCK}
     if Value < FSize then
       raise EJclOutOfBoundsError.Create;
     SetLength(FElements, Value);
     inherited SetCapacity(Value);
-  {$JPPEXPANDMACRO WRITEEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.Size: Integer;

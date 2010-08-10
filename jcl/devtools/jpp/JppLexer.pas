@@ -64,7 +64,9 @@ type
     ptDefine, ptUndef, ptIfdef, ptIfndef, ptIfopt, ptElse, ptEndif,
     ptInclude, ptJppDefineMacro, ptJppExpandMacro, ptJppUndefMacro,
     ptJppGetStrValue, ptJppGetIntValue, ptJppGetBoolValue,
-    ptJppSetStrValue, ptJppSetIntValue, ptJppSetBoolValue, ptJppLoop);
+    ptJppSetStrValue, ptJppSetIntValue, ptJppSetBoolValue, ptJppLoop,
+    // same as $DEFINE and $UNDEF but they will not be written to the final file
+    ptJppDefine, ptJppUndef);
 
   EJppLexerError = class(Exception);
 
@@ -145,6 +147,8 @@ begin
   AddToken('jppsetintvalue', ptJppSetIntValue);
   AddToken('jppsetboolvalue', ptJppSetBoolValue);
   AddToken('jpploop', ptJppLoop);
+  AddToken('jppdefine', ptJppDefine);
+  AddToken('jppundef', ptJppUndef);
 
   FBuf := ABuffer;
   Reset;
@@ -217,6 +221,8 @@ procedure TJppLexer.NextTok;
         ptUndef,
         ptIfdef,
         ptIfndef,
+        ptJppDefine,
+        ptJppUndef,
         ptJppGetStrValue,
         ptJppGetIntValue,
         ptJppGetBoolValue,

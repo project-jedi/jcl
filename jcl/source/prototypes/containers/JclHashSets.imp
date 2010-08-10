@@ -15,18 +15,18 @@ end;
 
 function SELFCLASSNAME.Add(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 begin
-  {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FMap)}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO DELEGATELOCK(FMap)}
     Result := not FMap.ContainsKey(PARAMETERNAME);
     if Result then
       FMap.PutValue(PARAMETERNAME, RefUnique);
-  {$JPPEXPANDMACRO DELEGATEWRITEEND(FMap)}
+  {$JPPEXPANDMACRO DELEGATEUNLOCK(FMap)}
 end;
 
 function SELFCLASSNAME.AddAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   It: ITRINTERFACENAME;
 begin
-  {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FMap)}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO DELEGATELOCK(FMap)}
     Result := False;
     if ACollection = nil then
       Exit;
@@ -34,7 +34,7 @@ begin
     It := ACollection.First;
     while It.HasNext do
       Result := Add(It.Next) and Result;
-  {$JPPEXPANDMACRO DELEGATEWRITEEND(FMap)}
+  {$JPPEXPANDMACRO DELEGATEUNLOCK(FMap)}
 end;
 
 procedure SELFCLASSNAME.AssignDataTo(Dest: TJclAbstractContainerBase);
@@ -53,7 +53,7 @@ function SELFCLASSNAME.CollectionEquals(const ACollection: COLLECTIONINTERFACENA
 var
   It, ItMap: ITRINTERFACENAME;
 begin
-  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FMap)}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO DELEGATELOCK(FMap)}
     Result := False;
     if ACollection = nil then
       Exit;
@@ -68,7 +68,7 @@ begin
         Result := False;
         Exit;
       end;
-  {$JPPEXPANDMACRO DELEGATEREADEND(FMap)}
+  {$JPPEXPANDMACRO DELEGATEUNLOCK(FMap)}
 end;
 
 function SELFCLASSNAME.Contains(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
@@ -80,7 +80,7 @@ function SELFCLASSNAME.ContainsAll(const ACollection: COLLECTIONINTERFACENAME): 
 var
   It: ITRINTERFACENAME;
 begin
-  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FMap)}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO DELEGATELOCK(FMap)}
     Result := False;
     if ACollection = nil then
       Exit;
@@ -88,7 +88,7 @@ begin
     It := ACollection.First;
     while Result and It.HasNext do
       Result := FMap.ContainsKey(It.Next);
-  {$JPPEXPANDMACRO DELEGATEREADEND(FMap)}
+  {$JPPEXPANDMACRO DELEGATEUNLOCK(FMap)}
 end;
 
 function SELFCLASSNAME.Extract(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
@@ -101,7 +101,7 @@ var
   It: ITRINTERFACENAME;
   ARefUnique: TRefUnique;
 begin
-  {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FMap)}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO DELEGATELOCK(FMap)}
     Result := False;
     if ACollection = nil then
       Exit;
@@ -110,7 +110,7 @@ begin
     It := ACollection.First;
     while It.HasNext do
       Result := (FMap.Extract(It.Next) = ARefUnique) and Result;
-  {$JPPEXPANDMACRO DELEGATEWRITEEND(FMap)}
+  {$JPPEXPANDMACRO DELEGATEUNLOCK(FMap)}
 end;
 
 function SELFCLASSNAME.First: ITRINTERFACENAME;
@@ -200,7 +200,7 @@ var
   It: ITRINTERFACENAME;
   ARefUnique: TRefUnique;
 begin
-  {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FMap)}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO DELEGATELOCK(FMap)}
     Result := False;
     if ACollection = nil then
       Exit;
@@ -209,14 +209,14 @@ begin
     It := ACollection.First;
     while It.HasNext do
       Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
-  {$JPPEXPANDMACRO DELEGATEWRITEEND(FMap)}
+  {$JPPEXPANDMACRO DELEGATEUNLOCK(FMap)}
 end;
 
 function SELFCLASSNAME.RetainAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   ItMap: ITRINTERFACENAME;
 begin
-  {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FMap)}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO DELEGATELOCK(FMap)}
     Result := False;
     if ACollection = nil then
       Exit;
@@ -225,7 +225,7 @@ begin
     while ItMap.HasNext do
       if not ACollection.Contains(ItMap.Next) then
         ItMap.Remove;
-  {$JPPEXPANDMACRO DELEGATEWRITEEND(FMap)}
+  {$JPPEXPANDMACRO DELEGATEUNLOCK(FMap)}
 end;
 
 procedure SELFCLASSNAME.SetAutoPackParameter(Value: Integer);

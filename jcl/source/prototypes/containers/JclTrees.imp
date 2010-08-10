@@ -16,7 +16,7 @@ function BASEITRCLASSNAME.Add(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 var
   ParentNode, NewNode: NODETYPENAME;
 begin
-  {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FOwnTree)}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO DELEGATELOCK(FOwnTree)}
     // add sibling or, if FCursor is root node, behave like TREECLASSNAME.Add
     Result := (FCursor <> nil) and (FOwnTree.AllowDefaultElements or not FEqualityComparer.ItemsEqual(PARAMETERNAME, DEFAULTVALUE))
       and ((not FOwnTree.Contains(PARAMETERNAME)) or FOwnTree.CheckDuplicate);
@@ -39,14 +39,14 @@ begin
         Inc(FOwnTree.FSize);
       end;
     end;
-  {$JPPEXPANDMACRO DELEGATEWRITEEND(FOwnTree)}
+  {$JPPEXPANDMACRO DELEGATEUNLOCK(FOwnTree)}
 end;
 
 function BASEITRCLASSNAME.AddChild(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 var
   NewNode: NODETYPENAME;
 begin
-  {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FOwnTree)}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO DELEGATELOCK(FOwnTree)}
     Result := (FCursor <> nil) and (FOwnTree.AllowDefaultElements or not FEqualityComparer.ItemsEqual(PARAMETERNAME, DEFAULTVALUE))
       and ((not FOwnTree.Contains(PARAMETERNAME)) or FOwnTree.CheckDuplicate);
 
@@ -64,7 +64,7 @@ begin
         Inc(FOwnTree.FSize);
       end;
     end;
-  {$JPPEXPANDMACRO DELEGATEWRITEEND(FOwnTree)}
+  {$JPPEXPANDMACRO DELEGATEUNLOCK(FOwnTree)}
 end;
 
 procedure BASEITRCLASSNAME.AssignPropertiesTo(Dest: TJclAbstractIterator);
@@ -84,17 +84,17 @@ end;
 
 function BASEITRCLASSNAME.ChildrenCount: Integer;
 begin
-  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO DELEGATELOCK(FOwnTree)}
     if FCursor <> nil then
       Result := FCursor.ChildrenCount
     else
       Result := 0;
-  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
+  {$JPPEXPANDMACRO DELEGATEUNLOCK(FOwnTree)}
 end;
 
 procedure BASEITRCLASSNAME.DeleteChild(Index: Integer);
 begin
-  {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FOwnTree)}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO DELEGATELOCK(FOwnTree)}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
       {$IFDEF BCB}
       FOwnTree.RemoveNode(NODETYPENAME(FCursor.Children[Index]))
@@ -103,14 +103,14 @@ begin
       {$ENDIF ~BCB}
     else
       raise EJclOutOfBoundsError.Create;
-  {$JPPEXPANDMACRO DELEGATEWRITEEND(FOwnTree)}
+  {$JPPEXPANDMACRO DELEGATEUNLOCK(FOwnTree)}
 end;
 
 procedure BASEITRCLASSNAME.DeleteChildren;
 var
   Index: Integer;
 begin
-  {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FOwnTree)}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO DELEGATELOCK(FOwnTree)}
     if FCursor <> nil then
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
@@ -122,26 +122,26 @@ begin
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
     end;
-  {$JPPEXPANDMACRO DELEGATEWRITEEND(FOwnTree)}
+  {$JPPEXPANDMACRO DELEGATEUNLOCK(FOwnTree)}
 end;
 
 procedure BASEITRCLASSNAME.Extract;
 var
   OldCursor: NODETYPENAME;
 begin
-  {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FOwnTree)}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO DELEGATELOCK(FOwnTree)}
     CheckValid;
     Valid := False;
     OldCursor := FCursor;
     FCursor := GetNextSibling;
     if OldCursor <> nil then
       FOwnTree.ExtractNode(OldCursor);
-  {$JPPEXPANDMACRO DELEGATEWRITEEND(FOwnTree)}
+  {$JPPEXPANDMACRO DELEGATEUNLOCK(FOwnTree)}
 end;
 
 procedure BASEITRCLASSNAME.ExtractChild(Index: Integer);
 begin
-  {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FOwnTree)}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO DELEGATELOCK(FOwnTree)}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
       {$IFDEF BCB}
       FOwnTree.ExtractNode(NODETYPENAME(FCursor.Children[Index]))
@@ -150,14 +150,14 @@ begin
       {$ENDIF ~BCB}
     else
       raise EJclOutOfBoundsError.Create;
-  {$JPPEXPANDMACRO DELEGATEWRITEEND(FOwnTree)}
+  {$JPPEXPANDMACRO DELEGATEUNLOCK(FOwnTree)}
 end;
 
 procedure BASEITRCLASSNAME.ExtractChildren;
 var
   Index: Integer;
 begin
-  {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FOwnTree)}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO DELEGATELOCK(FOwnTree)}
     if FCursor <> nil then
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
@@ -169,12 +169,12 @@ begin
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
     end;
-  {$JPPEXPANDMACRO DELEGATEWRITEEND(FOwnTree)}
+  {$JPPEXPANDMACRO DELEGATEUNLOCK(FOwnTree)}
 end;
 
 function BASEITRCLASSNAME.GetChild(Index: Integer): TYPENAME;
 begin
-  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO DELEGATELOCK(FOwnTree)}
     Result := DEFAULTVALUE;
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
       FCursor := NODETYPENAME(FCursor.Children[Index]);
@@ -183,12 +183,12 @@ begin
     else
     if not FOwnTree.ReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
-  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
+  {$JPPEXPANDMACRO DELEGATEUNLOCK(FOwnTree)}
 end;
 
 function BASEITRCLASSNAME.GETTERNAME: TYPENAME;
 begin
-  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO DELEGATELOCK(FOwnTree)}
     CheckValid;
     Result := DEFAULTVALUE;
     if FCursor <> nil then
@@ -196,51 +196,51 @@ begin
     else
     if not FOwnTree.ReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
-  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
+  {$JPPEXPANDMACRO DELEGATEUNLOCK(FOwnTree)}
 end;
 
 function BASEITRCLASSNAME.HasChild(Index: Integer): Boolean;
 begin
-  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO DELEGATELOCK(FOwnTree)}
     Result := (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount);
-  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
+  {$JPPEXPANDMACRO DELEGATEUNLOCK(FOwnTree)}
 end;
 
 function BASEITRCLASSNAME.HasNext: Boolean;
 begin
-  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO DELEGATELOCK(FOwnTree)}
     if Valid then
       Result := GetNextCursor <> nil
     else
       Result := FCursor <> nil;
-  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
+  {$JPPEXPANDMACRO DELEGATEUNLOCK(FOwnTree)}
 end;
 
 function BASEITRCLASSNAME.HasParent: Boolean;
 begin
-  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO DELEGATELOCK(FOwnTree)}
     Result := (FCursor <> nil) and (FCursor.Parent <> nil);
-  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
+  {$JPPEXPANDMACRO DELEGATEUNLOCK(FOwnTree)}
 end;
 
 function BASEITRCLASSNAME.HasPrevious: Boolean;
 begin
-  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO DELEGATELOCK(FOwnTree)}
     if Valid then
       Result := GetPreviousCursor <> nil
     else
       Result := FCursor <> nil;
-  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
+  {$JPPEXPANDMACRO DELEGATEUNLOCK(FOwnTree)}
 end;
 
 function BASEITRCLASSNAME.IndexOfChild(CONSTKEYWORDPARAMETERNAME: TYPENAME): Integer;
 begin
-  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO DELEGATELOCK(FOwnTree)}
     if FCursor <> nil then
       Result := FCursor.IndexOfValue(PARAMETERNAME, FEqualityComparer)
     else
       Result := -1;
-  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
+  {$JPPEXPANDMACRO DELEGATEUNLOCK(FOwnTree)}
 end;
 
 function BASEITRCLASSNAME.Insert(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
@@ -248,7 +248,7 @@ var
   ParentNode, NewNode: NODETYPENAME;
   Index, I: Integer;
 begin
-  {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FOwnTree)}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO DELEGATELOCK(FOwnTree)}
     // insert sibling or, if FCursor is root node, behave like TREECLASSNAME.Insert
     Result := (FCursor <> nil) and (FOwnTree.AllowDefaultElements or not FEqualityComparer.ItemsEqual(PARAMETERNAME, DEFAULTVALUE))
       and ((not FOwnTree.Contains(PARAMETERNAME)) or FOwnTree.CheckDuplicate);
@@ -282,7 +282,7 @@ begin
         Inc(FOwnTree.FSize);
       end;
     end;
-  {$JPPEXPANDMACRO DELEGATEWRITEEND(FOwnTree)}
+  {$JPPEXPANDMACRO DELEGATEUNLOCK(FOwnTree)}
 end;
 
 function BASEITRCLASSNAME.InsertChild(Index: Integer; CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
@@ -290,7 +290,7 @@ var
   NewNode: NODETYPENAME;
   I: Integer;
 begin
-  {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FOwnTree)}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO DELEGATELOCK(FOwnTree)}
     // insert sibling or, if FCursor is root node, behave like TREECLASSNAME.Insert
     Result := (FCursor <> nil) and (FOwnTree.AllowDefaultElements or not FEqualityComparer.ItemsEqual(PARAMETERNAME, DEFAULTVALUE))
       and ((not FOwnTree.Contains(PARAMETERNAME)) or FOwnTree.CheckDuplicate);
@@ -311,7 +311,7 @@ begin
         Inc(FOwnTree.FSize);
       end;
     end;
-  {$JPPEXPANDMACRO DELEGATEWRITEEND(FOwnTree)}
+  {$JPPEXPANDMACRO DELEGATEUNLOCK(FOwnTree)}
 end;
 
 function BASEITRCLASSNAME.IteratorEquals(const AIterator: STDITRINTERFACENAME): Boolean;
@@ -333,19 +333,19 @@ end;
 {$IFDEF SUPPORTS_FOR_IN}
 function BASEITRCLASSNAME.MoveNext: Boolean;
 begin
-  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO DELEGATELOCK(FOwnTree)}
     if Valid then
       FCursor := GetNextCursor
     else
       Valid := True;
     Result := FCursor <> nil;
-  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
+  {$JPPEXPANDMACRO DELEGATEUNLOCK(FOwnTree)}
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
 function BASEITRCLASSNAME.Next: TYPENAME;
 begin
-  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO DELEGATELOCK(FOwnTree)}
     if Valid then
       FCursor := GetNextCursor
     else
@@ -356,7 +356,7 @@ begin
     else
     if not FOwnTree.ReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
-  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
+  {$JPPEXPANDMACRO DELEGATEUNLOCK(FOwnTree)}
 end;
 
 function BASEITRCLASSNAME.NextIndex: Integer;
@@ -367,7 +367,7 @@ end;
 
 function BASEITRCLASSNAME.Parent: TYPENAME;
 begin
-  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO DELEGATELOCK(FOwnTree)}
     Result := DEFAULTVALUE;
     if FCursor <> nil then
       FCursor := FCursor.Parent;
@@ -376,12 +376,12 @@ begin
     else
     if not FOwnTree.ReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
-  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
+  {$JPPEXPANDMACRO DELEGATEUNLOCK(FOwnTree)}
 end;
 
 function BASEITRCLASSNAME.Previous: TYPENAME;
 begin
-  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO DELEGATELOCK(FOwnTree)}
     if Valid then
       FCursor := GetPreviousCursor
     else
@@ -392,7 +392,7 @@ begin
     else
     if not FOwnTree.ReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
-  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
+  {$JPPEXPANDMACRO DELEGATEUNLOCK(FOwnTree)}
 end;
 
 function BASEITRCLASSNAME.PreviousIndex: Integer;
@@ -405,21 +405,21 @@ procedure BASEITRCLASSNAME.Remove;
 var
   OldCursor: NODETYPENAME;
 begin
-  {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FOwnTree)}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO DELEGATELOCK(FOwnTree)}
     CheckValid;
     Valid := False;
     OldCursor := FCursor;
     FCursor := GetNextSibling;
     if OldCursor <> nil then
       FOwnTree.RemoveNode(OldCursor);
-  {$JPPEXPANDMACRO DELEGATEWRITEEND(FOwnTree)}
+  {$JPPEXPANDMACRO DELEGATEUNLOCK(FOwnTree)}
 end;
 
 procedure BASEITRCLASSNAME.Reset;
 var
   NewCursor: NODETYPENAME;
 begin
-  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO DELEGATELOCK(FOwnTree)}
     Valid := False;
     case FStart of
       isFirst:
@@ -448,29 +448,29 @@ begin
             FCursor := FCursor.Parent;
         end;
     end;
-  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
+  {$JPPEXPANDMACRO DELEGATEUNLOCK(FOwnTree)}
 end;
 
 procedure BASEITRCLASSNAME.SetChild(Index: Integer; CONSTKEYWORDPARAMETERNAME: TYPENAME);
 begin
-  {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FOwnTree)}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO DELEGATELOCK(FOwnTree)}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
       NODETYPENAME(FCursor.Children[Index]).Value := PARAMETERNAME
     else
       raise EJclOutOfBoundsError.Create;
-  {$JPPEXPANDMACRO DELEGATEWRITEEND(FOwnTree)}
+  {$JPPEXPANDMACRO DELEGATEUNLOCK(FOwnTree)}
 end;
 
 procedure BASEITRCLASSNAME.SETTERNAME(CONSTKEYWORDPARAMETERNAME: TYPENAME);
 begin
-  {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FOwnTree)}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO DELEGATELOCK(FOwnTree)}
     CheckValid;
     if FCursor <> nil then
     begin
       FOwnTree.RELEASERNAME(FCursor.Value);
       FCursor.Value := PARAMETERNAME;
     end;
-  {$JPPEXPANDMACRO DELEGATEWRITEEND(FOwnTree)}
+  {$JPPEXPANDMACRO DELEGATEUNLOCK(FOwnTree)}
 end;
 
 //=== { PREORDERITRCLASSNAME } ===================================================
@@ -646,7 +646,7 @@ function SELFCLASSNAME.Add(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 var
   NewNode: NODETYPENAME;
 begin
-  {$JPPEXPANDMACRO WRITEBEGIN}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO LOCK}
     Result := AllowDefaultElements or not ItemsEqual(PARAMETERNAME, DEFAULTVALUE);
 
     if Result then
@@ -678,14 +678,14 @@ begin
         Inc(FSize);
       end;
     end;
-  {$JPPEXPANDMACRO WRITEEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.AddAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   It: STDITRINTERFACENAME;
 begin
-  {$JPPEXPANDMACRO WRITEBEGIN}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO LOCK}
     Result := False;
     if ACollection = nil then
       Exit;
@@ -693,7 +693,7 @@ begin
     It := ACollection.First;
     while It.HasNext do
       Result := Add(It.Next) and Result;
-  {$JPPEXPANDMACRO WRITEEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 procedure SELFCLASSNAME.AssignDataTo(Dest: TJclAbstractContainerBase);
@@ -727,11 +727,11 @@ end;
 
 procedure SELFCLASSNAME.Clear;
 begin
-  {$JPPEXPANDMACRO WRITEBEGIN}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO LOCK}
     if FRoot <> nil then
       RemoveNode(FRoot);
     FSize := 0;
-  {$JPPEXPANDMACRO WRITEEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.CloneNode(Node, Parent: NODETYPENAME): NODETYPENAME;
@@ -751,7 +751,7 @@ function SELFCLASSNAME.CollectionEquals(const ACollection: COLLECTIONINTERFACENA
 var
   It, ItSelf: STDITRINTERFACENAME;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
     Result := False;
     if ACollection = nil then
       Exit;
@@ -766,38 +766,38 @@ begin
         Result := False;
         Break;
       end;
-  {$JPPEXPANDMACRO READEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.Contains(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
     if FRoot <> nil then
       Result := NodeContains(FRoot, PARAMETERNAME)
     else
       Result := False;
-  {$JPPEXPANDMACRO READEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.ContainsAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   It: STDITRINTERFACENAME;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
     Result := True;
     if ACollection = nil then
       Exit;
     It := ACollection.First;
     while Result and It.HasNext do
       Result := Contains(It.Next);
-  {$JPPEXPANDMACRO READEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.Extract(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 var
   It: STDITRINTERFACENAME;
 begin
-  {$JPPEXPANDMACRO WRITEBEGIN}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO LOCK}
     Result := FRoot <> nil;
     if Result then
     begin
@@ -810,14 +810,14 @@ begin
           Break;
       end;
     end;
-  {$JPPEXPANDMACRO WRITEEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.ExtractAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   It: STDITRINTERFACENAME;
 begin
-  {$JPPEXPANDMACRO WRITEBEGIN}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO LOCK}
     Result := False;
     if ACollection = nil then
       Exit;
@@ -825,7 +825,7 @@ begin
     It := ACollection.First;
     while It.HasNext do
       Result := Extract(It.Next) and Result;
-  {$JPPEXPANDMACRO WRITEEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 procedure SELFCLASSNAME.ExtractNode(var ANode: NODETYPENAME);
@@ -863,7 +863,7 @@ function SELFCLASSNAME.First: STDITRINTERFACENAME;
 var
   Start: NODETYPENAME;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
     Start := FRoot;
     case GetTraverseOrder of
       toPreOrder:
@@ -878,7 +878,7 @@ begin
     else
       Result := nil;
     end;
-  {$JPPEXPANDMACRO READEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -890,7 +890,7 @@ end;
 
 function SELFCLASSNAME.GetRoot: TREEITRINTERFACENAME;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
     case GetTraverseOrder of
       toPreOrder:
         Result := PREORDERITRCLASSNAME.Create(Self, FRoot, False, isRoot);
@@ -899,7 +899,7 @@ begin
     else
       Result := nil;
     end;
-  {$JPPEXPANDMACRO READEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.GetTraverseOrder: TJclTraverseOrder;
@@ -916,7 +916,7 @@ function SELFCLASSNAME.Last: STDITRINTERFACENAME;
 var
   Start: NODETYPENAME;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
     Start := FRoot;
     case FTraverseOrder of
       toPreOrder:
@@ -931,7 +931,7 @@ begin
     else
       Result := nil;
     end;
-  {$JPPEXPANDMACRO READEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.NodeContains(ANode: NODETYPENAME; CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
@@ -950,10 +950,10 @@ end;
 
 procedure SELFCLASSNAME.Pack;
 begin
-  {$JPPEXPANDMACRO WRITEBEGIN}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO LOCK}
     if FRoot <> nil then
       PackNode(FRoot);
-  {$JPPEXPANDMACRO WRITEEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 procedure SELFCLASSNAME.PackNode(ANode: NODETYPENAME);
@@ -969,21 +969,21 @@ function SELFCLASSNAME.Remove(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 var
   Extracted: TYPENAME;
 begin
-  {$JPPEXPANDMACRO WRITEBEGIN}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO LOCK}
     Result := Extract(PARAMETERNAME);
     if Result then
     begin
       Extracted := PARAMETERNAME;
       RELEASERNAME(Extracted);
     end;
-  {$JPPEXPANDMACRO WRITEEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.RemoveAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   It: STDITRINTERFACENAME;
 begin
-  {$JPPEXPANDMACRO WRITEBEGIN}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO LOCK}
     Result := False;
     if ACollection = nil then
       Exit;
@@ -991,7 +991,7 @@ begin
     It := ACollection.First;
     while It.HasNext do
       Result := Remove(It.Next) and Result;
-  {$JPPEXPANDMACRO WRITEEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 procedure SELFCLASSNAME.RemoveNode(var ANode: NODETYPENAME);
@@ -1030,7 +1030,7 @@ function SELFCLASSNAME.RetainAll(const ACollection: COLLECTIONINTERFACENAME): Bo
 var
   It: STDITRINTERFACENAME;
 begin
-  {$JPPEXPANDMACRO WRITEBEGIN}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO LOCK}
     Result := False;
     if ACollection = nil then
       Exit;
@@ -1039,7 +1039,7 @@ begin
     while It.HasNext do
       if not ACollection.Contains(It.Next) then
         It.Remove;
-  {$JPPEXPANDMACRO WRITEEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 procedure SELFCLASSNAME.SetCapacity(Value: Integer);

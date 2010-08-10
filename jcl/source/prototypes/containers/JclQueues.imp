@@ -43,7 +43,7 @@ procedure SELFCLASSNAME.Clear;
 var
   I: Integer;
 begin
-  {$JPPEXPANDMACRO WRITEBEGIN}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO LOCK}
      I := FHead;
      while I <> FTail do
      begin
@@ -54,14 +54,14 @@ begin
      end;
      FHead := 0;
      FTail := 0;
-  {$JPPEXPANDMACRO WRITEEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.Contains(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 var
   I: Integer;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
     Result := False;
     I := FHead;
     while I <> FTail do
@@ -75,12 +75,12 @@ begin
       if I = FCapacity then
         I := 0;
     end;
-  {$JPPEXPANDMACRO READEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.Dequeue: TYPENAME;
 begin
-  {$JPPEXPANDMACRO WRITEBEGIN}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO LOCK}
     Result := DEFAULTVALUE;
     if FTail <> FHead then
     begin
@@ -94,19 +94,19 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
-  {$JPPEXPANDMACRO WRITEEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.Empty: Boolean;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
     Result := FTail = FHead;
-  {$JPPEXPANDMACRO READEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.Enqueue(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 begin
-  {$JPPEXPANDMACRO WRITEBEGIN}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO LOCK}
     if (FTail = (FHead - 1)) or (FTail = (FHead + FCapacity - 1)) then
       AutoGrow;
     Result := (FTail <> (FHead - 1)) and (FTail <> (FHead + FCapacity - 1));
@@ -117,33 +117,33 @@ begin
       if FTail = FCapacity then
         FTail := 0;
     end;
-  {$JPPEXPANDMACRO WRITEEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 procedure SELFCLASSNAME.Pack;
 begin
-  {$JPPEXPANDMACRO WRITEBEGIN}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO LOCK}
     SetCapacity(Size + 1);
-  {$JPPEXPANDMACRO WRITEEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.Peek: TYPENAME;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
     Result := DEFAULTVALUE;
     if FTail <> FHead then
       Result := FElements[FHead]
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
-  {$JPPEXPANDMACRO READEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 procedure SELFCLASSNAME.SetCapacity(Value: Integer);
 var
   NewHead: Integer;
 begin
-  {$JPPEXPANDMACRO WRITEBEGIN}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO LOCK}
     if Value < 1 then
       raise EJclIllegalQueueCapacityError.Create;
     if Value <= Size then
@@ -173,15 +173,15 @@ begin
       SetLength(FElements, Value);
     end;
     inherited SetCapacity(Value);
-  {$JPPEXPANDMACRO WRITEEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.Size: Integer;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
     if FHead > FTail then
       Result := FCapacity - FHead + FTail  // looped
     else
       Result := FTail - FHead;
-  {$JPPEXPANDMACRO READEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;*)

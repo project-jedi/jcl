@@ -76,8 +76,8 @@ type
     procedure ParseCondition(Token: TJppToken);
     function ParseInclude: string;
 
-    procedure ParseDefine;
-    procedure ParseUndef;
+    procedure ParseDefine(Skip: Boolean);
+    procedure ParseUndef(Skip: Boolean);
 
     procedure ParseDefineMacro;
     procedure ParseExpandMacro;
@@ -299,10 +299,12 @@ begin
         case TempLexer.CurrTok of
           ptEof:
             Break;
-          ptDefine:
+          ptDefine,
+          ptJppDefine:
             if poProcessDefines in State.Options then
               State.Define(TempLexer.TokenAsString);
-          ptUndef:
+          ptUndef,
+          ptJppUndef:
             if poProcessDefines in State.Options then
               State.Undef(TempLexer.TokenAsString);
           ptIfdef, ptIfndef:
@@ -459,6 +461,8 @@ begin
     ptIfopt,
     ptElse,
     ptEndif,
+    ptJppDefine,
+    ptJppUndef,
     ptJppDefineMacro,
     ptJppExpandMacro,
     ptJppUndefMacro,
@@ -563,7 +567,7 @@ begin
   NextToken;
 end;
 
-procedure TJppParser.ParseDefine;
+procedure TJppParser.ParseDefine(Skip: Boolean);
 var
   Condition: string;
 begin
@@ -574,9 +578,10 @@ begin
     ttUndef:
       begin
         State.Defines[Lexer.TokenAsString] := ttDefined;
-        AddResult(Lexer.RawComment);
+        if not Skip then
+          AddResult(Lexer.RawComment);
       end;
-    // the symbol is already defined
+    // the symbol is already defined, always skip it
     ttDefined: ;
   end;
   NextToken;
@@ -609,15 +614,20 @@ var
   ParamNames: TDynStringArray;
 begin
   MacroText := Lexer.TokenAsString;
-  // expand the macro
   ParseMacro(MacroText, MacroName, ParamNames, False);
-  AResult := State.ExpandMacro(MacroName, ParamNames);
-  // add result to buffer
-  AddResult(AResult, True, True);
+  // macros are expanded in a sub-state
+  State.PushState;
+  try
+    AResult := State.ExpandMacro(MacroName, ParamNames);
+    // add result to buffer
+    AddResult(AResult, True, True);
+  finally
+    State.PopState;
+  end;
   NextToken;
 end;
 
-procedure TJppParser.ParseUndef;
+procedure TJppParser.ParseUndef(Skip: Boolean);
 var
   Condition: string;
 begin
@@ -628,9 +638,10 @@ begin
     ttDefined:
       begin
         State.Defines[Lexer.TokenAsString] := ttUndef;
-        AddResult(Lexer.RawComment);
+        if not Skip then
+          AddResult(Lexer.RawComment);
       end;
-    // the symbol is already defined
+    // the symbol is already defined, skip it
     ttUndef: ;
   end;
   NextToken;
@@ -850,13 +861,17 @@ begin
         NextToken;
       end;
 
-      ptDefine, ptUndef, ptIfdef, ptIfndef, ptIfopt:
+      ptDefine, ptJppDefine, ptUndef, ptJppUndef, ptIfdef, ptIfndef, ptIfopt:
         if poProcessDefines in State.Options then
           case Lexer.CurrTok of
             ptDefine:
-              ParseDefine;
+              ParseDefine(False);
+            ptJppDefine:
+              ParseDefine(True);
             ptUndef:
-              ParseUndef;
+              ParseUndef(False);
+            ptJppUndef:
+              ParseUndef(True);
             ptIfdef:
               ParseCondition(ptIfdef);
             ptIfndef:

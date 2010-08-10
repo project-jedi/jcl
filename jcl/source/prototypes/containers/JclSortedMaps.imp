@@ -37,7 +37,7 @@ var
   HiPos, LoPos, CompPos: Integer;
   Comp: Integer;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
     LoPos := 0;
     HiPos := FSize - 1;
     CompPos := (HiPos + LoPos) div 2;
@@ -57,14 +57,14 @@ begin
       CompPos := (HiPos + LoPos) div 2;
     end;
     Result := HiPos;
-  {$JPPEXPANDMACRO READEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 procedure SELFCLASSNAME.Clear;
 var
   Index: Integer;
 begin
-  {$JPPEXPANDMACRO WRITEBEGIN}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO LOCK}
     for Index := 0 to FSize - 1 do
     begin
       FreeKey(FEntries[Index].Key);
@@ -72,24 +72,24 @@ begin
     end;
     FSize := 0;
     AutoPack;
-  {$JPPEXPANDMACRO WRITEEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.ContainsKey(KEYCONSTKEYWORDKey: KEYTYPENAME): Boolean;
 var
   Index: Integer;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
     Index := BinarySearch(Key);
     Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
-  {$JPPEXPANDMACRO READEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.ContainsValue(VALUECONSTKEYWORDValue: VALUETYPENAME): Boolean;
 var
   Index: Integer;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
     Result := False;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -97,26 +97,26 @@ begin
       Result := True;
       Break;
     end;
-  {$JPPEXPANDMACRO READEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.FirstKey: KEYTYPENAME;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
     Result := KEYDEFAULT;
     if FSize > 0 then
       Result := FEntries[0].Key
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
-  {$JPPEXPANDMACRO READEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.Extract(KEYCONSTKEYWORDKey: KEYTYPENAME): VALUETYPENAME;
 var
   Index: Integer;
 begin
-  {$JPPEXPANDMACRO WRITEBEGIN}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO LOCK}
     Index := BinarySearch(Key);
     if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
     begin
@@ -130,21 +130,21 @@ begin
     end
     else
       Result := VALUEDEFAULT;
-  {$JPPEXPANDMACRO WRITEEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.GetValue(KEYCONSTKEYWORDKey: KEYTYPENAME): VALUETYPENAME;
 var
   Index: Integer;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
     Index := BinarySearch(Key);
     Result := VALUEDEFAULT;
     if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
       Result := FEntries[Index].Value
     else if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
-  {$JPPEXPANDMACRO READEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.HeadMap(KEYCONSTKEYWORDToKey: KEYTYPENAME): SORTEDMAPINTERFACENAME;
@@ -152,7 +152,7 @@ var
   ToIndex: Integer;
   NewMap: SELFCLASSNAME;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
     NewMap := CreateEmptyContainer as SELFCLASSNAME;
     ToIndex := BinarySearch(ToKey);
     if ToIndex >= 0 then
@@ -166,14 +166,14 @@ begin
       end;
     end;
     Result := NewMap;
-  {$JPPEXPANDMACRO READEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.IsEmpty: Boolean;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
     Result := FSize = 0;
-  {$JPPEXPANDMACRO READEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.KeyOfValue(VALUECONSTKEYWORDValue: VALUETYPENAME): KEYTYPENAME;
@@ -181,7 +181,7 @@ var
   Index: Integer;
   Found: Boolean;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
    Found := False;
     Result := KEYDEFAULT;
     for Index := 0 to FSize - 1 do
@@ -194,30 +194,30 @@ begin
 
     if (not Found) and (not FReturnDefaultElements) then
       raise EJclNoSuchElementError.Create('');
-  {$JPPEXPANDMACRO READEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.KeySet: KEYSETINTERFACENAME;
 var
   Index: Integer;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
     Result := CREATEKEYSET;
     for Index := 0 to FSize - 1 do
       Result.Add(FEntries[Index].Key);
-  {$JPPEXPANDMACRO READEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.LastKey: KEYTYPENAME;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
     Result := KEYDEFAULT;
     if FSize > 0 then
       Result := FEntries[FSize - 1].Key
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
-  {$JPPEXPANDMACRO READEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.MapEquals(const AMap: STDMAPINTERFACENAME): Boolean;
@@ -226,7 +226,7 @@ var
   Index: Integer;
   AKey: KEYTYPENAME;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
     Result := False;
     if AMap = nil then
       Exit;
@@ -244,7 +244,7 @@ begin
       Inc(Index);
     end;
     Result := True;
-  {$JPPEXPANDMACRO READEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 procedure SELFCLASSNAME.MoveArray(FromIndex, ToIndex, Count: Integer);
@@ -276,7 +276,7 @@ var
   It: KEYITRINTERFACENAME;
   Key: KEYTYPENAME;
 begin
-  {$JPPEXPANDMACRO WRITEBEGIN}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO LOCK}
     if AMap = nil then
       Exit;
     It := AMap.KeySet.First;
@@ -285,14 +285,14 @@ begin
       Key := It.Next;
       PutValue(Key, AMap.GetValue(Key));
     end;
-  {$JPPEXPANDMACRO WRITEEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 procedure SELFCLASSNAME.PutValue(KEYCONSTKEYWORDKey: KEYTYPENAME; VALUECONSTKEYWORDValue: VALUETYPENAME);
 var
   Index: Integer;
 begin
-  {$JPPEXPANDMACRO WRITEBEGIN}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO LOCK}
     if FAllowDefaultElements or ((KeysCompare(Key, KEYDEFAULT) <> 0) and (ValuesCompare(Value, VALUEDEFAULT) <> 0)) then
     begin
       Index := BinarySearch(Key);
@@ -317,20 +317,20 @@ begin
         end;
       end;
     end;
-  {$JPPEXPANDMACRO WRITEEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.Remove(KEYCONSTKEYWORDKey: KEYTYPENAME): VALUETYPENAME;
 begin
-  {$JPPEXPANDMACRO WRITEBEGIN}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO LOCK}
     Result := Extract(Key);
     Result := FreeValue(Result);
-  {$JPPEXPANDMACRO WRITEEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 procedure SELFCLASSNAME.SetCapacity(Value: Integer);
 begin
-  {$JPPEXPANDMACRO WRITEBEGIN}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO LOCK}
     if FSize <= Value then
     begin
       SetLength(FEntries, Value);
@@ -338,7 +338,7 @@ begin
     end
     else
       raise EJclOperationNotSupportedError.Create;
-  {$JPPEXPANDMACRO WRITEEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.Size: Integer;
@@ -351,7 +351,7 @@ var
   FromIndex, ToIndex: Integer;
   NewMap: SELFCLASSNAME;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
     NewMap := CreateEmptyContainer as SELFCLASSNAME;
     FromIndex := BinarySearch(FromKey);
     if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
@@ -368,7 +368,7 @@ begin
       end;
     end;
     Result := NewMap;
-  {$JPPEXPANDMACRO READEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.TailMap(KEYCONSTKEYWORDFromKey: KEYTYPENAME): SORTEDMAPINTERFACENAME;
@@ -376,7 +376,7 @@ var
   FromIndex, Index: Integer;
   NewMap: SELFCLASSNAME;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
     NewMap := CreateEmptyContainer as SELFCLASSNAME;
     FromIndex := BinarySearch(FromKey);
     if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
@@ -393,16 +393,16 @@ begin
       end;
     end;
     Result := NewMap;
-  {$JPPEXPANDMACRO READEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.Values: VALUECOLLECTIONINTERFACENAME;
 var
   Index: Integer;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
     Result := CREATEVALUECOLLECTION;
     for Index := 0 to FSize - 1 do
       Result.Add(FEntries[Index].Value);
-  {$JPPEXPANDMACRO READEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;*)

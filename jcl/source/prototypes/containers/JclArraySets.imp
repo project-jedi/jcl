@@ -5,7 +5,7 @@ function SELFCLASSNAME.Add(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 var
   Idx: Integer;
 begin
-  {$JPPEXPANDMACRO WRITEBEGIN}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO LOCK}
     Result := FAllowDefaultElements or not ItemsEqual(PARAMETERNAME, DEFAULTVALUE);
     if Result then
     begin
@@ -17,21 +17,21 @@ begin
       if Result then
         Result := inherited Insert(Idx + 1, PARAMETERNAME);
     end;
-  {$JPPEXPANDMACRO WRITEEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.AddAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   It: ITRINTERFACENAME;
 begin
-  {$JPPEXPANDMACRO WRITEBEGIN}
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO LOCK}
     Result := False;
     if ACollection = nil then
       Exit;
     It := ACollection.First;
     while It.HasNext do
       Result := Add(It.Next) and Result;
-  {$JPPEXPANDMACRO WRITEEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.BinarySearch(CONSTKEYWORDPARAMETERNAME: TYPENAME): Integer;
@@ -39,7 +39,7 @@ var
   HiPos, LoPos, CompPos: Integer;
   Comp: Integer;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
     LoPos := 0;
     HiPos := Size - 1;
     CompPos := (HiPos + LoPos) div 2;
@@ -59,20 +59,20 @@ begin
       CompPos := (HiPos + LoPos) div 2;
     end;
     Result := HiPos;
-  {$JPPEXPANDMACRO READEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.Contains(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 var
   Idx: Integer;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
+  {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
     Idx := BinarySearch(PARAMETERNAME);
     if Idx >= 0 then
       Result := ItemsEqual(GETTERNAME(Idx), PARAMETERNAME)
     else
       Result := False;
-  {$JPPEXPANDMACRO READEND}
+  {$JPPEXPANDMACRO UNLOCK}
 end;
 
 function SELFCLASSNAME.Insert(Index: Integer; CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
