@@ -2514,6 +2514,46 @@ type
       {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
+  IJclIntfAnsiStrMap = interface(IJclAnsiStrContainer)
+    ['{B10E324A-1D98-42FF-B9B4-7F99044591B2}']
+    procedure Clear;
+    function ContainsKey(const Key: IInterface): Boolean;
+    function ContainsValue(const Value: AnsiString): Boolean;
+    function Extract(const Key: IInterface): AnsiString;
+    function GetValue(const Key: IInterface): AnsiString;
+    function IsEmpty: Boolean;
+    function KeyOfValue(const Value: AnsiString): IInterface;
+    function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfAnsiStrMap): Boolean;
+    procedure PutAll(const AMap: IJclIntfAnsiStrMap);
+    procedure PutValue(const Key: IInterface; const Value: AnsiString);
+    function Remove(const Key: IInterface): AnsiString;
+    function Size: Integer;
+    function Values: IJclAnsiStrCollection;
+    property Items[const Key: IInterface]: AnsiString read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
+  end;
+
+  IJclAnsiStrAnsiStrMap = interface(IJclAnsiStrContainer)
+    ['{A4788A96-281A-4924-AA24-03776DDAAD8A}']
+    procedure Clear;
+    function ContainsKey(const Key: AnsiString): Boolean;
+    function ContainsValue(const Value: AnsiString): Boolean;
+    function Extract(const Key: AnsiString): AnsiString;
+    function GetValue(const Key: AnsiString): AnsiString;
+    function IsEmpty: Boolean;
+    function KeyOfValue(const Value: AnsiString): AnsiString;
+    function KeySet: IJclAnsiStrSet;
+    function MapEquals(const AMap: IJclAnsiStrAnsiStrMap): Boolean;
+    procedure PutAll(const AMap: IJclAnsiStrAnsiStrMap);
+    procedure PutValue(const Key: AnsiString; const Value: AnsiString);
+    function Remove(const Key: AnsiString): AnsiString;
+    function Size: Integer;
+    function Values: IJclAnsiStrCollection;
+    property Items[const Key: AnsiString]: AnsiString read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
+  end;
+
   IJclWideStrIntfMap = interface(IJclWideStrContainer)
     ['{C959AB76-9CF0-4C2C-A2C6-8A1846563FAF}']
     procedure Clear;
@@ -2531,6 +2571,46 @@ type
     function Size: Integer;
     function Values: IJclIntfCollection;
     property Items[const Key: WideString]: IInterface read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
+  end;
+
+  IJclIntfWideStrMap = interface(IJclWideStrContainer)
+    ['{D9FD7887-B840-4636-8A8F-E586663E332C}']
+    procedure Clear;
+    function ContainsKey(const Key: IInterface): Boolean;
+    function ContainsValue(const Value: WideString): Boolean;
+    function Extract(const Key: IInterface): WideString;
+    function GetValue(const Key: IInterface): WideString;
+    function IsEmpty: Boolean;
+    function KeyOfValue(const Value: WideString): IInterface;
+    function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfWideStrMap): Boolean;
+    procedure PutAll(const AMap: IJclIntfWideStrMap);
+    procedure PutValue(const Key: IInterface; const Value: WideString);
+    function Remove(const Key: IInterface): WideString;
+    function Size: Integer;
+    function Values: IJclWideStrCollection;
+    property Items[const Key: IInterface]: WideString read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
+  end;
+
+  IJclWideStrWideStrMap = interface(IJclWideStrContainer)
+    ['{8E8D2735-C4FB-4F00-8802-B2102BCE3644}']
+    procedure Clear;
+    function ContainsKey(const Key: WideString): Boolean;
+    function ContainsValue(const Value: WideString): Boolean;
+    function Extract(const Key: WideString): WideString;
+    function GetValue(const Key: WideString): WideString;
+    function IsEmpty: Boolean;
+    function KeyOfValue(const Value: WideString): WideString;
+    function KeySet: IJclWideStrSet;
+    function MapEquals(const AMap: IJclWideStrWideStrMap): Boolean;
+    procedure PutAll(const AMap: IJclWideStrWideStrMap);
+    procedure PutValue(const Key: WideString; const Value: WideString);
+    function Remove(const Key: WideString): WideString;
+    function Size: Integer;
+    function Values: IJclWideStrCollection;
+    property Items[const Key: WideString]: WideString read GetValue write PutValue;
       {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
@@ -2556,56 +2636,6 @@ type
   end;
   {$ENDIF SUPPORTS_UNICODE_STRING}
 
-  {$IFDEF CONTAINER_ANSISTR}
-  IJclStrIntfMap = IJclAnsiStrIntfMap;
-  {$ENDIF CONTAINER_ANSISTR}
-  {$IFDEF CONTAINER_WIDESTR}
-  IJclStrIntfMap = IJclWideStrIntfMap;
-  {$ENDIF CONTAINER_WIDESTR}
-  {$IFDEF CONTAINER_UNICODESTR}
-  IJclStrIntfMap = IJclUnicodeStrIntfMap;
-  {$ENDIF CONTAINER_UNICODESTR}
-
-  IJclIntfAnsiStrMap = interface(IJclAnsiStrContainer)
-    ['{B10E324A-1D98-42FF-B9B4-7F99044591B2}']
-    procedure Clear;
-    function ContainsKey(const Key: IInterface): Boolean;
-    function ContainsValue(const Value: AnsiString): Boolean;
-    function Extract(const Key: IInterface): AnsiString;
-    function GetValue(const Key: IInterface): AnsiString;
-    function IsEmpty: Boolean;
-    function KeyOfValue(const Value: AnsiString): IInterface;
-    function KeySet: IJclIntfSet;
-    function MapEquals(const AMap: IJclIntfAnsiStrMap): Boolean;
-    procedure PutAll(const AMap: IJclIntfAnsiStrMap);
-    procedure PutValue(const Key: IInterface; const Value: AnsiString);
-    function Remove(const Key: IInterface): AnsiString;
-    function Size: Integer;
-    function Values: IJclAnsiStrCollection;
-    property Items[const Key: IInterface]: AnsiString read GetValue write PutValue;
-      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
-  end;
-
-  IJclIntfWideStrMap = interface(IJclWideStrContainer)
-    ['{D9FD7887-B840-4636-8A8F-E586663E332C}']
-    procedure Clear;
-    function ContainsKey(const Key: IInterface): Boolean;
-    function ContainsValue(const Value: WideString): Boolean;
-    function Extract(const Key: IInterface): WideString;
-    function GetValue(const Key: IInterface): WideString;
-    function IsEmpty: Boolean;
-    function KeyOfValue(const Value: WideString): IInterface;
-    function KeySet: IJclIntfSet;
-    function MapEquals(const AMap: IJclIntfWideStrMap): Boolean;
-    procedure PutAll(const AMap: IJclIntfWideStrMap);
-    procedure PutValue(const Key: IInterface; const Value: WideString);
-    function Remove(const Key: IInterface): WideString;
-    function Size: Integer;
-    function Values: IJclWideStrCollection;
-    property Items[const Key: IInterface]: WideString read GetValue write PutValue;
-      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
-  end;
-
   {$IFDEF SUPPORTS_UNICODE_STRING}
   IJclIntfUnicodeStrMap = interface(IJclUnicodeStrContainer)
     ['{40F8B873-B763-4A3C-8EC4-31DB3404BF73}']
@@ -2628,56 +2658,6 @@ type
   end;
   {$ENDIF SUPPORTS_UNICODE_STRING}
 
-  {$IFDEF CONTAINER_ANSISTR}
-  IJclIntfStrMap = IJclIntfAnsiStrMap;
-  {$ENDIF CONTAINER_ANSISTR}
-  {$IFDEF CONTAINER_WIDESTR}
-  IJclIntfStrMap = IJclIntfWideStrMap;
-  {$ENDIF CONTAINER_WIDESTR}
-  {$IFDEF CONTAINER_UNICODESTR}
-  IJclIntfStrMap = IJclIntfUnicodeStrMap;
-  {$ENDIF CONTAINER_UNICODESTR}
-
-  IJclAnsiStrAnsiStrMap = interface(IJclAnsiStrContainer)
-    ['{A4788A96-281A-4924-AA24-03776DDAAD8A}']
-    procedure Clear;
-    function ContainsKey(const Key: AnsiString): Boolean;
-    function ContainsValue(const Value: AnsiString): Boolean;
-    function Extract(const Key: AnsiString): AnsiString;
-    function GetValue(const Key: AnsiString): AnsiString;
-    function IsEmpty: Boolean;
-    function KeyOfValue(const Value: AnsiString): AnsiString;
-    function KeySet: IJclAnsiStrSet;
-    function MapEquals(const AMap: IJclAnsiStrAnsiStrMap): Boolean;
-    procedure PutAll(const AMap: IJclAnsiStrAnsiStrMap);
-    procedure PutValue(const Key: AnsiString; const Value: AnsiString);
-    function Remove(const Key: AnsiString): AnsiString;
-    function Size: Integer;
-    function Values: IJclAnsiStrCollection;
-    property Items[const Key: AnsiString]: AnsiString read GetValue write PutValue;
-      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
-  end;
-
-  IJclWideStrWideStrMap = interface(IJclWideStrContainer)
-    ['{8E8D2735-C4FB-4F00-8802-B2102BCE3644}']
-    procedure Clear;
-    function ContainsKey(const Key: WideString): Boolean;
-    function ContainsValue(const Value: WideString): Boolean;
-    function Extract(const Key: WideString): WideString;
-    function GetValue(const Key: WideString): WideString;
-    function IsEmpty: Boolean;
-    function KeyOfValue(const Value: WideString): WideString;
-    function KeySet: IJclWideStrSet;
-    function MapEquals(const AMap: IJclWideStrWideStrMap): Boolean;
-    procedure PutAll(const AMap: IJclWideStrWideStrMap);
-    procedure PutValue(const Key: WideString; const Value: WideString);
-    function Remove(const Key: WideString): WideString;
-    function Size: Integer;
-    function Values: IJclWideStrCollection;
-    property Items[const Key: WideString]: WideString read GetValue write PutValue;
-      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
-  end;
-
   {$IFDEF SUPPORTS_UNICODE_STRING}
   IJclUnicodeStrUnicodeStrMap = interface(IJclUnicodeStrContainer)
     ['{557E1CBD-06AC-41C2-BAED-253709CBD0AE}']
@@ -2699,6 +2679,26 @@ type
       {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
   {$ENDIF SUPPORTS_UNICODE_STRING}
+
+  {$IFDEF CONTAINER_ANSISTR}
+  IJclStrIntfMap = IJclAnsiStrIntfMap;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  IJclStrIntfMap = IJclWideStrIntfMap;
+  {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrIntfMap = IJclUnicodeStrIntfMap;
+  {$ENDIF CONTAINER_UNICODESTR}
+
+  {$IFDEF CONTAINER_ANSISTR}
+  IJclIntfStrMap = IJclIntfAnsiStrMap;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  IJclIntfStrMap = IJclIntfWideStrMap;
+  {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclIntfStrMap = IJclIntfUnicodeStrMap;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrStrMap = IJclAnsiStrAnsiStrMap;
@@ -3642,6 +3642,24 @@ type
     function TailMap(const FromKey: AnsiString): IJclAnsiStrIntfSortedMap;
   end;
 
+  IJclIntfAnsiStrSortedMap = interface(IJclIntfAnsiStrMap)
+    ['{96E6AC5E-8C40-4795-9C8A-CFD098B58680}']
+    function FirstKey: IInterface;
+    function HeadMap(const ToKey: IInterface): IJclIntfAnsiStrSortedMap;
+    function LastKey: IInterface;
+    function SubMap(const FromKey, ToKey: IInterface): IJclIntfAnsiStrSortedMap;
+    function TailMap(const FromKey: IInterface): IJclIntfAnsiStrSortedMap;
+  end;
+
+  IJclAnsiStrAnsiStrSortedMap = interface(IJclAnsiStrAnsiStrMap)
+    ['{4F457799-5D03-413D-A46C-067DC4200CC3}']
+    function FirstKey: AnsiString;
+    function HeadMap(const ToKey: AnsiString): IJclAnsiStrAnsiStrSortedMap;
+    function LastKey: AnsiString;
+    function SubMap(const FromKey, ToKey: AnsiString): IJclAnsiStrAnsiStrSortedMap;
+    function TailMap(const FromKey: AnsiString): IJclAnsiStrAnsiStrSortedMap;
+  end;
+
   IJclWideStrIntfSortedMap = interface(IJclWideStrIntfMap)
     ['{299FDCFD-2DB7-4D64-BF18-EE3668316430}']
     function FirstKey: WideString;
@@ -3649,6 +3667,24 @@ type
     function LastKey: WideString;
     function SubMap(const FromKey, ToKey: WideString): IJclWideStrIntfSortedMap;
     function TailMap(const FromKey: WideString): IJclWideStrIntfSortedMap;
+  end;
+
+  IJclIntfWideStrSortedMap = interface(IJclIntfWideStrMap)
+    ['{FBE3AD2E-2781-4DC0-9E80-027027380E21}']
+    function FirstKey: IInterface;
+    function HeadMap(const ToKey: IInterface): IJclIntfWideStrSortedMap;
+    function LastKey: IInterface;
+    function SubMap(const FromKey, ToKey: IInterface): IJclIntfWideStrSortedMap;
+    function TailMap(const FromKey: IInterface): IJclIntfWideStrSortedMap;
+  end;
+
+  IJclWideStrWideStrSortedMap = interface(IJclWideStrWideStrMap)
+    ['{3B0757B2-2290-4AFA-880D-F9BA600E501E}']
+    function FirstKey: WideString;
+    function HeadMap(const ToKey: WideString): IJclWideStrWideStrSortedMap;
+    function LastKey: WideString;
+    function SubMap(const FromKey, ToKey: WideString): IJclWideStrWideStrSortedMap;
+    function TailMap(const FromKey: WideString): IJclWideStrWideStrSortedMap;
   end;
 
   {$IFDEF SUPPORTS_UNICODE_STRING}
@@ -3662,34 +3698,6 @@ type
   end;
   {$ENDIF SUPPORTS_UNICODE_STRING}
 
-  {$IFDEF CONTAINER_ANSISTR}
-  IJclStrIntfSortedMap = IJclAnsiStrIntfSortedMap;
-  {$ENDIF CONTAINER_ANSISTR}
-  {$IFDEF CONTAINER_WIDESTR}
-  IJclStrIntfSortedMap = IJclWideStrIntfSortedMap;
-  {$ENDIF CONTAINER_WIDESTR}
-  {$IFDEF CONTAINER_UNICODESTR}
-  IJclStrIntfSortedMap = IJclUnicodeStrIntfSortedMap;
-  {$ENDIF CONTAINER_UNICODESTR}
-
-  IJclIntfAnsiStrSortedMap = interface(IJclIntfAnsiStrMap)
-    ['{96E6AC5E-8C40-4795-9C8A-CFD098B58680}']
-    function FirstKey: IInterface;
-    function HeadMap(const ToKey: IInterface): IJclIntfAnsiStrSortedMap;
-    function LastKey: IInterface;
-    function SubMap(const FromKey, ToKey: IInterface): IJclIntfAnsiStrSortedMap;
-    function TailMap(const FromKey: IInterface): IJclIntfAnsiStrSortedMap;
-  end;
-
-  IJclIntfWideStrSortedMap = interface(IJclIntfWideStrMap)
-    ['{FBE3AD2E-2781-4DC0-9E80-027027380E21}']
-    function FirstKey: IInterface;
-    function HeadMap(const ToKey: IInterface): IJclIntfWideStrSortedMap;
-    function LastKey: IInterface;
-    function SubMap(const FromKey, ToKey: IInterface): IJclIntfWideStrSortedMap;
-    function TailMap(const FromKey: IInterface): IJclIntfWideStrSortedMap;
-  end;
-
   {$IFDEF SUPPORTS_UNICODE_STRING}
   IJclIntfUnicodeStrSortedMap = interface(IJclIntfUnicodeStrMap)
     ['{B0B0CB9B-268B-40D2-94A8-0B8B5BE2E1AC}']
@@ -3701,34 +3709,6 @@ type
   end;
   {$ENDIF SUPPORTS_UNICODE_STRING}
 
-  {$IFDEF CONTAINER_ANSISTR}
-  IJclIntfStrSortedMap = IJclIntfAnsiStrSortedMap;
-  {$ENDIF CONTAINER_ANSISTR}
-  {$IFDEF CONTAINER_WIDESTR}
-  IJclIntfStrSortedMap = IJclIntfWideStrSortedMap;
-  {$ENDIF CONTAINER_WIDESTR}
-  {$IFDEF CONTAINER_UNICODESTR}
-  IJclIntfStrSortedMap = IJclIntfUnicodeStrSortedMap;
-  {$ENDIF CONTAINER_UNICODESTR}
-
-  IJclAnsiStrAnsiStrSortedMap = interface(IJclAnsiStrAnsiStrMap)
-    ['{4F457799-5D03-413D-A46C-067DC4200CC3}']
-    function FirstKey: AnsiString;
-    function HeadMap(const ToKey: AnsiString): IJclAnsiStrAnsiStrSortedMap;
-    function LastKey: AnsiString;
-    function SubMap(const FromKey, ToKey: AnsiString): IJclAnsiStrAnsiStrSortedMap;
-    function TailMap(const FromKey: AnsiString): IJclAnsiStrAnsiStrSortedMap;
-  end;
-
-  IJclWideStrWideStrSortedMap = interface(IJclWideStrWideStrMap)
-    ['{3B0757B2-2290-4AFA-880D-F9BA600E501E}']
-    function FirstKey: WideString;
-    function HeadMap(const ToKey: WideString): IJclWideStrWideStrSortedMap;
-    function LastKey: WideString;
-    function SubMap(const FromKey, ToKey: WideString): IJclWideStrWideStrSortedMap;
-    function TailMap(const FromKey: WideString): IJclWideStrWideStrSortedMap;
-  end;
-
   {$IFDEF SUPPORTS_UNICODE_STRING}
   IJclUnicodeStrUnicodeStrSortedMap = interface(IJclUnicodeStrUnicodeStrMap)
     ['{D8EACC5D-B31E-47A8-9CC9-32B15A79CACA}']
@@ -3739,6 +3719,26 @@ type
     function TailMap(const FromKey: UnicodeString): IJclUnicodeStrUnicodeStrSortedMap;
   end;
   {$ENDIF SUPPORTS_UNICODE_STRING}
+
+  {$IFDEF CONTAINER_ANSISTR}
+  IJclStrIntfSortedMap = IJclAnsiStrIntfSortedMap;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  IJclStrIntfSortedMap = IJclWideStrIntfSortedMap;
+  {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrIntfSortedMap = IJclUnicodeStrIntfSortedMap;
+  {$ENDIF CONTAINER_UNICODESTR}
+
+  {$IFDEF CONTAINER_ANSISTR}
+  IJclIntfStrSortedMap = IJclIntfAnsiStrSortedMap;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  IJclIntfStrSortedMap = IJclIntfWideStrSortedMap;
+  {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclIntfStrSortedMap = IJclIntfUnicodeStrSortedMap;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrStrSortedMap = IJclAnsiStrAnsiStrSortedMap;
