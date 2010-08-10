@@ -1,3 +1,92 @@
+(*$JPPDEFINEMACRO MOVEARRAYIMP(PROCNAME, DYNARRAYTYPENAME)
+{$IFDEF REFCOUNTED}
+procedure FinalizeArrayBeforeMove(var List: DYNARRAYTYPENAME; FromIndex, ToIndex, Count: SizeInt); overload;
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+begin
+  Assert(Count > 0);
+  if FromIndex < ToIndex then
+  begin
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
+  end;
+end;
+
+procedure InitializeArray(var List: DYNARRAYTYPENAME; FromIndex, Count: SizeInt); overload;
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
+procedure InitializeArrayAfterMove(var List: DYNARRAYTYPENAME; FromIndex, ToIndex, Count: SizeInt); overload;
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+begin
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    InitializeArray(List, FromIndex, Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
+    else
+      InitializeArray(List, FromIndex, Count);
+  end;
+end;
+{$ELSE ~REFCOUNTED}
+{$IFDEF ZEROINIT}
+procedure InitializeArrayAfterMove(var List: DYNARRAYTYPENAME; FromIndex, ToIndex, Count: SizeInt); overload;
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+begin
+  { Clean array }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+    else
+      FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end;
+end;
+{$ENDIF ZEROINIT}{$ENDIF ~REFCOUNTED}
+
+procedure PROCNAME(var List: DYNARRAYTYPENAME; FromIndex, ToIndex, Count: SizeInt); overload;
+begin
+  if Count > 0 then
+  begin
+{$IFDEF REFCOUNTED}    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);{$ENDIF REFCOUNTED}
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+{$IFDEF REFCOUNTED}    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
+{$ELSE ~REFCOUNTED}{$IFDEF ZEROINIT}    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);{$ENDIF ZEROINIT}{$ENDIF ~REFCOUNTED}
+  end;
+end;*)
 (*$JPPDEFINEMACRO ITERATEIMP(PROCNAME, ITRINTERFACENAME, CALLBACKTYPE)
 procedure PROCNAME(const First: ITRINTERFACENAME; Count: Integer; F: CALLBACKTYPE);
 var

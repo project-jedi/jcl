@@ -45,7 +45,9 @@ type
   TAllTypeAttributeID = (
     // attributes for 1-D containers
     taTypeName,
-    taCondition,
+    taCondition, // condition while expanding macros, will be emitted
+    taDefines,   // list of defines while expanding macros, won't be emitted
+    taUndefs,    // list of undefs while expanding macros, won't be emitted
     taAlias,
     taAliasCondition,
     taDefaultValue,
@@ -187,6 +189,8 @@ const
   TypeAttributeInfos: array [TTypeAttributeID] of TTypeAttributeInfo =
     ( {TypeName} (IsGUID: False; DefaultValue: ''),
       {Condition} (IsGUID: False; DefaultValue: ''),
+      {Defines} (IsGUID: False; DefaultValue: ''),
+      {Undefs} (IsGUID: False; DefaultValue: ''),
       {Alias} (IsGUID: False; DefaultValue: ''),
       {AliasCondition} (IsGUID: False; DefaultValue: ''),
       {DefaultValue} (IsGUID: False; DefaultValue: ''),
@@ -306,7 +310,7 @@ type
 
   TCodeLocation = (clDefault, clAtCursor, clInterface, clImplementation);
 
-  TJclMacroParams = class(TJclTemplateParams)
+  TJclMacroParams = class
   private
     // FCodeLocation: TCodeLocation;
     // FCodeUnit: string;

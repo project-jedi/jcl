@@ -127,27 +127,27 @@ function UnicodeStrSimpleHashConvertI(const AString: UnicodeString): Integer;
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
 // move array algorithms
+
 procedure MoveArray(var List: TDynIInterfaceArray; FromIndex, ToIndex, Count: SizeInt); overload;
-procedure MoveArray(var List: TDynStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
-procedure MoveArray(var List: TDynFloatArray; FromIndex, ToIndex, Count: SizeInt); overload;
-procedure MoveArray(var List: TDynPointerArray; FromIndex, ToIndex, Count: SizeInt); overload;
+procedure MoveArray(var List: TDynAnsiStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
+procedure MoveArray(var List: TDynWideStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
 {$IFDEF SUPPORTS_UNICODE_STRING}
 procedure MoveArray(var List: TDynUnicodeStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
 {$ENDIF SUPPORTS_UNICODE_STRING}
-{$IFNDEF FPC}
-procedure MoveArray(var List: TDynAnsiStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
-{$ENDIF ~FPC}
-procedure MoveArray(var List: TDynWideStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
-procedure MoveArray(var List: TDynObjectArray; FromIndex, ToIndex, Count: SizeInt); overload;
 procedure MoveArray(var List: TDynSingleArray; FromIndex, ToIndex, Count: SizeInt); overload;
 procedure MoveArray(var List: TDynDoubleArray; FromIndex, ToIndex, Count: SizeInt); overload;
-{$IFDEF SUPPORTS_EXTENDED}
 procedure MoveArray(var List: TDynExtendedArray; FromIndex, ToIndex, Count: SizeInt); overload;
-{$ENDIF SUPPORTS_EXTENDED}
 procedure MoveArray(var List: TDynIntegerArray; FromIndex, ToIndex, Count: SizeInt); overload;
 procedure MoveArray(var List: TDynCardinalArray; FromIndex, ToIndex, Count: SizeInt); overload;
 procedure MoveArray(var List: TDynInt64Array; FromIndex, ToIndex, Count: SizeInt); overload;
+procedure MoveArray(var List: TDynPointerArray; FromIndex, ToIndex, Count: SizeInt); overload;
+procedure MoveArray(var List: TDynObjectArray; FromIndex, ToIndex, Count: SizeInt); overload;
+
 procedure MoveArray(var List: TDynSizeIntArray; FromIndex, ToIndex, Count: SizeInt); overload;
+{$IFNDEF FPC}
+procedure MoveArray(var List: TDynStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
+procedure MoveArray(var List: TDynFloatArray; FromIndex, ToIndex, Count: SizeInt); overload;
+{$ENDIF ~FPC}
 
 // Iterate algorithms
 
@@ -1058,6 +1058,7 @@ begin
   Result := Integer(AObject) and MaxInt;
 end;
 
+
 procedure FinalizeArrayBeforeMove(var List: TDynIInterfaceArray; FromIndex, ToIndex, Count: SizeInt); overload;
 {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 begin
@@ -1123,197 +1124,6 @@ begin
   end;
 end;
 
-procedure FinalizeArrayBeforeMove(var List: TDynStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
-{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-begin
-  Assert(Count > 0);
-  if FromIndex < ToIndex then
-  begin
-    if Count > (ToIndex - FromIndex) then
-      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
-    else
-      Finalize(List[ToIndex], Count);
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    if Count > (FromIndex - ToIndex) then
-      Count := FromIndex - ToIndex;
-    Finalize(List[ToIndex], Count)
-  end;
-end;
-
-procedure InitializeArray(var List: TDynStringArray; FromIndex, Count: SizeInt); overload;
-{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-begin
-  {$IFDEF FPC}
-  while Count > 0 do
-  begin
-    Initialize(List[FromIndex]);
-    Inc(FromIndex);
-    Dec(Count);
-  end;
-  {$ELSE ~FPC}
-  Initialize(List[FromIndex], Count);
-  {$ENDIF ~FPC}
-end;
-
-procedure InitializeArrayAfterMove(var List: TDynStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
-{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-begin
-  { Keep reference counting working }
-  if FromIndex < ToIndex then
-  begin
-    if (ToIndex - FromIndex) < Count then
-      Count := ToIndex - FromIndex;
-    InitializeArray(List, FromIndex, Count);
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    if (FromIndex - ToIndex) < Count then
-      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
-    else
-      InitializeArray(List, FromIndex, Count);
-  end;
-end;
-
-procedure MoveArray(var List: TDynStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
-begin
-  if Count > 0 then
-  begin
-    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
-  end;
-end;
-
-procedure InitializeArrayAfterMove(var List: TDynFloatArray; FromIndex, ToIndex, Count: SizeInt); overload;
-{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-begin
-  { Clean array }
-  if FromIndex < ToIndex then
-  begin
-    if (ToIndex - FromIndex) < Count then
-      Count := ToIndex - FromIndex;
-    FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    if (FromIndex - ToIndex) < Count then
-      FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-    else
-      FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-  end;
-end;
-
-procedure MoveArray(var List: TDynFloatArray; FromIndex, ToIndex, Count: SizeInt); overload;
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
-  end;
-end;
-
-procedure InitializeArrayAfterMove(var List: TDynPointerArray; FromIndex, ToIndex, Count: SizeInt); overload;
-{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-begin
-  { Clean array }
-  if FromIndex < ToIndex then
-  begin
-    if (ToIndex - FromIndex) < Count then
-      Count := ToIndex - FromIndex;
-    FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    if (FromIndex - ToIndex) < Count then
-      FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-    else
-      FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-  end;
-end;
-
-procedure MoveArray(var List: TDynPointerArray; FromIndex, ToIndex, Count: SizeInt); overload;
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
-  end;
-end;
-
-{$IFDEF SUPPORTS_UNICODE_STRING}
-procedure FinalizeArrayBeforeMove(var List: TDynUnicodeStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
-{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-begin
-  Assert(Count > 0);
-  if FromIndex < ToIndex then
-  begin
-    if Count > (ToIndex - FromIndex) then
-      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
-    else
-      Finalize(List[ToIndex], Count);
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    if Count > (FromIndex - ToIndex) then
-      Count := FromIndex - ToIndex;
-    Finalize(List[ToIndex], Count)
-  end;
-end;
-
-procedure InitializeArray(var List: TDynUnicodeStringArray; FromIndex, Count: SizeInt); overload;
-{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-begin
-  {$IFDEF FPC}
-  while Count > 0 do
-  begin
-    Initialize(List[FromIndex]);
-    Inc(FromIndex);
-    Dec(Count);
-  end;
-  {$ELSE ~FPC}
-  Initialize(List[FromIndex], Count);
-  {$ENDIF ~FPC}
-end;
-
-procedure InitializeArrayAfterMove(var List: TDynUnicodeStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
-{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-begin
-  { Keep reference counting working }
-  if FromIndex < ToIndex then
-  begin
-    if (ToIndex - FromIndex) < Count then
-      Count := ToIndex - FromIndex;
-    InitializeArray(List, FromIndex, Count);
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    if (FromIndex - ToIndex) < Count then
-      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
-    else
-      InitializeArray(List, FromIndex, Count);
-  end;
-end;
-
-procedure MoveArray(var List: TDynUnicodeStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
-begin
-  if Count > 0 then
-  begin
-    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
-  end;
-end;
-{$ENDIF SUPPORTS_UNICODE_STRING}
-
-{$IFNDEF FPC}
 procedure FinalizeArrayBeforeMove(var List: TDynAnsiStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
 {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 begin
@@ -1337,7 +1147,16 @@ end;
 procedure InitializeArray(var List: TDynAnsiStringArray; FromIndex, Count: SizeInt); overload;
 {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
   Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
 end;
 
 procedure InitializeArrayAfterMove(var List: TDynAnsiStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
@@ -1360,6 +1179,7 @@ begin
   end;
 end;
 
+
 procedure MoveArray(var List: TDynAnsiStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
 begin
   if Count > 0 then
@@ -1367,9 +1187,9 @@ begin
     FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
     Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
     InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
+
   end;
 end;
-{$ENDIF ~FPC}
 
 procedure FinalizeArrayBeforeMove(var List: TDynWideStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
 {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
@@ -1426,7 +1246,77 @@ begin
   end;
 end;
 
+
 procedure MoveArray(var List: TDynWideStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
+begin
+  if Count > 0 then
+  begin
+    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
+
+  end;
+end;
+
+{$IFDEF SUPPORTS_UNICODE_STRING}
+
+procedure FinalizeArrayBeforeMove(var List: TDynUnicodeStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+begin
+  Assert(Count > 0);
+  if FromIndex < ToIndex then
+  begin
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
+  end;
+end;
+
+procedure InitializeArray(var List: TDynUnicodeStringArray; FromIndex, Count: SizeInt); overload;
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
+procedure InitializeArrayAfterMove(var List: TDynUnicodeStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+begin
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    InitializeArray(List, FromIndex, Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
+    else
+      InitializeArray(List, FromIndex, Count);
+  end;
+end;
+
+
+procedure MoveArray(var List: TDynUnicodeStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
 begin
   if Count > 0 then
   begin
@@ -1435,35 +1325,7 @@ begin
     InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
-
-procedure InitializeArrayAfterMove(var List: TDynObjectArray; FromIndex, ToIndex, Count: SizeInt); overload;
-{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-begin
-  { Clean array }
-  if FromIndex < ToIndex then
-  begin
-    if (ToIndex - FromIndex) < Count then
-      Count := ToIndex - FromIndex;
-    FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    if (FromIndex - ToIndex) < Count then
-      FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-    else
-      FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-  end;
-end;
-
-procedure MoveArray(var List: TDynObjectArray; FromIndex, ToIndex, Count: SizeInt); overload;
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
-  end;
-end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
 procedure InitializeArrayAfterMove(var List: TDynSingleArray; FromIndex, ToIndex, Count: SizeInt); overload;
 {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
@@ -1485,10 +1347,12 @@ begin
   end;
 end;
 
+
 procedure MoveArray(var List: TDynSingleArray; FromIndex, ToIndex, Count: SizeInt); overload;
 begin
   if Count > 0 then
   begin
+
     Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
     InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
@@ -1514,16 +1378,17 @@ begin
   end;
 end;
 
+
 procedure MoveArray(var List: TDynDoubleArray; FromIndex, ToIndex, Count: SizeInt); overload;
 begin
   if Count > 0 then
   begin
+
     Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
     InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
-{$IFDEF SUPPORTS_EXTENDED}
 procedure InitializeArrayAfterMove(var List: TDynExtendedArray; FromIndex, ToIndex, Count: SizeInt); overload;
 {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 begin
@@ -1544,15 +1409,16 @@ begin
   end;
 end;
 
+
 procedure MoveArray(var List: TDynExtendedArray; FromIndex, ToIndex, Count: SizeInt); overload;
 begin
   if Count > 0 then
   begin
+
     Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
     InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
-{$ENDIF SUPPORTS_EXTENDED}
 
 procedure InitializeArrayAfterMove(var List: TDynIntegerArray; FromIndex, ToIndex, Count: SizeInt); overload;
 {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
@@ -1574,10 +1440,12 @@ begin
   end;
 end;
 
+
 procedure MoveArray(var List: TDynIntegerArray; FromIndex, ToIndex, Count: SizeInt); overload;
 begin
   if Count > 0 then
   begin
+
     Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
     InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
@@ -1603,10 +1471,12 @@ begin
   end;
 end;
 
+
 procedure MoveArray(var List: TDynCardinalArray; FromIndex, ToIndex, Count: SizeInt); overload;
 begin
   if Count > 0 then
   begin
+
     Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
     InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
@@ -1632,10 +1502,74 @@ begin
   end;
 end;
 
+
 procedure MoveArray(var List: TDynInt64Array; FromIndex, ToIndex, Count: SizeInt); overload;
 begin
   if Count > 0 then
   begin
+
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
+  end;
+end;
+
+procedure InitializeArrayAfterMove(var List: TDynPointerArray; FromIndex, ToIndex, Count: SizeInt); overload;
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+begin
+  { Clean array }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+    else
+      FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end;
+end;
+
+
+procedure MoveArray(var List: TDynPointerArray; FromIndex, ToIndex, Count: SizeInt); overload;
+begin
+  if Count > 0 then
+  begin
+
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
+  end;
+end;
+
+procedure InitializeArrayAfterMove(var List: TDynObjectArray; FromIndex, ToIndex, Count: SizeInt); overload;
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+begin
+  { Clean array }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+    else
+      FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end;
+end;
+
+
+procedure MoveArray(var List: TDynObjectArray; FromIndex, ToIndex, Count: SizeInt); overload;
+begin
+  if Count > 0 then
+  begin
+
     Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
     InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
@@ -1661,14 +1595,109 @@ begin
   end;
 end;
 
+
 procedure MoveArray(var List: TDynSizeIntArray; FromIndex, ToIndex, Count: SizeInt); overload;
 begin
   if Count > 0 then
   begin
+
     Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
     InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
+
+{$IFNDEF FPC}
+procedure FinalizeArrayBeforeMove(var List: TDynStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+begin
+  Assert(Count > 0);
+  if FromIndex < ToIndex then
+  begin
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
+  end;
+end;
+
+procedure InitializeArray(var List: TDynStringArray; FromIndex, Count: SizeInt); overload;
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+begin
+  
+  Initialize(List[FromIndex], Count);
+  
+end;
+
+procedure InitializeArrayAfterMove(var List: TDynStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+begin
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    InitializeArray(List, FromIndex, Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
+    else
+      InitializeArray(List, FromIndex, Count);
+  end;
+end;
+
+
+procedure MoveArray(var List: TDynStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
+begin
+  if Count > 0 then
+  begin
+    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
+
+  end;
+end;
+
+procedure InitializeArrayAfterMove(var List: TDynFloatArray; FromIndex, ToIndex, Count: SizeInt); overload;
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+begin
+  { Clean array }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+    else
+      FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end;
+end;
+
+
+procedure MoveArray(var List: TDynFloatArray; FromIndex, ToIndex, Count: SizeInt); overload;
+begin
+  if Count > 0 then
+  begin
+
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
+  end;
+end;
+{$ENDIF ~FPC}
 
 
 procedure Iterate(const First: IJclIntfIterator; Count: Integer; F: TIntfIterateProcedure);

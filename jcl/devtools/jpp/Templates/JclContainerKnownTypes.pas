@@ -42,6 +42,8 @@ const
   IInterfaceKnownType: TKnownTypeAttributes =
     ({taTypeName} 'IInterface',
      {taCondition} '',
+     {taDefines} 'REFCOUNTED',
+     {taUndefs} '',
      {taAlias} '',
      {taAliasCondition} '',
      {taDefaultValue} 'nil',
@@ -122,6 +124,8 @@ const
   AnsiStringKnownType: TKnownTypeAttributes =
     ({taTypeName} 'AnsiString',
      {taCondition} '',
+     {taDefines} 'REFCOUNTED',
+     {taUndefs} '',
      {taAlias} 'string',
      {taAliasCondition} 'CONTAINER_ANSISTR',
      {taDefaultValue} '''''',
@@ -202,6 +206,8 @@ const
   WideStringKnownType: TKnownTypeAttributes =
     ({taTypeName} 'WideString',
      {taCondition} '',
+     {taDefines} 'REFCOUNTED',
+     {taUndefs} '',
      {taAlias} 'string',
      {taAliasCondition} 'CONTAINER_WIDESTR',
      {taDefaultValue} '''''',
@@ -282,6 +288,8 @@ const
   UnicodeStringKnownType: TKnownTypeAttributes =
     ({taTypeName} 'UnicodeString',
      {taCondition} 'SUPPORTS_UNICODE_STRING',
+     {taDefines} 'REFCOUNTED',
+     {taUndefs} '',
      {taAlias} 'string',
      {taAliasCondition} 'CONTAINER_UNICODESTR',
      {taDefaultValue} '''''',
@@ -362,6 +370,8 @@ const
   StringKnownType: TKnownTypeAttributes =
     ({taTypeName} 'string',
      {taCondition} '',
+     {taDefines} 'REFCOUNTED',
+     {taUndefs} '',
      {taAlias} '',
      {taAliasCondition} '',
      {taDefaultValue} '''''',
@@ -442,6 +452,8 @@ const
   SingleKnownType: TKnownTypeAttributes =
     ({taTypeName} 'Single',
      {taCondition} '',
+     {taDefines} 'ZEROINIT',
+     {taUndefs} 'REFCOUNTED',
      {taAlias} 'Float',
      {taAliasCondition} 'MATH_SINGLE_PRECISION',
      {taDefaultValue} '0.0',
@@ -522,6 +534,8 @@ const
   DoubleKnownType: TKnownTypeAttributes =
     ({taTypeName} 'Double',
      {taCondition} '',
+     {taDefines} 'ZEROINIT',
+     {taUndefs} 'REFCOUNTED',
      {taAlias} 'Float',
      {taAliasCondition} 'MATH_DOUBLE_PRECISION',
      {taDefaultValue} '0.0',
@@ -602,6 +616,8 @@ const
   ExtendedKnownType: TKnownTypeAttributes =
     ({taTypeName} 'Extended',
      {taCondition} '',
+     {taDefines} 'ZEROINIT',
+     {taUndefs} 'REFCOUNTED',
      {taAlias} 'Float',
      {taAliasCondition} 'MATH_EXTENDED_PRECISION',
      {taDefaultValue} '0.0',
@@ -682,6 +698,8 @@ const
   FloatKnownType: TKnownTypeAttributes =
     ({taTypeName} 'Float',
      {taCondition} '',
+     {taDefines} 'ZEROINIT',
+     {taUndefs} 'REFCOUNTED',
      {taAlias} '',
      {taAliasCondition} '',
      {taDefaultValue} '0.0',
@@ -762,6 +780,8 @@ const
   IntegerKnownType: TKnownTypeAttributes =
     ({taTypeName} 'Integer',
      {taCondition} '',
+     {taDefines} 'ZEROINIT',
+     {taUndefs} 'REFCOUNTED',
      {taAlias} '',
      {taAliasCondition} '',
      {taDefaultValue} '0',
@@ -842,6 +862,8 @@ const
   CardinalKnownType: TKnownTypeAttributes =
     ({taTypeName} 'Cardinal',
      {taCondition} '',
+     {taDefines} 'ZEROINIT',
+     {taUndefs} 'REFCOUNTED',
      {taAlias} '',
      {taAliasCondition} '',
      {taDefaultValue} '0',
@@ -922,6 +944,8 @@ const
   Int64KnownType: TKnownTypeAttributes =
     ({taTypeName} 'Int64',
      {taCondition} '',
+     {taDefines} 'ZEROINIT',
+     {taUndefs} 'REFCOUNTED',
      {taAlias} '',
      {taAliasCondition} '',
      {taDefaultValue} '0',
@@ -1002,6 +1026,8 @@ const
   PointerKnownType: TKnownTypeAttributes =
     ({taTypeName} 'Pointer',
      {taCondition} '',
+     {taDefines} 'ZEROINIT',
+     {taUndefs} 'REFCOUNTED',
      {taAlias} '',
      {taAliasCondition} '',
      {taDefaultValue} 'nil',
@@ -1082,6 +1108,8 @@ const
   TObjectKnownType: TKnownTypeAttributes =
     ({taTypeName} 'TObject',
      {taCondition} '',
+     {taDefines} 'ZEROINIT',
+     {taUndefs} 'REFCOUNTED',
      {taAlias} '',
      {taAliasCondition} '',
      {taDefaultValue} 'nil',

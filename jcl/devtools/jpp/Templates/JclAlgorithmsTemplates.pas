@@ -66,6 +66,23 @@ type
     property ProcName: string read GetProcName write SetProcName stored False;
   end;
 
+  (* MOVEARRAYINT(PROCNAME, DYNARRAYTYPENAME, OVERLOAD) *)
+  TJclMoveArrayIntParams = class(TJclAlgorithmsIntProcParams)
+  protected
+    function GetProcName: string; override;
+  published
+    property Overload;
+    property ProcName;
+    property DynArrayTypeName: string index taDynArrayTypeName read GetTypeAttribute write SetTypeAttribute stored False;
+  end;
+
+  (* MOVEARRAYIMP(PROCNAME, DYNARRAYTYPENAME) *)
+  TJclMoveArrayImpParams = class(TJclAlgorithmsImpProcParams)
+  published
+    property ProcName;
+    property DynArrayTypeName: string index taDynArrayTypeName read GetTypeAttribute write SetTypeAttribute stored False;
+  end;
+
   (* ITERATEINT(PROCNAME, ITRINTERFACENAME, CALLBACKTYPE, OVERLOAD) *)
   TJclIterateIntParams = class(TJclAlgorithmsIntProcParams)
   protected
@@ -360,6 +377,7 @@ implementation
 
 procedure RegisterJclContainers;
 begin
+  RegisterContainerParams('MOVEARRAYINT', TJclMoveArrayIntParams);
   RegisterContainerParams('ITERATEINT', TJclIterateIntParams);
   RegisterContainerParams('APPLYINT', TJclApplyIntParams);
   RegisterContainerParams('SIMPLECOMPAREINT', TJclSimpleCompareIntParams);
@@ -375,6 +393,7 @@ begin
   RegisterContainerParams('REVERSEINT', TJclReverseIntParams);
   RegisterContainerParams('SORTINT', TJclSortIntParams);
 
+  RegisterContainerParams('MOVEARRAYIMP', TJclMoveArrayImpParams, TJclMoveArrayIntParams);
   RegisterContainerParams('ITERATEIMP', TJclIterateImpParams, TJclIterateIntParams);
   RegisterContainerParams('APPLYIMP', TJclApplyImpParams, TJclApplyIntParams);
   RegisterContainerParams('FINDIMP', TJclFindImpParams, TJclFindIntParams);
@@ -411,6 +430,15 @@ end;
 procedure TJclAlgorithmsImpProcParams.SetProcName(const Value: string);
 begin
   (InterfaceParams as TJclAlgorithmsIntProcParams).ProcName := Value;
+end;
+
+//=== { TJclMoveArrayIntParams } =============================================
+
+function TJclMoveArrayIntParams.GetProcName: string;
+begin
+  Result := inherited GetProcName;
+  if Result = '' then
+    Result := 'MoveArray';
 end;
 
 //=== { TJclIterateIntParams } ===============================================

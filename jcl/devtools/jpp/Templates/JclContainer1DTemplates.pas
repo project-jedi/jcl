@@ -114,6 +114,8 @@ type
   published
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
     property Condition: string index taCondition read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
+    property Defines: string index taDefines read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
+    property Undefs: string index taUndefs read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
     property Alias: string index taAlias read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
     property AliasCondition: string index taAliasCondition read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
     property DefaultValue: string index taDefaultValue read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;

@@ -65,7 +65,7 @@ type
     procedure SetAllMapIndex(const Value: Integer);
     procedure SetMapTypeIndex(const Value: Integer);
   protected
-    function ProcessConditional(const MacroText, Condition: string): string;
+    function ProcessConditional(const MacroText: string; ContainerTypeInfo: TJclContainerTypeInfo): string;
   public
     constructor Create;
     destructor Destroy; override;
@@ -120,6 +120,7 @@ uses
   SysUtils,
   JclRTTI,
   JclSysUtils,
+  JclStrings,
   JclContainerIntf,
   JclContainerKnownTypes,
   JclContainerKnownMaps;
@@ -480,13 +481,13 @@ begin
       // process conditional defines
       if (InterfaceParams is TJclMapInterfaceParams) and FMapInfo.KnownMap then
       begin
-        Result := ProcessConditional(Result, FMapInfo.KeyTypeInfo.TypeAttributes[taCondition]);
+        Result := ProcessConditional(Result, FMapInfo.KeyTypeInfo);
         if FMapInfo.KeyTypeInfo.TypeAttributes[taCondition] <> FMapInfo.ValueTypeInfo.TypeAttributes[taCondition] then
-          Result := ProcessConditional(Result, FMapInfo.ValueTypeInfo.TypeAttributes[taCondition]);
+          Result := ProcessConditional(Result, FMapInfo.ValueTypeInfo);
       end
       else
       if (InterfaceParams is TJclContainerInterfaceParams) and FTypeInfo.KnownType then
-        Result := ProcessConditional(Result, FTypeInfo.TypeAttributes[taCondition]);
+        Result := ProcessConditional(Result, FTypeInfo);
     finally
       ImplementationParams.Free;
       InterfaceParams.Free;
@@ -516,14 +517,31 @@ begin
   Result := Length(KnownTrueTypes);
 end;
 
-function TJclContainerParams.ProcessConditional(const MacroText, Condition: string): string;
+function TJclContainerParams.ProcessConditional(const MacroText: string; ContainerTypeInfo: TJclContainerTypeInfo): string;
+var
+  DefineList: TStrings;
+  I: Integer;
+  Condition: string;
 begin
   Result := MacroText;
+  Condition := ContainerTypeInfo.TypeAttributes[taCondition];
   if Condition <> '' then
     Result := Format('{$IFDEF %s}%s%s%s{$ENDIF %s}%s',
       [Condition, NativeLineBreak,
        Result, NativeLineBreak,
        Condition, NativeLineBreak]);
+  DefineList := TStringList.Create;
+  try
+    StrToStrings(ContainerTypeInfo.TypeAttributes[taDefines], ';', DefineList, False);
+    for I := 0 to DefineList.Count - 1 do
+      Define(DefineList.Strings[I]);
+    StrToStrings(ContainerTypeInfo.TypeAttributes[taUndefs], ';', DefineList, False);
+    for I := 0 to DefineList.Count - 1 do
+      Undef(DefineList.Strings[I]);
+  finally
+    DefineList.Free;
+  end;
+
 end;
 
 procedure TJclContainerParams.SetAllMapIndex(const Value: Integer);
