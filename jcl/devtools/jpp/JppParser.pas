@@ -517,9 +517,17 @@ begin
             State.Undef(Condition);
         end;
       ttUndef:
-        State.TriState := ttUndef;
+        if Token = ptIfdef then
+          State.TriState := ttUndef
+        else
+        if Token = ptIfndef then
+          State.TriState := ttDefined;
       ttDefined:
-        State.TriState := ttDefined;
+        if Token = ptIfdef then
+          State.TriState := ttDefined
+        else
+        if Token = ptIfndef then
+          State.TriState := ttUndef;
     end;
     NextToken;
     ParseText;
@@ -545,9 +553,23 @@ begin
               State.Define(Condition);
           end;
         ttUndef:
-          State.TriState := ttDefined;
+          begin
+            if Token = ptIfdef then
+              State.TriState := ttDefined
+            else
+            if Token = ptIfndef then
+              State.TriState := ttUndef;
+            State.Defines[Condition] := ttDefined;
+          end;
         ttDefined:
-          State.TriState := ttUndef;
+          begin
+            if Token = ptIfdef then
+              State.TriState := ttUndef
+            else
+            if Token = ptIfndef then
+              State.TriState := ttDefined;
+            State.Defines[Condition] := ttUndef;
+          end;
       end;
       NextToken;
       ParseText;

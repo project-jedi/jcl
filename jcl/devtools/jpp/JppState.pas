@@ -1,4 +1,4 @@
-﻿{ **************************************************************************** }
+{ **************************************************************************** }
 {                                                                              }
 {    PppState - Pascal PreProcessor State                                      }
 {    Copyright (c) 2001 Barry Kelly.                                           }
@@ -165,6 +165,7 @@ type
     Macros: IJclStrIntfMap;
     SearchPath: IJclStrList;
     TriState: TTriState;
+    ParentTriState: TTriState;
   end;
 
 //=== { TPppState } ==========================================================
@@ -442,14 +443,22 @@ begin
   AStateItem.Macros := Macros;
   AStateItem.SearchPath := SearchPath;
   AStateItem.TriState := ATriState;
+  if FStateStack.Empty then
+    AStateItem.ParentTriState := ttUnknown
+  else
+    AStateItem.ParentTriState := InternalPeekTriState;
   FStateStack.Push(AStateItem);
 end;
 
 procedure TPppState.InternalSetTriState(Value: TTriState);
+var
+  ASimplePppStateItem: TSimplePppStateItem;
 begin
   if FStateStack.Empty then
     raise EPppState.Create('Internal error: PPP State stack is empty');
-  (FStateStack.Peek as TSimplePppStateItem).TriState := Value;
+  ASimplePppStateItem := FStateStack.Peek as TSimplePppStateItem;
+  if (ASimplePppStateItem.ParentTriState <> ttUndef) or (Value = ttUndef) then
+    ASimplePppStateItem.TriState := Value;
 end;
 
 function TPppState.IsFileExcluded(const AName: string): Boolean;
