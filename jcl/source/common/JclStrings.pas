@@ -4309,6 +4309,8 @@ begin
 end;
 
 function TTabSetData.Add(Column: SizeInt): SizeInt;
+var
+  I: SizeInt;
 begin
   if Column < Ord(FZeroBased) then
     raise ArgumentOutOfRangeException.Create('Column');
@@ -4319,8 +4321,9 @@ begin
     Result := not Result;
     // increase the tab stop array
     SetLength(FStops, Length(FStops) + 1);
-    // make room at the insert position
-    MoveArray(FStops, Result, Result + 1, High(FStops) - Result);
+    // shift rooms after the insert position
+    for I := High(FStops) - 1 downto Result do
+      FStops[I + 1] := FStops[I];
     // add the tab stop at the correct location
     FStops[Result] := Column;
     CalcRealWidth;
@@ -4369,8 +4372,11 @@ begin
 end;
 
 procedure TTabSetData.RemoveAt(Index: SizeInt);
+var
+  I: SizeInt;
 begin
-  MoveArray(FStops, Succ(Index), Index, High(FStops) - Index);
+  for I := Index to High(FStops) - 1 do
+    FStops[I] := FStops[I + 1];
   SetLength(FStops, High(FStops));
   CalcRealWidth;
 end;
