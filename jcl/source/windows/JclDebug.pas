@@ -1684,7 +1684,11 @@ begin
   FSegmentClasses[C].Segment := Address.Segment;
   FSegmentClasses[C].Start := Address.Offset;
   FSegmentClasses[C].Addr := Address.Offset; // will be fixed below while considering module mapped address
-  FSegmentClasses[C].VA := MAPAddrToVA(FSegmentClasses[C].Start);
+  // test GroupName because SectionName = '.tls' in Delphi and '_tls' in BCB
+  if StrLIComp(GroupName, 'TLS', 3) = 0 then
+    FSegmentClasses[C].VA := FSegmentClasses[C].Start
+  else
+    FSegmentClasses[C].VA := MAPAddrToVA(FSegmentClasses[C].Start);
   FSegmentClasses[C].Len := Len;
   FSegmentClasses[C].SectionName := SectionName;
   FSegmentClasses[C].GroupName := GroupName;
@@ -1744,7 +1748,10 @@ begin
     if (FSegmentClasses[SegIndex].Segment = Address.Segment)
       and (DWORD(Address.Offset) < FSegmentClasses[SegIndex].Len) then
   begin
-    VA := MAPAddrToVA(Address.Offset + FSegmentClasses[SegIndex].Start);
+    if StrLIComp(FSegmentClasses[SegIndex].GroupName, 'TLS', 3) = 0 then
+      Va := Address.Offset
+    else
+      VA := MAPAddrToVA(Address.Offset + FSegmentClasses[SegIndex].Start);
     { Starting with Delphi 2005, "empty" units are listes with the last line and
       the VA 0001:00000000. When we would accept 0 VAs here, System.pas functions
       could be mapped to other units and line numbers. Discaring such items should
@@ -1849,7 +1856,10 @@ begin
     if FProcNamesCnt mod 256 = 0 then
       SetLength(FProcNames, FProcNamesCnt + 256);
     FProcNames[FProcNamesCnt].Segment := FSegmentClasses[SegIndex].Segment;
-    FProcNames[FProcNamesCnt].VA := MAPAddrToVA(Address.Offset + FSegmentClasses[SegIndex].Start);
+    if StrLIComp(FSegmentClasses[SegIndex].GroupName, 'TLS', 3) = 0 then
+      FProcNames[FProcNamesCnt].VA := Address.Offset
+    else
+      FProcNames[FProcNamesCnt].VA := MAPAddrToVA(Address.Offset + FSegmentClasses[SegIndex].Start);
     FProcNames[FProcNamesCnt].ProcName := Name;
     Inc(FProcNamesCnt);
     Break;
@@ -1896,7 +1906,10 @@ begin
     if (FSegmentClasses[SegIndex].Segment = Address.Segment)
       and (DWORD(Address.Offset) < FSegmentClasses[SegIndex].Len) then
   begin
-    VA := MAPAddrToVA(Address.Offset + FSegmentClasses[SegIndex].Start);
+    if StrLIComp(FSegmentClasses[SegIndex].GroupName, 'TLS', 3) = 0 then
+      VA := Address.Offset
+    else
+      VA := MAPAddrToVA(Address.Offset + FSegmentClasses[SegIndex].Start);
     if FSegmentCnt mod 16 = 0 then
       SetLength(FSegments, FSegmentCnt + 16);
     FSegments[FSegmentCnt].Segment := FSegmentClasses[SegIndex].Segment;
