@@ -1304,7 +1304,8 @@ begin
   PExtension := PEnd;
   while (PExtension >= MapString) and (PExtension^ <> '.') and (PExtension^ <> '|') do
     Dec(PExtension);
-  if (PExtension^ = '.') then
+  if (StrLIComp(PExtension, '.pas ', 5) = 0) or
+     (StrLIComp(PExtension, '.obj ', 5) = 0) then
     PEnd := PExtension;
   PExtension := PEnd;
   while (PExtension >= MapString) and (PExtension^ <> '|') and (PExtension^ <> '\') do
