@@ -16,7 +16,7 @@ type
   end;
 
   TRefCountObject = class(TInterfacedObject, IInterface, IRefCountInterface)
-  var
+  private
     FChar: Char;
   public
     function GetRefCount: Integer;
