@@ -1416,11 +1416,11 @@ var
       C := Char(CurrPos^);
       case C of
         '0'..'9':
-          Result := (Result shl 4) or (Ord(C) - Ord('0'));
+          Result := (Result shl 4) or DWORD(Ord(C) - Ord('0'));
         'A'..'F':
-          Result := (Result shl 4) or (Ord(C) - Ord('A') + 10);
+          Result := (Result shl 4) or DWORD(Ord(C) - Ord('A') + 10);
         'a'..'f':
-          Result := (Result shl 4) or (Ord(C) - Ord('a') + 10);
+          Result := (Result shl 4) or DWORD(Ord(C) - Ord('a') + 10);
         'H', 'h':
           begin
             Inc(CurrPos);
