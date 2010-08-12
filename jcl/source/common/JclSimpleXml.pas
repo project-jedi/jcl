@@ -3006,12 +3006,12 @@ begin
         else
         if not CharIsWhiteSpace(Ch) then
           FmtError(LoadResString(@RsEInvalidCDATAExpectedsButFounds), [CS_START_CDATA[lPos], Ch, StringStream.PeekPosition]);
-      10:
+      10: // ]
         if Ch = CS_STOP_CDATA[lPos] then
           Inc(lPos)
         else
           St := St + Ch;
-      11: //-
+      11: // ]
         if Ch = CS_STOP_CDATA[lPos] then
           Inc(lPos)
         else
@@ -3025,6 +3025,10 @@ begin
           lOk := True;
           Break; //End if
         end
+        else
+        // ]]]
+        if Ch = CS_STOP_CDATA[lPos-1] then
+          St := St + ']'
         else
         begin
           St := St + ']]' + Ch;
