@@ -159,6 +159,8 @@ type
   TAllTypeAttributeIDs = set of TAllTypeAttributeID;
 
   TTypeAttributeID = taTypeName..taStackClassName;
+  {$EXTERNALSYM TTypeAttributeID}
+  {$HPPEMIT '#define TTypeAttributeID int'}
 
   TTypeAttributes = array [TTypeAttributeID] of string;
 
@@ -166,10 +168,16 @@ type
   PKnownTypeAttributes = ^TKnownTypeAttributes;
 
   TKeyAttributeID = kaKeyTypeName..kaKeyArraySetClassName;
+  {$EXTERNALSYM TKeyAttributeID}
+  {$HPPEMIT '#define TKeyAttributeID int'}
 
   TValueAttributeID = vaValueTypeName..vaValueArrayListClassName;
+  {$EXTERNALSYM TValueAttributeID}
+  {$HPPEMIT '#define TValueAttributeID int'}
 
   TMapAttributeID = maMapInterfaceName..maSortedMapClassName;
+  {$EXTERNALSYM TMapAttributeID}
+  {$HPPEMIT '#define TMapAttributeID int'}
 
   TMapAttributes = array [TMapAttributeID] of string;
 
