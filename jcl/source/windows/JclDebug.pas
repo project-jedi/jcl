@@ -1416,20 +1416,11 @@ var
       C := Char(CurrPos^);
       case C of
         '0'..'9':
-          begin
-            Result := Result * 16;
-            Inc(Result, Ord(C) - Ord('0'));
-          end;
+          Result := (Result shl 4) or (Ord(C) - Ord('0'));
         'A'..'F':
-          begin
-            Result := Result * 16;
-            Inc(Result, Ord(C) - Ord('A') + 10);
-          end;
+          Result := (Result shl 4) or (Ord(C) - Ord('A') + 10);
         'a'..'f':
-          begin
-            Result := Result * 16;
-            Inc(Result, Ord(C) - Ord('a') + 10);
-          end;
+          Result := (Result shl 4) or (Ord(C) - Ord('a') + 10);
         'H', 'h':
           begin
             Inc(CurrPos);
