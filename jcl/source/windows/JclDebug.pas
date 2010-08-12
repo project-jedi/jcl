@@ -1664,7 +1664,7 @@ begin
   //                     only one segment of code
   // after Delphi 2005: segments started at code base address (module base address + $10000)
   //                    2 segments of code
-  if (Length(FSegmentClasses) > 0) and (FSegmentClasses[0].Start > 0) and (Addr > FSegmentClasses[0].Start) then
+  if (Length(FSegmentClasses) > 0) and (FSegmentClasses[0].Start > 0) and (Addr >= FSegmentClasses[0].Start) then
     // Delphi 2005 and later
     // The first segment should be code starting at module base address + $10000
     Result := Addr - FSegmentClasses[0].Start
