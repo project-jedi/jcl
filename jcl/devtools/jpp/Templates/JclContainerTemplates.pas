@@ -145,6 +145,22 @@ var
   GlobalTypeAttributeHandlers: array [TAllTypeAttributeID] of TJclInterfaceParamsClass;
   GlobalTypeAttributeDependencies: array [TAllTypeAttributeID] of TAllTypeAttributeIDs;
 
+procedure ClearRegisteredContainers;
+var
+  AttributeID: TAllTypeAttributeID;
+begin
+  SetLength(GlobalInterfaceParams, 0);
+  SetLength(GlobalImplementationParams, 0);
+  // avoid spurious errors while recompiling installed package in the IDE
+  // for some reasons the GlobalTypeAttributeHandlers and GlobalAttirbuteDependencies
+  // are not clean when the package is reloaded
+  for AttributeID := Low(AttributeID) to High(AttributeID) do
+  begin
+    GlobalTypeAttributeHandlers[AttributeID] := nil;
+    GlobalTypeAttributeDependencies[AttributeID] := [];
+  end;
+end;
+
 procedure RegisterContainerParams(const PrototypeName: string;
   InterfaceParamsClass: TJclInterfaceParamsClass);
 var
@@ -153,6 +169,11 @@ var
   PropCount, Index: Integer;
   Dependencies: TAllTypeAttributeIDs;
 begin
+  // avoid duplicate registrations
+  for Index := Low(GlobalInterfaceParams) to High(GlobalInterfaceParams) do
+    if (GlobalInterfaceParams[Index].ParamsName = PrototypeName) then
+      Exit;
+
   PropCount := GetStringPropList(InterfaceParamsClass.ClassInfo, PropList);
   if PropCount > 0 then
   begin
@@ -200,6 +221,11 @@ var
   PropCount, Index: Integer;
   PropInfo: PPropInfo;
 begin
+  // avoid duplicate registrations
+  for Index := Low(GlobalInterfaceParams) to High(GlobalInterfaceParams) do
+    if (GlobalImplementationParams[Index].ParamsName = PrototypeName) then
+      Exit;
+
   PropCount := GetStringPropList(ImplementationParamsClass.ClassInfo, PropList);
   if PropCount > 0 then
   begin
@@ -617,7 +643,6 @@ finalization
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  SetLength(GlobalInterfaceParams, 0);
-  SetLength(GlobalImplementationParams, 0);
+  ClearRegisteredContainers;
 
 end.
