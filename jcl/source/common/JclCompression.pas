@@ -1,4 +1,4 @@
-{**************************************************************************************************}
+﻿{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -2719,7 +2719,7 @@ var
   AHeader: TJclGZIPHeader;
   ExtraFieldLength, HeaderCRC16: Word;
   HeaderCRC: Cardinal;
-  TmpUTF8String: {$IFDEF UNICODE}UTF8String{$ELSE}AnsiString{$ENDIF UNICODE};
+  TmpAnsiString: AnsiString;
 
   procedure StreamWriteBuffer(const Buffer; Count: Longint);
   begin
@@ -2790,8 +2790,8 @@ begin
     if not CheckCString(OriginalFileName) then
       raise EJclCompressionError.CreateRes(@RsCompressionGZIPBadString);
 
-    TmpUTF8String := UTF8Encode(OriginalFileName);
-    StreamWriteBuffer(TmpUTF8String[1], Length(TmpUTF8String) + 1);
+    TmpAnsiString := AnsiString(OriginalFileName);
+    StreamWriteBuffer(TmpAnsiString[1], Length(TmpAnsiString) + 1);
   end;
 
   if (gfComment in Flags) and (Comment <> '') then
@@ -2799,8 +2799,8 @@ begin
     if not CheckCString(Comment) then
       raise EJclCompressionError.CreateRes(@RsCompressionGZIPBadString);
 
-    TmpUTF8String := UTF8Encode(Comment);
-    StreamWriteBuffer(TmpUTF8String[1], Length(TmpUTF8String) + 1);
+    TmpAnsiString := AnsiString(Comment);
+    StreamWriteBuffer(TmpAnsiString[1], Length(TmpAnsiString) + 1);
   end;
 
   if (gfHeaderCRC16 in Flags) then
