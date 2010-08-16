@@ -2719,6 +2719,7 @@ var
   AHeader: TJclGZIPHeader;
   ExtraFieldLength, HeaderCRC16: Word;
   HeaderCRC: Cardinal;
+  TmpUTF8String: {$IFDEF UNICODE}UTF8String{$ELSE}AnsiString{$ENDIF UNICODE};
 
   procedure StreamWriteBuffer(const Buffer; Count: Longint);
   begin
@@ -2788,14 +2789,18 @@ begin
   begin
     if not CheckCString(OriginalFileName) then
       raise EJclCompressionError.CreateRes(@RsCompressionGZIPBadString);
-    StreamWriteBuffer(OriginalFileName[1], Length(OriginalFileName) + 1);
+
+    TmpUTF8String := UTF8Encode(OriginalFileName);
+    StreamWriteBuffer(TmpUTF8String[1], Length(TmpUTF8String) + 1);
   end;
 
   if (gfComment in Flags) and (Comment <> '') then
   begin
     if not CheckCString(Comment) then
       raise EJclCompressionError.CreateRes(@RsCompressionGZIPBadString);
-    StreamWriteBuffer(Comment[1], Length(Comment) + 1);
+
+    TmpUTF8String := UTF8Encode(Comment);
+    StreamWriteBuffer(TmpUTF8String[1], Length(TmpUTF8String) + 1);
   end;
 
   if (gfHeaderCRC16 in Flags) then
