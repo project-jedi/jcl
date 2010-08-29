@@ -3,7 +3,7 @@
 { Project JEDI Code Library (JCL)                                                                  }
 { DUnit Test                                                                                       }
 {                                                                                                  }
-{ Last Update: 2004-01-27                                                                                }
+{ Last Update: $Date$                                }
 {                                                                                                  }
 { The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
 { you may not use this file except in compliance with the License. You may obtain a copy of the    }
@@ -27,7 +27,8 @@ uses
   TestJclEDI in 'units\TestJclEDI.pas',
   TestJclEDI_ANSIX12 in 'units\TestJclEDI_ANSIX12.pas',
   TestJclContainer in 'units\TestJclContainer.pas',
-  TestJclNotify in 'units\TestJclNotify.pas';
+  TestJclNotify in 'units\TestJclNotify.pas',
+  TestJclDebug in 'units\TestJclDebug.pas';
 
 {$R *.res}
 
