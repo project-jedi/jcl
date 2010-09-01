@@ -2171,8 +2171,8 @@ begin
   FSignChars[True] := '+';
   FPaddingChar := ' ';
   FMultiplier := '×';
-  FFractionalPartSeparator := DecimalSeparator;
-  FDigitBlockSeparator := ThousandSeparator;
+  FFractionalPartSeparator := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}DecimalSeparator;
+  FDigitBlockSeparator := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}ThousandSeparator;
 end;
 
 procedure TJclNumericFormat.InvalidDigit(Digit: Char);

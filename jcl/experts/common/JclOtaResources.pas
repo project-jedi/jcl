@@ -497,6 +497,16 @@ resourcestring
 resourcestring
   RsEInvalidAction = 'Internal error: invalid action';
 
+//=== JclOtaAddinOptions.pas =================================================
+resourcestring
+  RsProjectJEDIAddinOptionsCaptionPrefix = 'Project JEDI.JCL.';
+  RsProjectJEDIAddinOptionsCaption = 'Project JEDI';
+  RsProjectJEDIAddinOptionsTitle = 'Project JEDI Options';
+  RsProjectJEDIJclAddinOptionsCaption = 'Project JEDI.JCL';
+  RsProjectJEDIJclAddinOptionsTitle = 'JCL Options';
+  RsProjectJEDIJclCommonAddinOptionsCaption = 'Project JEDI.JCL.Common';
+  RsProjectJEDIJclCommonAddinOptionsTitle = 'JCL Common Options';
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (

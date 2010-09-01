@@ -2890,7 +2890,7 @@ function TJclDistribution.CreateInstall(Target: TJclBorRADToolInstallation): Boo
         Result := Target.VersionNumber in [6];
       brBorlandDevStudio :
         Result := ((Target.VersionNumber in [1, 2]) and (bpDelphi32 in Target.Personalities))
-          or (Target.VersionNumber in [3, 4, 5, 6, 7]);
+          or (Target.VersionNumber in [3, 4, 5, 6, 7, 8]);
       else
         Result := False;
     end;

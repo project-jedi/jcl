@@ -1636,7 +1636,7 @@ begin
           Inc(cp);
 
         { check for and read in fraction part of mantissa }
-        if (cp^ = '.') or (cp^ = DecimalSeparator) then
+        if (cp^ = '.') or (cp^ = {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}DecimalSeparator) then
         begin
           Inc(cp);
           while CharIsDigit(cp^) do
