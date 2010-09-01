@@ -50,8 +50,31 @@ type
   TDebugExpertAction = (deGenerateJdbg, deInsertJdbg, deDeleteMapFile);
   TDebugExpertActions = set of TDebugExpertAction;
 
+  {$IFDEF BDS8_UP}
+  TJclDebugExtension = class;
+
+  TJclDebugAddinOptions = class(TInterfacedObject, INTAAddinOptions)
+  private
+    FConfigFrame: TJclDebugIdeConfigFrame;
+    FDebugExtension: TJclDebugExtension;
+  public
+    constructor Create(ADebugExtension: TJclDebugExtension);
+    procedure DialogClosed(Accepted: Boolean);
+    procedure FrameCreated(AFrame: TCustomFrame);
+    function GetArea: string;
+    function GetCaption: string;
+    function GetFrameClass: TCustomFrameClass;
+    function ValidateContents: Boolean;
+    function GetHelpContext: Integer;
+    function IncludeInIDEInsight: Boolean;
+  end;
+  {$ENDIF BDS8_UP}
+
   TJclDebugExtension = class(TJclOTAExpert)
   private
+    {$IFDEF BDS8_UP}
+    FAddinOptions: TJclDebugAddinOptions;
+    {$ENDIF BDS8_UP}
     FResultInfo: array of TJclDebugDataInfo;
     FStoreResults: Boolean;
     FBuildError: Boolean;
@@ -118,6 +141,7 @@ type
     procedure UpdateMenuCheckState(Sender: TMenuItem; DebugExpertAction: TDebugExpertAction);
   public
     constructor Create; reintroduce;
+    destructor Destroy; override;
     procedure AfterCompile(const Project: IOTAProject; Succeeded: Boolean);
     procedure BeforeCompile(const Project: IOTAProject; var Cancel: Boolean);
     procedure RegisterCommands; override;
@@ -238,6 +262,9 @@ implementation
 uses
   TypInfo,
   Variants,
+  {$IFDEF BDS8_UP}
+  JclOtaAddinOptions,
+  {$ENDIF BDS8_UP}
   JclBase, JclIDEUtils, JclDebug, JclDebugIdeResult,
   JclOtaResources;
 
@@ -283,6 +310,64 @@ begin
   end;
 end;
 
+//=== { TJclDebugAddinOptions } ==============================================
+
+{$IFDEF BDS8_UP}
+constructor TJclDebugAddinOptions.Create(ADebugExtension: TJclDebugExtension);
+begin
+  inherited Create;
+  FDebugExtension := ADebugExtension;
+end;
+
+procedure TJclDebugAddinOptions.DialogClosed(Accepted: Boolean);
+begin
+  if Accepted then
+  begin
+    FDebugExtension.GlobalStates[deGenerateJdbg] := FConfigFrame.GenerateJdbgState;
+    FDebugExtension.GlobalStates[deInsertJdbg] := FConfigFrame.InsertJdbgState;
+    FDebugExtension.GlobalStates[deDeleteMapFile] := FConfigFrame.DeleteMapFileState;
+  end;
+end;
+
+procedure TJclDebugAddinOptions.FrameCreated(AFrame: TCustomFrame);
+begin
+  FConfigFrame := TJclDebugIdeConfigFrame(AFrame);
+  FConfigFrame.GenerateJdbgState := FDebugExtension.GlobalStates[deGenerateJdbg];
+  FConfigFrame.InsertJdbgState := FDebugExtension.GlobalStates[deInsertJdbg];
+  FConfigFrame.DeleteMapFileState := FDebugExtension.GlobalStates[deDeleteMapFile];
+end;
+
+function TJclDebugAddinOptions.GetArea: string;
+begin
+  Result := '';
+end;
+
+function TJclDebugAddinOptions.GetCaption: string;
+begin
+  Result := JclGetAddinOptionsCaption(RsDebugConfigPageCaption);
+end;
+
+function TJclDebugAddinOptions.GetFrameClass: TCustomFrameClass;
+begin
+  Result := TJclDebugIdeConfigFrame;
+end;
+
+function TJclDebugAddinOptions.GetHelpContext: Integer;
+begin
+  Result := 0;
+end;
+
+function TJclDebugAddinOptions.IncludeInIDEInsight: Boolean;
+begin
+  Result := True;
+end;
+
+function TJclDebugAddinOptions.ValidateContents: Boolean;
+begin
+  Result := True;
+end;
+{$ENDIF BDS8_UP}
+
 //=== { TJclDebugExtension } =================================================
 
 procedure TJclDebugExtension.ConfigurationClosed(AControl: TControl; SaveChanges: Boolean);
@@ -305,6 +390,19 @@ end;
 constructor TJclDebugExtension.Create;
 begin
   inherited Create(JclDebugExpertRegKey);
+  {$IFDEF BDS8_UP}
+  FAddinOptions := TJclDebugAddinOptions.Create(Self);
+  (BorlandIDEServices as INTAEnvironmentOptionsServices).RegisterAddInOptions(FAddinOptions);
+  {$ENDIF BDS8_UP}
+end;
+
+destructor TJclDebugExtension.Destroy;
+begin
+  {$IFDEF BDS8_UP}
+  (BorlandIDEServices as INTAEnvironmentOptionsServices).UnregisterAddInOptions(FAddinOptions);
+  FAddinOptions := nil;
+  {$ENDIF BDS8_UP}
+  inherited Destroy;
 end;
 
 procedure TJclDebugExtension.AddConfigurationPages(AddPageFunc: TJclOTAAddPageFunc);

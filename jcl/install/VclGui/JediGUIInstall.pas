@@ -183,7 +183,7 @@ var
   AEdit: TEdit;
 begin
   AEdit := Sender as TEdit;
-  if DirectoryExists(AEdit.Text) then
+  if {$IFDEF RTL220_UP}SysUtils.{$ENDIF RTL220_UP}DirectoryExists(AEdit.Text) then
     AEdit.Font.Color := clWindowText
   else
     AEdit.Font.Color := clRed;

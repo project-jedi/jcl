@@ -208,7 +208,7 @@ begin
   Result := inherited GetFileActions(FileName);
 
   CvsDirectory := PathAddSeparator(ExtractFilePath(FileName)) + JclVersionCtrlCVSDirectory;
-  FileNameLine := Format('/%s/', [ExtractFileName(AnsiUpperCaseFileName(FileName))]);
+  FileNameLine := Format('/%s/', [ExtractFileName(AnsiUpperCase(FileName))]);
 
   if DirectoryExists(CvsDirectory) and Enabled then
   begin

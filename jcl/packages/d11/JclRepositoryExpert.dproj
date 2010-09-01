@@ -49,8 +49,8 @@
            <VersionInfo Name="AutoIncBuild">False</VersionInfo>
            <VersionInfo Name="MajorVer">2</VersionInfo>
            <VersionInfo Name="MinorVer">2</VersionInfo>
-           <VersionInfo Name="Release">0</VersionInfo>
-           <VersionInfo Name="Build">3537</VersionInfo>
+           <VersionInfo Name="Release">1</VersionInfo>
+           <VersionInfo Name="Build">3817</VersionInfo>
            <VersionInfo Name="Debug">False</VersionInfo>
            <VersionInfo Name="PreRelease">False</VersionInfo>
            <VersionInfo Name="Special">False</VersionInfo>
@@ -62,13 +62,13 @@
          <VersionInfoKeys>
           <VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
           <VersionInfoKeys Name="FileDescription">JCL Package containing repository wizards</VersionInfoKeys>
-          <VersionInfoKeys Name="FileVersion">2.2.0.3537</VersionInfoKeys>
+          <VersionInfoKeys Name="FileVersion">2.2.1.3817</VersionInfoKeys>
           <VersionInfoKeys Name="InternalName">JclRepositoryExpert</VersionInfoKeys>
           <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2009 Project JEDI</VersionInfoKeys>
           <VersionInfoKeys Name="LegalTrademarks"/>
           <VersionInfoKeys Name="OriginalFilename">JclRepositoryExpert110.bpl</VersionInfoKeys>
           <VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
-          <VersionInfoKeys Name="ProductVersion">2.2 Build 3537</VersionInfoKeys>
+          <VersionInfoKeys Name="ProductVersion">2.2 Build 3817</VersionInfoKeys>
          </VersionInfoKeys>
          <Source>
            <Source Name="MainSource">JclRepositoryExpert.dpk</Source>

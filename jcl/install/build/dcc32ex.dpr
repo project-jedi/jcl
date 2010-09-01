@@ -491,7 +491,10 @@ begin
         if IDEVersion < 6 then
           Result.KeyName := 'Software\Borland\BDS\' + IDEVersionStr + '.0'
         else
-          Result.KeyName := 'Software\Codegear\BDS\' + IDEVersionStr + '.0';
+        if IDEVersion < 8 then
+          Result.KeyName := 'Software\Codegear\BDS\' + IDEVersionStr + '.0'
+        else
+          Result.KeyName := 'Software\Embarcadero\BDS\' + IDEVersionStr + '.0';
         Result.Id := 'd';
       end;
   end;
@@ -540,12 +543,18 @@ begin
           5: Result.Name := 'CodeGear Delphi 2007 for Win32';
           6: Result.Name := 'CodeGear RAD Studio 2009';
           7: Result.Name := 'Embarcadero RAD Studio 2010';
+          8: Result.Name := 'Embarcadero RAD Studio XE';
         end;
     end;
 
-    Result.LibDirs := Result.RootDir + '\Lib';
-    if DirectoryExists(Result.RootDir + '\Lib\Obj') then
-      Result.LibDirs := Result.LibDirs + ';' + Result.RootDir + '\Lib\Obj';
+    if (Result.Typ = ttBDS) and (Result.IDEVersion >= 8) then
+      Result.LibDirs := Result.RootDir + '\lib\win32\release'
+    else
+    begin
+      Result.LibDirs := Result.RootDir + '\Lib';
+      if DirectoryExists(Result.RootDir + '\Lib\Obj') then
+        Result.LibDirs := Result.LibDirs + ';' + Result.RootDir + '\Lib\Obj';
+    end;
 
 
     { Read IDE search paths }
@@ -850,7 +859,8 @@ begin
       begin
         // is the target valid
         if FileExists(Target.RootDir + '\bin\dcc32.exe') and
-           (FileExists(Target.RootDir + '\lib\System.dcu') or FileExists(Target.RootDir + '\lib\obj\System.dcu')) then
+           (FileExists(Target.RootDir + '\lib\System.dcu') or FileExists(Target.RootDir + '\lib\obj\System.dcu') or
+            FileExists(Target.RootDir + '\lib\win32\release\System.dcu')) then
         begin
           if (not RequireJcl or (Target.InstalledJcl and IsVersionCompatible(RequireJclVersion, Target.JclVersion))) and
              (not RequireJvcl or (Target.InstalledJvcl and IsVersionCompatible(RequireJvclVersion, Target.JvclVersion))) then
@@ -895,7 +905,8 @@ begin
             begin
               if not FileExists(Target.RootDir + '\bin\dcc32.exe') then
                 WriteLn(' - dcc32.exe missing (Evaluation version and TurboExplorer are not supported) ');
-              if not (FileExists(Target.RootDir + '\lib\System.dcu') or FileExists(Target.RootDir + '\lib\obj\System.dcu')) then
+              if not (FileExists(Target.RootDir + '\lib\System.dcu') or FileExists(Target.RootDir + '\lib\obj\System.dcu') or
+                FileExists(Target.RootDir + '\lib\win32\release\System.dcu')) then
                 WriteLn(' - System.dcu missing');
             end;
             WriteLn;
@@ -1183,7 +1194,7 @@ begin
   begin
     WriteLn;
     WriteLn('Additional options (must be specified before any dcc32 parameter):');
-    WriteLn('  --delphi-version=d14   Prefer this version, overrides environment variable');
+    WriteLn('  --delphi-version=d15   Prefer this version, overrides environment variable');
     WriteLn('  --verbose              Show warnings and errors during the compiler detection');
     WriteLn('  --use-search-paths     Use the IDE''s search paths');
     WriteLn('  --preserve-config      Keep the dcc32.cfg file and create a dcc32_command.cmd');
@@ -1195,8 +1206,8 @@ begin
     WriteLn('  --runtime-package-vcl  Link the executable against the vcl package');
     WriteLn;
     WriteLn('Environment variables:');
-    WriteLn('  DELPHIVERSION = d14    Prefer this Delphi/BCB/BDS version');
-    WriteLn('                         (d5, d6, d7, c5, c6, d9, d10, d11, d12, d14, ...)');
+    WriteLn('  DELPHIVERSION = d15    Prefer this Delphi/BCB/BDS version');
+    WriteLn('                         (d5, d6, d7, c5, c6, d9, d10, d11, d12, d14, d15, ...)');
   end;
 
   ExitCode := Status;

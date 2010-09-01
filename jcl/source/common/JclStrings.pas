@@ -2693,12 +2693,14 @@ end;
 
 function CharIsNumberChar(const C: Char): Boolean;
 begin
-  Result := ((StrCharTypes[C] and C1_DIGIT) <> 0) or (C = '+') or (C = '-') or (C = DecimalSeparator);
+  Result := ((StrCharTypes[C] and C1_DIGIT) <> 0) or (C = '+') or (C = '-') or
+    (C = {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}DecimalSeparator);
 end;
 
 function CharIsNumber(const C: Char): Boolean;
 begin
-  Result := ((StrCharTypes[C] and C1_DIGIT) <> 0) or (C = DecimalSeparator);
+  Result := ((StrCharTypes[C] and C1_DIGIT) <> 0) or
+    (C = {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}DecimalSeparator);
 end;
 
 function CharIsPrintable(const C: Char): Boolean;
@@ -3514,8 +3516,8 @@ var
   SwapSeparators, IsNegative: Boolean;
   DecSep, ThouSep, C: Char;
 begin
-  DecSep := DecimalSeparator;
-  ThouSep := ThousandSeparator;
+  DecSep := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}DecimalSeparator;
+  ThouSep := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}ThousandSeparator;
   Temp := S;
   SwapSeparators := False;
 

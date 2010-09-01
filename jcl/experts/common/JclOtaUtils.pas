@@ -128,7 +128,6 @@ type
 
   TJclOTAExpertBase = class(TInterfacedObject, IJclOTAOptionsCallback)
   private
-    FEnvVariables: TStringList;
     FRootDir: string;
     FJCLRootDir: string;
     FSettings: TJclOTASettings;
@@ -137,7 +136,7 @@ type
     function GetRootDir: string;
     function GetJCLRootDir: string;
     function GetJCLSettings: TStrings;
-    procedure ReadEnvVariables;
+    procedure ReadEnvVariables(EnvVariables: TStrings);
     procedure ConfigurationActionUpdate(Sender: TObject);
     procedure ConfigurationActionExecute(Sender: TObject);
     function GetActivePersonality: TJclBorPersonality;
@@ -182,7 +181,6 @@ type
     function GetOutputDirectory(const Project: IOTAProject): string;
     function IsInstalledPackage(const Project: IOTAProject): Boolean;
     function IsPackage(const Project: IOTAProject): Boolean;
-    function SubstitutePath(const Path: string): string;
 
     { IJclOTAOptionsCallback }
     procedure AddConfigurationPages(AddPageFunc: TJclOTAAddPageFunc); virtual;
@@ -321,6 +319,9 @@ uses
   {$IFDEF MSWINDOWS}
   ImageHlp, JclRegistry,
   {$ENDIF MSWINDOWS}
+  {$IFDEF BDS8_UP}
+  JclOtaAddinOptions,
+  {$ENDIF BDS8_UP}
   JclFileUtils, JclStrings, JclSysInfo, JclSimpleXml, JclCompilerUtils,
   JclOtaConsts, JclOtaResources, JclOtaExceptionForm, JclOtaConfigurationForm,
   JclOtaActionConfigureSheet, JclOtaUnitVersioningSheet,
@@ -768,6 +769,20 @@ var
   OptionsForm: TJclOtaOptionsForm;
   Index: Integer;
 begin
+  {$IFDEF BDS8_UP}
+  //no resourcestring here, because this message will be removed
+  if MessageBox(0, 'The JCL options can now be found in the Third party section of the environment options and ' +
+    'this menu item will be removed some time in the future.' + #13#10#13#10 +
+    'Press ENTER/Yes to open the enviroment options or No to open the old options dialog.',
+    'JCL', MB_ICONASTERISK or MB_YESNO or MB_DEFBUTTON1) = IDYES then
+  begin
+    (BorlandIDEServices as IOTAServices).GetEnvironmentOptions.EditOptions('',
+      RsProjectJEDIJclAddinOptionsCaption);
+    Result := True;
+  end
+  else
+  begin
+  {$ENDIF BDS8_UP}
   OptionsForm := TJclOtaOptionsForm.Create(nil);
   try
     for Index := 0 to GetExpertCount - 1 do
@@ -776,6 +791,9 @@ begin
   finally
     OptionsForm.Free;
   end;
+  {$IFDEF BDS8_UP}
+  end;
+  {$ENDIF BDS8_UP}
 end;
 
 class function TJclOTAExpertBase.GetExpert(Index: Integer): TJclOTAExpertBase;
@@ -995,14 +1013,21 @@ begin
   RegisterAboutBox;
   {$ENDIF BDS}
 
-  FEnvVariables := TStringList.Create;
   FSettings := TJclOTASettings.Create(AName);
+  {$IFDEF BDS8_UP}
+  JclRegisterCommonAddinOptions;
+  {$ENDIF BDS8_UP}
 end;
 
 destructor TJclOTAExpertBase.Destroy;
 begin
+  { TODO -cFulcrum: Check why the class destructor isn't executed. When it gets
+    executed then use class constructor/destructor for JclRegisterCommonAddinOptions
+    and JclUnregisterCommonAddinOptions }
+  {$IFDEF BDS8_UP}
+  JclUnregisterCommonAddinOptions;
+  {$ENDIF BDS8_UP}
   FreeAndNil(FSettings);
-  FreeAndNil(FEnvVariables);
   FreeAndNil(FJCLSettings);
   inherited Destroy;
 end;
@@ -1012,7 +1037,11 @@ function TJclOTAExpertBase.FindExecutableName(const MapFileName: TFileName;
 var
   Se: TSearchRec;
   Res: Integer;
+  {$IFDEF RTL220_UP}
+  LatestTime: TDateTime;
+  {$ELSE ~RTL220_UP}
   LatestTime: Integer;
+  {$ENDIF ~RTL220_UP}
   FileName: TFileName;
   {$IFDEF MSWINDOWS}
   LI: LoadedImage;
@@ -1029,11 +1058,19 @@ begin
     // possible loss of data
     if MapAndLoad(PAnsiChar(AnsiString(FileName)), nil, @LI, False, True) then
     begin
+      {$IFDEF RTL220_UP}
+      if (not LI.fDOSImage) and (Se.TimeStamp > LatestTime) then
+      begin
+        ExecutableFileName := FileName;
+        LatestTime := Se.TimeStamp;
+      end;
+      {$ELSE ~RTL220_UP}
       if (not LI.fDOSImage) and (Se.Time > LatestTime) then
       begin
         ExecutableFileName := FileName;
         LatestTime := Se.Time;
       end;
+      {$ENDIF ~RTL220_UP}
       UnMapAndLoad(@LI);
     end;
     {$ELSE}
@@ -1191,8 +1228,14 @@ end;
 
 function TJclOTAExpertBase.GetOutputDirectory(const Project: IOTAProject): string;
 var
+  {$IFDEF BDS8_UP}
+  Configurations: IOTAProjectOptionsConfigurations;
+  {$ENDIF BDS8_UP}
   EnvironmentOptions: IOTAEnvironmentOptions;
   OptionValue: Variant;
+  EnvVariables: TStrings;
+  Name: string;
+  I: Integer;
 begin
   if not Assigned(Project) then
     raise EJclExpertException.CreateRes(@RsENoActiveProject);
@@ -1248,7 +1291,32 @@ begin
     Result := '';
   {$ENDIF BDS5}
 
-  Result := SubstitutePath(Trim(Result));
+  Result := Trim(Result);
+
+  EnvVariables := TStringList.Create;
+  try
+    ReadEnvVariables(EnvVariables);
+    {$IFDEF BDS8_UP}
+    // add the config environment variable
+    if Supports(Project.ProjectOptions, IOTAProjectOptionsConfigurations, Configurations) then
+      EnvVariables.Values['Config'] := Configurations.ActiveConfigurationName;
+    {$ENDIF BDS8_UP}
+    while Pos('$(', Result) > 0 do
+    begin
+      for I := 0 to EnvVariables.Count - 1 do
+      begin
+        Name := EnvVariables.Names[I];
+        Result := StringReplace(Result, Format('$(%s)', [Name]),
+          EnvVariables.Values[Name], [rfReplaceAll, rfIgnoreCase]);
+      end;
+    end;
+  finally
+    EnvVariables.Free;
+  end;
+
+  while Pos('\\', Result) > 0 do
+    Result := StringReplace(Result, '\\', DirDelimiter, [rfReplaceAll]);
+
   if Result = '' then
     Result := ExtractFilePath(Project.FileName)
   else
@@ -1450,7 +1518,7 @@ begin
 end;
 {$ENDIF BDS}
 
-procedure TJclOTAExpertBase.ReadEnvVariables;
+procedure TJclOTAExpertBase.ReadEnvVariables(EnvVariables: TStrings);
 var
   I: Integer;
   EnvNames: TStringList;
@@ -1458,10 +1526,10 @@ var
   EnvVarKeyName: string;
   {$ENDIF MSWINDOWS}
 begin
-  FEnvVariables.Clear;
+  EnvVariables.Clear;
 
   // read user and system environment variables
-  GetEnvironmentVars(FEnvVariables, False);
+  GetEnvironmentVars(EnvVariables, False);
 
   // read Delphi environment variables
   EnvNames := TStringList.Create;
@@ -1471,7 +1539,7 @@ begin
     if RegKeyExists(HKEY_CURRENT_USER, EnvVarKeyName) and
       RegGetValueNames(HKEY_CURRENT_USER, EnvVarKeyName, EnvNames) then
       for I := 0 to EnvNames.Count - 1 do
-        FEnvVariables.Values[EnvNames[I]] :=
+        EnvVariables.Values[EnvNames[I]] :=
           RegReadStringDef(HKEY_CURRENT_USER, EnvVarKeyName, EnvNames[I], '');
     {$ENDIF MSWINDOWS}
   finally
@@ -1479,26 +1547,7 @@ begin
   end;
 
   // add the Delphi directory
-  FEnvVariables.Values[DelphiEnvironmentVar] := RootDir;
-end;
-
-function TJclOTAExpertBase.SubstitutePath(const Path: string): string;
-var
-  I: Integer;
-  Name: string;
-begin
-  if FEnvVariables.Count = 0 then
-    ReadEnvVariables;
-  Result := Path;
-  while Pos('$(', Result) > 0 do
-    for I := 0 to FEnvVariables.Count - 1 do
-    begin
-      Name := FEnvVariables.Names[I];
-      Result := StringReplace(Result, Format('$(%s)', [Name]),
-        FEnvVariables.Values[Name], [rfReplaceAll, rfIgnoreCase]);
-    end;
-  While Pos('\\', Result) > 0 do
-    Result := StringReplace(Result, '\\', DirDelimiter, [rfReplaceAll]);
+  EnvVariables.Values[DelphiEnvironmentVar] := RootDir;
 end;
 
 procedure TJclOTAExpertBase.RegisterAction(Action: TCustomAction);

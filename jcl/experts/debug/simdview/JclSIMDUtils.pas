@@ -546,8 +546,8 @@ var
   TestValue: Extended;
   ErrorCode: Integer;
 begin
-  if DecimalSeparator <> '.' then
-    StringValue := StringReplace(StringValue, DecimalSeparator, '.', [rfReplaceAll, rfIgnoreCase]);
+  if {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}DecimalSeparator <> '.' then
+    StringValue := StringReplace(StringValue, {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}DecimalSeparator, '.', [rfReplaceAll, rfIgnoreCase]);
   Val(StringValue, TestValue, ErrorCode);
   Result := ErrorCode = 0;
   if Result then
@@ -734,8 +734,8 @@ begin
     else
       Exit;
     ValueStr := Trim(FormatValue(AValue, sfSigned));
-    if DecimalSeparator <> '.' then
-      ValueStr := StringReplace(ValueStr, DecimalSeparator, '.', [rfReplaceAll, rfIgnoreCase]);
+    if {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}DecimalSeparator <> '.' then
+      ValueStr := StringReplace(ValueStr, {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}DecimalSeparator, '.', [rfReplaceAll, rfIgnoreCase]);
     if Length(ValueStr) >= Index - RegisterPosition then
     begin
       OldLength := Length(Expression);
@@ -831,8 +831,8 @@ begin
     else
       Exit;
     ValueStr := Trim(FormatValue(AValue, sfSigned));
-    if DecimalSeparator <> '.' then
-      ValueStr := StringReplace(ValueStr, DecimalSeparator, '.', [rfReplaceAll, rfIgnoreCase]);
+    if {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}DecimalSeparator <> '.' then
+      ValueStr := StringReplace(ValueStr, {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}DecimalSeparator, '.', [rfReplaceAll, rfIgnoreCase]);
     if Length(ValueStr) >= Index - RegisterPosition then
     begin
       OldLength := Length(Expression);

@@ -25,5 +25,7 @@
     <File Name="..\..\experts\common\JclOtaUnitVersioningSheet.pas" Targets="designtimeIDE" Formname="JclOtaUnitVersioningFrame: TFrame" Condition=""/>
     <File Name="..\..\experts\common\JclOtaWizardForm.pas" Targets="designtimeIDE" Formname="JclWizardForm" Condition=""/>
     <File Name="..\..\experts\common\JclOtaWizardFrame.pas" Targets="designtimeIDE" Formname="JclWizardFrame: TFrame" Condition=""/>
+    <File Name="..\..\experts\common\JclOtaAddinOptions.pas" Targets="d15" Formname="" Condition=""/>
+    <File Name="..\..\experts\common\JclOtaEmptyAddinOptionsFrame.pas" Targets="d15" Formname="JclOtaEmptyAddinOptionsFrm: TFrame" Condition=""/>
   </Contains>
 </Package>

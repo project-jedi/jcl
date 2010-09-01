@@ -1053,6 +1053,7 @@ const
 implementation
 
 uses
+  Math,
   {$IFDEF MSWINDOWS}
   ShellApi, ActiveX, ComObj, ShlObj,
   JclShell, JclSysInfo, JclSecurity,
@@ -6196,8 +6197,13 @@ type
     FRequiredAttr: Integer;
     FFileSizeMin: Int64;
     FFileSizeMax: Int64;
+    {$IFDEF RTL220_UP}
+    FFileTimeMin: TDateTime;
+    FFileTimeMax: TDateTime;
+    {$ELSE ~RTL220_UP}
     FFileTimeMin: Integer;
     FFileTimeMax: Integer;
+    {$ENDIF ~RTL220_UP}
     FSynchronizationMode: TFileEnumeratorSyncMode;
     FIncludeSubDirectories: Boolean;
     FIncludeHiddenSubDirectories: Boolean;
@@ -6226,6 +6232,13 @@ type
     property FileMasks: TStrings read GetFileMasks write SetFileMasks;
     property FileSizeMin: Int64 read FFileSizeMin write FFileSizeMin;
     property FileSizeMax: Int64 read FFileSizeMax write FFileSizeMax;
+    {$IFDEF RTL220_UP}
+    property FileTimeMin: TDateTime read FFileTimeMin write FFileTimeMin;
+    property FileTimeMax: TDateTime read FFileTimeMax write FFileTimeMax;
+    {$ELSE ~RTL220_UP}
+    property FileTimeMin: Integer read FFileTimeMin write FFileTimeMin;
+    property FileTimeMax: Integer read FFileTimeMax write FFileTimeMax;
+    {$ENDIF ~RTL220_UP}
     property Directories: TStrings read GetDirectories write SetDirectories;
     property IncludeSubDirectories: Boolean
       read FIncludeSubDirectories write FIncludeSubDirectories;
@@ -6249,8 +6262,13 @@ begin
   inherited Create(True);
   FDirectories := TStringList.Create;
   FFileMasks := TStringList.Create;
+  {$IFDEF RTL220_UP}
+  FFileTimeMin := -MaxDouble;
+  FFileTimeMax := MaxDouble;
+  {$ELSE ~RTL220_UP}
   FFileTimeMin := Low(FFileInfo.Time);
   FFileTimeMax := High(FFileInfo.Time);
+  {$ENDIF ~RTL220_UP}
   FFileSizeMax := High(FFileSizeMax);
   {$IFDEF MSWINDOWS}
   Priority := tpIdle;
@@ -6342,7 +6360,11 @@ function TEnumFileThread.FileMatch: Boolean;
 var
   FileSize: Int64;
 begin
+  {$IFDEF RTL220_UP}
+  Result := FileNameMatchesMask and (FFileInfo.TimeStamp >= FFileTimeMin) and (FFileInfo.TimeStamp <= FFileTimeMax);
+  {$ELSE ~RTL220_UP}
   Result := FileNameMatchesMask and (FFileInfo.Time >= FFileTimeMin) and (FFileInfo.Time <= FFileTimeMax);
+  {$ENDIF ~RTL220_UP}
   if Result then
   begin
     FileSize := GetSizeOfFile(FFileInfo);

@@ -113,6 +113,9 @@ const
 implementation
 
 uses
+  {$IFDEF BDS8_UP}
+  JclOtaAddinOptions,
+  {$ENDIF BDS8_UP}
   JclOtaConsts, JclOtaResources,
   JclStackTraceViewerImpl;
 
@@ -663,7 +666,11 @@ end;
 procedure TfrmMain.acOptionsExecute(Sender: TObject);
 begin
   inherited;
+  {$IFDEF BDS8_UP}
+  (BorlandIDEServices as IOTAServices).GetEnvironmentOptions.EditOptions('', JclGetAddinOptionsCaption(RsStackTraceViewerOptionsPageName));
+  {$ELSE ~BDS8_UP}
   TJclOTAExpertBase.ConfigurationDialog(LoadResString(@RsStackTraceViewerOptionsPageName));
+  {$ENDIF ~BDS8_UP}
 end;
 
 procedure TfrmMain.acUpdateLocalInfoExecute(Sender: TObject);

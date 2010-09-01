@@ -1,7 +1,8 @@
-JEDI Code Library v 2.1 Installation
+JEDI Code Library v 2.2 Installation
 
 Supported development tools versions:
 
+- Delphi XE and C++Builder XE;
 - Delphi 2010 and C++Builder 2010;
 - Delphi 2009 and C++Builder 2009;
 - CodeGear RAD Studio 2007 (also known as Delphi 2007 for Win32, C++Builder 2007);
@@ -54,11 +55,11 @@ To execute for
         to specify the root directory of the make.exe to use for JCL installation; 
         on the commandline, type (for example):
 
-        >install "C:\Program Files\Borland\Delphi5"
+        >install "C:\Program Files\Borland\Delphi6"
 
         or
 
         >install d6
 
 --------------------------------
-Document last updated 2009-11-05
+Document last updated 2010-08-13

@@ -34,7 +34,7 @@ unit JclVersionControlImpl;
 interface
 
 uses
-  SysUtils, Classes, Graphics, Controls, Menus, ActnList, Dialogs,
+  SysUtils, Classes, Graphics, Controls, Menus, ActnList, Dialogs, Forms,
   ToolsAPI,
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
@@ -57,8 +57,31 @@ type
     property ControlAction: TJclVersionControlActionType read FControlAction write FControlAction;
   end;
 
+  {$IFDEF BDS8_UP}
+  TJclVersionControlExpert = class;
+
+  TJclVersionControlExpertOptions = class(TInterfacedObject, INTAAddinOptions)
+  private
+    FOptionsFrame: TJclVersionCtrlOptionsFrame;
+    FVersionControlExpert: TJclVersionControlExpert;
+  public
+    constructor Create(AVersionControlExpert: TJclVersionControlExpert);
+    procedure DialogClosed(Accepted: Boolean);
+    procedure FrameCreated(AFrame: TCustomFrame);
+    function GetArea: string;
+    function GetCaption: string;
+    function GetFrameClass: TCustomFrameClass;
+    function ValidateContents: Boolean;
+    function GetHelpContext: Integer;
+    function IncludeInIDEInsight: Boolean;
+  end;
+  {$ENDIF BDS8_UP}
+
   TJclVersionControlExpert = class (TJclOTAExpert)
   private
+    {$IFDEF BDS8_UP}
+    FAddinOptions: TJclVersionControlExpertOptions;
+    {$ENDIF BDS8_UP}
     FVersionCtrlMenu: TMenuItem;
     FActions: array [TJclVersionControlActionType] of TCustomAction;
     FIconIndexes: array [TJclVersionControlActionType] of Integer;
@@ -131,7 +154,10 @@ const
 implementation
 
 uses
-  Windows, Forms, TypInfo, ImgList,
+  Windows, TypInfo, ImgList,
+  {$IFDEF BDS8_UP}
+  JclOtaAddinOptions,
+  {$ENDIF BDS8_UP}
   JclDebug, JclFileUtils, JclRegistry, JclShell, JclStrings,
   JclOtaConsts, JclOtaResources,
   JclVersionCtrlSVNImpl,
@@ -315,6 +341,73 @@ begin
   else
     raise EJclExpertException.CreateRes(@RsEInvalidAction);
 end;
+
+//=== { TJclVersionControlExpertOptions } ====================================
+
+{$IFDEF BDS8_UP}
+constructor TJclVersionControlExpertOptions.Create(AVersionControlExpert: TJclVersionControlExpert);
+begin
+  inherited Create;
+  FVersionControlExpert := AVersionControlExpert;
+end;
+
+procedure TJclVersionControlExpertOptions.DialogClosed(Accepted: Boolean);
+begin
+  if Accepted then
+  begin
+    FVersionControlExpert.DisableActions := FOptionsFrame.DisableActions;
+    FVersionControlExpert.HideActions := FOptionsFrame.HideActions;
+    FVersionControlExpert.SaveConfirmation := FOptionsFrame.SaveConfirmation;
+    FVersionControlExpert.ActOnTopSandbox := FOptionsFrame.ActOnTopSandbox;
+    FVersionControlExpert.FMenuOrganization.Assign(FOptionsFrame.MenuTree);
+    FVersionControlExpert.IconType := FOptionsFrame.IconType;
+    FVersionControlExpert.RefreshMenu;
+  end;
+end;
+
+procedure TJclVersionControlExpertOptions.FrameCreated(AFrame: TCustomFrame);
+begin
+  FOptionsFrame := TJclVersionCtrlOptionsFrame(AFrame);
+  FOptionsFrame.DisableActions := FVersionControlExpert.DisableActions;
+  FOptionsFrame.HideActions := FVersionControlExpert.HideActions;
+  FOptionsFrame.SaveConfirmation := FVersionControlExpert.SaveConfirmation;
+  FOptionsFrame.ActOnTopSandbox := FVersionControlExpert.ActOnTopSandbox;
+  FOptionsFrame.SetActions(FVersionControlExpert.FActions);
+  // after SetActions
+  FOptionsFrame.MenuTree := FVersionControlExpert.FMenuOrganization;
+  FOptionsFrame.IconType := FVersionControlExpert.IconType;
+end;
+
+function TJclVersionControlExpertOptions.GetArea: string;
+begin
+  Result := '';
+end;
+
+function TJclVersionControlExpertOptions.GetCaption: string;
+begin
+  Result := JclGetAddinOptionsCaption(RsVersionControlSheet);
+end;
+
+function TJclVersionControlExpertOptions.GetFrameClass: TCustomFrameClass;
+begin
+  Result := TJclVersionCtrlOptionsFrame;
+end;
+
+function TJclVersionControlExpertOptions.GetHelpContext: Integer;
+begin
+  Result := 0;
+end;
+
+function TJclVersionControlExpertOptions.IncludeInIDEInsight: Boolean;
+begin
+  Result := True;
+end;
+
+function TJclVersionControlExpertOptions.ValidateContents: Boolean;
+begin
+  Result := True;
+end;
+{$ENDIF BDS8_UP}
 
 //=== { TJclVersionControlExpert } ===================================================
 
@@ -535,10 +628,19 @@ begin
   FMenuOrganization := TStringList.Create;
 
   inherited Create('JclVersionControlExpert');
+
+  {$IFDEF BDS8_UP}
+  FAddinOptions := TJclVersionControlExpertOptions.Create(Self);
+  (BorlandIDEServices as INTAEnvironmentOptionsServices).RegisterAddInOptions(FAddinOptions);
+  {$ENDIF BDS8_UP}
 end;
 
 destructor TJclVersionControlExpert.Destroy;
 begin
+  {$IFDEF BDS8_UP}
+  (BorlandIDEServices as INTAEnvironmentOptionsServices).UnregisterAddInOptions(FAddinOptions);
+  FAddinOptions := nil;
+  {$ENDIF BDS8_UP}
   inherited Destroy;
   FMenuOrganization.Free;
 end;
