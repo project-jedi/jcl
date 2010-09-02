@@ -326,7 +326,9 @@ begin
       if ItemsEqual(FElementData[I], PARAMETERNAME) then
       begin
         if I < (FSize - 1) then
-          MoveArray(FElementData, I + 1, I, FSize - 1 - I);
+          MoveArray(FElementData, I + 1, I, FSize - 1 - I)
+        else
+          FElementData[I] := DEFAULTVALUE;
         Dec(FSize);
         Result := True;
         if FRemoveSingleElement then
@@ -358,7 +360,9 @@ begin
     begin
       Result := FElementData[Index];
       if Index < (FSize - 1) then
-        MoveArray(FElementData, Index + 1, Index, FSize - 1 - Index);
+        MoveArray(FElementData, Index + 1, Index, FSize - 1 - Index)
+      else
+        FElementData[Index] := DEFAULTVALUE;
       Dec(FSize);
       AutoPack;
     end
