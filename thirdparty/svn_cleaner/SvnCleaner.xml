@@ -203,10 +203,11 @@
 
         <setting path="" mask="HeaderTest" recurse="no" dironly="yes">
           <property name="svn:ignore">
+            <value>*.bak</value>
+            <value>*.cpp</value>
             <value>*.obj</value>
             <value>*.~*</value>
             <value>__history</value>
-            <value>*.bak</value>
           </property>
         </setting>
       </setting>
