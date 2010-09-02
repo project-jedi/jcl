@@ -48,7 +48,7 @@
 {$HPPEMIT '#define ZEXPORTVA __cdecl'}
 
 {$HPPEMIT '#define __MACTYPES__'}
-{$HPPEMIT '#include <zutil.h>'}
+{$HPPEMIT '#include <ZLib.hpp>'}
 
 unit zlibh;
 
@@ -228,13 +228,17 @@ type
   {$EXTERNALSYM free_func}
   free_func = procedure(opaque:voidpf; address:voidpf);
     {$IFDEF ZLIB_EXPORT_CDECL} cdecl; {$ENDIF ZLIB_EXPORT_CDECL}
+  {$EXTERNALSYM TFNAllocFunc}
   TFNAllocFunc = alloc_func;
+  {$EXTERNALSYM TFNFreeFunc}
   TFNFreeFunc = free_func;
 
 type
   {$EXTERNALSYM internal_state}
   internal_state = packed record end;
+  {$EXTERNALSYM TInternalState}
   TInternalState = internal_state; // backward compatibility
+  {$EXTERNALSYM PInternalState}
   PInternalState = ^internal_state; // backward compatibility
 
 type
@@ -259,13 +263,18 @@ type
       adler:    uLong;       // adler32 value of the uncompressed data 
       reserved: uLong;       // reserved for future use 
   end;
+  (*$HPPEMIT 'namespace Zlibh {'*)
+  (*$HPPEMIT 'typedef Zlib::TZStreamRec z_stream_s;'*)
+  (*$HPPEMIT '}'*)
 
   {$EXTERNALSYM z_stream}
   z_stream = z_stream_s;
   {$EXTERNALSYM z_streamp}
   z_streamp = ^z_stream_s;
 
+  {$EXTERNALSYM TZStreamRec}
   TZStreamRec = z_stream_s;
+  {$EXTERNALSYM PZStreamRec}
   PZStreamRec = ^z_stream_s;
 
 {*
@@ -1334,7 +1343,9 @@ type
   in_func = function(p1: Pointer; p2: PByte):UnsignedInt;
   {$EXTERNALSYM out_func}
   out_func = function (p1: Pointer; p2: PByte; p3:UnsignedInt): Longint;
+  {$EXTERNALSYM TFNInFunc}
   TFNInFunc = in_func;
+  {$EXTERNALSYM TFNOutFunc}
   TFNOutFunc = out_func;
 
 {$IFDEF ZLIB_LINKONREQUEST}
