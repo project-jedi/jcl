@@ -222,7 +222,7 @@ var
   PropInfo: PPropInfo;
 begin
   // avoid duplicate registrations
-  for Index := Low(GlobalInterfaceParams) to High(GlobalInterfaceParams) do
+  for Index := Low(GlobalImplementationParams) to High(GlobalImplementationParams) do
     if (GlobalImplementationParams[Index].ParamsName = PrototypeName) then
       Exit;
 
