@@ -340,6 +340,10 @@ type
 
   end;
 {$EXTERNALSYM TASK_TRIGGER}
+  (*$HPPEMIT 'namespace Mstask {'*)
+  (*$HPPEMIT 'typedef struct _TAST_TRIGGER _TASK_TRIGGER;'*)
+  (*$HPPEMIT '}'*)
+
   TASK_TRIGGER = _TASK_TRIGGER;
   TTaskTrigger = _TASK_TRIGGER;
 
@@ -381,6 +385,9 @@ type
     function GetTriggerString(out ppwszTrigger: LPWSTR): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {out} LPWSTR * ppwszTrigger |*)
   end;
+  (*$HPPEMIT 'namespace Mstask {'*)
+  (*$HPPEMIT 'typedef interface ITaskTrigger ITaskTrigger;'*)
+  (*$HPPEMIT '}'*)
 
 //+----------------------------------------------------------------------------
 //
@@ -461,6 +468,9 @@ type
     function GetAccountInformation(out ppwszAccountName: LPWSTR): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {out} LPWSTR * ppwszAccountName |*)
   end;
+  (*$HPPEMIT 'namespace Mstask {'*)
+  (*$HPPEMIT 'typedef interface IScheduledWorkItem IScheduledWorkItem;'*)
+  (*$HPPEMIT '}'*)
 
 //+----------------------------------------------------------------------------
 //
@@ -508,6 +518,9 @@ type
     function GetMaxRunTime(out pdwMaxRunTimeMS: DWORD): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {out} DWORD * pdwMaxRunTimeMS |*)
   end;
+  (*$HPPEMIT 'namespace Mstask {'*)
+  (*$HPPEMIT 'typedef interface ITask ITask;'*)
+  (*$HPPEMIT '}'*)
 
 //+----------------------------------------------------------------------------
 //
@@ -576,6 +589,9 @@ type
     function IsOfType(pwszName: LPCWSTR; const riid: TIID): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} LPCWSTR pwszName, {in} REFIID riid |*)
   end;
+  (*$HPPEMIT 'namespace Mstask {'*)
+  (*$HPPEMIT 'typedef interface ITaskScheduler ITaskScheduler;'*)
+  (*$HPPEMIT '}'*)
 
 // EXTERN_C const CLSID CLSID_CTask;
 // EXTERN_C const CLSID CLSID_CTaskScheduler;

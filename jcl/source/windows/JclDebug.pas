@@ -1363,22 +1363,22 @@ var
   L: Integer;
   P1, P2: PJclMapString;
 
+  function Eof: Boolean;
+  begin
+    Result := (CurrPos >= EndPos);
+  end;
+
   procedure SkipWhiteSpace;
   begin
-    while CharIsWhiteSpace(Char(CurrPos^)) do
+    while not Eof and CharIsWhiteSpace(Char(CurrPos^)) do
       Inc(CurrPos);
   end;
 
   procedure SkipEndLine;
   begin
-    while not CharIsReturn(Char(CurrPos^)) do
+    while not Eof and not CharIsReturn(Char(CurrPos^)) do
       Inc(CurrPos);
     SkipWhiteSpace;
-  end;
-
-  function Eof: Boolean;
-  begin
-    Result := (CurrPos >= EndPos);
   end;
 
   function IsDecDigit: Boolean;
@@ -1561,7 +1561,7 @@ begin
         PublicsByNameItem(A, P1);
       end;
     if SyncToHeader(PublicsByValueHeader) then
-      while IsDecDigit do
+      while not Eof and IsDecDigit do
       begin
         A := ReadAddress;
         P1 := ReadString;
