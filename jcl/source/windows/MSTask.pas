@@ -340,11 +340,11 @@ type
 
   end;
 {$EXTERNALSYM TASK_TRIGGER}
-  {$IFDEF BCB15_UP}
+  {$IFDEF COMPILER15_UP}
   (*$HPPEMIT 'namespace Mstask {'*)
   (*$HPPEMIT 'typedef struct _TAST_TRIGGER _TASK_TRIGGER;'*)
   (*$HPPEMIT '}'*)
-  {$ENDIF BCB15_UP}
+  {$ENDIF COMPILER15_UP}
 
   TASK_TRIGGER = _TASK_TRIGGER;
   TTaskTrigger = _TASK_TRIGGER;
@@ -387,11 +387,11 @@ type
     function GetTriggerString(out ppwszTrigger: LPWSTR): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {out} LPWSTR * ppwszTrigger |*)
   end;
-  {$IFDEF BCB15_UP}
+  {$IFDEF COMPILER15_UP}
   (*$HPPEMIT 'namespace Mstask {'*)
   (*$HPPEMIT 'typedef interface ITaskTrigger ITaskTrigger;'*)
   (*$HPPEMIT '}'*)
-  {$ENDIF BCB15_UP}
+  {$ENDIF COMPILER15_UP}
 
 //+----------------------------------------------------------------------------
 //
@@ -472,11 +472,11 @@ type
     function GetAccountInformation(out ppwszAccountName: LPWSTR): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {out} LPWSTR * ppwszAccountName |*)
   end;
-  {$IFDEF BCB15_UP}
+  {$IFDEF COMPILER15_UP}
   (*$HPPEMIT 'namespace Mstask {'*)
   (*$HPPEMIT 'typedef interface IScheduledWorkItem IScheduledWorkItem;'*)
   (*$HPPEMIT '}'*)
-  {$ENDIF BCB15_UP}
+  {$ENDIF COMPILER15_UP}
 
 //+----------------------------------------------------------------------------
 //
@@ -524,11 +524,11 @@ type
     function GetMaxRunTime(out pdwMaxRunTimeMS: DWORD): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {out} DWORD * pdwMaxRunTimeMS |*)
   end;
-  {$IFDEF BCB15_UP}
+  {$IFDEF COMPILER15_UP}
   (*$HPPEMIT 'namespace Mstask {'*)
   (*$HPPEMIT 'typedef interface ITask ITask;'*)
   (*$HPPEMIT '}'*)
-  {$ENDIF BCB15_UP}
+  {$ENDIF COMPILER15_UP}
 
 //+----------------------------------------------------------------------------
 //
@@ -597,11 +597,11 @@ type
     function IsOfType(pwszName: LPCWSTR; const riid: TIID): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} LPCWSTR pwszName, {in} REFIID riid |*)
   end;
-  {$IFDEF BCB15_UP}
+  {$IFDEF COMPILER15_UP}
   (*$HPPEMIT 'namespace Mstask {'*)
   (*$HPPEMIT 'typedef interface ITaskScheduler ITaskScheduler;'*)
   (*$HPPEMIT '}'*)
-  {$ENDIF BCB15_UP}
+  {$ENDIF COMPILER15_UP}
 
 // EXTERN_C const CLSID CLSID_CTask;
 // EXTERN_C const CLSID CLSID_CTaskScheduler;

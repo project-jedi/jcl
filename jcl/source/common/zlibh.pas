@@ -35,6 +35,10 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
+unit zlibh;
+
+{$I jcl.inc}
+
 {$IFDEF ZLIB_LINKDLL}
 {$HPPEMIT '#define ZLIB_DLL'}
 {$ELSE ~ZLIB_LINKDLL}
@@ -48,15 +52,11 @@
 {$HPPEMIT '#define ZEXPORTVA __cdecl'}
 
 {$HPPEMIT '#define __MACTYPES__'}
-{$IFDEF BCB2006_UP}
+{$IFDEF COMPILER10_UP}
 {$HPPEMIT '#include <ZLib.hpp>'}
-{$ELSE ~BCB2006_UP}
+{$ELSE ~COMPILER10_UP}
 {$HPPEMIT '#include <zlib.h>'}
-{$ENDIF ~BCB2006_UP}
-
-unit zlibh;
-
-{$I jcl.inc}
+{$ENDIF ~COMPILER10_UP}
 
 interface
 
@@ -267,11 +267,11 @@ type
       adler:    uLong;       // adler32 value of the uncompressed data 
       reserved: uLong;       // reserved for future use 
   end;
-  {$IFDEF BCB15_UP}
+  {$IFDEF COMPILER15_UP}
   (*$HPPEMIT 'namespace Zlibh {'*)
   (*$HPPEMIT 'typedef Zlib::TZStreamRec z_stream_s;'*)
   (*$HPPEMIT '}'*)
-  {$ENDIF BCB15_UP}
+  {$ENDIF COMPILER15_UP}
 
   {$EXTERNALSYM z_stream}
   z_stream = z_stream_s;
