@@ -1,4 +1,4 @@
-	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{2B548932-6654-4E44-8B06-3288D7A884C4}</ProjectGuid>
 			<MainSource>JclRepositoryExpert.dpk</MainSource>
@@ -108,7 +108,7 @@
 						<VersionInfo Name="MajorVer">2</VersionInfo>
 						<VersionInfo Name="MinorVer">2</VersionInfo>
 						<VersionInfo Name="Release">1</VersionInfo>
-						<VersionInfo Name="Build">3817</VersionInfo>
+						<VersionInfo Name="Build">3845</VersionInfo>
 						<VersionInfo Name="Debug">False</VersionInfo>
 						<VersionInfo Name="PreRelease">False</VersionInfo>
 						<VersionInfo Name="Special">False</VersionInfo>
@@ -120,13 +120,13 @@
 					<VersionInfoKeys>
 						<VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
 						<VersionInfoKeys Name="FileDescription">JCL Package containing repository wizards</VersionInfoKeys>
-						<VersionInfoKeys Name="FileVersion">2.2.1.3817</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">2.2.1.3845</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName">JclRepositoryExpert</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2009 Project JEDI</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename">JclRepositoryExpert120.bpl</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
-						<VersionInfoKeys Name="ProductVersion">2.2 Build 3817</VersionInfoKeys>
+						<VersionInfoKeys Name="ProductVersion">2.2 Build 3845</VersionInfoKeys>
 					</VersionInfoKeys>
 					<Source>
 						<Source Name="MainSource">JclRepositoryExpert.dpk</Source>

@@ -1,4 +1,4 @@
-	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{2F16B01B-57C8-4EB1-A0C4-421B3008A4F6}</ProjectGuid>
 			<MainSource>JclSIMDViewExpert.dpk</MainSource>
@@ -100,7 +100,7 @@
 						<VersionInfo Name="MajorVer">2</VersionInfo>
 						<VersionInfo Name="MinorVer">2</VersionInfo>
 						<VersionInfo Name="Release">1</VersionInfo>
-						<VersionInfo Name="Build">3817</VersionInfo>
+						<VersionInfo Name="Build">3845</VersionInfo>
 						<VersionInfo Name="Debug">False</VersionInfo>
 						<VersionInfo Name="PreRelease">False</VersionInfo>
 						<VersionInfo Name="Special">False</VersionInfo>
@@ -112,13 +112,13 @@
 					<VersionInfoKeys>
 						<VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
 						<VersionInfoKeys Name="FileDescription">JCL Debug Window of XMM registers</VersionInfoKeys>
-						<VersionInfoKeys Name="FileVersion">2.2.1.3817</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">2.2.1.3845</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName">JclSIMDViewExpert</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2009 Project JEDI</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename">JclSIMDViewExpert120.bpl</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
-						<VersionInfoKeys Name="ProductVersion">2.2 Build 3817</VersionInfoKeys>
+						<VersionInfoKeys Name="ProductVersion">2.2 Build 3845</VersionInfoKeys>
 					</VersionInfoKeys>
 					<Source>
 						<Source Name="MainSource">JclSIMDViewExpert.dpk</Source>

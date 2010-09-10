@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
 <Configuration>
   <!-- These are the values stored by jaxStore -->
   <pgEdit/>
@@ -98,7 +98,7 @@
         <ProjectProperty name="VersionMajorNumber" value="2"/>
         <ProjectProperty name="VersionMinorNumber" value="2"/>
         <ProjectProperty name="ReleaseNumber" value="1"/>
-        <ProjectProperty name="BuildNumber" value="3817"/>
+        <ProjectProperty name="BuildNumber" value="3845"/>
       </ProjectProperties>
     </Model>
   </models>
