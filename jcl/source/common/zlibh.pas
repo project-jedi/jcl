@@ -267,11 +267,11 @@ type
       adler:    uLong;       // adler32 value of the uncompressed data 
       reserved: uLong;       // reserved for future use 
   end;
-  {$IFDEF COMPILER15_UP}
+  {$IFDEF COMPILER10_UP}
   (*$HPPEMIT 'namespace Zlibh {'*)
   (*$HPPEMIT 'typedef Zlib::TZStreamRec z_stream_s;'*)
   (*$HPPEMIT '}'*)
-  {$ENDIF COMPILER15_UP}
+  {$ENDIF COMPILER10_UP}
 
   {$EXTERNALSYM z_stream}
   z_stream = z_stream_s;
