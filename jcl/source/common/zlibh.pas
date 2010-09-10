@@ -48,7 +48,11 @@
 {$HPPEMIT '#define ZEXPORTVA __cdecl'}
 
 {$HPPEMIT '#define __MACTYPES__'}
+{$IFDEF BCB2006_UP}
 {$HPPEMIT '#include <ZLib.hpp>'}
+{$ELSE ~BCB2006_UP}
+{$HPPEMIT '#include <zlib.h>'}
+{$ENDIF ~BCB2006_UP}
 
 unit zlibh;
 
@@ -263,9 +267,11 @@ type
       adler:    uLong;       // adler32 value of the uncompressed data 
       reserved: uLong;       // reserved for future use 
   end;
+  {$IFDEF BCB15_UP}
   (*$HPPEMIT 'namespace Zlibh {'*)
   (*$HPPEMIT 'typedef Zlib::TZStreamRec z_stream_s;'*)
   (*$HPPEMIT '}'*)
+  {$ENDIF BCB15_UP}
 
   {$EXTERNALSYM z_stream}
   z_stream = z_stream_s;

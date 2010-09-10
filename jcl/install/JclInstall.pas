@@ -1439,7 +1439,7 @@ var
         {$ENDIF ~MSWINDOWS}
         Target.BCC32.Options.Add('-w-par'); // warning
         Target.BCC32.Options.Add('-w-aus'); // warning
-        Target.BCC32.AddPathOption('I', Format('%sinclude%s%s%s%s%sinclude%s%s', [Distribution.JclPath, DirSeparator, Distribution.JclSourcePath, DirSeparator, Target.RootDir, DirDelimiter, DirSeparator, Target.VclIncludeDir]));
+        Target.BCC32.AddPathOption('I', Format('%s%s%s%sinclude%s%s', [Distribution.JclSourcePath, DirSeparator, Target.RootDir, DirDelimiter, DirSeparator, Target.VclIncludeDir]));
         Options := StringsToStr(Target.BCC32.Options, NativeSpace);
         Result := Target.BCC32.Execute(Options + ' "jcl_a2z.cpp"')
           and Target.BCC32.Execute(Options + ' "jcl_z2a.cpp"'); 
@@ -2320,6 +2320,11 @@ function TJclInstallation.CompileLibraryUnits(const SubDir: string; Debug: Boole
         // when multiple versions of C++ Builder are installed on the same
         // computer. The easiest way to see this is when checking HPP files.
         FileDelete(FileName);        
+      end;
+      if (CompareText(UnitList[I], 'zlibh') = 0) and (Target.RadToolKind = brCppBuilder) and (Target.VersionNumber = 6) then
+      begin
+        Result := Result and FileCopy('zlib.h', TargetDir + 'zlib.h', True)
+          and FileCopy('zconf.h', TargetDir + 'zconf.h', True);
       end;
     end;
   end;
