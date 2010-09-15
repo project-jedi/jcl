@@ -590,7 +590,7 @@ procedure RemoveTypeInfo(TypeInfo: PTypeInfo);
 function JclIsClass(const AnObj: TObject; const AClass: TClass): Boolean;
 function JclIsClassByName(const AnObj: TObject; const AClass: TClass): Boolean;
 
-// returns all properties of type string (kind = tkString or kind = tkUString when Unicode is enabled)
+// returns all properties of type string (kind = tkLString or kind = tkUString when Unicode is enabled)
 function GetStringPropList(TypeInfo: PTypeInfo; out PropList: PPropList): Integer;
 
 {$IFDEF UNITVERSIONING}
@@ -2494,11 +2494,11 @@ begin
     Result := GetPropList(TypeInfo, [tkUString], PropList);
   end;
   {$ELSE ~SUPPORTS_UNICODE_STRING}
-  Result := GetPropList(TypeInfo, [tkString], PropList);
+  Result := GetPropList(TypeInfo, [tkLString], PropList);
   if Result > 0 then
   begin
     GetMem(PropList, Result * SizeOf(PropList[0]));
-    Result := GetPropList(TypeInfo, [tkString], PropList);
+    Result := GetPropList(TypeInfo, [tkLString], PropList);
   end;
   {$ENDIF ~SUPPORTS_UNICODE_STRING}
 end;
