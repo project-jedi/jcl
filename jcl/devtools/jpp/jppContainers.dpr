@@ -41,7 +41,7 @@
 // Last modified: $Date$
 
 {$APPTYPE CONSOLE}
-program jpp;
+program jppContainers;
 
 uses
   SysUtils,
