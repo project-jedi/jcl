@@ -45,7 +45,6 @@ type
       joJCLDef,
         joJCLDefMath,
         joJCLDefDebug,
-        joJCLDefEDI,
         joJCLDefPCRE,
         joJCLDefBZip2,
         joJCLDefZLib,
@@ -65,7 +64,6 @@ type
         joJCLDefDebugNoMap,
         joJCLDefDebugNoExports,
         joJCLDefDebugNoSymbols,
-        joJCLDefEDIWeakPackageUnits,
         joJCLDefPCREStaticLink,
         joJCLDefPCRELinkDLL,
         joJCLDefPCRELinkOnRequest,
@@ -320,7 +318,6 @@ var
       (Id: -1; Caption: @RsCaptionDef;                     Hint: @RsHintDef), // joDef
       (Id: -1; Caption: @RsCaptionDefMath;                 Hint: @RsHintDefMath), // joDefMath
       (Id: -1; Caption: @RsCaptionDefDebug;                Hint: @RsHintDefDebug), // joDefDebug
-      (Id: -1; Caption: @RsCaptionDefEDI;                  Hint: @RsHintDefEDI), // joDefEDI
       (Id: -1; Caption: @RsCaptionDefPCRE;                 Hint: @RsHintDefPCRE), // joDefPCRE
       (Id: -1; Caption: @RsCaptionDefBZip2;                Hint: @RsHintDefBZip2), // joDefBZip2
       (Id: -1; Caption: @RsCaptionDefZLib;                 Hint: @RsHintDefZLib), // joDefZLib
@@ -340,7 +337,6 @@ var
       (Id: -1; Caption: @RsCaptionDefDebugNoMap;           Hint: @RsHintDefDebugNoMap), // joDefDebugNoMap
       (Id: -1; Caption: @RsCaptionDefDebugNoExports;       Hint: @RsHintDefDebugNoExports), // joDefDebugNoExports
       (Id: -1; Caption: @RsCaptionDefDebugNoSymbols;       Hint: @RsHintDefDebugNoSymbols), // joDefDebugNoSymbols
-      (Id: -1; Caption: @RsCaptionDefEDIWeakPackageUnits;  Hint: @RsHintDefEDIWeakPackageUnits), // joDefEDIWeakPackageUnits
       (Id: -1; Caption: @RsCaptionDefPCREStaticLink;       Hint: @RsHintDefPCREStaticLink), // joDefPCREStaticLink
       (Id: -1; Caption: @RsCaptionDefPCRELinkDLL;          Hint: @RsHintDefPCRELinkDLL), // joDefPCRELinkDLL
       (Id: -1; Caption: @RsCaptionDefPCRELinkOnRequest;    Hint: @RsHintDefPCRELinkOnRequest), // joDefPCRELinkOnRequest
@@ -763,9 +759,6 @@ procedure TJclInstallation.Init;
     AddOption(joJCLDefDebugNoExports, [goNoAutoCheck], joJCLDefDebug);
     AddOption(joJCLDefDebugNoSymbols, [goNoAutoCheck], joJCLDefDebug);
     {$ENDIF MSWINDOWS}
-    // EDI options
-    AddOption(joJCLDefEDI, [goNoAutoCheck], Parent);
-    AddOption(joJCLDefEDIWeakPackageUnits, [goNoAutoCheck], joJCLDefEDI);
     // PCRE options
     AddOption(joJCLDefPCRE, [goChecked], Parent);
     if Target.RadToolKind = brBorlandDevStudio then
@@ -1219,7 +1212,7 @@ var
         'MATH_SINGLE_PRECISION', 'MATH_DOUBLE_PRECISION', 'MATH_EXTENDED_PRECISION',
         'MATH_EXT_EXTREMEVALUES',  'HOOK_DLL_EXCEPTIONS',
         'DEBUG_NO_BINARY', 'DEBUG_NO_TD32', 'DEBUG_NO_MAP', 'DEBUG_NO_EXPORTS',
-        'DEBUG_NO_SYMBOLS', 'EDI_WEAK_PACKAGE_UNITS', 'PCRE_STATICLINK',
+        'DEBUG_NO_SYMBOLS', 'PCRE_STATICLINK',
         'PCRE_LINKDLL', 'PCRE_LINKONREQUEST', 'BZIP2_STATICLINK',
         'BZIP2_LINKDLL', 'BZIP2_LINKONREQUEST', 'ZLIB_STATICLINK',
         'ZLIB_LINKDLL', 'ZLIB_LINKONREQUEST', 'UNICODE_SILENT_FAILURE',

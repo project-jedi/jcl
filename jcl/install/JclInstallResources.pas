@@ -65,9 +65,6 @@ resourcestring
   RsCaptionDefDebugNoMap        = 'No debug source from Map files';
   RsCaptionDefDebugNoExports    = 'No debug source from function export table for libraries';
   RsCaptionDefDebugNoSymbols    = 'No debug source from Microsoft debug symbols';
-  // EDI options
-  RsCaptionDefEDI                 = 'EDI options';
-  RsCaptionDefEDIWeakPackageUnits = 'EDI weak package units';
   // PCRE options
   RsCaptionDefPCRE              = 'PCRE options';
   RsCaptionDefPCREStaticLink    = 'Static link to PCRE code';
@@ -177,9 +174,6 @@ resourcestring
   RsHintDefDebugNoTD32       = 'Disable support for TD32 informations';
   RsHintDefDebugNoExports    = 'Disable support for export names of libraries';
   RsHintDefDebugNoSymbols    = 'Disable support for Microsoft debug symbols (PDB and DBG files)';
-  // EDI options
-  RsHintDefEDI                 = 'EDI specific options (JclEDI*.pas)';
-  RsHintDefEDIWeakPackageUnits = 'Mark EDI units as weak package units (check if you use the original EDI package)';
   // PCRE options
   RsHintDefPCRE              = 'PCRE specific options (pcre.pas and JclPCRE.pas)';
   RsHintDefPCREStaticLink    = 'Code from PCRE is linked into JCL binaries';
