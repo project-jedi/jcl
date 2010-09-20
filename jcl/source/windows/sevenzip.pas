@@ -65,6 +65,8 @@ uses
   {$ENDIF UNITVERSIONING}
   JclBase;
 
+//DOM-IGNORE-BEGIN
+
 // Guid.txt  
 const
   CLSID_CCodec : TGUID = '{23170F69-40C1-2790-0000-000000000000}';
@@ -623,6 +625,8 @@ function GetNumberOfFormats(NumFormats: PCardinal): HRESULT; stdcall;
 function GetNumberOfMethods(NumMethods: PCardinal): HRESULT; stdcall;
 function SetLargePageMode: HRESULT; stdcall;
 {$ENDIF ~7ZIP_LINKONREQUEST}
+
+//DOM-IGNORE-END
 
 function Load7Zip: Boolean;
 function Is7ZipLoaded: Boolean;

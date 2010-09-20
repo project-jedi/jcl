@@ -1,6 +1,6 @@
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -56,6 +56,8 @@ uses
   {$ENDIF UNITVERSIONING}
   ActiveX,
   Classes;
+
+//DOM-IGNORE-BEGIN
 
 {$HPPEMIT '#include <winnt.h>'}
 
@@ -436,6 +438,8 @@ type
     class function Create: ICorRuntimeHost;
     class function CreateRemote(const MachineName: string): ICorRuntimeHost;
   end;
+
+//DOM-IGNORE-END
 
 {$IFDEF UNITVERSIONING}
 const

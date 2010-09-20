@@ -55,6 +55,9 @@ interface
 {$I jcl.inc}
 
 
+//DOM-IGNORE-BEGIN
+
+
 (*
   All possible combinations of the above DEFINEs have been tested and work fine.
 
@@ -89,6 +92,8 @@ var
 var
   hNtDll: THandle = 0; // For runtime dynamic linking
   bRtdlFunctionsLoaded: Boolean = False; // To show wether the RTDL functions had been loaded
+
+//DOM-IGNORE-END
 
 {$IFDEF UNITVERSIONING}
 const

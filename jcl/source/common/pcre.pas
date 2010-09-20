@@ -50,6 +50,8 @@ uses
   {$ENDIF UNITVERSIONING}
   JclBase;
 
+//DOM-IGNORE-BEGIN
+
 (*************************************************
 *       Perl-Compatible Regular Expressions      *
 *************************************************)
@@ -578,6 +580,8 @@ var
   {$EXTERNALSYM pcre_version}
 
 {$ENDIF PCRE_LINKONREQUEST}
+
+//DOM-IGNORE-END
 
 function IsPCRELoaded: Boolean;
 function LoadPCRE: Boolean;

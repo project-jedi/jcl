@@ -44,6 +44,8 @@ uses
   {$ENDIF UNITVERSIONING}
   JclBase; // PByte, PCardinal for Delphi 5 and C++Builder 5...
 
+//DOM-IGNORE-BEGIN
+
 {
 /*-------------------------------------------------------------*/
 /*--- Public header file for the library.                   ---*/
@@ -302,6 +304,8 @@ var
 
 var
   bz2_internal_error_event: procedure(errcode: Integer) of object = nil;
+
+//DOM-IGNORE-END
 
 function LoadBZip2: Boolean;
 function IsBZip2Loaded: Boolean;

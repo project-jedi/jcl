@@ -64,6 +64,8 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, SysUtils;
 
+//DOM-IGNORE-BEGIN
+
 (*$HPPEMIT '#include <snmp.h>'*)
 
 type
@@ -653,6 +655,8 @@ var
   {$EXTERNALSYM SnmpExtensionTrap}
   SnmpExtensionClose: TSnmpExtensionClose;
   {$EXTERNALSYM SnmpExtensionClose}
+
+//DOM-IGNORE-END
 
 function SnmpExtensionLoaded: Boolean;
 function LoadSnmpExtension(const LibName: string): Boolean;

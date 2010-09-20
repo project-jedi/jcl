@@ -55,6 +55,7 @@ uses
   ActiveX,
   Windows;
 
+//DOM-IGNORE-BEGIN
 
 (*$HPPEMIT '#include <MSTask.h>' *)
 
@@ -690,6 +691,8 @@ const
 const
 {$EXTERNALSYM CLSID_CSchedulingAgent}
   CLSID_CSchedulingAgent: TCLSID = (D1: $148BD52A; D2: $A2AB; D3: $11CE; D4: ($B1, $1F, $00, $AA, $00, $53, $05, $03));
+
+//DOM-IGNORE-END
 
 {$IFDEF UNITVERSIONING}
 const

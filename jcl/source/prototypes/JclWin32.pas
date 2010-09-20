@@ -108,6 +108,8 @@ type
   end;
 {$ENDIF MSWINDOWS}
 
+//DOM-IGNORE-BEGIN
+
 {$I win32api\WinDef.int}
 {$I win32api\WinNT.int}
 {$I win32api\WinBase.int}
@@ -136,6 +138,8 @@ type
 {$I win32api\NtSecApi.int}
 {$I win32api\TlHelp32.int}
 {$I win32api\Winternl.int}
+
+//DOM-IGNORE-END
 
 {$IFDEF MSWINDOWS}
 

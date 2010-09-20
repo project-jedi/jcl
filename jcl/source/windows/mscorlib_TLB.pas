@@ -1,6 +1,6 @@
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -75,6 +75,7 @@ uses
   ActiveX,
   Classes;
 
+//DOM-IGNORE-BEGIN
 
 // *********************************************************************//
 // GUIDS declared in the TypeLibrary. Following prefixes are used:        
@@ -26626,6 +26627,8 @@ type
     class function Create: _EnumBuilder;
     class function CreateRemote(const MachineName: string): _EnumBuilder;
   end;
+
+//DOM-IGNORE-END
 
 {$IFDEF UNITVERSIONING}
 const

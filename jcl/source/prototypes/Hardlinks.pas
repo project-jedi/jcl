@@ -178,6 +178,9 @@ interface
 {$DEFINE RTDL      // Use runtime dynamic linking }
 {$DEFINE PREFERAPI // Prefer the "real" Windows API on systems on which it exists
                    // If this is defined STDCALL is automatically needed and defined! }
+
+//DOM-IGNORE-BEGIN
+
 {$ENDIF JCL}
 
 (*
@@ -227,6 +230,10 @@ var
   hNtDll: THandle = 0; // For runtime dynamic linking
   bRtdlFunctionsLoaded: Boolean = False; // To show wether the RTDL functions had been loaded
 {$ENDIF RTDL}
+
+{$IFDEF JCL}
+//DOM-IGNORE-END
+{$ENDIF JCL}
 
 {$IFDEF UNITVERSIONING}
 const

@@ -72,7 +72,8 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   ActiveX, Classes;
-  
+
+//DOM-IGNORE-BEGIN
 
 // *********************************************************************//
 // GUIDS declared in the TypeLibrary. Following prefixes are used:        
@@ -1589,6 +1590,8 @@ type
     class function Create: IHxRegisterProtocol;
     class function CreateRemote(const MachineName: string): IHxRegisterProtocol;
   end;
+
+//DOM-IGNORE-END
 
 {$IFDEF UNITVERSIONING}
 const
