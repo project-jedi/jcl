@@ -113,8 +113,9 @@
 
 // container options
 // define mapping of TJclStr* containers to TJclAnsiStr* or TJclWideStr* (mutually exclusive)
-{.$DEFINE CONTAINER_ANSISTR} // default
+{.$DEFINE CONTAINER_ANSISTR} // default for D2007 and older
 {.$DEFINE CONTAINER_WIDESTR}
+{.$DEFINE CONTAINER_UNICODESTR} // default for D2009 and newer, not supported for Delphi 2007 and older
 {.$DEFINE CONTAINER_NOSTR}
 
 
