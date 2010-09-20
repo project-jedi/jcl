@@ -54,6 +54,7 @@ type
   {$JPPEXPANDMACRO JCLSTACKINT(,,,,,,,,,)}
 *)
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
 
   (*$JPPEXPANDMACRO JCLSTACKINT(TJclStack<T>,IJclStack<T>,TJclAbstractContainer<T>,TDynArray, IJclEqualityComparer<T>\, IJclItemOwner<T>\,,
 protected
@@ -96,6 +97,8 @@ protected
     { IJclEqualityComparer<T> }
     function ItemsEqual(const A, B: T): Boolean; override;
   end;
+
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
 {$IFDEF UNITVERSIONING}
@@ -119,6 +122,7 @@ uses
 {$JPPEXPANDMACRO JCLSTACKIMP(,,,,,,,)}
 *)
 {$IFDEF SUPPORTS_GENERICS}
+//DOM-IGNORE-BEGIN
 
 (*$JPPEXPANDMACRO JCLSTACKIMP(TJclStack<T>,; AOwnsItems: Boolean,AOwnsItems,const ,AItem,T,Default(T),FreeItem)*)
 
@@ -185,6 +189,7 @@ begin
     Result := A.Equals(B);
 end;
 
+//DOM-IGNORE-END
 {$ENDIF SUPPORTS_GENERICS}
 
 {$IFDEF UNITVERSIONING}

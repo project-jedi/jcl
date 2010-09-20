@@ -2538,6 +2538,8 @@ type
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
+
   TJclHashEntry<TKey,TValue> = record
     Key: TKey;
     Value: TValue;
@@ -2685,6 +2687,8 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; override;
   end;
+
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
 function HashMul(Key, Range: Integer): Integer;
@@ -27828,6 +27832,8 @@ begin
 end;
 
 {$IFDEF SUPPORTS_GENERICS}
+//DOM-IGNORE-BEGIN
+
 //=== { TJclBucket<TKey, TValue> } ==========================================
 
 procedure TJclBucket<TKey, TValue>.MoveArray(FromIndex, ToIndex, Count: Integer);
@@ -28583,6 +28589,7 @@ begin
   Result := A.Equals(B);
 end;
 
+//DOM-IGNORE-END
 {$ENDIF SUPPORTS_GENERICS}
 
 {$IFDEF UNITVERSIONING}

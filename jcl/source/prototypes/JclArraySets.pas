@@ -54,6 +54,8 @@ type
   {$JPPEXPANDMACRO JCLARRAYSETINT(,,,,,,,,,,,)}
 *)
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
+
   (*$JPPEXPANDMACRO JCLARRAYSETINT(TJclArraySet<T>,TJclArrayList<T>,IJclCollection<T>,IJclList<T>,IJclArray<T>,IJclSet<T>, IJclItemOwner<T>\, IJclEqualityComparer<T>\, IJclComparer<T>\,,,,const ,AItem,T)*)
 
   // E = External helper to compare items
@@ -99,6 +101,7 @@ type
     function ItemsEqual(const A, B: T): Boolean; override;
   end;
 
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
 {$IFDEF UNITVERSIONING}
@@ -122,6 +125,8 @@ uses
 {$JPPEXPANDMACRO JCLARRAYSETIMP(,,,,,,,)}
 *)
 {$IFDEF SUPPORTS_GENERICS}
+//DOM-IGNORE-BEGIN
+
 {$JPPEXPANDMACRO JCLARRAYSETIMP(TJclArraySet<T>,IJclCollection<T>,IJclIterator<T>,const ,AItem,T,Default(T),GetItem)}
 
 //=== { TJclArraySetE<T> } ===================================================
@@ -216,6 +221,7 @@ begin
     Result := A.CompareTo(B) = 0;
 end;
 
+//DOM-IGNORE-END
 {$ENDIF SUPPORTS_GENERICS}
 
 {$IFDEF UNITVERSIONING}

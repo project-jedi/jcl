@@ -57,7 +57,9 @@ type
 
   {$JPPEXPANDMACRO JCLTREEITRINT(,,,,,,,,,,,,,)}
 *)
-{$IFDEF SUPPORTS_GENERICS}
+  {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
+
   {$JPPEXPANDMACRO JCLTREETYPESINT(TJclTreeNode<T>,IJclEqualityComparer<T>,const ,AItem,T)}
 
   TJclPreOrderTreeIterator<T> = class;
@@ -108,7 +110,9 @@ protected
     { IJclEqualityComparer<T> }
     function ItemsEqual(const A, B: T): Boolean; override;
   end;
-{$ENDIF SUPPORTS_GENERICS}
+
+  //DOM-IGNORE-END
+  {$ENDIF SUPPORTS_GENERICS}
 
 {$IFDEF UNITVERSIONING}
 const
@@ -135,6 +139,8 @@ uses
 {$JPPEXPANDMACRO JCLTREEITRIMP(,,,,,,,,,,,,,,)}
 *)
 {$IFDEF SUPPORTS_GENERICS}
+//DOM-IGNORE-BEGIN
+
 {$JPPEXPANDMACRO JCLTREETYPESIMP(TJclTreeNode<T>,IJclEqualityComparer<T>,const ,AItem,T)}
 
 {$JPPEXPANDMACRO JCLTREEIMP(TTreeNode,TJclTree<T>,TPreOrderTreeIterator,TPostOrderTreeIterator,IJclCollection<T>,IJclIterator<T>,IJclTreeIterator<T>,IJclEqualityComparer<T>,AOwnsItems: Boolean,AOwnsItems,const ,AItem,T,Default(T),FreeItem)}
@@ -200,6 +206,7 @@ begin
     Result := A.Equals(B);
 end;
 
+//DOM-IGNORE-END
 {$ENDIF SUPPORTS_GENERICS}
 
 {$IFDEF UNITVERSIONING}

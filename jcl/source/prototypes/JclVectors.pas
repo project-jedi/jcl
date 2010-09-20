@@ -58,6 +58,8 @@ type
   {$JPPEXPANDMACRO JCLVECTORITRINT(,,,,,,,)}
 *)
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
+
   TJclVectorIterator<T> = class;
 
   (*$JPPEXPANDMACRO JCLVECTORINT(TJclVector<T>,TJclAbstractContainer<T>,IJclCollection<T>,IJclList<T>,IJclArray<T>,IJclIterator<T>, IJclItemOwner<T>\, IJclEqualityComparer<T>\,,
@@ -105,6 +107,8 @@ protected
     { IJclEqualityComparer<T> }
     function ItemsEqual(const A, B: T): Boolean; override;
   end;
+
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
 {$IFDEF UNITVERSIONING}
@@ -130,6 +134,8 @@ uses
 {$JPPEXPANDMACRO JCLVECTORITRIMP(,,,,,,,)}
 *)
 {$IFDEF SUPPORTS_GENERICS}
+//DOM-IGNORE-BEGIN
+
 (*$JPPEXPANDMACRO JCLVECTORIMP(TJclVector<T>,IJclCollection<T>,IJclList<T>,IJclIterator<T>,TVectorIterator,; AOwnsItems: Boolean,AOwnsItems,const ,AItem,T,Default(T),GetItem,SetItem,FreeItem)*)
 
 (*$JPPEXPANDMACRO JCLVECTORITRIMP(TJclVectorIterator<T>,IJclIterator<T>,IJclList<T>,const ,AItem,T,GetItem,SetItem)*)
@@ -232,6 +238,7 @@ begin
     Result := A.Equals(B);
 end;
 
+//DOM-IGNORE-END
 {$ENDIF SUPPORTS_GENERICS}
 
 {$IFDEF UNITVERSIONING}

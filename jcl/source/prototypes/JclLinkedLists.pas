@@ -25,7 +25,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                       $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -60,6 +60,8 @@ type
   {$JPPEXPANDMACRO JCLLINKEDLISTITRINT(,,,,,,,,,,)}
 *)
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
+
   (*$JPPEXPANDMACRO JCLLINKEDLISTTYPESINT(TJclLinkedListItem<T>,T)*)
 
   TJclLinkedListIterator<T> = class;
@@ -111,6 +113,8 @@ protected
     { IJclEqualityComparer<T> }
     function ItemsEqual(const A, B: T): Boolean; override;
   end;
+
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
 {$IFDEF UNITVERSIONING}
@@ -136,6 +140,7 @@ uses
 {$JPPEXPANDMACRO JCLLINKEDLISTITRIMP(,,,,,,,,,,,)}
 *)
 {$IFDEF SUPPORTS_GENERICS}
+//DOM-IGNORE-BEGIN
 
 {$JPPEXPANDMACRO JCLLINKEDLISTIMP(TJclLinkedList<T>,TLinkedListItem,IJclCollection<T>,IJclList<T>,IJclIterator<T>,TLinkedListIterator,; AOwnsItems: Boolean,AOwnsItems,const ,AItem,T,Default(T),GetItem,SetItem,FreeItem)}
 
@@ -205,6 +210,7 @@ begin
     Result := A.Equals(B);
 end;
 
+//DOM-IGNORE-END
 {$ENDIF SUPPORTS_GENERICS}
 
 {$IFDEF UNITVERSIONING}

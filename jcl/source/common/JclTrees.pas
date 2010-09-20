@@ -1680,7 +1680,9 @@ type
     function GetPreviousCursor: TJclTreeNode; override;
   end;
 
-{$IFDEF SUPPORTS_GENERICS}
+  {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
+
   TJclTreeNode<T> = class
   public
     Value: T;
@@ -1852,7 +1854,9 @@ type
     { IJclEqualityComparer<T> }
     function ItemsEqual(const A, B: T): Boolean; override;
   end;
-{$ENDIF SUPPORTS_GENERICS}
+
+  //DOM-IGNORE-END
+  {$ENDIF SUPPORTS_GENERICS}
 
 {$IFDEF UNITVERSIONING}
 const
@@ -18812,6 +18816,8 @@ begin
 end;
 
 {$IFDEF SUPPORTS_GENERICS}
+//DOM-IGNORE-BEGIN
+
 //=== { TJclTreeNode<T> } =======================================================
 
 function TJclTreeNode<T>.IndexOfChild(AChild: TJclTreeNode<T>): Integer;
@@ -20276,6 +20282,7 @@ begin
     Result := A.Equals(B);
 end;
 
+//DOM-IGNORE-END
 {$ENDIF SUPPORTS_GENERICS}
 
 {$IFDEF UNITVERSIONING}

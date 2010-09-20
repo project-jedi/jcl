@@ -532,6 +532,8 @@ type
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
+
   TJclAbstractContainer<T> = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclCloneable, IJclIntfCloneable, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
     IJclHashConverter<T>)
@@ -563,6 +565,8 @@ type
     function Hash(const AItem: T): Integer; virtual;
     property HashConvert: THashConvert<T> read GetHashConvert write SetHashConvert;
   end;
+
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
   TJclAnsiStrAbstractCollection = class(TJclAnsiStrAbstractContainer,
@@ -2258,6 +2262,8 @@ begin
 end;
 
 {$IFDEF SUPPORTS_GENERICS}
+//DOM-IGNORE-BEGIN
+
 //=== { TJclAbstractContainer<T> } ===========================================
 
 constructor TJclAbstractContainer<T>.Create(AOwnsItems: Boolean);
@@ -2356,6 +2362,7 @@ begin
   FHashConvert := Value;
 end;
 
+//DOM-IGNORE-END
 {$ENDIF SUPPORTS_GENERICS}
 
 //=== { TJclAnsiStrAbstractCollection } ======================================

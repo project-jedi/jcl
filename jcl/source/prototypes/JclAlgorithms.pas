@@ -146,6 +146,8 @@ var
 {$JPPEXPANDMACRO SORTINT(Sort,,First,Last,, overload;)}*)
 
 {$IFDEF SUPPORTS_GENERICS}
+//DOM-IGNORE-BEGIN
+
 type
   // cannot implement generic global functions
   TJclAlgorithms<T> = class
@@ -166,6 +168,8 @@ type
     class {$JPPEXPANDMACRO SORTINT(Sort,IJclList<T>,First,Last,TCompare<T>,)}
     //class property SortProc: TSortProc<T> read FSortProc write FSortProc;
   end;
+
+//DOM-IGNORE-END
 {$ENDIF SUPPORTS_GENERICS}
 
 const
@@ -882,6 +886,8 @@ begin
 end;
 
 {$IFDEF SUPPORTS_GENERICS}
+//DOM-IGNORE-BEGIN
+
 class {$JPPEXPANDMACRO ITERATEIMP(TJclAlgorithms<T>.Iterate,IJclIterator<T>,TIterateProcedure<T>)}
 
 class {$JPPEXPANDMACRO APPLYIMP(TJclAlgorithms<T>.Apply,IJclIterator<T>,TApplyFunction<T>,SetItem)}
@@ -909,6 +915,8 @@ class procedure TJclAlgorithms<T>.Sort(const AList: IJclList<T>; First, Last: In
 begin
   TJclAlgorithms<T>.QuickSort(AList, First, Last, AComparator);
 end;
+
+//DOM-IGNORE-END
 {$ENDIF SUPPORTS_GENERICS}
 
 

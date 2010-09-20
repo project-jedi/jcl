@@ -52,6 +52,7 @@ uses
 {$I containers\JclHashSets.int}
 type
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
   TRefUnique = class;
   TRefUnique = class(TInterfacedObject, IEquatable<TRefUnique>, IJclEqualityComparer<TRefUnique>)
   public
@@ -63,6 +64,7 @@ type
     function ItemsEqual(const A, B: TRefUnique): Boolean;
     property EqualityCompare: TEqualityCompare<TRefUnique> read GetEqualityCompare write SetEqualityCompare;
   end;
+  //DOM-IGNORE-END
   {$ELSE ~SUPPORTS_GENERICS}
   TRefUnique = TInterfacedObject;
   {$ENDIF ~SUPPORTS_GENERICS}
@@ -189,6 +191,7 @@ type
     function GetOwnsObjects: Boolean; override;,,,AObject,TObject)*)
 
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
 
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclHashSet<T>,TJclAbstractContainer<T>,IJclCollection<T>,IJclSet<T>,IJclMap<T\, TRefUnique>,IJclIterator<T>, IJclItemOwner<T>\, IJclEqualityComparer<T>\,,
   public
@@ -241,6 +244,8 @@ type
     { IJclEqualityComparer<T> }
     function ItemsEqual(const A, B: T): Boolean; override;
   end;
+
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
 {$IFDEF UNITVERSIONING}
@@ -278,6 +283,7 @@ begin
 end;
 
 {$IFDEF SUPPORTS_GENERICS}
+//DOM-IGNORE-BEGIN
 
 //=== { TRefUnique } ==========================================================
 
@@ -300,6 +306,8 @@ function TRefUnique.Equals(Other: TRefUnique): Boolean;
 begin
   Result := Self = Other;
 end;
+
+//DOM-IGNORE-END
 {$ENDIF SUPPORTS_GENERICS}
 
 (*$JPPEXPANDMACRO JCLHASHSETIMP(TJclIntfHashSet,IJclIntfMap,IJclIntfCollection,IJclIntfIterator,,const ,AInterface,IInterface)*)
@@ -553,6 +561,7 @@ begin
 end;
 
 {$IFDEF SUPPORTS_GENERICS}
+//DOM-IGNORE-BEGIN
 
 (*$JPPEXPANDMACRO JCLHASHSETIMP(TJclHashSet<T>,IJclMap<T\, TRefUnique>,IJclCollection<T>,IJclIterator<T>,False,const ,AItem,T)*)
 
@@ -664,6 +673,7 @@ begin
     Result := A.Equals(B);
 end;
 
+//DOM-IGNORE-END
 {$ENDIF SUPPORTS_GENERICS}
 
 initialization

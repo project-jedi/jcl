@@ -42,8 +42,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes,
-  {$IFDEF SUPPORTS_GENERICS}
-  {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclAlgorithms, JclContainerIntf, JclSynch;
 {$I containers\JclContainerCommon.imp}
 {$I containers\JclBinaryTrees.imp}
@@ -59,6 +57,8 @@ type
   {$JPPEXPANDMACRO JCLBINARYTREEITRINT(,,,,,,,,,,,,,,)}
 *)
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
+
   (*$JPPEXPANDMACRO JCLBINARYTREETYPESINT(TJclBinaryNode<T>,T)*)
 
   TJclBinaryTreeIterator<T> = class;
@@ -116,6 +116,8 @@ protected
     { IJclEqualityComparer<T> }
     function ItemsEqual(const A, B: T): Boolean; override;
   end;
+
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
 
@@ -143,6 +145,8 @@ uses
 *)
 
 {$IFDEF SUPPORTS_GENERICS}
+//DOM-IGNORE-BEGIN
+
 (*$JPPEXPANDMACRO JCLBINARYTREEIMP(TJclBinaryTree<T>,TJclBinaryNode<T>,TPreOrderBinaryTreeIterator,TInOrderBinaryTreeIterator,TPostOrderBinaryTreeIterator,IJclCollection<T>,IJclIterator<T>,IJclTreeIterator<T>,,,AOwnsItems: Boolean,AOwnsItems,const ,AItem,T,Default(T),FreeItem)*)
 
 {$JPPEXPANDMACRO JCLBINARYTREEITRIMP(TJclBinaryTreeIterator<T>,TJclPreOrderBinaryTreeIterator<T>,TJclInOrderBinaryTreeIterator<T>,TJclPostOrderBinaryTreeIterator<T>,IJclIterator<T>,IJclCollection<T>,IJclEqualityComparer<T>,TJclBinaryNode<T>,const ,AItem,T,Default(T),GetItem,SetItem,FreeItem)}
@@ -225,6 +229,7 @@ begin
     Result := A.CompareTo(B) = 0;
 end;
 
+//DOM-IGNORE-END
 {$ENDIF SUPPORTS_GENERICS}
 
 {$IFDEF UNITVERSIONING}

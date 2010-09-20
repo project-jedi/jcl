@@ -423,6 +423,8 @@ procedure Sort(const AList: IJclPtrList; First, Last: Integer; AComparator: TPtr
 procedure Sort(const AList: IJclList; First, Last: Integer; AComparator: TCompare); overload;
 
 {$IFDEF SUPPORTS_GENERICS}
+//DOM-IGNORE-BEGIN
+
 type
   // cannot implement generic global functions
   TJclAlgorithms<T> = class
@@ -448,6 +450,8 @@ type
     class procedure Sort(const AList: IJclList<T>; First, Last: Integer; AComparator: TCompare<T>);
     //class property SortProc: TSortProc<T> read FSortProc write FSortProc;
   end;
+
+//DOM-IGNORE-END
 {$ENDIF SUPPORTS_GENERICS}
 
 const
@@ -1179,7 +1183,6 @@ begin
   end;
 end;
 
-
 procedure MoveArray(var List: TDynAnsiStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
 begin
   if Count > 0 then
@@ -1187,7 +1190,6 @@ begin
     FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
     Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
     InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
-
   end;
 end;
 
@@ -3942,6 +3944,8 @@ begin
 end;
 
 {$IFDEF SUPPORTS_GENERICS}
+//DOM-IGNORE-BEGIN
+
 class procedure TJclAlgorithms<T>.Iterate(const First: IJclIterator<T>; Count: Integer; F: TIterateProcedure<T>);
 var
   I: Integer;
@@ -4126,6 +4130,8 @@ class procedure TJclAlgorithms<T>.Sort(const AList: IJclList<T>; First, Last: In
 begin
   TJclAlgorithms<T>.QuickSort(AList, First, Last, AComparator);
 end;
+
+//DOM-IGNORE-END
 {$ENDIF SUPPORTS_GENERICS}
 
 

@@ -54,6 +54,8 @@ type
   {$JPPEXPANDMACRO JCLSORTEDMAPINT(,,,,,,,,,,,,,,)}
 *)
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
+
   (*$JPPEXPANDMACRO JCLSORTEDMAPTYPESINT(TJclSortedEntry<TKey\,TValue>,TKey,TValue)*)
 
   (*$JPPEXPANDMACRO JCLSORTEDMAPINT(TSortedEntry,TJclSortedMap<TKey\,TValue>,TJclAbstractContainerBase,IJclMap<TKey\,TValue>,IJclSortedMap<TKey\,TValue>,IJclSet<TKey>,IJclCollection<TValue>, IJclPairOwner<TKey\,TValue>\,,
@@ -147,6 +149,8 @@ public
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; override;
   end;
+
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
 {$IFDEF UNITVERSIONING}
@@ -171,6 +175,7 @@ uses
 *)
 
 {$IFDEF SUPPORTS_GENERICS}
+//DOM-IGNORE-BEGIN
 
 {$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclSortedMap<TKey\,TValue>,IJclMap<TKey\,TValue>,IJclSortedMap<TKey\,TValue>,IJclSet<TKey>,IJclIterator<TKey>,IJclCollection<TValue>,; AOwnsKeys: Boolean,; AOwnsValues: Boolean,
   FOwnsKeys := AOwnsKeys;
@@ -360,6 +365,7 @@ begin
   Result := A.CompareTo(B);
 end;
 
+//DOM-IGNORE-END
 {$ENDIF SUPPORTS_GENERICS}
 
 {$IFDEF UNITVERSIONING}

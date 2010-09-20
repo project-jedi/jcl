@@ -56,6 +56,8 @@ type
   {$JPPEXPANDMACRO JCLARRAYLISTITRINT(,,,,,,,)}
 *)
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
+
   TJclArrayIterator<T> = class;
 
   {$JPPEXPANDMACRO JCLARRAYLISTINT(TJclArrayList<T>,TJclAbstractContainer<T>,IJclCollection<T>,IJclList<T>,IJclArray<T>,IJclIterator<T>,TDynArray, IJclItemOwner<T>\, IJclEqualityComparer<T>\,,
@@ -107,6 +109,7 @@ protected
     function ItemsEqual(const A, B: T): Boolean; override;
   end;
 
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
 {$IFDEF UNITVERSIONING}
@@ -132,6 +135,7 @@ uses
 {$JPPEXPANDMACRO JCLARRAYLISTITRIMP(,,,,,,,)}
 *)
 {$IFDEF SUPPORTS_GENERICS}
+//DOM-IGNORE-BEGIN
 
 {$JPPEXPANDMACRO JCLARRAYLISTIMP(TJclArrayList<T>,; AOwnsItems: Boolean,AOwnsItems,IJclCollection<T>,IJclIterator<T>,TArrayIterator,IJclList<T>,const ,AItem,GetItem,SetItem,FreeItem,T,Default(T))}
 
@@ -249,6 +253,7 @@ begin
     Result := A.Equals(B);
 end;
 
+//DOM-IGNORE-END
 {$ENDIF SUPPORTS_GENERICS}
 
 {$IFDEF UNITVERSIONING}

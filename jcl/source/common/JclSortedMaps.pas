@@ -2368,6 +2368,8 @@ type
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
+
   TJclSortedEntry<TKey,TValue> = record
     Key: TKey;
     Value: TValue;
@@ -2499,6 +2501,8 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; override;
   end;
+
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
 {$IFDEF UNITVERSIONING}
@@ -29547,6 +29551,7 @@ end;
 
 
 {$IFDEF SUPPORTS_GENERICS}
+//DOM-IGNORE-BEGIN
 
 //=== { TJclSortedMap<TKey,TValue> } ==============================================
 
@@ -30330,6 +30335,7 @@ begin
   Result := A.CompareTo(B);
 end;
 
+//DOM-IGNORE-END
 {$ENDIF SUPPORTS_GENERICS}
 
 {$IFDEF UNITVERSIONING}

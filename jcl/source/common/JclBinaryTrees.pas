@@ -46,8 +46,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes,
-  {$IFDEF SUPPORTS_GENERICS}
-  {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclAlgorithms, JclContainerIntf, JclSynch;
 
 type
@@ -1723,6 +1721,8 @@ type
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
+
   TJclBinaryNode<T> = class
   public
     Value: T;
@@ -1904,6 +1904,8 @@ type
     { IJclEqualityComparer<T> }
     function ItemsEqual(const A, B: T): Boolean; override;
   end;
+
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
 
@@ -19776,6 +19778,8 @@ end;
 
 
 {$IFDEF SUPPORTS_GENERICS}
+//DOM-IGNORE-BEGIN
+
 //=== { TJclBinaryTree<T> } =================================================
 
 constructor TJclBinaryTree<T>.Create(AOwnsItems: Boolean);
@@ -21334,6 +21338,7 @@ begin
     Result := A.CompareTo(B) = 0;
 end;
 
+//DOM-IGNORE-END
 {$ENDIF SUPPORTS_GENERICS}
 
 {$IFDEF UNITVERSIONING}

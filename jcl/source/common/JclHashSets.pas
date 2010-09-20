@@ -54,6 +54,7 @@ uses
 
 type
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
   TRefUnique = class;
   TRefUnique = class(TInterfacedObject, IEquatable<TRefUnique>, IJclEqualityComparer<TRefUnique>)
   public
@@ -65,6 +66,7 @@ type
     function ItemsEqual(const A, B: TRefUnique): Boolean;
     property EqualityCompare: TEqualityCompare<TRefUnique> read GetEqualityCompare write SetEqualityCompare;
   end;
+  //DOM-IGNORE-END
   {$ELSE ~SUPPORTS_GENERICS}
   TRefUnique = TInterfacedObject;
   {$ENDIF ~SUPPORTS_GENERICS}
@@ -839,6 +841,7 @@ type
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
 
   TJclHashSet<T> = class(TJclAbstractContainer<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>,
@@ -945,6 +948,8 @@ type
     { IJclEqualityComparer<T> }
     function ItemsEqual(const A, B: T): Boolean; override;
   end;
+
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
 {$IFDEF UNITVERSIONING}
@@ -982,6 +987,7 @@ begin
 end;
 
 {$IFDEF SUPPORTS_GENERICS}
+//DOM-IGNORE-BEGIN
 
 //=== { TRefUnique } ==========================================================
 
@@ -1004,6 +1010,8 @@ function TRefUnique.Equals(Other: TRefUnique): Boolean;
 begin
   Result := Self = Other;
 end;
+
+//DOM-IGNORE-END
 {$ENDIF SUPPORTS_GENERICS}
 
 //=== { TJclIntfHashSet } =====================================================
@@ -5408,6 +5416,7 @@ begin
 end;
 
 {$IFDEF SUPPORTS_GENERICS}
+//DOM-IGNORE-BEGIN
 
 //=== { TJclHashSet<T> } =====================================================
 
@@ -5865,6 +5874,7 @@ begin
     Result := A.Equals(B);
 end;
 
+//DOM-IGNORE-END
 {$ENDIF SUPPORTS_GENERICS}
 
 initialization

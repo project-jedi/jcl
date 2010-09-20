@@ -322,6 +322,8 @@ function Addr64ToAddr32(const Value: TJclAddr64): TJclAddr32;
 function Addr32ToAddr64(const Value: TJclAddr32): TJclAddr64;
 
 {$IFDEF SUPPORTS_GENERICS}
+//DOM-IGNORE-BEGIN
+
 type
   TCompare<T> = function(const Obj1, Obj2: T): Integer;
   TEqualityCompare<T> = function(const Obj1, Obj2: T): Boolean;
@@ -343,6 +345,8 @@ type
     function GetHashCode2(Obj: T): Integer;
     function IEqualityComparer<T>.GetHashCode = GetHashCode2;
   end;
+
+//DOM-IGNORE-END
 {$ENDIF SUPPORTS_GENERICS}
 
 const
@@ -509,6 +513,8 @@ end;
 {$ENDIF OVERFLOWCHECKS_ON}
 
 {$IFDEF SUPPORTS_GENERICS}
+//DOM-IGNORE-BEGIN
+
 //=== { TEquatable<T> } ======================================================
 
 function TEquatable<T>.TestEquals(Other: T): Boolean;
@@ -538,6 +544,7 @@ begin
     Result := Obj.GetHashCode;
 end;
 
+//DOM-IGNORE-END
 {$ENDIF SUPPORTS_GENERICS}
 
 procedure LoadAnsiReplacementCharacter;

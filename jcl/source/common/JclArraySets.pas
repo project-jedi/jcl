@@ -316,6 +316,8 @@ type
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
+
   TJclArraySet<T> = class(TJclArrayList<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
     IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclSet<T>)
@@ -377,6 +379,7 @@ type
     function ItemsEqual(const A, B: T): Boolean; override;
   end;
 
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
 {$IFDEF UNITVERSIONING}
@@ -2105,6 +2108,8 @@ begin
 end;
 
 {$IFDEF SUPPORTS_GENERICS}
+//DOM-IGNORE-BEGIN
+
 //=== { TJclArraySet<T> } ====================================================
 
 function TJclArraySet<T>.Add(const AItem: T): Boolean;
@@ -2333,6 +2338,7 @@ begin
     Result := A.CompareTo(B) = 0;
 end;
 
+//DOM-IGNORE-END
 {$ENDIF SUPPORTS_GENERICS}
 
 {$IFDEF UNITVERSIONING}

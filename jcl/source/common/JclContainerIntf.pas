@@ -103,7 +103,9 @@ type
   TPtrIterateProcedure = procedure(APtr: Pointer);
   TIterateProcedure = procedure(AObject: TObject);
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
   TIterateProcedure<T> = procedure(const AItem: T);
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
   // apply functions Type -> Type
@@ -141,7 +143,9 @@ type
   TPtrApplyFunction = function(APtr: Pointer): Pointer;
   TApplyFunction = function(AObject: TObject): TObject;
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
   TApplyFunction<T> = function(const AItem: T): T;
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
   // comparison functions Type -> Type -> Integer
@@ -179,7 +183,9 @@ type
   TPtrCompare = function(Obj1, Obj2: Pointer): Integer;
   TCompare = function(Obj1, Obj2: TObject): Integer;
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
   TCompare<T> = function(const Obj1, Obj2: T): Integer;
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
   // comparison for equality functions Type -> Type -> Boolean
@@ -217,7 +223,9 @@ type
   TPtrEqualityCompare = function(Obj1, Obj2: Pointer): Boolean;
   TEqualityCompare = function(Obj1, Obj2: TObject): Boolean;
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
   TEqualityCompare<T> = function(const Obj1, Obj2: T): Boolean;
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
   // hash functions Type -> Integer
@@ -255,7 +263,9 @@ type
   TPtrHashConvert = function(APtr: Pointer): Integer;
   THashConvert = function(AObject: TObject): Integer;
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
   THashConvert<T> = function(const AItem: T): Integer;
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
   IJclLockable = interface
@@ -516,6 +526,7 @@ type
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
   IJclEqualityComparer<T> = interface
     ['{4AF79AD6-D9F4-424B-BEAA-68857F9222B4}']
     function GetEqualityCompare: TEqualityCompare<T>;
@@ -523,6 +534,7 @@ type
     function ItemsEqual(const A, B: T): Boolean;
     property EqualityCompare: TEqualityCompare<T> read GetEqualityCompare write SetEqualityCompare;
   end;
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
 
@@ -645,6 +657,7 @@ type
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
   IJclComparer<T> = interface
     ['{830AFC8C-AA06-46F5-AABD-8EB46B2A9986}']
     function GetCompare: TCompare<T>;
@@ -652,6 +665,7 @@ type
     function ItemsCompare(const A, B: T): Integer;
     property Compare: TCompare<T> read GetCompare write SetCompare;
   end;
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
 
@@ -774,6 +788,7 @@ type
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
   IJclHashConverter<T> = interface
     ['{300AEA0E-7433-4C3E-99A6-E533212ACF42}']
     function GetHashConvert: THashConvert<T>;
@@ -781,6 +796,7 @@ type
     function Hash(const AItem: T): Integer;
     property HashConvert: THashConvert<T> read GetHashConvert write SetHashConvert;
   end;
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
   IJclIntfCloneable = interface
@@ -860,6 +876,8 @@ type
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
+
   IJclItemOwner<T> = interface
     ['{0CC220C1-E705-4B21-9F53-4AD340952165}']
     function FreeItem(var AItem: T): T;
@@ -876,6 +894,8 @@ type
     property OwnsKeys: Boolean read GetOwnsKeys;
     property OwnsValues: Boolean read GetOwnsValues;
   end;
+
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
 
@@ -1166,6 +1186,7 @@ type
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
   IJclIterator<T> = interface(IJclAbstractIterator)
     ['{6E8547A4-5B5D-4831-8AE3-9C6D04071B11}']
     function Add(const AItem: T): Boolean;
@@ -1187,6 +1208,7 @@ type
     property Current: T read GetItem;
     {$ENDIF SUPPORTS_FOR_IN}
   end;
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
 
@@ -1429,6 +1451,7 @@ type
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
   IJclTreeIterator<T> = interface(IJclIterator<T>)
     ['{29A06DA4-D93A-40A5-8581-0FE85BC8384B}']
     function AddChild(const AItem: T): Boolean;
@@ -1446,6 +1469,7 @@ type
     procedure SetChild(Index: Integer; const AItem: T);
     property Children[Index: Integer]: T read GetChild write SetChild;
   end;
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
 
@@ -1568,6 +1592,7 @@ type
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
   IJclBinaryTreeIterator<T> = interface(IJclTreeIterator<T>)
     ['{0CF5B0FC-C644-458C-BF48-2E093DAFEC26}']
     function HasLeft: Boolean;
@@ -1575,6 +1600,7 @@ type
     function Left: T;
     function Right: T;
   end;
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
 
@@ -2082,6 +2108,7 @@ type
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
   IJclList<T> = interface(IJclCollection<T>)
     ['{3B4BE3D7-8FF7-4163-91DF-3F73AE6935E7}']
     function Delete(Index: Integer): T;
@@ -2095,6 +2122,7 @@ type
     function SubList(First, Count: Integer): IJclList<T>;
     property Items[Key: Integer]: T read GetItem write SetItem; default;
   end;
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
   // Pointer functions for sort algorithms
@@ -2132,7 +2160,9 @@ type
   TPtrSortProc = procedure(const AList: IJclPtrList; L, R: Integer; AComparator: TPtrCompare);
   TSortProc = procedure(const AList: IJclList; L, R: Integer; AComparator: TCompare);
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
   TSortProc<T> = procedure(const AList: IJclList<T>; L, R: Integer; AComparator: TCompare<T>);
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
 
@@ -2243,12 +2273,14 @@ type
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
   IJclArray<T> = interface(IJclList<T>)
     ['{38810C13-E35E-428A-B84F-D25FB994BE8E}']
     function GetItem(Index: Integer): T;
     procedure SetItem(Index: Integer; const AItem: T);
     property Items[Index: Integer]: T read GetItem write SetItem; default;
   end;
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
 
@@ -2359,12 +2391,14 @@ type
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
   IJclSet<T> = interface(IJclCollection<T>)
     ['{0B7CDB90-8588-4260-A54C-D87101C669EA}']
     procedure Intersect(const ACollection: IJclCollection<T>);
     procedure Subtract(const ACollection: IJclCollection<T>);
     procedure Union(const ACollection: IJclCollection<T>);
   end;
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
   TJclTraverseOrder = (toPreOrder, toOrder, toPostOrder);
@@ -2501,6 +2535,7 @@ type
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
   IJclTree<T> = interface(IJclCollection<T>)
     ['{3F963AB5-5A75-41F9-A21B-7E7FB541A459}']
     function GetRoot: IJclTreeIterator<T>;
@@ -2509,6 +2544,7 @@ type
     property Root: IJclTreeIterator<T> read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
 
@@ -3468,6 +3504,7 @@ type
   end;*)
 
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
   IHashable = interface
     function GetHashCode: Integer;
   end;
@@ -3491,6 +3528,8 @@ type
     property Items[const Key: TKey]: TValue read GetValue write PutValue;
       {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
+
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
 
@@ -3649,6 +3688,7 @@ type
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
   IJclQueue<T> = interface(IJclContainer)
     ['{16AB909F-2194-46CF-BD89-B4207AC0CAB8}']
     procedure Clear;
@@ -3659,6 +3699,7 @@ type
     function Peek: T;
     function Size: Integer;
   end;
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
 
@@ -4139,6 +4180,7 @@ type
 
 
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
   IJclSortedMap<TKey,TValue> = interface(IJclMap<TKey,TValue>)
     ['{C62B75C4-891B-442E-A5D6-9954E75A5C0C}']
     function FirstKey: TKey;
@@ -4147,6 +4189,7 @@ type
     function SubMap(const FromKey, ToKey: TKey): IJclSortedMap<TKey,TValue>;
     function TailMap(const FromKey: TKey): IJclSortedMap<TKey,TValue>;
   end;
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
 
@@ -4257,12 +4300,14 @@ type
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
   IJclSortedSet<T> = interface(IJclSet<T>)
     ['{30F836E3-2FB1-427E-A499-DFAE201633C8}']
     function HeadSet(const Finish: T): IJclSortedSet<T>;
     function SubSet(const Start, Finish: T): IJclSortedSet<T>;
     function TailSet(const Start: T): IJclSortedSet<T>;
   end;
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
 
@@ -4421,6 +4466,7 @@ type
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
   IJclStack<T> = interface(IJclContainer)
     ['{2F08EAC9-270D-496E-BE10-5E975918A5F2}']
     procedure Clear;
@@ -4431,6 +4477,7 @@ type
     function Push(const AItem: T): Boolean;
     function Size: Integer;
   end;
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
   // Exceptions
