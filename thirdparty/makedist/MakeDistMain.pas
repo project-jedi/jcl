@@ -8,8 +8,12 @@ uses
 
 type
   TProgressionEvent = procedure (TaskIndex, ActionIndex: Integer; Finished, Success: Boolean) of object;
-  
+
+  TDistribution = class;
+
   TDistAction = class
+  private
+    FDistribution: TDistribution;
   protected
     function GetCaption: string; virtual; abstract;
     function GetConfigCount: Integer; virtual; abstract;
@@ -18,8 +22,8 @@ type
     procedure SetConfigValue(Index: Integer; const Value: string); virtual; abstract;
   public
     class function GetDescription: string; virtual;
-    
-    constructor Create; virtual;
+
+    constructor Create(ADistribution: TDistribution); virtual;
 
     function LoadConfiguration(ANode: TJclSimpleXMLElem): Boolean;
     function SaveConfiguration(ANode: TJclSimpleXMLElem): Boolean;
@@ -30,6 +34,7 @@ type
     property ConfigCount: Integer read GetConfigCount;
     property ConfigCaptions[Index: Integer]: string read GetConfigCaption;
     property ConfigValues[Index: Integer]: string read GetConfigValue write SetConfigValue;
+    property Distribution: TDistribution read FDistribution;
   end;
 
   TDistActionClass = class of TDistAction;
@@ -55,13 +60,14 @@ type
   TDistTask = class
   private
     FActions: TObjectList;
+    FDistribution: TDistribution;
     FName: string;
     FSelected: Boolean;
   protected
     function GetActionCount: Integer;
     function GetAction(Index: Integer): TDistAction;
   public
-    constructor Create;
+    constructor Create(ADistribution: TDistribution);
     destructor Destroy; override;
 
     function AddAction(AClass: TDistActionClass): Integer;
@@ -73,6 +79,7 @@ type
 
     property ActionCount: Integer read GetActionCount;
     property Actions[Index: Integer]: TDistAction read GetAction;
+    property Distribution: TDistribution read FDistribution;
     property Name: string read FName write FName;
     property Selected: Boolean read FSelected write FSelected;
   end;
@@ -131,9 +138,10 @@ var
 
 //=== { TDistAction } ========================================================
 
-constructor TDistAction.Create;
+constructor TDistAction.Create(ADistribution: TDistribution);
 begin
   inherited Create;
+  FDistribution := ADistribution;
   // override to customize
 end;
 
@@ -252,13 +260,14 @@ end;
 
 function TDistTask.AddAction(AClass: TDistActionClass): Integer;
 begin
-  Result := FActions.Add(AClass.Create);
+  Result := FActions.Add(AClass.Create(Distribution));
 end;
 
-constructor TDistTask.Create;
+constructor TDistTask.Create(ADistribution: TDistribution);
 begin
   inherited Create;
   FActions := TObjectList.Create(True);
+  FDistribution := ADistribution;
 end;
 
 procedure TDistTask.DeleteAction(Index: Integer);
@@ -368,7 +377,7 @@ end;
 
 function TDistribution.AddTask: Integer;
 begin
-  Result := FTasks.Add(TDistTask.Create);
+  Result := FTasks.Add(TDistTask.Create(Self));
 end;
 
 constructor TDistribution.Create;

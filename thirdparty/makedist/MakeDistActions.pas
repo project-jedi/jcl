@@ -352,19 +352,34 @@ type
     function Execute(const AMessageHandler: TTextHandler): Boolean; override;
   end;
 
+  // call an other task
+  TSubTask = class(TDistAction)
+  private
+    FTaskName: string;
+  protected
+    function GetCaption: string; override;
+    function GetConfigCount: Integer; override;
+    function GetConfigCaption(Index: Integer): string; override;
+    function GetConfigValue(Index: Integer): string; override;
+    procedure SetConfigValue(Index: Integer; const Value: string); override;
+  public
+    class function GetDescription: string; override;
+    function Execute(const AMessageHandler: TTextHandler): Boolean; override;
+  end;
+
 implementation
 
 uses
   DateUtils, JclDateTime, JclStrings, JclFileUtils, JclSysInfo, JclSimpleXml, JclCompression;
 
 const
-  StdActionsClasses: array [0..18] of TDistActionClass =
+  StdActionsClasses: array [0..19] of TDistActionClass =
     ( TBuildCalculator, TConstantParser,
       TVariableReader, TVariableSetter, TVariableWriter,
       TDirectoryCreator, TDirectoryRemover, TEolConverter,
       TFileCopier, TFileCreator, TFileMover, TFileRemover, TFileTouch,
       TXmlGetter, TCommandLineCaller, TArchiveMaker,
-      TLogSaver, TLogCleaner, TDelay );
+      TLogSaver, TLogCleaner, TDelay, TSubTask );
 
 procedure RegisterStandardActions;
 var
@@ -2184,6 +2199,74 @@ procedure TDelay.SetConfigValue(Index: Integer; const Value: string);
 begin
   case Index of
     0: FDelay := Value;
+  end;
+end;
+
+//=== { TSubTask } ===========================================================
+
+function TSubTask.Execute(const AMessageHandler: TTextHandler): Boolean;
+var
+  TaskName: string;
+  TaskIndex: Integer;
+  Task: TDistTask;
+begin
+  Result := False;
+  TaskName := FTaskName;
+  ExpandEnvironmentVar(TaskName);
+  for TaskIndex := 0 to Distribution.TaskCount - 1 do
+  begin
+    Task := Distribution.Tasks[TaskIndex];
+    if StrMatches(TaskName, Task.Name) then
+    begin
+      AMessageHandler(Format('Execute task %d', [TaskIndex]));
+      Result := Distribution.ExecuteTask(TaskIndex);
+      if not Result then
+        Exit;
+    end;
+  end;
+end;
+
+function TSubTask.GetCaption: string;
+var
+  TaskName: string;
+begin
+  TaskName := FTaskName;
+  ExpandEnvironmentVar(TaskName);
+  Result := Format('Execute task "%s"', [TaskName]);
+end;
+
+function TSubTask.GetConfigCaption(Index: Integer): string;
+begin
+  case Index of
+    0: Result := 'Task name';
+  else
+    Result := '';
+  end;
+end;
+
+function TSubTask.GetConfigCount: Integer;
+begin
+  Result := 1;
+end;
+
+function TSubTask.GetConfigValue(Index: Integer): string;
+begin
+  case Index of
+    0: Result := FTaskName;
+  else
+    Result := '';
+  end;
+end;
+
+class function TSubTask.GetDescription: string;
+begin
+  Result := 'Execute an other task';
+end;
+
+procedure TSubTask.SetConfigValue(Index: Integer; const Value: string);
+begin
+  case Index of
+    0: FTaskName := Value;
   end;
 end;
 
