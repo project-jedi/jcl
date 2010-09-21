@@ -752,6 +752,37 @@ begin
       Result := False;
 end;
 
+function InternalStrToFloat(const RootKey: DelphiHKEY; const Key, Name: string; out Success: Boolean;
+  RaiseException: Boolean): Extended;
+var
+  {$IFDEF RTL150_UP}
+  FS: TFormatSettings;
+  {$ELSE ~RTL150_UP}
+  OldSep: Char;
+  {$ENDIF ~RTL150_UP}
+begin
+  {$IFDEF RTL150_UP}
+  FS.ThousandSeparator := ',';
+  FS.DecimalSeparator := '.';
+  {$ELSE ~RTL150_UP}
+  OldSep := DecimalSeparator;
+  try
+    DecimalSeparator := '.';
+  {$ENDIF ~RTL150_UP}
+    if RaiseException then
+    begin
+      Result := StrToFloat(RegReadString(RootKey, Key, Name){$IFDEF RTL150_UP}, FS{$ENDIF});
+      Success := True;
+    end
+    else
+      Success := TryStrToFloat(RegReadString(RootKey, Key, Name), Result{$IFDEF RTL150_UP}, FS{$ENDIF});
+  {$IFNDEF RTL150_UP}
+  finally
+    DecimalSeparator := OldSep;
+  end;
+  {$ENDIF ~RTL150_UP}
+end;
+
 procedure InternalSetData(const RootKey: DelphiHKEY; const Key, Name: WideString;
   RegKind: TRegKind; Value: Pointer; ValueSize: Cardinal);
 var
@@ -1092,37 +1123,10 @@ function RegReadSingleEx(const RootKey: DelphiHKEY; const Key, Name: string;
   out RetValue: Single; RaiseException: Boolean): Boolean;
 var
   DataType, DataSize: DWORD;
-  {$IFDEF RTL150_UP}
-  FS: TFormatSettings;
-  {$ELSE}
-  OldSep: Char;
-  {$ENDIF RTL150_UP}
 begin
   RegGetDataType(RootKey, Key, Name, DataType);
   if DataType in [REG_SZ, REG_EXPAND_SZ] then
-  begin
-    {$IFDEF RTL150_UP}
-    FS.ThousandSeparator := ',';
-    FS.DecimalSeparator := '.';
-    {$ELSE}
-    OldSep := DecimalSeparator;
-    try
-      DecimalSeparator := '.';
-    {$ENDIF RTL150_UP}
-    if RaiseException then
-    begin
-      RetValue := StrToFloat(RegReadString(RootKey, Key, Name), FS);
-      Result := True;
-    end
-    else
-      Result := TryStrToFloat(RegReadString(RootKey, Key, Name), RetValue, FS);
-    {$IFDEF RTL150_UP}
-    {$ELSE}
-    finally
-      DecimalSeparator := OldSep;
-    end;
-    {$ENDIF RTL150_UP}
-  end
+    RetValue := InternalStrToFloat(RootKey, Key, Name, Result, RaiseException)
   else
     Result := InternalGetData(RootKey, Key, Name, [REG_BINARY],
       SizeOf(RetValue), DataType, @RetValue, DataSize, RaiseException);
@@ -1147,37 +1151,10 @@ function RegReadDoubleEx(const RootKey: DelphiHKEY; const Key, Name: string;
   out RetValue: Double; RaiseException: Boolean): Boolean;
 var
   DataType, DataSize: DWORD;
-  {$IFDEF RTL150_UP}
-  FS: TFormatSettings;
-  {$ELSE}
-  OldSep: Char;
-  {$ENDIF RTL150_UP}
 begin
   RegGetDataType(RootKey, Key, Name, DataType);
   if DataType in [REG_SZ, REG_EXPAND_SZ] then
-  begin
-    {$IFDEF RTL150_UP}
-    FS.ThousandSeparator := ',';
-    FS.DecimalSeparator := '.';
-    {$ELSE}
-    OldSep := DecimalSeparator;
-    try
-      DecimalSeparator := '.';
-    {$ENDIF RTL150_UP}
-    if RaiseException then
-    begin
-      RetValue := StrToFloat(RegReadString(RootKey, Key, Name), FS);
-      Result := True;
-    end
-    else
-      Result := TryStrToFloat(RegReadString(RootKey, Key, Name), RetValue, FS);
-    {$IFDEF RTL150_UP}
-    {$ELSE}
-    finally
-      DecimalSeparator := OldSep;
-    end;
-    {$ENDIF RTL150_UP}
-  end
+    RetValue := InternalStrToFloat(RootKey, Key, Name, Result, RaiseException)
   else
     Result := InternalGetData(RootKey, Key, Name, [REG_BINARY],
       SizeOf(RetValue), DataType, @RetValue, DataSize, RaiseException);
@@ -1202,37 +1179,10 @@ function RegReadExtendedEx(const RootKey: DelphiHKEY; const Key, Name: string;
   out RetValue: Extended; RaiseException: Boolean): Boolean;
 var
   DataType, DataSize: DWORD;
-  {$IFDEF RTL150_UP}
-  FS: TFormatSettings;
-  {$ELSE}
-  OldSep: Char;
-  {$ENDIF RTL150_UP}
 begin
   RegGetDataType(RootKey, Key, Name, DataType);
   if DataType in [REG_SZ, REG_EXPAND_SZ] then
-  begin
-    {$IFDEF RTL150_UP}
-    FS.ThousandSeparator := ',';
-    FS.DecimalSeparator := '.';
-    {$ELSE}
-    OldSep := DecimalSeparator;
-    try
-      DecimalSeparator := '.';
-    {$ENDIF RTL150_UP}
-    if RaiseException then
-    begin
-      RetValue := StrToFloat(RegReadString(RootKey, Key, Name), FS);
-      Result := True;
-    end
-    else
-      Result := TryStrToFloat(RegReadString(RootKey, Key, Name), RetValue, FS);
-    {$IFDEF RTL150_UP}
-    {$ELSE}
-    finally
-      DecimalSeparator := OldSep;
-    end;
-    {$ENDIF RTL150_UP}
-  end
+    RetValue := InternalStrToFloat(RootKey, Key, Name, Result, RaiseException)
   else
     Result := InternalGetData(RootKey, Key, Name, [REG_BINARY],
       SizeOf(RetValue), DataType, @RetValue, DataSize, RaiseException);
@@ -2145,5 +2095,4 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-
 
