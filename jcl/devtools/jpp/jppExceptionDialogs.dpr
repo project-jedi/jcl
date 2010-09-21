@@ -49,7 +49,7 @@ var
   AFileStream: TFileStream;
   Buffer: AnsiString;
 begin
-  AFileStream := TFileStream.Create(FileName, fmOpenRead, fmShareDenyWrite);
+  AFileStream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
   try
     SetLength(Buffer, AFileStream.Size);
     AFileStream.ReadBuffer(Buffer[1], AFileStream.Size);
@@ -64,7 +64,7 @@ var
   AFileStream: TFileStream;
   Buffer: AnsiString;
 begin
-  AFileStream := TFileStream.Create(FileName, fmOpenWrite, fmShareExclusive);
+  AFileStream := TFileStream.Create(FileName, fmOpenWrite or fmShareDenyWrite);
   try
     Buffer := AnsiString(FileContent);
     AFileStream.Size := 0;

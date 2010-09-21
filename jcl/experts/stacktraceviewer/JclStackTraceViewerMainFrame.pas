@@ -589,7 +589,7 @@ begin
       {$IFDEF COMPILER12_UP}
       SS.LoadFromFile(OpenDialog1.FileName);
       {$ELSE ~COMPILER12_UP}
-      FS := TFileStream.Create(OpenDialog1.FileName, fmOpenRead);
+      FS := TFileStream.Create(OpenDialog1.FileName, fmOpenRead or fmShareDenyWrite);
       try
         SS.CopyFrom(FS, 0);
       finally

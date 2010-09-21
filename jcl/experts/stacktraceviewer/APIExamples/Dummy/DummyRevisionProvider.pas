@@ -34,7 +34,7 @@ var
   R, W: Int64;
 begin
   Result := True;
-  FS := TFileStream.Create(AFileName, fmOpenRead);
+  FS := TFileStream.Create(AFileName, fmOpenRead or fmShareDenyWrite);
   try
     SA := TStreamAdapter.Create(FS);
     SA.CopyTo(AContent, FS.Size, R, W);

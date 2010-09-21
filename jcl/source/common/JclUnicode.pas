@@ -5191,7 +5191,7 @@ var
   Stream: TStream;
 begin
   try
-    Stream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyNone);
+    Stream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
     try
       LoadFromStream(Stream);
     finally

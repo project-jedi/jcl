@@ -101,7 +101,7 @@ procedure TForm1.ConvertFile(ReaderClass,
   begin
     SourceStream := TFileStream.Create(SourceFileName, fmOpenRead or fmShareDenyWrite);
     try
-      DestStream := TFileStream.Create(DestFileName, fmCreate or fmShareExclusive);
+      DestStream := TFileStream.Create(DestFileName, fmCreate);
       try
         Reader := ReaderClass.Create(SourceStream, False);
         try

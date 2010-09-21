@@ -114,7 +114,7 @@ begin
   ssOut := nil;
   AState.PushState;
   try
-    fsIn := TFileStream.Create(AOld, fmOpenRead);
+    fsIn := TFileStream.Create(AOld, fmOpenRead or fmShareDenyWrite);
     ssIn := TJclAutoStream.Create(fsIn);
     parse := TJppParser.Create(ssIn.ReadString, AState);
     answer := Format('%s'#13#10'%s', [SWarningJppGenerated, parse.Parse]);

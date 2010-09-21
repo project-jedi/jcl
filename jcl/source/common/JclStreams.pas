@@ -696,7 +696,7 @@ procedure TJclStream.SaveToFile(const FileName: TFileName; BufferSize: Integer);
 var
   FS: TStream;
 begin
-  FS := TFileStream.Create(FileName, fmCreate or fmShareExclusive);
+  FS := TFileStream.Create(FileName, fmCreate);
   try
     SaveToStream(FS, BufferSize);
   finally
