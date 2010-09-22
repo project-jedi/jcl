@@ -386,7 +386,10 @@
             <value>jcld12.inc</value>
             <value>jcld14.inc</value>
             <value>jcld15.inc</value>
-         </property>
+          </property>
+          <property name="svn:externals">
+            <value>jedi https://projectjedi.svn.sourceforge.net:443/svnroot/projectjedi/trunk/shared/include</value>
+          </property>
         </setting>
 
         <setting path="prototypes" mask="*" recurse="no" dironly="yes">

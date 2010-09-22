@@ -34,7 +34,7 @@
 
 unit JediRegInfo;
 
-{$I jedi.inc}
+{$I jedi\jedi.inc}
 
 interface
 

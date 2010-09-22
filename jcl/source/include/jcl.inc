@@ -38,7 +38,7 @@
 {$WRITEABLECONST OFF} // Read-only typed constants
 {$TYPEDADDRESS OFF}   // Type checked pointers off
 
-{$I jedi.inc} // Pull in the JCL/J-VCL shared directives
+{$I jedi\jedi.inc} // Pull in the JCL/J-VCL shared directives
 
 {$IFNDEF JEDI_INC}
 ALERT_jedi_inc_incompatible
