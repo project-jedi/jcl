@@ -41,11 +41,6 @@
 	<Target Name="Rebuild" DependsOnTargets="Clean;Make" />
 
 
-	<!-- Options -->
-	<PropertyGroup>
-		<BCBCompile>true</BCBCompile>
-	</PropertyGroup>
-
 	<!-- Delphi Version -->
 	<PropertyGroup>
 		<!--
@@ -64,6 +59,9 @@
 
 	<PropertyGroup>
 		<DCC32>&quot;$(BDS)\bin\dcc32.exe&quot; --no-config -Q</DCC32>
+
+		<BCBCompile>false</BCBCompile>
+		<BCBCompile Condition=" Exists('$(BDS)\bin\bccide.dll') ">true</BCBCompile>
 
 		<!-- Use Delphi XE's properties -->
 		<DelphiLibraryPath Condition=" '$(DelphiLibraryPath)' == '' ">$(Win32LibraryPath)</DelphiLibraryPath>
