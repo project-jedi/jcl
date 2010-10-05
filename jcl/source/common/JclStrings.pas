@@ -25,6 +25,7 @@
 {   Jack N.A. Bakker                                                                               }
 {   Jean-Fabien Connault (cycocrew)                                                                }
 {   John C Molyneux                                                                                }
+{   Kiriakos Vlahos                                                                                }
 {   Leonard Wennekers                                                                              }
 {   Marcel Bestebroer                                                                              }
 {   Martin Kimmings                                                                                }
@@ -68,6 +69,9 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
+  {$IFDEF UNICODE_RTL_DATABASE}
+  Character,
+  {$ENDIF UNICODE_RTL_DATABASE}
   Classes, SysUtils,
   JclAnsiStrings,
   JclWideStrings,
@@ -575,6 +579,7 @@ procedure StrResetLength(var S: UnicodeString); overload;
 function CompareNaturalStr(const S1, S2: string): SizeInt;
 function CompareNaturalText(const S1, S2: string): SizeInt;
 
+{$IFNDEF UNICODE_RTL_DATABASE}
 // internal structures published to make function inlining working
 const
   MaxStrCharCount = Ord(High(Char)) + 1;       // # of chars in one set
@@ -587,6 +592,7 @@ var
   StrCaseMap: array [0..StrCaseMapSize - 1] of Char; // case mappings
   StrCaseMapReady: Boolean = False;         // true if case map exists
   StrCharTypes: array [Char] of Word;
+{$ENDIF ~UNICODE_RTL_DATABASE}
 
 {$IFDEF UNITVERSIONING}
 const
@@ -620,6 +626,7 @@ type
   end;
   PStrRec = ^TStrRec;
 
+{$IFNDEF UNICODE_RTL_DATABASE}
 procedure LoadCharTypes;
 var
   CurrChar: Char;
@@ -737,6 +744,7 @@ begin
     until C = #0;
   end;
 end;
+{$ENDIF ~UNICODE_RTL_DATABASE}
 
 function StrEndW(Str: PWideChar): PWideChar;
 begin
@@ -1163,13 +1171,42 @@ begin
 end;
 
 procedure StrLowerInPlace(var S: string);
+{$IFDEF UNICODE_RTL_DATABASE}
+var
+  P: PChar;
+  I, L: SizeInt;
+begin
+  L := Length(S);
+  if L > 0 then
+  begin
+    UniqueString(S);
+    P := PChar(S);
+    for I := 1 to L do
+    begin
+      P^ := Character.ToLower(P^);
+      Inc(P);
+    end;
+  end;
+end;
+{$ELSE ~UNICODE_RTL_DATABASE}
 begin
   StrCase(S, StrLoOffset);
 end;
+{$ENDIF ~UNICODE_RTL_DATABASE}
 
 procedure StrLowerBuff(S: PChar);
 begin
+  {$IFDEF UNICODE_RTL_DATABASE}
+  if S <> nil then
+  begin
+    repeat
+      S^ := Character.ToLower(S^);
+      Inc(S);
+    until S^ = #0;
+  end;
+  {$ELSE ~UNICODE_RTL_DATABASE}
   StrCaseBuff(S, StrLoOffset);
+  {$ENDIF ~UNICODE_RTL_DATABASE}
 end;
 
 procedure StrMove(var Dest: string; const Source: string;
@@ -1890,13 +1927,42 @@ begin
 end;
 
 procedure StrUpperInPlace(var S: string);
+{$IFDEF UNICODE_RTL_DATABASE}
+var
+  P: PChar;
+  I, L: SizeInt;
+begin
+  L := Length(S);
+  if L > 0 then
+  begin
+    UniqueString(S);
+    P := PChar(S);
+    for I := 1 to L do
+    begin
+      P^ := Character.ToUpper(P^);
+      Inc(P);
+    end;
+  end;
+end;
+{$ELSE ~UNICODE_RTL_DATABASE}
 begin
   StrCase(S, StrUpOffset);
 end;
+{$ENDIF ~UNICODE_RTL_DATABASE}
 
 procedure StrUpperBuff(S: PChar);
 begin
+  {$IFDEF UNICODE_RTL_DATABASE}
+  if S <> nil then
+  begin
+    repeat
+      S^ := Character.ToUpper(S^);
+      Inc(S);
+    until S^ = #0;
+  end;
+  {$ELSE ~UNICODE_RTL_DATABASE}
   StrCaseBuff(S, StrUpOffset);
+  {$ENDIF ~UNICODE_RTL_DATABASE}
 end;
 
 //=== String Management ======================================================
@@ -2642,22 +2708,39 @@ end;
 
 function CharIsAlpha(const C: Char): Boolean;
 begin
+  {$IFDEF UNICODE_RTL_DATABASE}
+  Result := Character.IsLetter(C);
+  {$ELSE ~UNICODE_RTL_DATABASE}
   Result := (StrCharTypes[C] and C1_ALPHA) <> 0;
+  {$ENDIF ~UNICODE_RTL_DATABASE}
 end;
 
 function CharIsAlphaNum(const C: Char): Boolean;
 begin
+  {$IFDEF UNICODE_RTL_DATABASE}
+  Result := Character.IsLetterOrDigit(C);
+  {$ELSE ~UNICODE_RTL_DATABASE}
   Result := ((StrCharTypes[C] and C1_ALPHA) <> 0) or ((StrCharTypes[C] and C1_DIGIT) <> 0);
+  {$ENDIF ~UNICODE_RTL_DATABASE}
 end;
 
 function CharIsBlank(const C: Char): Boolean;
 begin
+  {$IFDEF UNICODE_RTL_DATABASE}
+  //http://blogs.msdn.com/b/michkap/archive/2007/06/11/3230072.aspx
+  Result := (C = ' ') or (C = #$0009) or (C = #$00A0) or (C = #$3000);
+  {$ELSE ~UNICODE_RTL_DATABASE}
   Result := ((StrCharTypes[C] and C1_BLANK) <> 0);
+  {$ENDIF ~UNICODE_RTL_DATABASE}
 end;
 
 function CharIsControl(const C: Char): Boolean;
 begin
+  {$IFDEF UNICODE_RTL_DATABASE}
+  Result := Character.IsControl(C);
+  {$ELSE ~UNICODE_RTL_DATABASE}
   Result := (StrCharTypes[C] and C1_CNTRL) <> 0;
+  {$ENDIF ~UNICODE_RTL_DATABASE}
 end;
 
 function CharIsDelete(const C: Char): Boolean;
@@ -2667,12 +2750,16 @@ end;
 
 function CharIsDigit(const C: Char): Boolean;
 begin
+  {$IFDEF UNICODE_RTL_DATABASE}
+  Result := Character.IsDigit(C);
+  {$ELSE ~UNICODE_RTL_DATABASE}
   Result := (StrCharTypes[C] and C1_DIGIT) <> 0;
+  {$ENDIF ~UNICODE_RTL_DATABASE}
 end;
 
 function CharIsFracDigit(const C: Char): Boolean;
 begin
-  Result := (C = '.') or ((StrCharTypes[C] and C1_DIGIT) <> 0);
+  Result := (C = '.') or CharIsDigit(C);
 end;
 
 function CharIsHexDigit(const C: Char): Boolean;
@@ -2682,24 +2769,28 @@ begin
     'a'..'f':
       Result := True;
   else
-    Result := ((StrCharTypes[C] and C1_DIGIT) <> 0);
+    Result := CharIsDigit(C);
   end;
 end;
 
 function CharIsLower(const C: Char): Boolean;
 begin
+  {$IFDEF UNICODE_RTL_DATABASE}
+  Result := Character.IsLower(C);
+  {$ELSE ~UNICODE_RTL_DATABASE}
   Result := (StrCharTypes[C] and C1_LOWER) <> 0;
+  {$ENDIF ~UNICODE_RTL_DATABASE}
 end;
 
 function CharIsNumberChar(const C: Char): Boolean;
 begin
-  Result := ((StrCharTypes[C] and C1_DIGIT) <> 0) or (C = '+') or (C = '-') or
+  Result := CharIsDigit(C) or (C = '+') or (C = '-') or
     (C = {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}DecimalSeparator);
 end;
 
 function CharIsNumber(const C: Char): Boolean;
 begin
-  Result := ((StrCharTypes[C] and C1_DIGIT) <> 0) or
+  Result := CharIsDigit(C) or
     (C = {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}DecimalSeparator);
 end;
 
@@ -2710,7 +2801,11 @@ end;
 
 function CharIsPunctuation(const C: Char): Boolean;
 begin
+  {$IFDEF UNICODE_RTL_DATABASE}
+  Result := Character.IsPunctuation(C);
+  {$ELSE ~UNICODE_RTL_DATABASE}
   Result := ((StrCharTypes[C] and C1_PUNCT) <> 0);
+  {$ENDIF ~UNICODE_RTL_DATABASE}
 end;
 
 function CharIsReturn(const C: Char): Boolean;
@@ -2720,12 +2815,20 @@ end;
 
 function CharIsSpace(const C: Char): Boolean;
 begin
+  {$IFDEF UNICODE_RTL_DATABASE}
+  Result := Character.IsWhiteSpace(C);
+  {$ELSE ~UNICODE_RTL_DATABASE}
   Result := (StrCharTypes[C] and C1_SPACE) <> 0;
+  {$ENDIF ~UNICODE_RTL_DATABASE}
 end;
 
 function CharIsUpper(const C: Char): Boolean;
 begin
+  {$IFDEF UNICODE_RTL_DATABASE}
+  Result := Character.IsUpper(C);
+  {$ELSE ~UNICODE_RTL_DATABASE}
   Result := (StrCharTypes[C] and C1_UPPER) <> 0;
+  {$ENDIF ~UNICODE_RTL_DATABASE}
 end;
 
 function CharIsValidIdentifierLetter(const C: Char): Boolean;
@@ -2772,7 +2875,11 @@ end;
 
 function CharType(const C: Char): Word;
 begin
+  {$IFDEF UNICODE_RTL_DATABASE}
+  GetStringTypeEx(LOCALE_USER_DEFAULT, CT_CTYPE1, @C, 1, Result);
+  {$ELSE ~UNICODE_RTL_DATABASE}
   Result := StrCharTypes[C];
+  {$ENDIF ~UNICODE_RTL_DATABASE}
 end;
 
 //=== PCharVector ============================================================
@@ -2867,17 +2974,34 @@ end;
 
 function CharLower(const C: Char): Char;
 begin
+  {$IFDEF UNICODE_RTL_DATABASE}
+  Result := Character.ToLower(C);
+  {$ELSE ~UNICODE_RTL_DATABASE}
   Result := StrCaseMap[Ord(C) + StrLoOffset];
+  {$ENDIF ~UNICODE_RTL_DATABASE}
 end;
 
 function CharToggleCase(const C: Char): Char;
 begin
+  {$IFDEF UNICODE_RTL_DATABASE}
+  if CharIsLower(C) then
+    Result := CharUpper(C)
+  else if CharIsUpper(C) then
+    Result := CharLower(C)
+  else
+    Result := C;
+  {$ELSE ~UNICODE_RTL_DATABASE}
   Result := StrCaseMap[Ord(C) + StrReOffset];
+  {$ENDIF ~UNICODE_RTL_DATABASE}
 end;
 
 function CharUpper(const C: Char): Char;
 begin
+  {$IFDEF UNICODE_RTL_DATABASE}
+  Result := Character.ToUpper(C);
+  {$ELSE ~UNICODE_RTL_DATABASE}
   Result := StrCaseMap[Ord(C) + StrUpOffset];
+  {$ENDIF ~UNICODE_RTL_DATABASE}
 end;
 
 //=== Character Search and Replace ===========================================
@@ -2910,7 +3034,7 @@ begin
   begin
     C := CharUpper(C);
     for Result := Index to Length(S) do
-      if StrCaseMap[Ord(S[Result]) + StrUpOffset] = C then
+      if CharUpper(S[Result]) = C then
         Exit;
   end;
   Result := 0;
@@ -5151,8 +5275,10 @@ begin
 end;
 
 initialization
+  {$IFNDEF UNICODE_RTL_DATABASE}
   LoadCharTypes;  // this table first
   LoadCaseMap;    // or this function does not work
+  {$ENDIF ~UNICODE_RTL_DATABASE}
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
@@ -5163,3 +5289,4 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
+

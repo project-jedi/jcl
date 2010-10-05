@@ -1054,6 +1054,9 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNIT_CHARACTER}
+  Character,
+  {$ENDIF HAS_UNIT_CHARACTER}
   Math,
   {$IFDEF MSWINDOWS}
   ShellApi, ActiveX, ComObj, ShlObj,

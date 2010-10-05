@@ -1634,6 +1634,9 @@ implementation
 
 uses
   Math,
+  {$IFDEF HAS_UNIT_CHARACTER}
+  Character,
+  {$ENDIF HAS_UNIT_CHARACTER}
   JclCIL, JclResources, JclStrings;
 
 const

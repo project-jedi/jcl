@@ -82,6 +82,7 @@ resourcestring
   RsCaptionDefZLibLinkOnRequest = 'Late bind to zlib1.dll';
   // Unicode options
   RsCaptionDefUnicode              = 'Unicode options';
+  RsCaptionDefUnicodeRTLDatabase   = 'Prefer RTL database';
   RsCaptionDefUnicodeSilentFailure = 'Silent failure';
   RsCaptionDefUnicodeRawData       = 'Uncompressed Unicode data';
   RsCaptionDefUnicodeZLibData      = 'Compressed data using zlib';
@@ -191,6 +192,7 @@ resourcestring
   RsHintDefZLibLinkOnRequest = 'JCL binaries require zlib1.dll when calling ZLib functions';
   // Unicode options
   RsHintDefUnicode              = 'Unicode specific option (JclUnicode.pas)';
+  RsHintDefUnicodeRTLDatabase   = 'Prefer RTL Character Database over JCL one, less accurate but reduce executable sizes';
   RsHintDefUnicodeSilentFailure = 'Insert a replacement character if sequence is corrupted rather than raising an exception';
   RsHintDefUnicodeRawData       = 'Link resource containing uncompressed Unicode data (bigger executable size)';
   RsHintDefUnicodeZLibData      = 'Link resource containing Unicode data compressed with ZLib';

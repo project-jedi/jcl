@@ -73,6 +73,7 @@ type
         joJCLDefZLibStaticLink,
         joJCLDefZLibLinkDLL,
         joJCLDefZLibLinkOnRequest,
+        joJCLDefUnicodeRTLDatabase,
         joJCLDefUnicodeSilentFailure,
         joJCLDefUnicodeRawData,
         joJCLDefUnicodeZLibData,
@@ -346,6 +347,7 @@ var
       (Id: -1; Caption: @RsCaptionDefZLibStaticLink;       Hint: @RsHintDefZLibStaticLink), // joDefZLibStaticLink
       (Id: -1; Caption: @RsCaptionDefZLibLinkDLL;          Hint: @RsHintDefZLibLinkDLL), // joDefZLibLinkDLL
       (Id: -1; Caption: @RsCaptionDefZLibLinkOnRequest;    Hint: @RsHintDefZLibLinkOnRequest), // joDefZLibLinkOnRequest
+      (Id: -1; Caption: @RsCaptionDefUnicodeRTLDatabase;   Hint: @RsHintDefUnicodeRTLDatabase), // joDefUnicodeSilentFailure
       (Id: -1; Caption: @RsCaptionDefUnicodeSilentFailure; Hint: @RsHintDefUnicodeSilentFailure), // joDefUnicodeSilentFailure
       (Id: -1; Caption: @RsCaptionDefUnicodeRawData;       Hint: @RsHintDefUnicodeRawData), // joDefUnicodeRawData
       (Id: -1; Caption: @RsCaptionDefUnicodeZLibData;      Hint: @RsHintDefUnicodeZLibData), // joDefUnicodeZLibData
@@ -781,6 +783,9 @@ procedure TJclInstallation.Init;
     AddOption(joJCLDefZLibLinkDLL, [goRadioButton], joJCLDefZLib);
     // Unicode options
     AddOption(joJCLDefUnicode, [goChecked], Parent);
+    if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 6) then
+      // Delphi 2009 and newer have unit "Character"
+      AddOption(joJCLDefUnicodeRTLDatabase, [], joJCLDefUnicode);
     AddOption(joJCLDefUnicodeSilentFailure, [goChecked], joJCLDefUnicode);
     AddOption(joJCLDefUnicodeRawData, [goRadioButton, goChecked], joJCLDefUnicode);
     AddOption(joJCLDefUnicodeZLibData, [goRadioButton], joJCLDefUnicode);
@@ -1215,7 +1220,7 @@ var
         'DEBUG_NO_SYMBOLS', 'PCRE_STATICLINK',
         'PCRE_LINKDLL', 'PCRE_LINKONREQUEST', 'BZIP2_STATICLINK',
         'BZIP2_LINKDLL', 'BZIP2_LINKONREQUEST', 'ZLIB_STATICLINK',
-        'ZLIB_LINKDLL', 'ZLIB_LINKONREQUEST', 'UNICODE_SILENT_FAILURE',
+        'ZLIB_LINKDLL', 'ZLIB_LINKONREQUEST', 'UNICODE_RTL_DATABASE', 'UNICODE_SILENT_FAILURE',
         'UNICODE_RAW_DATA', 'UNICODE_ZLIB_DATA', 'UNICODE_BZIP2_DATA',
         'CONTAINER_ANSISTR', 'CONTAINER_WIDESTR', 'CONTAINER_UNICODESTR',
         'CONTAINER_NOSTR', {'7ZIP_STATICLINK',} '7ZIP_LINKDLL',
