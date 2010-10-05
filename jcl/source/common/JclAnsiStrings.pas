@@ -33,6 +33,7 @@
 {   Michael Winter                                                                                 }
 {   Nick Hodges                                                                                    }
 {   Olivier Sannier (obones)                                                                       }
+{   Patrick Kolla                                                                                  }
 {   Pelle F. S. Liljendal                                                                          }
 {   Petr Vones (pvones)                                                                            }
 {   Robert Lee                                                                                     }
@@ -815,18 +816,21 @@ end;
 
 procedure TJclAnsiStrings.SetDelimitedText(const Value: AnsiString);
 var
-  LastStart: Integer;
-  Index: Integer;
+  ValueLength, LastStart, Index: Integer;
 begin
   Clear;
   LastStart := 1;
-  for Index := 1 to Length(Value) do
+  ValueLength := Length(Value);
+  for Index := 1 to ValueLength do
   begin
     if Value[Index] = Delimiter then
     begin
       Add(Copy(Value, LastStart, Index - LastStart));
       LastStart := Index + 1;
-    end;
+    end
+    else
+    if Index = ValueLength then
+      Add(Copy(Value, LastStart, ValueLength - LastStart + 1));
   end;
 end;
 
