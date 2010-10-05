@@ -290,76 +290,82 @@ begin
   // recurse macro expanding
   if ForceRecurseTest or (StrIPos('$JPP', AResult) > 0) then
   begin
-    Recurse := False;
-    TempLexer := TJppLexer.Create(AResult);
     try
-      State.PushState;
-      while True do
-      begin
-        case TempLexer.CurrTok of
-          ptEof:
-            Break;
-          ptDefine,
-          ptJppDefine:
-            if poProcessDefines in State.Options then
-              State.Define(TempLexer.TokenAsString);
-          ptUndef,
-          ptJppUndef:
-            if poProcessDefines in State.Options then
-              State.Undef(TempLexer.TokenAsString);
-          ptIfdef, ptIfndef:
-            if (poProcessDefines in State.Options) and (State.Defines[TempLexer.TokenAsString] in [ttDefined, ttUndef]) then
-            begin
-              Recurse := True;
-              Break;
-            end;
-          ptJppDefineMacro,
-          ptJppExpandMacro,
-          ptJppUndefMacro:
-            if poProcessMacros in State.Options then
-            begin
-              Recurse := True;
-              Break;
-            end;
-          ptJppGetStrValue,
-          ptJppGetIntValue,
-          ptJppGetBoolValue,
-          ptJppSetStrValue,
-          ptJppSetIntValue,
-          ptJppSetBoolValue,
-          ptJppLoop:
-            if poProcessValues in State.Options then
-            begin
-              Recurse := True;
-              Break;
-            end;
-        end;
-        TempLexer.NextTok;
-      end;
-    finally
-      State.PopState;
-      TempLexer.Free;
-    end;
-    if Recurse then
-    begin
-      TempMemoryStream := TMemoryStream.Create;
+      Recurse := False;
+      TempLexer := TJppLexer.Create(AResult);
       try
-        TempStringStream := TJclAutoStream.Create(TempMemoryStream);
-        try
-          TempStringStream.WriteString(AResult, 1, Length(AResult));
-          TempStringStream.Seek(0, soBeginning);
-          TempParser := TJppParser.Create(TempStringStream.ReadString, State);
-          try
-            AResult := TempParser.Parse;
-          finally
-            TempParser.Free;
+        State.PushState;
+        while True do
+        begin
+          case TempLexer.CurrTok of
+            ptEof:
+              Break;
+            ptDefine,
+            ptJppDefine:
+              if poProcessDefines in State.Options then
+                State.Define(TempLexer.TokenAsString);
+            ptUndef,
+            ptJppUndef:
+              if poProcessDefines in State.Options then
+                State.Undef(TempLexer.TokenAsString);
+            ptIfdef, ptIfndef:
+              if (poProcessDefines in State.Options) and (State.Defines[TempLexer.TokenAsString] in [ttDefined, ttUndef]) then
+              begin
+                Recurse := True;
+                Break;
+              end;
+            ptJppDefineMacro,
+            ptJppExpandMacro,
+            ptJppUndefMacro:
+              if poProcessMacros in State.Options then
+              begin
+                Recurse := True;
+                Break;
+              end;
+            ptJppGetStrValue,
+            ptJppGetIntValue,
+            ptJppGetBoolValue,
+            ptJppSetStrValue,
+            ptJppSetIntValue,
+            ptJppSetBoolValue,
+            ptJppLoop:
+              if poProcessValues in State.Options then
+              begin
+                Recurse := True;
+                Break;
+              end;
           end;
-        finally
-          TempStringStream.Free;
+          TempLexer.NextTok;
         end;
       finally
-        TempMemoryStream.Free;
+        State.PopState;
+        TempLexer.Free;
       end;
+      if Recurse then
+      begin
+        TempMemoryStream := TMemoryStream.Create;
+        try
+          TempStringStream := TJclAutoStream.Create(TempMemoryStream);
+          try
+            TempStringStream.WriteString(AResult, 1, Length(AResult));
+            TempStringStream.Seek(0, soBeginning);
+            TempParser := TJppParser.Create(TempStringStream.ReadString, State);
+            try
+              AResult := TempParser.Parse;
+            finally
+              TempParser.Free;
+            end;
+          finally
+            TempStringStream.Free;
+          end;
+        finally
+          TempMemoryStream.Free;
+        end;
+      end;
+    except
+      // The text might not be well-formed Pascal source and
+      // thus exceptions might be raised, in such case, just add the text without recursion
+      AResult := S;
     end;
   end;
   if FixIndent then
