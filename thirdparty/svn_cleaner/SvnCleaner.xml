@@ -89,6 +89,10 @@
     <setting path="help" mask="" recurse="no" dironly="yes">
       <property name="svn:ignore">
         <value>*.doxdb</value>
+        <value>*.bak</value>
+      </property>
+      <property name="svn:externals">
+        <value>jedi https://projectjedi.svn.sourceforge.net:443/svnroot/projectjedi/trunk/shared/help</value>
       </property>
     </setting>
 
