@@ -1140,7 +1140,7 @@ begin
   if Count = Capacity then
     Grow;
 
-  for I := Index to Count - 1 do
+  for I := Count - 1 downto Index do
     FStrings[I + 1] := FStrings[I];
 
   FStrings[Index].Str := S;
