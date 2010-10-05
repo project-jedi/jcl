@@ -86,15 +86,18 @@ type
   private
     FDelimiter: AnsiChar;
     FNameValueSeparator: AnsiChar;
-
+    FStrictDelimiter: Boolean;
+    FQuoteChar: AnsiChar;
     function GetText: AnsiString;
     procedure SetText(const Value: AnsiString);
     function GetCommaText: AnsiString; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
     procedure SetCommaText(const Value: AnsiString); {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
     function GetDelimitedText: AnsiString; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-    function GetDelimitedText(const ADelimiter: AnsiString): AnsiString; overload;
+    function GetDelimitedText(const ADelimiter: AnsiString; AQuoteChar: AnsiChar;
+      AStrictDelimiter: Boolean): AnsiString; overload;
     procedure SetDelimitedText(const Value: AnsiString); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-    procedure SetDelimitedText(const Value, ADelimiter: AnsiString); overload;
+    procedure SetDelimitedText(const Value, ADelimiter: AnsiString; AQuoteChar: AnsiChar;
+      AStrictDelimiter: Boolean); overload;
     function ExtractName(const S: AnsiString): AnsiString;
     function GetName(Index: Integer): AnsiString;
     function GetValue(const Name: AnsiString): AnsiString;
@@ -142,6 +145,8 @@ type
     property Delimiter: AnsiChar read FDelimiter write FDelimiter;
     property DelimitedText: AnsiString read GetDelimitedText write SetDelimitedText;
     property CommaText: AnsiString read GetCommaText write SetCommaText;
+    property StrictDelimiter: Boolean read FStrictDelimiter write FStrictDelimiter;
+    property QuoteChar: AnsiChar read FQuoteChar write FQuoteChar;
 
     property Strings[Index: Integer]: AnsiString read GetString write SetString; default;
     property Objects[Index: Integer]: TObject read GetObject write SetObject;
@@ -663,6 +668,8 @@ begin
 
   FDelimiter := ',';
   FNameValueSeparator := '=';
+  FQuoteChar := '"';
+  FStrictDelimiter := False;
 end;
 
 procedure TJclAnsiStrings.Assign(Source: TPersistent);
@@ -806,15 +813,27 @@ end;
 
 function TJclAnsiStrings.GetCommaText: AnsiString;
 begin
-  Result := GetDelimitedText(AnsiComma);
+  Result := GetDelimitedText(AnsiComma, AnsiDoubleQuote, False);
 end;
 
 function TJclAnsiStrings.GetDelimitedText: AnsiString;
 begin
-  Result := GetDelimitedText(Delimiter);
+  Result := GetDelimitedText(Delimiter, QuoteChar, StrictDelimiter);
 end;
 
-function TJclAnsiStrings.GetDelimitedText(const ADelimiter: AnsiString): AnsiString;
+function TJclAnsiStrings.GetDelimitedText(const ADelimiter: AnsiString; AQuoteChar: AnsiChar;
+  AStrictDelimiter: Boolean): AnsiString;
+
+  function Quoted(Item: AnsiString): AnsiString;
+  begin
+    if (not AStrictDelimiter) and (Pos(AnsiSpace, Item) > 0) then
+    begin
+      Result := AnsiQuotedStr(Item, AQuoteChar);
+    end
+    else
+      Result := Item;
+  end;
+
 var
   I: Integer;
 begin
@@ -832,31 +851,45 @@ end;
 
 procedure TJclAnsiStrings.SetCommaText(const Value: AnsiString);
 begin
-  SetDelimitedText(Value, AnsiComma);
+  SetDelimitedText(Value, AnsiComma, AnsiDoubleQuote, False);
 end;
 
 procedure TJclAnsiStrings.SetDelimitedText(const Value: AnsiString);
 begin
-  SetDelimitedText(Value, Delimiter);
+  SetDelimitedText(Value, Delimiter, QuoteChar, StrictDelimiter);
 end;
 
-procedure TJclAnsiStrings.SetDelimitedText(const Value, ADelimiter: AnsiString);
+procedure TJclAnsiStrings.SetDelimitedText(const Value, ADelimiter: AnsiString; AQuoteChar: AnsiChar;
+  AStrictDelimiter: Boolean);
 var
-  ValueLength, LastStart, Index: Integer;
+  ValueLength, LastStart, Index, QuoteCharCount: Integer;
+  ValueChar: AnsiChar;
 begin
   Clear;
   LastStart := 1;
+  QuoteCharCount := 0;
   ValueLength := Length(Value);
   for Index := 1 to ValueLength do
   begin
-    if Value[Index] = ADelimiter then
+    ValueChar := Value[Index];
+    if ValueChar = AQuoteChar then
+      Inc(QuoteCharCount);
+    if (ValueChar = ADelimiter) and ((not AStrictDelimiter) or (Odd(QuoteCharCount) or (QuoteCharCount = 0))) then
     begin
-      Add(Copy(Value, LastStart, Index - LastStart));
+      if AStrictDelimiter then
+        Add(Copy(Value, LastStart, Index - LastStart))
+      else
+        Add(StrTrimQuotes(Copy(Value, LastStart, Index - LastStart), AQuoteChar));
+      QuoteCharCount := 0;
       LastStart := Index + 1;
-    end
-    else
-    if Index = ValueLength then
-      Add(Copy(Value, LastStart, ValueLength - LastStart + 1));
+    end;
+    if (Index = ValueLength) and (LastStart < ValueLength) then
+    begin
+      if AStrictDelimiter then
+        Add(Copy(Value, LastStart, ValueLength - LastStart + 1))
+      else
+        Add(StrTrimQuotes(Copy(Value, LastStart, Index - LastStart), AQuoteChar));
+    end;
   end;
 end;
 
