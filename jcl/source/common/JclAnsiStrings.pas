@@ -355,7 +355,8 @@ function StrTrimCharLeft(const S: AnsiString; C: AnsiChar): AnsiString;
 function StrTrimCharsLeft(const S: AnsiString; const Chars: TSysCharSet): AnsiString;
 function StrTrimCharRight(const S: AnsiString; C: AnsiChar): AnsiString;
 function StrTrimCharsRight(const S: AnsiString; const Chars: TSysCharSet): AnsiString;
-function StrTrimQuotes(const S: AnsiString): AnsiString;
+function StrTrimQuotes(const S: AnsiString): AnsiString; overload;
+function StrTrimQuotes(const S: AnsiString; QuoteChar: AnsiChar): AnsiString; overload;
 function StrUpper(const S: AnsiString): AnsiString;
 procedure StrUpperInPlace(var S: AnsiString);
 procedure StrUpperBuff(S: PAnsiChar);
@@ -2210,6 +2211,25 @@ begin
     First := S[1];
     Last := S[L];
     if (First = Last) and ((First = AnsiSingleQuote) or (First = AnsiDoubleQuote)) then
+      Result := Copy(S, 2, L - 2)
+    else
+      Result := S;
+  end
+  else
+    Result := S;
+end;
+
+function StrTrimQuotes(const S: AnsiString; QuoteChar: AnsiChar): AnsiString;
+var
+  First, Last: AnsiChar;
+  L: SizeInt;
+begin
+  L := Length(S);
+  if L > 1 then
+  begin
+    First := S[1];
+    Last := S[L];
+    if (First = Last) and (First = QuoteChar) then
       Result := Copy(S, 2, L - 2)
     else
       Result := S;
