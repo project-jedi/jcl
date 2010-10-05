@@ -89,8 +89,12 @@ type
 
     function GetText: AnsiString;
     procedure SetText(const Value: AnsiString);
-    function GetDelimitedText: AnsiString;
-    procedure SetDelimitedText(const Value: AnsiString);
+    function GetCommaText: AnsiString; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    procedure SetCommaText(const Value: AnsiString); {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    function GetDelimitedText: AnsiString; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    function GetDelimitedText(const ADelimiter: AnsiString): AnsiString; overload;
+    procedure SetDelimitedText(const Value: AnsiString); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    procedure SetDelimitedText(const Value, ADelimiter: AnsiString); overload;
     function ExtractName(const S: AnsiString): AnsiString;
     function GetName(Index: Integer): AnsiString;
     function GetValue(const Name: AnsiString): AnsiString;
@@ -137,6 +141,7 @@ type
 
     property Delimiter: AnsiChar read FDelimiter write FDelimiter;
     property DelimitedText: AnsiString read GetDelimitedText write SetDelimitedText;
+    property CommaText: AnsiString read GetCommaText write SetCommaText;
 
     property Strings[Index: Integer]: AnsiString read GetString write SetString; default;
     property Objects[Index: Integer]: TObject read GetObject write SetObject;
@@ -798,13 +803,23 @@ begin
   end;
 end;
 
+function TJclAnsiStrings.GetCommaText: AnsiString;
+begin
+  Result := GetDelimitedText(AnsiComma);
+end;
+
 function TJclAnsiStrings.GetDelimitedText: AnsiString;
+begin
+  Result := GetDelimitedText(Delimiter);
+end;
+
+function TJclAnsiStrings.GetDelimitedText(const ADelimiter: AnsiString): AnsiString;
 var
   I: Integer;
 begin
   Result := '';
   for I := 0 to Count - 2 do
-    Result := Result + Strings[I] + Delimiter;
+    Result := Result + Strings[I] + ADelimiter;
   if Count > 0 then
     Result := Result + Strings[Count - 1];
 end;
@@ -814,7 +829,17 @@ begin
   InsertObject(Index, S, nil);
 end;
 
+procedure TJclAnsiStrings.SetCommaText(const Value: AnsiString);
+begin
+  SetDelimitedText(Value, AnsiComma);
+end;
+
 procedure TJclAnsiStrings.SetDelimitedText(const Value: AnsiString);
+begin
+  SetDelimitedText(Value, Delimiter);
+end;
+
+procedure TJclAnsiStrings.SetDelimitedText(const Value, ADelimiter: AnsiString);
 var
   ValueLength, LastStart, Index: Integer;
 begin
@@ -823,7 +848,7 @@ begin
   ValueLength := Length(Value);
   for Index := 1 to ValueLength do
   begin
-    if Value[Index] = Delimiter then
+    if Value[Index] = ADelimiter then
     begin
       Add(Copy(Value, LastStart, Index - LastStart));
       LastStart := Index + 1;
