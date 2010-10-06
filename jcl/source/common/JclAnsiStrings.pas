@@ -93,11 +93,9 @@ type
     function GetCommaText: AnsiString; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
     procedure SetCommaText(const Value: AnsiString); {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
     function GetDelimitedText: AnsiString; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-    function GetDelimitedText(const ADelimiter: AnsiString; AQuoteChar: AnsiChar;
-      AStrictDelimiter: Boolean): AnsiString; overload;
+    function GetDelimitedText(const ADelimiter: AnsiString; AQuoteChar: AnsiChar): AnsiString; overload;
     procedure SetDelimitedText(const Value: AnsiString); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-    procedure SetDelimitedText(const Value, ADelimiter: AnsiString; AQuoteChar: AnsiChar;
-      AStrictDelimiter: Boolean); overload;
+    procedure SetDelimitedText(const Value, ADelimiter: AnsiString; AQuoteChar: AnsiChar); overload;
     function ExtractName(const S: AnsiString): AnsiString;
     function GetName(Index: Integer): AnsiString;
     function GetValue(const Name: AnsiString): AnsiString;
@@ -813,20 +811,19 @@ end;
 
 function TJclAnsiStrings.GetCommaText: AnsiString;
 begin
-  Result := GetDelimitedText(AnsiComma, AnsiDoubleQuote, False);
+  Result := GetDelimitedText(AnsiComma, AnsiDoubleQuote);
 end;
 
 function TJclAnsiStrings.GetDelimitedText: AnsiString;
 begin
-  Result := GetDelimitedText(Delimiter, QuoteChar, StrictDelimiter);
+  Result := GetDelimitedText(Delimiter, QuoteChar);
 end;
 
-function TJclAnsiStrings.GetDelimitedText(const ADelimiter: AnsiString; AQuoteChar: AnsiChar;
-  AStrictDelimiter: Boolean): AnsiString;
+function TJclAnsiStrings.GetDelimitedText(const ADelimiter: AnsiString; AQuoteChar: AnsiChar): AnsiString;
 
   function Quoted(Item: AnsiString): AnsiString;
   begin
-    if (not AStrictDelimiter) and (Pos(AnsiSpace, Item) > 0) then
+    if (not StrictDelimiter) and ((Pos(AnsiSpace, Item) > 0) or (Pos(FQuoteChar, Item) > 0)) then
     begin
       Result := AnsiQuotedStr(Item, AQuoteChar);
     end
@@ -839,9 +836,9 @@ var
 begin
   Result := '';
   for I := 0 to Count - 2 do
-    Result := Result + Strings[I] + ADelimiter;
+    Result := Result + Quoted(Strings[I]) + ADelimiter;
   if Count > 0 then
-    Result := Result + Strings[Count - 1];
+    Result := Result + Quoted(Strings[Count - 1]);
 end;
 
 procedure TJclAnsiStrings.Insert(Index: Integer; const S: AnsiString);
@@ -851,16 +848,23 @@ end;
 
 procedure TJclAnsiStrings.SetCommaText(const Value: AnsiString);
 begin
-  SetDelimitedText(Value, AnsiComma, AnsiDoubleQuote, False);
+  SetDelimitedText(Value, AnsiComma, AnsiDoubleQuote);
 end;
 
 procedure TJclAnsiStrings.SetDelimitedText(const Value: AnsiString);
 begin
-  SetDelimitedText(Value, Delimiter, QuoteChar, StrictDelimiter);
+  SetDelimitedText(Value, Delimiter, QuoteChar);
 end;
 
-procedure TJclAnsiStrings.SetDelimitedText(const Value, ADelimiter: AnsiString; AQuoteChar: AnsiChar;
-  AStrictDelimiter: Boolean);
+procedure TJclAnsiStrings.SetDelimitedText(const Value, ADelimiter: AnsiString; AQuoteChar: AnsiChar);
+
+  procedure InternalAdd(Item: AnsiString);
+  begin
+    Item := StrTrimQuotes(Item, AQuoteChar);
+    StrReplace(Item, AQuoteChar + AQuoteChar, AQuoteChar, [rfReplaceAll]);
+    Add(Item);
+  end;
+
 var
   ValueLength, LastStart, Index, QuoteCharCount: Integer;
   ValueChar: AnsiChar;
@@ -874,21 +878,21 @@ begin
     ValueChar := Value[Index];
     if ValueChar = AQuoteChar then
       Inc(QuoteCharCount);
-    if (ValueChar = ADelimiter) and ((not AStrictDelimiter) or (Odd(QuoteCharCount) or (QuoteCharCount = 0))) then
+    if (ValueChar = ADelimiter) and ((not StrictDelimiter) or (Odd(QuoteCharCount) or (QuoteCharCount = 0))) then
     begin
-      if AStrictDelimiter then
+      if StrictDelimiter then
         Add(Copy(Value, LastStart, Index - LastStart))
       else
-        Add(StrTrimQuotes(Copy(Value, LastStart, Index - LastStart), AQuoteChar));
+        InternalAdd(Copy(Value, LastStart, Index - LastStart));
       QuoteCharCount := 0;
       LastStart := Index + 1;
     end;
     if (Index = ValueLength) and (LastStart < ValueLength) then
     begin
-      if AStrictDelimiter then
+      if StrictDelimiter then
         Add(Copy(Value, LastStart, ValueLength - LastStart + 1))
       else
-        Add(StrTrimQuotes(Copy(Value, LastStart, Index - LastStart), AQuoteChar));
+        InternalAdd(Copy(Value, LastStart, Index - LastStart + 1));
     end;
   end;
 end;
