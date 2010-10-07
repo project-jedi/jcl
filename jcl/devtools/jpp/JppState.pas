@@ -58,7 +58,7 @@ type
   EPppState = class(Exception);
 
   TPppOption = (poProcessIncludes, poProcessDefines, poStripComments,
-    poProcessMacros, poProcessValues);
+    poProcessMacros, poProcessValues, poNoWarningHeader);
   TPppOptions = set of TPppOption;
 
   TTriState = (ttUnknown, ttUndef, ttDefined);
@@ -172,6 +172,7 @@ type
 
 constructor TPppState.Create;
 begin
+  inherited Create;
   FStateStack := TJclStack.Create(16, True);
   InternalPushState(TJclStrArrayList.Create(16), TJclStrArrayList.Create(16),
     TJclStrIntfHashMap.Create(16), TJclStrHashMap.Create(16, False), ttUnknown);

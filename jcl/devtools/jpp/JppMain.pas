@@ -82,6 +82,7 @@ begin
     '  -v'#9#9'Process value directive'#10,
     '  -C'#9#9'Strip comments'#10,
     '  -fxxx'#9#9'Prefix xxx to filename'#10,
+    '  -w'#9#9'Do not add header warning'#10,
     '  -h, -?'#9'This help'#10,
     '  -i[x[,y...]]'#9'Process includes, except files x, y, ...'#10,
     '  -pxxx'#9#9'Add xxx to include path'#10,
@@ -117,7 +118,9 @@ begin
     fsIn := TFileStream.Create(AOld, fmOpenRead or fmShareDenyWrite);
     ssIn := TJclAutoStream.Create(fsIn);
     parse := TJppParser.Create(ssIn.ReadString, AState);
-    answer := Format('%s'#13#10'%s', [SWarningJppGenerated, parse.Parse]);
+    answer := parse.Parse;
+    if not (poNoWarningHeader in AState.Options) then
+      answer := Format('%s'#13#10'%s', [SWarningJppGenerated, answer]);
     fsOut := TFileStream.Create(ANew, fmCreate);
     case ssIn.Encoding of
       seAnsi:
@@ -306,6 +309,9 @@ var
               Prefix := Copy(Prefix, N + 1, Length(Prefix));
             Prefix := ExpandUNCFilename(Prefix);
           end;
+
+        'w', 'W':
+          cp := CheckOpt(cp + 1, poNoWarningHeader);
 
       else
         Syntax;
