@@ -18,11 +18,7 @@
 <TITLE Error Handling>
 <TOPICORDER 400>
 --------------------------------------------------------------------------------
-@@BaseServices.FPCCompatibility
-<GROUP BaseServices>
-<TITLE FPC Compatibility>
-<TOPICORDER 600>
---------------------------------------------------------------------------------
+
 @@BaseServices.Int64support
 <GROUP BaseServices>
 <TITLE Int64 support>
@@ -57,32 +53,8 @@ JclVersionRelease  If set to 1 this is an official release. If 0 this is a previ
 Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
-@@string
-<GROUP BaseServices.FPCCompatibility>
-Summary:
-  ResStringRec is a pointer to a resource string.
-Description:
-  ResStringRec is a pointer to a resource string used with the creation of exceptions.
-  This type is provided for compatibility with FPC. When compiling with Delphi or
-  Kylix use the type defined in SysUtils.pas instead.
-Donator:
-  Team JCL
---------------------------------------------------------------------------------
-@@SysErrorMessage
-<GROUP BaseServices.FPCCompatibility>
-Summary:
-  Converts OS error codes into strings.
-Description:
-  SysErrorMessage returns an error message string that corresponds to the specified
-  OS error code. This routine is provided for compatibility with FPC. When compiling
-  with Delphi or Kylix use the SysErrorMessage from the RTL instead (SysUtils.pas).
-Parameters:
-  ErrNo - The Windows API error code for which to retrieve the associated error message.
-Result:
-  Returns the error message string associated with the specified Windows API error code.
-Donator:
-  Team JCL
---------------------------------------------------------------------------------
+
+
 @@EJclError
 <GROUP BaseServices.ErrorHandling>
 Summary:
@@ -508,21 +480,6 @@ See also:
 Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
-@@TObjectList
-<GROUP BaseServices.Compatibility>
-Summary:
-  TList descendent to maintain a list of TObject descendants.
-Description:
-  TObjectList is a TList descendant adapted to maintain a list of TObject descendants
-  which can optionally be owned by the class. If the class owns the items, it will
-  automatically free the objects when the list is cleared. This class is only provided
-  for backward compatibility and is not a full-fledged implementation of TObjectList
-  as found in Delphi 5 and up.
-Donator:
-  Petr Vones
---------------------------------------------------------------------------------
-
-
 
 @@RaiseLastOSError
 <GROUP BaseServices.Compatibility>
@@ -746,3 +703,338 @@ Summary:
 @@TDynWordArray
 Summary:
   Type for a dynamic array of Word (unsigned 16-bit integer).
+
+@@AWSuffix
+\ \ 
+Summary
+Suffix for External string function API
+
+
+Description
+This constant denotes the suffix for imported string
+functions. Windows headers usually have two declarations for
+each string function: one is Ansi-flavoured, the other is
+unicode-enabled. The two functions have different names: the
+names of the Ansi-flavoured functions end with 'A' while
+Unicode-enabled functions end with 'W'.
+
+
+
+Since Delphi/C++Builder 2009, the built-in string type is
+Unicode-enabled. This constant is accordingly set to 'W'
+(stands for Wide) for Delphi/C++Builder and newer while it is
+set to 'A' (stands for Ansi) for older versions.
+
+
+
+This constant is used in various places in the JCL for
+specifying the flavour of the function that is being
+imported.
+
+@@BOM_UTF16_LSB
+Summary
+UTF-16 LSB Text file Byte-Order-Mark (BOM)
+Description
+These 2 bytes are usually inserted to the beginning of UTF-16
+text files where the least significant byte of each character
+is written first.
+
+@@BOM_UTF16_MSB
+Summary
+UTF-16 MSB Text file Byte-Order-Mark (BOM)
+Description
+These 2 bytes are usually inserted to the beginning of UTF-16
+text files where the most significant byte of each character
+is written first.
+
+@@BOM_UTF32_LSB
+Summary
+UTF-32 LSB Text file Byte-Order-Mark (BOM)
+Description
+These 4 bytes are usually inserted to the beginning of UTF-32
+text files where the least significant byte of each character
+is written first.
+
+@@BOM_UTF32_MSB
+Summary
+UTF-32 MSB Text file Byte-Order-Mark (BOM)
+Description
+These 4 bytes are usually inserted to the beginning of UTF-32
+text files where the most significant byte of each character
+is written first.
+
+@@BOM_UTF8
+Summary
+UTF-8 Text file Byte-Order-Mark (BOM)
+Description
+These 3 bytes are usually inserted to the beginning of UTF-8
+text files.
+
+@@HexPrefix
+Summary
+Constants describing the hexadecimal prefix for strings.
+Description
+The HexPrefix constants are the prefix to be added to strings
+denoting hexadecimal values.
+<table>
+Constant          \Description:
+----------------  -----------------------------------------------
+HexPrefixC        Prefix for C/C++ hexadecimal values
+HexPrefixPascal   Prefix for Pascal/Delphi hexadecimal values
+HexPrefix         Language independant prefix, this constant is
+                   automatically set to HexPrefixPascal when the
+                   code is compiled with Delphi and to HexPrefixC
+                   when compiled with C++Builder.
+</table>
+
+@@HexPrefixC
+<combine HexPrefix>
+
+\ \ 
+
+@@HexPrefixPascal
+<combine HexPrefix>
+
+\ \ 
+
+@@MaximumUCS2
+Summary
+Maximum value for an UCS-2 encoded character
+Description
+This constant denotes the maximum value for an UCS-2
+character. Valid UCS-2 characters are included in range
+[#0..MaximumUCS2].
+
+@@MaximumUCS4
+Summary
+Maximum value for an UCS-4 encoded character
+Description
+This constant denotes the maximum value for an UCS-4
+character. Valid UCS-4 characters are included in range
+[#0..MaximumUCS4].
+
+@@MaximumUTF16
+Summary
+Maximum value for an UTF-16 encoded character
+Description
+This constant denotes the maximum value for an UTF-16
+character. Valid UTF-16 characters are included in range
+[#0..MaximumUTF16], with the exclusion of ranges
+[SurrogateLowStart..SurrogateLowEnd] and
+[SurrogateHighStart..SurrogateHighEnd].
+
+
+
+In an UTF-16 stream, characters are read per 16-bit wide
+chunk. Characters are decoded as follow:
+
+A first 16-bit chunk is read, if its value is included in
+[SurrogateLowStart..SurrogateLowEnd], it is an error. If its
+value is not included in
+[SurrogateHighStart..SurrogateHighEnd], then the character
+value is equal to this first chunk.
+
+If the value of the first chunk is included in
+[SurrogateHighStart..SurrogateHighEnd], a second thunk is
+read and its value has to be included in
+[SurrogateLowStart..SurrogateLowEnd], it is an error
+\otherwise. Finally the value of these two thunk are combined
+to make the character value.
+
+@@SurrogateHighEnd
+<combine MaximumUTF16>
+
+\ \ 
+
+@@SurrogateHighStart
+<combine MaximumUTF16>
+
+\ \ 
+
+@@SurrogateLowEnd
+<combine MaximumUTF16>
+
+\ \ 
+
+@@SurrogateLowStart
+<combine MaximumUTF16>
+
+\ \ 
+
+@@UCS4ReplacementCharacter
+Summary
+UTF-8/UTF-16/UCS2/UCS4 replacement character
+Description
+When an UTF-8 or an UTF-16 character fails to be correctly
+decoded, it may be replaced by this constant acting as an
+error flag. Depending on the code, exceptions might be raised
+instead of inserting this constant. See code details.
+
+@@JclBase.pas
+\ \ 
+Summary
+JclBase description
+
+
+Description
+The JclBase file contains basic declarations for the JEDI
+Code Library.
+
+@@GetMem@@Longint
+\ \ 
+Summary
+GetMem function redeclaration for FPC
+Description
+FPC emits a lot of warnings while compiling GetMem calls: it
+complains about the first argument not being initialized.
+This is caused by the declaration of the first parameter as a
+variable parameter. We change it to output in order to avoid
+all these warnings.
+
+@@Addr32ToAddr64@TJclAddr32
+\ \ 
+Summary
+32-bit address to 64-bit address conversion
+Description
+This function converts a 32-bit address to a 64-bit value.
+
+@@Addr64ToAddr32@TJclAddr64
+Summary
+64-bit address to 32-bit address conversion
+Description
+This function converts a 64-bit address to a 32-bit value.
+Exceptions
+If the argument address does not fit in the result, an
+exception of class EJclAddr64Exception is raised.
+
+@@AnsiByteArrayStringLen@TBytes
+Summary
+Computes the length of an AnsiString stored in a TBytes array
+Description
+This functions computes the length of the AnsiString stored
+in the TBytes array. The string ends at the first encountered
+null character.
+Parameters
+Data :  Source byte array
+Returns
+The length of the string, including the ending null
+character.
+See Also
+AnsiByteArrayToString@TBytes@SizeInt
+
+StringToAnsiByteArray@string
+
+@@AnsiByteArrayToString@TBytes@SizeInt
+Summary
+Makes a copy an AnsiString stored in a TBytes array
+Description
+This functions copies Count characters from the AnsiString
+stored in a TBytes array to its result.
+Parameters
+Data :   Source byte array
+Count :  Number of characters to be copied
+Returns
+A string of length Count whose data is initialized by the
+values read from Data.
+See Also
+AnsiByteArrayStringLen@TBytes
+
+StringToAnsiByteArray@string
+
+@@StringToAnsiByteArray@string
+Summary
+Create a byte array from an AnsiString
+Description
+This function serializes all the characters of S to the
+resulting byte array.
+Parameters
+S :  String to convert
+Returns
+Serialized bytes from S.
+See Also
+AnsiByteArrayToString@TBytes@SizeInt
+
+AnsiByteArrayStringLen@TBytes
+
+@@EJclAddr64Exception
+Summary
+Exception class for address conversion failures
+Description
+This exception class is raised when a 64-bit address cannot
+be stored as a 32-bit value.
+See Also
+Addr64ToAddr32@TJclAddr64
+
+@@PInt64
+\ \ 
+Summary
+Type for pointers to signed 6'-bit integers
+
+@@TDynWideCharArray
+\ \ 
+Summary
+Type for a dynamic array of WideChar.
+
+@@TDynAnsiCharArray
+\ \ 
+Summary
+Type for a dynamic array of AnsiChar.
+
+@@TDynAnsiStringArray
+\ \ 
+Summary
+Type for a dynamic array of AnsiString.
+
+@@TDynCharArray
+\ \ 
+Summary
+Type for a dynamic array of Char.
+
+@@TDynUnicodeStringArray
+\ \ 
+Summary
+Type for a dynamic array of UnicodeString (defined for
+Delphi/C++Builder 2009 and newer).
+
+@@TDynWideStringArray
+\ \ 
+Summary
+Type for a dynamic array of WideString.
+
+@@TJclByteArray
+\ \ 
+Summary
+Type for a dynamic array of Byte.
+
+@@TJclAddr64
+Summary
+Integer type for 64-bit addresses.
+
+@@TJclAddr32
+Summary
+Integer type for 32-bit addresses.
+
+@@TJclAddr
+Summary
+Integer type for addresses.
+
+
+Description
+This type is aliased to TJclAddr32 for 32-bit applications
+and it is aliased to TJclAddr64 for 64-bit applications.
+
+
+@@AnsiReplacementCharacter
+Summary
+ANSI replacement character
+Description
+When an Unicode character does not have representation in the
+current ANSI codepage, it may be replaced by this constant
+acting as an error flag. Depending on the code, exceptions
+might be raised instead of inserting this constant. See code
+details.
+
+@@PJclAddr
+<combine TJclAddr>
+
+\ \ 

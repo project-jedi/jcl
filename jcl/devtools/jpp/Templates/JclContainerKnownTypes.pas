@@ -1108,7 +1108,7 @@ const
   TObjectKnownType: TKnownTypeAttributes =
     ({taTypeName} 'TObject',
      {taCondition} '',
-     {taDefines} 'ZEROINIT',
+     {taDefines} 'OWNABLE;ZEROINIT',
      {taUndefs} 'REFCOUNTED',
      {taAlias} '',
      {taAliasCondition} '',

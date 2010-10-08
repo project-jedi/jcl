@@ -18,18 +18,18 @@
 <TITLE TJclPeMapImgHooks>
 <TOPICORDER 200>
 --------------------------------------------------------------------------------
-@@LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
-<TITLE Borland Delphi Specific>
-<TOPICORDER 200>
---------------------------------------------------------------------------------
-@@LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific.TJclPeBorImage
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific>
+@@LibrariesProcessesandThreads.PortableExecutableFileFormat.DelphiCBuilderSpecific
+<title Delphi/C++Builder Specific>
+
+\ \ 
+
+@@LibrariesProcessesandThreads.PortableExecutableFileFormat.DelphiCBuilderSpecific.TJclPeBorImage
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.DelphiCBuilderSpecific>
 <TITLE TJclPeBorImage>
 <TOPICORDER 100>
 --------------------------------------------------------------------------------
-@@LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific.TJclPePackageInfo
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific>
+@@LibrariesProcessesandThreads.PortableExecutableFileFormat.DelphiCBuilderSpecific.TJclPePackageInfo
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.DelphiCBuilderSpecific>
 <TITLE TJclPePackageInfo>
 <TOPICORDER 200>
 --------------------------------------------------------------------------------
@@ -416,13 +416,13 @@ Summary:
 Description:
   Specifies the manufacturer of the linker that produced an image file. The 
   function uses a heuristic which is not perfect and is only capable of 
-  recognizing Borland Delphi, C++ Builder and Microsoft Visual Studio linkers.
+  recognizing Delphi, C++ Builder and Microsoft Visual Studio linkers.
 Donator:
   Petr Vones
 @@TJclPeLinkerProducer.lrBorland
-  The image was produced by the Borland Delphi linker.
+  The image was produced by the Delphi linker.
 @@TJclPeLinkerProducer.lrMicrosoft
-  The image was produced by the Borland C++ Builder or Microsoft Visual C++ linker.
+  The image was produced by the C++ Builder or Microsoft Visual C++ linker.
 --------------------------------------------------------------------------------
 @@TJclPeImportFuncItem
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection.TJclPeImportFuncItem>
@@ -2260,7 +2260,7 @@ Donator:
   Petr Vones
 --------------------------------------------------------------------------------
 @@TJclPePackageInfo
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific.TJclPePackageInfo>
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.DelphiCBuilderSpecific.TJclPePackageInfo>
 Summary:
   Allows you to obtain information about Delphi packages.
 Description:
@@ -2432,13 +2432,13 @@ Donator:
   Jean-Fabien Connault
 --------------------------------------------------------------------------------
 @@TJclPeBorImage
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific.TJclPeBorImage>
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.DelphiCBuilderSpecific.TJclPeBorImage>
 Summary:
-  Specialisation of TJclPeImage for Borland produced images.
+  Specialisation of TJclPeImage for Delphi/C++Builder produced images.
 Description:
   The TJclPeBorImage class is a specialisation of TJclPeImage which allows access
   to information contained in the image file which is specific, and therefore unique,
-  to images produced by a Borland linker.
+  to images produced by a Delphi or C++Builder linker.
 Donator:
   Petr Vones
 --------------------------------------------------------------------------------
@@ -2452,17 +2452,17 @@ Donator:
 --------------------------------------------------------------------------------
 @@TJclPeBorImage.IsBorlandImage
 Summary:
-  Returns whether or not the image is an image produced by a Borland linker.
+  Returns whether or not the image is an image produced by a Delphi or C++Builder linker.
 Description:
-  Returns whether or not the image is an image produced by a Borland linker.
+  Returns whether or not the image is an image produced by a Delphi or C++Builder linker.
 Donator:
   Petr Vones
 --------------------------------------------------------------------------------
 @@TJclPeBorImage.IsPackage
 Summary:
-  Returns whether the image is Borland package file.
+  Returns whether the image is Delphi or C++Builder package file.
 Description:
-  Returns whether the image is Borland package file.
+  Returns whether the image is Delphi or C++Builder package file.
 Donator:
   Petr Vones
 --------------------------------------------------------------------------------

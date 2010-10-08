@@ -13,27 +13,10 @@ Donator:
 Donator:
   Jean-Philippe Bempel
 --------------------------------------------------------------------------------
-@@IJclIntfIterator
-<GROUP Containers.Interfaces>
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@IJclStrIterator
-<GROUP Containers.Interfaces>
-Donator:
-  Jean-Philippe Bempel
+@@IJclIntfCloneable.IntfClone
+  Makes a deep copy of the current object.
 --------------------------------------------------------------------------------
 @@IJclIterator
-<GROUP Containers.Interfaces>
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@IJclIntfCollection
-<GROUP Containers.Interfaces>
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@IJclStrCollection
 <GROUP Containers.Interfaces>
 Donator:
   Jean-Philippe Bempel
@@ -54,12 +37,6 @@ Donator:
   Jean-Philippe Bempel
 --------------------------------------------------------------------------------
 @@IJclCollection.Add@TObject
-  Add AObject at the end of the collection. Return True if the method succeeds.
---------------------------------------------------------------------------------
-@@IJclIntfCollection.Add@IInterface
-  Add AObject at the end of the collection. Return True if the method succeeds.
---------------------------------------------------------------------------------
-@@IJclAnsiStrCollection.Add@AnsiString
   Add AObject at the end of the collection. Return True if the method succeeds.
 --------------------------------------------------------------------------------
 @@IJclCollection.AddAll@IJclCollection
@@ -106,27 +83,7 @@ Donator:
 @@IJclCollection.Size
   Return the number of objects contained in the collection.
 --------------------------------------------------------------------------------
-@@IJclIntfList
-<GROUP Containers.Interfaces>
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@IJclStrList
-<GROUP Containers.Interfaces>
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
 @@IJclList
-<GROUP Containers.Interfaces>
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@IJclIntfArray
-<GROUP Containers.Interfaces>
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@IJclStrArray
 <GROUP Containers.Interfaces>
 Donator:
   Jean-Philippe Bempel
@@ -136,27 +93,7 @@ Donator:
 Donator:
   Jean-Philippe Bempel
 --------------------------------------------------------------------------------
-@@IJclIntfSet
-<GROUP Containers.Interfaces>
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@IJclStrSet
-<GROUP Containers.Interfaces>
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
 @@IJclSet
-<GROUP Containers.Interfaces>
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@IJclIntfTree
-<GROUP Containers.Interfaces>
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@IJclStrTree
 <GROUP Containers.Interfaces>
 Donator:
   Jean-Philippe Bempel
@@ -166,42 +103,7 @@ Donator:
 Donator:
   Jean-Philippe Bempel
 --------------------------------------------------------------------------------
-@@IJclIntfIntfMap
-<GROUP Containers.Interfaces>
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@IJclMultiIntfIntfMap
-<GROUP Containers.Interfaces>
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@IJclStrIntfMap
-<GROUP Containers.Interfaces>
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@IJclStrStrMap
-<GROUP Containers.Interfaces>
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@IJclStrMap
-<GROUP Containers.Interfaces>
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
 @@IJclMap
-<GROUP Containers.Interfaces>
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@IJclIntfQueue
-<GROUP Containers.Interfaces>
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@IJclStrQueue
 <GROUP Containers.Interfaces>
 Donator:
   Jean-Philippe Bempel
@@ -211,32 +113,12 @@ Donator:
 Donator:
   Jean-Philippe Bempel
 --------------------------------------------------------------------------------
-@@IJclStrStrSortedMap
-<GROUP Containers.Interfaces>
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
 @@IJclSortedMap
 <GROUP Containers.Interfaces>
 Donator:
   Jean-Philippe Bempel
 --------------------------------------------------------------------------------
-@@IJclIntfSortedSet
-<GROUP Containers.Interfaces>
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
 @@IJclSortedSet
-<GROUP Containers.Interfaces>
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@IJclIntfStack
-<GROUP Containers.Interfaces>
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@IJclStrStack
 <GROUP Containers.Interfaces>
 Donator:
   Jean-Philippe Bempel
@@ -251,51 +133,10 @@ Donator:
 Donator:
   Jean-Philippe Bempel
 --------------------------------------------------------------------------------
-@@IJclIntfCloneable.IntfClone
-  Makes a deep copy of the current object.
---------------------------------------------------------------------------------
 @@TJclVector
 <GROUP Containers.Sequence.Vectors>
 Summary:
   This class store objects in a dynamic array.
-Notes:
-  The default capacity is 16 elements. When the limit is
-  reached, the capacity grows of 25%.
-
-  When an element is removed or insert, all elements after it
-  are shifted.
-
-  The dynamic array is in public for fast access in read. To
-  have directly access to the dynamic array, you have to use
-  the class and not the interface.
-
-  This container is NOT threadsafe.
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@TJclStrVector
-<GROUP Containers.Sequence.Vectors>
-Summary:
-  This class store strings in a dynamic array.
-Notes:
-  The default capacity is 16 elements. When the limit is
-  reached, the capacity grows of 25%.
-
-  When an element is removed or insert, all elements after it
-  are shifted.
-
-  The dynamic array is in public for fast access in read. To
-  have directly access to the dynamic array, you have to use
-  the class and not the interface.
-
-  This container is NOT threadsafe.
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@TJclIntfVector
-<GROUP Containers.Sequence.Vectors>
-Summary:
-  This class store interfaces in a dynamic array.
 Notes:
   The default capacity is 16 elements. When the limit is
   reached, the capacity grows of 25%.
@@ -323,60 +164,10 @@ Notes:
 Donator:
   Jean-Philippe Bempel
 --------------------------------------------------------------------------------
-@@TJclIntfQueue
-<GROUP Containers.Adapters.Queues>
-Summary:
-  This class store interfaces in a FIFO dynamic array.
-Notes:
-  The default capacity is 16 elements. This limit is fixed.
-
-  If the compilation symbol THREADSAFE is defined,
-  this container is threadsafe.
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@TJclStrQueue
-<GROUP Containers.Adapters.Queues>
-Summary:
-  This class store strings in a FIFO dynamic array.
-Notes:
-  The default capacity is 16 elements. This limit is fixed.
-
-  If the compilation symbol THREADSAFE is defined,
-  this container is threadsafe.
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
 @@TJclStack
 <GROUP Containers.Adapters.Stacks>
 Summary:
   This class store objects in a LIFO dynamic array.
-Notes:
-  The default capacity is 16 elements. When the limit is
-  reached, the capacity grows of 25%.
-
-  If the compilation symbol THREADSAFE is defined,
-  this container is threadsafe.
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@TJclIntfStack
-<GROUP Containers.Adapters.Stacks>
-Summary:
-  This class store interfaces in a LIFO dynamic array.
-Notes:
-  The default capacity is 16 elements. When the limit is
-  reached, the capacity grows of 25%.
-
-  If the compilation symbol THREADSAFE is defined,
-  this container is threadsafe.
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@TJclStrStack
-<GROUP Containers.Adapters.Stacks>
-Summary:
-  This class store strings in a LIFO dynamic array.
 Notes:
   The default capacity is 16 elements. When the limit is
   reached, the capacity grows of 25%.
@@ -394,37 +185,6 @@ Summary:
   code in a Critical Section. The function retuen an interface
   and when this interface is released (RefCount = 0) the
   critical section is relased too.
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@TJclIntfArrayList
-<GROUP Containers.Specialized.Arrays>
-Summary:
-  This class store interfaces in a dynamic array.
-
-  The default capacity is 16 elements. When the limit is
-  reached, the capacity grows of 25%.
-  When an element is removed or insert, all elements after it
-  are shifted.
-
-  If the compilation symbol THREADSAFE is defined,
-  this container is threadsafe.
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@TJclStrArrayList
-<GROUP Containers.Specialized.Arrays>
-Summary:
-  This class store strings in a dynamic array.
-Notes:
-  The default capacity is 16 elements. When the limit is
-  reached, the capacity grows of 25%.
-
-  When an element is removed or insert, all elements after it
-  are shifted.
-
-  If the compilation symbol THREADSAFE is defined,
-  this container is threadsafe.
 Donator:
   Jean-Philippe Bempel
 --------------------------------------------------------------------------------
@@ -459,77 +219,9 @@ Notes:
 Donator:
   Jean-Philippe Bempel
 --------------------------------------------------------------------------------
-@@TJclIntfArraySet
-Summary:
-  This class store interfaces only one time in a dynamic array.
-Notes:
-  The default capacity is 16 elements. When the limit is
-  reached, the capacity grows of 25%.
-
-  When an element is removed or insert, all elements after it
-  are shifted.
-
-  If the compilation symbol THREADSAFE is defined,
-  this container is threadsafe.
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@TJclStrArraySet
-Summary:
-  This class store strings only one time in a dynamic array.
-Notes:
-  The default capacity is 16 elements. When the limit is
-  reached, the capacity grows of 25%.
-
-  When an element is removed or insert, all elements after it
-  are shifted.
-
-  If the compilation symbol THREADSAFE is defined,
-  this container is threadsafe.
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
 @@TJclBinaryTree
 Summary:
   This class store objects in a red-black binary tree.
-Notes:
-  The binary tree is always balanced with red-black algorithms
-  (from CLR) for best performance in search.
-
-  When an element is removed or insert, the tree is modified to
-  keep balancing.
-
-  You can traverse the tree with iterators in different order
-  (PreOrder, Order and PostOrder). Iterators are
-  bidirectionnal.
-
-  If the compilation symbol THREADSAFE is defined,
-  this container is threadsafe.
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@TJclIntfBinaryTree
-Summary:
-  This class store interfaces in a red-black binary tree.
-Notes:
-  The binary tree is always balanced with red-black algorithms
-  (from CLR) for best performance in search.
-
-  When an element is removed or insert, the tree is modified to
-  keep balancing.
-
-  You can traverse the tree with iterators in different order
-  (PreOrder, Order and PostOrder). Iterators are
-  bidirectionnal.
-
-  If the compilation symbol THREADSAFE is defined,
-  this container is threadsafe.
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@TJclStrBinaryTree
-Summary:
-  This class store strings in a red-black binary tree.
 Notes:
   The binary tree is always balanced with red-black algorithms
   (from CLR) for best performance in search.
@@ -565,95 +257,6 @@ Notes:
 Donator:
   Jean-Philippe Bempel
 --------------------------------------------------------------------------------
-@@TJclIntfIntfHashMap
-<GROUP Containers.Associative.Maps>
-Summary:
-  This class store a map with interface as hashed key and
-  interface as value.
-Notes:
-  Hashed value give an index to a dynamic array (Buckets) that
-  store another (Entries) in each cells for collisions.
-  The default buckets capacity is 16 elements. The buckets
-  capacity is fixed. The default entries capcity is 1. When the
-  limit is reached, the capacity grows of 25% if \> 64 else it
-  is muliply by 4.
-
-  You can change the hash function by the property HashFunction
-
-  If the compilation symbol THREADSAFE is defined,
-  this container is threadsafe.
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@TJclStrIntfHashMap
-<GROUP Containers.Associative.Maps>
-Summary:
-  This class store a map with string as hashed key and
-  interface as value.
-Notes:
-  Hashed value give an index to a dynamic array (Buckets) that
-  store another (Entries) in each cells for collisions.
-  The default buckets capacity is 16 elements. The buckets
-  capacity is fixed. The default entries capcity is 1. When the
-  limit is reached, the capacity grows of 25% if \> 64 else it
-  is muliply by 4.
-
-  You can change the hash function by the property HashFunction
-
-  If the compilation symbol THREADSAFE is defined,
-  this container is threadsafe.
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@TJclStrHashMap
-<GROUP Containers.Associative.Maps>
-Summary:
-  This class store a map with string as hashed key and object
-  as value.
-Notes:
-  Hashed value give an index to a dynamic array (Buckets) that
-  store another (Entries) in each cells for collisions.
-  The default buckets capacity is 16 elements. The buckets
-  capacity is fixed. The default entries capcity is 1. When the
-  limit is reached, the capacity grows of 25% if \> 64 else it
-  is muliply by 4.
-
-  You can change the hash function by the property HashFunction
-
-  If the compilation symbol THREADSAFE is defined,
-  this container is threadsafe.
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@TJclStrStrHashMap
-<GROUP Containers.Associative.Maps>
-Summary:
-  This class store a map with string as hashed key and string as value.
-Notes:
-  Hashed value give an index to a dynamic array (Buckets) that
-  store another (Entries) in each cells for collisions.
-  The default buckets capacity is 16 elements. The buckets
-  capacity is fixed. The default entries capcity is 1. When the
-  limit is reached, the capacity grows of 25% if \> 64 else it
-  is muliply by 4.
-
-  You can change the hash function by the property HashFunction
-
-  If the compilation symbol THREADSAFE is defined,
-  this container is threadsafe.
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@TJclIntfHashSet
-<GROUP Containers.OrderedSets>
-Summary:
-  This class store hashed interfaces only one time in a HashMap.
-Notes:
-  If the compilation symbol THREADSAFE is defined,
-  this container is threadsafe.
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
 @@TJclHashSet
 <GROUP Containers.OrderedSets>
 Summary:
@@ -664,54 +267,10 @@ Notes:
 Donator:
   Jean-Philippe Bempel
 --------------------------------------------------------------------------------
-@@TJclStrHashSet
-<GROUP Containers.OrderedSets>
-Summary:
-  This class store hashed strings only one time in a HashMap.
-Notes:
-  If the compilation symbol THREADSAFE is defined,
- this container is threadsafe.
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
 @@TJclLinkedList
 <GROUP Containers.Sequence.LinkedLists>
 Summary:
   This class store objects in a simple linked list.
-Notes:
-  When an element is insert, a new node is created.
-
-  When an element is removed, the node is destroyed.
-
-  When you access to a element by an index, you go trough all
-  intermediate nodes from the head.
-
-  If the compilation symbol THREADSAFE is defined,
-  this container is threadsafe.
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@TJclIntfLinkedList
-<GROUP Containers.Sequence.LinkedLists>
-Summary:
-  This class store interfaces in a simple linked list.
-Notes:
-  When an element is insert, a new node is created.
-
-  When an element is removed, the node is destroyed.
-
-  When you access to a element by an index, you go trough all
-  intermediate nodes from the head.
-
-  If the compilation symbol THREADSAFE is defined,
-  this container is threadsafe.
-Donator:
-  Jean-Philippe Bempel
---------------------------------------------------------------------------------
-@@TJclStrLinkedList
-<GROUP Containers.Sequence.LinkedLists>
-Summary:
-  This class stores strings in a simple linked list.
 Notes:
   When an element is insert, a new node is created.
 

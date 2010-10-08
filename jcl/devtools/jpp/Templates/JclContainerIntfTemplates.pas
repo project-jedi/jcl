@@ -227,7 +227,9 @@ type
     function AliasAttributeIDs: TAllTypeAttributeIDs; override;
   published
     property InterfaceName: string index taListInterfaceName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
+    property ListInterfaceName: string index taListInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property AncestorName: string index taCollectionInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
+    property CollectionInterfaceName: string index taCollectionInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property GUID: string index taListInterfaceGUID read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
@@ -259,7 +261,9 @@ type
     function AliasAttributeIDs: TAllTypeAttributeIDs; override;
   published
     property InterfaceName: string index taSetInterfaceName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
+    property SetInterfaceName: string index taSetInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property AncestorName: string index taCollectionInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
+    property CollectionInterfaceName: string index taCollectionInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property GUID: string index taSetInterfaceGUID read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
   end;
 

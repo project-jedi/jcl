@@ -57,11 +57,15 @@ type
     FAllMapIndex: Integer;
     FTrueMapIndex: Integer;
     function GetAllTypeCount: Integer;
+    function GetHelpAllTypeCount: Integer;
     function GetTrueTypeCount: Integer;
+    function GetHelpTrueTypeCount: Integer;
     procedure SetAllTypeIndex(const Value: Integer);
     procedure SetTrueTypeIndex(const Value: Integer);
     function GetAllMapCount: Integer;
+    function GetHelpAllMapCount: Integer;
     function GetTrueMapCount: Integer;
+    function GetHelpTrueMapCount: Integer;
     procedure SetAllMapIndex(const Value: Integer);
     procedure SetMapTypeIndex(const Value: Integer);
   protected
@@ -74,12 +78,16 @@ type
   published
     property AllTypeIndex: Integer read FAllTypeIndex write SetAllTypeIndex;
     property AllTypeCount: Integer read GetAllTypeCount;
+    property HelpAllTypeCount: Integer read GetHelpAllTypeCount;
     property TrueTypeIndex: Integer read FTrueTypeIndex write SetTrueTypeIndex;
     property TrueTypeCount: Integer read GetTrueTypeCount;
+    property HelpTrueTypeCount: Integer read GetHelpTrueTypeCount;
     property AllMapIndex: Integer read FAllMapIndex write SetAllMapIndex;
     property AllMapCount: Integer read GetAllMapCount;
+    property HelpAllMapCount: Integer read GetHelpAllMapCount;
     property TrueMapIndex: Integer read FTrueMapIndex write SetMapTypeIndex;
     property TrueMapCount: Integer read GetTrueMapCount;
+    property HelpTrueMapCount: Integer read GetHelpTrueMapCount;
   end;
 
 {$IFNDEF TYPEINFO_ON}
@@ -540,9 +548,19 @@ begin
   Result := Length(KnownAllMaps);
 end;
 
+function TJclContainerParams.GetHelpAllMapCount: Integer;
+begin
+  Result := Length(KnownAllMaps) - 1;
+end;
+
 function TJclContainerParams.GetAllTypeCount: Integer;
 begin
   Result := Length(KnownAllTypes);
+end;
+
+function TJclContainerParams.GetHelpAllTypeCount: Integer;
+begin
+  Result := Length(KnownAllTypes) - 1;
 end;
 
 function TJclContainerParams.GetTrueMapCount: Integer;
@@ -550,9 +568,19 @@ begin
   Result := Length(KnownTrueMaps);
 end;
 
+function TJclContainerParams.GetHelpTrueMapCount: Integer;
+begin
+  Result := Length(KnownTrueMaps) - 1;
+end;
+
 function TJclContainerParams.GetTrueTypeCount: Integer;
 begin
   Result := Length(KnownTrueTypes);
+end;
+
+function TJclContainerParams.GetHelpTrueTypeCount: Integer;
+begin
+  Result := Length(KnownTrueTypes) - 1;
 end;
 
 function TJclContainerParams.ProcessConditional(const MacroText: string; ContainerTypeInfo: TJclContainerTypeInfo): string;

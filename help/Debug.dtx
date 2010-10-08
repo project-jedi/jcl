@@ -909,7 +909,7 @@ Description:
   	
   		* Text-based map file
   		* Jcl Binary debug data resource
-  		* Borland exports header
+  		* Module export table
   	
   If initialization failed for all supported types nil will be returned, otherwise
   it will return the first that initialized correctly.
@@ -991,10 +991,10 @@ Donator:
 @@TJclDebugInfoExports
 <GROUP Debugging.SourceLocations>
 Summary:
-  Debug info location item for Borland export header.
+  Debug info location item for module export table.
 Description:
   TJclDebugInfoExports is the class to hold location information by scanning
-  a Borland export header for the PE-image. It uses a TJclPeBorImage object to do so.
+  a export table for the PE-image. It uses a TJclPeBorImage object to do so.
 Donator:
   Petr Vones
 --------------------------------------------------------------------------------
@@ -1831,7 +1831,7 @@ Description:
 Notes:
   This type is copied from System.pas
 Donator:
-  Borland
+  Borland/Codegear/Embarcadero
 @@TJmpInstruction.OpCode
   OpCode for the JMP instruction.
 @@TJmpInstruction.Distance
@@ -1849,7 +1849,7 @@ Description:
 Notes:
   This type is copied from System.pas.
 Donator:
-  Borland
+  Borland/Codegear/Embarcadero
 @@TExcDescEntry.VTable
   Pointer to the Virtual Method table of an Exception class.
 @@TExcDescEntry.Handler
@@ -1863,18 +1863,22 @@ Donator:
 Summary:
   Except frame descriptor.
 Description:
-  TExcDesc is an except frame descriptor.For Borland modules this usually means
+  TExcDesc is an except frame descriptor.
+
+  For Delphi/C++Builder-generated modules this usually means
   a JMP instruction to either HandleFinally, HandleAnyException, HandleOnException or
   HandleAutoException. Incase of an HandleOnException, the JMP is followed by a table
   containing the Exception classes to handle and their handlers. In other cases
-  the JMP is followed by the code to execute.For non-Borland modules, the frame
+  the JMP is followed by the code to execute.
+
+  For other modules, the frame
   descriptor is undefined (but it always starts with executable code).
 Notes:
   This type is copied from System.pas.
 Donator:
-  Borland
+  Borland/Codegear/Embarcadero
 @@TExcDesc.JMP
-  Holds the JMP-instruction incase of Borland code
+  Holds the JMP-instruction incase of Delphi/C++Builder code
 @@TExcDesc.Instructions
   Handler instructions for non "except on..."-blocks
 @@TExcDesc.Cnt
@@ -1892,17 +1896,17 @@ Summary:
 Description:
   TExcFrame is an except frame. It holds a reference to the next frame (if any), the
   location of the frame (which should always start with executable code) and the
-  handlers stack frame. Incase of Borland modules, it could also contain a reference
+  handlers stack frame. Incase of Delphi or C++Builder modules, it could also contain a reference
   to the object being constructed (this is the case for the implicit except frame for
   constructors) or a reference to Self of the method containing the handler.
 Notes:
   This type is copied from System.pas.
 Donator:
-  Borland
+  Borland/Codegear/Embarcadero
 @@TExcFrame.Next
   Link to next except frame or -1(!) if there is no next frame.
 @@TExcFrame.Desc
-  Pointer to handler (non-Borland modules) or frame descriptor (Borland modules)
+  Pointer to handler (non-Delphi and non-C++Builder modules) or frame descriptor (Delphi and C++Builder modules)
 @@TExcFrame.FramePointer
   Value of the handlers stack frame pointer (EBP/RBP)
 @@TExcFrame.ConstructedObject
@@ -1924,7 +1928,7 @@ Description:
 Donator:
   Marcel Bestebroer
 @@TExceptFrameKind.efkUnknown
-  Anonymous exception frame (most likely an exception frame inside a non-Borland library.
+  Anonymous exception frame (most likely an exception frame inside a non-Delphi and non-C++Builder library.
 @@TExceptFrameKind.efkFinally
   A try...finally frame. Note that the compiler inserts implicit try...finally blocks for any method, function or procedure with parameters and/or variables that need clean up (eg. long strings, dynamic arrays, interface references).
 @@TExceptFrameKind.efkAnyException
@@ -2022,7 +2026,7 @@ Summary:
 Description:
   FrameKind holds the kind of except frame this object references. The type is
   determined when the object is created by checking the code and see if it jumps
-  to any of the known Borland handlers.
+  to any of the known RTL exception handlers.
 Donator:
   Marcel Bestebroer
 --------------------------------------------------------------------------------
@@ -2119,7 +2123,7 @@ Description:
 Parameters:
   ExceptObj - Exception object.
   ExceptAddr - Address where exception occured.
-  OSException - If the exception occured outside of any Borland module, this parameter is True, otherwise it is False.
+  OSException - If the exception occured outside of any Delphi/C++Builder module, this parameter is True, otherwise it is False.
 See also:
   TJclExceptNotifyMethod
   ExceptNotifyProc
@@ -2136,7 +2140,7 @@ Description:
 Parameters:
   ExceptObj - Exception object.
   ExceptAddr - Address where exception occured.
-  OSException - If the exception occured outside of any Borland module, this parameter is True, otherwise it is False.
+  OSException - If the exception occured outside of any Delphi/C++Builder module, this parameter is True, otherwise it is False.
 See also:
   TJclExceptNotifyProc
   ExceptNotifyProc
@@ -2285,12 +2289,12 @@ Donator:
 @@TrackAllModules
 <GROUP Debugging.Exceptionhooking>
 Summary:
-  Track all modules or Borland modules only.
+  Track all modules or Delphi/C++Builder modules only.
 Description:
   TrackAllModules is a flag that enables or disables tracking of all modules
   when exception hooking is on and stack tracking is enabled. When set to True all
   modules are reported in the stack list, otherwise only addresses that are within
-  a Borland module are reported.
+  a Delphi/C++Builder module are reported.
 Donator:
   Petr Vones
 --------------------------------------------------------------------------------
