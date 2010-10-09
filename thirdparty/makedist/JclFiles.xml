@@ -10,13 +10,10 @@
       <configuration index="0" caption="Directory" value="sandbox"/>
       <configuration index="1" caption="Move to recycle bin" value="no"/>
     </action>
-    <action classname="TDirectoryCreator">
-      <configuration index="0" caption="Directory" value="sandbox"/>
-    </action>
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="%SVN%"/>
-      <configuration index="1" caption="Working directory" value="sandbox"/>
-      <configuration index="2" caption="Parameters" value="export -rBASE --native-eol CRLF --force ..\..\..\ ."/>
+      <configuration index="1" caption="Working directory" value=""/>
+      <configuration index="2" caption="Parameters" value="export -rBASE --native-eol CRLF ..\..\ sandbox"/>
       <configuration index="3" caption="Valid exit codes" value=""/>
       <configuration index="4" caption="Result file" value=""/>
     </action>
@@ -212,6 +209,9 @@
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox\%PREFIX%"/>
     </action>
+    <action classname="TDelay">
+      <configuration index="0" caption="Delay" value="30"/>
+    </action>
     <action classname="TFileMover">
       <configuration index="0" caption="Old file name" value="sandbox\jcl\help"/>
       <configuration index="1" caption="New file name" value="sandbox\%PREFIX%\help"/>
@@ -258,6 +258,9 @@
       <configuration index="2" caption="Parameters" value="-config &quot;CHM&quot; -noshow -w3 JclHelp.dox"/>
       <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
       <configuration index="4" caption="Result file" value=""/>
+    </action>
+    <action classname="TDelay">
+      <configuration index="0" caption="Delay" value="30"/>
     </action>
     <action classname="TFileRemover">
       <configuration index="0" caption="Directory" value="sandbox\jcl\help"/>
@@ -313,6 +316,9 @@
       <configuration index="2" caption="Parameters" value="-config &quot;H2&quot; -noshow -w3 JclHelp.dox"/>
       <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
       <configuration index="4" caption="Result file" value=""/>
+    </action>
+    <action classname="TDelay">
+      <configuration index="0" caption="Delay" value="30"/>
     </action>
     <action classname="TFileRemover">
       <configuration index="0" caption="Directory" value="sandbox\jcl\help"/>
@@ -372,6 +378,9 @@
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox\%PREFIX%"/>
     </action>
+    <action classname="TDelay">
+      <configuration index="0" caption="Delay" value="30"/>
+    </action>
     <action classname="TFileMover">
       <configuration index="0" caption="Old file name" value="sandbox\jcl\help"/>
       <configuration index="1" caption="New file name" value="sandbox\%PREFIX%\help"/>
@@ -422,6 +431,9 @@
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox\%PREFIX%"/>
     </action>
+    <action classname="TDelay">
+      <configuration index="0" caption="Delay" value="30"/>
+    </action>
     <action classname="TFileMover">
       <configuration index="0" caption="Old file name" value="sandbox\jcl\help"/>
       <configuration index="1" caption="New file name" value="sandbox\%PREFIX%\help"/>
@@ -471,6 +483,9 @@
     </action>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox\%PREFIX%"/>
+    </action>
+    <action classname="TDelay">
+      <configuration index="0" caption="Delay" value="30"/>
     </action>
     <action classname="TFileMover">
       <configuration index="0" caption="Old file name" value="sandbox\jcl\help"/>
