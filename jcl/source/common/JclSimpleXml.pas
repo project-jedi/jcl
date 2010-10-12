@@ -506,12 +506,12 @@ function XMLCreate: Variant; overload;
 function VarXML: TVarType;
 
 // Encodes a string into an internal format:
-// any character <= #127 is preserved
+// any character #32..#127 is preserved
 // all other characters are converted to hex notation except
 // for some special characters that are converted to XML entities
 function SimpleXMLEncode(const S: string): string;
 // Decodes a string encoded with SimpleXMLEncode:
-// any character <= #127 is preserved
+// any character #32..#127 is preserved
 // all other characters and substrings are converted from
 // the special XML entities to characters or from hex to characters
 // NB! Setting TrimBlanks to true will slow down the process considerably
@@ -719,6 +719,7 @@ begin
         AddEntity(Tmp, RIndex, RLen, '&lt;');
       '>':
         AddEntity(Tmp, RIndex, RLen, '&gt;');
+      Char(#0)..Char(#31),
       Char(128)..Char(255):
         AddEntity(Tmp, RIndex, RLen, Format('&#x%.2x;', [Ord(C)]));
       {$IFDEF SUPPORTS_UNICODE}
@@ -760,7 +761,7 @@ procedure SimpleXMLDecode(var S: string; TrimBlanks: Boolean);
       if S[ReadIndex] = ';' then
       begin
         Value := StrToIntDef(cHexPrefix[IsHex] + Copy(S, I, ReadIndex - I), -1); // no characters are less than 0
-        if Value > 0 then
+        if Value >= 0 then
           S[WriteIndex] := Chr(Value)
         else
           ReadIndex := I - (2 + Cardinal(IsHex)); // reset to start
