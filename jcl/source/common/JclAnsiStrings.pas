@@ -878,7 +878,8 @@ begin
     ValueChar := Value[Index];
     if ValueChar = AQuoteChar then
       Inc(QuoteCharCount);
-    if (ValueChar = ADelimiter) and ((not StrictDelimiter) or (Odd(QuoteCharCount) or (QuoteCharCount = 0))) then
+    if ((ValueChar = ADelimiter) or ((ValueChar = ' ') and (not StrictDelimiter)))
+    and ((not Odd(QuoteCharCount) or (QuoteCharCount = 0))) then
     begin
       if StrictDelimiter then
         Add(Copy(Value, LastStart, Index - LastStart))
@@ -905,7 +906,7 @@ begin
   for I := 0 to Count - 2 do
     Result := Result + Strings[I] + sLineBreak;
   if Count > 0 then
-    Result := Result + Strings[Count - 1];
+    Result := Result + Strings[Count - 1] + sLineBreak;
 end;
 
 procedure TJclAnsiStrings.SetText(const Value: AnsiString);
