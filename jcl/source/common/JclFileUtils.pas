@@ -4952,11 +4952,19 @@ var
     P: PAnsiChar;
     TempKey: PWideChar;
   begin
+    Key := '';
     P := Data;
     Len := PWord(P)^;
     if Len = 0 then
     begin
-      Error := True;
+      // do not raise error in the case of resources padded with 0
+      while P < EndOfData do
+      begin
+        Error := P^ <> #0;
+        if Error then
+          Break;
+        Inc(P);
+      end;
       Exit;
     end;
     Inc(P, SizeOf(Word));
