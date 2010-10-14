@@ -180,6 +180,27 @@ type
     procedure _ZeroBased;
 end;
 
+  { TJclStringManagment }
+
+  TAnsiStringListTest = class (TTestCase)
+  published
+    procedure _SetCommaTextCount;
+    procedure _GetCommaTextCount;
+    procedure _GetCommaTextSpacedCount;
+    procedure _SetCommaTextProperties;
+    procedure _SetCommaTextQuotedProperties;
+    procedure _SetCommaTextQuotedSpacedProperties;
+    procedure _GetCommaTextQuotedProperties;
+    procedure _SetCommaTextInnerQuotesProperties;
+    procedure _GetCommaTextInnerQuotesProperties;
+    procedure _SetDelimitedTextCommaDoubleQuoteFalse;
+    procedure _GetDelimitedTextCommaDoubleQuoteFalse;
+    procedure _SetDelimitedTextCommaDoubleQuoteTrue;
+    procedure _GetDelimitedTextCommaDoubleQuoteTrue;
+    procedure _SetDelimitedTextFunkyFalse;
+    procedure _GetDelimitedTextFunkyFalse;
+  end;
+
 implementation
 
 {$IFDEF LINUX}
@@ -366,9 +387,11 @@ begin
 end;
 
 function StrLower2(const S: AnsiString): AnsiString;
+var sTemp: String;
 begin
-  Result := S;
-  StrLowerInPlace(Result);
+  sTemp := S;
+  StrLowerInPlace(sTemp);
+  Result := sTemp;
 end;
 
 //==================================================================================================
@@ -2921,13 +2944,354 @@ begin
   end;
 end;
 
+{ TAnsiStringListTest }
+
+procedure TAnsiStringListTest._GetCommaTextCount;
+var slJCL: TAnsiStringList;
+    slRTL: TStringList;
+begin
+  slJCL := TAnsiStringList.Create;
+  slRTL := TStringList.Create;
+  try
+    slJCL.CommaText := 'Hello,World';
+    slRTL.CommaText := 'Hello,World';
+    CheckEquals(2, slJCL.Count, 'TAnsiStringList.Count');
+    CheckEquals(slRTL.Count, slJCL.Count, 'TAnsiStringList.Count');
+  finally
+    FreeAndNil(slJCL);
+    FreeAndNil(slRTL);
+  end;
+end;
+
+procedure TAnsiStringListTest._GetCommaTextInnerQuotesProperties;
+var slJCL: TAnsiStringList;
+    slRTL: TStringList;
+begin
+  slJCL := TAnsiStringList.Create;
+  slRTL := TStringList.Create;
+  try
+    slJCL.Add('Hello');
+    slJCL.Add('"World"');
+    slRTL.Add('Hello');
+    slRTL.Add('"World"');
+    CheckEquals('Hello,"""World"""', slJCL.CommaText, 'TAnsiStringList.CommaText');
+    CheckEquals(slRTL.CommaText, slJCL.CommaText, 'TAnsiStringList.CommaText');
+  finally
+    FreeAndNil(slJCL);
+    FreeAndNil(slRTL);
+  end;
+end;
+
+procedure TAnsiStringListTest._GetCommaTextQuotedProperties;
+var slJCL: TAnsiStringList;
+    slRTL: TStringList;
+begin
+     slJCL := TAnsiStringList.Create;
+  slRTL := TStringList.Create;
+  try
+    slJCL.Add('Hello');
+    slJCL.Add('My World');
+    slRTL.Add('Hello');
+    slRTL.Add('My World');
+    CheckEquals('Hello,"My World"', slJCL.CommaText, 'TAnsiStringList.CommaText');
+    CheckEquals(slRTL.CommaText, slJCL.CommaText, 'TAnsiStringList.CommaText');
+  finally
+    FreeAndNil(slJCL);
+    FreeAndNil(slRTL);
+  end;
+end;
+
+procedure TAnsiStringListTest._GetCommaTextSpacedCount;
+var slJCL: TAnsiStringList;
+    slRTL: TStringList;
+begin
+  slJCL := TAnsiStringList.Create;
+  slRTL := TStringList.Create;
+  try
+    slJCL.CommaText := 'Hello,My World,There!';
+    slRTL.CommaText := 'Hello,My World,There!';
+    CheckEquals(4, slJCL.Count, 'TAnsiStringList.Count');
+    CheckEquals(slRTL.Count, slJCL.Count, 'TAnsiStringList.Count');
+  finally
+    FreeAndNil(slJCL);
+    FreeAndNil(slRTL);
+  end;
+end;
+
+procedure TAnsiStringListTest._GetDelimitedTextCommaDoubleQuoteFalse;
+var slJCL: TAnsiStringList;
+    slRTL: TStringList;
+begin
+  slJCL := TAnsiStringList.Create;
+  slRTL := TStringList.Create;
+  try
+    slJCL.CommaText := 'Hello,"My World"';
+    slRTL.CommaText := 'Hello,"My World"';
+    slJCL.QuoteChar := '"';
+    slJCL.Delimiter := ',';
+    slJCL.StrictDelimiter := false;
+    slRTL.QuoteChar := '"';
+    slRTL.Delimiter := ',';
+    slRTL.StrictDelimiter := false;
+    CheckEquals('Hello,"My World"', slJCL.DelimitedText, 'TAnsiStringList.DelimitedText');
+    CheckEquals(slRTL.DelimitedText, slJCL.DelimitedText, 'TAnsiStringList.DelimitedText');
+  finally
+    FreeAndNil(slJCL);
+    FreeAndNil(slRTL);
+  end;
+end;
+
+procedure TAnsiStringListTest._GetDelimitedTextCommaDoubleQuoteTrue;
+var slJCL: TAnsiStringList;
+    slRTL: TStringList;
+begin
+  slJCL := TAnsiStringList.Create;
+  slRTL := TStringList.Create;
+  try
+    slJCL.CommaText := 'Hello,My World';
+    slRTL.CommaText := 'Hello,My World';
+    slJCL.QuoteChar := '"';
+    slJCL.Delimiter := ',';
+    slJCL.StrictDelimiter := true;
+    slRTL.QuoteChar := '"';
+    slRTL.Delimiter := ',';
+    slRTL.StrictDelimiter := true;
+    CheckEquals('Hello,My,World', slJCL.DelimitedText, 'TAnsiStringList.DelimitedText');
+    CheckEquals(slRTL.DelimitedText, slJCL.DelimitedText, 'TAnsiStringList.DelimitedText');
+  finally
+    FreeAndNil(slJCL);
+    FreeAndNil(slRTL);
+  end;
+end;
+
+procedure TAnsiStringListTest._GetDelimitedTextFunkyFalse;
+var slJCL: TAnsiStringList;
+    slRTL: TStringList;
+begin
+  slJCL := TAnsiStringList.Create;
+  slRTL := TStringList.Create;
+  try
+    slJCL.CommaText := 'Hello,"My World"';
+    slRTL.CommaText := 'Hello,"My World"';
+    slJCL.QuoteChar := '|';
+    slJCL.Delimiter := '-';
+    slJCL.StrictDelimiter := false;
+    slRTL.QuoteChar := '|';
+    slRTL.Delimiter := '-';
+    slRTL.StrictDelimiter := false;
+    CheckEquals('Hello-|My World|', slJCL.DelimitedText, 'TAnsiStringList.DelimitedText');
+    CheckEquals(slRTL.DelimitedText, slJCL.DelimitedText, 'TAnsiStringList.DelimitedText');
+  finally
+    FreeAndNil(slJCL);
+    FreeAndNil(slRTL);
+  end;
+end;
+
+procedure TAnsiStringListTest._SetCommaTextCount;
+var slJCL: TAnsiStringList;
+    slRTL: TStringList;
+begin
+  slJCL := TAnsiStringList.Create;
+  slRTL := TStringList.Create;
+  try
+    slJCL.CommaText := 'Hello,World';
+    slRTL.CommaText := 'Hello,World';
+    CheckEquals(2, slJCL.Count, 'TAnsiStringList.Count');
+    CheckEquals(slRTL.Count, slJCL.Count, 'TAnsiStringList.Count');
+  finally
+    FreeAndNil(slJCL);
+    FreeAndNil(slRTL);
+  end;
+end;
+
+procedure TAnsiStringListTest._SetCommaTextInnerQuotesProperties;
+var slJCL: TAnsiStringList;
+    slRTL: TStringList;
+begin
+  slJCL := TAnsiStringList.Create;
+  slRTL := TStringList.Create;
+  try
+    slJCL.CommaText := 'Hello,"""World"""';
+    slRTL.CommaText := 'Hello,"""World"""';
+    CheckEquals(2, slJCL.Count, 'TAnsiStringList.Count');
+    CheckEquals(slRTL.Count, slJCL.Count, 'TAnsiStringList.Count');
+    if slJCL.Count=2 then begin
+      CheckEquals('Hello', slJCL[0], 'TAnsiStringList[0]');
+      CheckEquals(slRTL[0], slJCL[0], 'TAnsiStringList[0]');
+      CheckEquals('"World"', slJCL[1], 'TAnsiStringList[1]');
+      CheckEquals(slRTL[1], slJCL[1], 'TAnsiStringList[1]');
+    end;
+  finally
+    FreeAndNil(slJCL);
+    FreeAndNil(slRTL);
+  end;
+end;
+
+procedure TAnsiStringListTest._SetCommaTextProperties;
+var slJCL: TAnsiStringList;
+    slRTL: TStringList;
+begin
+  slJCL := TAnsiStringList.Create;
+  slRTL := TStringList.Create;
+  try
+    slJCL.CommaText := 'Hello,World';
+    slRTL.CommaText := 'Hello,World';
+    CheckEquals(2, slJCL.Count, 'TAnsiStringList.Count');
+    CheckEquals(slRTL.Count, slJCL.Count, 'TAnsiStringList.Count');
+    if slJCL.Count=2 then begin
+      CheckEquals('Hello', slJCL[0], 'TAnsiStringList[0]');
+      CheckEquals(slRTL[0], slJCL[0], 'TAnsiStringList[0]');
+      CheckEquals('World', slJCL[1], 'TAnsiStringList[1]');
+      CheckEquals(slRTL[1], slJCL[1], 'TAnsiStringList[1]');
+    end;
+  finally
+    FreeAndNil(slJCL);
+    FreeAndNil(slRTL);
+  end;
+end;
+
+procedure TAnsiStringListTest._SetCommaTextQuotedProperties;
+var slJCL: TAnsiStringList;
+    slRTL: TStringList;
+begin
+  slJCL := TAnsiStringList.Create;
+  slRTL := TStringList.Create;
+  try
+    slJCL.CommaText := 'Hello,"World"';
+    slRTL.CommaText := 'Hello,"World"';
+    CheckEquals(2, slJCL.Count, 'TAnsiStringList.Count');
+    CheckEquals(slRTL.Count, slJCL.Count, 'TAnsiStringList.Count');
+    if slJCL.Count=2 then begin
+      CheckEquals('Hello', slJCL[0], 'TAnsiStringList[0]');
+      CheckEquals(slRTL[0], slJCL[0], 'TAnsiStringList[0]');
+      CheckEquals('World', slJCL[1], 'TAnsiStringList[1]');
+      CheckEquals(slRTL[1], slJCL[1], 'TAnsiStringList[1]');
+    end;
+  finally
+    FreeAndNil(slJCL);
+    FreeAndNil(slRTL);
+  end;
+end;
+
+procedure TAnsiStringListTest._SetCommaTextQuotedSpacedProperties;
+var slJCL: TAnsiStringList;
+    slRTL: TStringList;
+begin
+  slJCL := TAnsiStringList.Create;
+  slRTL := TStringList.Create;
+  try
+    slJCL.CommaText := 'Hello,"My World",There!';
+    slRTL.CommaText := 'Hello,"My World",There!';
+    CheckEquals(3, slJCL.Count, 'TAnsiStringList.Count');
+    CheckEquals(slRTL.Count, slJCL.Count, 'TAnsiStringList.Count');
+    if slJCL.Count=3 then begin
+      CheckEquals('Hello', slJCL[0], 'TAnsiStringList[0]');
+      CheckEquals(slRTL[0], slJCL[0], 'TAnsiStringList[0]');
+      CheckEquals('My World', slJCL[1], 'TAnsiStringList[1]');
+      CheckEquals(slRTL[1], slJCL[1], 'TAnsiStringList[1]');
+    end;
+  finally
+    FreeAndNil(slJCL);
+    FreeAndNil(slRTL);
+  end;
+end;
+
+procedure TAnsiStringListTest._SetDelimitedTextCommaDoubleQuoteFalse;
+var slJCL: TAnsiStringList;
+    slRTL: TStringList;
+begin
+  slJCL := TAnsiStringList.Create;
+  slRTL := TStringList.Create;
+  try
+    slJCL.QuoteChar := '"';
+    slJCL.Delimiter := ',';
+    slJCL.StrictDelimiter := false;
+    slJCL.DelimitedText := 'Hello,"My World"';
+    slRTL.QuoteChar := '"';
+    slRTL.Delimiter := ',';
+    slRTL.StrictDelimiter := false;
+    slRTL.DelimitedText := 'Hello,"My World"';
+    CheckEquals(2, slJCL.Count, 'TAnsiStringList.Count');
+    CheckEquals(slRTL.Count, slJCL.Count, 'TAnsiStringList.Count');
+    if slJCL.Count=2 then begin
+      CheckEquals('Hello', slJCL[0], 'TAnsiStringList[0]');
+      CheckEquals(slRTL[0], slJCL[0], 'TAnsiStringList[0]');
+      CheckEquals('My World', slJCL[1], 'TAnsiStringList[1]');
+      CheckEquals(slRTL[1], slJCL[1], 'TAnsiStringList[1]');
+    end;
+  finally
+    FreeAndNil(slJCL);
+    FreeAndNil(slRTL);
+  end;
+end;
+
+procedure TAnsiStringListTest._SetDelimitedTextCommaDoubleQuoteTrue;
+var slJCL: TAnsiStringList;
+    slRTL: TStringList;
+begin
+  slJCL := TAnsiStringList.Create;
+  slRTL := TStringList.Create;
+  try
+    slJCL.QuoteChar := '"';
+    slJCL.Delimiter := ',';
+    slJCL.StrictDelimiter := true;
+    slJCL.DelimitedText := 'Hello,My World';
+    slRTL.QuoteChar := '"';
+    slRTL.Delimiter := ',';
+    slRTL.StrictDelimiter := true;
+    slRTL.DelimitedText := 'Hello,My World';
+    CheckEquals(2, slJCL.Count, 'TAnsiStringList.Count');
+    CheckEquals(slRTL.Count, slJCL.Count, 'TAnsiStringList.Count');
+    if slJCL.Count=2 then begin
+      CheckEquals('Hello', slJCL[0], 'TAnsiStringList[0]');
+      CheckEquals(slRTL[0], slJCL[0], 'TAnsiStringList[0]');
+      CheckEquals('My World', slJCL[1], 'TAnsiStringList[1]');
+      CheckEquals(slRTL[1], slJCL[1], 'TAnsiStringList[1]');
+    end;
+  finally
+    FreeAndNil(slJCL);
+    FreeAndNil(slRTL);
+  end;
+end;
+
+procedure TAnsiStringListTest._SetDelimitedTextFunkyFalse;
+var slJCL: TAnsiStringList;
+    slRTL: TStringList;
+begin
+  slJCL := TAnsiStringList.Create;
+  slRTL := TStringList.Create;
+  try
+    slJCL.QuoteChar := '|';
+    slJCL.Delimiter := '-';
+    slJCL.StrictDelimiter := false;
+    slJCL.DelimitedText := 'Hello-|My World|';
+    slRTL.QuoteChar := '|';
+    slRTL.Delimiter := '-';
+    slRTL.StrictDelimiter := false;
+    slRTL.DelimitedText := 'Hello-|My World|';
+    CheckEquals(2, slJCL.Count, 'TAnsiStringList.Count');
+    CheckEquals(slRTL.Count, slJCL.Count, 'TAnsiStringList.Count');
+    if slJCL.Count=2 then begin
+      CheckEquals('Hello', slJCL[0], 'TAnsiStringList[0]');
+      CheckEquals(slRTL[0], slJCL[0], 'TAnsiStringList[0]');
+      CheckEquals('My World', slJCL[1], 'TAnsiStringList[1]');
+      CheckEquals(slRTL[1], slJCL[1], 'TAnsiStringList[1]');
+    end;
+  finally
+    FreeAndNil(slJCL);
+    FreeAndNil(slRTL);
+  end;
+end;
+
 initialization
+
   RegisterTest('JCLStrings', TJclStringTransformation.Suite);
   RegisterTest('JCLStrings', TJclStringManagment.Suite);
   RegisterTest('JCLStrings', TJclStringSearchandReplace.Suite);
   RegisterTest('JCLStrings', TJclStringCharacterTestRoutines.Suite);
   RegisterTest('JCLStrings', TJclStringExtraction.Suite);
   RegisterTest('JCLStrings', TJclStringTabSet.Suite);
+  RegisterTest('JCLStrings', TAnsiStringListTest.Suite);
 
 // History:
 //
