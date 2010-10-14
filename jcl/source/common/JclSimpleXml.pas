@@ -506,12 +506,12 @@ function XMLCreate: Variant; overload;
 function VarXML: TVarType;
 
 // Encodes a string into an internal format:
-// any character #32..#127 is preserved
+// any character TAB,LF,CR,#32..#127 is preserved
 // all other characters are converted to hex notation except
 // for some special characters that are converted to XML entities
 function SimpleXMLEncode(const S: string): string;
 // Decodes a string encoded with SimpleXMLEncode:
-// any character #32..#127 is preserved
+// any character TAB,LF,CR,#32..#127 is preserved
 // all other characters and substrings are converted from
 // the special XML entities to characters or from hex to characters
 // NB! Setting TrimBlanks to true will slow down the process considerably
@@ -719,7 +719,9 @@ begin
         AddEntity(Tmp, RIndex, RLen, '&lt;');
       '>':
         AddEntity(Tmp, RIndex, RLen, '&gt;');
-      Char(#0)..Char(#31),
+      NativeNull..NativeBackspace, // NativeTab, NativeLineFeed
+      NativeVerticalTab..NativeFormFeed, // NativeCarriageReturn
+      NativeSo..NativeUs,
       Char(128)..Char(255):
         AddEntity(Tmp, RIndex, RLen, Format('&#x%.2x;', [Ord(C)]));
       {$IFDEF SUPPORTS_UNICODE}
