@@ -18,12 +18,12 @@
     </property>
 
     <!-- general properties based on extensions -->
-    <setting path="" mask="*.pas *.cpp *.h *.dpr *.dpk *.lpk *.inc *.mak *.pl *.cs" recurse="yes" dironly="no">
+    <setting path="" mask="*.pas *.cpp *.h *.c *.dpr *.dpk *.lpk *.inc *.mak *.pl *.cs" recurse="yes" dironly="no">
       <property name="svn:keywords">
         <value>URL HeadURL Author LastChangedBy Date LastChangedDate Rev Revision LastChangedRevision Id</value>
       </property>
     </setting>
-    <setting path="" mask="*.pas *.cpp *.inc *.h *.dpr *.dpk *.lpk *.bpr *.bpk *.bpf *.bmk *.def *.conf *.sh *.txt *.bat *.xml *.html *.css *.exc *.bpg *.bdsgroup *.bdsproj *.groupproj *.dproj *.cproj *.dof *.rc *.dfm *.xfm *.dtx *.dsf *.dox *.dfg *.ini *.mak *.int *.imp *.pl *.cmd *.manifest *.iss *.cs *.resx *.htaccess *.cfg" recurse="yes"  dironly="no">
+    <setting path="" mask="*.pas *.cpp *.inc *.h *.c *.dpr *.dpk *.lpk *.bpr *.bpk *.bpf *.bmk *.def *.conf *.sh *.txt *.bat *.xml *.html *.css *.exc *.bpg *.bdsgroup *.bdsproj *.groupproj *.dproj *.cproj *.dof *.rc *.dfm *.xfm *.dtx *.dsf *.dox *.dfg *.ini *.mak *.int *.imp *.pl *.cmd *.manifest *.iss *.cs *.resx *.htaccess *.cfg" recurse="yes"  dironly="no">
       <property name="svn:eol-style">
         <value>native</value>
       </property>
@@ -463,6 +463,160 @@
         <value>jcl-weekly-h2-0.txt</value>
         <value>jcl-weekly-chm-0.txt</value>
         <value>7z.dll</value>
+      </property>
+    </setting>
+
+    <setting path="thirdparty/bzip2" mask="bzip2-*" recurse="no" dironly="yes">
+      <property name="svn:ignore">
+        <value>sample3.ref</value>
+        <value>bzip2.1.preformatted</value>
+        <value>manual.html</value>
+        <value>mk251.c</value>
+        <value>libbz2.def</value>
+        <value>bz-fo.xsl</value>
+        <value>bz-html.xsl</value>
+        <value>entities.xml</value>
+        <value>bzip2.1</value>
+        <value>bzgrep</value>
+        <value>README.COMPILATION.PROBLEMS</value>
+        <value>bzmore.1</value>
+        <value>xmlproc.sh</value>
+        <value>makefile.msc</value>
+        <value>manual.ps</value>
+        <value>format.pl</value>
+        <value>bzdiff.1</value>
+        <value>bz-common.xsl</value>
+        <value>CHANGES</value>
+        <value>libbz2.dsp</value>
+        <value>manual.xml</value>
+        <value>Makefile</value>
+        <value>words0</value>
+        <value>words1</value>
+        <value>words2</value>
+        <value>words3</value>
+        <value>README.XML.STUFF</value>
+        <value>manual.pdf</value>
+        <value>bzgrep.1</value>
+        <value>bzip.css</value>
+        <value>dlltest.c</value>
+        <value>bzip2recover.c</value>
+        <value>bzmore</value>
+        <value>sample1.bz2</value>
+        <value>sample2.bz2</value>
+        <value>dlltest.dsp</value>
+        <value>Makefile-libbz2_so</value>
+        <value>sample3.bz2</value>
+        <value>bzdiff</value>
+        <value>bzip2.txt</value>
+        <value>spewG.c</value>
+        <value>bzip2.c</value>
+        <value>sample1.ref</value>
+        <value>sample2.ref</value>
+        <value>unzcrash.c</value>
+      </property>
+    </setting>
+
+    <setting path="thirdparty/pcre" mask="pcre-*" recurse="no" dironly="yes">
+      <property name="svn:ignore">
+        <value>cmake</value>
+        <value>pcrecpp.h</value>
+        <value>Makefile.in</value>
+        <value>Detrail</value>
+        <value>pcre_scanner_unittest.cc</value>
+        <value>pcre_scanner.cc</value>
+        <value>depcomp</value>
+        <value>makevp.bat</value>
+        <value>132html</value>
+        <value>ltmain.sh</value>
+        <value>pcregexp.pas</value>
+        <value>PrepareRelease</value>
+        <value>pcre-config.in</value>
+        <value>configure.ac</value>
+        <value>RunTest</value>
+        <value>doc</value>
+        <value>pcre_printint.src</value>
+        <value>COPYING</value>
+        <value>NEWS</value>
+        <value>pcrecpp_internal.h</value>
+        <value>pcrecpp.cc</value>
+        <value>pcrecpparg.h.in</value>
+        <value>CleanTxt</value>
+        <value>pcre.h.in</value>
+        <value>ChangeLog</value>
+        <value>pcre_scanner.h</value>
+        <value>pcreposix.c</value>
+        <value>config.h.in</value>
+        <value>pcreposix.h</value>
+        <value>makevp_c.txt</value>
+        <value>HACKING</value>
+        <value>NON-UNIX-USE</value>
+        <value>pcre_stringpiece_unittest.cc</value>
+        <value>testdata</value>
+        <value>makevp_l.txt</value>
+        <value>perltest.pl</value>
+        <value>config-cmake.h.in</value>
+        <value>pcredemo.c</value>
+        <value>m4</value>
+        <value>pcre_stringpiece.h.in</value>
+        <value>configure</value>
+        <value>libpcre.pc.in</value>
+        <value>config.guess</value>
+        <value>config.sub</value>
+        <value>INSTALL</value>
+        <value>libpcreposix.pc.in</value>
+        <value>pcre_stringpiece.cc</value>
+        <value>RunTest.bat</value>
+        <value>pcretest.c</value>
+        <value>CMakeLists.txt</value>
+        <value>pcrecpp_unittest.cc</value>
+        <value>RunGrepTest</value>
+        <value>pcregrep.c</value>
+        <value>libpcrecpp.pc.in</value>
+        <value>pcre_chartables.c.dist</value>
+        <value>missing</value>
+        <value>Makefile.am</value>
+        <value>aclocal.m4</value>
+        <value>install-sh</value>
+        <value>pcre.h</value>
+        <value>config.h</value>
+      </property>
+    </setting>
+
+    <setting path="thirdparty/zlib" mask="zlib-*" recurse="no" dironly="yes">
+      <property name="svn:ignore">
+        <value>configure</value>
+        <value>Makefile.in</value>
+        <value>gzlib.c</value>
+        <value>watcom</value>
+        <value>gzread.c</value>
+        <value>zlib2ansi</value>
+        <value>doc</value>
+        <value>nintendods</value>
+        <value>qnx</value>
+        <value>zlib.pc.in</value>
+        <value>INDEX</value>
+        <value>minigzip.c</value>
+        <value>zlib.3.pdf</value>
+        <value>gzwrite.c</value>
+        <value>example.c</value>
+        <value>zlib.map</value>
+        <value>Makefile</value>
+        <value>CMakeLists.txt</value>
+        <value>treebuild.xml</value>
+        <value>make_vms.com</value>
+        <value>msdos</value>
+        <value>gzclose.c</value>
+        <value>contrib</value>
+        <value>zlib.3</value>
+        <value>win32</value>
+        <value>gzguts.h</value>
+        <value>zconf.h.in</value>
+        <value>zconf.h.cmakein</value>
+        <value>amiga</value>
+        <value>examples</value>
+        <value>old</value>
+        <value>ChangeLog</value>
+        <value>FAQ</value>
       </property>
     </setting>
 
