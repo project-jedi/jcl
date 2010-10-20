@@ -29,7 +29,6 @@ object TextFrame: TTextFrame
       Height = 208
       Anchors = [akLeft, akTop, akRight, akBottom]
       TabOrder = 0
-      OnDblClick = RichEditTextDblClick
     end
   end
 end
