@@ -217,7 +217,10 @@ type
     FJclHlpHelpFileName: string;
     FJclHxSHelpFileName: string;
     FJclReadmeFileName: string;
+    FJclLicenseFileName: string;
     FGUI: IJediInstallGUI;
+    FReadMePage: IJediTextPage;
+    FLicensePage: IJediTextPage;
     FNbEnabled: Integer;
     FNbInstalled: Integer;
     {$IFDEF MSWINDOWS}
@@ -274,11 +277,14 @@ type
     property JclHlpHelpFileName: string read FJclHlpHelpFileName;
     property JclHxSHelpFileName: string read FJclHxSHelpFileName;
     property JclReadmeFileName: string read FJclReadmeFileName;
+    property JclLicenseFileName: string read FJclLicenseFileName;
     property RadToolInstallations: TJclBorRADToolInstallations read FRadToolInstallations;
     property TargetInstalls[Index: Integer]: TJclInstallation read GetTargetInstall;
     property TargetInstallCount: Integer read GetTargetInstallCount;
 
     property GUI: IJediInstallGUI read FGUI;
+    property ReadMePage: IJediTextPage read FReadMePage;
+    property LicensePage: IJediTextPage read FLicensePage;
     property NbEnabled: Integer read FNbEnabled;
     property NbInstalled: Integer read FNbInstalled;
 
@@ -477,6 +483,7 @@ const
   HHFileName        = 'HH.EXE';
 
   ReadmeFileName = 'Readme.txt';
+  LicenseFileName = 'LICENSE.txt';
 
   DailyRevisionFileName = 'jcl-revision.txt';
   EntriesFileName1      = '.svn' + DirDelimiter + 'entries';
@@ -3006,7 +3013,6 @@ procedure TJclDistribution.Init;
   procedure InitDistribution;
   var
     ExceptDialogsPath, InstallerFileName, ProfileName: string;
-    ReadMePage: IJediReadMePage;
     Index: Integer;
     Settings: IJediConfiguration;
   begin
@@ -3045,11 +3051,17 @@ procedure TJclDistribution.Init;
     FileSetAttr(ChangeFileExt(FVclDialogSendFileName, '.dfm'), faArchive);
     {$ENDIF MSWINDOWS}
     FJclReadmeFileName := JclPath + 'docs' + DirDelimiter + ReadmeFileName;
+    FJclLicenseFileName := JclPath + LicenseFileName;
     if Assigned(GUI) then
     begin
-      ReadMePage := GUI.CreateReadmePage;
-      ReadMePage.Caption := Version;
-      ReadMePage.ReadmeFileName := FJclReadmeFileName;
+      FReadMePage := GUI.CreateTextPage;
+      FReadMePage.Caption := Version;
+      FReadMePage.TextFileName := FJclReadmeFileName;
+
+      FLicensePage := GUI.CreateTextPage;
+      FLicensePage.Caption := LoadResString(@RsCaptionLicense);
+      FLicensePage.TextFileName := FJclLicenseFileName;
+      FLicensePage.AddOption(LoadResString(@RsCaptionLicenseAgreement));
 
       if InstallCore.ProfilesManager.MultipleProfileMode then
       begin
@@ -3105,6 +3117,15 @@ begin
     Exit;
   end;
 
+  if Assigned(LicensePage) and not LicensePage.Options[0] then
+  begin
+    if Assigned(GUI) then
+      GUI.Dialog(LoadResString(@RsMissingLicenseAgreement), dtError, [drCancel]);
+    LicensePage.Show;
+    Result := False;
+    Exit;
+  end;
+
   {$IFDEF MSWINDOWS}
   if Assigned(GUI) then
   begin
@@ -3113,6 +3134,8 @@ begin
       AInstallation := TargetInstalls[I];
       if AInstallation.Enabled then
       begin
+        if Assigned(AInstallation.GUIPage) then
+          AInstallation.GUIPage.Show;
         KeepSettings := GUI.Dialog(LoadResString(@RsKeepExpertSettings),
           dtConfirmation, [drYes, drNo]) = drYes;
         Break;

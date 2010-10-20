@@ -43,6 +43,11 @@ resourcestring
   RsCaptionDCPPath    = '&DCP path:';
   RsCaptionBPIPath    = 'BP&I path:';
 
+  // License
+  RsCaptionLicense          = 'MPL 1.1 License';
+  RsCaptionLicenseAgreement = 'I agree with the terms of the MPL 1.1 license';
+  RsMissingLicenseAgreement = 'Please agree to the terms of the MPL 1.1 license first';
+
   // Products
   RsCaptionLibrary = 'JEDI Code Library';
 

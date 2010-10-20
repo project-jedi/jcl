@@ -25,7 +25,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-unit JediGUIReadme;
+unit JediGUIText;
 
 {$I jcl.inc}
 {$I crossplatform.inc}
@@ -36,25 +36,36 @@ uses
   Windows, Messages,
   SysUtils, Classes,
   Graphics, Controls, Forms, Dialogs, StdCtrls, ComCtrls,
-  JediInstall;
+  JediInstall, ExtCtrls;
 
 type
-  TReadmeFrame = class(TFrame, IJediReadmePage, IJediPage)
-    ReadmePane: TRichEdit;
-    procedure ReadmePaneDblClick(Sender: TObject);
+  TTextFrame = class(TFrame, IJediTextPage, IJediPage)
+    PanelOptions: TPanel;
+    PanelText: TPanel;
+    RichEditText: TRichEdit;
+    procedure RichEditTextDblClick(Sender: TObject);
   private
-    FReadmeFileName: string;
+    FTextFileName: string;
+    FOptions: TList;
   public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     // IJediPage
     function GetCaption: string;
     procedure SetCaption(const Value: string);
     function GetHintAtPos(ScreenX, ScreenY: Integer): string;
     procedure Show;
-    // IJediReadmePage
-    procedure SetReadmeFileName(const Value: string);
-    function GetReadmeFileName: string;
+    // IJediTextPage
+    procedure SetTextFileName(const Value: string);
+    function GetTextFileName: string;
+    function AddOption(const Caption: string): Integer;
+    function GetOptionCount: Integer;
+    function GetOption(Index: Integer): Boolean;
+    procedure SetOption(Index: Integer; Value: Boolean);
 
-    property ReadmeFileName: string read GetReadmeFileName write SetReadmeFileName;
+    property TextFileName: string read GetTextFileName write SetTextFileName;
+    property OptionCount: Integer read GetOptionCount;
+    property Options[Index: Integer]: Boolean read GetOption write SetOption;
   end;
 
 implementation
@@ -64,45 +75,109 @@ implementation
 uses
   JclShell;
 
-function TReadmeFrame.GetCaption: string;
+type
+  TOptionRec = record
+    CheckBox: TCheckBox;
+  end;
+
+  POptionRec = ^TOptionRec;
+
+constructor TTextFrame.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FOptions := TList.Create;
+end;
+
+destructor TTextFrame.Destroy;
+var
+  Index: Integer;
+begin
+  for Index := 0 to FOptions.Count - 1 do
+    Dispose(FOptions.Items[Index]);
+  FOptions.Free;
+  inherited Destroy;
+end;
+
+function TTextFrame.GetCaption: string;
 begin
   Result := (Parent as TTabSheet).Caption;
 end;
 
-function TReadmeFrame.GetReadmeFileName: string;
+function TTextFrame.GetTextFileName: string;
 begin
-  Result := FReadmeFileName;
+  Result := FTextFileName;
 end;
 
-procedure TReadmeFrame.ReadmePaneDblClick(Sender: TObject);
+procedure TTextFrame.RichEditTextDblClick(Sender: TObject);
 begin
   { TODO: implement for Unix }
-  ShellExecEx(ReadmeFileName);
+  ShellExecEx(TextFileName);
 end;
 
-procedure TReadmeFrame.SetCaption(const Value: string);
+procedure TTextFrame.SetCaption(const Value: string);
 begin
   (Parent as TTabSheet).Caption := Value;
 end;
 
-function TReadmeFrame.GetHintAtPos(ScreenX, ScreenY: Integer): string;
+function TTextFrame.GetHintAtPos(ScreenX, ScreenY: Integer): string;
 begin
   Result := '';
 end;
 
-procedure TReadmeFrame.SetReadmeFileName(const Value: string);
+procedure TTextFrame.SetTextFileName(const Value: string);
 begin
-  FReadmeFileName := Value;
+  FTextFileName := Value;
   if FileExists(Value) then
-    ReadmePane.Lines.LoadFromFile(Value);
+    RichEditText.Lines.LoadFromFile(Value);
 end;
 
-procedure TReadmeFrame.Show;
+procedure TTextFrame.Show;
 var
   ATabSheet: TTabSheet;
 begin
   ATabSheet := Parent as TTabSheet;
   (ATabSheet.Parent as TPageControl).ActivePage := ATabSheet;
+end;
+
+function TTextFrame.AddOption(const Caption: string): Integer;
+var
+  AOptionRec: POptionRec;
+  ControlTop: Integer;
+begin
+  if FOptions.Count > 0 then
+  begin
+    AOptionRec := FOptions.Items[FOptions.Count - 1];
+    ControlTop := AOptionRec^.CheckBox.Top + AOptionRec^.CheckBox.Height + 10;
+  end
+  else
+    ControlTop := 16;
+
+  New(AOptionRec);
+  AOptionRec^.CheckBox := TCheckBox.Create(Self);
+  AOptionRec^.CheckBox.Parent := PanelOptions;
+  AOptionRec^.CheckBox.Anchors := [akLeft, akTop, akRight];
+  AOptionRec^.CheckBox.Caption := Caption;
+
+  AOptionRec^.CheckBox.SetBounds(16, ControlTop, PanelOptions.ClientWidth - 32, AOptionRec^.CheckBox.Height);
+
+  PanelOptions.ClientHeight := AOptionRec^.CheckBox.Top + AOptionRec^.CheckBox.Height + 16;
+
+  Result := FOptions.Add(AOptionRec);
+end;
+
+procedure TTextFrame.SetOption(Index: Integer; Value: Boolean);
+begin
+  POptionRec(FOptions.Items[Index])^.CheckBox.Checked := Value;
+end;
+
+function TTextFrame.GetOption(Index: Integer): Boolean;
+begin
+  Result := POptionRec(FOptions.Items[Index])^.CheckBox.Checked;
+end;
+
+function TTextFrame.GetOptionCount: Integer;
+begin
+  Result := FOptions.Count;
 end;
 
 end.

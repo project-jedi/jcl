@@ -98,7 +98,7 @@ type
     function GetDirectoryCount: Integer;
     function GetDirectory(Index: Integer): string;
     procedure SetDirectory(Index: Integer; const Value: string);
-    function AddDirectory(Caption: string): Integer;
+    function AddDirectory(const Caption: string): Integer;
     function GetProgress: Integer;
     procedure SetProgress(Value: Integer);
     procedure BeginInstall;
@@ -558,7 +558,7 @@ begin
   PDirectoryRec(FDirectories.Items[Index])^.Edit.Text := Value;
 end;
 
-function TInstallFrame.AddDirectory(Caption: string): Integer;
+function TInstallFrame.AddDirectory(const Caption: string): Integer;
 var
   ADirectoryRec: PDirectoryRec;
   ALabel: TLabel;

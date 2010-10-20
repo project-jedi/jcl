@@ -20,7 +20,7 @@ uses
   JediRegInfo in 'JediRegInfo.pas',
   JclDotNet in '..\source\windows\JclDotNet.pas',
   FrmCompile in 'VclGui\FrmCompile.pas' {FormCompile},
-  JediGUIReadme in 'VclGui\JediGUIReadme.pas' {ReadmeFrame: TFrame},
+  JediGUIText in 'VclGui\JediGUIText.pas' {TextFrame: TFrame},
   JediGUIInstall in 'VclGui\JediGUIInstall.pas' {InstallFrame: TFrame},
   JediGUIMain in 'VclGui\JediGUIMain.pas' {MainForm},
   JediGUIProfiles in 'VclGui\JediGUIProfiles.pas' {ProfilesFrame: TFrame},
