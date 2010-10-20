@@ -198,7 +198,9 @@
 			Inputs="@(JclSources);$(JclResFiles);$(JclIncFile);@(Packages->'$(JclDir)\Packages\$(LibDirVersion)\%(Filename).dpk')"
 			Outputs="@(Packages->'$(DcpOutDir)\%(Filename).dcp')" DependsOnTargets="CompileJclSources">
 		<Exec Command="$(DCC32) %(Packages.FileName).dpk $(PackageOptions)" WorkingDirectory="$(JclDir)\Packages\$(LibDirVersion)" />
-	</Target><Target Name="DeleteOutputFiles">
+	</Target>
+
+	<Target Name="DeleteOutputFiles">
 		<Delete Files="$(JclSourcesOutput)" />
 		<Delete Files="$(JclBcbSourceOutput)" />
 		<Delete Files="$(JclResFileOutput)" />
