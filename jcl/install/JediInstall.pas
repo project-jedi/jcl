@@ -429,7 +429,8 @@ begin
   else
     Result := True;
 
-  for Index := FProducts.Size - 1 downto 0 do
+  if Result then
+    for Index := FProducts.Size - 1 downto 0 do
   begin
     Result := (FProducts.GetObject(Index) as IJediProduct).Install;
     if not Result then
