@@ -72,7 +72,7 @@ MinNodeWidth=30
 NodesAdjustWidthToGrid=0
 NodesAllSameWidth=0
 NodeSpacing=1
-Scale=1
+Scale=0.1
 ShowControlPoints=0
 SubGraphSpacing=40
 
