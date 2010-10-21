@@ -98,7 +98,7 @@
         <ProjectProperty name="VersionMajorNumber" value="2"/>
         <ProjectProperty name="VersionMinorNumber" value="2"/>
         <ProjectProperty name="ReleaseNumber" value="1"/>
-        <ProjectProperty name="BuildNumber" value="3845"/>
+        <ProjectProperty name="BuildNumber" value="3886"/>
       </ProjectProperties>
     </Model>
   </models>

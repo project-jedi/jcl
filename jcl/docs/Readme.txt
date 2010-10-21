@@ -3,8 +3,8 @@
 
 JEDI Code Library
 Release 2.2
-Build 3845
-10-September-2010
+Build 3886
+21-October-2010
 
 
 --------------------------------------------------------------------------------
@@ -32,6 +32,7 @@ Multiple bugs have been fixed; for detailed change logs, use the facilities of o
 
 Head changes: 
 
+BZip2 is updated to 1.0.6
 PCRE is updated to 8.02 
 The JEDI PreProcessor is now merged to JCL runtime code, you can embed it in your own application 
 ZLib is updated to 1.2.5 

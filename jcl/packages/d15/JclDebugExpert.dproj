@@ -105,7 +105,7 @@
 						<VersionInfo Name="MajorVer">2</VersionInfo>
 						<VersionInfo Name="MinorVer">2</VersionInfo>
 						<VersionInfo Name="Release">1</VersionInfo>
-						<VersionInfo Name="Build">3845</VersionInfo>
+						<VersionInfo Name="Build">3886</VersionInfo>
 						<VersionInfo Name="Debug">False</VersionInfo>
 						<VersionInfo Name="PreRelease">False</VersionInfo>
 						<VersionInfo Name="Special">False</VersionInfo>
@@ -117,13 +117,13 @@
 					<VersionInfoKeys>
 						<VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
 						<VersionInfoKeys Name="FileDescription">JCL Debug IDE extension</VersionInfoKeys>
-						<VersionInfoKeys Name="FileVersion">2.2.1.3845</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">2.2.1.3886</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName">JclDebugExpert</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2009 Project JEDI</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename">JclDebugExpert150.bpl</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
-						<VersionInfoKeys Name="ProductVersion">2.2 Build 3845</VersionInfoKeys>
+						<VersionInfoKeys Name="ProductVersion">2.2 Build 3886</VersionInfoKeys>
 					</VersionInfoKeys>
 					<Source>
 						<Source Name="MainSource">JclDebugExpert.dpk</Source>
