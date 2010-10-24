@@ -3,7 +3,7 @@ object JclFormCpuInfo: TJclFormCpuInfo
   Top = 438
   BorderStyle = bsDialog
   Caption = 'RsCpuInfoTitle'
-  ClientHeight = 296
+  ClientHeight = 312
   ClientWidth = 322
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -144,8 +144,8 @@ object JclFormCpuInfo: TJclFormCpuInfo
     TabOrder = 10
   end
   object ButtonClose: TButton
-    Left = 128
-    Top = 263
+    Left = 120
+    Top = 279
     Width = 83
     Height = 25
     Caption = 'RsClose'
@@ -162,19 +162,19 @@ object JclFormCpuInfo: TJclFormCpuInfo
     Enabled = False
     TabOrder = 11
   end
-  object CheckBoxSSE4A: TCheckBox
+  object CheckBoxSSE41: TCheckBox
     Left = 161
     Top = 164
     Width = 153
     Height = 17
     Alignment = taLeftJustify
-    Caption = 'RsSSE4A'
+    Caption = 'RsSSE41'
     Enabled = False
     TabOrder = 12
   end
   object CheckBoxSSE5: TCheckBox
     Left = 161
-    Top = 210
+    Top = 233
     Width = 153
     Height = 17
     Alignment = taLeftJustify
@@ -182,19 +182,19 @@ object JclFormCpuInfo: TJclFormCpuInfo
     Enabled = False
     TabOrder = 14
   end
-  object CheckBoxSSE4B: TCheckBox
+  object CheckBoxSSE42: TCheckBox
     Left = 161
     Top = 187
     Width = 153
     Height = 17
     Alignment = taLeftJustify
-    Caption = 'RsSSE4B'
+    Caption = 'RsSSE42'
     Enabled = False
     TabOrder = 13
   end
   object CheckBoxAVX: TCheckBox
     Left = 161
-    Top = 233
+    Top = 256
     Width = 153
     Height = 17
     Alignment = taLeftJustify
@@ -231,5 +231,15 @@ object JclFormCpuInfo: TJclFormCpuInfo
     Caption = 'RsEnabledAVX'
     Enabled = False
     TabOrder = 19
+  end
+  object CheckBoxSSE4A: TCheckBox
+    Left = 161
+    Top = 210
+    Width = 153
+    Height = 17
+    Alignment = taLeftJustify
+    Caption = 'RsSSE4A'
+    Enabled = False
+    TabOrder = 20
   end
 end

@@ -309,8 +309,9 @@ resourcestring
   RsSSE2 = 'SSE Version 2';
   RsSSE3 = 'SSE Version 3';
   RsSSE3Ext = 'SSE Version 3 Ext.';
-  RsSSE4A = 'SSE Version 4 A';
-  RsSSE4B = 'SSE Version 4 B';
+  RsSSE41 = 'SSE Version 4.1';
+  RsSSE42 = 'SSE Version 4.2';
+  RsSSE4A = 'SSE Version 4 AMD Ext.';
   RsSSE5 = 'SSE Version 5';
   RsAVX = 'AVX';
   RsClose = 'Close';

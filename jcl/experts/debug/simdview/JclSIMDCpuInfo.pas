@@ -60,13 +60,14 @@ type
     CheckBoxSSE3: TCheckBox;
     ButtonClose: TButton;
     CheckBoxSSSE3: TCheckBox;
-    CheckBoxSSE4A: TCheckBox;
+    CheckBoxSSE41: TCheckBox;
     CheckBoxSSE5: TCheckBox;
-    CheckBoxSSE4B: TCheckBox;
+    CheckBoxSSE42: TCheckBox;
     CheckBoxAVX: TCheckBox;
     CheckBoxEnabledFPU: TCheckBox;
     CheckBoxEnabledSSE: TCheckBox;
     CheckBoxEnabledAVX: TCheckBox;
+    CheckBoxSSE4A: TCheckBox;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   public
@@ -126,8 +127,9 @@ begin
   CheckBoxSSE2.Caption := LoadResString(@RsSSE2);
   CheckBoxSSE3.Caption := LoadResString(@RsSSE3);
   CheckBoxSSSE3.Caption := LoadResString(@RsSSE3Ext);
+  CheckBoxSSE41.Caption := LoadResString(@RsSSE41);
+  CheckBoxSSE42.Caption := LoadResString(@RsSSE42);
   CheckBoxSSE4A.Caption := LoadResString(@RsSSE4A);
-  CheckBoxSSE4B.Caption := LoadResString(@RsSSE4B);
   CheckBoxSSE5.Caption := LoadResString(@RsSSE5);
   CheckBoxAVX.Caption := LoadResString(@RsAVX);
   ButtonClose.Caption := LoadResString(@RsClose);
@@ -144,8 +146,9 @@ begin
   CheckBoxSSE2.Checked := sse2 in CpuInfo.SSE;
   CheckBoxSSE3.Checked := sse3 in CpuInfo.SSE;
   CheckBoxSSSE3.Checked := ssse3 in CpuInfo.SSE;
+  CheckBoxSSE41.Checked := sse41 in CpuInfo.SSE;
+  CheckBoxSSE42.Checked := sse42 in CpuInfo.SSE;
   CheckBoxSSE4A.Checked := sse4A in CpuInfo.SSE;
-  CheckBoxSSE4B.Checked := sse4B in CpuInfo.SSE;
   CheckBoxSSE5.Checked := sse5 in CpuInfo.SSE;
   CheckBoxAVX.Checked := avx in CpuInfo.SSE;
   CheckBoxEnabledFPU.Checked := oefFPU in EnabledFeatures;
