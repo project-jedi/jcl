@@ -612,6 +612,7 @@ type
     function GetComment: WideString;
     function GetCRC: Cardinal;
     function GetCreationTime: TFileTime;
+    function GetDirectory: Boolean;
     function GetEncrypted: Boolean;
     function GetFileName: TFileName;
     function GetFileSize: Int64;
@@ -632,7 +633,8 @@ type
     procedure SetComment(const Value: WideString);
     procedure SetCRC(Value: Cardinal);
     procedure SetCreationTime(const Value: TFileTime);
-    procedure SetEncrypted(const Value: Boolean);
+    procedure SetDirectory(Value: Boolean);
+    procedure SetEncrypted(Value: Boolean);
     procedure SetFileName(const Value: TFileName);
     procedure SetFileSize(const Value: Int64);
     procedure SetGroup(const Value: WideString);
@@ -656,6 +658,7 @@ type
     property Comment: WideString read GetComment write SetComment;
     property CRC: Cardinal read GetCRC write SetCRC;
     property CreationTime: TFileTime read GetCreationTime write SetCreationTime;
+    property Directory: Boolean read GetDirectory write SetDirectory;
     property Encrypted: Boolean read GetEncrypted write SetEncrypted;
     property FileSize: Int64 read GetFileSize write SetFileSize;
     property Group: WideString read GetGroup write SetGroup;
@@ -2049,7 +2052,7 @@ type
   TCardinalSetter = procedure (Value: Cardinal) of object;
   TInt64Setter = procedure (const Value: Int64) of object;
   TFileTimeSetter = procedure (const Value: TFileTime) of object;
-  TBoolSetter = procedure (const Value: Boolean) of object;
+  TBoolSetter = procedure (Value: Boolean) of object;
 
 procedure SevenzipCheck(Value: HRESULT);
 function Get7zWideStringProp(const AArchive: IInArchive; ItemIndex: Integer;
@@ -3666,6 +3669,11 @@ begin
   Result := FCreationTime;
 end;
 
+function TJclCompressionItem.GetDirectory: Boolean;
+begin
+  Result := (Attributes and FILE_ATTRIBUTE_DIRECTORY) <> 0;
+end;
+
 function TJclCompressionItem.GetEncrypted: Boolean;
 begin
   CheckGetProperty(ipEncrypted);
@@ -3821,7 +3829,18 @@ begin
   Include(FValidProperties, ipCreationTime);
 end;
 
-procedure TJclCompressionItem.SetEncrypted(const Value: Boolean);
+procedure TJclCompressionItem.SetDirectory(Value: Boolean);
+begin
+  CheckSetProperty(ipAttributes);
+  if Value then
+    FAttributes := FAttributes or FILE_ATTRIBUTE_DIRECTORY
+  else
+    FAttributes := FAttributes and (not FILE_ATTRIBUTE_DIRECTORY);
+  Include(FModifiedProperties, ipAttributes);
+  Include(FValidProperties, ipAttributes);
+end;
+
+procedure TJclCompressionItem.SetEncrypted(Value: Boolean);
 begin
   CheckSetProperty(ipEncrypted);
   FEncrypted := Value;
@@ -5610,6 +5629,8 @@ begin
   Get7zWideStringProp(AInArchive, ItemIndex, kpidPath, AItem.SetPackedName);
   Get7zWideStringProp(AInArchive, ItemIndex, kpidExtension, AItem.SetPackedExtension);
   Get7zCardinalProp(AInArchive, ItemIndex, kpidAttrib, AItem.SetAttributes);
+  // SetDirectory must be after SetAttributes
+  Get7zBoolProp(AInArchive, ItemIndex, kpidIsDir, AItem.SetDirectory);
   Get7zInt64Prop(AInArchive, ItemIndex, kpidSize, AItem.SetFileSize);
   Get7zInt64Prop(AInArchive, ItemIndex, kpidPackSize, AItem.SetPackedSize);
   Get7zFileTimeProp(AInArchive, ItemIndex, kpidCTime, AItem.SetCreationTime);
