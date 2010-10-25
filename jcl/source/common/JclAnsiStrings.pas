@@ -904,9 +904,9 @@ var
 begin
   Result := '';
   for I := 0 to Count - 2 do
-    Result := Result + Strings[I] + sLineBreak;
+    Result := Result + Strings[I] + AnsiLineBreak;
   if Count > 0 then
-    Result := Result + Strings[Count - 1] + sLineBreak;
+    Result := Result + Strings[Count - 1] + AnsiLineBreak;
 end;
 
 procedure TJclAnsiStrings.SetText(const Value: AnsiString);
