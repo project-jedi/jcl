@@ -344,6 +344,7 @@ resourcestring
   RsLogNoPersonalityExtension = 'No personality supports the extension %s';
   RsLogInvalidBplPath = 'Invalid BPL path "%s"';
   RsLogInvalidDcpPath = 'Invalid DCP path "%s"';
+  RsLogInvalidHppPath = 'Invalid HPP path "%s"';
   RsLogLibDescriptor = '%s library %sunits for %s';
 
 implementation

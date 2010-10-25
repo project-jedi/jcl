@@ -1120,6 +1120,22 @@ var
   end;
 
   function CheckDirectories: Boolean;
+    function CheckDirectory(const Directory: string; ErrorMessage: PResStringRec): Boolean;
+    begin
+      Result := DirectoryExists(Directory);
+      if not Result then
+      begin
+        if not Assigned(GUI) then
+          WriteLog(Format(LoadResString(ErrorMessage), [Directory]))
+        else
+        if GUI.Dialog(Format(LoadResString(@RsWarningCreatePath), ['BPL']), dtWarning, [drYes, drNo]) = drYes then
+        begin
+          Result := ForceDirectories(Directory);
+          if not Result then
+            GUI.Dialog(Format(LoadResString(@RsErrorCantCreatePath), [Directory]), dtError, [drCancel]);
+        end;
+      end;
+    end;
   begin
     Result := True;
 
@@ -1130,31 +1146,10 @@ var
 
     if Result and OptionChecked[joJCLPackages] then
     begin
-      Result := True;
-      if not DirectoryExists(GetBplPath) then
-      begin
-        Result := False;
-        if not Assigned(GUI) then
-          WriteLog(Format(LoadResString(@RsLogInvalidBplPath), [GetBplPath]))
-        else if GUI.Dialog(Format(LoadResString(@RsWarningCreatePath), ['BPL']), dtWarning, [drYes, drNo]) = drYes then
-        begin
-          Result := ForceDirectories(GetBplPath);
-          if not Result then
-            GUI.Dialog(Format(LoadResString(@RsErrorCantCreatePath), [GetBplPath]), dtError, [drCancel]);
-        end;
-      end;
-      if not DirectoryExists(GetDcpPath) then
-      begin
-        Result := False;
-        if not Assigned(GUI) then
-          WriteLog(Format(LoadResString(@RsLogInvalidDcpPath), [GetDcpPath]))
-        else if GUI.Dialog(Format(LoadResString(@RsWarningCreatePath), ['DCP']), dtWarning, [drYes, drNo]) = drYes then
-        begin
-          Result := ForceDirectories(GetDcpPath);
-          if not Result then
-            GUI.Dialog(Format(LoadResString(@RsErrorCantCreatePath), [GetDcpPath]), dtError, [drCancel]);
-        end;
-      end;
+      Result := CheckDirectory(GetBplPath, @RsLogInvalidBplPath)
+        and CheckDirectory(GetDcpPath, @RsLogInvalidDcpPath);
+      if OptionChecked[joJCLCopyHppFiles] or OptionChecked[joJCLCopyPackagesHppFiles] then
+        Result := Result and CheckDirectory(Target.VclIncludeDir, @RsLogInvalidHppPath);
     end;
   end;
 
