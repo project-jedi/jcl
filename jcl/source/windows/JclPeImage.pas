@@ -2262,7 +2262,7 @@ end;
 procedure TJclPeExportFuncList.CreateList;
 var
   Functions: Pointer;
-  Address: DWORD;
+  Address, NameCount: DWORD;
   NameOrdinals: PWORD;
   Names: PDWORD;
   I: Integer;
@@ -2288,10 +2288,12 @@ begin
       Functions := RvaToVa(FExportDir^.AddressOfFunctions);
       NameOrdinals := RvaToVa(FExportDir^.AddressOfNameOrdinals);
       Names := RvaToVa(FExportDir^.AddressOfNames);
-      Count := FExportDir^.NumberOfNames;
-      for I := 0 to FExportDir^.NumberOfNames - 1 do
+      NameCount := FExportDir^.NumberOfNames;
+      Count := FExportDir^.NumberOfFunctions;
+
+      for I := 0 to Count - 1 do
       begin
-        Address := PDWORD(TJclAddr(Functions) + NameOrdinals^ * SizeOf(DWORD))^;
+        Address := PDWORD(TJclAddr(Functions) + TJclAddr(I) * SizeOf(DWORD))^;
         if (Address >= ExportVABegin) and (Address <= ExportVAEnd) then
         begin
           FAnyForwards := True;
@@ -2302,13 +2304,23 @@ begin
         else
           ForwardedName := '';
 
+        ExportItem := TJclPeExportFuncItem.Create(Self, '',
+          ForwardedName, Address, $FFFF, TJclAddr(I) + FBase, icNotChecked);
+
+        List^[I] := ExportItem;
+      end;
+
+      for I := 0 to NameCount - 1 do
+      begin
+          // named function
         UTF8Name := PAnsiChar(RvaToVa(Names^));
         if not TryUTF8ToString(UTF8Name, ExportName) then
           ExportName := string(UTF8Name);
-        ExportItem := TJclPeExportFuncItem.Create(Self, ExportName,
-          ForwardedName, Address, I, DWORD(NameOrdinals^) + FBase, icNotChecked);
 
-        List^[I] := ExportItem;
+        ExportItem := TJclPeExportFuncItem(List^[NameOrdinals^]);
+        ExportItem.FName := ExportName;
+        ExportItem.FHint := I;
+
         Inc(NameOrdinals);
         Inc(Names);
       end;
