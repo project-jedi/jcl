@@ -136,6 +136,8 @@ begin
   try
     PChar(nil)^ := 'a';
   except
+    on E: Exception do
+      ShowMessage('Error = ' + E.Message);
   end;
 end;
 
@@ -145,12 +147,8 @@ begin
   try
     ShowMessage(IntToStr(StrToInt('a')));
   except
-    on E: EConvertError do
-      ShowMessage('EConvertError or descendant');
-    on E: ERangeError do
-      ShowMessage('ERangeError or descendant');
-    else
-      ShowMessage('Not EConvertError and not ERangeError')
+    on E: Exception do
+      ShowMessage('Exception + ' + E.Message);
   end;
 end;
 
