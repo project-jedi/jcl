@@ -37,6 +37,7 @@
 unit JclMapi;
 
 {$I jcl.inc}
+{$I windowsonly.inc}
 
 interface
 

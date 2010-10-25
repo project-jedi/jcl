@@ -50,12 +50,10 @@ unit MSHelpServices_TLB;
 // removing them from the $IFDEF blocks. However, such items must still be    
 // programmatically created via a method of the appropriate CoClass before    
 // they can be used.                                                          
-{$TYPEDADDRESS OFF} // Unit must be compiled without type-checked pointers. 
-{ $WARN SYMBOL_PLATFORM OFF}
-{ $WRITEABLECONST ON}
-{ $VARPROPSETTER ON}
+{ $TYPEDADDRESS OFF} // Unit must be compiled without type-checked pointers. 
 
 {$I jcl.inc}
+{$I windowsonly.inc}
 
 {$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
   {$IFDEF UNITVERSIONING}

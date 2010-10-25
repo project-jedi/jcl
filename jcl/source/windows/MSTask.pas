@@ -33,12 +33,8 @@
 
 unit MSTask;
 
-{$ALIGN ON}
-{$MINENUMSIZE 4}
-
-interface
-
 {$I jcl.inc}
+{$I windowsonly.inc}
 
 {$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
   {$IFDEF UNITVERSIONING}
@@ -47,6 +43,11 @@ interface
     {$WEAKPACKAGEUNIT ON}
   {$ENDIF ~UNITVERSIONING}
 {$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
+
+{$ALIGN ON}
+{$MINENUMSIZE 4}
+
+interface
 
 uses
   {$IFDEF UNITVERSIONING}

@@ -26,7 +26,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                          $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -37,6 +37,7 @@ unit JclHookExcept;
 interface
 
 {$I jcl.inc}
+{$I windowsonly.inc}
 
 uses
   {$IFDEF UNITVERSIONING}

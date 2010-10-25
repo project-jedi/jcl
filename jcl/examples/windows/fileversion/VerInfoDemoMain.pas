@@ -3,10 +3,7 @@ unit VerInfoDemoMain;
 interface
 
 {$I jcl.inc}
-
-{$IFDEF COMPILER6_UP}
-  {$WARN UNIT_PLATFORM OFF}
-{$ENDIF COMPILER6_UP}
+{$I windowsonly.inc}
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,

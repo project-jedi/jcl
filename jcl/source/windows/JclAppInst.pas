@@ -39,6 +39,7 @@
 unit JclAppInst;
 
 {$I jcl.inc}
+{$I windowsonly.inc}
 
 interface
 

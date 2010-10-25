@@ -63,6 +63,7 @@ of "structured storage"...
 unit JclStructStorage;
 
 {$I jcl.inc}
+{$I windowsonly.inc}
 
 interface
 

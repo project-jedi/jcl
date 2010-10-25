@@ -46,6 +46,7 @@
 unit JclShell;
 
 {$I jcl.inc}
+{$I windowsonly.inc}
 
 interface
 

@@ -3,13 +3,14 @@
 //          revised 2005-06-26
 //
 
+unit StretchGraphicDemoMain;
+
 {$I jcl.inc}
+{$I crossplatform.inc}
 
 {$IFDEF VCL}
   {$DEFINE HasShellCtrls} // $(Delphi)\Demos\ShellControls\ShellCtrls.pas
 {$ENDIF VCL}
-
-unit StretchGraphicDemoMain;
 
 interface
 
@@ -22,7 +23,6 @@ uses
   Dialogs, ComCtrls, StdCtrls, Menus, ExtCtrls, ExtDlgs,
   JclGraphics,
   {$IFDEF HasShellCtrls}
-    {$WARN UNIT_PLATFORM OFF} 
   ShellCtrls,
   {$ENDIF HasShellCtrls}
   JclFileUtils;

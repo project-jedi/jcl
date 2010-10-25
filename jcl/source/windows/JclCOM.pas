@@ -38,6 +38,7 @@
 unit JclCOM;
 
 {$I jcl.inc}
+{$I windowsonly.inc}
 
 interface
 

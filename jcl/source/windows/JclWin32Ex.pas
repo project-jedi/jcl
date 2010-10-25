@@ -28,6 +28,7 @@
 unit JclWin32Ex;
 
 {$I jcl.inc}
+{$I windowsonly.inc}
 
 interface
 

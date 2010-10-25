@@ -52,11 +52,9 @@ unit mscorlib_TLB;
 //   Hint: Parameter 'Type' of _Assembly.GetManifestResourceStream changed to 'Type_'
 // ************************************************************************ //
 {$TYPEDADDRESS OFF} // Unit must be compiled without type-checked pointers. 
-{ $WARN SYMBOL_PLATFORM OFF}
-{ $WRITEABLECONST ON}
-{ $VARPROPSETTER ON}
 
 {$I jcl.inc}
+{$I windowsonly.inc}
 
 {$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
   {$IFDEF UNITVERSIONING}

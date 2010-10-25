@@ -56,6 +56,7 @@ unit sevenzip;
 interface
 
 {$I jcl.inc}
+{$I windowsonly.inc}
 
 uses
   Windows,

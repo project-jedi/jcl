@@ -35,6 +35,7 @@
 unit JclMetadata;
 
 {$I jcl.inc}
+{$I windowsonly.inc}
 
 interface
 

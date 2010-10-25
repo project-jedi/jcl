@@ -25,11 +25,8 @@
 
 unit PeSearch;
 
-{$I JCL.INC}
-
-{$IFDEF COMPILER6_UP}
-  {$WARN UNIT_PLATFORM OFF}
-{$ENDIF COMPILER6_UP}
+{$I jcl.inc}
+{$I windowsonly.inc}
 
 interface
 

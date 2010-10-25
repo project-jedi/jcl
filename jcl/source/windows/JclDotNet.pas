@@ -49,6 +49,7 @@ unit JclDotNet;
 interface
 
 {$I jcl.inc}
+{$I windowsonly.inc}
 
 uses
   {$IFDEF UNITVERSIONING}
@@ -448,8 +449,6 @@ begin
   end;
 end;
 
-{$WARNINGS OFF}
-
 type
   TGetCORSystemDirectory = function (pbuffer: PWideChar; const cchBuffer: DWORD;
     var dwLength: DWORD): HRESULT; stdcall;
@@ -728,8 +727,6 @@ begin
   GetProcedureAddress(Pointer(@_GetRequestedRuntimeVersionForCLSID), mscoree_dll, 'GetRequestedRuntimeVersionForCLSID');
   Result := _GetRequestedRuntimeVersionForCLSID(rclsid, pVersion, cchBuffer, dwLength, dwResolutionFlags);
 end;
-
-{$WARNINGS ON}
 
 //=== { TJclClrHost } ========================================================
 

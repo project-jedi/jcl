@@ -39,6 +39,7 @@
 unit JclMultimedia;
 
 {$I jcl.inc}
+{$I windowsonly.inc}
 
 interface
 

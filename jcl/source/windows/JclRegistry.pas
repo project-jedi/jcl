@@ -46,6 +46,7 @@
 unit JclRegistry;
 
 {$I jcl.inc}
+{$I windowsonly.inc}
 
 interface
 

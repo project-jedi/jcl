@@ -47,13 +47,13 @@
 
 unit Hardlinks;
 
+{$I jcl.inc}
+{$I windowsonly.inc}
+
 {$ALIGN ON}
 {$MINENUMSIZE 4}
 
 interface
-
-{$I jcl.inc}
-
 
 //DOM-IGNORE-BEGIN
 

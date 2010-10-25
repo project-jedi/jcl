@@ -52,10 +52,10 @@
 unit JclWin32;
 
 {$I jcl.inc}
+{$I windowsonly.inc}
 
 {$MINENUMSIZE 4}
 {$ALIGN ON}
-{$WARNINGS OFF}
 
 interface
 
@@ -8939,8 +8939,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-
-{$WARNINGS ON}
 
 end.
 
