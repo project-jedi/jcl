@@ -345,7 +345,7 @@ begin
   else
   begin
     {$IFDEF SUPPORTS_UNICODE}
-    Result := PChar(S);
+    Result := PWideChar(S);
     {$ELSE ~SUPPORTS_UNICODE}
     Result := AllocMem((Length(S)+1) * SizeOf(WideChar));
     MultiByteToWideChar(CP_ACP, 0, PChar(S), Length(S), Result, Length(S));
@@ -358,8 +358,10 @@ end;
 
 procedure FreeWChar(W: PWideChar);
 begin
+  {$IFNDEF SUPPORTS_UNICODE}
   if Assigned(W) then
     FreeMem(W);
+  {$ENDIF ~SUPPORTS_UNICODE}
 end;
 
 //=== { TJclStructStorageFolder } ============================================
