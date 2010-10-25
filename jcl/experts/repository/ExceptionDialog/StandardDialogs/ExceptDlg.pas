@@ -384,12 +384,14 @@ begin
       ProcessorDetails := ProcessorDetails + ' SSE3';
     if ssse3 in CpuInfo.SSE then
       ProcessorDetails := ProcessorDetails + ' SSSE3';
+    if sse41 in CpuInfo.SSE then
+      ProcessorDetails := ProcessorDetails + ' SSE41';
+    if sse42 in CpuInfo.SSE then
+      ProcessorDetails := ProcessorDetails + ' SSE42';
     if sse4A in CpuInfo.SSE then
       ProcessorDetails := ProcessorDetails + ' SSE4A';
-    if sse4B in CpuInfo.SSE then
-      ProcessorDetails := ProcessorDetails + ' SSE4B';
     if sse5 in CpuInfo.SSE then
-      ProcessorDetails := ProcessorDetails + ' SSE';
+      ProcessorDetails := ProcessorDetails + ' SSE5';
     if CpuInfo.Ex3DNow then
       ProcessorDetails := ProcessorDetails + ' 3DNow!ex';
     if CpuInfo._3DNow then
