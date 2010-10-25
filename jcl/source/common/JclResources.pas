@@ -1011,11 +1011,24 @@ resourcestring
   RsCompression7zWindows             = 'Windows';
   RsCompression7zUnix                = 'Unix';
   RsCompressionZipName               = 'Zip archive';
-  RsCompressionZipExtensions         = '*.zip;*.jar;*.xpi';
+  RsCompressionZipExtensions         = '*.zip;'+   // Basic ZIP file
+                                       '*.jar;*.ear;*.war;'+  // JAVA files
+                                       '*.cbz;'+ //Comic reader files - ZIP version
+                                       '*.apk;'+ // Android application package
+                                       '*.wsz;*.wal;'+ // Winamp Skins
+                                       '*.xpi;*.crx;'+ // Firefox, Chrome extensions
+                                       '*.dfsz;'+ // ???
+                                       '*.pcv;'+ // MozBackup file
+                                       '+*.bsz;'+ // BSplayer skin
+                                       '*.mskin;'+ // Maxthon skin
+                                       '*.wmz;'+ // Windows Media Player skin
+                                       '*.sxw;*.sxi;*.sxt;*.sxd;*.sxc;*.sxm;*.sxg;*.stw;*.sti;*.std;*.stc;'+ // OpenOffice.org 1.x documents and templates
+                                       '*.odh;*.odd;*.odt;*.odm;*.ods;*.ots;*.odg;*.otg;*.odp;*.otp;*.odf;*.odb'; // OpenOffice.org 2.x/3.x docs and templates
   RsCompressionBZip2Name             = 'BZip2 archive';
   RsCompressionBZip2Extensions       = '*.bz2;*.bzip2;*.tbz2;*.tbz';
   RsCompressionRarName               = 'Rar archive';
-  RsCompressionRarExtensions         = '*.rar;*.r00';
+  RsCompressionRarExtensions         = '*.rar;*.r00;'+
+                                       '*.cbr'; // Comic reader file - RAR version
   RsCompressionArjName               = 'Arj archive';
   RsCompressionArjExtensions         = '*.arj';
   RsCompressionZName                 = 'Z archive';
@@ -1025,7 +1038,8 @@ resourcestring
   RsCompression7zName                = '7z archive';
   RsCompression7zExtensions          = '*.7z';
   RsCompressionCabName               = 'Cab archive';
-  RsCompressionCabExtensions         = '*.cab';
+  RsCompressionCabExtensions         = '*.cab;'+
+                                       '*.fwp'; // FrontPage Web Package
   RsCompressionNsisName              = 'Nsis archive';
   RsCompressionNsisExtensions        = '*.nsis';
   RsCompressionLzmaName              = 'Lzma archive';
@@ -1043,7 +1057,8 @@ resourcestring
   RsCompressionUdfName               = 'Udf archive';
   RsCompressionUdfExtensions         = '*.iso';
   RsCompressionXarName               = 'Xar archive';
-  RsCompressionXarExtensions         = '*.xar';
+  RsCompressionXarExtensions         = '*.xar;'+
+                                       '*.safariextz'; // Safari extensions
   RsCompressionMubName               = 'Mub archive';
   // TODO: extension might be *.*, but then TJclCompressionStreamFormats.FindDecompressFormat can fail
   RsCompressionMubExtensions         = '*.';
