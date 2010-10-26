@@ -37,7 +37,7 @@ uses
 
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$Url:$';
+    RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JCL\examples\common\unitversioning';
