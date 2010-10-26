@@ -49,11 +49,11 @@ uses
 type
   PUnitVersionInfo = ^TUnitVersionInfo;
   TUnitVersionInfo = record
-    RCSfile: string;  // $'RCSfile$
-    Revision: string; // $'Revision$
-    Date: string;     // $'Date$     in UTC (GMT)
-    LogPath: string;  // logical file path
-    Extra: string;    // user defined string
+    RCSfile: PChar;   // $'RCSfile$
+    Revision: PChar;  // $'Revision$
+    Date: PChar;      // $'Date$     in UTC (GMT)
+    LogPath: PChar;   // logical file path
+    Extra: PChar;     // user defined string
     Data: Pointer;    // user data
   end;
 
@@ -107,10 +107,10 @@ type
     FModules: TObjectList;
     FProviders: TObjectList;
 
-    function GetItems(Index: Integer): TUnitVersion;
+    function GetItem(Index: Integer): TUnitVersion;
     function GetCount: Integer;
     function GetModuleCount: Integer;
-    function GetModules(Index: Integer): TUnitVersioningModule;
+    function GetModule(Index: Integer): TUnitVersioningModule;
 
     procedure UnregisterModule(Module: TUnitVersioningModule); overload;
     procedure ValidateModules;
@@ -131,11 +131,11 @@ type
 
     // units by modules
     property ModuleCount: Integer read GetModuleCount;
-    property Modules[Index: Integer]: TUnitVersioningModule read GetModules;
+    property Modules[Index: Integer]: TUnitVersioningModule read GetModule;
 
     // all units
     property Count: Integer read GetCount;
-    property Items[Index: Integer]: TUnitVersion read GetItems; default;
+    property Items[Index: Integer]: TUnitVersion read GetItem; default;
   end;
 
 procedure RegisterUnitVersion(Instance: THandle; const Info: TUnitVersionInfo);
@@ -380,14 +380,19 @@ begin
 end;
 
 function TUnitVersioningModule.IndexOf(const RCSfile: string; const LogPath: string): Integer;
+var
+  Item: TUnitVersion;
 begin
   for Result := 0 to FItems.Count - 1 do
-    if CompareFilenames(Items[Result].RCSfile, RCSfile) = 0 then
+  begin
+    Item := Items[Result];
+    if CompareFilenames(Item.RCSfile, RCSfile) = 0 then
       if LogPath = '*' then
         Exit
       else
-      if CompareFilenames(LogPath, Trim(Items[Result].LogPath)) = 0 then
+      if CompareFilenames(LogPath, Trim(Item.LogPath)) = 0 then
         Exit;
+  end;
   Result := -1;
 end;
 
@@ -430,12 +435,15 @@ var
   Module: TUnitVersioningModule;
 begin
   for I := 0 to FModules.Count - 1 do
-    if Modules[I].Instance = Instance then
+  begin
+    Module := Modules[I];
+    if Module.Instance = Instance then
     begin
-      if Modules[I].IndexOfInfo(Info) = -1 then
-        Modules[I].Add(Info);
+      if Module.IndexOfInfo(Info) = -1 then
+        Module.Add(Info);
       Exit;
     end;
+  end;
   // create a new module entry
   Module := TUnitVersioningModule.Create(Instance);
   FModules.Add(Module);
@@ -471,21 +479,23 @@ begin
     Inc(Result, Modules[I].Count);
 end;
 
-function TUnitVersioning.GetItems(Index: Integer): TUnitVersion;
+function TUnitVersioning.GetItem(Index: Integer): TUnitVersion;
 var
   Cnt, I: Integer;
+  Module: TUnitVersioningModule;
 begin
   Result := nil;
   ValidateModules;
   Cnt := 0;
   for I := 0 to FModules.Count - 1 do
   begin
-    if Index < Cnt + Modules[I].Count then
+    Module := Modules[I];
+    if Index < Cnt + Module.Count then
     begin
-      Result := Modules[I].Items[Index - Cnt];
+      Result := Module.Items[Index - Cnt];
       Break;
     end;
-    Inc(Cnt, Modules[I].Count);
+    Inc(Cnt, Module.Count);
   end;
 end;
 
@@ -495,7 +505,7 @@ begin
   Result := FModules.Count;
 end;
 
-function TUnitVersioning.GetModules(Index: Integer): TUnitVersioningModule;
+function TUnitVersioning.GetModule(Index: Integer): TUnitVersioningModule;
 begin
   Result := TUnitVersioningModule(FModules[Index]);
 end;
@@ -510,19 +520,25 @@ end;
 procedure TUnitVersioning.ValidateModules;
 var
   I: Integer;
+  {$IFNDEF FPCUNIX}
   Buffer: string;
+  {$ENDIF ~FPCUNIX}
+  Module: TUnitVersioningModule;
 begin
+  {$IFNDEF FPCUNIX}
+  SetLength(Buffer, 1024);
+  {$ENDIF ~FPCUNIX}
   for I := FModules.Count - 1 downto 0 do
   begin
-    SetLength(Buffer, 1024);
+    Module := Modules[I];
     {$IFDEF FPCUNIX}
-    if dlsym(Pointer(Modules[I].Instance), '_init') = nil then
+    if dlsym(Pointer(Module.Instance), '_init') = nil then
     {$ELSE ~FPCUNIX}
-    if GetModuleFileName(Modules[I].Instance, PChar(Buffer), 1024) = 0 then
+    if GetModuleFileName(Module.Instance, PChar(Buffer), 1024) = 0 then
     {$ENDIF ~FPCUNIX}
       // This module is no more in memory but has not unregistered itself so
       // unregister it here.
-      UnregisterModule(Modules[I]);
+      UnregisterModule(Module);
   end;
 end;
 
@@ -542,18 +558,20 @@ end;
 function TUnitVersioning.IndexOf(const RCSfile: string; const LogPath: string): Integer;
 var
   I, Cnt, Index: Integer;
+  Module: TUnitVersioningModule;
 begin
   Result := -1;
   Cnt := 0;
   for I := 0 to FModules.Count - 1 do
   begin
-    Index := Modules[I].IndexOf(RCSfile, LogPath);
+    Module := Modules[I];
+    Index := Module.IndexOf(RCSfile, LogPath);
     if Index <> -1 then
     begin
       Result := Cnt + Index;
       Break;
     end;
-    Inc(Cnt, Modules[I].Count);
+    Inc(Cnt, Module.Count);
   end;
 end;
 

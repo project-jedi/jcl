@@ -1,9 +1,9 @@
 object frmUnitVersioningTestMain: TfrmUnitVersioningTestMain
   Left = 192
   Top = 137
-  Width = 703
-  Height = 480
   Caption = 'UnitVersioning Test'
+  ClientHeight = 453
+  ClientWidth = 695
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

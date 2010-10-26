@@ -84,9 +84,18 @@ end;
 procedure TfrmUnitVersioningTestMain.FormDestroy(Sender: TObject);
 var
   I: Integer;
+  UnitVersionInfoPtr: PUnitVersionInfo;
 begin
   for I := 0 to FFindMethodsInfoPtrs.Count - 1 do
-    Dispose(FFindMethodsInfoPtrs[I]);
+  begin
+    UnitVersionInfoPtr := PUnitVersionInfo(FFindMethodsInfoPtrs[I]);
+    StrDispose(UnitVersionInfoPtr^.RCSfile);
+    StrDispose(UnitVersionInfoPtr^.Revision);
+    StrDispose(UnitVersionInfoPtr^.Date);
+    StrDispose(UnitVersionInfoPtr^.LogPath);
+    StrDispose(UnitVersionInfoPtr^.Extra);
+    Dispose(UnitVersionInfoPtr);
+  end;
   FFindMethodsInfoPtrs.Free;
   FreeTestDLL;
 end;
@@ -113,11 +122,11 @@ begin
     New(UnitVersionInfoPtr);
     with UnitVersionInfoPtr^ do
     begin
-      RCSfile := Format('unit%d.pas', [I]);
-      Revision := '';
-      Date := '';
-      LogPath := '';
-      Extra := '';
+      RCSfile := StrNew(PChar(Format('unit%d.pas', [I])));
+      Revision := StrNew('');
+      Date := StrNew('');
+      LogPath := StrNew('');
+      Extra := StrNew('');
       Data := nil;
     end;
     FFindMethodsInfoPtrs.Add(UnitVersionInfoPtr);
@@ -264,8 +273,8 @@ begin
         begin
           with UnitVersionInfo do
           begin
-            RCSfile := Format('unit%d.pas', [I]);
-            Revision := Format('0.%d', [I]);
+            RCSfile := PChar(Format('unit%d.pas', [I]));
+            Revision := PChar(Format('0.%d', [I]));
             Date := '';
             LogPath := '';
             Extra := '';
