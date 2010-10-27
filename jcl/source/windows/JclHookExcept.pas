@@ -278,10 +278,15 @@ procedure HookedRaiseException(ExceptionCode, ExceptionFlags, NumberOfArguments:
   Arguments: PExceptionArguments); stdcall;
 const
   cDelphiException = $0EEDFADE;
-  cNonContinuable = 1;
+  cNonContinuable = 1;                  // Delphi exceptions
+  cNonContinuableException = $C0000025; // C++Builder exceptions (sounds like a bug)
+  DelphiNumberOfArguments = 7;
+  CBuilderNumberOfArguments = 8;
 begin
-  if (ExceptionFlags = cNonContinuable) and (ExceptionCode = cDelphiException) and
-    (NumberOfArguments = 7) and (TJclAddr(Arguments) = TJclAddr(@Arguments) + SizeOf(Pointer)) then
+  if ((ExceptionFlags = cNonContinuable) or (ExceptionFlags = cNonContinuableException)) and
+    (ExceptionCode = cDelphiException) and
+    (NumberOfArguments in [DelphiNumberOfArguments,CBuilderNumberOfArguments]) and
+    (TJclAddr(Arguments) = TJclAddr(@Arguments) + SizeOf(Pointer)) then
   begin
     DoExceptNotify(Arguments.ExceptObj, Arguments.ExceptAddr, False, GetFramePointer);
   end;
