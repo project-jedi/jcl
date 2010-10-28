@@ -3567,7 +3567,11 @@ begin
   if not (bpBCBuilder32 in Personalities) then
     raise EJclBorRadException.CreateResFmt(@RsEDualPackageNotSupported, [Name]);
   if (RadToolKind = brBorlandDevStudio) and (IDEVersionNumber >= 8) then
-    Result := SubstitutePath(GetMsBuildEnvOption(MsBuildDelphiHPPOutputPathNodeName))
+  begin
+    Result := SubstitutePath(GetMsBuildEnvOption(MsBuildDelphiHPPOutputPathNodeName));
+    if Result = '' then
+      Result := SubstitutePath('$(BDSCOMMONDIR)\hpp');
+  end
   else
     Result := inherited GetVclIncludeDir;
 end;
