@@ -3299,9 +3299,17 @@ begin
           Result := SubstitutePath(GetMsBuildEnvOption(MsBuildWin32DLLOutputPathNodeName));
       end;
     6, 7:
-      Result := SubstitutePath(GetMsBuildEnvOption(MsBuildWin32DLLOutputPathNodeName));
+      begin
+        Result := SubstitutePath(GetMsBuildEnvOption(MsBuildCBuilderBPLOutputPathNodeName));
+        if Result = '' then
+          Result := SubstitutePath(GetMsBuildEnvOption(MsBuildWin32DLLOutputPathNodeName));
+      end;
     8:
-      Result := SubstitutePath(GetMsBuildEnvOption(MsBuildDelphiDLLOutputPathNodeName));
+      begin
+        Result := SubstitutePath(GetMsBuildEnvOption(MsBuildCBuilderBPLOutputPathNodeName));
+        if Result = '' then
+          Result := SubstitutePath(GetMsBuildEnvOption(MsBuildDelphiDLLOutputPathNodeName));
+      end;
   end;
 end;
 
