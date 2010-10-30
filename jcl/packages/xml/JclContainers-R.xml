@@ -17,18 +17,18 @@
   </Requires>
   <Contains>
     <File Name="..\..\source\common\JclAbstractContainers.pas" Targets="all" Formname="" Condition=""/>
-	<File Name="..\..\source\common\JclAlgorithms.pas" Targets="all" Formname="" Condition=""/>
-	<File Name="..\..\source\common\JclArrayLists.pas" Targets="all" Formname="" Condition=""/>
-	<File Name="..\..\source\common\JclArraySets.pas" Targets="all" Formname="" Condition=""/>
-	<File Name="..\..\source\common\JclBinaryTrees.pas" Targets="all" Formname="" Condition=""/>
-	<File Name="..\..\source\common\JclContainerIntf.pas" Targets="all" Formname="" Condition=""/>
-	<File Name="..\..\source\common\JclHashMaps.pas" Targets="all" Formname="" Condition=""/>
-	<File Name="..\..\source\common\JclHashSets.pas" Targets="all" Formname="" Condition=""/>
-	<File Name="..\..\source\common\JclLinkedLists.pas" Targets="all" Formname="" Condition=""/>
-	<File Name="..\..\source\common\JclQueues.pas" Targets="all" Formname="" Condition=""/>
-	<File Name="..\..\source\common\JclSortedMaps.pas" Targets="all" Formname="" Condition=""/>
-	<File Name="..\..\source\common\JclStacks.pas" Targets="all" Formname="" Condition=""/>
-	<File Name="..\..\source\common\JclTrees.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclAlgorithms.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclArrayLists.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclArraySets.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclBinaryTrees.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclContainerIntf.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclHashMaps.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclHashSets.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclLinkedLists.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclQueues.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclSortedMaps.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclStacks.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclTrees.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclVectors.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>
