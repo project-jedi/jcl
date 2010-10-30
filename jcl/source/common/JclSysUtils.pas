@@ -167,8 +167,8 @@ type
     function GetItem: T;
     procedure FreeItem;
 
-	constructor Create(Instance: T);
-	destructor Destroy; override;
+  constructor Create(Instance: T);
+  destructor Destroy; override;
   public
     class function New(Instance: T): ISafeGuard<T>; static;
   end;

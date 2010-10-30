@@ -285,7 +285,7 @@ type
     ccBidiControl,           // Format control characters which have specific functions in the Unicode Bidirectional Algorithm [UAX9].
     ccDash,                  // Punctuation characters explicitly called out as dashes in the Unicode Standard, plus their compatibility equivalents. Most of these have the General_Category value Pd, but some have the General_Category value Sm because of their use in mathematics.
     ccDeprecated,            // For a machine-readable list of deprecated characters. No characters will ever be removed from the standard, but the usage of deprecated characters is strongly discouraged.
-    ccDiacritic,             //	Characters that linguistically modify the meaning of another character to which they apply. Some diacritics are not combining characters, and some combining characters are not diacritics.
+    ccDiacritic,             // Characters that linguistically modify the meaning of another character to which they apply. Some diacritics are not combining characters, and some combining characters are not diacritics.
     ccExtender,              // Characters whose principal function is to extend the value or shape of a preceding alphabetic character. Typical of these are length and iteration marks.
     ccHyphen,                // Dashes which are used to mark connections between pieces of words, plus the Katakana middle dot. The Katakana middle dot functions like a hyphen, but is shaped like a dot rather than a dash.
     ccIdeographic,           // Characters considered to be CJKV (Chinese, Japanese, Korean, and Vietnamese) ideographs.
@@ -301,7 +301,7 @@ type
     ccOtherIDStart,          // Used for backward compatibility of ID_Start.
     ccOtherLowercase,        // Used in deriving the Lowercase property.
     ccOtherMath,             // Used in deriving the Math property.
-    ccOtherUppercase,        //	Used in deriving the Uppercase property.
+    ccOtherUppercase,        // Used in deriving the Uppercase property.
     ccPatternSyntax,         // Used for pattern syntax as described in UAX #31: Unicode Identifier and Pattern Syntax [UAX31].
     ccPatternWhiteSpace,
     ccRadical,               // Used in Ideographic Description Sequences.
@@ -340,7 +340,7 @@ type
     cftSmall,     // Small variant form (CNS compatibility)
     cftSquare,    // CJK squared font variant
     cftFraction,  // Vulgar fraction form
-    cftCompat     //	Otherwise unspecified compatibility character
+    cftCompat     // Otherwise unspecified compatibility character
   );
 
   // used to hold information about the start and end
