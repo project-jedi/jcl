@@ -69,7 +69,7 @@ function JclUnhookExceptions: Boolean;
 function JclExceptionsHooked: Boolean;
 
 function JclHookExceptionsInModule(Module: HMODULE): Boolean;
-function JclUnkookExceptionsInModule(Module: HMODULE): Boolean;
+function JclUnhookExceptionsInModule(Module: HMODULE): Boolean;
 
 // Exceptions hooking in libraries
 type
@@ -509,7 +509,7 @@ begin
     TJclPeMapImgHooks.ReplaceImport(Pointer(Module), kernel32, RaiseExceptionAddress, @HookedRaiseException);
 end;
 
-function JclUnkookExceptionsInModule(Module: HMODULE): Boolean;
+function JclUnhookExceptionsInModule(Module: HMODULE): Boolean;
 begin
   Result := ExceptionsHooked and
     TJclPeMapImgHooks.ReplaceImport(Pointer(Module), kernel32, @HookedRaiseException, @Kernel32_RaiseException);
