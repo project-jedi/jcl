@@ -44,7 +44,7 @@ They contain a copy of the development repository and as such contain
 all the latest bug fixes and improvements provided by the JCL
 developers.<br>
 <br>
-The latest version is available for download below<br>
+The latest source files are available for download below:<br>
 <br>
 <table
  style="width: 75%; text-align: left; margin-left: auto; margin-right: auto;"
@@ -66,7 +66,64 @@ The latest version is available for download below<br>
       $filenames = array();
       while (($filename = readdir($dh)) !== false)
       {
-        if (!is_dir($filename) && (substr($filename, 0, 4) == "jcl-"))
+        if (!is_dir($filename) &&
+            (substr($filename, 0, 4) == "jcl-") &&
+            (substr($filename, -11, 8) != "-winhelp") &&
+            (substr($filename, -13, 10) != "-htmlhelp2") &&
+            (substr($filename, -11, 8) != "-chmhelp"))
+        {
+          $filenames[] = $filename;
+        }
+      }
+
+      // sort the array before displaying it
+      rsort($filenames);
+
+      foreach ($filenames as $filename)
+      {
+        $filename_full = $filename;
+        echo '<tr>';
+        echo '  <td style="vertical-align: top;"><a href="'.$filename_full.'">'.$filename_full.'</a><br>';
+        echo '  </td>';
+        echo '  <td style="vertical-align: top; white-space: nowrap;">'.GetDisplayFileDate($filename_full);
+        echo '  </td>';
+        echo '  <td style="vertical-align: top; white-space: nowrap;">'.GetDisplayFileSize($filename_full);
+        echo '  </td>';
+//        echo '  <td style="vertical-align: top;">The complete set of files<br>';
+//        echo '  </td>';
+        echo '</tr>';
+      }
+      ?>
+  </tbody>
+</table>
+<br>
+The latest help files are available for download below:<br>
+<br>
+<table
+ style="width: 75%; text-align: left; margin-left: auto; margin-right: auto;"
+ cellspacing="2" cellpadding="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top; font-weight: bold;">File<br>
+      </td>
+      <td style="vertical-align: top; font-weight: bold;">Date and time<br>
+      </td>
+      <td style="vertical-align: top;"><span style="font-weight: bold;">Size</span><br>
+      </td>
+<!--      <td style="vertical-align: top;"><span style="font-weight: bold;">Description</span><br>
+      </td>-->
+    </tr>
+      <?php
+
+      $dh = opendir("./");
+      $filenames = array();
+      while (($filename = readdir($dh)) !== false)
+      {
+        if (!is_dir($filename) &&
+            (substr($filename, 0, 4) == "jcl-") &&
+            ((substr($filename, -11, 8) == "-winhelp") ||
+             (substr($filename, -13, 10) == "-htmlhelp2") ||
+             (substr($filename, -11, 8) == "-chmhelp")))
         {
           $filenames[] = $filename;
         }
