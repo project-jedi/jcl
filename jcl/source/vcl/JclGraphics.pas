@@ -511,6 +511,7 @@ function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
 procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer; Window: THandle = HWND_DESKTOP); overload;
 procedure ScreenShot(bm: TBitmap; IncludeTaskBar: Boolean = True); overload;
 procedure ScreenShot(bm: TBitmap; ControlToPrint: TWinControl); overload;
+procedure ScreenShot(bm: TBitmap; ControlToPrint: string); overload;
 procedure ScreenShot(bm: TBitmap; FormToPrint: TCustomForm; ControlToPrint: TWinControl); overload;
 procedure ScreenShot(bm: TBitmap; FormToPrint: TCustomForm); overload;
 procedure ScreenShot(bm: TBitmap; FormToPrint: TCustomForm; ControlToPrint: String); overload;
@@ -2147,6 +2148,14 @@ begin
     raise EJclGraphicsError.CreateResFmt(@RSInvalidFormOrComponent, ['form'])
     end;
 
+procedure ScreenShot(bm: TBitmap; ControlToPrint: string); overload;
+begin
+//uses the ActiveForm property of TScreen to determine on which form the control will be searched for.
+  if Length(ControlToPrint) > 0 then
+    ScreenShot(bm, Screen.ActiveForm, ControlToPrint)
+  else
+    raise EJclGraphicsError.CreateResFmt(@RSInvalidFormOrComponent, ['Component'])
+end;
 procedure ScreenShot(bm: TBitmap; FormToPrint: TCustomForm; ControlToPrint: TWinControl); overload;
 begin
   if FormToPrint <> nil then
