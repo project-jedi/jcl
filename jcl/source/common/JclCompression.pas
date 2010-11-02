@@ -1022,13 +1022,11 @@ type
     procedure CheckNotDecompressing;
     procedure CheckListing;
 
+    procedure InitializeArchiveProperties; override;
+
     function ValidateExtraction(Index: Integer; var FileName: TFileName; var AStream: TStream;
       var AOwnsStream: Boolean): Boolean; virtual;
   public
-    constructor Create(Volume0: TStream; AVolumeMaxSize: Int64 = 0;
-      AOwnVolume: Boolean = False); overload; override;
-    constructor Create(const VolumeFileName: TFileName; AVolumeMaxSize: Int64 = 0;
-      VolumeMask: Boolean = False); overload; override;
     class function VolumeAccess: TJclStreamAccess; override;
     class function ItemAccess: TJclStreamAccess; override;
 
@@ -1062,14 +1060,10 @@ type
     FOnTmpVolume: TJclCompressionVolumeEvent;
   protected
     function NeedTmpStream(Index: Integer): TStream;
+    procedure InitializeArchiveProperties; override;
     function InternalOpenTmpStream(const FileName: TFileName): TStream;
   public
     class function TmpVolumeAccess: TJclStreamAccess; virtual;
-
-    constructor Create(Volume0: TStream; AVolumeMaxSize: Int64 = 0;
-      AOwnVolume: Boolean = False); overload; override;
-    constructor Create(const VolumeFileName: TFileName; AVolumeMaxSize: Int64 = 0;
-      VolumeMask: Boolean = False); overload; override;
 
     procedure Compress; override;
 
@@ -4966,18 +4960,6 @@ begin
     raise EJclCompressionError.CreateRes(@RsCompressionDecompressingError);
 end;
 
-constructor TJclUpdateArchive.Create(Volume0: TStream; AVolumeMaxSize: Int64; AOwnVolume: Boolean);
-begin
-  inherited Create(Volume0, AVolumeMaxSize, AOwnVolume);
-  FDuplicateCheck := dcExisting;
-end;
-
-constructor TJclUpdateArchive.Create(const VolumeFileName: TFileName; AVolumeMaxSize: Int64; VolumeMask: Boolean);
-begin
-  inherited Create(VolumeFileName, AVolumeMaxSize, VolumeMask);
-  FDuplicateCheck := dcExisting;
-end;
-
 procedure TJclUpdateArchive.ExtractAll(const ADestinationDir: string;
   AAutoCreateSubDir: Boolean);
 begin
@@ -4990,6 +4972,12 @@ procedure TJclUpdateArchive.ExtractSelected(const ADestinationDir: string;
 begin
 // Calling ReleaseVolumes here causes subsequent operations on the archive to fail with an "unsupported method" exception
 //  ReleaseVolumes;
+end;
+
+procedure TJclUpdateArchive.InitializeArchiveProperties;
+begin
+  inherited InitializeArchiveProperties;
+  FDuplicateCheck := dcExisting;
 end;
 
 class function TJclUpdateArchive.ItemAccess: TJclStreamAccess;
@@ -5113,18 +5101,9 @@ begin
   end;
 end;
 
-constructor TJclOutOfPlaceUpdateArchive.Create(Volume0: TStream;
-  AVolumeMaxSize: Int64; AOwnVolume: Boolean);
+procedure TJclOutOfPlaceUpdateArchive.InitializeArchiveProperties;
 begin
-  inherited Create(Volume0, AVolumeMaxSize, AOwnVolume);
-  FReplaceVolumes := True;
-  FTmpVolumeIndex := -1;
-end;
-
-constructor TJclOutOfPlaceUpdateArchive.Create(const VolumeFileName: TFileName;
-  AVolumeMaxSize: Int64; VolumeMask: Boolean);
-begin
-  inherited Create(VolumeFileName, AVolumeMaxSize, VolumeMask);
+  inherited InitializeArchiveProperties;
   FReplaceVolumes := True;
   FTmpVolumeIndex := -1;
 end;
