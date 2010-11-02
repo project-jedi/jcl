@@ -1011,18 +1011,19 @@ resourcestring
   RsCompression7zWindows             = 'Windows';
   RsCompression7zUnix                = 'Unix';
   RsCompressionZipName               = 'Zip archive';
-  RsCompressionZipExtensions         = '*.zip;'+   // Basic ZIP file
-                                       '*.jar;*.ear;*.war;'+  // JAVA files
-                                       '*.cbz;'+ //Comic reader files - ZIP version
-                                       '*.apk;'+ // Android application package
-                                       '*.wsz;*.wal;'+ // Winamp Skins
-                                       '*.xpi;*.crx;'+ // Firefox, Chrome extensions
-                                       '*.dfsz;'+ // ???
-                                       '*.pcv;'+ // MozBackup file
-                                       '+*.bsz;'+ // BSplayer skin
-                                       '*.mskin;'+ // Maxthon skin
-                                       '*.wmz;'+ // Windows Media Player skin
-                                       '*.sxw;*.sxi;*.sxt;*.sxd;*.sxc;*.sxm;*.sxg;*.stw;*.sti;*.std;*.stc;'+ // OpenOffice.org 1.x documents and templates
+  RsCompressionZipExtensions         = '*.zip;' +   // Basic ZIP file
+                                       '*.jar;*.ear;*.war;' +  // JAVA files
+                                       '*.cbz;' + //Comic reader files - ZIP version
+                                       '*.apk;' + // Android application package
+                                       '*.wsz;*.wal;' + // Winamp Skins
+                                       '*.xpi;*.crx;' + // Firefox, Chrome extensions
+                                       '*.dfsz;' + // ???
+                                       '*.pcv;' + // MozBackup file
+                                       '*.bsz;' + // BSplayer skin
+                                       '*.mskin;' + // Maxthon skin
+                                       '*.wmz;' + // Windows Media Player skin
+                                       '*.ipa;' + // iPhone/iPad application
+                                       '*.sxw;*.sxi;*.sxt;*.sxd;*.sxc;*.sxm;*.sxg;*.stw;*.sti;*.std;*.stc;' + // OpenOffice.org 1.x documents and templates
                                        '*.odh;*.odd;*.odt;*.odm;*.ods;*.ots;*.odg;*.otg;*.odp;*.otp;*.odf;*.odb'; // OpenOffice.org 2.x/3.x docs and templates
   RsCompressionBZip2Name             = 'BZip2 archive';
   RsCompressionBZip2Extensions       = '*.bz2;*.bzip2;*.tbz2;*.tbz';
