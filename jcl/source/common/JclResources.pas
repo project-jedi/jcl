@@ -1001,6 +1001,7 @@ resourcestring
   RsCompressionUnsupportedMethod     = 'Unsupported method';
   RsCompressionDataError             = 'Data error';
   RsCompressionCRCError              = 'CRC error';
+  RsCompressionNoNestedArchive       = 'Nested archive is not supported';
   RsCompressionUnknownError          = 'Unknown error';
   RsCompression7zLoadError           = 'Sevenzip: Failed to load 7z.dll';
   RsCompression7zReturnError         = 'Sevenzip: Error result (%.8x) "%s"';
@@ -1023,10 +1024,12 @@ resourcestring
                                        '*.mskin;' + // Maxthon skin
                                        '*.wmz;' + // Windows Media Player skin
                                        '*.ipa;' + // iPhone/iPad application
+                                       '*.docx;*.xlsx;*.pptx;' + // MsOffice
                                        '*.sxw;*.sxi;*.sxt;*.sxd;*.sxc;*.sxm;*.sxg;*.stw;*.sti;*.std;*.stc;' + // OpenOffice.org 1.x documents and templates
                                        '*.odh;*.odd;*.odt;*.odm;*.ods;*.ots;*.odg;*.otg;*.odp;*.otp;*.odf;*.odb'; // OpenOffice.org 2.x/3.x docs and templates
   RsCompressionBZip2Name             = 'BZip2 archive';
   RsCompressionBZip2Extensions       = '*.bz2;*.bzip2;*.tbz2;*.tbz';
+  RsCompressionBZip2SubExtensions    = '.tbz2=.tar;.tbz=.tar';
   RsCompressionRarName               = 'Rar archive';
   RsCompressionRarExtensions         = '*.rar;*.r00;'+
                                        '*.cbr'; // Comic reader file - RAR version
@@ -1034,6 +1037,7 @@ resourcestring
   RsCompressionArjExtensions         = '*.arj';
   RsCompressionZName                 = 'Z archive';
   RsCompressionZExtensions           = '*.z;*.taz';
+  RsCompressionZSubExtensions        = '.taz=.tar';
   RsCompressionLzhName               = 'Lzh archive';
   RsCompressionLzhExtensions         = '*.lzh;*.lha';
   RsCompression7zName                = '7z archive';
@@ -1056,7 +1060,7 @@ resourcestring
   // TODO: extension might be *.*, but then TJclCompressionStreamFormats.FindDecompressFormat can fail
   RsCompressionMachoExtensions       = '*.';
   RsCompressionUdfName               = 'Udf archive';
-  RsCompressionUdfExtensions         = '*.iso';
+  RsCompressionUdfExtensions         = '*.iso;*.img';
   RsCompressionXarName               = 'Xar archive';
   RsCompressionXarExtensions         = '*.xar;'+
                                        '*.safariextz'; // Safari extensions
@@ -1072,7 +1076,7 @@ resourcestring
   RsCompressionWimName               = 'Wim archive';
   RsCompressionWimExtensions         = '*.wim;*.swm';
   RsCompressionIsoName               = 'Iso archive';
-  RsCompressionIsoExtensions         = '*.iso';
+  RsCompressionIsoExtensions         = '*.iso;*.img';
   RsCompressionChmName               = 'Chm archive';
   RsCompressionChmExtensions         = '*.chm;*.chi;*.chq;*.chw;*.hxs;*.hxi;*.hxr;*.hxq;*.hxw;*.lit';
   RsCompressionSplitName             = 'Split archive';
@@ -1087,8 +1091,10 @@ resourcestring
   RsCompressionTarExtensions         = '*.tar';
   RsCompressionGZipName              = 'GZip archive';
   RsCompressionGZipExtensions        = '*.gz;*.gzip;*.tgz;*.tpz';
+  RsCompressionGZipSubExtensions     = '.tgz=.tar;.tpz=.tar';
   RsCompressionXzName                = 'Xz archive';
   RsCompressionXzExtensions          = '*.xz;*.txz';
+  RsCompressionXzSubExtensions       = '.txz=.tar';
   RsCompressionNtfsName              = 'Ntfs archive';
   RsCompressionNtfsExtensions        = '*.ntfs;*.img';
   RsCompressionFatName               = 'Fat archive';
@@ -1096,7 +1102,8 @@ resourcestring
   RsCompressionMbrName               = 'Mbr archive';
   RsCompressionMbrExtensions         = '*.mbr';
   RsCompressionVhdName               = 'Vhd archive';
-  RsCompressionVhdExtensions         = '*.vhd;*.mbr';
+  RsCompressionVhdExtensions         = '*.vhd';
+  RsCompressionVhdSubExtensions      = '.vhd=.mbr';
   RsCompressionFlvName               = 'Flv archive';
   RsCompressionFlvExtensions         = '*.flv';
   RsCompressionMsLZName              = 'MsLZ archive';

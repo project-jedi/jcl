@@ -127,6 +127,22 @@ object FormMain: TFormMain
         Action = ActionProperties
         TabOrder = 3
       end
+      object ButtonDescend: TButton
+        Left = 361
+        Top = 16
+        Width = 75
+        Height = 25
+        Action = ActionDescendRO
+        TabOrder = 4
+      end
+      object ButtonLevelUp: TButton
+        Left = 442
+        Top = 16
+        Width = 75
+        Height = 25
+        Action = ActionLevelUpRO
+        TabOrder = 5
+      end
     end
     object TabSheetWriteOnly: TTabSheet
       Caption = 'Write-only'
@@ -317,6 +333,18 @@ object FormMain: TFormMain
       Caption = '&Properties'
       OnExecute = ActionPropertiesExecute
       OnUpdate = ActionPropertiesUpdate
+    end
+    object ActionDescendRO: TAction
+      Category = 'ReadOnly'
+      Caption = 'Descend'
+      OnExecute = ActionDescendROExecute
+      OnUpdate = ActionDescendROUpdate
+    end
+    object ActionLevelUpRO: TAction
+      Category = 'ReadOnly'
+      Caption = 'Level up'
+      OnExecute = ActionLevelUpROExecute
+      OnUpdate = ActionLevelUpROUpdate
     end
   end
   object OpenDialogArchiveRO: TOpenDialog
