@@ -768,6 +768,7 @@ type
     class function ArchiveExtensions: string; virtual;
     class function ArchiveName: string; virtual;
     class function ArchiveSubExtensions: string; virtual;
+    class function ArchiveSignature: TDynByteArray; virtual;
 
     constructor Create(Volume0: TStream; AVolumeMaxSize: Int64 = 0;
       AOwnVolume: Boolean = False); overload; virtual;
@@ -978,6 +979,8 @@ type
 
   TJclCompressArchiveClass = class of TJclCompressArchive;
 
+  TJclCompressArchiveClassArray = array of TJclCompressArchiveClass;
+
   TJclDecompressItem = class(TJclCompressionItem)
   protected
     procedure CheckGetProperty(AProperty: TJclCompressionItemProperty); override;
@@ -1020,6 +1023,8 @@ type
   end;
 
   TJclDecompressArchiveClass = class of TJclDecompressArchive;
+
+  TJclDecompressArchiveClassArray = array of TJclDecompressArchiveClass;
 
   TJclUpdateItem = class(TJclCompressionItem)
   protected
@@ -1092,6 +1097,8 @@ type
 
   TJclUpdateArchiveClass = class of TJclUpdateArchive;
 
+  TJclUpdateArchiveClassArray = array of TJclUpdateArchiveClass;
+
 // registered archive formats
 type
   TJclCompressionArchiveFormats = class
@@ -1113,9 +1120,18 @@ type
     procedure RegisterFormat(AClass: TJclCompressionArchiveClass);
     procedure UnregisterFormat(AClass: TJclCompressionArchiveClass);
 
+    // archive signatures do not give significant results for ISO/UDF (signature is not located at stream start)
+    // need to find a generic way to match all signature before publishing the code
+    //function SignatureMatches(Format: TJclCompressionArchiveClass; ArchiveStream: TStream; var Buffer: TDynByteArray): Boolean;
     function FindCompressFormat(const AFileName: TFileName): TJclCompressArchiveClass;
-    function FindDecompressFormat(const AFileName: TFileName): TJclDecompressArchiveClass;
-    function FindUpdateFormat(const AFileName: TFileName): TJclUpdateArchiveClass;
+    //function FindDecompressFormat(const AFileName: TFileName; TestArchiveSignature: Boolean): TJclDecompressArchiveClass; overload;
+    function FindDecompressFormat(const AFileName: TFileName): TJclDecompressArchiveClass; //overload;
+    //function FindUpdateFormat(const AFileName: TFileName; TestArchiveSignature: Boolean): TJclUpdateArchiveClass; overload;
+    function FindUpdateFormat(const AFileName: TFileName): TJclUpdateArchiveClass; //overload;
+
+    function FindCompressFormats(const AFileName: TFileName): TJclCompressArchiveClassArray;
+    function FindDecompressFormats(const AFileName: TFileName): TJclDecompressArchiveClassArray;
+    function FindUpdateFormats(const AFileName: TFileName): TJclUpdateArchiveClassArray;
 
     property CompressFormatCount: Integer read GetCompressFormatCount;
     property CompressFormats[Index: Integer]: TJclCompressArchiveClass read GetCompressFormat;
@@ -1138,6 +1154,7 @@ type
     function GetOutArchive: IOutArchive;
   public
     class function ArchiveCLSID: TGUID; virtual;
+    class function ArchiveSignature: TDynByteArray; override;
     destructor Destroy; override;
     procedure Compress; override;
     property OutArchive: IOutArchive read GetOutArchive;
@@ -1361,6 +1378,7 @@ type
     function GetSupportsNestedArchive: Boolean; override;
   public
     class function ArchiveCLSID: TGUID; virtual;
+    class function ArchiveSignature: TDynByteArray; override;
     destructor Destroy; override;
     procedure ListFiles; override;
     procedure ExtractSelected(const ADestinationDir: string = '';
@@ -1732,6 +1750,7 @@ type
     function GetOutArchive: IOutArchive;
   public
     class function ArchiveCLSID: TGUID; virtual;
+    class function ArchiveSignature: TDynByteArray; override;
     destructor Destroy; override;
     procedure ListFiles; override;
     procedure ExtractSelected(const ADestinationDir: string = '';
@@ -4295,13 +4314,90 @@ begin
   end;
 end;
 
+function TJclCompressionArchiveFormats.FindCompressFormats(
+  const AFileName: TFileName): TJclCompressArchiveClassArray;
+var
+  IndexFormat, IndexFilter: Integer;
+  Filters: TStrings;
+  AFormat: TJclCompressArchiveClass;
+begin
+  SetLength(Result, 0);
+  Filters := TStringList.Create;
+  try
+    for IndexFormat := 0 to CompressFormatCount - 1 do
+    begin
+      AFormat := CompressFormats[IndexFormat];
+      StrTokenToStrings(AFormat.ArchiveExtensions, DirSeparator, Filters);
+      for IndexFilter := 0 to Filters.Count - 1 do
+        if IsFileNameMatch(AFileName, Filters.Strings[IndexFilter]) then
+      begin
+        SetLength(Result, Length(Result) + 1);
+        Result[High(Result)] := AFormat;
+        Break;
+      end;
+    end;
+  finally
+    Filters.Free;
+  end;
+end;
+
+{function TJclCompressionArchiveFormats.FindDecompressFormat(const AFileName: TFileName;
+  TestArchiveSignature: Boolean): TJclDecompressArchiveClass;
+var
+  MatchingFormats: TJclDecompressArchiveClassArray;
+  Index: Integer;
+  ArchiveStream: TStream;
+  Buffer: TDynByteArray;
+begin
+  SetLength(Buffer, 0);
+
+  // enumerate formats based on filename
+  MatchingFormats := FindDecompressFormats(AFileName);
+  if (Length(MatchingFormats) >= 1) and (not TestArchiveSignature) then
+  begin
+    Result := MatchingFormats[0];
+    Exit;
+  end
+  else
+    Result := nil;
+
+  // load archive to test signature
+  ArchiveStream := TFileStream.Create(AFileName, fmOpenRead and fmShareDenyNone);
+  try
+    for Index := Low(MatchingFormats) to High(MatchingFormats) do
+      if SignatureMatches(MatchingFormats[Index], ArchiveStream, Buffer) then
+    begin
+      Result := MatchingFormats[Index];
+      Exit;
+    end;
+  finally
+    ArchiveStream.Free;
+  end;
+end;}
+
 function TJclCompressionArchiveFormats.FindDecompressFormat(const AFileName: TFileName): TJclDecompressArchiveClass;
+var
+  MatchingFormats: TJclDecompressArchiveClassArray;
+begin
+  // enumerate formats based on filename
+  MatchingFormats := FindDecompressFormats(AFileName);
+  if Length(MatchingFormats) >= 1 then
+  begin
+    Result := MatchingFormats[0];
+    Exit;
+  end
+  else
+    Result := nil;
+end;
+
+function TJclCompressionArchiveFormats.FindDecompressFormats(
+  const AFileName: TFileName): TJclDecompressArchiveClassArray;
 var
   IndexFormat, IndexFilter: Integer;
   Filters: TStrings;
   AFormat: TJclDecompressArchiveClass;
 begin
-  Result := nil;
+  SetLength(Result, 0);
   Filters := TStringList.Create;
   try
     for IndexFormat := 0 to DecompressFormatCount - 1 do
@@ -4311,24 +4407,73 @@ begin
       for IndexFilter := 0 to Filters.Count - 1 do
         if IsFileNameMatch(AFileName, Filters.Strings[IndexFilter]) then
       begin
-        Result := AFormat;
+        SetLength(Result, Length(Result) + 1);
+        Result[High(Result)] := AFormat;
         Break;
       end;
-      if Result <> nil then
-        Break;
     end;
   finally
     Filters.Free;
   end;
 end;
 
+{function TJclCompressionArchiveFormats.FindUpdateFormat(const AFileName: TFileName;
+  TestArchiveSignature: Boolean): TJclUpdateArchiveClass;
+var
+  MatchingFormats: TJclUpdateArchiveClassArray;
+  Index: Integer;
+  ArchiveStream: TStream;
+  Buffer: TDynByteArray;
+begin
+  SetLength(Buffer, 0);
+
+  // enumerate formats based on filename
+  MatchingFormats := FindUpdateFormats(AFileName);
+  if (Length(MatchingFormats) >= 1) and (not TestArchiveSignature) then
+  begin
+    Result := MatchingFormats[0];
+    Exit;
+  end
+  else
+    Result := nil;
+  
+  // load archive to test signature
+  ArchiveStream := TFileStream.Create(AFileName, fmOpenRead and fmShareDenyNone);
+  try
+    for Index := Low(MatchingFormats) to High(MatchingFormats) do
+      if SignatureMatches(MatchingFormats[Index], ArchiveStream, Buffer) then
+    begin
+      Result := MatchingFormats[Index];
+      Exit;
+    end;
+  finally
+    ArchiveStream.Free;
+  end;
+end;}
+
 function TJclCompressionArchiveFormats.FindUpdateFormat(const AFileName: TFileName): TJclUpdateArchiveClass;
+var
+  MatchingFormats: TJclUpdateArchiveClassArray;
+begin
+  // enumerate formats based on filename
+  MatchingFormats := FindUpdateFormats(AFileName);
+  if Length(MatchingFormats) >= 1 then
+  begin
+    Result := MatchingFormats[0];
+    Exit;
+  end
+  else
+    Result := nil;
+end;
+
+function TJclCompressionArchiveFormats.FindUpdateFormats(
+  const AFileName: TFileName): TJclUpdateArchiveClassArray;
 var
   IndexFormat, IndexFilter: Integer;
   Filters: TStrings;
   AFormat: TJclUpdateArchiveClass;
 begin
-  Result := nil;
+  SetLength(Result, 0);
   Filters := TStringList.Create;
   try
     for IndexFormat := 0 to UpdateFormatCount - 1 do
@@ -4338,11 +4483,10 @@ begin
       for IndexFilter := 0 to Filters.Count - 1 do
         if IsFileNameMatch(AFileName, Filters.Strings[IndexFilter]) then
       begin
-        Result := AFormat;
+        SetLength(Result, Length(Result) + 1);
+        Result[High(Result)] := AFormat;
         Break;
       end;
-      if Result <> nil then
-        Break;
     end;
   finally
     Filters.Free;
@@ -4390,6 +4534,36 @@ begin
   if AClass.InheritsFrom(TJclCompressArchive) then
     FCompressFormats.Add(AClass);
 end;
+
+{function TJclCompressionArchiveFormats.SignatureMatches(
+  Format: TJclCompressionArchiveClass; ArchiveStream: TStream;
+  var Buffer: TDynByteArray): Boolean;
+var
+  Index, StartPos, EndPos: Integer;
+  Signature: TDynByteArray;
+begin
+  // must match empty signatures
+  Result := True;
+  Signature := Format.ArchiveSignature;
+
+  // fill buffer if needed
+  StartPos := Length(Buffer); // High(Buffer) + 1
+  EndPos := Length(Signature);
+  if StartPos < EndPos then
+  begin
+    SetLength(Buffer, EndPos);
+    for Index := StartPos to EndPos - 1 do
+      ArchiveStream.ReadBuffer(Buffer[Index], SizeOf(Buffer[Index]));
+  end;
+
+  // compare buffer and signature
+  for Index := 0 to EndPos - 1 do
+    if Buffer[Index] <> Signature[Index] then
+  begin
+    Result := False;
+    Break;
+  end;    
+end;}
 
 procedure TJclCompressionArchiveFormats.UnregisterFormat(AClass: TJclCompressionArchiveClass);
 begin
@@ -4511,6 +4685,11 @@ end;
 class function TJclCompressionArchive.ArchiveName: string;
 begin
   Result := '';
+end;
+
+class function TJclCompressionArchive.ArchiveSignature: TDynByteArray;
+begin
+  SetLength(Result, 0);
 end;
 
 class function TJclCompressionArchive.ArchiveSubExtensions: string;
@@ -6019,6 +6198,56 @@ begin
   end;
 end;
 
+function Get7zArchiveSignature(const ClassID: TGUID): TDynByteArray;
+var
+  I, NumberOfFormats: Cardinal;
+  J: Integer;
+  PropValue: TPropVariant;
+  Found: Boolean;
+  Data: PAnsiChar;
+begin
+  Found := False;
+  SetLength(Result, 0);
+  SevenzipCheck(Sevenzip.GetNumberOfFormats(@NumberOfFormats));
+  for I := 0 to NumberOfFormats - 1 do
+  begin
+    SevenzipCheck(Sevenzip.GetHandlerProperty2(I, kClassID, PropValue));
+    if PropValue.vt = VT_BSTR then
+    begin
+      try
+        if SysStringByteLen(PropValue.bstrVal) = SizeOf(TGUID) then
+          Found := GUIDEquals(PGUID(PropValue.bstrVal)^, ClassID)
+        else
+          raise EJclCompressionError.CreateRes(@RsCompressionDataError);
+      finally
+        SysFreeString(PropValue.bstrVal);
+      end;
+    end
+    else
+      raise EJclCompressionError.CreateResFmt(@RsCompression7zUnknownValueType, [PropValue.vt, kClassID]);
+
+    if Found then
+    begin
+      SevenzipCheck(Sevenzip.GetHandlerProperty2(I, kStartSignature, PropValue));
+      if PropValue.vt = VT_BSTR then
+      begin
+        try
+          SetLength(Result, SysStringByteLen(PropValue.bstrVal));
+          Data := PAnsiChar(PropValue.bstrVal);
+          for J := Low(Result) to High(Result) do
+            Result[J] := Ord(Data[J]);
+        finally
+          SysFreeString(PropValue.bstrVal);
+        end;
+      end
+      else
+      if PropValue.vt <> VT_EMPTY then
+        raise EJclCompressionError.CreateResFmt(@RsCompression7zUnknownValueType, [PropValue.vt, kClassID]);
+      Break;
+    end;
+  end;
+end;
+
 //=== { TJclSevenzipOutputCallback } =========================================
 
 constructor TJclSevenzipUpdateCallback.Create(
@@ -6266,6 +6495,11 @@ end;
 class function TJclSevenzipCompressArchive.ArchiveCLSID: TGUID;
 begin
   Result := GUID_NULL;
+end;
+
+class function TJclSevenzipCompressArchive.ArchiveSignature: TDynByteArray;
+begin
+  Result := Get7zArchiveSignature(ArchiveCLSID);
 end;
 
 destructor TJclSevenzipCompressArchive.Destroy;
@@ -7162,6 +7396,11 @@ end;
 class function TJclSevenzipDecompressArchive.ArchiveCLSID: TGUID;
 begin
   Result := GUID_NULL;
+end;
+
+class function TJclSevenzipDecompressArchive.ArchiveSignature: TDynByteArray;
+begin
+  Result := Get7zArchiveSignature(ArchiveCLSID);
 end;
 
 destructor TJclSevenzipDecompressArchive.Destroy;
@@ -8282,6 +8521,11 @@ begin
   FInArchive := nil;
   FOutArchive := nil;
   inherited Destroy;
+end;
+
+class function TJclSevenzipUpdateArchive.ArchiveSignature: TDynByteArray;
+begin
+  Result := Get7zArchiveSignature(ArchiveCLSID);
 end;
 
 procedure TJclSevenzipUpdateArchive.Compress;

@@ -611,6 +611,7 @@ function IsCompiledWithPackages: Boolean;
 // GUID
 function JclGUIDToString(const GUID: TGUID): string;
 function JclStringToGUID(const S: string): TGUID;
+function GUIDEquals(const GUID1, GUID2: TGUID): Boolean;
 
 // thread safe support
 
@@ -3071,6 +3072,15 @@ begin
   Result.D4[5] := StrToInt('$' + Copy(S, 32, 2));
   Result.D4[6] := StrToInt('$' + Copy(S, 34, 2));
   Result.D4[7] := StrToInt('$' + Copy(S, 36, 2));
+end;
+
+function GUIDEquals(const GUID1, GUID2: TGUID): Boolean;
+begin
+  Result := (GUID1.D1 = GUID2.D1) and (GUID1.D2 = GUID2.D2) and (GUID1.D3 = GUID2.D3) and
+    (GUID1.D4[0] = GUID2.D4[0]) and (GUID1.D4[1] = GUID2.D4[1]) and
+    (GUID1.D4[2] = GUID2.D4[2]) and (GUID1.D4[3] = GUID2.D4[3]) and
+    (GUID1.D4[4] = GUID2.D4[4]) and (GUID1.D4[5] = GUID2.D4[5]) and
+    (GUID1.D4[6] = GUID2.D4[6]) and (GUID1.D4[7] = GUID2.D4[7]);
 end;
 
 // add items at the end

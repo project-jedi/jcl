@@ -611,17 +611,26 @@ const
 {$IFDEF 7ZIP_LINKONREQUEST}
 type
   TCreateObjectFunc = function (ClsID: PGUID; IID: PGUID; out Obj): HRESULT; stdcall;
+  TGetHandlerProperty2 = function (FormatIndex: Cardinal; PropID: TPropID; out Value: TPropVariant): HRESULT; stdcall;
+  TGetHandlerProperty = function (PropID: TPropID; out Value: TPropVariant): HRESULT; stdcall;
+  TGetMethodProperty = function (CodecIndex: Cardinal; PropID: TPropID; out Value: TPropVariant): HRESULT; stdcall;
   TGetNumberOfFormatsFunc = function (NumFormats: PCardinal): HRESULT; stdcall;
   TGetNumberOfMethodsFunc = function (NumMethods: PCardinal): HRESULT; stdcall;
   TSetLargePageMode = function: HRESULT; stdcall;
 
 var
   CreateObject: TCreateObjectFunc = nil;
+  GetHandlerProperty2: TGetHandlerProperty2 = nil;
+  GetHandlerProperty: TGetHandlerProperty = nil;
+  GetMethodProperty: TGetMethodProperty = nil;
   GetNumberOfFormats: TGetNumberOfFormatsFunc = nil;
   GetNumberOfMethods: TGetNumberOfMethodsFunc = nil;
   SetLargePageMode: TSetLargePageMode = nil;
 {$ELSE ~7ZIP_LINKONREQUEST}
 function CreateObject(ClsID: PGUID; IID: PGUID; out Obj): HRESULT; stdcall;
+function GetHandlerProperty2(FormatIndex: Cardinal; PropID: TPropID; out Value: TPropVariant): HRESULT; stdcall;
+function GetHandlerProperty(PropID: TPropID; out Value: TPropVariant): HRESULT; stdcall;
+function GetMethodProperty(CodecIndex: Cardinal; PropID: TPropID; out Value: TPropVariant): HRESULT; stdcall;
 function GetNumberOfFormats(NumFormats: PCardinal): HRESULT; stdcall;
 function GetNumberOfMethods(NumMethods: PCardinal): HRESULT; stdcall;
 function SetLargePageMode: HRESULT; stdcall;
@@ -658,6 +667,9 @@ type
 const
   sz7Zip = '7z.dll';
   CreateObjectExportName = 'CreateObject';
+  GetHandlerProperty2ExportName = 'GetHandlerProperty2';
+  GetHandlerPropertyExportName = 'GetHandlerProperty';
+  GetMethodPropertyExportName = 'GetMethodProperty';
   GetNumberOfFormatsExportName = 'GetNumberOfFormats';
   GetNumberOfMethodsExportName = 'GetNumberOfMethods';
   SetLargePageModeExportName = 'SetLargePageMode';
@@ -665,6 +677,9 @@ const
 
 {$IFDEF 7ZIP_LINKDLL}
 function CreateObject; external sz7Zip name CreateObjectExportName;
+function GetHandlerProperty2; external sz7Zip name GetHandlerProperty2ExportName;
+function GetHandlerProperty; external sz7Zip name GetHandlerPropertyExportName;
+function GetMethodProperty; external sz7Zip name GetMethodPropertyExportName;
 function GetNumberOfFormats; external sz7Zip name GetNumberOfFormatsExportName;
 function GetNumberOfMethods; external sz7Zip name GetNumberOfMethodsExportName;
 function SetLargePageMode; external sz7Zip name SetLargePageModeExportName;
@@ -700,11 +715,16 @@ begin
     if Result then
     begin
       @CreateObject := GetSymbol(CreateObjectExportName);
+      @GetHandlerProperty2 := GetSymbol(GetHandlerProperty2ExportName);
+      @GetHandlerProperty := GetSymbol(GetHandlerPropertyExportName);
+      @GetMethodProperty := GetSymbol(GetMethodPropertyExportName);
       @GetNumberOfFormats := GetSymbol(GetNumberOfFormatsExportName);
       @GetNumberOfMethods := GetSymbol(GetNumberOfMethodsExportName);
       @SetLargePageMode := GetSymbol(SetLargePageModeExportName);
-      Result := Assigned(@CreateObject) and Assigned(@GetNumberOfFormats) and
-        Assigned(@GetNumberOfMethods) and Assigned(@SetLargePageMode);
+      Result := Assigned(@CreateObject) and Assigned(@GetHandlerProperty2) and
+        Assigned(@GetHandlerProperty) and Assigned(@GetMethodProperty) and
+        Assigned(@GetNumberOfFormats) and Assigned(@GetNumberOfMethods) and
+        Assigned(@SetLargePageMode);
     end;
   end;
 end;
@@ -727,6 +747,9 @@ procedure Unload7Zip;
 begin
   {$IFDEF 7ZIP_LINKONREQUEST}
   @CreateObject := nil;
+  @GetHandlerProperty2 := nil;
+  @GetHandlerProperty := nil;
+  @GetMethodProperty := nil;
   @GetNumberOfFormats := nil;
   @GetNumberOfMethods := nil;
   @SetLargePageMode := nil;

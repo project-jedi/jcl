@@ -353,8 +353,9 @@ end;
 procedure TFormMain.ActionOpenROExecute(Sender: TObject);
 var
   ArchiveFileName, Password: string;
-  AFormat: TJclDecompressArchiveClass;
+  AFormats: TJclDecompressArchiveClassArray;
   SplitArchive: Boolean;
+  Index: Integer;
 begin
   if OpenDialogArchiveRO.Execute then
   begin
@@ -365,34 +366,43 @@ begin
     if SplitArchive then
       ArchiveFileName := ChangeFileExt(ArchiveFileName, '');
 
-    AFormat := GetArchiveFormats.FindDecompressFormat(ArchiveFileName);
+    AFormats := GetArchiveFormats.FindDecompressFormats(ArchiveFileName);
 
-    if AFormat <> nil then
+    if Length(AFormats) > 0 then
     begin
       if SplitArchive then
         ArchiveFileName := ArchiveFileName + '.%.3d';
 
       InputQuery('Archive password', 'Value', Password);
+    end;
 
-      FArchive := AFormat.Create(ArchiveFileName, 0, SplitArchive);
-      FArchive.Password := Password;
-      FArchive.OnProgress := ArchiveProgress;
-
-      if FArchive is TJclDecompressArchive then
-        TJclDecompressArchive(FArchive).ListFiles
-      else
-      if FArchive is TJclUpdateArchive then
-        TJclUpdateArchive(FArchive).ListFiles;
-
-      ListView1.Items.BeginUpdate;
+    for Index := Low(AFormats) to High(AFormats) do
+    begin
+      FArchive := AFormats[Index].Create(ArchiveFileName, 0, SplitArchive);
       try
-        while ListView1.Items.Count < FArchive.ItemCount do
-          ListView1.Items.Add;
-      finally
-        ListView1.Items.EndUpdate;
+        FArchive.Password := Password;
+        FArchive.OnProgress := ArchiveProgress;
+
+        if FArchive is TJclDecompressArchive then
+          TJclDecompressArchive(FArchive).ListFiles
+        else
+        if FArchive is TJclUpdateArchive then
+          TJclUpdateArchive(FArchive).ListFiles;
+
+        ListView1.Items.BeginUpdate;
+        try
+          while ListView1.Items.Count < FArchive.ItemCount do
+            ListView1.Items.Add;
+        finally
+          ListView1.Items.EndUpdate;
+        end;
+        Break;
+      except
+        CloseAllArchive;
       end;
-    end
-    else
+    end;
+
+    if not Assigned(FArchive) then
       ShowMessage('not a supported format');
   end;
 end;
@@ -400,8 +410,9 @@ end;
 procedure TFormMain.ActionOpenRWExecute(Sender: TObject);
 var
   ArchiveFileName, Password: string;
-  AFormat: TJclUpdateArchiveClass;
+  AFormats: TJclUpdateArchiveClassArray;
   SplitArchive: Boolean;
+  Index: Integer;
 begin
   if OpenDialogArchiveRW.Execute then
   begin
@@ -412,34 +423,42 @@ begin
     if SplitArchive then
       ArchiveFileName := ChangeFileExt(ArchiveFileName, '');
 
-    AFormat := GetArchiveFormats.FindUpdateFormat(ArchiveFileName);
+    AFormats := GetArchiveFormats.FindUpdateFormats(ArchiveFileName);
 
-    if AFormat <> nil then
+    if Length(AFormats) > 0 then
     begin
       if SplitArchive then
         ArchiveFileName := ArchiveFileName + '.%.3d';
 
       InputQuery('Archive password', 'Value', Password);
+    end;
 
-      FArchive := AFormat.Create(ArchiveFileName, 0, SplitArchive);
-      FArchive.Password := Password;
-      FArchive.OnProgress := ArchiveProgress;
-
-      if FArchive is TJclDecompressArchive then
-        TJclDecompressArchive(FArchive).ListFiles
-      else
-      if FArchive is TJclUpdateArchive then
-        TJclUpdateArchive(FArchive).ListFiles;
-
-      ListView1.Items.BeginUpdate;
+    for Index := Low(AFormats) to High(AFormats) do
+    begin
+      FArchive := AFormats[Index].Create(ArchiveFileName, 0, SplitArchive);
       try
-        while ListView1.Items.Count < FArchive.ItemCount do
-          ListView1.Items.Add;
-      finally
-        ListView1.Items.EndUpdate;
+        FArchive.Password := Password;
+        FArchive.OnProgress := ArchiveProgress;
+
+        if FArchive is TJclDecompressArchive then
+          TJclDecompressArchive(FArchive).ListFiles
+        else
+        if FArchive is TJclUpdateArchive then
+          TJclUpdateArchive(FArchive).ListFiles;
+
+        ListView1.Items.BeginUpdate;
+        try
+          while ListView1.Items.Count < FArchive.ItemCount do
+            ListView1.Items.Add;
+        finally
+          ListView1.Items.EndUpdate;
+        end;
+        Break;
+      except
+        CloseAllArchive;
       end;
-    end
-    else
+    end;
+    if not Assigned(FArchive) then
       ShowMessage('not a supported format');
   end;
 end;
