@@ -86,10 +86,13 @@ type
   private
     FArchiveStack: TObjectList;
     FArchive: TJclCompressionArchive;
+    FProgressValue: Byte;
+    FProgressMax: Byte;
+    procedure SyncArchiveProgress;
+  public
     procedure CloseArchive;
     procedure CloseAllArchive;
     procedure ArchiveProgress(Sender: TObject; const Value, MaxValue: Int64);
-  public
   end;
 
 var
@@ -491,13 +494,15 @@ begin
   MyValue := Value;
   MyMaxValue := MaxValue;
 
-  while MyMaxValue > High(Word) do
+  while MyMaxValue > High(Byte) do
   begin
     MyMaxValue := MyMaxValue shr 8;
     MyValue := MyValue shr 8;
   end;
-  ProgressBar1.Max := MyMaxValue;
-  ProgressBar1.Position := MyValue;
+
+  FProgressMax := MyMaxValue;
+  FProgressValue := MyValue;
+  TThread.Synchronize(nil, SyncArchiveProgress);
 end;
 
 procedure TFormMain.CloseAllArchive;
@@ -656,6 +661,12 @@ begin
     Item.SubItems.Add(IntToHex(CompressionItem.CRC, 8))
   else
     Item.SubItems.Add('');
+end;
+
+procedure TFormMain.SyncArchiveProgress;
+begin
+  ProgressBar1.Max := FProgressMax;
+  ProgressBar1.Position := FProgressValue;
 end;
 
 initialization
