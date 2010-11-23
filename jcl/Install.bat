@@ -1,5 +1,3 @@
-@echo off
-
 SET DELPHIVERSION=%1
 
 cd install
