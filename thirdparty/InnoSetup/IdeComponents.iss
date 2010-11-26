@@ -25,3 +25,6 @@ Name: "IDE\Delphi12"; Description: "Install for RAD Studio 2009"; Types: full pr
 #ifdef Include_Delphi14
 Name: "IDE\Delphi14"; Description: "Install for RAD Studio 2010"; Types: full prefered; Check: IsDelphiInstalled(14)
 #endif
+#ifdef Include_Delphi15
+Name: "IDE\Delphi15"; Description: "Install for RAD Studio XE"; Types: full prefered; Check: IsDelphiInstalled(15)
+#endif
