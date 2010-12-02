@@ -1090,7 +1090,7 @@ begin
   Result := 0;
   Pointer(P) := nil;
 
-  if (GetWindowsVersion in [wvUnknown..wvWinNT4]) and ((Name = '') or (Pos('\', Name) > 0)) then
+  if not CheckWin32Version(5, 0) and ((Name = '') or (Pos('\', Name) > 0)) then
     raise ESharedMemError.CreateResFmt(@RsInvalidMMFName, [Name]);
 
   {$IFDEF THREADSAFE}
