@@ -174,6 +174,8 @@ function ShellOpenAs(const FileName: string): Boolean;
 function ShellRasDial(const EntryName: string): Boolean;
 function ShellRunControlPanel(const NameOrFileName: string; AppletNumber: Integer = 0): Boolean;
 
+function RunAsAdmin(const FileName: string; const Parameters: string = ''; const Parent: THandle = 0): Boolean;
+
 function GetFileNameIcon(const FileName: string; Flags: Cardinal = 0): HICON;
 
 type
@@ -231,6 +233,7 @@ const
   cVerbProperties = 'properties';
   cVerbOpen = 'open';
   cVerbExplore = 'explore';
+  cVerbRunas = 'runas';
 
 //=== Files and Folders ======================================================
 
@@ -1469,8 +1472,8 @@ begin
        end;
      finally
        FreeLibrary(RasDlg);
-     end;   
-   end 
+     end;
+   end
    else
      Result := ShellExecEx('rundll32', Format('rnaui.dll,RnaDial "%s"', [EntryName]), '', SW_SHOWNORMAL);
 end;
@@ -1502,6 +1505,28 @@ begin
     Result := False;
     SetLastError(ERROR_FILE_NOT_FOUND);
   end;
+end;
+
+// Compare http://msdn.microsoft.com/en-us/library/bb756922.aspx
+
+function RunAsAdmin(const FileName: string; const Parameters: string = ''; const Parent: THandle = 0): Boolean;
+var
+  Sei: TShellExecuteInfo;
+begin
+  ResetMemory(Sei, SizeOf(Sei));
+  Sei.cbSize := SizeOf(TShellExecuteInfo);
+  Sei.Wnd := Parent;
+  Sei.fMask := SEE_MASK_FLAG_DDEWAIT or SEE_MASK_FLAG_NO_UI;
+  Sei.lpVerb := PChar(cVerbRunas);
+  Sei.lpFile := PChar(FileName);
+  Sei.lpParameters := PCharOrNil(Parameters);
+  Sei.nShow := SW_SHOWNORMAL;
+
+  {$TYPEDADDRESS ON}
+  Result := ShellExecuteEx(@Sei);
+  {$IFNDEF TYPEDADDRESS_ON}
+  {$TYPEDADDRESS OFF}
+  {$ENDIF ~TYPEDADDRESS_ON}
 end;
 
 function GetFileExeType(const FileName: TFileName): TJclFileExeType;
