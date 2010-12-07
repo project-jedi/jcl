@@ -60,7 +60,8 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, SysUtils, Contnrs, Classes;
+  Windows, SysUtils, Contnrs, Classes,
+  JclBase;
 
 type
   // Contents of the TZI value in the Time Zones section of the registry
@@ -147,8 +148,8 @@ type
   end;
 
 type
-  EDaylightSavingsNotSupported = class(Exception);
-  EAutoAdjustNotEnabled = class(Exception);
+  EDaylightSavingsNotSupported = class(EJclError);
+  EAutoAdjustNotEnabled = class(EJclError);
 
 // Enumerate all time zones from the registry
 function EnumTimeZones(CallBackFunc: TJclTimeZoneCallBackFunc): Boolean;

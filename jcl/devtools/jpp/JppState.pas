@@ -55,7 +55,7 @@ uses
   JclBase, JclContainerIntf;
 
 type
-  EPppState = class(Exception);
+  EPppState = class(EJclError);
 
   TPppOption = (poProcessIncludes, poProcessDefines, poStripComments,
     poProcessMacros, poProcessValues, poNoWarningHeader);

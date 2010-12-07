@@ -38,8 +38,12 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  JclBase,
   SysUtils, Classes, Contnrs,
   Graphics, Controls, ActnList, ImgList;
+
+type
+  EJclVersionControlError = class(EJclError);
 
 type
   TJclVersionControlActionType = (

@@ -184,7 +184,7 @@ begin
       wrSignaled:
         Result := True;
       wrTimeout:
-        raise Exception.Create(RsEnterMutexTimeout);
+        raise EJclError.Create(RsEnterMutexTimeout);
     else
       Result := False;
     end;

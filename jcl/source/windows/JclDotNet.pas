@@ -81,7 +81,7 @@ type
   TJclClrHostLoaderFlags = set of TJclClrHostLoaderFlag;
 
 type
-  EJclClrException = class(SysUtils.Exception);
+  EJclClrException = class(EJclError);
   
   TJclClrAppDomain = class;
   TJclClrAppDomainSetup = class;

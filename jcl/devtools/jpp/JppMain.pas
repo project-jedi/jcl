@@ -47,6 +47,7 @@ interface
 uses
   SysUtils,
   Classes,
+  JclBase,
   JclFileUtils,
   JclStrings,
   JclStreams,
@@ -199,7 +200,7 @@ var
       while (Result^ <> #0) and (Result^ <> '"') do
         Inc(Result);
       if Result^ = #0 then
-        raise Exception.Create('Unterminated string');
+        raise EJclError.Create('Unterminated string');
       Inc(Result); // skip over final "
       SetString(AStr, cp, Result - cp);
     end
@@ -355,7 +356,7 @@ var
                 ChangeFileExt(NewName, ProcessedExtension);
               Process(State, FileName, NewName);
             except
-              on e: Exception do
+              on e: EJclError do
                 Writeln(Format('Error: %s %s', [e.Message, FileName]));
             end;
           end

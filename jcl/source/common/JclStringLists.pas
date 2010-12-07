@@ -55,6 +55,8 @@ uses
 {$ENDIF FPC}
 
 type
+  EJclStringListError = class(EJclError);
+
   IJclStringList = interface;
 
   TJclStringListObjectsMode = (omNone, omObjects, omVariants, omInterfaces);
@@ -938,7 +940,7 @@ begin
   begin
     if FObjectsMode <> omNone then
     begin
-      raise Exception.CreateFmt('Objects cannot be used as "%s" because it has been used as "%s".',
+      raise EJclStringListError.CreateFmt('Objects cannot be used as "%s" because it has been used as "%s".',
         [GetEnumName(TypeInfo(TJclStringListObjectsMode), Ord(AMode)),
         GetEnumName(TypeInfo(TJclStringListObjectsMode), Ord(FObjectsMode))]);
     end;

@@ -57,7 +57,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
-  JclStrHashMap, JclStrings;
+  JclBase, JclStrHashMap, JclStrings;
 
 type
   TJppToken = (ptEof, ptComment, ptText, ptEol,
@@ -68,7 +68,7 @@ type
     // same as $DEFINE and $UNDEF but they will not be written to the final file
     ptJppDefine, ptJppUndef);
 
-  EJppLexerError = class(Exception);
+  EJppLexerError = class(EJclError);
 
   TJppLexer = class
   private

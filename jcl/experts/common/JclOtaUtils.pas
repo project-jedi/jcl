@@ -82,7 +82,7 @@ type
 //  - notifier callback functions
 //  - ... (non exhaustive list)
 
-  EJclExpertException = class (Exception)
+  EJclExpertException = class (EJclError)
   {$IFDEF MSWINDOWS}
   private
     FStackInfo: TJclStackInfoList;

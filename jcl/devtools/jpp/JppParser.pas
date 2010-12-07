@@ -51,10 +51,10 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JppState, JppLexer;
+  JclBase, JppState, JppLexer;
 
 type
-  EPppParserError = class(Exception);
+  EPppParserError = class(EJclError);
 
   TJppParser = class
   private
@@ -114,7 +114,7 @@ const
 implementation
 
 uses
-  JclBase, JclStrings, JclStreams, JclSysUtils;
+  JclStrings, JclStreams, JclSysUtils;
   
 {$IFDEF MSWINDOWS}
 const

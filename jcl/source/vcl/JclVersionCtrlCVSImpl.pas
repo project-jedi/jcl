@@ -124,9 +124,9 @@ function TJclVersionControlCVS.ExecuteAction(const FileName: TFileName;
     startupInfo.wShowWindow := SW_SHOW;
 
     if FileName = '' then
-      raise Exception.Create(RsEEmptyFileName);
+      raise EJclVersionControlError.Create(RsEEmptyFileName);
     if not Enabled then
-      raise Exception.Create(RsENoTortoiseCVS);
+      raise EJclVersionControlError.Create(RsENoTortoiseCVS);
 
     if FileName[Length(FileName)] = DirDelimiter then
       CurrentDir := FileName
