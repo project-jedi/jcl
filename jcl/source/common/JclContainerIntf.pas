@@ -854,12 +854,174 @@ type
     property AutoGrowStrategy: TJclAutoGrowStrategy read GetAutoGrowStrategy write SetAutoGrowStrategy;
   end;
 
-  IJclObjectOwner = interface
+
+  TFreeIntfEvent = function (var AInterface: IInterface): IInterface of object;
+
+  IJclIntfOwner = interface(IInterface)
+    ['{17C1D3FB-BB32-48F2-BD1C-D43EA05A86A8}']
+    function GetOnFreeObject: TFreeIntfEvent;
+    function FreeObject(var AInterface: IInterface): IInterface;
+    procedure SetOnFreeObject(Value: TFreeIntfEvent);
+    property OnFreeObject: TFreeIntfEvent read GetOnFreeObject write SetOnFreeObject;
+  end;
+
+  TFreeAnsiStrEvent = function (var AString: AnsiString): AnsiString of object;
+
+  IJclAnsiStrOwner = interface(IInterface)
+    ['{4F64F1F6-766A-4CFA-B51B-654116E308A8}']
+    function GetOnFreeString: TFreeAnsiStrEvent;
+    function FreeString(var AString: AnsiString): AnsiString;
+    procedure SetOnFreeString(Value: TFreeAnsiStrEvent);
+    property OnFreeString: TFreeAnsiStrEvent read GetOnFreeString write SetOnFreeString;
+  end;
+
+  TFreeWideStrEvent = function (var AString: WideString): WideString of object;
+
+  IJclWideStrOwner = interface(IInterface)
+    ['{282B7A64-BCD0-4EAE-8776-4EF92D7E3D8B}']
+    function GetOnFreeString: TFreeWideStrEvent;
+    function FreeString(var AString: WideString): WideString;
+    procedure SetOnFreeString(Value: TFreeWideStrEvent);
+    property OnFreeString: TFreeWideStrEvent read GetOnFreeString write SetOnFreeString;
+  end;
+
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  TFreeUnicodeStrEvent = function (var AString: UnicodeString): UnicodeString of object;
+
+  {$ENDIF SUPPORTS_UNICODE_STRING}
+
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  IJclUnicodeStrOwner = interface(IInterface)
+    ['{07F402E6-DD97-4AA4-83D8-4CCD419FCCFC}']
+    function GetOnFreeString: TFreeUnicodeStrEvent;
+    function FreeString(var AString: UnicodeString): UnicodeString;
+    procedure SetOnFreeString(Value: TFreeUnicodeStrEvent);
+    property OnFreeString: TFreeUnicodeStrEvent read GetOnFreeString write SetOnFreeString;
+  end;
+  {$ENDIF SUPPORTS_UNICODE_STRING}
+
+  {$IFDEF CONTAINER_ANSISTR}
+  TFreeStrEvent = TFreeAnsiStrEvent;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TFreeStrEvent = TFreeWideStrEvent;
+  {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  TFreeStrEvent = TFreeUnicodeStrEvent;
+  {$ENDIF CONTAINER_UNICODESTR}
+
+  {$IFDEF CONTAINER_ANSISTR}
+  IJclStrOwner = IJclAnsiStrOwner;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  IJclStrOwner = IJclWideStrOwner;
+  {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrOwner = IJclUnicodeStrOwner;
+  {$ENDIF CONTAINER_UNICODESTR}
+
+  TFreeSingleEvent = function (var AValue: Single): Single of object;
+
+  IJclSingleOwner = interface(IInterface)
+    ['{B002C201-70D7-4FA8-B44A-6D18E82580E5}']
+    function GetOnFreeSingle: TFreeSingleEvent;
+    function FreeSingle(var AValue: Single): Single;
+    procedure SetOnFreeSingle(Value: TFreeSingleEvent);
+    property OnFreeSingle: TFreeSingleEvent read GetOnFreeSingle write SetOnFreeSingle;
+  end;
+
+  TFreeDoubleEvent = function (var AValue: Double): Double of object;
+
+  IJclDoubleOwner = interface(IInterface)
+    ['{3BEFEDB0-C904-4400-ABEF-40FC928BB258}']
+    function GetOnFreeDouble: TFreeDoubleEvent;
+    function FreeDouble(var AValue: Double): Double;
+    procedure SetOnFreeDouble(Value: TFreeDoubleEvent);
+    property OnFreeDouble: TFreeDoubleEvent read GetOnFreeDouble write SetOnFreeDouble;
+  end;
+
+  TFreeExtendedEvent = function (var AValue: Extended): Extended of object;
+
+  IJclExtendedOwner = interface(IInterface)
+    ['{4501B203-6784-479D-8A8E-FBE3E1249CCF}']
+    function GetOnFreeExtended: TFreeExtendedEvent;
+    function FreeExtended(var AValue: Extended): Extended;
+    procedure SetOnFreeExtended(Value: TFreeExtendedEvent);
+    property OnFreeExtended: TFreeExtendedEvent read GetOnFreeExtended write SetOnFreeExtended;
+  end;
+
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TFreeFloatEvent = TFreeSingleEvent;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TFreeFloatEvent = TFreeDoubleEvent;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TFreeFloatEvent = TFreeExtendedEvent;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+
+  {$IFDEF MATH_SINGLE_PRECISION}
+  IJclFloatOwner = IJclSingleOwner;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  IJclFloatOwner = IJclDoubleOwner;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  IJclFloatOwner = IJclExtendedOwner;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+
+  TFreeIntegerEvent = function (var AValue: Integer): Integer of object;
+
+  IJclIntegerOwner = interface(IInterface)
+    ['{00E37ECB-0FF0-4833-8143-EB7FBEF9E208}']
+    function GetOnFreeInteger: TFreeIntegerEvent;
+    function FreeInteger(var AValue: Integer): Integer;
+    procedure SetOnFreeInteger(Value: TFreeIntegerEvent);
+    property OnFreeInteger: TFreeIntegerEvent read GetOnFreeInteger write SetOnFreeInteger;
+  end;
+
+  TFreeCardinalEvent = function (var AValue: Cardinal): Cardinal of object;
+
+  IJclCardinalOwner = interface(IInterface)
+    ['{27B3EDEF-0ACD-4592-95F2-52A1DF5E7A39}']
+    function GetOnFreeCardinal: TFreeCardinalEvent;
+    function FreeCardinal(var AValue: Cardinal): Cardinal;
+    procedure SetOnFreeCardinal(Value: TFreeCardinalEvent);
+    property OnFreeCardinal: TFreeCardinalEvent read GetOnFreeCardinal write SetOnFreeCardinal;
+  end;
+
+  TFreeInt64Event = function (var AValue: Int64): Int64 of object;
+
+  IJclInt64Owner = interface(IInterface)
+    ['{7D4A1375-057A-42B8-8DAA-52DE30058864}']
+    function GetOnFreeInt64: TFreeInt64Event;
+    function FreeInt64(var AValue: Int64): Int64;
+    procedure SetOnFreeInt64(Value: TFreeInt64Event);
+    property OnFreeInt64: TFreeInt64Event read GetOnFreeInt64 write SetOnFreeInt64;
+  end;
+
+  TFreePtrEvent = function (var APtr: Pointer): Pointer of object;
+
+  IJclPtrOwner = interface(IInterface)
+    ['{28340328-34AD-4632-9BAC-A7387A822200}']
+    function GetOnFreePointer: TFreePtrEvent;
+    function FreePointer(var APtr: Pointer): Pointer;
+    procedure SetOnFreePointer(Value: TFreePtrEvent);
+    property OnFreePointer: TFreePtrEvent read GetOnFreePointer write SetOnFreePointer;
+  end;
+
+  TFreeObjectEvent = function (var AObject: TObject): TObject of object;
+
+  IJclObjectOwner = interface(IInterface)
     ['{5157EA13-924E-4A56-995D-36956441025C}']
+    function GetOnFreeObject: TFreeObjectEvent;
     function FreeObject(var AObject: TObject): TObject;
+    procedure SetOnFreeObject(Value: TFreeObjectEvent);
+    property OnFreeObject: TFreeObjectEvent read GetOnFreeObject write SetOnFreeObject;
     function GetOwnsObjects: Boolean;
     property OwnsObjects: Boolean read GetOwnsObjects;
   end;
+
 
   IJclKeyOwner = interface
     ['{8BE209E6-2F85-44FD-B0CD-A8363C95349A}']
@@ -878,9 +1040,14 @@ type
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
 
-  IJclItemOwner<T> = interface
+  TFreeItemEvent<T> = function (var AItem: T): T of object;
+
+  IJclItemOwner<T> = interface(IInterface)
     ['{0CC220C1-E705-4B21-9F53-4AD340952165}']
+    function GetOnFreeItem: TFreeItemEvent<T>;
     function FreeItem(var AItem: T): T;
+    procedure SetOnFreeItem(Value: TFreeItemEvent<T>);
+    property OnFreeItem: TFreeItemEvent<T> read GetOnFreeItem write SetOnFreeItem;
     function GetOwnsItems: Boolean;
     property OwnsItems: Boolean read GetOwnsItems;
   end;

@@ -329,12 +329,11 @@ type
     property AutoGrowStrategy: TJclAutoGrowStrategy read GetAutoGrowStrategy write SetAutoGrowStrategy;
   end;
 
-  IJclObjectOwner = interface
-    ['{5157EA13-924E-4A56-995D-36956441025C}']
-    function FreeObject(var AObject: TObject): TObject;
-    function GetOwnsObjects: Boolean;
-    property OwnsObjects: Boolean read GetOwnsObjects;
-  end;
+(*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
+  {$JPPEXPANDMACRO RELEASEEVENT(,,)}
+
+  {$JPPEXPANDMACRO OWNER(,,,,,,,,)}
+*)
 
   IJclKeyOwner = interface
     ['{8BE209E6-2F85-44FD-B0CD-A8363C95349A}']
@@ -353,12 +352,11 @@ type
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
 
-  IJclItemOwner<T> = interface
-    ['{0CC220C1-E705-4B21-9F53-4AD340952165}']
-    function FreeItem(var AItem: T): T;
-    function GetOwnsItems: Boolean;
-    property OwnsItems: Boolean read GetOwnsItems;
-  end;
+  {$JPPEXPANDMACRO RELEASEEVENT(TFreeItemEvent<T>,AItem,T)}
+
+  (*$JPPEXPANDMACRO OWNER(IJclItemOwner<T>,IInterface,{0CC220C1-E705-4B21-9F53-4AD340952165},FreeItem,OnFreeItem,TFreeItemEvent<T>,AItem,T,
+  function GetOwnsItems: Boolean;
+  property OwnsItems: Boolean read GetOwnsItems;)*)
 
   IJclPairOwner<TKey, TValue> = interface
     ['{321C1FF7-AA2E-4229-966A-7EC6417EA16D}']

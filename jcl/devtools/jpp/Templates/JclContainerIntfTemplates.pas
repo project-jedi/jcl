@@ -166,6 +166,36 @@ type
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
+  (* RELEASEEVENT(EVENTTYPENAME, PARAMETERNAME, TYPENAME) *)
+  TJclReleaseEventParams = class(TJclContainerIntf1DParams)
+  public
+    function AliasAttributeIDs: TAllTypeAttributeIDs; override;
+  published
+    property EventTypeName: string index taReleaseEventTypeName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
+    property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
+    property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
+  end;
+
+  (* OWNER(INTERFACENAME, ANCESTORNAME, GUID, RELEASERNAME, RELEASEEVENTNAME, RELEASEEVENTTYPENAME, PARAMETERNAME, TYPENAME, OWNERADDITIONAL) *)
+  TJclOwnerParams = class(TJclContainerIntfAncestorParams)
+  protected
+    FOwnerAdditional: string;
+    function GetAncestorName: string; override;
+    function GetOwnerAdditional: string;
+  public
+    function AliasAttributeIDs: TAllTypeAttributeIDs; override;
+  published
+    property InterfaceName: string index taOwnershipInterfaceName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
+    property AncestorName;
+    property GUID: string index taOwnershipInterfaceGUID read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
+    property ReleaserName: string index taReleaserName read GetTypeAttribute write SetTypeAttribute stored False;
+    property ReleaseEventName: string index taReleaseEventName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
+    property ReleaseEventTypeName: string index taReleaseEventTypeName read GetTypeAttribute write SetTypeAttribute stored False;
+    property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
+    property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
+    property OwnerAdditional: string read GetOwnerAdditional write FOwnerAdditional;
+  end;
+
   (* ITERATOR(INTERFACENAME, ANCESTORNAME, GUID, CONSTKEYWORD, PARAMETERNAME, TYPENAME, GETTERNAME, SETTERNAME) *)
   TJclIteratorParams = class(TJclContainerIntfAncestorParams)
   protected
@@ -363,6 +393,9 @@ const
 
 implementation
 
+uses
+  JclStrings;
+
 procedure RegisterJclContainers;
 begin
   RegisterContainerParams('ITERPROCEDURE', TJclIterProcedureParams);
@@ -374,6 +407,8 @@ begin
   RegisterContainerParams('EQUALITYCOMPARER', TJclEqualityComparerParams);
   RegisterContainerParams('COMPARER', TJclComparerParams);
   RegisterContainerParams('HASHCONVERTER', TJclHashConverterParams);
+  RegisterContainerParams('RELEASEEVENT', TJclReleaseEventParams);
+  RegisterContainerParams('OWNER', TJclOwnerParams);
   RegisterContainerParams('ITERATOR', TJclIteratorParams);
   RegisterContainerParams('TREEITERATOR', TJclTreeIteratorParams);
   RegisterContainerParams('BINTREEITERATOR', TJclBinaryTreeIteratorParams);
@@ -493,6 +528,36 @@ end;
 function TJclHashConverterParams.AliasAttributeIDs: TAllTypeAttributeIDs;
 begin
   Result := [taHashConverterInterfaceName];
+end;
+
+//=== { TJclReleaseEventParams } =============================================
+
+function TJclReleaseEventParams.AliasAttributeIDs: TAllTypeAttributeIDs;
+begin
+  Result := [taReleaseEventTypeName];
+end;
+
+//=== { TJclOwnerParams } ====================================================
+
+function TJclOwnerParams.AliasAttributeIDs: TAllTypeAttributeIDs;
+begin
+  Result := [taOwnershipInterfaceName];
+end;
+
+function TJclOwnerParams.GetAncestorName: string;
+begin
+  Result := FAncestorName;
+  if Result = '' then
+    Result := 'IInterface';
+end;
+
+function TJclOwnerParams.GetOwnerAdditional: string;
+begin
+  Result := FOwnerAdditional;
+  if (Result = '') and TypeInfo.TObjectType then
+    Result := NativeLineBreak +
+      '  function GetOwnsObjects: Boolean;' + NativeLineBreak +
+      '  property OwnsObjects: Boolean read GetOwnsObjects;';
 end;
 
 //=== { TJclTreeIteratorParams } =============================================
