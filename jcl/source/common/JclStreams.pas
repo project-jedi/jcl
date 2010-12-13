@@ -1342,7 +1342,8 @@ begin
     FBufferCurrentSize := BufPos + Result;
   P := @Buffer;
   Move(P[Start], FBuffer[BufPos], Result);
-  FBufferMaxModifiedPos := BufPos + Result;
+  if FBufferMaxModifiedPos < BufPos + Result then
+    FBufferMaxModifiedPos := BufPos + Result;
   Inc(FPosition, Result);
 end;
 
