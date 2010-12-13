@@ -53,6 +53,43 @@ uses
   JclBase, JclStreams;
 
 type
+  TJclSimpleData = class(TObject)
+  private
+    FName: string;
+    FValue: string;
+    FData: Pointer;
+  protected
+    function GetBoolValue: Boolean;
+    procedure SetBoolValue(const Value: Boolean);
+    procedure SetName(const Value: string); virtual;
+    function GetFloatValue: Extended;
+    procedure SetFloatValue(const Value: Extended);
+    function GetAnsiValue: AnsiString;
+    procedure SetAnsiValue(const Value: AnsiString);
+    function GetIntValue: Int64;
+    procedure SetIntValue(const Value: Int64);
+  public
+    constructor Create(const AName: string);
+    property Name: string read FName write SetName;
+    property Value: string read FValue write FValue;
+    property AnsiValue: AnsiString read GetAnsiValue write SetAnsiValue;
+    property IntValue: Int64 read GetIntValue write SetIntValue;
+    property BoolValue: Boolean read GetBoolValue write SetBoolValue;
+    property FloatValue: Extended read GetFloatValue write SetFloatValue;
+
+    property Data: Pointer read FData write FData;
+  end;
+
+type
+  TJclSimpleXMLData = class(TJclSimpleData)
+  private
+    FNameSpace: string;
+  public
+    function FullName:string;
+    property NameSpace: string read FNameSpace write FNameSpace;
+  end;
+
+type
   TJclSimpleXML = class;
   EJclSimpleXMLError = class(EJclError);
   {$TYPEINFO ON} // generate RTTI for published properties
@@ -92,37 +129,15 @@ type
       hkDirect: (FirstElem: PJclHashElem);
   end;
 
-  TJclSimpleXMLProp = class(TObject)
+  TJclSimpleXMLProp = class(TJclSimpleXMLData)
   private
-    FName: string;
-    FValue: string;
     FParent: TJclSimpleXMLProps;
-    FNameSpace: string;
-    FData: Pointer;
-    function GetBoolValue: Boolean;
-    procedure SetBoolValue(const Value: Boolean);
-    procedure SetName(const Value: string);
-    function GetFloatValue: Extended;
-    procedure SetFloatValue(const Value: Extended);
-    function GetAnsiValue: AnsiString;
-    procedure SetAnsiValue(const Value: AnsiString);
   protected
-    function GetIntValue: Int64;
-    procedure SetIntValue(const Value: Int64);
+    procedure SetName(const Value: string); override;
   public
     function GetSimpleXML: TJclSimpleXML;
     procedure SaveToStringStream(StringStream: TJclStringStream);
-    function FullName:string;
     property Parent: TJclSimpleXMLProps read FParent write FParent;
-    property Name: string read FName write SetName;
-    property Value: string read FValue write FValue;
-    property AnsiValue: AnsiString read GetAnsiValue write SetAnsiValue;
-    property IntValue: Int64 read GetIntValue write SetIntValue;
-    property BoolValue: Boolean read GetBoolValue write SetBoolValue;
-    property FloatValue: Extended read GetFloatValue write SetFloatValue;
-    property NameSpace: string read FNameSpace write FNameSpace;
-
-    property Data: Pointer read FData write FData;
   end;
 
   TJclSimpleXMLProps = class(TObject)
@@ -295,35 +310,23 @@ type
   end;
 
   {$TYPEINFO ON}
-  TJclSimpleXMLElem = class(TObject)
+  TJclSimpleXMLElem = class(TJclSimpleXmlData)
   private
-    FName: string;
     FParent: TJclSimpleXMLElem;
     FItems: TJclSimpleXMLElems;
     FProps: TJclSimpleXMLProps;
-    FValue: string;
-    FNameSpace: string;
-    FData: Pointer;
     FSimpleXML: TJclSimpleXML;
     FContainer: TJclSimpleXMLElems;
-    function GetFloatValue: Extended;
-    procedure SetFloatValue(const Value: Extended);
-    function GetAnsiValue: AnsiString;
-    procedure SetAnsiValue(const Value: AnsiString);
   protected
     function GetSimpleXML: TJclSimpleXML;
-    function GetIntValue: Int64;
-    function GetBoolValue: Boolean;
     function GetChildsCount: Integer;
     function GetProps: TJclSimpleXMLProps;
-    procedure SetBoolValue(const Value: Boolean);
-    procedure SetName(const Value: string);
-    procedure SetIntValue(const Value: Int64);
+    procedure SetName(const Value: string); override;
     function GetItems: TJclSimpleXMLElems;
     procedure Error(const S: string);
     procedure FmtError(const S: string; const Args: array of const);
   public
-    constructor Create(const AOwner: TJclSimpleXMLElem); virtual;
+    constructor Create(const AOwner: TJclSimpleXMLElem; const AName: string = '');
     destructor Destroy; override;
     procedure Assign(Value: TJclSimpleXMLElem); virtual;
     procedure Clear; virtual;
@@ -333,25 +336,16 @@ type
     procedure LoadFromString(const Value: string);
     function SaveToString: string;
     procedure GetBinaryValue(Stream: TStream);
-    property Data: Pointer read FData write FData;
     function GetChildIndex(const AChild: TJclSimpleXMLElem): Integer;
     function GetNamedIndex(const AChild: TJclSimpleXMLElem): Integer;
 
     property SimpleXML: TJclSimpleXML read GetSimpleXML;
     property Container: TJclSimpleXMLElems read FContainer write FContainer;
   published
-    function FullName: string;virtual;
-    property Name: string read FName write SetName;
     property Parent: TJclSimpleXMLElem read FParent write FParent;
-    property NameSpace: string read FNameSpace write FNameSpace;
     property ChildsCount: Integer read GetChildsCount;
     property Items: TJclSimpleXMLElems read GetItems;
     property Properties: TJclSimpleXMLProps read GetProps;
-    property IntValue: Int64 read GetIntValue write SetIntValue;
-    property BoolValue: Boolean read GetBoolValue write SetBoolValue;
-    property FloatValue: Extended read GetFloatValue write SetFloatValue;
-    property Value: string read FValue write FValue;
-    property AnsiValue: AnsiString read GetAnsiValue write SetAnsiValue;
   end;
   {$IFNDEF TYPEINFO_ON}
   {$TYPEINFO OFF}
@@ -881,6 +875,71 @@ begin
   SimpleXMLDecode(Result, False);
 end;
 
+//=== { TJclSimpleData } =====================================================
+
+constructor TJclSimpleData.Create(const AName: string);
+begin
+  inherited Create;
+  FName := AName;
+end;
+
+function TJclSimpleData.GetAnsiValue: AnsiString;
+begin
+  Result := AnsiString(Value);
+end;
+
+function TJclSimpleData.GetBoolValue: Boolean;
+begin
+  Result := StrToBoolDef(Value, False);
+end;
+
+function TJclSimpleData.GetFloatValue: Extended;
+begin
+  Result := 0.0;
+  if not TryStrToFloat(Value, Result) then
+    Result := 0.0;
+end;
+
+function TJclSimpleData.GetIntValue: Int64;
+begin
+  Result := StrToInt64Def(Value, -1);
+end;
+
+procedure TJclSimpleData.SetAnsiValue(const Value: AnsiString);
+begin
+  Self.Value := string(Value);
+end;
+
+procedure TJclSimpleData.SetBoolValue(const Value: Boolean);
+begin
+  FValue := BoolToStr(Value);
+end;
+
+procedure TJclSimpleData.SetFloatValue(const Value: Extended);
+begin
+  FValue := FloatToStr(Value);
+end;
+
+procedure TJclSimpleData.SetIntValue(const Value: Int64);
+begin
+  FValue := IntToStr(Value);
+end;
+
+procedure TJclSimpleData.SetName(const Value: string);
+begin
+  FName := Value;
+end;
+
+//=== { TJclSimpleXMLData } ==================================================
+
+function TJclSimpleXMLData.FullName: string;
+begin
+  if NameSpace <> '' then
+    Result := NameSpace + ':' + Name
+  else
+    Result := Name;
+end;
+
 //=== { TJclSimpleXML } ======================================================
 
 constructor TJclSimpleXML.Create;
@@ -1218,7 +1277,7 @@ end;
 procedure TJclSimpleXMLElem.Assign(Value: TJclSimpleXMLElem);
 var
   Elems: TJclSimpleXMLElem;
-  Elem: TJclSimpleXMLElem;
+  SrcElem, DestElem: TJclSimpleXMLElem;
   I: Integer;
 begin
   Clear;
@@ -1234,9 +1293,10 @@ begin
   begin
     // Create from the class type, so that the virtual constructor is called
     // creating an element of the correct class type.
-    Elem := TJclSimpleXMLElemClass(Elems.Items[I].ClassType).Create(Self);
-    Elem.Assign(Elems.Items[I]);
-    Items.Add(Elem);
+    SrcElem := Elems.Items[I];
+    DestElem := TJclSimpleXMLElemClass(SrcElem.ClassType).Create(Self, SrcElem.Name);
+    DestElem.Assign(SrcElem);
+    Items.Add(DestElem);
   end;
 end;
 
@@ -1248,10 +1308,9 @@ begin
     FProps.Clear;
 end;
 
-constructor TJclSimpleXMLElem.Create(const AOwner: TJclSimpleXMLElem);
+constructor TJclSimpleXMLElem.Create(const AOwner: TJclSimpleXMLElem; const AName: string);
 begin
-  inherited Create;
-  FName := '';
+  inherited Create(AName);
   FParent := TJclSimpleXMLElem(AOwner);
   if Assigned(FParent) then
     FSimpleXML := FParent.FSimpleXML;
@@ -1276,19 +1335,6 @@ procedure TJclSimpleXMLElem.FmtError(const S: string;
   const Args: array of const);
 begin
   Error(Format(S, Args));
-end;
-
-function TJclSimpleXMLElem.FullName: string;
-begin
-  if FNameSpace <> '' then
-    Result := FNameSpace + ':' + Name
-  else
-    Result := Name;
-end;
-
-function TJclSimpleXMLElem.GetAnsiValue: AnsiString;
-begin
-  Result := AnsiString(Value);
 end;
 
 procedure TJclSimpleXMLElem.GetBinaryValue(Stream: TStream);
@@ -1367,11 +1413,6 @@ begin
   Stream.Write(Buf, J);
 end;
 
-function TJclSimpleXMLElem.GetBoolValue: Boolean;
-begin
-  Result := StrToBoolDef(Value, False);
-end;
-
 function TJclSimpleXMLElem.GetChildIndex(
   const AChild: TJclSimpleXMLElem): Integer;
 begin
@@ -1389,18 +1430,6 @@ begin
   if FItems <> nil then
     for I := 0 to FItems.Count - 1 do
       Result := Result + FItems[I].ChildsCount;
-end;
-
-function TJclSimpleXMLElem.GetFloatValue: Extended;
-begin
-  Result := 0.0;
-  if not TryStrToFloat(Value, Result) then
-    Result := 0.0;
-end;
-
-function TJclSimpleXMLElem.GetIntValue: Int64;
-begin
-  Result := StrToInt64Def(Value, -1);
 end;
 
 function TJclSimpleXMLElem.GetItems: TJclSimpleXMLElems;
@@ -1468,33 +1497,13 @@ begin
   end;
 end;
 
-procedure TJclSimpleXMLElem.SetAnsiValue(const Value: AnsiString);
-begin
-  Self.Value := string(Value);
-end;
-
-procedure TJclSimpleXMLElem.SetBoolValue(const Value: Boolean);
-begin
-  FValue := BoolToStr(Value);
-end;
-
-procedure TJclSimpleXMLElem.SetFloatValue(const Value: Extended);
-begin
-  FValue := FloatToStr(Value);
-end;
-
-procedure TJclSimpleXMLElem.SetIntValue(const Value: Int64);
-begin
-  FValue := IntToStr(Value);
-end;
-
 procedure TJclSimpleXMLElem.SetName(const Value: string);
 begin
-  if (Value <> FName) and (Value <> '') then
+  if (Value <> Name) and (Value <> '') then
   begin
-    if (Parent <> nil) and (FName <> '') then
+    if (Parent <> nil) and (Name <> '') then
       Parent.Items.DoItemRename(Self, Value);
-    FName := Value;
+    inherited SetName(Value);
   end;
 end;
 
@@ -1635,23 +1644,20 @@ end;
 
 function TJclSimpleXMLElems.Add(const Name: string): TJclSimpleXMLElemClassic;
 begin
-  Result := TJclSimpleXMLElemClassic.Create(Parent);
-  Result.FName := Name; //Directly set parent to avoid notification
+  Result := TJclSimpleXMLElemClassic.Create(Parent, Name);
   AddChild(Result);
 end;
 
 function TJclSimpleXMLElems.Add(const Name, Value: string): TJclSimpleXMLElemClassic;
 begin
-  Result := TJclSimpleXMLElemClassic.Create(Parent);
-  Result.FName := Name;
+  Result := TJclSimpleXMLElemClassic.Create(Parent, Name);
   Result.Value := Value;
   AddChild(Result);
 end;
 
 function TJclSimpleXMLElems.Add(const Name: string; const Value: Int64): TJclSimpleXMLElemClassic;
 begin
-  Result := TJclSimpleXMLElemClassic.Create(Parent);
-  Result.FName := Name;
+  Result := TJclSimpleXMLElemClassic.Create(Parent, Name);
   Result.Value := IntToStr(Value);
   AddChild(Result);
 end;
@@ -1666,8 +1672,7 @@ end;
 function TJclSimpleXMLElems.Add(const Name: string;
   const Value: Boolean): TJclSimpleXMLElemClassic;
 begin
-  Result := TJclSimpleXMLElemClassic.Create(Parent);
-  Result.FName := Name;
+  Result := TJclSimpleXMLElemClassic.Create(Parent, Name);
   Result.Value := BoolToStr(Value);
   AddChild(Result);
 end;
@@ -1689,8 +1694,7 @@ begin
         St := St + IntToHex(Buf[I], 2);
       Stream.WriteString(St);
     until Count = 0;
-    Result := TJclSimpleXMLElemClassic.Create(Parent);
-    Result.FName := Name;
+    Result := TJclSimpleXMLElemClassic.Create(Parent, Name);
     Result.Value := Stream.DataString;
     AddChild(Result);
   finally
@@ -1750,8 +1754,7 @@ end;
 
 function TJclSimpleXMLElems.AddFirst(const Name: string): TJclSimpleXMLElemClassic;
 begin
-  Result := TJclSimpleXMLElemClassic.Create(Parent);
-  Result.FName := Name; //Directly set parent to avoid notification
+  Result := TJclSimpleXMLElemClassic.Create(Parent, Name);
   AddChildFirst(Result);
 end;
 
@@ -1765,24 +1768,21 @@ end;
 function TJclSimpleXMLElems.AddComment(const Name,
   Value: string): TJclSimpleXMLElemComment;
 begin
-  Result := TJclSimpleXMLElemComment.Create(Parent);
-  Result.FName := Name;
+  Result := TJclSimpleXMLElemComment.Create(Parent, Name);
   Result.Value := Value;
   AddChild(Result);
 end;
 
 function TJclSimpleXMLElems.AddCData(const Name, Value: string): TJclSimpleXMLElemCData;
 begin
-  Result := TJclSimpleXMLElemCData.Create(Parent);
-  Result.FName := Name;
+  Result := TJclSimpleXMLElemCData.Create(Parent, Name);
   Result.Value := Value;
   AddChild(Result);
 end;
 
 function TJclSimpleXMLElems.AddText(const Name, Value: string): TJclSimpleXMLElemText;
 begin
-  Result := TJclSimpleXMLElemText.Create(Parent);
-  Result.FName := Name;
+  Result := TJclSimpleXMLElemText.Create(Parent, Name);
   Result.Value := Value;
   AddChild(Result);
 end;
@@ -2216,8 +2216,7 @@ end;
 function TJclSimpleXMLElems.Insert(const Name: string;
   Index: Integer): TJclSimpleXMLElemClassic;
 begin
-  Result := TJclSimpleXMLElemClassic.Create(Parent);
-  Result.FName := Name; //Directly set parent to avoid notification
+  Result := TJclSimpleXMLElemClassic.Create(Parent, Name);
   InsertChild(Result, Index);
 end;
 
@@ -2259,9 +2258,8 @@ var
 begin
   if FProperties = nil then
     FProperties := THashedStringList.Create;
-  Elem := TJclSimpleXMLProp.Create();
+  Elem := TJclSimpleXMLProp.Create(Name);
   FProperties.AddObject(Name, Elem);
-  Elem.FName := Name; //Avoid notification
   Elem.Value := Value;
   Elem.Parent := Self;
   Result := Elem;
@@ -2291,9 +2289,8 @@ var
 begin
   if FProperties = nil then
     FProperties := THashedStringList.Create;
-  Elem := TJclSimpleXMLProp.Create();
+  Elem := TJclSimpleXMLProp.Create(Name);
   FProperties.InsertObject(Index, Name, Elem);
-  Elem.FName := Name; //Avoid notification
   Elem.Value := Value;
   Elem.Parent := Self;
   Result := Elem;
@@ -2605,36 +2602,6 @@ end;
 
 //=== { TJclSimpleXMLProp } ==================================================
 
-function TJclSimpleXMLProp.GetAnsiValue: AnsiString;
-begin
-  Result := AnsiString(Value);
-end;
-
-function TJclSimpleXMLProp.GetBoolValue: Boolean;
-begin
-  Result := StrToBoolDef(Value, False);
-end;
-
-function TJclSimpleXMLProp.GetFloatValue: Extended;
-begin
-  Result := 0.0;
-  if not TryStrToFloat(Value, Result) then
-    Result := 0.0;
-end;
-
-function TJclSimpleXMLProp.FullName: string;
-begin
-  if FNameSpace <> '' then
-    Result := FNameSpace + ':' + Name
-  else
-    Result := Name;
-end;
-
-function TJclSimpleXMLProp.GetIntValue: Int64;
-begin
-  Result := StrToInt64Def(Value, -1);
-end;
-
 function TJclSimpleXMLProp.GetSimpleXML: TJclSimpleXML;
 begin
   if (FParent <> nil) and (FParent.FParent <> nil) then
@@ -2646,10 +2613,10 @@ end;
 procedure TJclSimpleXMLProp.SaveToStringStream(StringStream: TJclStringStream);
 var
   AEncoder: TJclSimpleXML;
-  Tmp:string;
+  Tmp: string;
 begin
   AEncoder := GetSimpleXML;
-  Tmp := FValue;
+  Tmp := Value;
   if AEncoder <> nil then
     AEncoder.DoEncodeValue(Tmp);
   if NameSpace <> '' then
@@ -2659,33 +2626,13 @@ begin
   StringStream.WriteString(Tmp, 1, Length(Tmp));
 end;
 
-procedure TJclSimpleXMLProp.SetAnsiValue(const Value: AnsiString);
-begin
-  Self.Value := string(Value);
-end;
-
-procedure TJclSimpleXMLProp.SetBoolValue(const Value: Boolean);
-begin
-  FValue := BoolToStr(Value);
-end;
-
-procedure TJclSimpleXMLProp.SetFloatValue(const Value: Extended);
-begin
-  FValue := FloatToStr(Value);
-end;
-
-procedure TJclSimpleXMLProp.SetIntValue(const Value: Int64);
-begin
-  FValue := IntToStr(Value);
-end;
-
 procedure TJclSimpleXMLProp.SetName(const Value: string);
 begin
-  if (Value <> FName) and (Value <> '') then
+  if (Value <> Name) and (Value <> '') then
   begin
-    if (Parent <> nil) and (FName <> '') then
+    if (Parent <> nil) and (Name <> '') then
       Parent.DoItemRename(Self, Value);
-    FName := Value;
+    inherited SetName(Value);
   end;
 end;
 
@@ -2866,7 +2813,7 @@ begin
 
   if (Items.Count = 0) then
   begin
-    tmp := FValue;
+    tmp := Value;
     if (Name <> '') then
     begin
       if Value = '' then
@@ -3862,8 +3809,7 @@ function TJclSimpleXMLElemsProlog.AddStyleSheet(const AType, AHRef: string): TJc
 begin
   // make sure there is an xml header
   FindHeader;
-  Result := TJclSimpleXMLElemSheet.Create(nil);
-  Result.Name := 'xml-stylesheet';
+  Result := TJclSimpleXMLElemSheet.Create(nil, 'xml-stylesheet');
   Result.Properties.Add('type',AType);
   Result.Properties.Add('href',AHRef);
   FElems.AddObject('xml-stylesheet', Result);
@@ -3873,8 +3819,7 @@ function TJclSimpleXMLElemsProlog.AddMSOApplication(const AProgId : string): TJc
 begin
   // make sure there is an xml header
   FindHeader;
-  Result := TJclSimpleXMLElemMSOApplication.Create(nil);
-  Result.Name := 'mso-application';
+  Result := TJclSimpleXMLElemMSOApplication.Create(nil, 'mso-application');
   Result.Properties.Add('progid',AProgId);
   FElems.AddObject('mso-application', Result);
 end;
