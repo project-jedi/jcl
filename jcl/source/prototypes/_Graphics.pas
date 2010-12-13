@@ -36,7 +36,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -61,7 +61,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF VCL}
-  Graphics, JclGraphUtils, Controls,
+  Graphics, JclGraphUtils, Controls, Forms,
   {$ENDIF VCL}
   JclBase;
 
@@ -531,6 +531,11 @@ function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
   RegionBitmapMode: TJclRegionBitmapMode; UseAlphaChannel: Boolean = False): HRGN;
 procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer; Window: THandle = HWND_DESKTOP); overload;
 procedure ScreenShot(bm: TBitmap; IncludeTaskBar: Boolean = True); overload;
+procedure ScreenShot(bm: TBitmap; ControlToPrint: TWinControl); overload;
+procedure ScreenShot(bm: TBitmap; ControlToPrint: string); overload;
+procedure ScreenShot(bm: TBitmap; FormToPrint: TCustomForm; ControlToPrint: TWinControl); overload;
+procedure ScreenShot(bm: TBitmap; FormToPrint: TCustomForm); overload;
+procedure ScreenShot(bm: TBitmap; FormToPrint: TCustomForm; ControlToPrint: String); overload;
 function MapWindowRect(hWndFrom, hWndTo: THandle; ARect: TRect):TRect;
 {$ENDIF VCL}
 
@@ -2175,6 +2180,76 @@ begin
   else
     SystemParametersInfo(SPI_GETWORKAREA, 0, @R, 0);
   ScreenShot(bm, R.Left, R.Top, R.Right, R.Bottom, HWND_DESKTOP);
+end;
+
+procedure ScreenShot(bm: TBitmap; ControlToPrint: TWinControl); overload;
+begin
+  //uses the ActiveForm property of TScreen to determine on which form the control will be searched for.
+  if ControlToPrint <> nil then
+    ScreenShot(bm, Screen.ActiveForm, ControlToPrint)
+  else
+    raise EJclGraphicsError.CreateResFmt(@RSInvalidFormOrComponent, ['form'])
+end;
+
+procedure ScreenShot(bm: TBitmap; ControlToPrint: string); overload;
+begin
+  //uses the ActiveForm property of TScreen to determine on which form the control will be searched for.
+  if Length(ControlToPrint) > 0 then
+    ScreenShot(bm, Screen.ActiveForm, ControlToPrint)
+  else
+    raise EJclGraphicsError.CreateResFmt(@RSInvalidFormOrComponent, ['Component'])
+end;
+
+procedure ScreenShot(bm: TBitmap; FormToPrint: TCustomForm; ControlToPrint: TWinControl); overload;
+begin
+  if FormToPrint <> nil then
+  begin
+    if (ControlToPrint is TWinControl) then
+      ScreenShot(bm, FormToPrint, ControlToPrint.Name)
+    else
+      raise EJclGraphicsError.CreateResFmt(@RSInvalidControlType,[ControlToPrint.Name])
+  end
+  else
+  if ControlToPrint <> nil then
+    raise EJclGraphicsError.CreateResFmt(@RSInvalidFormOrComponent, ['form'])
+  else
+    raise EJclGraphicsError.CreateResFmt(@RSInvalidFormOrComponent, ['form'])
+end;
+
+procedure ScreenShot(bm: TBitmap; FormToPrint: TCustomForm); overload;
+begin
+  //Prints the entire forms area.
+  if FormToPrint <> nil then
+    ScreenShot(bm, FormToPrint.Left, FormToPrint.Top, FormToPrint.Width, FormToPrint.Height, FormToPrint.Handle)
+  else
+    raise EJclGraphicsError.CreateResFmt(@RSInvalidFormOrComponent, ['form'])
+end;
+
+procedure ScreenShot(bm: TBitmap; FormToPrint: TCustomForm; ControlToPrint: String); overload;
+var
+  Component: TComponent;
+begin
+  if FormToPrint <> nil then
+  begin
+    if Length(ControlToPrint) =0 then
+      raise EJclGraphicsError.CreateResFmt(@RSInvalidFormOrComponent, ['component'])
+    else
+    begin
+      Component :=nil;
+      FormToPrint.FindComponent(ControlToPrint);
+      if Component =nil then
+        raise EJclGraphicsError.CreateResFmt(@RsComponentDoesNotExist,[ControlToPrint, FormToPrint.Name])
+      else
+      begin
+        if Component is TWinControl then
+          ScreenShot(bm, TWinControl(Component).Left, TWinControl(Component).Top, TWinControl(Component).Width, TWinControl(Component).Height, TWinControl(Component).Handle)
+        else
+          raise EJclGraphicsError.CreateResFmt(@RSInvalidControlType,[ControlToPrint]);
+      end;
+    end;
+  end
+  else
+    raise EJclGraphicsError.CreateResFmt(@RSInvalidFormOrComponent, ['form'])
 end;
 
 function MapWindowRect(hWndFrom, hWndTo: THandle; ARect:TRect):TRect;

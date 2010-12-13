@@ -40,7 +40,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -54,11 +54,11 @@ interface
 
 uses
   Windows,
-  Forms, Classes, SysUtils,
+  Classes, SysUtils,
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Graphics, JclGraphUtils, Controls,
+  Graphics, JclGraphUtils, Controls, Forms,
   JclBase;
 
 type
