@@ -3767,10 +3767,17 @@ begin
     Exit;
   ExtractPath := ExtractFilePath(Name);
   {$ENDIF UNIX}
-  if ExtractPath = '' then
-    Result := CreateDir(Name)
-  else
-    Result := ForceDirectories(ExtractPath) and CreateDir(Name);
+  Result := (ExtractPath = '') or ForceDirectories(ExtractPath);
+  if Result then
+  begin
+    {$IFDEF MSWINDOWS}
+    SetLastError(ERROR_SUCCESS);
+    {$ENDIF MSWINDOWS}
+    Result := Result and CreateDir(Name);
+    {$IFDEF MSWINDOWS}
+    Result := Result or (GetLastError = ERROR_ALREADY_EXISTS);
+    {$ENDIF MSWINDOWS}
+  end;
 end;
 
 function GetDirectorySize(const Path: string): Int64;
