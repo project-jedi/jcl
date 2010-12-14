@@ -62,7 +62,7 @@ Containers:	..\Common\JclAlgorithms.pas \
 
 ..\windows\JclWin32.pas: \
                 JclWin32.pas
-        $(jpp) -ijcl.inc $(WinOptions) $?
+        $(jpp) -ijcl.inc -iwindowsonly.inc $(WinOptions) $?
 
 JclAlgorithms.pas: \
 		containers\JclAlgorithms.int containers\JclAlgorithms.imp
