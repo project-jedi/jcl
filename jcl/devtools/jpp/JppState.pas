@@ -63,6 +63,17 @@ type
 
   TTriState = (ttUnknown, ttUndef, ttDefined);
 
+  TPppStateItem = class
+  public
+    DefinedKeywords: IJclStrMap;
+    ExcludedFiles: IJclStrList;
+    Macros: IJclStrIntfMap;
+    SearchPath: IJclStrList;
+    TriState: TTriState;
+  end;
+
+  TPppStateItemClass = class of TPppStateItem;
+
   TPppProvider = class(TPersistent)
   protected
     function GetBoolValue(const Name: string): Boolean; virtual; abstract;
@@ -84,8 +95,6 @@ type
   private
     FStateStack: IJclStack;
     FOptions: TPppOptions;
-    procedure InternalPushState(const ExcludedFiles, SearchPath: IJclStrList;
-      const Macros: IJclStrIntfMap; const Defines: IJclStrMap; ATriState: TTriState);
     function InternalPeekDefines: IJclStrMap;
     function InternalPeekExcludedFiles: IJclStrList;
     function InternalPeekMacros: IJclStrIntfMap;
@@ -93,6 +102,10 @@ type
     function InternalPeekTriState: TTriState;
     procedure InternalSetTriState(Value: TTriState);
   protected
+    class function StateItemClass: TPppStateItemClass; virtual;
+    procedure InternalPushState(FromStateItem, ToStateItem: TPppStateItem); virtual;
+    function PeekStateItem: TPppStateItem;
+
     function GetOptions: TPppOptions;
     procedure SetOptions(AOptions: TPppOptions);
 
@@ -112,6 +125,8 @@ type
     constructor Create;
     destructor Destroy; override;
 
+    procedure AfterConstruction; override;
+  
     { PushState is called at the start of every unit, and PopState at the
       end. This means that any declarations like $DEFINE will be file-local
       in scope. }
@@ -157,25 +172,12 @@ uses
   TypInfo,
   JclStrings, JclArrayLists, JclHashMaps, JclStacks;
 
-type
-  TSimplePppStateItem = class
-  public
-    DefinedKeywords: IJclStrMap;
-    ExcludedFiles: IJclStrList;
-    Macros: IJclStrIntfMap;
-    SearchPath: IJclStrList;
-    TriState: TTriState;
-    ParentTriState: TTriState;
-  end;
-
 //=== { TPppState } ==========================================================
 
 constructor TPppState.Create;
 begin
   inherited Create;
   FStateStack := TJclStack.Create(16, True);
-  InternalPushState(TJclStrArrayList.Create(16), TJclStrArrayList.Create(16),
-    TJclStrIntfHashMap.Create(16), TJclStrHashMap.Create(16, False), ttUnknown);
 end;
 
 destructor TPppState.Destroy;
@@ -192,6 +194,15 @@ end;
 procedure TPppState.AddToSearchPath(const AName: string);
 begin
   InternalPeekSearchPath.Add(AName);
+end;
+
+procedure TPppState.AfterConstruction;
+var
+  StateItem: TPppStateItem;
+begin
+  StateItem := StateItemClass.Create;
+  InternalPushState(nil, StateItem);
+  FStateStack.Push(StateItem);
 end;
 
 function TPppState.AssociateParameters(const ParamNames: IJclStrList;
@@ -400,66 +411,57 @@ end;
 
 function TPppState.InternalPeekDefines: IJclStrMap;
 begin
-  if FStateStack.Empty then
-    raise EPppState.Create('Internal error: PPP State stack is empty');
-  Result := (FStateStack.Peek as TSimplePppStateItem).DefinedKeywords;
+  Result := PeekStateItem.DefinedKeywords;
 end;
 
 function TPppState.InternalPeekExcludedFiles: IJclStrList;
 begin
-  if FStateStack.Empty then
-    raise EPppState.Create('Internal error: PPP State stack is empty');
-  Result := (FStateStack.Peek as TSimplePppStateItem).ExcludedFiles;
+  Result := PeekStateItem.ExcludedFiles;
 end;
 
 function TPppState.InternalPeekMacros: IJclStrIntfMap;
 begin
-  if FStateStack.Empty then
-    raise EPppState.Create('Internal error: PPP State stack is empty');
-  Result := (FStateStack.Peek as TSimplePppStateItem).Macros;
+  Result := PeekStateItem.Macros;
 end;
 
 function TPppState.InternalPeekSearchPath: IJclStrList;
 begin
-  if FStateStack.Empty then
-    raise EPppState.Create('Internal error: PPP State stack is empty');
-  Result := (FStateStack.Peek as TSimplePppStateItem).SearchPath;
+  Result := PeekStateItem.SearchPath;
 end;
 
 function TPppState.InternalPeekTriState: TTriState;
 begin
-  if FStateStack.Empty then
-    raise EPppState.Create('Internal error: PPP State stack is empty');
-  Result := (FStateStack.Peek as TSimplePppStateItem).TriState;
+ Result := PeekStateItem.TriState;
 end;
 
-procedure TPppState.InternalPushState(const ExcludedFiles, SearchPath: IJclStrList;
-  const Macros: IJclStrIntfMap; const Defines: IJclStrMap; ATriState: TTriState);
-var
-  AStateItem: TSimplePppStateItem;
+procedure TPppState.InternalPushState(FromStateItem, ToStateItem: TPppStateItem);
 begin
-  AStateItem := TSimplePppStateItem.Create;
-  AStateItem.ExcludedFiles := ExcludedFiles;
-  AStateItem.DefinedKeywords := Defines;
-  AStateItem.Macros := Macros;
-  AStateItem.SearchPath := SearchPath;
-  AStateItem.TriState := ATriState;
-  if FStateStack.Empty then
-    AStateItem.ParentTriState := ttUnknown
+  if Assigned(FromStateItem) then
+  begin
+    // clone
+    ToStateItem.DefinedKeywords := (FromStateItem.DefinedKeywords as IJclIntfCloneable).IntfClone as IJclStrMap;
+    ToStateItem.ExcludedFiles := (FromStateItem.ExcludedFiles as IJclIntfCloneable).IntfClone as IJclStrList;
+    ToStateItem.Macros := (FromStateItem.Macros as IJclIntfCloneable).IntfClone as IJclStrIntfMap;
+    ToStateItem.SearchPath := (FromStateItem.SearchPath as IJclIntfCloneable).IntfClone as IJclStrList;
+    ToStateItem.TriState := FromStateItem.TriState;
+  end
   else
-    AStateItem.ParentTriState := InternalPeekTriState;
-  FStateStack.Push(AStateItem);
+  begin
+    // create the first item
+    ToStateItem.DefinedKeywords := TJclStrHashMap.Create(16, False);
+    ToStateItem.ExcludedFiles := TJclStrArrayList.Create(16);
+    ToStateItem.Macros := TJclStrIntfHashMap.Create(16);
+    ToStateItem.SearchPath := TJclStrArrayList.Create(16);
+    ToStateItem.TriState := ttDefined;
+  end;
 end;
 
 procedure TPppState.InternalSetTriState(Value: TTriState);
 var
-  ASimplePppStateItem: TSimplePppStateItem;
+  APppStateItem: TPppStateItem;
 begin
-  if FStateStack.Empty then
-    raise EPppState.Create('Internal error: PPP State stack is empty');
-  ASimplePppStateItem := FStateStack.Peek as TSimplePppStateItem;
-  if (ASimplePppStateItem.ParentTriState <> ttUndef) or (Value = ttUndef) then
-    ASimplePppStateItem.TriState := Value;
+  APppStateItem := PeekStateItem;
+  APppStateItem.TriState := Value;
 end;
 
 function TPppState.IsFileExcluded(const AName: string): Boolean;
@@ -480,6 +482,13 @@ begin
   end;
 end;
 
+function TPppState.PeekStateItem: TPppStateItem;
+begin
+  if FStateStack.Empty then
+    raise EPppState.Create('Internal error: PPP State stack is empty');
+  Result := FStateStack.Peek as TPppStateItem; 
+end;
+
 procedure TPppState.PopState;
 begin
   if FStateStack.Size <= 1 then
@@ -489,18 +498,12 @@ end;
 
 procedure TPppState.PushState;
 var
-  AExcludedFiles, ASearchPath: IJclStrList;
-  ADefines: IJclStrMap;
-  AMacros: IJclStrIntfMap;
-  ATriState: TTriState;
+  FromStateItem, ToStateItem: TPppStateItem;
 begin
-  ADefines := (InternalPeekDefines as IJclIntfCloneable).IntfClone as IJclStrMap;
-  AExcludedFiles := (InternalPeekExcludedFiles as IJclIntfCloneable).IntfClone as IJclStrList;
-  ASearchPath := (InternalPeekSearchPath as IJclIntfCloneable).IntfClone as IJclStrList;
-  AMacros := (InternalPeekMacros as IJclIntfCloneable).IntfClone as IJclStrIntfMap;
-  ATriState := InternalPeekTriState;
-
-  InternalPushState(AExcludedFiles, ASearchPath, AMacros, ADefines, ATriState);
+  FromStateItem := PeekStateItem;
+  ToStateItem := StateItemClass.Create;
+  InternalPushState(FromStateItem, ToStateItem);
+  FStateStack.Push(ToStateItem);
 end;
 
 procedure TPppState.SetOptions(AOptions: TPppOptions);
@@ -570,6 +573,11 @@ var
 begin
   VariantValue := Value;
   SetPropValue(Self, Name, VariantValue);
+end;
+
+class function TPppState.StateItemClass: TPppStateItemClass;
+begin
+  Result := TPppStateItem;
 end;
 
 procedure TPppState.Undef(const ASymbol: string);
