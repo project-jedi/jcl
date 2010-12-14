@@ -414,7 +414,7 @@ type
 
   TJclSimpleXMLOptions = set of (sxoAutoCreate, sxoAutoIndent, sxoAutoEncodeValue,
     sxoAutoEncodeEntity, sxoDoNotSaveProlog, sxoTrimPrecedingTextWhitespace,
-    sxoTrimFollowingTextWhitespace);
+    sxoTrimFollowingTextWhitespace, sxoKeepWhitespace);
   TJclSimpleXMLEncodeEvent = procedure(Sender: TObject; var Value: string) of object;
   TJclSimpleXMLEncodeStreamEvent = procedure(Sender: TObject; InStream, OutStream: TStream) of object;
 
@@ -2002,7 +2002,7 @@ var
 begin
   St := '';
   lPos := rsWaitingTag;
-  KeepWhiteSpace := (AParent.Options * [sxoTrimPrecedingTextWhitespace, sxoTrimFollowingTextWhitespace]) = [];
+  KeepWhiteSpace := sxoKeepWhitespace in AParent.Options;
   ContainsText := False;
   ContainsWhiteSpace := False;
 
@@ -3021,7 +3021,7 @@ end;
 procedure TJclSimpleXMLElemText.LoadFromStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML);
 var
   Ch: Char;
-  St: string;
+  St, TrimValue: string;
 begin
   St := '';
 
@@ -3044,10 +3044,13 @@ begin
   begin
     GetSimpleXML.DoDecodeValue(St);
 
+    TrimValue := St;
     if sxoTrimPrecedingTextWhitespace in SimpleXML.Options then
-      St := TrimLeft(St);
+      TrimValue := TrimLeft(TrimValue);
     if sxoTrimFollowingTextWhitespace in SimpleXML.Options then
-      St := TrimRight(St);
+      TrimValue := TrimRight(TrimValue);
+    if (TrimValue <> '') or not (sxoKeepWhitespace in SimpleXML.Options) then
+      St := TrimValue;
   end;
 
   Value := St;
