@@ -50,13 +50,18 @@ unit Hardlinks;
 {$I jcl.inc}
 {$I windowsonly.inc}
 
+// ALL enabled by default for Project JEDI
+{$DEFINE STDCALL}   // Make functions STDCALL always
+{$DEFINE RTDL}      // Use runtime dynamic linking
+{$DEFINE PREFERAPI} // Prefer the "real" Windows API on systems on which it exists
+                    // If this is defined STDCALL is automatically needed and defined!
+
 {$ALIGN ON}
 {$MINENUMSIZE 4}
 
 interface
 
 //DOM-IGNORE-BEGIN
-
 
 (*
   All possible combinations of the above DEFINEs have been tested and work fine.
