@@ -170,7 +170,8 @@ implementation
 
 uses
   TypInfo,
-  JclStrings, JclArrayLists, JclHashMaps, JclStacks;
+  JclStrings, JclArrayLists, JclHashMaps, JclStacks,
+  JppParser;
 
 //=== { TPppState } ==========================================================
 
@@ -212,6 +213,7 @@ var
   AssociationByName: Boolean;
   Index, ParamIndex: Integer;
   AParamName, AParamText: string;
+  Parser: TJppParser;
 begin
   SetLength(Result, Length(ParamValues));
   AssociationByName := True;
@@ -221,7 +223,7 @@ begin
     begin
       StrParams.Add(ParamValues[Index]);
       AParamName := StrParams.Names[Index];
-      if AParamName <> '' then
+      if Assigned(ParamNames) and (AParamName <> '') then
       begin
         // verify parameter names
         ParamIndex := ParamNames.IndexOf(AParamName);
@@ -237,6 +239,17 @@ begin
         AParamText := StrParams.Values[ParamNames.Strings[Index]]
       else
         AParamText := StrParams.Strings[Index];
+      Self.PushState;
+      try
+        Parser := TJppParser.Create(AParamText, Self);
+        try
+          AParamText := Parser.Parse;
+        finally
+          Parser.Free;
+        end;
+      finally
+        Self.PopState;
+      end;
       Result[Index] := WideString(AParamText);
     end;
   finally
@@ -461,7 +474,8 @@ var
   APppStateItem: TPppStateItem;
 begin
   APppStateItem := PeekStateItem;
-  APppStateItem.TriState := Value;
+  if APppStateItem.TriState <> ttUndef then
+    APppStateItem.TriState := Value;
 end;
 
 function TPppState.IsFileExcluded(const AName: string): Boolean;
