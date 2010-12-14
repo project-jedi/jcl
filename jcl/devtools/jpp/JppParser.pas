@@ -65,7 +65,6 @@ type
     FLineBreakPos: Integer;
     FAllWhiteSpaceIn: Boolean;
     FAllWhiteSpaceOut: Boolean;
-    procedure RemoveOrphanedLineBreaks;
   protected
     procedure AddResult(const S: string; FixIndent: Boolean = False; ForceRecurseTest: Boolean = False);
     function IsExcludedInclude(const FileName: string): Boolean;
@@ -140,7 +139,7 @@ begin
   Result := True;
   for I := 1 to Length(P) do
     case P^ of
-      #9, #10, #13, ' ':
+      NativeTab, NativeLineFeed, NativeCarriageReturn, NativeSpace:
         Inc(P);
     else
       Result := False;
@@ -259,6 +258,7 @@ end;
 
 constructor TJppParser.Create(const ABuffer: string; APppState: TPppState);
 begin
+  inherited Create;
   Assert(APppState <> nil);
 
   FLexer := TJppLexer.Create(ABuffer);
@@ -288,7 +288,7 @@ begin
 
   AResult := S;
   // recurse macro expanding
-  if ForceRecurseTest or (StrIPos('$JPP', AResult) > 0) then
+  if (AResult <> '') and (ForceRecurseTest or (StrIPos('$JPP', AResult) > 0)) then
   begin
     try
       Recurse := False;
@@ -368,7 +368,7 @@ begin
       AResult := S;
     end;
   end;
-  if FixIndent then
+  if FixIndent and (AResult <> '') then
   begin
     // find the number of white space at the beginning of the current line (indentation level)
     I := FResultLen + 1;
@@ -411,12 +411,14 @@ begin
       Lines.Free;
     end;
   end;
-  while FResultLen + Length(AResult) > Length(FResult) do
-    SetLength(FResult, Length(FResult) * 2);
-  Move(AResult[1], FResult[FResultLen + 1], Length(AResult) * SizeOf(Char));
-  if FAllWhiteSpaceOut then
-    FAllWhiteSpaceOut := AllWhiteSpace(@FResult[FLineBreakPos]);
-  Inc(FResultLen, Length(AResult));
+  if AResult <> '' then
+  begin
+    while FResultLen + Length(AResult) > Length(FResult) do
+      SetLength(FResult, Length(FResult) * 2);
+    Move(AResult[1], FResult[FResultLen + 1], Length(AResult) * SizeOf(Char));
+    FAllWhiteSpaceOut := FAllWhiteSpaceOut and AllWhiteSpace(PChar(AResult));
+    Inc(FResultLen, Length(AResult));
+  end;
 end;
 
 function TJppParser.IsExcludedInclude(const FileName: string): Boolean;
@@ -428,38 +430,17 @@ procedure TJppParser.NextToken;
 begin
   Lexer.NextTok;
 
-  if State.TriState in [ttUnknown, ttDefined] then
-    RemoveOrphanedLineBreaks;
-end;
-
-procedure TJppParser.RemoveOrphanedLineBreaks;
-
-  procedure DeleteCurrentLineIfOrphaned;
-  begin
-    if not FAllWhiteSpaceIn and FAllWhiteSpaceOut then
-      if FLineBreakPos <= FResultLen then
-      begin
-        FResultLen := FLineBreakPos - 1;
-        FResult[FResultLen + 1] := #0;
-      end;
-  end;
-
-begin
+  if State.TriState = ttUndef then
+    Exit;
+    
   case Lexer.CurrTok of
-    ptEof:
-      DeleteCurrentLineIfOrphaned;
+    ptEof, ptEol:
+      // do not change FAllWhiteSpaceIn
+      ;
     ptComment:
       FAllWhiteSpaceIn := False;
     ptText:
-      if FAllWhiteSpaceIn then
-        FAllWhiteSpaceIn := AllWhiteSpace(PChar(Lexer.TokenAsString));
-    ptEol:
-      begin
-        DeleteCurrentLineIfOrphaned;
-        FLineBreakPos := FResultLen + 1;
-        FAllWhiteSpaceIn := True;
-        FAllWhiteSpaceOut := True;
-      end;
+      FAllWhiteSpaceIn := FAllWhiteSpaceIn and AllWhiteSpace(PChar(Lexer.TokenAsString));
     ptDefine,
     ptUndef,
     ptIfdef,
@@ -490,9 +471,11 @@ end;
 function TJppParser.Parse: string;
 begin
   FLexer.Reset;
-  FResult := '';
-  FResultLen := 0;
   SetLength(FResult, 64 * 1024);
+  FillChar(FResult[1], Length(FResult) * SizeOf(Char), 0);
+  FResultLen := 0;
+  FLineBreakPos := 1;
+  FAllWhiteSpaceOut := True;
 
   ParseText;
   SetLength(FResult, FResultLen);
@@ -500,6 +483,22 @@ begin
 end;
 
 procedure TJppParser.ParseCondition(Token: TJppToken);
+  procedure PushAndExecute(NewTriState: TTriState);
+  var
+    NeedPush: Boolean;
+  begin
+    NeedPush := State.TriState <> NewTriState;
+    if NeedPush then
+      State.PushState;
+    try
+      State.TriState := NewTriState;
+      NextToken;
+      ParseText;
+    finally
+      if NeedPush then
+        State.PopState;
+    end;
+  end;
 var
   Condition: string;
   ConditionTriState: TTriState;
@@ -507,11 +506,11 @@ begin
   Condition := Lexer.TokenAsString;
   ConditionTriState := State.Defines[Condition];
   // parse the first part of the $IFDEF or $IFNDEF
-  State.PushState;
-  try
-    case ConditionTriState of
-      ttUnknown:
-        begin
+  case ConditionTriState of
+    ttUnknown:
+      begin
+        State.PushState;
+        try
           // preserve the $IFDEF or $IFNDEF
           AddResult(Lexer.RawComment);
           // assume that the symbol is defined in the $IFDEF
@@ -521,33 +520,33 @@ begin
           // assume that the symbol is not defined in the $IFNDEF
           if Token = ptIfndef then
             State.Undef(Condition);
+          NextToken;
+          ParseText;
+        finally
+          State.PopState;
         end;
-      ttUndef:
-        if Token = ptIfdef then
-          State.TriState := ttUndef
-        else
-        if Token = ptIfndef then
-          State.TriState := ttDefined;
-      ttDefined:
-        if Token = ptIfdef then
-          State.TriState := ttDefined
-        else
-        if Token = ptIfndef then
-          State.TriState := ttUndef;
-    end;
-    NextToken;
-    ParseText;
-  finally
-    State.PopState;
+      end;
+    ttUndef:
+      if Token = ptIfdef then
+        PushAndExecute(ttUndef)
+      else
+      if Token = ptIfndef then
+        PushAndExecute(ttDefined);
+    ttDefined:
+      if Token = ptIfdef then
+        PushAndExecute(ttDefined)
+      else
+      if Token = ptIfndef then
+        PushAndExecute(ttUndef);
   end;
   // part the second part of the $IFDEF or $IFNDEF if any
   if Lexer.CurrTok = ptElse then
   begin
-    State.PushState;
-    try
-      case ConditionTriState of
-        ttUnknown:
-          begin
+    case ConditionTriState of
+      ttUnknown:
+        begin
+          State.PushState;
+          try
             // preserve the $ELSE
             AddResult(Lexer.RawComment);
             // assume that the symbol is not defined after the $IFDEF
@@ -557,31 +556,31 @@ begin
             // assume that the symbol is defined after the $IFNDEF
             if Token = ptIfndef then
               State.Define(Condition);
+            NextToken;
+            ParseText;
+          finally
+            State.PopState;
           end;
-        ttUndef:
-          begin
-            if Token = ptIfdef then
-              State.TriState := ttDefined
-            else
-            if Token = ptIfndef then
-              State.TriState := ttUndef;
-            State.Defines[Condition] := ttDefined;
-          end;
-        ttDefined:
-          begin
-            if Token = ptIfdef then
-              State.TriState := ttUndef
-            else
-            if Token = ptIfndef then
-              State.TriState := ttDefined;
-            State.Defines[Condition] := ttUndef;
-          end;
+        end;
+      ttUndef:
+        begin
+          if Token = ptIfdef then
+            PushAndExecute(ttDefined)
+          else
+          if Token = ptIfndef then
+            PushAndExecute(ttUndef);
+          //State.Defines[Condition] := ttDefined;
+        end;
+      ttDefined:
+        begin
+          if Token = ptIfdef then
+            PushAndExecute(ttUndef)
+          else
+          if Token = ptIfndef then
+            PushAndExecute(ttDefined);
+          //State.Defines[Condition] := ttUndef;
+        end;
       end;
-      NextToken;
-      ParseText;
-    finally
-      State.PopState;
-    end;
   end;
   if Lexer.CurrTok <> ptEndif then
     Lexer.Error('$ENDIF expected');
@@ -873,6 +872,16 @@ procedure TJppParser.ParseText;
     NextToken;
   end;
 
+  procedure DeleteCurrentLineIfOrphaned;
+  begin
+    if not FAllWhiteSpaceIn and FAllWhiteSpaceOut then
+      if FLineBreakPos <= FResultLen then
+      begin
+        FResultLen := FLineBreakPos - 1;
+        FResult[FResultLen + 1] := #0;
+      end;
+  end;
+
 begin
   while True do
     case Lexer.CurrTok of
@@ -883,7 +892,23 @@ begin
         NextToken;
       end;
 
-      ptText, ptEol:
+      ptEof:
+        begin
+          DeleteCurrentLineIfOrphaned;
+          Break;
+        end;
+
+      ptEol:
+        begin
+          AddResult(Lexer.TokenAsString);
+          DeleteCurrentLineIfOrphaned;
+          FLineBreakPos := FResultLen + 1;
+          FAllWhiteSpaceIn := True;
+          FAllWhiteSpaceOut := True;
+          NextToken;
+        end;
+
+      ptText:
       begin
         AddResult(Lexer.TokenAsString);
         NextToken;

@@ -54,7 +54,6 @@ uses
 type
   TItrStart = (isFirst, isLast);
 
-
   TJclIntfLinkedListItem = class
   public
     Value: IInterface;
@@ -1129,6 +1128,7 @@ type
     {$ENDIF SUPPORTS_FOR_IN}
   end;
 
+
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
 
@@ -1279,7 +1279,6 @@ implementation
 
 uses
   SysUtils;
-
 
 //=== { TJclIntfLinkedList } ==================================================
 
@@ -16345,6 +16344,7 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
+
 
 {$IFDEF SUPPORTS_GENERICS}
 //DOM-IGNORE-BEGIN

@@ -52,6 +52,7 @@ type
   {$JPPEXPANDMACRO JCLSORTEDMAPTYPESINT(,,)}
 
   {$JPPEXPANDMACRO JCLSORTEDMAPINT(,,,,,,,,,,,,,,)}
+
 *)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
@@ -59,6 +60,7 @@ type
   (*$JPPEXPANDMACRO JCLSORTEDMAPTYPESINT(TJclSortedEntry<TKey\,TValue>,TKey,TValue)*)
 
   (*$JPPEXPANDMACRO JCLSORTEDMAPINT(TSortedEntry,TJclSortedMap<TKey\,TValue>,TJclAbstractContainerBase,IJclMap<TKey\,TValue>,IJclSortedMap<TKey\,TValue>,IJclSet<TKey>,IJclCollection<TValue>, IJclPairOwner<TKey\,TValue>\,,
+
 protected
   type
     TSortedEntry = TJclSortedEntry<TKey\,TValue>;
@@ -172,12 +174,14 @@ uses
 
 (*$JPPLOOP TRUEMAPINDEX TRUEMAPCOUNT
 {$JPPEXPANDMACRO JCLSORTEDMAPIMP(,,,,,,,,,,,,,,,,)}
+
 *)
 
 {$IFDEF SUPPORTS_GENERICS}
 //DOM-IGNORE-BEGIN
 
 {$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclSortedMap<TKey\,TValue>,IJclMap<TKey\,TValue>,IJclSortedMap<TKey\,TValue>,IJclSet<TKey>,IJclIterator<TKey>,IJclCollection<TValue>,; AOwnsKeys: Boolean,; AOwnsValues: Boolean,
+
   FOwnsKeys := AOwnsKeys;
   FOwnsValues := AOwnsValues;,const ,TKey,Default(TKey),const ,TValue,Default(TValue),CreateEmptyArraySet(FSize, False),CreateEmptyArrayList(FSize, False))}
 

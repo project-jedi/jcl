@@ -34,6 +34,7 @@
 unit JclAlgorithms;
 
 {$I jcl.inc}
+
 {$I containers\JclAlgorithms.int}
 {$I containers\JclAlgorithms.imp}
 interface
@@ -46,8 +47,8 @@ uses
 
 // Compare functions
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
-{$JPPEXPANDMACRO SIMPLECOMPAREINT(,,)}*)
-
+{$JPPEXPANDMACRO SIMPLECOMPAREINT(,,)}
+*)
 {$JPPEXPANDMACRO SIMPLECOMPAREINT(IntegerCompare,,TObject)}
 
 function AnsiStrSimpleCompareI(const Obj1, Obj2: AnsiString): Integer;
@@ -58,8 +59,8 @@ function UnicodeStrSimpleCompareI(const Obj1, Obj2: UnicodeString): Integer;
 
 // Compare functions for equality
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
-{$JPPEXPANDMACRO SIMPLEEQUALITYCOMPAREINT(,,)}*)
-
+{$JPPEXPANDMACRO SIMPLEEQUALITYCOMPAREINT(,,)}
+*)
 function AnsiStrSimpleEqualityCompareI(const Obj1, Obj2: AnsiString): Boolean;
 function WideStrSimpleEqualityCompareI(const Obj1, Obj2: WideString): Boolean;
 {$IFDEF SUPPORTS_UNICODE_STRING}
@@ -68,8 +69,8 @@ function UnicodeStrSimpleEqualityCompareI(const Obj1, Obj2: UnicodeString): Bool
 
 // Hash conversion functions
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
-{$JPPEXPANDMACRO SIMPLEHASHCONVERTINT(,,,)}*)
-
+{$JPPEXPANDMACRO SIMPLEHASHCONVERTINT(,,,)}
+*)
 function AnsiStrSimpleHashConvertI(const AString: AnsiString): Integer;
 function AnsiStrSimpleHashConvertU(const AString: AnsiString): Integer;
 function AnsiStrSimpleHashConvertUI(const AString: AnsiString): Integer;
@@ -80,8 +81,8 @@ function UnicodeStrSimpleHashConvertI(const AString: UnicodeString): Integer;
 
 // move array algorithms
 (*$JPPLOOP TRUETYPEINDEX TRUETYPECOUNT
-{$JPPEXPANDMACRO MOVEARRAYINT(MoveArray,, overload;)}*)
-
+{$JPPEXPANDMACRO MOVEARRAYINT(MoveArray,, overload;)}
+*)
 {$JPPEXPANDMACRO MOVEARRAYINT(MoveArray,TDynSizeIntArray, overload;)}
 {$IFNDEF FPC}
 {$JPPEXPANDMACRO MOVEARRAYINT(MoveArray,TDynStringArray, overload;)}
@@ -90,40 +91,49 @@ function UnicodeStrSimpleHashConvertI(const AString: UnicodeString): Integer;
 
 // Iterate algorithms
 (*$JPPLOOP TRUETYPEINDEX TRUETYPECOUNT
-{$JPPEXPANDMACRO ITERATEINT(Iterate,,, overload;)}*)
+{$JPPEXPANDMACRO ITERATEINT(Iterate,,, overload;)}
+*)
 
 // Apply algorithms
 (*$JPPLOOP TRUETYPEINDEX TRUETYPECOUNT
-{$JPPEXPANDMACRO APPLYINT(Apply,,, overload;)}*)
+{$JPPEXPANDMACRO APPLYINT(Apply,,, overload;)}
+*)
 
 // Find algorithms
 (*$JPPLOOP TRUETYPEINDEX TRUETYPECOUNT
 {$JPPEXPANDMACRO FINDINT(Find,,,,,, overload;)}
-{$JPPEXPANDMACRO FINDEQINT(Find,,,,,, overload;)}*)
+{$JPPEXPANDMACRO FINDEQINT(Find,,,,,, overload;)}
+*)
 
 // CountObject algorithms
 (*$JPPLOOP TRUETYPEINDEX TRUETYPECOUNT
 {$JPPEXPANDMACRO COUNTOBJECTINT(CountObject,,,,,, overload;)}
-{$JPPEXPANDMACRO COUNTOBJECTEQINT(CountObject,,,,,, overload;)}*)
+{$JPPEXPANDMACRO COUNTOBJECTEQINT(CountObject,,,,,, overload;)}
+*)
 
 // Copy algorithms
 (*$JPPLOOP TRUETYPEINDEX TRUETYPECOUNT
-{$JPPEXPANDMACRO COPYINT(Copy,, overload;)}*)
+{$JPPEXPANDMACRO COPYINT(Copy,, overload;)}
+*)
 
 // Generate algorithms
 (*$JPPLOOP TRUETYPEINDEX TRUETYPECOUNT
-{$JPPEXPANDMACRO GENERATEINT(Generate,,,,, overload;)}*)
+{$JPPEXPANDMACRO GENERATEINT(Generate,,,,, overload;)}
+*)
 
 // Fill algorithms
 (*$JPPLOOP TRUETYPEINDEX TRUETYPECOUNT
-{$JPPEXPANDMACRO FILLINT(Fill,,,,, overload;)}*)
+{$JPPEXPANDMACRO FILLINT(Fill,,,,, overload;)}
+*)
 
 // Reverse algorithms
 (*$JPPLOOP TRUETYPEINDEX TRUETYPECOUNT
-{$JPPEXPANDMACRO REVERSEINT(Reverse,, overload;)}*)
+{$JPPEXPANDMACRO REVERSEINT(Reverse,, overload;)}
+*)
 
 (*$JPPLOOP TRUETYPEINDEX TRUETYPECOUNT
-{$JPPEXPANDMACRO SORTINT(QuickSort,,,,, overload;)}*)
+{$JPPEXPANDMACRO SORTINT(QuickSort,,,,, overload;)}
+*)
 
 var
   IntfSortProc: TIntfSortProc = QuickSort;
@@ -143,7 +153,8 @@ var
 
 // Sort algorithms
 (*$JPPLOOP TRUETYPEINDEX TRUETYPECOUNT
-{$JPPEXPANDMACRO SORTINT(Sort,,First,Last,, overload;)}*)
+{$JPPEXPANDMACRO SORTINT(Sort,,First,Last,, overload;)}
+*)
 
 {$IFDEF SUPPORTS_GENERICS}
 //DOM-IGNORE-BEGIN
@@ -782,6 +793,7 @@ end;
 
 (*$JPPLOOP TRUETYPEINDEX TRUETYPECOUNT
 {$JPPEXPANDMACRO MOVEARRAYIMP(,)}
+
 *)
 {$JPPUNDEF REFCOUNTED}{$JPPDEFINE ZEROINIT}{$JPPEXPANDMACRO MOVEARRAYIMP(MoveArray,TDynSizeIntArray)}
 
@@ -793,36 +805,44 @@ end;
 
 (*$JPPLOOP TRUETYPEINDEX TRUETYPECOUNT
 {$JPPEXPANDMACRO ITERATEIMP(Iterate,,)}
+
 *)
 (*$JPPLOOP TRUETYPEINDEX TRUETYPECOUNT
 {$JPPEXPANDMACRO APPLYIMP(Apply,,,)}
+
 *)
 (*$JPPLOOP TRUETYPEINDEX TRUETYPECOUNT
 {$JPPEXPANDMACRO FINDIMP(Find,,,,,)}
 
 {$JPPEXPANDMACRO FINDEQIMP(Find,,,,,)}
+
 *)
 (*$JPPLOOP TRUETYPEINDEX TRUETYPECOUNT
 {$JPPEXPANDMACRO COUNTOBJECTIMP(CountObject,,,,,)}
 
 {$JPPEXPANDMACRO COUNTOBJECTEQIMP(CountObject,,,,,)}
+
 *)
 (*$JPPLOOP TRUETYPEINDEX TRUETYPECOUNT
 {$JPPEXPANDMACRO COPYIMP(Copy,,)}
+
 *)
 (*$JPPLOOP TRUETYPEINDEX TRUETYPECOUNT
 {$JPPEXPANDMACRO GENERATEIMP(Generate,,,,)}
+
 *)
 (*$JPPLOOP TRUETYPEINDEX TRUETYPECOUNT
 {$JPPEXPANDMACRO FILLIMP(Fill,,,,,)}
+
 *)
 (*$JPPLOOP TRUETYPEINDEX TRUETYPECOUNT
 {$JPPEXPANDMACRO REVERSEIMP(Reverse,,,,)}
+
 *)
 (*$JPPLOOP TRUETYPEINDEX TRUETYPECOUNT
 {$JPPEXPANDMACRO QUICKSORTIMP(QuickSort,,,,,,,)}
-*)
 
+*)
 procedure Sort(const AList: IJclIntfList; First, Last: Integer; AComparator: TIntfCompare);
 begin
   IntfSortProc(AList, First, Last, AComparator);

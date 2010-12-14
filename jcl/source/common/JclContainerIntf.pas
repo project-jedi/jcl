@@ -40,7 +40,6 @@
 unit JclContainerIntf;
 
 {$I jcl.inc}
-
 interface
 
 uses
@@ -69,7 +68,6 @@ type
   // function pointer types
 
   // iterate functions Type -> (void)
-
   TIntfIterateProcedure = procedure(const AInterface: IInterface);
   TAnsiStrIterateProcedure = procedure(const AString: AnsiString);
   TWideStrIterateProcedure = procedure(const AString: WideString);
@@ -102,6 +100,7 @@ type
   TInt64IterateProcedure = procedure(const AValue: Int64);
   TPtrIterateProcedure = procedure(APtr: Pointer);
   TIterateProcedure = procedure(AObject: TObject);
+
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
   TIterateProcedure<T> = procedure(const AItem: T);
@@ -109,7 +108,6 @@ type
   {$ENDIF SUPPORTS_GENERICS}
 
   // apply functions Type -> Type
-
   TIntfApplyFunction = function(const AInterface: IInterface): IInterface;
   TAnsiStrApplyFunction = function(const AString: AnsiString): AnsiString;
   TWideStrApplyFunction = function(const AString: WideString): WideString;
@@ -142,6 +140,7 @@ type
   TInt64ApplyFunction = function(const AValue: Int64): Int64;
   TPtrApplyFunction = function(APtr: Pointer): Pointer;
   TApplyFunction = function(AObject: TObject): TObject;
+
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
   TApplyFunction<T> = function(const AItem: T): T;
@@ -149,7 +148,6 @@ type
   {$ENDIF SUPPORTS_GENERICS}
 
   // comparison functions Type -> Type -> Integer
-
   TIntfCompare = function(const Obj1, Obj2: IInterface): Integer;
   TAnsiStrCompare = function(const Obj1, Obj2: AnsiString): Integer;
   TWideStrCompare = function(const Obj1, Obj2: WideString): Integer;
@@ -182,6 +180,7 @@ type
   TInt64Compare = function(const Obj1, Obj2: Int64): Integer;
   TPtrCompare = function(Obj1, Obj2: Pointer): Integer;
   TCompare = function(Obj1, Obj2: TObject): Integer;
+
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
   TCompare<T> = function(const Obj1, Obj2: T): Integer;
@@ -189,7 +188,6 @@ type
   {$ENDIF SUPPORTS_GENERICS}
 
   // comparison for equality functions Type -> Type -> Boolean
-
   TIntfEqualityCompare = function(const Obj1, Obj2: IInterface): Boolean;
   TAnsiStrEqualityCompare = function(const Obj1, Obj2: AnsiString): Boolean;
   TWideStrEqualityCompare = function(const Obj1, Obj2: WideString): Boolean;
@@ -222,6 +220,7 @@ type
   TInt64EqualityCompare = function(const Obj1, Obj2: Int64): Boolean;
   TPtrEqualityCompare = function(Obj1, Obj2: Pointer): Boolean;
   TEqualityCompare = function(Obj1, Obj2: TObject): Boolean;
+
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
   TEqualityCompare<T> = function(const Obj1, Obj2: T): Boolean;
@@ -229,7 +228,6 @@ type
   {$ENDIF SUPPORTS_GENERICS}
 
   // hash functions Type -> Integer
-
   TIntfHashConvert = function(const AInterface: IInterface): Integer;
   TAnsiStrHashConvert = function(const AString: AnsiString): Integer;
   TWideStrHashConvert = function(const AString: WideString): Integer;
@@ -262,6 +260,7 @@ type
   TInt64HashConvert = function(const AValue: Int64): Integer;
   TPtrHashConvert = function(APtr: Pointer): Integer;
   THashConvert = function(AObject: TObject): Integer;
+
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
   THashConvert<T> = function(const AItem: T): Integer;
@@ -406,7 +405,6 @@ type
   IJclFloatContainer = IJclSingleContainer;
   {$ENDIF MATH_SINGLE_PRECISION}
 
-
   IJclIntfEqualityComparer = interface
     ['{5CC2DF51-BE56-4D02-A171-31BAAC097632}']
     function GetEqualityCompare: TIntfEqualityCompare;
@@ -439,6 +437,7 @@ type
     function ItemsEqual(const A, B: UnicodeString): Boolean;
     property EqualityCompare: TUnicodeStrEqualityCompare read GetEqualityCompare write SetEqualityCompare;
   end;
+
   {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
@@ -525,6 +524,7 @@ type
     property EqualityCompare: TEqualityCompare read GetEqualityCompare write SetEqualityCompare;
   end;
 
+
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
   IJclEqualityComparer<T> = interface
@@ -536,7 +536,6 @@ type
   end;
   //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
-
 
   IJclIntfComparer = interface
     ['{EB41B843-184B-420D-B5DA-27D055B4CD55}']
@@ -656,6 +655,7 @@ type
     property Compare: TCompare read GetCompare write SetCompare;
   end;
 
+
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
   IJclComparer<T> = interface
@@ -667,7 +667,6 @@ type
   end;
   //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
-
 
   IJclIntfHashConverter = interface
     ['{7BAA0791-3B45-4D0F-9CD8-D13B81694786}']
@@ -701,6 +700,7 @@ type
     function Hash(const AString: UnicodeString): Integer;
     property HashConvert: TUnicodeStrHashConvert read GetHashConvert write SetHashConvert;
   end;
+
   {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
@@ -787,6 +787,7 @@ type
     property HashConvert: THashConvert read GetHashConvert write SetHashConvert;
   end;
 
+
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
   IJclHashConverter<T> = interface
@@ -854,7 +855,6 @@ type
     property AutoGrowStrategy: TJclAutoGrowStrategy read GetAutoGrowStrategy write SetAutoGrowStrategy;
   end;
 
-
   TFreeIntfEvent = function (var AInterface: IInterface): IInterface of object;
 
   IJclIntfOwner = interface(IInterface)
@@ -898,6 +898,7 @@ type
     procedure SetOnFreeString(Value: TFreeUnicodeStrEvent);
     property OnFreeString: TFreeUnicodeStrEvent read GetOnFreeString write SetOnFreeString;
   end;
+
   {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
@@ -1023,6 +1024,7 @@ type
   end;
 
 
+
   IJclKeyOwner = interface
     ['{8BE209E6-2F85-44FD-B0CD-A8363C95349A}']
     function FreeKey(var Key: TObject): TObject;
@@ -1064,7 +1066,6 @@ type
 
   //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
-
 
   IJclIntfIterator = interface(IJclAbstractIterator)
     ['{E121A98A-7C43-4587-806B-9189E8B2F106}']
@@ -1352,6 +1353,7 @@ type
     {$ENDIF SUPPORTS_FOR_IN}
   end;
 
+
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
   IJclIterator<T> = interface(IJclAbstractIterator)
@@ -1377,7 +1379,6 @@ type
   end;
   //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
-
 
   IJclIntfTreeIterator = interface(IJclIntfIterator)
     ['{C97379BF-C6A9-4A90-9D7A-152E9BAD314F}']
@@ -1617,6 +1618,7 @@ type
     property Children[Index: Integer]: TObject read GetChild write SetChild;
   end;
 
+
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
   IJclTreeIterator<T> = interface(IJclIterator<T>)
@@ -1638,7 +1640,6 @@ type
   end;
   //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
-
 
   IJclIntfBinaryTreeIterator = interface(IJclIntfTreeIterator)
     ['{8BE874B2-0075-4EE0-8F49-665FC894D923}']
@@ -1758,6 +1759,7 @@ type
     function Right: TObject;
   end;
 
+
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
   IJclBinaryTreeIterator<T> = interface(IJclTreeIterator<T>)
@@ -1769,7 +1771,6 @@ type
   end;
   //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
-
 
   IJclIntfCollection = interface(IJclContainer)
     ['{8E178463-4575-487A-B4D5-DC2AED3C7ACA}']
@@ -2057,6 +2058,7 @@ type
     {$ENDIF SUPPORTS_FOR_IN}
   end;
 
+
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
   IJclCollection<T> = interface(IJclContainer)
@@ -2082,7 +2084,6 @@ type
   end;
   //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
-
 
   IJclIntfList = interface(IJclIntfCollection)
     ['{E14EDA4B-1DAA-4013-9E6C-CDCB365C7CF9}']
@@ -2274,6 +2275,7 @@ type
     property Objects[Key: Integer]: TObject read GetObject write SetObject; default;
   end;
 
+
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
   IJclList<T> = interface(IJclCollection<T>)
@@ -2293,7 +2295,6 @@ type
   {$ENDIF SUPPORTS_GENERICS}
 
   // Pointer functions for sort algorithms
-
   TIntfSortProc = procedure(const AList: IJclIntfList; L, R: Integer; AComparator: TIntfCompare);
   TAnsiStrSortProc = procedure(const AList: IJclAnsiStrList; L, R: Integer; AComparator: TAnsiStrCompare);
   TWideStrSortProc = procedure(const AList: IJclWideStrList; L, R: Integer; AComparator: TWideStrCompare);
@@ -2326,12 +2327,12 @@ type
   TInt64SortProc = procedure(const AList: IJclInt64List; L, R: Integer; AComparator: TInt64Compare);
   TPtrSortProc = procedure(const AList: IJclPtrList; L, R: Integer; AComparator: TPtrCompare);
   TSortProc = procedure(const AList: IJclList; L, R: Integer; AComparator: TCompare);
+
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
   TSortProc<T> = procedure(const AList: IJclList<T>; L, R: Integer; AComparator: TCompare<T>);
   //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
-
 
   IJclIntfArray = interface(IJclIntfList)
     ['{B055B427-7817-43FC-97D4-AD1845643D63}']
@@ -2439,6 +2440,7 @@ type
     property Objects[Index: Integer]: TObject read GetObject write SetObject; default;
   end;
 
+
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
   IJclArray<T> = interface(IJclList<T>)
@@ -2449,7 +2451,6 @@ type
   end;
   //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
-
 
   IJclIntfSet = interface(IJclIntfCollection)
     ['{E2D28852-9774-49B7-A739-5DBA2B705924}']
@@ -2557,6 +2558,7 @@ type
     procedure Union(const ACollection: IJclCollection);
   end;
 
+
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
   IJclSet<T> = interface(IJclCollection<T>)
@@ -2569,7 +2571,6 @@ type
   {$ENDIF SUPPORTS_GENERICS}
 
   TJclTraverseOrder = (toPreOrder, toOrder, toPostOrder);
-
 
   IJclIntfTree = interface(IJclIntfCollection)
     ['{5A21688F-113D-41B4-A17C-54BDB0BD6559}']
@@ -2701,6 +2702,7 @@ type
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 
+
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
   IJclTree<T> = interface(IJclCollection<T>)
@@ -2713,7 +2715,6 @@ type
   end;
   //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
-
 
   IJclIntfIntfMap = interface(IJclContainer)
     ['{01D05399-4A05-4F3E-92F4-0C236BE77019}']
@@ -3664,6 +3665,7 @@ type
   end;
 
 
+
   (*IJclMultiIntfIntfMap = interface(IJclIntfIntfMap)
     ['{497775A5-D3F1-49FC-A641-15CC9E77F3D0}']
     function GetValues(const Key: IInterface): IJclIntfIterator;
@@ -3698,7 +3700,6 @@ type
 
   //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
-
 
   IJclIntfQueue = interface(IJclContainer)
     ['{B88756FE-5553-4106-957E-3E33120BFA99}']
@@ -3854,6 +3855,7 @@ type
     function Size: Integer;
   end;
 
+
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
   IJclQueue<T> = interface(IJclContainer)
@@ -3868,7 +3870,6 @@ type
   end;
   //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
-
 
   IJclIntfIntfSortedMap = interface(IJclIntfIntfMap)
     ['{265A6EB2-4BB3-459F-8813-360FD32A4971}']
@@ -4346,6 +4347,7 @@ type
   end;
 
 
+
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
   IJclSortedMap<TKey,TValue> = interface(IJclMap<TKey,TValue>)
@@ -4358,7 +4360,6 @@ type
   end;
   //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
-
 
   IJclIntfSortedSet = interface(IJclIntfSet)
     ['{159BE5A7-7349-42FF-BE55-9CA1B9DBA991}']
@@ -4466,6 +4467,7 @@ type
     function TailSet(Start: TObject): IJclSortedSet;
   end;
 
+
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
   IJclSortedSet<T> = interface(IJclSet<T>)
@@ -4476,7 +4478,6 @@ type
   end;
   //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
-
 
   IJclIntfStack = interface(IJclContainer)
     ['{CA1DC7A1-8D8F-4A5D-81D1-0FE32E9A4E84}']
@@ -4631,6 +4632,7 @@ type
     function Push(AObject: TObject): Boolean;
     function Size: Integer;
   end;
+
 
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN

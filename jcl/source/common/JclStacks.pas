@@ -52,7 +52,6 @@ uses
   JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
 
 type
-
   TJclIntfStack = class(TJclIntfAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntfEqualityComparer,
     IJclIntfStack)
@@ -363,6 +362,7 @@ type
     function Size: Integer;
   end;
 
+
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
 
@@ -447,7 +447,6 @@ implementation
 
 uses
   SysUtils;
-
 
 //=== { TJclIntfStack } =======================================================
 
@@ -2719,6 +2718,7 @@ begin
   Result := TJclStack.Create(FSize, False);
   AssignPropertiesTo(Result);
 end;
+
 
 {$IFDEF SUPPORTS_GENERICS}
 //DOM-IGNORE-BEGIN

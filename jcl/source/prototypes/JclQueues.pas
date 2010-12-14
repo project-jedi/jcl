@@ -49,11 +49,13 @@ uses
 type
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
   {$JPPEXPANDMACRO JCLQUEUEINT(,,,,,,,,,)}
+
 *)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
 
   (*$JPPEXPANDMACRO JCLQUEUEINT(TJclQueue<T>,IJclQueue<T>,TJclAbstractContainer<T>,TDynArray, IJclEqualityComparer<T>\, IJclItemOwner<T>\,,
+
 protected
   type
     TDynArray = array of T;
@@ -115,6 +117,7 @@ uses
 
 (*$JPPLOOP TRUETYPEINDEX TRUETYPECOUNT
 {$JPPEXPANDMACRO JCLQUEUEIMP(,,,,,,,)}
+
 *)
 {$IFDEF SUPPORTS_GENERICS}
 //DOM-IGNORE-BEGIN

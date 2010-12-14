@@ -50,7 +50,6 @@ uses
 
 
 type
-
   TJclIntfQueue = class(TJclIntfAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntfEqualityComparer,
     IJclIntfQueue)
@@ -397,6 +396,7 @@ type
     function Size: Integer;
   end;
 
+
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
 
@@ -482,7 +482,6 @@ implementation
 
 uses
   SysUtils;
-
 
 //=== { TJclIntfQueue } =======================================================
 
@@ -3882,6 +3881,7 @@ begin
   Result := TJclQueue.Create(Size + 1, False);
   AssignPropertiesTo(Result);
 end;
+
 
 {$IFDEF SUPPORTS_GENERICS}
 //DOM-IGNORE-BEGIN

@@ -52,7 +52,6 @@ uses
   JclBase, JclAbstractContainers, JclContainerIntf, JclArrayLists, JclSynch;
 
 type
-
   TJclIntfArraySet = class(TJclIntfArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntfEqualityComparer, IJclIntfComparer,
     IJclIntfCollection, IJclIntfList, IJclIntfArray, IJclIntfSet)
@@ -315,6 +314,7 @@ type
     procedure Union(const ACollection: IJclCollection);
   end;
 
+
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
 
@@ -398,7 +398,6 @@ implementation
 
 uses
   SysUtils;
-
 
 //=== { TJclIntfArraySet } ====================================================
 
@@ -2106,6 +2105,7 @@ begin
   Result := TJclArraySet.Create(Size, False);
   AssignPropertiesTo(Result);
 end;
+
 
 {$IFDEF SUPPORTS_GENERICS}
 //DOM-IGNORE-BEGIN

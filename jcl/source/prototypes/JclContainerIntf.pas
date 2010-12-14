@@ -1,4 +1,4 @@
-{**************************************************************************************************}
+﻿{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -66,7 +66,8 @@ type
 
   // iterate functions Type -> (void)
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
-  {$JPPEXPANDMACRO ITERPROCEDURE(,,,)}*)
+  {$JPPEXPANDMACRO ITERPROCEDURE(,,,)}
+*)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
   {$JPPEXPANDMACRO ITERPROCEDURE(TIterateProcedure<T>,const ,AItem,T)}
@@ -75,7 +76,8 @@ type
 
   // apply functions Type -> Type
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
-  {$JPPEXPANDMACRO APPLYFUNCTION(,,,)}*)
+  {$JPPEXPANDMACRO APPLYFUNCTION(,,,)}
+*)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
   {$JPPEXPANDMACRO APPLYFUNCTION(TApplyFunction<T>,const ,AItem,T)}
@@ -84,7 +86,8 @@ type
 
   // comparison functions Type -> Type -> Integer
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
-  {$JPPEXPANDMACRO COMPAREFUNCTION(,,)}*)
+  {$JPPEXPANDMACRO COMPAREFUNCTION(,,)}
+*)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
   {$JPPEXPANDMACRO COMPAREFUNCTION(TCompare<T>,const ,T)}
@@ -93,7 +96,8 @@ type
 
   // comparison for equality functions Type -> Type -> Boolean
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
-  {$JPPEXPANDMACRO EQUALITYCOMPAREFUNCTION(,,)}*)
+  {$JPPEXPANDMACRO EQUALITYCOMPAREFUNCTION(,,)}
+*)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
   {$JPPEXPANDMACRO EQUALITYCOMPAREFUNCTION(TEqualityCompare<T>,const ,T)}
@@ -102,7 +106,8 @@ type
 
   // hash functions Type -> Integer
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
-  {$JPPEXPANDMACRO HASHFUNCTION(,,,)}*)
+  {$JPPEXPANDMACRO HASHFUNCTION(,,,)}
+*)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
   {$JPPEXPANDMACRO HASHFUNCTION(THashConvert<T>,const ,AItem,T)}
@@ -249,6 +254,7 @@ type
 
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
   {$JPPEXPANDMACRO EQUALITYCOMPARER(,,,,)}
+
 *)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
@@ -258,6 +264,7 @@ type
 
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
   {$JPPEXPANDMACRO COMPARER(,,,,)}
+
 *)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
@@ -267,6 +274,7 @@ type
 
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
   {$JPPEXPANDMACRO HASHCONVERTER(,,,,,)}
+
 *)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
@@ -333,6 +341,7 @@ type
   {$JPPEXPANDMACRO RELEASEEVENT(,,)}
 
   {$JPPEXPANDMACRO OWNER(,,,,,,,,)}
+
 *)
 
   IJclKeyOwner = interface
@@ -355,6 +364,7 @@ type
   {$JPPEXPANDMACRO RELEASEEVENT(TFreeItemEvent<T>,AItem,T)}
 
   (*$JPPEXPANDMACRO OWNER(IJclItemOwner<T>,IInterface,{0CC220C1-E705-4B21-9F53-4AD340952165},FreeItem,OnFreeItem,TFreeItemEvent<T>,AItem,T,
+
   function GetOwnsItems: Boolean;
   property OwnsItems: Boolean read GetOwnsItems;)*)
 
@@ -373,6 +383,7 @@ type
 
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
   {$JPPEXPANDMACRO ITERATOR(,,,,,,,)}
+
 *)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
@@ -382,6 +393,7 @@ type
 
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
   {$JPPEXPANDMACRO TREEITERATOR(,,,,,)}
+
 *)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
@@ -391,6 +403,7 @@ type
 
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
   {$JPPEXPANDMACRO BINTREEITERATOR(,,,)}
+
 *)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
@@ -400,6 +413,7 @@ type
 
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
   {$JPPEXPANDMACRO COLLECTION(,,,,,,)}
+
 *)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
@@ -409,6 +423,7 @@ type
 
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
   {$JPPEXPANDMACRO LIST(,,,,,,,,)}
+
 *)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
@@ -418,7 +433,8 @@ type
 
   // Pointer functions for sort algorithms
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
-  {$JPPEXPANDMACRO SORTPROC(,,)}*)
+  {$JPPEXPANDMACRO SORTPROC(,,)}
+*)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
   {$JPPEXPANDMACRO SORTPROC(TSortProc<T>,IJclList<T>,TCompare<T>)}
@@ -427,6 +443,7 @@ type
 
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
   {$JPPEXPANDMACRO ARRAY(,,,,,,,,)}
+
 *)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
@@ -436,6 +453,7 @@ type
 
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
   {$JPPEXPANDMACRO SET(,,)}
+
 *)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
@@ -447,6 +465,7 @@ type
 
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
   {$JPPEXPANDMACRO TREE(,,,)}
+
 *)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
@@ -456,6 +475,7 @@ type
 
 (*$JPPLOOP ALLMAPINDEX ALLMAPCOUNT
   {$JPPEXPANDMACRO MAP(,,,,,,,,)}
+
 *)
 
   (*IJclMultiIntfIntfMap = interface(IJclIntfIntfMap)
@@ -477,6 +497,7 @@ type
 
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
   {$JPPEXPANDMACRO QUEUE(,,,,,)}
+
 *)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
@@ -486,6 +507,7 @@ type
 
 (*$JPPLOOP ALLMAPINDEX ALLMAPCOUNT
   {$JPPEXPANDMACRO SORTEDMAP(,,,,)}
+
 *)
 
   {$IFDEF SUPPORTS_GENERICS}
@@ -496,6 +518,7 @@ type
 
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
   {$JPPEXPANDMACRO SORTEDSET(,,,,)}
+
 *)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
@@ -505,6 +528,7 @@ type
 
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
   {$JPPEXPANDMACRO STACK(,,,,,)}
+
 *)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN

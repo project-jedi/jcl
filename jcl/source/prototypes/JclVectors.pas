@@ -56,6 +56,7 @@ type
   {$JPPEXPANDMACRO JCLVECTORINT(,,,,,,,,,,,,,,,)}
 
   {$JPPEXPANDMACRO JCLVECTORITRINT(,,,,,,,)}
+
 *)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
@@ -63,6 +64,7 @@ type
   TJclVectorIterator<T> = class;
 
   (*$JPPEXPANDMACRO JCLVECTORINT(TJclVector<T>,TJclAbstractContainer<T>,IJclCollection<T>,IJclList<T>,IJclArray<T>,IJclIterator<T>, IJclItemOwner<T>\, IJclEqualityComparer<T>\,,
+
 protected
   type
     TDynArray = array of T;
@@ -132,6 +134,7 @@ uses
 {$JPPEXPANDMACRO JCLVECTORIMP(,,,,,,,,,,,,,)}
 
 {$JPPEXPANDMACRO JCLVECTORITRIMP(,,,,,,,)}
+
 *)
 {$IFDEF SUPPORTS_GENERICS}
 //DOM-IGNORE-BEGIN

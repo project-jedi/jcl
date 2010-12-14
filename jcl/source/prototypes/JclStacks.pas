@@ -52,11 +52,13 @@ uses
 type
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
   {$JPPEXPANDMACRO JCLSTACKINT(,,,,,,,,,)}
+
 *)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
 
   (*$JPPEXPANDMACRO JCLSTACKINT(TJclStack<T>,IJclStack<T>,TJclAbstractContainer<T>,TDynArray, IJclEqualityComparer<T>\, IJclItemOwner<T>\,,
+
 protected
   type
     TDynArray = array of T;,; AOwnsItems: Boolean,const ,AItem,T)*)
@@ -120,6 +122,7 @@ uses
 
 (*$JPPLOOP TRUETYPEINDEX TRUETYPECOUNT
 {$JPPEXPANDMACRO JCLSTACKIMP(,,,,,,,)}
+
 *)
 {$IFDEF SUPPORTS_GENERICS}
 //DOM-IGNORE-BEGIN

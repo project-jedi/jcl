@@ -56,7 +56,6 @@ type
   // Result must be in 0..Range-1
   TJclHashFunction = function(Key, Range: Integer): Integer;
 
-
   TJclIntfIntfHashEntry = record
     Key: IInterface;
     Value: IInterface;
@@ -2537,6 +2536,7 @@ type
     function Values: IJclCollection;
   end;
 
+
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
 
@@ -2718,7 +2718,6 @@ const
 begin
   Result := Trunc(Range * (Frac(Abs(Key * A))));
 end;
-
 
 //=== { TJclIntfIntfBucket } ==========================================
 
@@ -27830,6 +27829,7 @@ function TJclHashMap.ValuesEqual(A, B: TObject): Boolean;
 begin
   Result := SimpleEqualityCompare(A, B);
 end;
+
 
 {$IFDEF SUPPORTS_GENERICS}
 //DOM-IGNORE-BEGIN

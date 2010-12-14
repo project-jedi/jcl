@@ -54,7 +54,6 @@ uses
 
 type
   TItrStart = (isFirst, isLast);
-
   TJclIntfVector = class(TJclIntfAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntfEqualityComparer,
     IJclIntfCollection, IJclIntfList, IJclIntfArray)
@@ -1083,6 +1082,7 @@ type
     {$ENDIF SUPPORTS_FOR_IN}
   end;
 
+
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
 
@@ -1229,7 +1229,6 @@ implementation
 
 uses
   SysUtils;
-
 
 //=== { TJclIntfVector } ======================================================
 
@@ -11039,6 +11038,7 @@ begin
   CheckValid;
   FOwnList.SetObject(FCursor, AObject);
 end;
+
 
 {$IFDEF SUPPORTS_GENERICS}
 //DOM-IGNORE-BEGIN

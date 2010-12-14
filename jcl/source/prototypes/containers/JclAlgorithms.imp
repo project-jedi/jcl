@@ -75,8 +75,9 @@ begin
       FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
   end;
 end;
-{$ENDIF ZEROINIT}{$ENDIF ~REFCOUNTED}
 
+{$ENDIF ZEROINIT}
+{$ENDIF ~REFCOUNTED}
 procedure PROCNAME(var List: DYNARRAYTYPENAME; FromIndex, ToIndex, Count: SizeInt); overload;
 begin
   if Count > 0 then

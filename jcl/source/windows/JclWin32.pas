@@ -3106,7 +3106,6 @@ function SetNamedSecurityInfoW(pObjectName: LPWSTR; ObjectType: SE_OBJECT_TYPE;
   SecurityInfo: SECURITY_INFORMATION; psidOwner, psidGroup: PSID;
   pDacl, pSacl: PACL): DWORD; stdcall;
 {$EXTERNALSYM SetNamedSecurityInfoW}
-
 const
   IMAGE_SEPARATION = (64*1024);
   {$EXTERNALSYM IMAGE_SEPARATION}
@@ -3400,7 +3399,6 @@ const
 
   SYMOPT_DEBUG                  = $80000000;
   {$EXTERNALSYM SYMOPT_DEBUG}
-
 
 const
   NERR_Success = 0; // Success
@@ -5619,7 +5617,6 @@ const
   {$EXTERNALSYM PDIRTYUI}
   UDIRTYUI = (SHTDN_REASON_FLAG_DIRTY_UI);
   {$EXTERNALSYM UDIRTYUI}
-
 
 const
   CSIDL_LOCAL_APPDATA        = $001C; { <user name>\Local Settings\Application Data (non roaming) }

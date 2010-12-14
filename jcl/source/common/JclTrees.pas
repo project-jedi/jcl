@@ -1680,6 +1680,7 @@ type
     function GetPreviousCursor: TJclTreeNode; override;
   end;
 
+
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
 
@@ -1874,7 +1875,6 @@ implementation
 
 uses
   SysUtils;
-
 
 //=== { TJclIntfTreeNode } =======================================================
 
@@ -18814,6 +18814,7 @@ begin
       Result := TJclTreeNode(Result.Children[Result.IndexOfChild(LastRet) - 1]);
   end;
 end;
+
 
 {$IFDEF SUPPORTS_GENERICS}
 //DOM-IGNORE-BEGIN

@@ -54,6 +54,7 @@ type
   {$JPPEXPANDMACRO JCLARRAYLISTINT(,,,,,,,,,,,,,,,)}
 
   {$JPPEXPANDMACRO JCLARRAYLISTITRINT(,,,,,,,)}
+
 *)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
@@ -61,6 +62,7 @@ type
   TJclArrayIterator<T> = class;
 
   {$JPPEXPANDMACRO JCLARRAYLISTINT(TJclArrayList<T>,TJclAbstractContainer<T>,IJclCollection<T>,IJclList<T>,IJclArray<T>,IJclIterator<T>,TDynArray, IJclItemOwner<T>\, IJclEqualityComparer<T>\,,
+
 protected
   type
     TDynArray = array of T;
@@ -133,6 +135,7 @@ uses
 {$JPPEXPANDMACRO JCLARRAYLISTIMP(,,,,,,,,,,,,,)}
 
 {$JPPEXPANDMACRO JCLARRAYLISTITRIMP(,,,,,,,)}
+
 *)
 {$IFDEF SUPPORTS_GENERICS}
 //DOM-IGNORE-BEGIN

@@ -55,6 +55,7 @@ type
   {$JPPEXPANDMACRO JCLBINARYTREEINT(,,,,,,,,,,,,,,)}
 
   {$JPPEXPANDMACRO JCLBINARYTREEITRINT(,,,,,,,,,,,,,,)}
+
 *)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
@@ -67,6 +68,7 @@ type
   TJclPostOrderBinaryTreeIterator<T> = class;
 
   (*$JPPEXPANDMACRO JCLBINARYTREEINT(TBinaryNode,TJclBinaryTree<T>,TJclAbstractContainer<T>,IJclCollection<T>,IJclTree<T>,IJclIterator<T>,IJclTreeIterator<T>, IJclItemOwner<T>\, IJclEqualityComparer<T>\, IJclComparer<T>\,,
+
 protected
   type
     TBinaryNode = TJclBinaryNode<T>;
@@ -142,6 +144,7 @@ uses
 {$JPPEXPANDMACRO JCLBINARYTREEIMP(,,,,,,,,,,,,,,,,)}
 
 {$JPPEXPANDMACRO JCLBINARYTREEITRIMP(,,,,,,,,,,,,,,)}
+
 *)
 
 {$IFDEF SUPPORTS_GENERICS}

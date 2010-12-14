@@ -51,7 +51,6 @@ uses
 type
   TItrStart = (isFirst, isLast, isRoot);
 
-
   TJclIntfBinaryNode = class
   public
     Value: IInterface;
@@ -1720,6 +1719,7 @@ type
     function GetPreviousCursor: TJclBinaryNode; override;
   end;
 
+
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
 
@@ -1925,7 +1925,6 @@ implementation
 
 uses
   SysUtils;
-
 
 //=== { TJclIntfBinaryTree } =================================================
 
@@ -19775,6 +19774,7 @@ begin
       Result := Result.Left;
   end;
 end;
+
 
 
 {$IFDEF SUPPORTS_GENERICS}

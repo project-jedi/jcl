@@ -70,12 +70,14 @@ type
   {$ENDIF ~SUPPORTS_GENERICS}
 
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclIntfHashSet,TJclIntfAbstractContainer,IJclIntfCollection,IJclIntfSet,IJclIntfMap,IJclIntfIterator, IJclIntfEqualityComparer\,,
+
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACapacity: Integer); overload;,,const ,AInterface,IInterface)*)
 
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclAnsiStrHashSet,TJclAnsiStrAbstractCollection,IJclAnsiStrCollection,IJclAnsiStrSet,IJclAnsiStrMap,IJclAnsiStrIterator, IJclStrContainer\, IJclAnsiStrContainer\, IJclAnsiStrEqualityComparer\,,
+
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
@@ -88,6 +90,7 @@ type
     procedure SetEncoding(Value: TJclAnsiStrEncoding); override;, override;,const ,AString,AnsiString)*)
 
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclWideStrHashSet,TJclWideStrAbstractCollection,IJclWideStrCollection,IJclWideStrSet,IJclWideStrMap,IJclWideStrIterator, IJclStrContainer\, IJclWideStrContainer\, IJclWideStrEqualityComparer\,,
+
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
@@ -101,6 +104,7 @@ type
 
 {$IFDEF SUPPORTS_UNICODE_STRING}
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclUnicodeStrHashSet,TJclUnicodeStrAbstractCollection,IJclUnicodeStrCollection,IJclUnicodeStrSet,IJclUnicodeStrMap,IJclUnicodeStrIterator, IJclStrContainer\, IJclUnicodeStrContainer\, IJclUnicodeStrEqualityComparer\,,
+
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
@@ -121,6 +125,7 @@ type
   {$ENDIF CONTAINER_UNICODESTR}
 
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclSingleHashSet,TJclSingleAbstractContainer,IJclSingleCollection,IJclSingleSet,IJclSingleMap,IJclSingleIterator, IJclSingleContainer\, IJclSingleEqualityComparer\,,
+
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
@@ -130,6 +135,7 @@ type
     procedure SetPrecision(const Value: Single); override;,,const ,AValue,Single)*)
 
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclDoubleHashSet,TJclDoubleAbstractContainer,IJclDoubleCollection,IJclDoubleSet,IJclDoubleMap,IJclDoubleIterator, IJclDoubleContainer\, IJclDoubleEqualityComparer\,,
+
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
@@ -139,6 +145,7 @@ type
     procedure SetPrecision(const Value: Double); override;,,const ,AValue,Double)*)
 
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclExtendedHashSet,TJclExtendedAbstractContainer,IJclExtendedCollection,IJclExtendedSet,IJclExtendedMap,IJclExtendedIterator, IJclExtendedContainer\, IJclExtendedEqualityComparer\,,
+
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
@@ -158,30 +165,35 @@ type
   {$ENDIF MATH_SINGLE_PRECISION}
 
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclIntegerHashSet,TJclIntegerAbstractContainer,IJclIntegerCollection,IJclIntegerSet,IJclIntegerMap,IJclIntegerIterator, IJclIntegerEqualityComparer\,,
+
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACapacity: Integer); overload;,,,AValue,Integer)*)
 
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclCardinalHashSet,TJclCardinalAbstractContainer,IJclCardinalCollection,IJclCardinalSet,IJclCardinalMap,IJclCardinalIterator, IJclCardinalEqualityComparer\,,
+
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACapacity: Integer); overload;,,,AValue,Cardinal)*)
 
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclInt64HashSet,TJclInt64AbstractContainer,IJclInt64Collection,IJclInt64Set,IJclInt64Map,IJclInt64Iterator, IJclInt64EqualityComparer\,,
+
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACapacity: Integer); overload;,,const ,AValue,Int64)*)
 
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclPtrHashSet,TJclPtrAbstractContainer,IJclPtrCollection,IJclPtrSet,IJclPtrMap,IJclPtrIterator, IJclPtrEqualityComparer\,,
+
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACapacity: Integer); overload;,,,AValue,Pointer)*)
 
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclHashSet,TJclAbstractContainer,IJclCollection,IJclSet,IJclMap,IJclIterator, IJclObjectOwner\, IJclEqualityComparer\,,
+
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
@@ -194,6 +206,7 @@ type
   //DOM-IGNORE-BEGIN
 
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclHashSet<T>,TJclAbstractContainer<T>,IJclCollection<T>,IJclSet<T>,IJclMap<T\, TRefUnique>,IJclIterator<T>, IJclItemOwner<T>\, IJclEqualityComparer<T>\,,
+
   public
     { IJclItemOwner<T> }
     function FreeItem(var AItem: T): T; override;

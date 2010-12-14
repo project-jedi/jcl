@@ -57,6 +57,7 @@ type
   {$JPPEXPANDMACRO JCLHASHMAPTYPESINT(,,,)}
 
   {$JPPEXPANDMACRO JCLHASHMAPINT(,,,,,,,,,,,,,)}
+
 *)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
@@ -64,6 +65,7 @@ type
   (*$JPPEXPANDMACRO JCLHASHMAPTYPESINT(TJclHashEntry<TKey\,TValue>,TJclBucket<TKey\,TValue>,TKey,TValue)*)
 
   (*$JPPEXPANDMACRO JCLHASHMAPINT(TBucket,TJclHashMap<TKey\,TValue>,TJclAbstractContainerBase,IJclMap<TKey\,TValue>,IJclSet<TKey>,IJclCollection<TValue>, IJclPairOwner<TKey\, TValue>\,,
+
 protected
   type
     TBucket = TJclBucket<TKey\,TValue>;
@@ -203,6 +205,7 @@ end;
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(,,)}
 
 {$JPPEXPANDMACRO JCLHASHMAPIMP(,,,,,,,,,,,,,,,,)}
+
 *)
 {$IFDEF SUPPORTS_GENERICS}
 //DOM-IGNORE-BEGIN
@@ -210,6 +213,7 @@ end;
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclBucket<TKey\, TValue>,Default(TKey),Default(TValue))}
 
 {$JPPEXPANDMACRO JCLHASHMAPIMP(TJclHashMap<TKey\, TValue>,TBucket,IJclMap<TKey\, TValue>,IJclSet<TKey>,IJclIterator<TKey>,IJclCollection<TValue>,; AOwnsKeys: Boolean,; AOwnsValues: Boolean,
+
   FOwnsKeys := AOwnsKeys;
   FOwnsValues := AOwnsValues;,const ,TKey,Default(TKey),const ,TValue,Default(TValue),CreateEmptyArraySet(FSize, False),CreateEmptyArrayList(FSize, False))}
 

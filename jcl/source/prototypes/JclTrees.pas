@@ -50,12 +50,14 @@ uses
 {$I containers\JclTrees.int}
 type
   TItrStart = (isFirst, isLast, isRoot);
+
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
   {$JPPEXPANDMACRO JCLTREETYPESINT(,,,,)}
 
   {$JPPEXPANDMACRO JCLTREEINT(,,,,,,,,,,,,,,,)}
 
   {$JPPEXPANDMACRO JCLTREEITRINT(,,,,,,,,,,,,,)}
+
 *)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
@@ -66,6 +68,7 @@ type
   TJclPostOrderTreeIterator<T> = class;
 
   {$JPPEXPANDMACRO JCLTREEINT(TTreeNode,TJclTree<T>,TJclAbstractContainer<T>,IJclEqualityComparer<T>,IJclCollection<T>,IJclTree<T>,IJclIterator<T>,IJclTreeIterator<T>, IJclItemOwner<T>\,,
+
 protected
   type
     TTreeNode = TJclTreeNode<T>;
@@ -137,6 +140,7 @@ uses
 {$JPPEXPANDMACRO JCLTREEIMP(,,,,,,,,,,,,,,)}
 
 {$JPPEXPANDMACRO JCLTREEITRIMP(,,,,,,,,,,,,,,)}
+
 *)
 {$IFDEF SUPPORTS_GENERICS}
 //DOM-IGNORE-BEGIN

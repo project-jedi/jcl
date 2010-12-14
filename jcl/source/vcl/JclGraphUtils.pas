@@ -978,6 +978,7 @@ var
 begin
   X := GetSystemMetrics(SM_CXSCREEN);
   Y := GetSystemMetrics(SM_CYSCREEN);
+
   with R do
   begin
     if Right > X then

@@ -2,7 +2,6 @@
 {  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
-
 {**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
@@ -45,6 +44,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
+
 unit Hardlinks;
 
 {$I jcl.inc}
@@ -84,6 +84,7 @@ uses
 
 {$EXTERNALSYM CreateHardLinkW}
 {$EXTERNALSYM CreateHardLinkA}
+
 
 // Well, we did not decide yet ;) - bind to either address, depending on whether
 // the API could be found.
@@ -238,6 +239,7 @@ const
 // =================================================================
 
 
+
 type
   TRtlCreateUnicodeStringFromAsciiz = function(var destination: UNICODE_STRING;
     source: PAnsiChar): Boolean; stdcall;
@@ -372,6 +374,7 @@ var
 
  ******************************************************************************)
 function
+
   MyCreateHardLinkW // ... otherwise this one
   (szLinkName, szLinkTarget: PWideChar; lpSecurityAttributes: PSecurityAttributes): BOOL;
 const
@@ -594,6 +597,7 @@ end;
  ******************************************************************************)
 
 function
+
   MyCreateHardLinkA // ... otherwise this one
   (szLinkName, szLinkTarget: PAnsiChar; lpSecurityAttributes: PSecurityAttributes): BOOL;
 var
@@ -707,6 +711,7 @@ initialization
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
+
 
 
 end.

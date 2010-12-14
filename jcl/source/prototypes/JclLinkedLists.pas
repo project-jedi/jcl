@@ -58,6 +58,7 @@ type
   {$JPPEXPANDMACRO JCLLINKEDLISTINT(,,,,,,,,,,,,,,)}
 
   {$JPPEXPANDMACRO JCLLINKEDLISTITRINT(,,,,,,,,,,)}
+
 *)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
@@ -67,6 +68,7 @@ type
   TJclLinkedListIterator<T> = class;
 
   (*$JPPEXPANDMACRO JCLLINKEDLISTINT(TLinkedListItem,TJclLinkedList<T>,TJclAbstractContainer<T>,IJclCollection<T>,IJclList<T>,IJclIterator<T>, IJclItemOwner<T>\, IJclEqualityComparer<T>\,,
+
 protected
   type
     TLinkedListItem = TJclLinkedListItem<T>;
@@ -138,6 +140,7 @@ uses
 {$JPPEXPANDMACRO JCLLINKEDLISTIMP(,,,,,,,,,,,,,,)}
 
 {$JPPEXPANDMACRO JCLLINKEDLISTITRIMP(,,,,,,,,,,,)}
+
 *)
 {$IFDEF SUPPORTS_GENERICS}
 //DOM-IGNORE-BEGIN

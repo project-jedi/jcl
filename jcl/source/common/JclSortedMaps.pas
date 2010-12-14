@@ -50,7 +50,6 @@ uses
   JclAbstractContainers, JclContainerIntf, JclArrayLists, JclArraySets;
 
 type
-
   TJclIntfIntfSortedEntry = record
     Key: IInterface;
     Value: IInterface;
@@ -2367,6 +2366,7 @@ type
     function TailMap(FromKey: TObject): IJclSortedMap;
   end;
 
+
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
 
@@ -2521,7 +2521,6 @@ implementation
 
 uses
   SysUtils;
-
 
 //=== { TJclIntfIntfSortedMap } ==============================================
 
@@ -29548,6 +29547,7 @@ function TJclSortedMap.ValuesCompare(A, B: TObject): Integer;
 begin
   Result := SimpleCompare(A, B);
 end;
+
 
 
 {$IFDEF SUPPORTS_GENERICS}
