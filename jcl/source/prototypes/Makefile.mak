@@ -10,7 +10,7 @@ touch		= $(MAKEDIR)\touch.exe
 
 Options			= -c -dJCL -dSUPPORTS_DEFAULTPARAMS -dSUPPORTS_INT64
 # CommonOptions		= $(Options) -f..\common\\
-VclOptions		= $(Options) -dVCL -dMSWINDOWS -uUnix -dBitmap32 -x1:..\vcl\Jcl
+VclOptions		= $(Options) -dVCL -dMSWINDOWS -uUnix -dBitmap32 -f..\vcl\\
 WinOptions		= $(Options) -dMSWINDOWS -uUNIX -uHAS_UNIT_LIBC -f..\windows\\
 Win32Options		= $(Options) -uHAS_UNIT_LIBC -f..\windows\\
 ContainerOptions	= $(Options) -m -ijcl.inc -f..\Common\\
@@ -51,14 +51,6 @@ Containers:	..\Common\JclAlgorithms.pas \
 		..\Common\JclStacks.pas \
                 ..\Common\JclTrees.pas \
 		..\Common\JclVectors.pas
-
-..\vcl\JclGraphics.pas: \
-		_Graphics.pas
-	$(jpp) $(VclOptions) $?
-
-..\vcl\JclGraphUtils.pas: \
-		_GraphUtils.pas
-	$(jpp) $(VclOptions) $?
 
 ..\windows\JclWin32.pas: \
                 JclWin32.pas
@@ -124,3 +116,7 @@ JclVectors.pas: \
 
 {.}.pas{..\unix}.pas:
 	$(jpp) $(UnixOptions) $<
+
+{.}.pas{..\vcl}.pas:
+	$(jpp) $(VclOptions) $<
+

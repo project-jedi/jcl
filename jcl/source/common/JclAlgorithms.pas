@@ -1183,7 +1183,6 @@ begin
   end;
 end;
 
-
 procedure MoveArray(var List: TDynAnsiStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
 begin
   if Count > 0 then
@@ -1191,7 +1190,6 @@ begin
     FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
     Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
     InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
-
   end;
 end;
 
