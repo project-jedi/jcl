@@ -309,13 +309,14 @@ begin
             ptEof:
               Break;
             ptDefine,
-            ptJppDefine:
-              if poProcessDefines in State.Options then
-                State.Define(TempLexer.TokenAsString);
+            ptJppDefine,
             ptUndef,
             ptJppUndef:
               if poProcessDefines in State.Options then
-                State.Undef(TempLexer.TokenAsString);
+              begin
+                Recurse := True;
+                Break;
+              end;
             ptIfdef, ptIfndef:
               if (poProcessDefines in State.Options) and (State.Defines[TempLexer.TokenAsString] in [ttDefined, ttUndef]) then
               begin
