@@ -58,7 +58,7 @@ type
   EPppState = class(EJclError);
 
   TPppOption = (poProcessIncludes, poProcessDefines, poStripComments,
-    poProcessMacros, poProcessValues, poNoWarningHeader);
+    poProcessMacros, poProcessValues, poNoWarningHeader, poKeepTabAndSpaces);
   TPppOptions = set of TPppOption;
 
   TTriState = (ttUnknown, ttUndef, ttDefined);

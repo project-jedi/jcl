@@ -132,14 +132,22 @@ type
   PLineBreak = PChar;
 {$ENDIF UNIX}
 
-function AllWhiteSpace(P: PChar): Boolean;
+function AllWhiteSpace(P: PChar; KeepTabAndSpaces: Boolean): Boolean;
 var
   I: Integer;
 begin
   Result := True;
   for I := 1 to Length(P) do
     case P^ of
-      NativeTab, NativeLineFeed, NativeCarriageReturn, NativeSpace:
+      NativeTab, NativeSpace:
+        if KeepTabAndSpaces then
+        begin
+          Result := False;
+          Break;
+        end
+        else
+          Inc(P);
+      NativeLineFeed, NativeCarriageReturn:
         Inc(P);
     else
       Result := False;
@@ -416,7 +424,7 @@ begin
     while FResultLen + Length(AResult) > Length(FResult) do
       SetLength(FResult, Length(FResult) * 2);
     Move(AResult[1], FResult[FResultLen + 1], Length(AResult) * SizeOf(Char));
-    FAllWhiteSpaceOut := FAllWhiteSpaceOut and AllWhiteSpace(PChar(AResult));
+    FAllWhiteSpaceOut := FAllWhiteSpaceOut and AllWhiteSpace(PChar(AResult), poKeepTabAndSpaces in State.Options);
     Inc(FResultLen, Length(AResult));
   end;
 end;
@@ -440,7 +448,7 @@ begin
     ptComment:
       FAllWhiteSpaceIn := False;
     ptText:
-      FAllWhiteSpaceIn := FAllWhiteSpaceIn and AllWhiteSpace(PChar(Lexer.TokenAsString));
+      FAllWhiteSpaceIn := FAllWhiteSpaceIn and AllWhiteSpace(PChar(Lexer.TokenAsString), poKeepTabAndSpaces in State.Options);
     ptDefine,
     ptUndef,
     ptIfdef,

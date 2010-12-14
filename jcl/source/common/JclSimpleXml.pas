@@ -1998,11 +1998,13 @@ var
   St: string;
   lElem: TJclSimpleXMLElem;
   Ch: Char;
-  lContainsText: Boolean;
+  ContainsText, ContainsWhiteSpace, KeepWhiteSpace: Boolean;
 begin
   St := '';
   lPos := rsWaitingTag;
-  lContainsText := False;
+  KeepWhiteSpace := (AParent.Options * [sxoTrimPrecedingTextWhitespace, sxoTrimFollowingTextWhitespace]) = [];
+  ContainsText := False;
+  ContainsWhiteSpace := False;
 
   // We read from a stream, thus replacing the existing items
   Clear;
@@ -2021,8 +2023,10 @@ begin
             St := Ch;
           end
           else
-          if not CharIsWhiteSpace(Ch) then
-            lContainsText := True;
+          if CharIsWhiteSpace(Ch) then
+            ContainsWhiteSpace := True
+          else
+            ContainsText := True;
         end;
 
       rsReadingTagKind: //We are trying to determine the kind of the tag
@@ -2039,7 +2043,7 @@ begin
                 // in the list. If we did not check this, we would create a
                 // text element for whitespace found between two adjacent end
                 // tags.
-                if lContainsText then
+                if ContainsText or (ContainsWhiteSpace and KeepWhiteSpace) then
                 begin
                   lElem := TJclSimpleXMLElemText.Create(Parent);
                   lElem.LoadFromStringStream(StringStream, AParent);
@@ -2063,12 +2067,13 @@ begin
                 lPos := rsWaitingTag;
               end;
           else
-            if lContainsText then
+            if ContainsText or (ContainsWhiteSpace and KeepWhiteSpace) then
             begin
               // inner text
               lElem := TJclSimpleXMLElemText.Create(Parent);
               lPos := rsReadingTagKind;
-              lContainsText := False;
+              ContainsText := False;
+              ContainsWhiteSpace := False;
             end
             else
             begin
