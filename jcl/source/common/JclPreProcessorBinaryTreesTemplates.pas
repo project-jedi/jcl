@@ -26,7 +26,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-unit JclBinaryTreesTemplates;
+unit JclPreProcessorBinaryTreesTemplates;
 
 interface
 
@@ -36,9 +36,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclContainerTypes,
-  JclContainerTemplates,
-  JclContainer1DTemplates;
+  JclPreProcessorContainerTypes,
+  JclPreProcessorContainerTemplates,
+  JclPreProcessorContainer1DTemplates;
 
 type
   (* JCLBINARYTREETYPESINT(NODETYPENAME, TYPENAME) *)
@@ -182,7 +182,7 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\devtools\jpp\Templates';
+    LogPath: 'JCL\source\common';
     Extra: '';
     Data: nil
     );

@@ -26,7 +26,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-unit JclTemplates;
+unit JclPreProcessorTemplates;
 
 interface
 
@@ -37,7 +37,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JppState;
+  JclPreProcessorState;
 
 type
   TJclTemplateParams = class(TPppState)
@@ -65,7 +65,7 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\devtools\jpp\Templates';
+    LogPath: 'JCL\source\common';
     Extra: '';
     Data: nil
     );
@@ -77,7 +77,7 @@ uses
   SysUtils,
   TypInfo,
   JclStrings, JclSysUtils,
-  JppParser;
+  JclPreProcessorParser;
 
 //=== { TJclTemplateParams } =================================================
 

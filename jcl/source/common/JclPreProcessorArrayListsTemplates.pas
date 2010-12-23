@@ -26,7 +26,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-unit JclArrayListsTemplates;
+unit JclPreProcessorArrayListsTemplates;
 
 interface
 
@@ -36,9 +36,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclContainerTypes,
-  JclContainerTemplates,
-  JclContainer1DTemplates;
+  JclPreProcessorContainerTypes,
+  JclPreProcessorContainerTemplates,
+  JclPreProcessorContainer1DTemplates;
 
 type
   (* JCLARRAYLISTINT(SELFCLASSNAME, ANCESTORCLASSNAME, COLLECTIONINTERFACENAME, LISTINTERFACENAME,
@@ -138,7 +138,7 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\devtools\jpp\Templates';
+    LogPath: 'JCL\source\common';
     Extra: '';
     Data: nil
     );

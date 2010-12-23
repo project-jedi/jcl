@@ -188,7 +188,7 @@ implementation
 
 uses
   Classes, ActiveX,
-  JclDateTime, JclFileUtils, JclOtaResources, JclTemplates;
+  JclDateTime, JclFileUtils, JclOtaResources, JclPreProcessorTemplates;
 
 //=== { TJclOTARepositoryExpertBase } ========================================
 

@@ -26,7 +26,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-unit JclContainer2DTemplates;
+unit JclPreProcessorContainer2DTemplates;
 
 interface
 
@@ -37,8 +37,8 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   JclBase,
-  JclContainerTypes,
-  JclContainer1DTemplates;
+  JclPreProcessorContainerTypes,
+  JclPreProcessorContainer1DTemplates;
 
 {$TYPEINFO ON}
 
@@ -166,7 +166,7 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\devtools\jpp\Templates';
+    LogPath: 'JCL\source\common';
     Extra: '';
     Data: nil
     );
@@ -182,7 +182,7 @@ uses
   JclRTTI,
   JclSysUtils,
   JclContainerIntf,
-  JclContainerKnownMaps;
+  JclPreProcessorContainerKnownMaps;
 
 //=== { TJclContainerMapInfo } ===============================================
 

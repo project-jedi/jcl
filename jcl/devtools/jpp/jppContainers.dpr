@@ -45,29 +45,26 @@ program jppContainers;
 
 uses
   SysUtils,
-  JppState in 'JppState.pas',
-  JppParser in 'JppParser.pas',
-  JppLexer in 'JppLexer.pas',
-  JppMain in 'JppMain.pas',
-  JclTemplates in 'Templates\JclTemplates.pas',
-  JclContainerTypes in 'Templates\JclContainerTypes.pas',
-  JclAlgorithmsTemplates in 'Templates\JclAlgorithmsTemplates.pas',
-  JclArrayListsTemplates in 'Templates\JclArrayListsTemplates.pas',
-  JclArraySetsTemplates in 'Templates\JclArraySetsTemplates.pas',
-  JclBinaryTreesTemplates in 'Templates\JclBinaryTreesTemplates.pas',
-  JclContainerIntfTemplates in 'Templates\JclContainerIntfTemplates.pas',
-  JclContainerKnownTypes in 'Templates\JclContainerKnownTypes.pas',
-  JclContainerTemplates in 'Templates\JclContainerTemplates.pas',
-  JclLinkedListsTemplates in 'Templates\JclLinkedListsTemplates.pas',
-  JclQueuesTemplates in 'Templates\JclQueuesTemplates.pas',
-  JclStacksTemplates in 'Templates\JclStacksTemplates.pas',
-  JclVectorsTemplates in 'Templates\JclVectorsTemplates.pas',
-  JclTreesTemplates in 'Templates\JclTreesTemplates.pas',
-  JclContainer1DTemplates in 'Templates\JclContainer1DTemplates.pas',
-  JclContainer2DTemplates in 'Templates\JclContainer2DTemplates.pas',
-  JclContainerKnownMaps in 'Templates\JclContainerKnownMaps.pas',
-  JclHashMapsTemplates in 'Templates\JclHashMapsTemplates.pas',
-  JclSortedMapsTemplates in 'Templates\JclSortedMapsTemplates.pas';
+  JclPreProcessorTemplates,
+  JclPreProcessorContainerTypes,
+  JclPreProcessorAlgorithmsTemplates,
+  JclPreProcessorArrayListsTemplates,
+  JclPreProcessorArraySetsTemplates,
+  JclPreProcessorBinaryTreesTemplates,
+  JclPreProcessorContainerIntfTemplates,
+  JclPreProcessorContainerKnownTypes,
+  JclPreProcessorContainerTemplates,
+  JclPreProcessorLinkedListsTemplates,
+  JclPreProcessorQueuesTemplates,
+  JclPreProcessorStacksTemplates,
+  JclPreProcessorVectorsTemplates,
+  JclPreProcessorTreesTemplates,
+  JclPreProcessorContainer1DTemplates,
+  JclPreProcessorContainer2DTemplates,
+  JclPreProcessorContainerKnownMaps,
+  JclPreProcessorHashMapsTemplates,
+  JclPreProcessorSortedMapsTemplates,
+  JppMain in 'JppMain.pas';
 
 var
   CommandLine: string;
@@ -75,9 +72,7 @@ var
   State: TJclContainerParams;
 begin
   try
-    {$IFDEF DEBUG}
     CheckJclContainers;
-    {$ENDIF DEBUG}
     State := TJclContainerParams.Create;
     try
       i := 1;

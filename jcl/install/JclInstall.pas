@@ -208,6 +208,7 @@ type
     FLibDebugDirMask: string;
     FJclIncludeDir: string;
     FJclSourcePath: string;
+    FJclOldSourcePath: string;
     FJclExamplesDir: string;
     FVclDialogFileName: string;
     FVclDialogSendFileName: string;
@@ -268,6 +269,7 @@ type
     property LibDebugDirMask: string read FLibDebugDirMask;
     property JclIncludeDir: string read FJclIncludeDir;
     property JclSourcePath: string read FJclSourcePath;
+    property JclOldSourcePath: string read FJclOldSourcePath;
     property JclExamplesDir: string read FJclExamplesDir;
     property VclDialogFileName: string read FVclDialogFileName;
     property VclDialogSendFileName: string read FVclDialogSendFileName;
@@ -440,23 +442,25 @@ const
   OldExperts: array [0..6] of string =
     ( 'JclDebugIde', 'ProjectAnalyzer', 'IdeOpenDlgFavorite', 'ThreadNameExpert', 'JediUses', 'JclSIMDView', 'JclVersionControl' );
 
-  JclSrcDirWindows   = 'source' + DirDelimiter + 'windows';
-  JclSrcDirUnix      = 'source' + DirDelimiter + 'unix';
-  JclSrcDirVcl       = 'source' + DirDelimiter + 'vcl';
-  JclSrcDirCommon    = 'source' + DirDelimiter + 'common';
-  JclJppDir          = 'devtools' + DirDelimiter + 'jpp';
-  JClJppDirTemplates = 'devtools' + DirDelimiter + 'jpp' + DirDelimiter + 'Templates';
+  JclSrcDirWindows      = 'source' + DirDelimiter + 'windows';
+  JclSrcDirUnix         = 'source' + DirDelimiter + 'unix';
+  JclSrcDirVcl          = 'source' + DirDelimiter + 'vcl';
+  JclSrcDirCommon       = 'source' + DirDelimiter + 'common';
+  JclOldIncludeDir      = 'source';
+  JclOldJppDir          = 'devtools' + DirDelimiter + 'jpp';
+  JClOldJppDirTemplates = 'devtools' + DirDelimiter + 'jpp' + DirDelimiter + 'Templates';
 
   BCBIncludePath = '%s' + DirSeparator + '%s' + DirSeparator + '$(BCB)' + DirDelimiter + 'include;$(BCB)' + DirDelimiter + 'include' + DirDelimiter + 'vcl';
   {$IFDEF MSWINDOWS}
   BCBObjectPath  = '%s;%s;$(BCB)\Lib\Obj';
   // to be compiled and added to IDE browsing path
-  JclSrcPaths: array[0..4] of string = (JclSrcDirCommon, JclSrcDirWindows, JclSrcDirVcl, JclJppDir, JclJppDirTemplates);
+  JclSrcPaths: array[0..2] of string = (JclSrcDirCommon, JclSrcDirWindows, JclSrcDirVcl);
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   BCBObjectPath  = BCBIncludePath;
-  JclSrcPaths: array[0..3] of string = (JclSrcDirCommon, JclSrcDirUnix, JclJppDir, JclJppDirTemplates);
+  JclSrcPaths: array[0..1] of string = (JclSrcDirCommon, JclSrcDirUnix);
   {$ENDIF UNIX}
+  JclOldSrcPaths: array[0..2] of string = (JclOldIncludeDir, JclOldJppDir, JclOldJppDirTemplates);
 
   ExceptDlgPath = 'experts' + DirDelimiter + 'repository' + DirDelimiter + 'ExceptionDialog' + DirDelimiter + 'StandardDialogs' + DirDelimiter;
   ExceptDlgVclFileName    = 'ExceptDlg.pas';
@@ -1898,12 +1902,20 @@ function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
       WriteLog(Format(LoadResString(@RsLogDelLibraryBrowsingPath), [Distribution.JclSourcePath]))
     else
       WriteLog(LoadResString(@RsLogFailedDelLibraryBrowsingPath));
+    if ATarget.RemoveFromLibraryBrowsingPath(Distribution.JclOldSourcePath) then
+      WriteLog(Format(LoadResString(@RsLogDelLibraryBrowsingPath), [Distribution.JclOldSourcePath]))
+    else
+      WriteLog(LoadResString(@RsLogFailedDelLibraryBrowsingPath));
     {$IFDEF MSWINDOWS}
     if (ATarget.RadToolKind = brBorlandDevStudio) and (bpBCBuilder32 in ATarget.Personalities) then
       with TJclBDSInstallation(ATarget) do
     begin
       if RemoveFromCppBrowsingPath(Distribution.JclSourcePath) then
         WriteLog(Format(LoadResString(@RsLogDelCppBrowsingPath), [Distribution.JclSourcePath]))
+      else
+        WriteLog(LoadResString(@RsLogFailedDelCppBrowsingPath));
+      if RemoveFromCppBrowsingPath(Distribution.JclOldSourcePath) then
+        WriteLog(Format(LoadResString(@RsLogDelCppBrowsingPath), [Distribution.JclOldSourcePath]))
       else
         WriteLog(LoadResString(@RsLogFailedDelCppBrowsingPath));
     end;
@@ -3022,6 +3034,9 @@ procedure TJclDistribution.Init;
     FJclSourcePath := '';
     for Index := Low(JclSrcPaths) to High(JclSrcPaths) do
       ListAddItems(FJclSourcePath, DirSeparator, JclPath + JclSrcPaths[Index]);
+    FJclOldSourcePath := '';
+    for Index := Low(JclOldSrcPaths) to High(JclOldSrcPaths) do
+      ListAddItems(FJclOldSourcePath, DirSeparator, JclPath + JclOldSrcPaths[Index]);
 
     ExceptDialogsPath := JclPath + ExceptDlgPath;
     FVclDialogFileName := ExceptDialogsPath + ExceptDlgVclFileName;

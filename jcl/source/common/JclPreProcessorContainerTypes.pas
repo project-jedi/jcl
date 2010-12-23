@@ -26,7 +26,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-unit JclContainerTypes;
+unit JclPreProcessorContainerTypes;
 
 interface
 
@@ -34,7 +34,7 @@ interface
 
 uses
   JclBase,
-  JclTemplates,
+  JclPreProcessorTemplates,
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
@@ -374,7 +374,7 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\devtools\jpp\Templates';
+    LogPath: 'JCL\source\common';
     Extra: '';
     Data: nil
     );

@@ -26,7 +26,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-unit JclContainerTemplates;
+unit JclPreProcessorContainerTemplates;
 
 interface
 
@@ -40,10 +40,10 @@ uses
   {$ENDIF UNITVERSIONING}
   JclBase,
   JclIDEUtils,
-  JclTemplates,
-  JclContainerTypes,
-  JclContainer1DTemplates,
-  JclContainer2DTemplates;
+  JclPreProcessorTemplates,
+  JclPreProcessorContainerTypes,
+  JclPreProcessorContainer1DTemplates,
+  JclPreProcessorContainer2DTemplates;
 
 {$TYPEINFO ON}
 
@@ -103,9 +103,7 @@ procedure FindContainerParams(const PrototypeName: string;
   out InterfaceParamsClass: TJclInterfaceParamsClass;
   out ImplementationParamsClass: TJclImplementationParamsClass);
 
-{$IFDEF DEBUG}
 procedure CheckJclContainers;
-{$ENDIF DEBUG}
 
 {$IFDEF UNITVERSIONING}
 const
@@ -113,7 +111,7 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\devtools\jpp\Templates';
+    LogPath: 'JCL\source\common';
     Extra: '';
     Data: nil
     );
@@ -131,8 +129,8 @@ uses
   JclSysUtils,
   JclStrings,
   JclContainerIntf,
-  JclContainerKnownTypes,
-  JclContainerKnownMaps;
+  JclPreProcessorContainerKnownTypes,
+  JclPreProcessorContainerKnownMaps;
 
 type
   TInterfaceParamsRec = record

@@ -26,7 +26,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-unit JclContainerKnownMaps;
+unit JclPreProcessorContainerKnownMaps;
 
 interface
 
@@ -36,8 +36,8 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclContainerTypes,
-  JclContainerKnownTypes;
+  JclPreProcessorContainerTypes,
+  JclPreProcessorContainerKnownTypes;
 
 const
   IInterfaceIInterfaceKnownMap: TKnownMapAttributes =
@@ -963,7 +963,7 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\devtools\jpp\Templates';
+    LogPath: 'JCL\source\common';
     Extra: '';
     Data: nil
     );

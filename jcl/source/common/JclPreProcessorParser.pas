@@ -37,10 +37,14 @@
 {    under either the MPL or the LPGL License.                                 }
 {                                                                              }
 { **************************************************************************** }
+{                                                                              }
+{ Last modified: $Date::                                                     $ }
+{ Revision:      $Rev::                                                      $ }
+{ Author:        $Author::                                                   $ }
+{                                                                              }
+{ **************************************************************************** }
 
-// Last modified: $Date$
-
-unit JppParser;
+unit JclPreProcessorParser;
 
 {$I jcl.inc}
 
@@ -51,7 +55,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclBase, JppState, JppLexer;
+  JclBase, JclPreProcessorState, JclPreProcessorLexer;
 
 type
   EPppParserError = class(EJclError);
@@ -104,7 +108,7 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\devtools\jpp';
+    LogPath: 'JCL\source\common';
     Extra: '';
     Data: nil
     );

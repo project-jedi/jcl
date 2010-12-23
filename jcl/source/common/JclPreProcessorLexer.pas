@@ -37,6 +37,12 @@
 {                                                                              }
 { **************************************************************************** }
 {                                                                              }
+{ Last modified: $Date::                                                     $ }
+{ Revision:      $Rev::                                                      $ }
+{ Author:        $Author::                                                   $ }
+{                                                                              }
+{ **************************************************************************** }
+{                                                                              }
 {    JppLexer differs from the original unit in that it provides a separate    }
 {    token for line breaks, ptEol.  That makes it much easier to remove        }
 {    orphaned line breaks after conditional compilation symbol resolution,     }
@@ -44,9 +50,7 @@
 {                                                                              }
 { **************************************************************************** }
 
-// Last modified: $Date$
-
-unit JppLexer;
+unit JclPreProcessorLexer;
 
 {$I jcl.inc}
 
@@ -105,7 +109,7 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\devtools\jpp';
+    LogPath: 'JCL\source\common';
     Extra: '';
     Data: nil
     );

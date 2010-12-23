@@ -35,13 +35,18 @@
 {    under either the MPL or the LPGL License.                                 }
 {                                                                              }
 { **************************************************************************** }
-{ $Id$ }
+{                                                                              }
+{ Last modified: $Date::                                                     $ }
+{ Revision:      $Rev::                                                      $ }
+{ Author:        $Author::                                                   $ }
+{                                                                              }
+{ **************************************************************************** }
 
 { Brief: The state of the preprocessor; options (e.g. remove comments),
     defines, include search path, etc. }
 
 // Modifications by Robert Rossmair:  Addition of TTriState type, TriState methods
-unit JppState;
+unit JclPreProcessorState;
 
 {$I jcl.inc}
 
@@ -161,7 +166,7 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\devtools\jpp';
+    LogPath: 'JCL\source\common';
     Extra: '';
     Data: nil
     );
@@ -172,7 +177,7 @@ implementation
 uses
   TypInfo,
   JclStrings, JclArrayLists, JclHashMaps, JclStacks,
-  JppParser;
+  JclPreProcessorParser;
 
 //=== { TPppState } ==========================================================
 

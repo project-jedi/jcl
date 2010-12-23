@@ -10,7 +10,7 @@
 { ANY KIND, either express or implied. See the License for the specific language governing rights  }
 { and limitations under the License.                                                               }
 {                                                                                                  }
-{ The Original Code is JclStacksTemplates.pas.                                                     }
+{ The Original Code is JclQueuesTemplates.pas.                                                     }
 {                                                                                                  }
 { The Initial Developer of the Original Code is Florent Ouchet                                     }
 {         <outchy att users dott sourceforge dott net>                                             }
@@ -26,7 +26,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-unit JclStacksTemplates;
+unit JclPreProcessorQueuesTemplates;
 
 interface
 
@@ -36,26 +36,26 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclContainerTypes,
-  JclContainerTemplates,
-  JclContainer1DTemplates;
+  JclPreProcessorContainerTypes,
+  JclPreProcessorContainerTemplates,
+  JclPreProcessorContainer1DTemplates;
 
 type
-  (* JCLSTACKINT(SELFCLASSNAME, STACKINTERFACENAME, ANCESTORCLASSNAME, DYNARRAYTYPENAME,
+  (* JCLQUEUEINT(SELFCLASSNAME, QUEUEINTERFACENAME, ANCESTORCLASSNAME, DYNARRAYTYPENAME,
                  INTERFACEADDITIONAL, SECTIONADDITIONAL, OWNERSHIPDECLARATION,
                  CONSTKEYWORD, PARAMETERNAME, TYPENAME) *)
-  TJclStackIntParams = class(TJclClassInterfaceParams)
+  TJclQueueIntParams = class(TJclClassInterfaceParams)
   protected
     // function CodeUnit: string; override;
     function GetInterfaceAdditional: string; override;
   public
     function AliasAttributeIDs: TAllTypeAttributeIDs; override;
   published
-    property SelfClassName: string index taStackClassName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
-    property StackInterfaceName: string index taStackInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
-    property EqualityComparerInterfaceName: string index taEqualityComparerInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
+    property SelfClassName: string index taQueueClassName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
+    property QueueInterfaceName: string index taQueueInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property AncestorClassName;
     property DynArrayTypeName: string index taDynArrayTypeName read GetTypeAttribute write SetTypeAttribute stored False;
+    property EqualityComparerInterfaceName: string index taEqualityComparerInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property InterfaceAdditional;
     property SectionAdditional;
     property OwnershipDeclaration;
@@ -64,16 +64,16 @@ type
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* JCLSTACKIMP(SELFCLASSNAME, OWNERSHIPDECLARATION, OWNERSHIPPARAMETER, CONSTKEYWORD,
-                 PARAMETERNAME, TYPENAME, DEFAULTVALUE, RELEASERNAME) *)
-  TJclStackImpParams = class(TJclClassImplementationParams)
+  (* JCLQUEUEIMP(SELFCLASSNAME, OWNERSHIPDECLARATION, OWNERSHIPPARAMETER,
+                 CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE, RELEASERNAME) *)
+  TJclQueueImpParams = class(TJclClassImplementationParams)
   protected
     // function CodeUnit: string; override;
   public
     function GetConstructorParameters: string; override;
     function GetSelfClassName: string; override;
   published
-    property SelfClassName: string index taStackClassName read GetTypeAttribute write SetTypeAttribute stored False;
+    property SelfClassName: string index taQueueClassName read GetTypeAttribute write SetTypeAttribute stored False;
     property OwnershipDeclaration;
     property OwnershipParameter: string index taOwnershipParameter read GetTypeAttribute write SetTypeAttribute stored False;
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
@@ -90,7 +90,7 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\devtools\jpp\Templates';
+    LogPath: 'JCL\source\common';
     Extra: '';
     Data: nil
     );
@@ -104,32 +104,32 @@ uses
 
 procedure RegisterJclContainers;
 begin
-  RegisterContainerParams('JCLSTACKINT', TJclStackIntParams);
-  RegisterContainerParams('JCLSTACKIMP', TJclStackImpParams, TJclStackIntParams);
+  RegisterContainerParams('JCLQUEUEINT', TJclQueueIntParams);
+  RegisterContainerParams('JCLQUEUEIMP', TJclQueueImpParams, TJclQueueIntParams);
 end;
 
-//=== { TJclStackIntParams } =================================================
+//=== { TJclQueueIntParams } =================================================
 
-function TJclStackIntParams.AliasAttributeIDs: TAllTypeAttributeIDs;
+function TJclQueueIntParams.AliasAttributeIDs: TAllTypeAttributeIDs;
 begin
-  Result := [taStackClassName];
+  Result := [taQueueClassName];
 end;
 
-function TJclStackIntParams.GetInterfaceAdditional: string;
+function TJclQueueIntParams.GetInterfaceAdditional: string;
 begin
   Result := FInterfaceAdditional;
   if Result = '' then
     Result := Format('%s %s,', [inherited GetInterfaceAdditional, EqualityComparerInterfaceName]);
 end;
 
-//=== { TJclStackImpParams } =================================================
+//=== { TJclQueueImpParams } =================================================
 
-function TJclStackImpParams.GetConstructorParameters: string;
+function TJclQueueImpParams.GetConstructorParameters: string;
 begin
-  Result := 'FSize';
+  Result := 'Size + 1';
 end;
 
-function TJclStackImpParams.GetSelfClassName: string;
+function TJclQueueImpParams.GetSelfClassName: string;
 begin
   Result := SelfClassName;
 end;

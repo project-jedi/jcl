@@ -45,9 +45,7 @@ program jpp;
 
 uses
   SysUtils,
-  JppState in 'JppState.pas',
-  JppParser in 'JppParser.pas',
-  JppLexer in 'JppLexer.pas',
+  JclPreProcessorState,
   JppMain in 'JppMain.pas';
 
 var

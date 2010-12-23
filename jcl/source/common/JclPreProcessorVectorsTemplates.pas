@@ -10,7 +10,7 @@
 { ANY KIND, either express or implied. See the License for the specific language governing rights  }
 { and limitations under the License.                                                               }
 {                                                                                                  }
-{ The Original Code is JclLinkedListsTemplates.pas.                                                }
+{ The Original Code is JclVectorsTemplates.pas.                                                    }
 {                                                                                                  }
 { The Initial Developer of the Original Code is Florent Ouchet                                     }
 {         <outchy att users dott sourceforge dott net>                                             }
@@ -26,7 +26,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-unit JclLinkedListsTemplates;
+unit JclPreProcessorVectorsTemplates;
 
 interface
 
@@ -36,38 +36,29 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclContainerTypes,
-  JclContainerTemplates,
-  JclContainer1DTemplates;
+  JclPreProcessorContainerTypes,
+  JclPreProcessorContainerTemplates,
+  JclPreProcessorContainer1DTemplates;
 
 type
-  (* JCLLINKEDLISTTYPESINT(ITEMCLASSNAME, TYPENAME) *)
-  TJclLinkedListTypeIntParams = class(TJclContainerInterfaceParams)
-  public
-    function AliasAttributeIDs: TAllTypeAttributeIDs; override;
-  published
-    property ItemClassName: string index taLinkedListItemClassName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
-    property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
-  end;
-
-  (* JCLLINKEDLISTINT(ITEMCLASSNAME, SELFCLASSNAME, ANCESTORCLASSNAME, COLLECTIONINTERFACENAME,
-                      LISTINTERFACENAME, ITRINTERFACENAME, INTERFACEADDITIONAL, SECTIONADDITIONAL,
-                      COLLECTIONFLAGS, OWNERSHIPDECLARATION, CONSTKEYWORD, PARAMETERNAME,
-                      TYPENAME, GETTERNAME, SETTERNAME) *)
-  TJclLinkedListIntParams = class(TJclCollectionInterfaceParams)
+  (* JCLVECTORINT(SELFCLASSNAME, ANCESTORCLASSNAME, COLLECTIONINTERFACENAME, LISTINTERFACENAME,
+                  ARRAYINTERFACENAME, ITRINTERFACENAME, INTERFACEADDITIONAL, SECTIONADDITIONAL,
+                  COLLECTIONFLAGS, OWNERSHIPDECLARATION, CONSTKEYWORD, PARAMETERNAME, TYPENAME,
+                  DYNARRAYTYPE, GETTERNAME, SETTERNAME) *)
+  TJclVectorIntParams = class(TJclCollectionInterfaceParams)
   protected
     // function CodeUnit: string; override;
     function GetInterfaceAdditional: string; override;
   public
     function AliasAttributeIDs: TAllTypeAttributeIDs; override;
   published
-    property ItemClassName: string index taLinkedListItemClassName read GetTypeAttribute write SetTypeAttribute stored False;
-    property SelfClassName: string index taLinkedListClassName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
+    property SelfClassName: string index taVectorClassName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
     property AncestorClassName;
     property CollectionInterfaceName: string index taCollectionInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
-    property ListInterfaceName: string index taListInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
-    property ItrInterfaceName: string index taIteratorInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property EqualityComparerInterfaceName: string index taEqualityComparerInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
+    property ListInterfaceName: string index taListInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
+    property ArrayInterfaceName: string index taArrayInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
+    property ItrInterfaceName: string index taIteratorInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property InterfaceAdditional;
     property SectionAdditional;
     property CollectionFlags;
@@ -75,49 +66,44 @@ type
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
+    property DynArrayType: string index taDynArrayTypeName read GetTypeAttribute write SetTypeAttribute stored False;
     property GetterName: string index taGetterName read GetTypeAttribute write SetTypeAttribute stored False;
     property SetterName: string index taSetterName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* JCLLINKEDLISTITRINT(SELFCLASSNAME, ITRINTERFACENAME, LISTINTERFACENAME, EQUALITYCOMPARERINTERFACENAME,
-                         ITEMCLASSNAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE,
-                         GETTERNAME, SETTERNAME) *)
-  TJclLinkedListItrIntParams = class(TJclContainerInterfaceParams)
+  (* JCLVECTORITRINT(SELFCLASSNAME, ITRINTERFACENAME, LISTINTERFACENAME,
+                     CONSTKEYWORD, PARAMETERNAME, TYPENAME, GETTERNAME, SETTERNAME) *)
+  TJclVectorItrIntParams = class(TJclContainerInterfaceParams)
   protected
     // function CodeUnit: string; override;
   public
     function AliasAttributeIDs: TAllTypeAttributeIDs; override;
   published
-    property SelfClassName: string index taLinkedListIteratorClassName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
+    property SelfClassName: string index taVectorIteratorClassName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
     property ItrInterfaceName: string index taIteratorInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property ListInterfaceName: string index taListInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
-    property EqualityComparerInterfaceName: string index taEqualityComparerInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
-    property ItemClassName: string index taLinkedListItemClassName read GetTypeAttribute write SetTypeAttribute stored False;
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
-    property DefaultValue: string index taDefaultValue read GetTypeAttribute write SetTypeAttribute stored False;
     property GetterName: string index taGetterName read GetTypeAttribute write SetTypeAttribute stored False;
     property SetterName: string index taSetterName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* JCLLINKEDLISTIMP(SELFCLASSNAME, ITEMCLASSNAME, COLLECTIONINTERFACENAME, LISTINTERFACENAME,
-                      ITRINTERFACENAME, ITRCLASSNAME, OWNERSHIPDECLARATION, OWNERSHIPPARAMETER,
-                      CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE,
-                      GETTERNAME, SETTERNAME, RELEASERNAME) *)
-  TJclLinkedListImpParams = class(TJclCollectionImplementationParams)
+  (* JCLVECTORIMP(SELFCLASSNAME, COLLECTIONINTERFACENAME, LISTINTERFACENAME, ITRINTERFACENAME,
+                  ITRCLASSNAME, OWNERSHIPDECLARATION, OWNERSHIPPARAMETER, CONSTKEYWORD,
+                  PARAMETERNAME, TYPENAME, DEFAULTVALUE, GETTERNAME, SETTERNAME, RELEASERNAME) *)
+  TJclVectorImpParams = class(TJclCollectionImplementationParams)
   protected
     // function CodeUnit: string; override;
   public
     function GetConstructorParameters: string; override;
     function GetSelfClassName: string; override;
   published
-    property SelfClassName: string index taLinkedListClassName read GetTypeAttribute write SetTypeAttribute stored False;
-    property ItemClassName: string index taLinkedListItemClassName read GetTypeAttribute write SetTypeAttribute stored False;
+    property SelfClassName: string index taVectorClassName read GetTypeAttribute write SetTypeAttribute stored False;
     property CollectionInterfaceName: string index taCollectionInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property ListInterfaceName: string index taListInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property ItrInterfaceName: string index taIteratorInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
-    property ItrClassName: string index taLinkedListIteratorClassName read GetTypeAttribute write SetTypeAttribute stored False;
+    property ItrClassName: string index taVectorIteratorClassName read GetTypeAttribute write SetTypeAttribute stored False;
     property OwnershipDeclaration;
     property OwnershipParameter: string index taOwnershipParameter read GetTypeAttribute write SetTypeAttribute stored False;
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
@@ -130,30 +116,20 @@ type
     property MacroFooter;
   end;
 
-  (* JCLLINKEDLISTITRIMP(SELFCLASSNAME, ITRINTERFACENAME, LISTINTERFACENAME, EQUALITYCOMPARERINTERFACENAME,
-                         ITEMCLASSNAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE,
-                         GETTERNAME, SETTERNAME, RELEASERCALL) *)
-  TJclLinkedListItrImpParams = class(TJclContainerImplementationParams)
-  private
-    FReleaserCall: string;
-    function GetReleaserCall: string;
+  (* JCLVECTORITRIMP(SELFCLASSNAME, ITRINTERFACENAME, LISTINTERFACENAME,
+                     CONSTKEYWORD, PARAMETERNAME, TYPENAME, GETTERNAME, SETTERNAME) *)
+  TJclVectorItrImpParams = class(TJclContainerImplementationParams)
   protected
     // function CodeUnit: string; override;
-  public
-    procedure ResetDefault(Value: Boolean); override;
   published
-    property SelfClassName: string index taLinkedListIteratorClassName read GetTypeAttribute write SetTypeAttribute stored False;
+    property SelfClassName: string index taVectorIteratorClassName read GetTypeAttribute write SetTypeAttribute stored False;
     property ItrInterfaceName: string index taIteratorInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property ListInterfaceName: string index taListInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
-    property EqualityComparerInterfaceName: string index taEqualityComparerInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
-    property ItemClassName: string index taLinkedListItemClassName read GetTypeAttribute write SetTypeAttribute stored False;
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
-    property DefaultValue: string index taDefaultValue read GetTypeAttribute write SetTypeAttribute stored False;
     property GetterName: string index taGetterName read GetTypeAttribute write SetTypeAttribute stored False;
     property SetterName: string index taSetterName read GetTypeAttribute write SetTypeAttribute stored False;
-    property ReleaserCall: string read GetReleaserCall write FReleaserCall;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -162,7 +138,7 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\devtools\jpp\Templates';
+    LogPath: 'JCL\source\common';
     Extra: '';
     Data: nil
     );
@@ -176,73 +152,43 @@ uses
 
 procedure RegisterJclContainers;
 begin
-  RegisterContainerParams('JCLLINKEDLISTTYPESINT', TJclLinkedListTypeIntParams);
-  RegisterContainerParams('JCLLINKEDLISTINT', TJclLinkedListIntParams);
-  RegisterContainerParams('JCLLINKEDLISTITRINT', TJclLinkedListItrIntParams);
-  RegisterContainerParams('JCLLINKEDLISTIMP', TJclLinkedListImpParams, TJclLinkedListIntParams);
-  RegisterContainerParams('JCLLINKEDLISTITRIMP', TJclLinkedListItrImpParams, TJclLinkedListItrIntParams);
+  RegisterContainerParams('JCLVECTORINT', TJclVectorIntParams);
+  RegisterContainerParams('JCLVECTORITRINT', TJclVectorItrIntParams);
+  RegisterContainerParams('JCLVECTORIMP', TJclVectorImpParams, TJclVectorIntParams);
+  RegisterContainerParams('JCLVECTORITRIMP', TJclVectorItrImpParams, TJclVectorItrIntParams);
 end;
 
-//=== { TJclLinkedListTypeIntParams } ========================================
+//=== { TJclVectorIntParams } ================================================
 
-function TJclLinkedListTypeIntParams.AliasAttributeIDs: TAllTypeAttributeIDs;
+function TJclVectorIntParams.AliasAttributeIDs: TAllTypeAttributeIDs;
 begin
-  Result := [taLinkedListItemClassName];
+  Result := [taVectorClassName];
 end;
 
-//=== { TJclLinkedListIntParams } ============================================
-
-function TJclLinkedListIntParams.AliasAttributeIDs: TAllTypeAttributeIDs;
-begin
-  Result := [taLinkedListClassName];
-end;
-
-function TJclLinkedListIntParams.GetInterfaceAdditional: string;
+function TJclVectorIntParams.GetInterfaceAdditional: string;
 begin
   Result := FInterfaceAdditional;
   if Result = '' then
     Result := Format('%s %s,', [inherited GetInterfaceAdditional, EqualityComparerInterfaceName]);
 end;
 
-//=== { TJclLinkedListItrIntParams } =========================================
+//=== { TJclVectorItrIntParams } =============================================
 
-function TJclLinkedListItrIntParams.AliasAttributeIDs: TAllTypeAttributeIDs;
+function TJclVectorItrIntParams.AliasAttributeIDs: TAllTypeAttributeIDs;
 begin
-  Result := [taLinkedListIteratorClassName];
+  Result := [taVectorIteratorClassName];
 end;
 
-//=== { TJclLinkedListImpParams } ============================================
+//=== { TJclVectorImpParams } ================================================
 
-function TJclLinkedListImpParams.GetConstructorParameters: string;
+function TJclVectorImpParams.GetConstructorParameters: string;
 begin
-  Result := 'nil';
+  Result := 'FSize';
 end;
 
-function TJclLinkedListImpParams.GetSelfClassName: string;
+function TJclVectorImpParams.GetSelfClassName: string;
 begin
   Result := SelfClassName;
-end;
-
-//=== { TJclLinkedListItrImpParams } =========================================
-
-function TJclLinkedListItrImpParams.GetReleaserCall: string;
-begin
-  Result := FReleaserCall;
-  if (Result = '') and TypeInfo.KnownType then
-  begin
-    if TypeInfo.TObjectType then
-      Result := '(FownList as IJclObjectOwner).FreeObject(FCursor.Value);'
-    else
-      Result := Format('FCursor.Value := %s;', [TypeInfo.TypeAttributes[taDefaultValue]]);
-  end;
-end;
-
-procedure TJclLinkedListItrImpParams.ResetDefault(Value: Boolean);
-begin
-  inherited ResetDefault(Value);
-  FReleaserCall := '';
-  if not Value then
-    FReleaserCall := GetReleaserCall;
 end;
 
 initialization

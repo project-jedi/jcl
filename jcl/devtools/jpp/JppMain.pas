@@ -52,8 +52,8 @@ uses
   JclStrings,
   JclStreams,
   JclSysUtils,
-  JppState,
-  JppParser;
+  JclPreProcessorState,
+  JclPreProcessorParser;
 
 procedure Syntax;
 procedure Params(State: TPppState; ACommandLine: PChar);

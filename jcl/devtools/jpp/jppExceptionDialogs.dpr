@@ -34,11 +34,8 @@ uses
   SysUtils,
   Classes,
   JclIDEUtils,
-  JclTemplates in 'Templates\JclTemplates.pas',
-  JclExcDlgTemplates in 'Templates\JclExcDlgTemplates.pas',
-  JppState in 'JppState.pas',
-  JppLexer in 'JppLexer.pas',
-  JppParser in 'JppParser.pas';
+  JclPreProcessorExcDlgTemplates,
+  JclPreProcessorTemplates;
 
 const
   TemplateDirectory = '..\experts\repository\ExceptionDialog\Templates\';

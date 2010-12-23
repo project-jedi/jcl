@@ -10,7 +10,7 @@
 { ANY KIND, either express or implied. See the License for the specific language governing rights  }
 { and limitations under the License.                                                               }
 {                                                                                                  }
-{ The Original Code is JclHashMapsTemplates.pas.                                                   }
+{ The Original Code is JclSortedMapsTemplates.pas.                                                 }
 {                                                                                                  }
 { The Initial Developer of the Original Code is Florent Ouchet                                     }
 {         <outchy att users dott sourceforge dott net>                                             }
@@ -26,7 +26,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-unit JclHashMapsTemplates;
+unit JclPreProcessorSortedMapsTemplates;
 
 interface
 
@@ -36,37 +36,40 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclContainerTypes,
-  JclContainerTemplates,
-  JclContainer2DTemplates;
+  JclPreProcessorContainerTypes,
+  JclPreProcessorContainerTemplates,
+  JclPreProcessorContainer2DTemplates;
 
 type
-  (* JCLHASHMAPTYPESINT(ENTRYTYPENAME, BUCKETTYPENAME, KEYTYPENAME, VALUETYPENAME) *)
-  TJclHashMapTypeIntParams = class(TJclMapInterfaceParams)
+  (* JCLSORTEDMAPTYPESINT(ENTRYTYPENAME, KEYTYPENAME, VALUETYPENAME) *)
+  TJclSortedMapTypeIntParams = class(TJclMapInterfaceParams)
   public
     function AliasAttributeIDs: TAllTypeAttributeIDs; override;
   published
-    property EntryTypeName: string index maHashMapEntryTypeName read GetMapAttribute write SetMapAttribute stored IsMapAttributeStored;
-    property BucketTypeName: string index maHashMapBucketTypeName read GetMapAttribute write SetMapAttribute stored IsMapAttributeStored;
+    property EntryTypeName: string index maSortedMapEntryTypeName read GetMapAttribute write SetMapAttribute stored IsMapAttributeStored;
     property KeyTypeName: string index kaKeyTypeName read GetKeyAttribute write SetKeyAttribute stored False;
     property ValueTypeName: string index vaValueTypeName read GetValueAttribute write SetValueAttribute stored False;
   end;
 
-  (* JCLHASHMAPINT(BUCKETTYPENAME, SELFCLASSNAME, ANCESTORNAME, MAPINTERFACENAME, KEYSETINTERFACENAME,
-                   VALUECOLLECTIONINTERFACENAME, INTERFACEADDITIONAL, SECTIONADDITIONAL,
-                   KEYOWNERSHIPDECLARATION, VALUEOWNERSHIPDECLARATION, KEYCONSTKEYWORD,
-                   KEYTYPENAME, VALUECONSTKEYWORD, VALUETYPENAME) *)
-  TJclHashMapIntParams = class(TJclMapClassInterfaceParams)
+  (* JCLSORTEDMAPINT(ENTRYTYPENAME, SELFCLASSNAME, ANCESTORNAME,
+                     STDMAPINTERFACENAME, SORTEDMAPINTERFACENAME,
+                     KEYSETINTERFACENAME, VALUECOLLECTIONINTERFACENAME,
+                     INTERFACEADDITIONAL, SECTIONADDITIONAL, KEYOWNERSHIPDECLARATION,
+                     VALUEOWNERSHIPDECLARATION, KEYCONSTKEYWORD, KEYTYPENAME,
+                     VALUECONSTKEYWORD, VALUETYPENAME) *)
+  TJclSortedMapIntParams = class(TJclMapClassInterfaceParams)
   protected
     // function CodeUnit: string; override;
-    function GetComparisonSectionAdditional: string; override;
+    //function GetInterfaceAdditional: string; override;
   public
     function AliasAttributeIDs: TAllTypeAttributeIDs; override;
+    function GetComparisonSectionAdditional: string; override;
   published
-    property BucketTypeName: string index maHashMapBucketTypeName read GetMapAttribute write SetMapAttribute stored False;
-    property SelfClassName: string index maHashMapClassName read GetMapAttribute write SetMapAttribute stored IsMapAttributeStored;
+    property EntryTypeName: string index maSortedMapEntryTypeName read GetMapAttribute write SetMapAttribute stored False;
+    property SelfClassName: string index maSortedMapClassName read GetMapAttribute write SetMapAttribute stored IsMapAttributeStored;
     property AncestorName: string index maMapAncestorClassName read GetMapAttribute write SetMapAttribute stored False;
-    property MapInterfaceName: string index maMapInterfaceName read GetMapAttribute write SetMapAttribute stored False;
+    property StdMapInterfaceName: string index maMapInterfaceName read GetMapAttribute write SetMapAttribute stored False;
+    property SortedMapInterfaceName: string index maSortedMapInterfaceName read GetMapAttribute write SetMapAttribute stored False;
     property KeySetInterfaceName: string index kaKeySetInterfaceName read GetKeyAttribute write SetKeyAttribute stored False;
     property ValueCollectionInterfaceName: string index vaValueCollectionInterfaceName read GetValueAttribute write SetValueAttribute stored False;
     property InterfaceAdditional;
@@ -79,20 +82,15 @@ type
     property ValueTypeName;
   end;
 
-  (* JCLHASHMAPTYPESIMP(BUCKETTYPENAME, KEYDEFAULT, VALUEDEFAULT) *)
-  TJclHashMapTypeImpParams = class(TJclMapImplementationParams)
-  published
-    property BucketTypeName: string index maHashMapBucketTypeName read GetMapAttribute write SetMapAttribute stored False;
-    property KeyDefault: string index kaKeyDefaultValue read GetKeyAttribute write SetKeyAttribute stored False;
-    property ValueDefault: string index vaValueDefaultValue read GetValueAttribute write SetValueAttribute stored False;
-  end;
-
-  (* JCLHASHMAPIMP(SELFCLASSNAME, BUCKETTYPENAME,
-                   MAPINTERFACENAME, KEYSETINTERFACENAME, KEYITRINTERFACENAME, VALUECOLLECTIONINTERFACENAME,
-                   KEYOWNERSHIPDECLARATION, VALUEOWNERSHIPDECLARATION, OWNERSHIPASSIGNMENTS,
-                   KEYCONSTKEYWORD, KEYTYPENAME, KEYDEFAULT, VALUECONSTKEYWORD, VALUETYPENAME, VALUEDEFAULT,
-                   CREATEKEYSET, CREATEVALUECOLLECTION) *)
-  TJclHashMapImpParams = class(TJclMapClassImplementationParams)
+  (* JCLSORTEDMAPIMP(SELFCLASSNAME,
+                     STDMAPINTERFACENAME, SORTEDMAPINTERFACENAME,
+                     KEYSETINTERFACENAME, KEYITRINTERFACENAME,
+                     VALUECOLLECTIONINTERFACENAME,
+                     KEYOWNERSHIPDECLARATION, VALUEOWNERSHIPDECLARATION,
+                     OWNERSHIPASSIGNMENTS, KEYCONSTKEYWORD, KEYTYPENAME, KEYDEFAULT,
+                     VALUECONSTKEYWORD, VALUETYPENAME, VALUEDEFAULT,
+                     CREATEKEYSET, CREATEVALUECOLLECTION) *)
+  TJclSortedMapImpParams = class(TJclMapClassImplementationParams)
   protected
     // function CodeUnit: string; override;
   public
@@ -100,29 +98,25 @@ type
     function GetMacroFooter: string; override;
     function GetSelfClassName: string; override;
   published
-    property SelfClassName: string index maHashMapClassName read GetMapAttribute write SetMapAttribute stored False;
+    property SelfClassName: string index maSortedMapClassName read GetMapAttribute write SetMapAttribute stored False;
     property AncestorClassName: string index maMapAncestorClassName read GetMapAttribute write SetMapAttribute stored False;
-    property BucketTypeName: string index maHashMapBucketTypeName read GetMapAttribute write SetMapAttribute stored False;
-    property MapInterfaceName: string index maMapInterfaceName read GetMapAttribute write SetMapAttribute stored False;
+    property StdMapInterfaceName: string index maMapInterfaceName read GetMapAttribute write SetMapAttribute stored False;
+    property SortedMapInterfaceName: string index maSortedMapInterfaceName read GetMapAttribute write SetMapAttribute stored False;
     property KeySetInterfaceName: string index kaKeySetInterfaceName read GetKeyAttribute write SetKeyAttribute stored False;
-    property KeyArraySetClassName;
     property KeyItrInterfaceName: string index kaKeyIteratorInterfaceName read GetKeyAttribute write SetKeyAttribute stored False;
     property ValueCollectionInterfaceName: string index vaValueCollectionInterfaceName read GetValueAttribute write SetValueAttribute stored False;
-    property ValueArrayListClassName;
     property KeyOwnershipDeclaration;
     property ValueOwnershipDeclaration;
     property OwnershipAssignments;
     property KeyConstKeyword: string index kaKeyConstKeyword read GetKeyAttribute write SetKeyAttribute stored False;
-    property KeyParameterName: string index kaKeyParameterName read GetKeyAttribute write SetKeyAttribute stored False;
     property KeyTypeName;
     property KeyDefault;
-    property KeySimpleEqualityCompareFunctionName: string index kaKeySimpleEqualityCompareFunctionName read GetKeyAttribute write SetKeyAttribute stored False;
-    property KeySimpleHashConvertFunctionName: string index kaKeySimpleHashConvertFunctionName read GetKeyAttribute write SetKeyAttribute stored False;
+    property KeySimpleCompareFunctionName: string index kaKeySimpleCompareFunctionName read GetKeyAttribute write SetKeyAttribute stored False;
     property KeyBaseContainer: string index kaKeyBaseContainerClassName read GetKeyAttribute write SetKeyAttribute stored False;
     property ValueConstKeyword: string index vaValueConstKeyword read GetValueAttribute write SetValueAttribute stored False;
     property ValueTypeName;
     property ValueDefault;
-    property ValueSimpleEqualityCompareFunctionName: string index vaValueSimpleEqualityCompareFunctionName read GetValueAttribute write SetValueAttribute stored False;
+    property ValueSimpleCompareFunctionName: string index vaValueSimpleCompareFunctionName read GetValueAttribute write SetValueAttribute stored False;
     property ValueBaseContainerClassName: string index vaValueBaseContainerClassName read GetValueAttribute write SetValueAttribute stored False;
     property CreateKeySet;
     property CreateValueCollection;
@@ -135,7 +129,7 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\devtools\jpp\Templates';
+    LogPath: 'JCL\source\common';
     Extra: '';
     Data: nil
     );
@@ -149,88 +143,65 @@ uses
 
 procedure RegisterJclContainers;
 begin
-  RegisterContainerParams('JCLHASHMAPTYPESINT', TJclHashMapTypeIntParams);
-  RegisterContainerParams('JCLHASHMAPTYPESIMP', TJclHashMapTypeImpParams, TJclHashMapTypeIntParams);
-  RegisterContainerParams('JCLHASHMAPINT', TJclHashMapIntParams);
-  RegisterContainerParams('JCLHASHMAPIMP', TJclHashMapImpParams, TJclHashMapIntParams);
+  RegisterContainerParams('JCLSORTEDMAPTYPESINT', TJclSortedMapTypeIntParams);
+  RegisterContainerParams('JCLSORTEDMAPINT', TJclSortedMapIntParams);
+  RegisterContainerParams('JCLSORTEDMAPIMP', TJclSortedMapImpParams, TJclSortedMapIntParams);
 end;
 
-//=== { TJclHashMapTypeIntParams } ===========================================
+//=== { TJclSortedMapTypeIntParams } =========================================
 
-function TJclHashMapTypeIntParams.AliasAttributeIDs: TAllTypeAttributeIDs;
+function TJclSortedMapTypeIntParams.AliasAttributeIDs: TAllTypeAttributeIDs;
 begin
-  Result := [maHashMapEntryTypeName, maHashMapBucketTypeName];
+  Result := [maSortedMapEntryTypeName];
 end;
 
-//=== { TJclHashMapIntParams } ===============================================
+//=== { TJclSortedMapIntParams } =============================================
 
-function TJclHashMapIntParams.AliasAttributeIDs: TAllTypeAttributeIDs;
+function TJclSortedMapIntParams.AliasAttributeIDs: TAllTypeAttributeIDs;
 begin
-  Result := [maHashMapClassName];
+  Result := [maSortedMapClassName];
 end;
 
-function TJclHashMapIntParams.GetComparisonSectionAdditional: string;
+function TJclSortedMapIntParams.GetComparisonSectionAdditional: string;
 begin
-  Result := '';
-  if AncestorName <> MapInfo.KeyTypeInfo.TypeAttributes[taBaseContainer] then
-  begin
-    Result := Format('%s  function Hash(%s%s: %s): Integer;',
-                     [Result, MapInfo.KeyTypeInfo.TypeAttributes[taConstKeyword],
-                      MapInfo.KeyTypeInfo.TypeAttributes[taParameterName], KeyTypeName]);
-    if AncestorName <> 'TJclAbstractContainerBase' then
-      Result := Result + ' reintroduce;' + NativeLineBreak
-    else
-      Result := Result + NativeLineBreak;
-  end;
-  Result := Format('%s  function KeysEqual(%sA, B: %s): Boolean;' + NativeLineBreak +
-                   '  function ValuesEqual(%sA, B: %s): Boolean;',
-                   [Result, KeyConstKeyword, KeyTypeName, ValueConstKeyword, ValueTypeName]);
+  Result := Format('  function KeysCompare(%sA, B: %s): Integer;' + NativeLineBreak +
+                   '  function ValuesCompare(%sA, B: %s): Integer;',
+                   [KeyConstKeyword, KeyTypeName, ValueConstKeyword, ValueTypeName]);
 end;
 
-//=== { TJclHashMapImpParams } ===============================================
+//=== { TJclSortedMapImpParams } =============================================
 
-function TJclHashMapImpParams.GetConstructorParameters: string;
+function TJclSortedMapImpParams.GetConstructorParameters: string;
 begin
-  Result := 'FCapacity';
+  Result := 'FSize';
 end;
 
-function TJclHashMapImpParams.GetMacroFooter: string;
+function TJclSortedMapImpParams.GetMacroFooter: string;
 var
   FuncName: string;
 begin
   Result := inherited GetMacroFooter;
   if (FMacroFooter = '') and MapInfo.KnownMap then
   begin
-    if AncestorClassName <> KeyBaseContainer then
-    begin
-      Result := Format('%s' + NativeLineBreak +
-                       'function %s.Hash(%s%s: %s): Integer;' + NativeLineBreak +
-                       'begin' + NativeLineBreak +
-                       '  Result := %s(%s);' + NativeLineBreak +
-                       'end;' + NativeLineBreak,
-                       [Result, SelfClassName, KeyConstKeyword, KeyParameterName, KeyTypeName,
-                        KeySimpleHashConvertFunctionName, KeyParameterName]);
-    end;
-
     if AncestorClassName = KeyBaseContainer then
-      FuncName := 'ItemsEqual'
+      FuncName := 'ItemsCompare'
     else
-      FuncName := KeySimpleEqualityCompareFunctionName;
+      FuncName := KeySimpleCompareFunctionName;
 
     Result := Format('%s' + NativeLineBreak +
-                     'function %s.KeysEqual(%sA, B: %s): Boolean;' + NativeLineBreak +
+                     'function %s.KeysCompare(%sA, B: %s): Integer;' + NativeLineBreak +
                      'begin' + NativeLineBreak +
                      '  Result := %s(A, B);' + NativeLineBreak +
                      'end;' + NativeLineBreak,
                      [Result, SelfClassName, KeyConstKeyword, KeyTypeName, FuncName]);
 
     if AncestorClassName = ValueBaseContainerClassName then
-      FuncName := 'ItemsEqual'
+      FuncName := 'ItemsCompare'
     else
-      FuncName := ValueSimpleEqualityCompareFunctionName;
+      FuncName := ValueSimpleCompareFunctionName;
 
     Result := Format('%s' + NativeLineBreak +
-                     'function %s.ValuesEqual(%sA, B: %s): Boolean;' + NativeLineBreak +
+                     'function %s.ValuesCompare(%sA, B: %s): Integer;' + NativeLineBreak +
                      'begin' + NativeLineBreak +
                      '  Result := %s(A, B);' + NativeLineBreak +
                      'end;' + NativeLineBreak,
@@ -238,7 +209,7 @@ begin
   end;
 end;
 
-function TJclHashMapImpParams.GetSelfClassName: string;
+function TJclSortedMapImpParams.GetSelfClassName: string;
 begin
   Result := SelfClassName;
 end;

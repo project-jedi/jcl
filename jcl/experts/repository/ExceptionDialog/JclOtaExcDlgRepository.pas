@@ -52,7 +52,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   JclIDEUtils,
-  JclOtaUtils, JclOtaRepositoryUtils, JclExcDlgTemplates;
+  JclOtaUtils, JclOtaRepositoryUtils, JclPreProcessorExcDlgTemplates;
 
 type
   TJclExcDlgExpert = class(TJclOtaRepositoryExpert)
@@ -94,7 +94,7 @@ uses
   Windows,
   JclStrings, JclFileUtils, JclRegistry,
   JclOtaResources, JclOtaConsts,
-  JclTemplates, JclOtaRepositoryReg, JclOtaExcDlgWizard;
+  JclPreProcessorTemplates, JclOtaRepositoryReg, JclOtaExcDlgWizard;
 
 {$R JclOtaExcDlgIcons.res}
 

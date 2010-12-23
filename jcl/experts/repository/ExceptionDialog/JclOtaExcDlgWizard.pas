@@ -38,7 +38,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclIDEUtils, JclExcDlgTemplates, JclOtaWizardForm;
+  JclIDEUtils, JclPreProcessorExcDlgTemplates, JclOtaWizardForm;
 
 type
   TJclOtaExcDlgForm = class(TJclWizardForm)

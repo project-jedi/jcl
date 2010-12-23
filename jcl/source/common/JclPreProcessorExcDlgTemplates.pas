@@ -26,7 +26,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-unit JclExcDlgTemplates;
+unit JclPreProcessorExcDlgTemplates;
 
 interface
 
@@ -38,7 +38,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   JclIDEUtils,
-  JclTemplates;
+  JclPreProcessorTemplates;
 
 type
   TJclExcDlgParams = class(TJclTemplateParams)
@@ -161,7 +161,7 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\devtools\jpp\Templates';
+    LogPath: 'JCL\source\common';
     Extra: '';
     Data: nil
     );

@@ -10,7 +10,7 @@
 { ANY KIND, either express or implied. See the License for the specific language governing rights  }
 { and limitations under the License.                                                               }
 {                                                                                                  }
-{ The Original Code is JclArraySetsTemplates.pas.                                                  }
+{ The Original Code is JclStacksTemplates.pas.                                                     }
 {                                                                                                  }
 { The Initial Developer of the Original Code is Florent Ouchet                                     }
 {         <outchy att users dott sourceforge dott net>                                             }
@@ -26,7 +26,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-unit JclArraySetsTemplates;
+unit JclPreProcessorStacksTemplates;
 
 interface
 
@@ -36,54 +36,51 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclContainerTypes,
-  JclContainerTemplates,
-  JclContainer1DTemplates;
+  JclPreProcessorContainerTypes,
+  JclPreProcessorContainerTemplates,
+  JclPreProcessorContainer1DTemplates;
 
 type
-  (* JCLARRAYSETINT(SELFCLASSNAME, ANCESTORCLASSNAME, COLLECTIONINTERFACENAME, LISTINTERFACENAME,
-                    ARRAYINTERFACENAME, SETINTERFACENAME, INTERFACEADDITIONAL, SECTIONADDITIONAL,
-                    COLLECTIONFLAGS, CONSTKEYWORD, PARAMETERNAME, TYPENAME) *)
-  TJclArraySetIntParams = class(TJclCollectionInterfaceParams)
+  (* JCLSTACKINT(SELFCLASSNAME, STACKINTERFACENAME, ANCESTORCLASSNAME, DYNARRAYTYPENAME,
+                 INTERFACEADDITIONAL, SECTIONADDITIONAL, OWNERSHIPDECLARATION,
+                 CONSTKEYWORD, PARAMETERNAME, TYPENAME) *)
+  TJclStackIntParams = class(TJclClassInterfaceParams)
   protected
     // function CodeUnit: string; override;
     function GetInterfaceAdditional: string; override;
   public
     function AliasAttributeIDs: TAllTypeAttributeIDs; override;
   published
-    property SelfClassName: string index taArraySetClassName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
-    property AncestorClassName: string index taArrayListClassName read GetTypeAttribute write SetTypeAttribute stored False;
-    property CollectionInterfaceName: string index taCollectionInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
+    property SelfClassName: string index taStackClassName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
+    property StackInterfaceName: string index taStackInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property EqualityComparerInterfaceName: string index taEqualityComparerInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
-    property ComparerInterfaceName: string index taComparerInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
-    property ListInterfaceName: string index taListInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
-    property ArrayInterfaceName: string index taArrayInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
-    property SetInterfaceName: string index taSetInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
+    property AncestorClassName;
+    property DynArrayTypeName: string index taDynArrayTypeName read GetTypeAttribute write SetTypeAttribute stored False;
     property InterfaceAdditional;
     property SectionAdditional;
-    property CollectionFlags;
+    property OwnershipDeclaration;
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
- (* JCLARRAYSETIMP(SELFCLASSNAME, COLLECTIONINTERFACENAME, ITRINTERFACENAME, CONSTKEYWORD,
-                   PARAMETERNAME, TYPENAME, DEFAULTVALUE, GETTERNAME) *)
-  TJclArraySetImpParams = class(TJclCollectionImplementationParams)
+  (* JCLSTACKIMP(SELFCLASSNAME, OWNERSHIPDECLARATION, OWNERSHIPPARAMETER, CONSTKEYWORD,
+                 PARAMETERNAME, TYPENAME, DEFAULTVALUE, RELEASERNAME) *)
+  TJclStackImpParams = class(TJclClassImplementationParams)
   protected
     // function CodeUnit: string; override;
   public
     function GetConstructorParameters: string; override;
     function GetSelfClassName: string; override;
   published
-    property SelfClassName: string index taArraySetClassName read GetTypeAttribute write SetTypeAttribute stored False;
-    property CollectionInterfaceName: string index taCollectionInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
-    property ItrInterfaceName: string index taIteratorInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
+    property SelfClassName: string index taStackClassName read GetTypeAttribute write SetTypeAttribute stored False;
+    property OwnershipDeclaration;
+    property OwnershipParameter: string index taOwnershipParameter read GetTypeAttribute write SetTypeAttribute stored False;
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
     property DefaultValue: string index taDefaultValue read GetTypeAttribute write SetTypeAttribute stored False;
-    property GetterName: string index taGetterName read GetTypeAttribute write SetTypeAttribute stored False;
+    property ReleaserName: string index taReleaserName read GetTypeAttribute write SetTypeAttribute stored False;
     property MacroFooter;
   end;
 
@@ -93,7 +90,7 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\devtools\jpp\Templates';
+    LogPath: 'JCL\source\common';
     Extra: '';
     Data: nil
     );
@@ -107,32 +104,32 @@ uses
 
 procedure RegisterJclContainers;
 begin
-  RegisterContainerParams('JCLARRAYSETINT', TJclArraySetIntParams);
-  RegisterContainerParams('JCLARRAYSETIMP', TJclArraySetImpParams, TJclArraySetIntParams);
+  RegisterContainerParams('JCLSTACKINT', TJclStackIntParams);
+  RegisterContainerParams('JCLSTACKIMP', TJclStackImpParams, TJclStackIntParams);
 end;
 
-//=== { TJclArraySetIntParams } ==============================================
+//=== { TJclStackIntParams } =================================================
 
-function TJclArraySetIntParams.AliasAttributeIDs: TAllTypeAttributeIDs;
+function TJclStackIntParams.AliasAttributeIDs: TAllTypeAttributeIDs;
 begin
-  Result := [taArraySetClassName];
+  Result := [taStackClassName];
 end;
 
-function TJclArraySetIntParams.GetInterfaceAdditional: string;
+function TJclStackIntParams.GetInterfaceAdditional: string;
 begin
   Result := FInterfaceAdditional;
   if Result = '' then
-    Result := Format('%s %s, %s,', [inherited GetInterfaceAdditional, EqualityComparerInterfaceName, ComparerInterfaceName]);
+    Result := Format('%s %s,', [inherited GetInterfaceAdditional, EqualityComparerInterfaceName]);
 end;
 
-//=== { TJclArraySetImpParams } ==============================================
+//=== { TJclStackImpParams } =================================================
 
-function TJclArraySetImpParams.GetConstructorParameters: string;
+function TJclStackImpParams.GetConstructorParameters: string;
 begin
-  Result := 'Size';
+  Result := 'FSize';
 end;
 
-function TJclArraySetImpParams.GetSelfClassName: string;
+function TJclStackImpParams.GetSelfClassName: string;
 begin
   Result := SelfClassName;
 end;
