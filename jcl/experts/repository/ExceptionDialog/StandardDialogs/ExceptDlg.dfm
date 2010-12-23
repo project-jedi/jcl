@@ -3,7 +3,6 @@ object ExceptionDialog: TExceptionDialog
   Top = 255
   AutoScroll = False
   BorderIcons = [biSystemMenu]
-
   Caption = 'ExceptionDialog'
   ClientHeight = 283
   ClientWidth = 483
@@ -34,7 +33,6 @@ object ExceptionDialog: TExceptionDialog
     Anchors = [akLeft, akTop, akRight]
     Shape = bsTopLine
   end
-
 
   object SaveBtn: TButton
     Left = 403

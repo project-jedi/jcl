@@ -365,6 +365,7 @@ begin
       StackList.AddToStrings(DetailsMemo.Lines, True, True, True, True);
       NextDetailBlock;
     end;
+
     // All threads
     ThreadList := JclDebugThreadList;
     ThreadList.Lock.Enter; // avoid modifications

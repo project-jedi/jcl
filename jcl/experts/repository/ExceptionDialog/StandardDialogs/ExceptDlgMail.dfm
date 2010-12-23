@@ -3,7 +3,6 @@ object ExceptionDialogMail: TExceptionDialogMail
   Top = 255
   AutoScroll = False
   BorderIcons = [biSystemMenu]
-
   Caption = 'ExceptionDialogMail'
   ClientHeight = 283
   ClientWidth = 483
@@ -34,7 +33,6 @@ object ExceptionDialogMail: TExceptionDialogMail
     Anchors = [akLeft, akTop, akRight]
     Shape = bsTopLine
   end
-
   object SendBtn: TButton
     Left = 403
     Top = 32
@@ -46,7 +44,6 @@ object ExceptionDialogMail: TExceptionDialogMail
     TabOrder = 0
     OnClick = SendBtnClick
   end
-
   object SaveBtn: TButton
     Left = 403
     Top = 60
