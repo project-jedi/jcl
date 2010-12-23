@@ -89,13 +89,13 @@ type
     procedure ParseSetBoolValue;
     procedure ParseSetIntValue;
     procedure ParseSetStrValue;
-
-    property Lexer: TJppLexer read FLexer;
-    property State: TPppState read FState;
   public
     constructor Create(const ABuffer: string; APppState: TPppState);
     destructor Destroy; override;
     function Parse: string;
+
+    property Lexer: TJppLexer read FLexer;
+    property State: TPppState read FState;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -895,11 +895,11 @@ begin
   while True do
     case Lexer.CurrTok of
       ptComment:
-      begin
-        if not (poStripComments in State.Options) then
-          AddResult(Lexer.TokenAsString);
-        NextToken;
-      end;
+        begin
+          if not (poStripComments in State.Options) then
+            AddResult(Lexer.TokenAsString);
+          NextToken;
+        end;
 
       ptEof:
         begin
@@ -957,6 +957,9 @@ begin
           AddRawComment;
 
       ptJppDefineMacro, ptJppExpandMacro, ptJppUndefMacro:
+        if State.TriState = ttUndef then
+          NextToken
+        else
         if poProcessMacros in State.Options then
           case Lexer.CurrTok of
             ptJppDefineMacro:
@@ -976,6 +979,9 @@ begin
       ptJppSetIntValue,
       ptJppSetBoolValue,
       ptJppLoop:
+        if State.TriState = ttUndef then
+          NextToken
+        else
         if poProcessValues in State.Options then
           case Lexer.CurrTok of
             ptJppGetStrValue:
