@@ -391,21 +391,24 @@ begin
     Lines := TStringList.Create;
     try
       StrToStrings(AResult, NativeLineBreak, Lines);
-      // remove first empty lines
-      while Lines.Count > 0 do
+      if not (poKeepTabAndSpaces in State.Options) then
       begin
-        if Lines.Strings[0] = '' then
-          Lines.Delete(0)
-        else
-          Break;
-      end;
-      // remove last empty lines
-      for I := Lines.Count - 1 downto 0 do
-      begin
-        if Lines.Strings[I] = '' then
-          Lines.Delete(I)
-        else
-          Break;
+        // remove first empty lines
+        while Lines.Count > 0 do
+        begin
+          if Lines.Strings[0] = '' then
+            Lines.Delete(0)
+          else
+            Break;
+        end;
+        // remove last empty lines
+        for I := Lines.Count - 1 downto 0 do
+        begin
+          if Lines.Strings[I] = '' then
+            Lines.Delete(I)
+          else
+            Break;
+        end;
       end;
       // fix line offsets
       if LinePrefix <> '' then
