@@ -79,8 +79,9 @@ type
     FCurrTok: TJppToken;
     FTokenAsString: string;
     FRawComment: string;
+    FIgnoreUnterminatedStrings: Boolean;
   public
-    constructor Create(const ABuffer: string);
+    constructor Create(const ABuffer: string; AIgnoreUnterminatedStrings: Boolean = False);
     destructor Destroy; override;
 
     procedure Error(const AMsg: string);
@@ -94,6 +95,8 @@ type
     { The raw comment for $IFDEF, etc. when TokenAsString becomes the
       file name / preprocessor symbol. }
     property RawComment: string read FRawComment;
+    { Do not raise exceptions when strings are not terminated }
+    property IgnoreUnterminatedStrings: Boolean read FIgnoreUnterminatedStrings write FIgnoreUnterminatedStrings;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -112,7 +115,7 @@ implementation
 
 { TJppLexer }
 
-constructor TJppLexer.Create(const ABuffer: string);
+constructor TJppLexer.Create(const ABuffer: string; AIgnoreUnterminatedStrings: Boolean);
 
   procedure AddToken(const AIdent: string; AValue: TJppToken);
   var
@@ -123,6 +126,9 @@ constructor TJppLexer.Create(const ABuffer: string);
   end;
 
 begin
+  inherited Create;
+  FIgnoreUnterminatedStrings := AIgnoreUnterminatedStrings;
+
   FTokenHash := TStringHashMap.Create(CaseInsensitiveTraits, 19);
 
   AddToken('i', ptInclude);
@@ -162,7 +168,8 @@ end;
 
 procedure TJppLexer.Error(const AMsg: string);
 begin
-  raise EJppLexerError.CreateFmt('(%d): %s', [FCurrLine, AMsg]);
+  if not IgnoreUnterminatedStrings then
+    raise EJppLexerError.CreateFmt('(%d): %s', [FCurrLine, AMsg]);
 end;
 
 procedure TJppLexer.NextTok;
@@ -376,6 +383,7 @@ Label_NormalText:
                 begin
                   FCurrLine := cl;
                   Error('String not terminated');
+                  Break;
                 end;
                 '''':
                   Break;

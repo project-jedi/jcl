@@ -269,7 +269,7 @@ begin
   inherited Create;
   Assert(APppState <> nil);
 
-  FLexer := TJppLexer.Create(ABuffer);
+  FLexer := TJppLexer.Create(ABuffer, poIgnoreUnterminatedStrings in APppState.Options);
   FState := APppState;
   FState.Undef('PROTOTYPE');
 end;
@@ -300,7 +300,7 @@ begin
   begin
     try
       Recurse := False;
-      TempLexer := TJppLexer.Create(AResult);
+      TempLexer := TJppLexer.Create(AResult, poIgnoreUnterminatedStrings in State.Options);
       try
         State.PushState;
         while True do
@@ -725,7 +725,7 @@ begin
           Lexer.Error(e.Message);
       end;
       ssIn := TJclAutoStream.Create(fsIn);
-      newLexer := TJppLexer.Create(ssIn.ReadString);
+      newLexer := TJppLexer.Create(ssIn.ReadString, poIgnoreUnterminatedStrings in State.Options);
       FLexer := newLexer;
       ParseText;
     finally
