@@ -123,6 +123,22 @@ type
         joJCLHelpHxSPlugin,
       joJCLMakeDemos);
 
+const
+  JclDefineNames: array [joJCLDefThreadSafe..joJCLDef7zLinkOnRequest] of string =
+    ( 'THREADSAFE', 'DROP_OBSOLETE_CODE', 'UNITVERSIONING',
+      'MATH_SINGLE_PRECISION', 'MATH_DOUBLE_PRECISION', 'MATH_EXTENDED_PRECISION',
+      'MATH_EXT_EXTREMEVALUES',  'HOOK_DLL_EXCEPTIONS',
+      'DEBUG_NO_BINARY', 'DEBUG_NO_TD32', 'DEBUG_NO_MAP', 'DEBUG_NO_EXPORTS',
+      'DEBUG_NO_SYMBOLS', 'PCRE_STATICLINK',
+      'PCRE_LINKDLL', 'PCRE_LINKONREQUEST', 'BZIP2_STATICLINK',
+      'BZIP2_LINKDLL', 'BZIP2_LINKONREQUEST', 'ZLIB_STATICLINK',
+      'ZLIB_LINKDLL', 'ZLIB_LINKONREQUEST', 'UNICODE_RTL_DATABASE', 'UNICODE_SILENT_FAILURE',
+      'UNICODE_RAW_DATA', 'UNICODE_ZLIB_DATA', 'UNICODE_BZIP2_DATA',
+      'CONTAINER_ANSISTR', 'CONTAINER_WIDESTR', 'CONTAINER_UNICODESTR',
+      'CONTAINER_NOSTR', {'7ZIP_STATICLINK',} '7ZIP_LINKDLL',
+      '7ZIP_LINKONREQUEST' );
+
+type
   TJclDistribution = class;
 
   TJclInstallation = class
@@ -132,6 +148,7 @@ type
     FTarget: TJclBorRADToolInstallation;
     FTargetName: string;
     FTargetPlatform: TJclBorPlatform;
+    FIncludeFileName: string;
     FGUIPage: IJediInstallPage;
     FGUI: IJediInstallGUI;
     FGUIBPLPathIndex: Integer;
@@ -186,6 +203,7 @@ type
     property Distribution: TJclDistribution read FDistribution;
     property Target: TJclBorRADToolInstallation read FTarget;
     property TargetName: string read FTargetName;
+    property IncludeFileName: string read FIncludeFileName;
     property GUIPage: IJediInstallPage read FGUIPage;
     property GUI: IJediInstallGUI read FGUI;
     property TargetPlatform: TJclBorPlatform read FTargetPlatform;
@@ -207,6 +225,7 @@ type
     FLibReleaseDirMask: string;
     FLibDebugDirMask: string;
     FJclIncludeDir: string;
+    FJclIncludeTemplate: string;
     FJclSourcePath: string;
     FJclOldSourcePath: string;
     FJclExamplesDir: string;
@@ -268,6 +287,7 @@ type
     property LibReleaseDirMask: string read FLibReleaseDirMask;
     property LibDebugDirMask: string read FLibDebugDirMask;
     property JclIncludeDir: string read FJclIncludeDir;
+    property JclIncludeTemplate: string read FJclIncludeTemplate;
     property JclSourcePath: string read FJclSourcePath;
     property JclOldSourcePath: string read FJclOldSourcePath;
     property JclExamplesDir: string read FJclExamplesDir;
@@ -310,6 +330,9 @@ uses
   {$ENDIF MSWINDOWS}
   JclFileUtils, JclStrings,
   JclCompilerUtils,
+  JclContainerIntf,
+  JclPreProcessorState,
+  JclPreProcessorParser,
   JediInstallResources,
   JclInstallResources;
 
@@ -462,6 +485,9 @@ const
   {$ENDIF UNIX}
   JclOldSrcPaths: array[0..2] of string = (JclOldIncludeDir, JclOldJppDir, JclOldJppDirTemplates);
 
+  JclIncludeTemplateFileName = 'jcl.template.inc';
+  JclIncludeMask             = 'jcl%s.inc';
+
   ExceptDlgPath = 'experts' + DirDelimiter + 'repository' + DirDelimiter + 'ExceptionDialog' + DirDelimiter + 'StandardDialogs' + DirDelimiter;
   ExceptDlgVclFileName    = 'ExceptDlg.pas';
   ExceptDlgVclSndFileName = 'ExceptDlgMail.pas';
@@ -558,6 +584,8 @@ begin
   FDistribution := JclDistribution;
   FTargetPlatform := ATargetPlatform;
   FTargetName := Target.Name;
+
+  FIncludeFileName := PathAddSeparator(Distribution.JclIncludeDir) + Format(JclIncludeMask, [Target.IDEVersionNumberStr]);
 
   // exclude C#Builder 1 and Delphi 8 targets
   FRunTimeInstallation := (Target.RadToolKind <> brBorlandDevStudio)
@@ -975,6 +1003,38 @@ procedure TJclInstallation.Init;
     end;
   end;
 
+  procedure LoadStaticValues(AConfiguration: IJediConfiguration);
+  var
+    IncludeContent: AnsiString;
+    DefineName: string;
+    JppState: TPppState;
+    JppParser: TJppParser;
+    Option: TInstallerOption;
+  begin
+    if FileExists(IncludeFileName) then
+    begin
+      IncludeContent := FileToString(IncludeFileName);
+      JppState := TPppState.Create;
+      try
+        JppState.Options := [poProcessDefines];
+        JppParser := TJppParser.Create(string(IncludeContent), JppState);
+        try
+          JppParser.Parse;
+        finally
+          JppParser.Free;
+        end;
+        for Option := Low(JclDefineNames) to High(JclDefineNames) do
+        begin
+          DefineName := JclDefineNames[Option];
+          if DefineName <> '' then
+            AConfiguration.OptionAsBool[TargetName, OptionData[Option].Id] := JppState.Defines[DefineName] = ttDefined;
+        end;
+      finally
+        JppState.Free;
+      end;
+    end;
+  end;
+
   procedure LoadValues;
   var
     AConfiguration: IJediConfiguration;
@@ -987,6 +1047,8 @@ procedure TJclInstallation.Init;
     AConfiguration := InstallCore.Configuration;
     if not Assigned(AConfiguration) then
       Exit;
+    // options in included files jcl/source/include/jclXX.inc overrides stored settings
+    LoadStaticValues(AConfiguration);
     if AConfiguration.SectionExists(TargetName) then
     begin
       ResetDefaultValue := not AConfiguration.OptionAsBool[TargetName, OptionData[joJediCodeLibrary].Id];
@@ -1161,7 +1223,7 @@ var
 
     function SaveDefines(Defines: TStrings): Boolean;
     var
-      TemplateFileName, IncludeFileName, IncludeLine, Symbol: string;
+      IncludeLine, Symbol: string;
       IncludeFile: TStrings;
       IndexLine, DefinePos, SymbolEnd: Integer;
       Defined, NotDefined: Boolean;
@@ -1171,13 +1233,11 @@ var
     begin
       WriteLog(LoadResString(@RsLogConditionalDefines));
       Result := True;
-      TemplateFileName := PathAddSeparator(Distribution.JclIncludeDir) + 'jcl.template.inc';
-      IncludeFileName := Format('%sjcl%s.inc', [PathAddSeparator(Distribution.JclIncludeDir), Target.IDEVersionNumberStr]);
       try
         IncludeFile := TStringList.Create;
         try
-          IncludeFile.LoadFromFile(TemplateFileName);
-          WriteLog(Format(LoadResString(@RsLogLoadTemplate), [TemplateFileName]));
+          IncludeFile.LoadFromFile(Distribution.JclIncludeTemplate);
+          WriteLog(Format(LoadResString(@RsLogLoadTemplate), [Distribution.JclIncludeTemplate]));
     
           for IndexLine := 0 to IncludeFile.Count - 1 do
           begin
@@ -1217,20 +1277,6 @@ var
       end;
     end;
 
-  const
-    DefineNames: array [joJCLDefThreadSafe..joJCLDef7zLinkOnRequest] of string =
-      ( 'THREADSAFE', 'DROP_OBSOLETE_CODE', 'UNITVERSIONING',
-        'MATH_SINGLE_PRECISION', 'MATH_DOUBLE_PRECISION', 'MATH_EXTENDED_PRECISION',
-        'MATH_EXT_EXTREMEVALUES',  'HOOK_DLL_EXCEPTIONS',
-        'DEBUG_NO_BINARY', 'DEBUG_NO_TD32', 'DEBUG_NO_MAP', 'DEBUG_NO_EXPORTS',
-        'DEBUG_NO_SYMBOLS', 'PCRE_STATICLINK',
-        'PCRE_LINKDLL', 'PCRE_LINKONREQUEST', 'BZIP2_STATICLINK',
-        'BZIP2_LINKDLL', 'BZIP2_LINKONREQUEST', 'ZLIB_STATICLINK',
-        'ZLIB_LINKDLL', 'ZLIB_LINKONREQUEST', 'UNICODE_RTL_DATABASE', 'UNICODE_SILENT_FAILURE',
-        'UNICODE_RAW_DATA', 'UNICODE_ZLIB_DATA', 'UNICODE_BZIP2_DATA',
-        'CONTAINER_ANSISTR', 'CONTAINER_WIDESTR', 'CONTAINER_UNICODESTR',
-        'CONTAINER_NOSTR', {'7ZIP_STATICLINK',} '7ZIP_LINKDLL',
-        '7ZIP_LINKONREQUEST' );
   var
     Option: TInstallerOption;
     Defines: TStrings;
@@ -1240,11 +1286,11 @@ var
       if OptionChecked[joJCLDef] then
       begin
         MarkOptionBegin(joJCLDef);
-        for Option := Low(DefineNames) to High(DefineNames) do
+        for Option := Low(JclDefineNames) to High(JclDefineNames) do
           if OptionChecked[Option] then
         begin
           MarkOptionBegin(Option);
-          Defines.Add(DefineNames[Option]);
+          Defines.Add(JclDefineNames[Option]);
           MarkOptionEnd(Option, True);
         end;
         MarkOptionEnd(joJCLDef, True);
@@ -3030,6 +3076,7 @@ procedure TJclDistribution.Init;
     FLibDebugDirMask := FLibReleaseDirMask + DirDelimiter + 'debug';
     FJclBinDir := JclPath + 'bin';
     FJclIncludeDir := PathAddSeparator(JclPath + 'source') + 'include';
+    FJclIncludeTemplate := PathAddSeparator(FJclIncludeDir) + JclIncludeTemplateFileName;
     FJclExamplesDir := JclPath + 'examples';
     FJclSourcePath := '';
     for Index := Low(JclSrcPaths) to High(JclSrcPaths) do
