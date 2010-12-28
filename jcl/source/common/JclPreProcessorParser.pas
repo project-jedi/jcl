@@ -119,29 +119,12 @@ implementation
 uses
   JclStrings, JclStreams, JclSysUtils;
   
-{$IFDEF MSWINDOWS}
-const
-  LineBreak = #13#10;
-
-type
-  T2Char = array[0..1] of Char;
-  PLineBreak = ^T2Char;
-{$ENDIF MSWINDOWS}
-
-{$IFDEF UNIX}
-const
-  LineBreak = #10;
-
-type
-  PLineBreak = PChar;
-{$ENDIF UNIX}
-
 function AllWhiteSpace(P: PChar; KeepTabAndSpaces: Boolean): Boolean;
 var
   I: Integer;
 begin
   Result := True;
-  for I := 1 to Length(P) do
+  for I := 1 to StrLen(P) do
     case P^ of
       NativeTab, NativeSpace:
         if KeepTabAndSpaces then
@@ -165,18 +148,20 @@ var
   I, J: Integer;
   Comment: Boolean;
   ParenthesisCount: Integer;
+  MacroTextLen: Integer;
 begin
+  MacroTextLen := Length(MacroText);
   I := 1;
-  while (I <= Length(MacroText)) and not CharIsSpace(MacroText[I]) do
+  while (I <= MacroTextLen) and not CharIsSpace(MacroText[I]) do
     Inc(I);
-  while (I <= Length(MacroText)) and CharIsSpace(MacroText[I]) do
+  while (I <= MacroTextLen) and CharIsSpace(MacroText[I]) do
     Inc(I);
   J := I;
-  while (J <= Length(MacroText)) and CharIsValidIdentifierLetter(MacroText[J]) do
+  while (J <= MacroTextLen) and CharIsValidIdentifierLetter(MacroText[J]) do
     Inc(J);
   MacroName := Copy(MacroText, I, J - I);
 
-  if J <= Length(MacroText) then
+  if J <= MacroTextLen then
   begin
     SetLength(ParamNames, 0);
     if MacroText[J] = '(' then
@@ -185,16 +170,16 @@ begin
       if ParamDeclaration then
       begin
         repeat
-          while (J <= Length(MacroText)) and CharIsSpace(MacroText[J]) do
+          while (J <= MacroTextLen) and CharIsSpace(MacroText[J]) do
             Inc(J);
           I := J;
-          while (I <= Length(MacroText)) and CharIsValidIdentifierLetter(MacroText[I]) do
+          while (I <= MacroTextLen) and CharIsValidIdentifierLetter(MacroText[I]) do
             Inc(I);
           SetLength(ParamNames, Length(ParamNames) + 1);
           ParamNames[High(ParamNames)] := Copy(MacroText, J, I - J);
-          while (I <= Length(MacroText)) and CharIsSpace(MacroText[I]) do
+          while (I <= MacroTextLen) and CharIsSpace(MacroText[I]) do
             Inc(I);
-          if (I <= Length(MacroText)) then
+          if (I <= MacroTextLen) then
             case MacroText[I] of
               ',':
                 Inc(I);
@@ -203,7 +188,7 @@ begin
               raise EPppParserError.CreateFmt('invalid parameter declaration in macro "%s"', [MacroText]);
             end;
           J := I;
-        until (J > Length(MacroText)) or (MacroText[J] = ')');
+        until (J > MacroTextLen) or (MacroText[J] = ')');
       end
       else
       begin
@@ -212,7 +197,7 @@ begin
           Comment := False;
           ParenthesisCount := 0;
 
-          while I <= Length(MacroText) do
+          while I <= MacroTextLen do
           begin
             case MacroText[I] of
               NativeSingleQuote:
@@ -228,7 +213,7 @@ begin
                     Dec(ParenthesisCount);
                 end;
               NativeBackslash:
-                if (not Comment) and (ParenthesisCount = 0) and (I < Length(MacroText)) and (MacroText[i + 1] = NativeComma) then
+                if (not Comment) and (ParenthesisCount = 0) and (I < MacroTextLen) and (MacroText[i + 1] = NativeComma) then
                   Inc(I);
               NativeComma:
                 if (not Comment) and (ParenthesisCount = 0) then
@@ -239,17 +224,17 @@ begin
           SetLength(ParamNames, Length(ParamNames) + 1);
           ParamNames[High(ParamNames)] := Copy(MacroText, J, I - J);
           StrReplace(ParamNames[High(ParamNames)], '\,', ',', [rfReplaceAll]);
-          if (I < Length(MacroText)) and (MacroText[I] = ')') then
+          if (I < MacroTextLen) and (MacroText[I] = ')') then
           begin
             J := I;
             Break;
           end;
-          if (I < Length(MacroText)) and (MacroText[I] = ',') then
+          if (I < MacroTextLen) and (MacroText[I] = ',') then
             Inc(I);
           J := I;
-        until J > Length(MacroText);
+        until J > MacroTextLen;
       end;
-      if J <= Length(MacroText) then
+      if J <= MacroTextLen then
       begin
         if MacroText[J] = ')' then
           Inc(J) // skip )
@@ -259,7 +244,7 @@ begin
     end
     else
     begin
-      while (J <= Length(MacroText)) and CharIsSpace(MacroText[J]) do
+      while (J <= MacroTextLen) and CharIsSpace(MacroText[J]) do
         Inc(J);
     end;
   end;
@@ -281,7 +266,7 @@ end;
 destructor TJppParser.Destroy;
 begin
   FLexer.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJppParser.AddResult(const S: string; FixIndent, ForceRecurseTest: Boolean);
