@@ -2784,14 +2784,12 @@ end;
 
 function CharIsNumberChar(const C: Char): Boolean;
 begin
-  Result := CharIsDigit(C) or (C = '+') or (C = '-') or
-    (C = {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}DecimalSeparator);
+  Result := CharIsDigit(C) or (C = '+') or (C = '-') or (C = JclFormatSettings.DecimalSeparator);
 end;
 
 function CharIsNumber(const C: Char): Boolean;
 begin
-  Result := CharIsDigit(C) or
-    (C = {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}DecimalSeparator);
+  Result := CharIsDigit(C) or (C = JclFormatSettings.DecimalSeparator);
 end;
 
 function CharIsPrintable(const C: Char): Boolean;

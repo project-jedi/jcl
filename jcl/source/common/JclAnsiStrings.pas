@@ -2995,13 +2995,12 @@ end;
 function CharIsNumberChar(const C: AnsiChar): Boolean;
 begin
   Result := ((AnsiCharTypes[C] and C1_DIGIT) <> 0) or (C = AnsiSignMinus) or (C = AnsiSignPlus) or
-    (Char(C) = {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}DecimalSeparator);
+    (Char(C) = JclFormatSettings.DecimalSeparator);
 end;
 
 function CharIsNumber(const C: AnsiChar): Boolean;
 begin
-  Result := ((AnsiCharTypes[C] and C1_DIGIT) <> 0) or
-    (Char(C) = {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}DecimalSeparator);
+  Result := ((AnsiCharTypes[C] and C1_DIGIT) <> 0) or (Char(C) = JclFormatSettings.DecimalSeparator);
 end;
 
 function CharIsPrintable(const C: AnsiChar): Boolean;
@@ -3741,8 +3740,8 @@ var
   DecSep: AnsiChar;
   ThouSep: AnsiChar;
 begin
-  DecSep := AnsiChar({$IFDEF RTL220_UP}FormatSettings.{$ENDIF}DecimalSeparator);
-  ThouSep := AnsiChar({$IFDEF RTL220_UP}FormatSettings.{$ENDIF}ThousandSeparator);
+  DecSep := AnsiChar(JclFormatSettings.DecimalSeparator);
+  ThouSep := AnsiChar(JclFormatSettings.ThousandSeparator);
   Temp := S;
   SwapSeparators := False;
 

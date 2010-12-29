@@ -22,6 +22,7 @@
 {   Bernhard Berger                                                                                }
 {   Heri Bender                                                                                    }
 {   Jean-Fabien Connault (cycocrew)                                                                }
+{   Jens Fudickar                                                                                  }
 {   Jeroen Speldekamp                                                                              }
 {   Marcel van Brakel                                                                              }
 {   Peter Friese                                                                                   }
@@ -658,6 +659,64 @@ type
     property LoggingActive: Boolean read FLoggingActive write FLoggingActive default True;
     property LogOpen: Boolean read GetLogOpen;
   end;
+
+type
+  TJclFormatSettings = class
+  private
+    function GetLongDayNames(AIndex: Integer): string; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
+    function GetLongMonthNames(AIndex: Integer): string; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
+    function GetShortDayNames(AIndex: Integer): string; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
+    function GetShortMonthNames(AIndex: Integer): string; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
+    function GetCurrencyDecimals: Byte; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
+    function GetCurrencyFormat: Byte; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
+    function GetCurrencyString: string; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
+    function GetDateSeparator: Char; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
+    function GetDecimalSeparator: Char; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
+    function GetListSeparator: Char; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
+    function GetLongDateFormat: string; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
+    function GetLongTimeFormat: string; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
+    function GetNegCurrFormat: Byte; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
+    function GetShortDateFormat: string; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
+    function GetShortTimeFormat: string; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
+    function GetThousandSeparator: Char; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
+    function GetTimeAMString: string; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
+    function GetTimePMString: string; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
+    function GetTimeSeparator: Char; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
+    function GetTwoDigitYearCenturyWindow: Word; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
+    procedure SetThousandSeparator(AValue: Char); {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
+    procedure SetDecimalSeparator(AValue: Char); {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
+    procedure SetCurrencyDecimals(AValue: Byte); {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
+    procedure SetCurrencyString(AValue: string); {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
+    procedure SetLongDateFormat(const AValue: string); {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
+    procedure SetLongTimeFormat(const AValue: string); {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
+    procedure SetShortDateFormat(AValue: string); {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
+    procedure SetShortTimeFormat(const AValue: string); {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
+    procedure SetTwoDigitYearCenturyWindow(const AValue: Word);
+  public
+    property CurrencyFormat: Byte read GetCurrencyFormat;
+    property NegCurrFormat: Byte read GetNegCurrFormat;
+    property ThousandSeparator: Char read GetThousandSeparator write SetThousandSeparator;
+    property DecimalSeparator: Char read GetDecimalSeparator write SetDecimalSeparator;
+    property CurrencyDecimals: Byte read GetCurrencyDecimals write SetCurrencyDecimals;
+    property DateSeparator: Char read GetDateSeparator;
+    property TimeSeparator: Char read GetTimeSeparator;
+    property ListSeparator: Char read GetListSeparator;
+    property CurrencyString: string read GetCurrencyString write SetCurrencyString;
+    property ShortDateFormat: string read GetShortDateFormat write SetShortDateFormat;
+    property LongDateFormat: string read GetLongDateFormat write SetLongDateFormat;
+    property TimeAMString: string read GetTimeAMString;
+    property TimePMString: string read GetTimePMString;
+    property ShortTimeFormat: string read GetShortTimeFormat write SetShortTimeFormat;
+    property LongTimeFormat: string read GetLongTimeFormat write SetLongTimeFormat;
+    property ShortMonthNames[AIndex: Integer]: string read GetShortMonthNames;
+    property LongMonthNames[AIndex: Integer]: string read GetLongMonthNames;
+    property ShortDayNames[AIndex: Integer]: string read GetShortDayNames;
+    property LongDayNames[AIndex: Integer]: string read GetLongDayNames;
+    property TwoDigitYearCenturyWindow: Word read GetTwoDigitYearCenturyWindow write SetTwoDigitYearCenturyWindow;
+  end;
+
+var
+  JclFormatSettings: TJclFormatSettings;
 
 // Procedure to initialize the SimpleLog Variable
 procedure InitSimpleLog(const ALogFileName: string = ''; AOpenLog: Boolean = true);
@@ -2172,8 +2231,8 @@ begin
   FSignChars[True] := '+';
   FPaddingChar := ' ';
   FMultiplier := '×';
-  FFractionalPartSeparator := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}DecimalSeparator;
-  FDigitBlockSeparator := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}ThousandSeparator;
+  FFractionalPartSeparator := JclFormatSettings.DecimalSeparator;
+  FDigitBlockSeparator := JclFormatSettings.ThousandSeparator;
 end;
 
 procedure TJclNumericFormat.InvalidDigit(Digit: Char);
@@ -3492,6 +3551,269 @@ begin
   SimpleLog := TJclSimpleLog.Create(ALogFileName);
   if AOpenLog then
     SimpleLog.OpenLog;
+end;
+
+{ TJclFormatSettings }
+
+function TJclFormatSettings.GetLongDayNames(AIndex: Integer): string;
+begin
+{$IFDEF RTL220_UP}
+  Result := FormatSettings.LongDayNames[AIndex];
+{$ELSE}
+  Result := SysUtils.LongDayNames[AIndex];
+{$ENDIF}
+end;
+
+function TJclFormatSettings.GetLongMonthNames(AIndex: Integer): string;
+begin
+{$IFDEF RTL220_UP}
+  Result := FormatSettings.LongMonthNames[AIndex];
+{$ELSE}
+  Result := SysUtils.LongMonthNames[AIndex];
+{$ENDIF}
+end;
+
+function TJclFormatSettings.GetShortDayNames(AIndex: Integer): string;
+begin
+{$IFDEF RTL220_UP}
+  Result := FormatSettings.ShortDayNames[AIndex];
+{$ELSE}
+  Result := SysUtils.ShortDayNames[AIndex];
+{$ENDIF}
+end;
+
+function TJclFormatSettings.GetShortMonthNames(AIndex: Integer): string;
+begin
+{$IFDEF RTL220_UP}
+  Result := FormatSettings.ShortMonthNames[AIndex];
+{$ELSE}
+  Result := SysUtils.ShortMonthNames[AIndex];
+{$ENDIF}
+end;
+
+function TJclFormatSettings.GetCurrencyDecimals: Byte;
+begin
+{$IFDEF RTL220_UP}
+  Result := FormatSettings.CurrencyDecimals;
+{$ELSE}
+  Result := SysUtils.CurrencyDecimals;
+{$ENDIF}
+end;
+
+function TJclFormatSettings.GetCurrencyFormat: Byte;
+begin
+{$IFDEF RTL220_UP}
+  Result := FormatSettings.CurrencyFormat;
+{$ELSE}
+  Result := SysUtils.CurrencyFormat;
+{$ENDIF}
+end;
+
+function TJclFormatSettings.GetCurrencyString: string;
+begin
+{$IFDEF RTL220_UP}
+  Result := FormatSettings.CurrencyString;
+{$ELSE}
+  Result := SysUtils.CurrencyString;
+{$ENDIF}
+end;
+
+function TJclFormatSettings.GetDateSeparator: Char;
+begin
+{$IFDEF RTL220_UP}
+  Result := FormatSettings.DateSeparator;
+{$ELSE}
+  Result := SysUtils.DateSeparator;
+{$ENDIF}
+end;
+
+function TJclFormatSettings.GetDecimalSeparator: Char;
+begin
+{$IFDEF RTL220_UP}
+  Result := FormatSettings.DecimalSeparator;
+{$ELSE}
+  Result := SysUtils.DecimalSeparator;
+{$ENDIF}
+end;
+
+function TJclFormatSettings.GetListSeparator: Char;
+begin
+{$IFDEF RTL220_UP}
+  Result := FormatSettings.ListSeparator;
+{$ELSE}
+  Result := SysUtils.ListSeparator;
+{$ENDIF}
+end;
+
+function TJclFormatSettings.GetLongDateFormat: string;
+begin
+{$IFDEF RTL220_UP}
+  Result := FormatSettings.LongDateFormat;
+{$ELSE}
+  Result := SysUtils.LongDateFormat;
+{$ENDIF}
+end;
+
+function TJclFormatSettings.GetLongTimeFormat: string;
+begin
+{$IFDEF RTL220_UP}
+  Result := FormatSettings.LongTimeFormat;
+{$ELSE}
+  Result := SysUtils.LongTimeFormat;
+{$ENDIF}
+end;
+
+function TJclFormatSettings.GetNegCurrFormat: Byte;
+begin
+{$IFDEF RTL220_UP}
+  Result := FormatSettings.NegCurrFormat;
+{$ELSE}
+  Result := SysUtils.NegCurrFormat;
+{$ENDIF}
+end;
+
+function TJclFormatSettings.GetShortDateFormat: string;
+begin
+{$IFDEF RTL220_UP}
+  Result := FormatSettings.ShortDateFormat;
+{$ELSE}
+  Result := SysUtils.ShortDateFormat;
+{$ENDIF}
+end;
+
+function TJclFormatSettings.GetShortTimeFormat: string;
+begin
+{$IFDEF RTL220_UP}
+  Result := FormatSettings.ShortTimeFormat;
+{$ELSE}
+  Result := SysUtils.ShortTimeFormat;
+{$ENDIF}
+end;
+
+function TJclFormatSettings.GetThousandSeparator: Char;
+begin
+{$IFDEF RTL220_UP}
+  Result := FormatSettings.ThousandSeparator;
+{$ELSE}
+  Result := SysUtils.ThousandSeparator;
+{$ENDIF}
+end;
+
+function TJclFormatSettings.GetTimeAMString: string;
+begin
+{$IFDEF RTL220_UP}
+  Result := FormatSettings.TimeAMString;
+{$ELSE}
+  Result := SysUtils.TimeAMString;
+{$ENDIF}
+end;
+
+function TJclFormatSettings.GetTimePMString: string;
+begin
+{$IFDEF RTL220_UP}
+  Result := FormatSettings.TimePMString;
+{$ELSE}
+  Result := SysUtils.TimePMString;
+{$ENDIF}
+end;
+
+function TJclFormatSettings.GetTimeSeparator: Char;
+begin
+{$IFDEF RTL220_UP}
+  Result := FormatSettings.TimeSeparator;
+{$ELSE}
+  Result := SysUtils.TimeSeparator;
+{$ENDIF}
+end;
+
+function TJclFormatSettings.GetTwoDigitYearCenturyWindow: Word;
+begin
+{$IFDEF RTL220_UP}
+  Result := FormatSettings.TwoDigitYearCenturyWindow;
+{$ELSE}
+  Result := SysUtils.TwoDigitYearCenturyWindow;
+{$ENDIF}
+end;
+
+procedure TJclFormatSettings.SetThousandSeparator(AValue: Char);
+begin
+{$IFDEF RTL220_UP}
+  FormatSettings.TimeSeparator := AValue;
+{$ELSE}
+  SysUtils.TimeSeparator := AValue;
+{$ENDIF}
+end;
+
+procedure TJclFormatSettings.SetDecimalSeparator(AValue: Char);
+begin
+{$IFDEF RTL220_UP}
+  FormatSettings.DecimalSeparator := AValue;
+{$ELSE}
+  SysUtils.DecimalSeparator := AValue;
+{$ENDIF}
+end;
+
+procedure TJclFormatSettings.SetCurrencyDecimals(AValue: Byte);
+begin
+{$IFDEF RTL220_UP}
+  FormatSettings.CurrencyDecimals := AValue;
+{$ELSE}
+  SysUtils.CurrencyDecimals := AValue;
+{$ENDIF}
+end;
+
+procedure TJclFormatSettings.SetCurrencyString(AValue: string);
+begin
+{$IFDEF RTL220_UP}
+  FormatSettings.CurrencyString := AValue;
+{$ELSE}
+  SysUtils.CurrencyString := AValue;
+{$ENDIF}
+end;
+
+procedure TJclFormatSettings.SetLongDateFormat(const AValue: string);
+begin
+{$IFDEF RTL220_UP}
+  FormatSettings.LongDateFormat := AValue;
+{$ELSE}
+  SysUtils.LongDateFormat := AValue;
+{$ENDIF}
+end;
+
+procedure TJclFormatSettings.SetLongTimeFormat(const AValue: string);
+begin
+{$IFDEF RTL220_UP}
+  FormatSettings.LongTimeFormat := AValue;
+{$ELSE}
+  SysUtils.LongTimeFormat := AValue;
+{$ENDIF}
+end;
+
+procedure TJclFormatSettings.SetShortDateFormat(AValue: string);
+begin
+{$IFDEF RTL220_UP}
+  FormatSettings.ShortDateFormat := AValue;
+{$ELSE}
+  SysUtils.ShortDateFormat := AValue;
+{$ENDIF}
+end;
+
+procedure TJclFormatSettings.SetShortTimeFormat(const AValue: string);
+begin
+{$IFDEF RTL220_UP}
+  FormatSettings.ShortTimeFormat := AValue;
+{$ELSE}
+  SysUtils.ShortTimeFormat := AValue;
+{$ENDIF}
+end;
+
+procedure TJclFormatSettings.SetTwoDigitYearCenturyWindow(const AValue: Word);
+begin
+{$IFDEF RTL220_UP}
+  FormatSettings.TwoDigitYearCenturyWindow:= AValue;
+{$ELSE}
+  SysUtils.TwoDigitYearCenturyWindow:= AValue;
+{$ENDIF}
 end;
 
 initialization
