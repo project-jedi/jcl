@@ -663,46 +663,46 @@ type
 type
   TJclFormatSettings = class
   private
-    function GetCurrencyDecimals: Byte; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    function GetCurrencyFormat: Byte; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    function GetCurrencyString: string; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    function GetDateSeparator: Char; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    function GetDayNamesHighIndex: Integer; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    function GetDayNamesLowIndex: Integer; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    function GetDecimalSeparator: Char; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    function GetListSeparator: Char; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    function GetLongDateFormat: string; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    function GetLongDayNames(AIndex: Integer): string; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    function GetLongMonthNames(AIndex: Integer): string; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    function GetLongTimeFormat: string; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    function GetMonthNamesHighIndex: Integer; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    function GetMonthNamesLowIndex: Integer; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    function GetNegCurrFormat: Byte; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    function GetShortDateFormat: string; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    function GetShortDayNames(AIndex: Integer): string; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    function GetShortMonthNames(AIndex: Integer): string; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    function GetShortTimeFormat: string; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    function GetThousandSeparator: Char; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    function GetTimeAMString: string; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    function GetTimePMString: string; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    function GetTimeSeparator: Char; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    function GetTwoDigitYearCenturyWindow: Word; {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    procedure SetCurrencyDecimals(AValue: Byte); {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    procedure SetCurrencyFormat(const AValue: Byte); {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    procedure SetCurrencyString(AValue: string); {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    procedure SetDateSeparator(const AValue: Char); {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    procedure SetDecimalSeparator(AValue: Char); {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    procedure SetListSeparator(const AValue: Char); {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    procedure SetLongDateFormat(const AValue: string); {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    procedure SetLongTimeFormat(const AValue: string); {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    procedure SetNegCurrFormat(const AValue: Byte); {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    procedure SetShortDateFormat(AValue: string); {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    procedure SetShortTimeFormat(const AValue: string); {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    procedure SetThousandSeparator(AValue: Char); {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    procedure SetTimeAMString(const AValue: string); {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    procedure SetTimePMString(const AValue: string); {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    procedure SetTimeSeparator(const AValue: Char); {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
-    procedure SetTwoDigitYearCenturyWindow(const AValue: Word); {$IFDEF DELPHI2005_UP} inline; {$ENDIF}
+    function GetCurrencyDecimals: Byte; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    function GetCurrencyFormat: Byte; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    function GetCurrencyString: string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    function GetDateSeparator: Char; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    function GetDayNamesHighIndex: Integer; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    function GetDayNamesLowIndex: Integer; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    function GetDecimalSeparator: Char; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    function GetListSeparator: Char; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    function GetLongDateFormat: string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    function GetLongDayNames(AIndex: Integer): string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    function GetLongMonthNames(AIndex: Integer): string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    function GetLongTimeFormat: string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    function GetMonthNamesHighIndex: Integer; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    function GetMonthNamesLowIndex: Integer; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    function GetNegCurrFormat: Byte; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    function GetShortDateFormat: string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    function GetShortDayNames(AIndex: Integer): string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    function GetShortMonthNames(AIndex: Integer): string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    function GetShortTimeFormat: string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    function GetThousandSeparator: Char; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    function GetTimeAMString: string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    function GetTimePMString: string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    function GetTimeSeparator: Char; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    function GetTwoDigitYearCenturyWindow: Word; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure SetCurrencyDecimals(AValue: Byte); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure SetCurrencyFormat(const AValue: Byte); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure SetCurrencyString(AValue: string); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure SetDateSeparator(const AValue: Char); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure SetDecimalSeparator(AValue: Char); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure SetListSeparator(const AValue: Char); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure SetLongDateFormat(const AValue: string); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure SetLongTimeFormat(const AValue: string); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure SetNegCurrFormat(const AValue: Byte); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure SetShortDateFormat(AValue: string); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure SetShortTimeFormat(const AValue: string); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure SetThousandSeparator(AValue: Char); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure SetTimeAMString(const AValue: string); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure SetTimePMString(const AValue: string); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure SetTimeSeparator(const AValue: Char); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure SetTwoDigitYearCenturyWindow(const AValue: Word); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
   public
     property CurrencyDecimals: Byte read GetCurrencyDecimals write SetCurrencyDecimals;
     property CurrencyFormat: Byte read GetCurrencyFormat write SetCurrencyFormat;
