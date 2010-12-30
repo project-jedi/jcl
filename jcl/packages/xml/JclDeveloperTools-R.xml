@@ -38,7 +38,6 @@
     <File Name="..\..\source\common\JclPreProcessorQueuesTemplates.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclPreProcessorSortedMapsTemplates.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclPreProcessorStacksTemplates.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclPreProcessorState.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclPreProcessorTemplates.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclPreProcessorTreesTemplates.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclPreProcessorVectorsTemplates.pas" Targets="all" Formname="" Condition=""/>

@@ -52,7 +52,6 @@ uses
   JclStrings,
   JclStreams,
   JclSysUtils,
-  JclPreProcessorState,
   JclPreProcessorParser;
 
 procedure Syntax;

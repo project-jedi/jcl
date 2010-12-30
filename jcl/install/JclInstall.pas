@@ -331,7 +331,6 @@ uses
   JclFileUtils, JclStrings,
   JclCompilerUtils,
   JclContainerIntf,
-  JclPreProcessorState,
   JclPreProcessorParser,
   JediInstallResources,
   JclInstallResources;

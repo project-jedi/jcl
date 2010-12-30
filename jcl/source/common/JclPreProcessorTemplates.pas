@@ -37,7 +37,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclPreProcessorState;
+  JclPreProcessorParser;
 
 type
   TJclTemplateParams = class(TPppState)
@@ -76,8 +76,7 @@ implementation
 uses
   SysUtils,
   TypInfo,
-  JclStrings, JclSysUtils,
-  JclPreProcessorParser;
+  JclStrings, JclSysUtils;
 
 //=== { TJclTemplateParams } =================================================
 

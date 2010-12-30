@@ -70,7 +70,6 @@ contains
   JclPreProcessorQueuesTemplates in '..\..\source\common\JclPreProcessorQueuesTemplates.pas' ,
   JclPreProcessorSortedMapsTemplates in '..\..\source\common\JclPreProcessorSortedMapsTemplates.pas' ,
   JclPreProcessorStacksTemplates in '..\..\source\common\JclPreProcessorStacksTemplates.pas' ,
-  JclPreProcessorState in '..\..\source\common\JclPreProcessorState.pas' ,
   JclPreProcessorTemplates in '..\..\source\common\JclPreProcessorTemplates.pas' ,
   JclPreProcessorTreesTemplates in '..\..\source\common\JclPreProcessorTreesTemplates.pas' ,
   JclPreProcessorVectorsTemplates in '..\..\source\common\JclPreProcessorVectorsTemplates.pas' ,

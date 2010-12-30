@@ -128,10 +128,6 @@
         <Filename Value="..\..\source\common\JclPreProcessorStacksTemplates.pas"/>
         <UnitName Value="JclPreProcessorStacksTemplates"/>
       </Item22>
-      <Item23>
-        <Filename Value="..\..\source\common\JclPreProcessorState.pas"/>
-        <UnitName Value="JclPreProcessorState"/>
-      </Item23>
       <Item24>
         <Filename Value="..\..\source\common\JclPreProcessorTemplates.pas"/>
         <UnitName Value="JclPreProcessorTemplates"/>

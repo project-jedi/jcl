@@ -45,7 +45,7 @@ program jpp;
 
 uses
   SysUtils,
-  JclPreProcessorState,
+  JclPreProcessorParser,
   JppMain in 'JppMain.pas';
 
 var

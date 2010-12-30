@@ -1,4 +1,4 @@
-﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{2AE59B42-1430-423F-99D0-FB8F17DF798B}</ProjectGuid>
 			<MainSource>JclDeveloperTools.dpk</MainSource>
@@ -88,7 +88,6 @@
 			<DCCReference Include="..\..\source\common\JclPreProcessorQueuesTemplates.pas"/>
 			<DCCReference Include="..\..\source\common\JclPreProcessorSortedMapsTemplates.pas"/>
 			<DCCReference Include="..\..\source\common\JclPreProcessorStacksTemplates.pas"/>
-			<DCCReference Include="..\..\source\common\JclPreProcessorState.pas"/>
 			<DCCReference Include="..\..\source\common\JclPreProcessorTemplates.pas"/>
 			<DCCReference Include="..\..\source\common\JclPreProcessorTreesTemplates.pas"/>
 			<DCCReference Include="..\..\source\common\JclPreProcessorVectorsTemplates.pas"/>

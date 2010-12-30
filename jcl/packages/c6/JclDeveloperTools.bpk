@@ -36,7 +36,6 @@
       ..\..\lib\c6\JclPreProcessorQueuesTemplates.obj
       ..\..\lib\c6\JclPreProcessorSortedMapsTemplates.obj
       ..\..\lib\c6\JclPreProcessorStacksTemplates.obj
-      ..\..\lib\c6\JclPreProcessorState.obj
       ..\..\lib\c6\JclPreProcessorTemplates.obj
       ..\..\lib\c6\JclPreProcessorTreesTemplates.obj
       ..\..\lib\c6\JclPreProcessorVectorsTemplates.obj
@@ -121,7 +120,6 @@
       <FILE FILENAME="..\..\source\common\JclPreProcessorQueuesTemplates.pas" FORMNAME="" UNITNAME="JclPreProcessorQueuesTemplates" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\common\JclPreProcessorSortedMapsTemplates.pas" FORMNAME="" UNITNAME="JclPreProcessorSortedMapsTemplates" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\common\JclPreProcessorStacksTemplates.pas" FORMNAME="" UNITNAME="JclPreProcessorStacksTemplates" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\source\common\JclPreProcessorState.pas" FORMNAME="" UNITNAME="JclPreProcessorState" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\common\JclPreProcessorTemplates.pas" FORMNAME="" UNITNAME="JclPreProcessorTemplates" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\common\JclPreProcessorTreesTemplates.pas" FORMNAME="" UNITNAME="JclPreProcessorTreesTemplates" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\common\JclPreProcessorVectorsTemplates.pas" FORMNAME="" UNITNAME="JclPreProcessorVectorsTemplates" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
