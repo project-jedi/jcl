@@ -1,25 +1,25 @@
-@@Windows.Security
-<GROUP Windows>
+@@Windows_Specific.Security
+<GROUP Windows_Specific>
 <TITLE Security>
 <TOPICORDER 400>
 --------------------------------------------------------------------------------
-@@Windows.Security.AccessControl
-<GROUP Windows.Security>
+@@Windows_Specific.Security.AccessControl
+<GROUP Windows_Specific.Security>
 <TITLE Access Control>
 <TOPICORDER 100>
 --------------------------------------------------------------------------------
 @@AccountInformation
-<GROUP Windows.Security>
+<GROUP Windows_Specific.Security>
 <TITLE Account Information>
 <TOPICORDER 200>
 --------------------------------------------------------------------------------
-@@Windows.Security.Privileges
-<GROUP Windows.Security>
+@@Windows_Specific.Security.Privileges
+<GROUP Windows_Specific.Security>
 <TITLE Privileges>
 <TOPICORDER 300>
 --------------------------------------------------------------------------------
 @@AllowRegKeyForEveryone
-<GROUP Windows.Security.AccessControl>
+<GROUP Windows_Specific.Security.AccessControl>
 Summary:
   Allows full access to everyone for a registry key.
 Description:
@@ -37,7 +37,7 @@ Donator:
   John C Molyneux
 --------------------------------------------------------------------------------
 @@CreateNullDacl
-<GROUP Windows.Security.AccessControl>
+<GROUP Windows_Specific.Security.AccessControl>
 Summary:
   Initializes a security attributes structure for NULL access and optional inheritability.
 Description:
@@ -62,7 +62,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@CreateInheritable
-<GROUP Windows.Security.AccessControl>
+<GROUP Windows_Specific.Security.AccessControl>
 Summary:
   Initializes a security attributes structure for inheritable object creation.
 Description:
@@ -83,7 +83,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@IsPrivilegeEnabled
-<GROUP Windows.Security.Privileges>
+<GROUP Windows_Specific.Security.Privileges>
 Summary:
   Tests if the specified Privilege is enabled.
 Description:
@@ -107,7 +107,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@EnableProcessPrivilege
-<GROUP Windows.Security.Privileges>
+<GROUP Windows_Specific.Security.Privileges>
 Summary:
   Enables or disables a privilege for the process.
 Description:
@@ -131,7 +131,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@EnableThreadPrivilege
-<GROUP Windows.Security.Privileges>
+<GROUP Windows_Specific.Security.Privileges>
 Summary:
   Enables or disables a privilege for the thread.
 Description:
@@ -157,7 +157,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@IsAdministrator
-<GROUP Windows.Security.Privileges>
+<GROUP Windows_Specific.Security.Privileges>
 Summary:
   Tests whether the process is running in the user context of a local administrator.
 Description:
@@ -230,7 +230,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GetPrivilegeDisplayName
-<GROUP Windows.Security.Privileges>
+<GROUP Windows_Specific.Security.Privileges>
 Summary:
   Wrapper around the LookupPrivilegeDisplayName Windows API function.
 Description:
@@ -249,7 +249,7 @@ Donator:
   Anonymous
 --------------------------------------------------------------------------------
 @@GetUserObjectName
-<GROUP Windows.Security.Privileges>
+<GROUP Windows_Specific.Security.Privileges>
 Summary:
   Returns the name of the specified object.
 Description:
@@ -264,7 +264,7 @@ Donator:
   Anonymous
 --------------------------------------------------------------------------------
 @@SetUserObjectFullAccess
-<GROUP Windows.Security.Privileges>
+<GROUP Windows_Specific.Security.Privileges>
 Summary:
   Permits full access to a user object.
 Description:
