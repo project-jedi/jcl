@@ -2820,7 +2820,7 @@ Result:
 Example:
   <code>x := StrExpandTabs('Abc'#9'de'#9'fg');</code>
   The above call will result in <i>x</i> containing the string (· represents a
-  space character): <c>Abc·····de······fg</c>. In this case the first tab
+  space character): <code>Abc·····de······fg</code>. In this case the first tab
   character (ASCII code 9) was  transformed into a single space and the second
   tab character into two spaces.
 See also:
@@ -2856,7 +2856,7 @@ Result:
 Example:
   <code>x := StrExpandTabs('Abc'#9'de'#9'fg', 8);</code>
   The above call will result in <i>x</i> containing the string (· represents a
-  space character): <c>Abc·····de······fg</c>. In this case the first tab
+  space character): <code>Abc·····de······fg</code>. In this case the first tab
   character (ASCII code 9) was transformed into five spaces and the second tab
   character into six spaces.
 See also:
@@ -2901,7 +2901,7 @@ Example:
   <b>end</b>;
 </code>
   The above snippet will result in <i>x</i> containing the string (· represents a
-  space character): <c>MyLabel:·······LD···A,(HL)····;·Initialize·A·register</c>.
+  space character): <code>MyLabel:·······LD···A,(HL)····;·Initialize·A·register</code>.
   In this case the first tab character (ASCII code 9) was transformed into seven
   spaces, the second tab character into three spaces and the third tab character
   into four spaces.
@@ -3100,7 +3100,7 @@ Example:
   <b>end;</b>
 </code>
   The above snippet will result in <i>x</i> containing the string (· represents a
-  space character): <c>MyLabel:·······LD···A,(HL)····;·Initialize·A·register</c>.
+  space character): <code>MyLabel:·······LD···A,(HL)····;·Initialize·A·register</code>.
   In this case the first tab character (ASCII code 9) was transformed into seven
   spaces, the second tab character into three spaces and the third tab character
   into four spaces.
@@ -3274,14 +3274,14 @@ Summary:
 Description:
   Expand expands tab characters in the provided string into sequences of
   spaces while preserving the formatting. Expand will assume the string starts
-  at column 0 (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>True</c>) or 1
-  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>False</c>).
+  at column 0 (<LINK TJclTabSet.ZeroBased, zero-based> set to <code>True</code>) or 1
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <code>False</code>).
 
   Multi-line strings, ie. strings containing one or more newline sequences (eg.
   CrLf, but also single Cr of Lf characters are treated as newlines), are
   handled properly, with each line starting at column 0
-  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>True</c>) or 1
-  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>False</c>).
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <code>True</code>) or 1
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <code>False</code>).
 
   The reverse operation (collapse sequences of spaces into tab characters) can
   be achieved by the <LINK TJclTabSet.Optimize@string, Optimize> method.
@@ -3314,8 +3314,8 @@ Description:
   Multi-line strings, ie. strings containing one or more newline sequences (eg.
   CrLf, but also single Cr of Lf characters are treated as newlines), are
   handled properly, with all but the first line starting at column 0
-  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>True</c>) or 1
-  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>False</c>).
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <code>True</code>) or 1
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <code>False</code>).
 
   The reverse operation (collapse sequences of spaces into tab characters) can
   be achieved by the <LINK TJclTabSet.Optimize@string@SizeInt, Optimize> method.
@@ -3496,14 +3496,14 @@ Description:
   Optimize reduces tab and space character sequences in the provided string into
   an optimized (shortest) sequences of tab and space characters while preserving
   the formatting. Optimize will assume the string starts at column 0
-  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>True</c>) or 1
-  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>False</c>).
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <code>True</code>) or 1
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <code>False</code>).
 
   Multi-line strings, ie. strings containing one or more newline sequences (eg.
   CrLf, but also single Cr of Lf characters are treated as newlines), are
   handled properly, with each line starting at column 0
-  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>True</c>) or 1
-  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>False</c>).
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <code>True</code>) or 1
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <code>False</code>).
 
   The reverse operation (expand sequences of tab characters into spaces) can
   be achieved by the <LINK TJclTabSet.Expand@string, Expand> method.
@@ -3534,8 +3534,8 @@ Description:
   Multi-line strings, ie. strings containing one or more newline sequences (eg.
   CrLf, but also single Cr of Lf characters are treated as newlines), are
   handled properly, with all but the first line starting at column 0
-  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>True</c>) or 1
-  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>False</c>).
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <code>True</code>) or 1
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <code>False</code>).
 
   The reverse operation (expand sequences of tab characters into spaces) can
   be achieved by the <LINK TJclTabSet.Expand@string@SizeInt, Expand> method.
@@ -3562,10 +3562,10 @@ Summary:
 Description:
   StartColumn indicates which column is used as the start of a line.
 Returns:
-  <b>0</b> if ZeroBased is set to <c>True</c> or if this method is called on a
+  <b>0</b> if ZeroBased is set to <code>True</code> or if this method is called on a
   <b>nil</b>-reference
    <i>- or -</i><p>
-  <b>1</b> if ZeroBased is set to <c>False</c>
+  <b>1</b> if ZeroBased is set to <code>False</code>
 Donator:
   Marcel Bestebroer
 --------------------------------------------------------------------------------
@@ -3742,8 +3742,8 @@ Description:
   Multi-line strings, ie. strings containing one or more newline sequences (eg.
   CrLf, but also single Cr of Lf characters are treated as newlines), are
   handled properly, with all but the first line starting at column 0
-  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>True</c>) or 1
-  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>False</c>).
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <code>True</code>) or 1
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <code>False</code>).
 Parameters:
   S - The string to expand tabs in.
 Result:
@@ -3772,8 +3772,8 @@ Description:
   Multi-line strings, ie. strings containing one or more newline sequences (eg.
   CrLf, but also single Cr of Lf characters are treated as newlines), are
   handled properly, with all but the first line starting at column 0
-  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>True</c>) or 1
-  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>False</c>).
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <code>True</code>) or 1
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <code>False</code>).
 Parameters:
   S - The string to expand tabs in.
   Column - The starting column to use when expanding the tabs.
@@ -3804,8 +3804,8 @@ Description:
   Multi-line strings, ie. strings containing one or more newline sequences (eg.
   CrLf, but also single Cr of Lf characters are treated as newlines), are
   handled properly, with all but the first line starting at column 0
-  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>True</c>) or 1
-  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>False</c>).
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <code>True</code>) or 1
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <code>False</code>).
 Parameters:
   S - The string to expand tabs in.
   Column - On entry: The starting column to use when expanding the tabs.
@@ -3835,17 +3835,17 @@ Description:
   <LINK TJclTabSet.TabStops, tabulation positions> and other column references
   are zero based.
 
-  If this property is set to <c>True</c>, all columns are considered to be
+  If this property is set to <code>True</code>, all columns are considered to be
   zero-based (the first column index is zero); otherwise columns references are
   one-based (the first column index is one).
 
   If this flag is toggled, any stored
   <LINK TJclTabSet.TabStops, tabulation positions> are automatically converted
-  to the new state (ie. values are incremented when setting to <c>False</c> or
-  decremented when setting to <c>True</c>).
+  to the new state (ie. values are incremented when setting to <code>False</code> or
+  decremented when setting to <code>True</code>).
 Notes:
   This property is <i><b>nil</b>-safe</i>. When read from on a
-  <b>nil</b>-reference, this property will return <c>True</c>. When written to
+  <b>nil</b>-reference, this property will return <code>True</code>. When written to
   on a <b>nil</b>-reference, a NullReferenceException will be raised.
 See also:
   TJclTabSet.Expand@string@SizeInt
@@ -3893,11 +3893,11 @@ Parameters:
   S1 - First string to compare.
   S2 - Second string to compare.
 Result:
-  <c>0</c> if S1 is identical to S2
+  <code>0</code> if S1 is identical to S2
    <i>- or -</i><p>
-  <c>a negative value</c> if S1 is less than S2
+  <code>a negative value</code> if S1 is less than S2
    <i>- or -</i><p>
-  <c>a positive value</c> if S1 is greater than S2
+  <code>a positive value</code> if S1 is greater than S2
 Donator:
   Marcel Bestebroer
 --------------------------------------------------------------------------------
@@ -3939,11 +3939,11 @@ Parameters:
   S1 - First string to compare.
   S2 - Second string to compare.
 Result:
-  <c>0</c> if S1 is identical to S2
+  <code>0</code> if S1 is identical to S2
    <i>- or -</i><p>
-  <c>a negative value</c> if S1 is less than S2
+  <code>a negative value</code> if S1 is less than S2
    <i>- or -</i><p>
-  <c>a positive value</c> if S1 is greater than S2
+  <code>a positive value</code> if S1 is greater than S2
 Donator:
   Marcel Bestebroer
 --------------------------------------------------------------------------------
