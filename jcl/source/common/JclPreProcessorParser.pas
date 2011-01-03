@@ -1141,7 +1141,6 @@ var
   AssociationByName: Boolean;
   Index, ParamIndex: Integer;
   AParamName, AParamText: string;
-//  Parser: TJppParser;
 begin
   SetLength(Result, Length(ParamValues));
   AssociationByName := True;
@@ -1167,17 +1166,6 @@ begin
         AParamText := StrParams.Values[ParamNames.Strings[Index]]
       else
         AParamText := StrParams.Strings[Index];
-      Self.PushState;
-      try
-        (*Parser := TJppParser.Create(AParamText, Self);
-        try
-          AParamText := Parser.Parse;
-        finally
-          Parser.Free;
-        end;*)
-      finally
-        Self.PopState;
-      end;
       Result[Index] := WideString(AParamText);
     end;
   finally
