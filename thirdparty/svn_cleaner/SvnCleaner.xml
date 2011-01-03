@@ -91,9 +91,6 @@
         <value>*.doxdb</value>
         <value>*.bak</value>
       </property>
-      <property name="svn:externals">
-        <value>jedi https://projectjedi.svn.sourceforge.net:443/svnroot/projectjedi/trunk/shared/help</value>
-      </property>
     </setting>
 
     <setting path="qa/automated/dunit" mask="" recurse="no" dironly="yes">
