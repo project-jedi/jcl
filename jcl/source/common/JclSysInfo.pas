@@ -470,6 +470,7 @@ type
     LogicalCore: Byte;
     PhysicalCore: Byte;
     HyperThreadingTechnology: Boolean;
+    HardwareHyperThreadingTechnology: Boolean;
     // todo: TLB
     case CpuType: Byte of
       CPU_TYPE_INTEL: (IntelSpecific: TIntelSpecific;);
@@ -4573,6 +4574,7 @@ function CPUID: TCpuInfo;
       end;
     end;
 
+    CPUInfo.HardwareHyperThreadingTechnology := CPUInfo.LogicalCore <> CPUInfo.PhysicalCore;
     CPUInfo.AES := (CPUInfo.IntelSpecific.ExFeatures and EINTEL_AES) <> 0;
     CPUInfo.MMX := (CPUInfo.Features and MMX_FLAG) <> 0;
     CPUInfo.SSE := [];
@@ -4729,6 +4731,7 @@ function CPUID: TCpuInfo;
       end;
     end;
 
+    CPUInfo.HardwareHyperThreadingTechnology := CPUInfo.LogicalCore <> CPUInfo.PhysicalCore;
     CPUInfo.AES := (CPUInfo.AMDSpecific.Features2 and AMD2_AES) <> 0;
     CPUInfo.MMX := (CPUInfo.Features and AMD_MMX) <> 0;
     CPUInfo.ExMMX := CPUInfo.HasExtendedInfo and ((CPUInfo.AMDSpecific.ExFeatures and EAMD_EXMMX) <> 0);
