@@ -1201,6 +1201,8 @@ var
   Handle: THandle;
   ReparseData: TReparseDataBufferOverlay;
   BytesReturned: DWORD;
+  SubstituteName: WideString;
+  SubstituteNameAddr: PWideChar;
 begin
   Result := False;
   if NtfsFileHasReparsePoint(Source) then
@@ -1217,8 +1219,12 @@ begin
       begin
         if BytesReturned >= DWORD(ReparseData.Reparse.SubstituteNameLength + SizeOf(WideChar)) then
         begin
-          SetLength(Destination, (ReparseData.Reparse.SubstituteNameLength div SizeOf(WideChar)) + 1);
-          Move(ReparseData.Reparse.PathBuffer[0], Destination[1], ReparseData.Reparse.SubstituteNameLength);
+          SetLength(Destination, ReparseData.Reparse.SubstituteNameLength div SizeOf(WideChar));
+          SubstituteNameAddr := @ReparseData.Reparse.PathBuffer;
+          Inc(SubstituteNameAddr, ReparseData.Reparse.SubstituteNameOffset div SizeOf(WideChar));
+          SetString(SubstituteName, SubstituteNameAddr, Length(Destination));
+          Destination := string(SubstituteName);
+
           Result := True;
         end;
       end;
