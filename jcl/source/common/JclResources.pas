@@ -1843,6 +1843,7 @@ resourcestring
   RsIntelCacheDescr71 = 'Trace cache: 16 K-Ops, 8-way set associative';
   RsIntelCacheDescr72 = 'Trace cache: 32 K-Ops, 8-way set associative';
   RsIntelCacheDescr73 = 'Trace cache: 64 K-Ops, 8-way set associative';
+  RsIntelCacheDescr76 = 'Instruction TLB: 2M/4M pages, fully associative, 8 entries';
   RsIntelCacheDescr78 = '2nd-level cache: 1 MBytes, 4-way set associative, 64 bytes line size';
   RsIntelCacheDescr79 = '2nd-level cache: 128 KBytes, 8-way set associative, 64 bytes line size, 2 lines per sector';
   RsIntelCacheDescr7A = '2nd-level cache: 256 KBytes, 8-way set associative, 64 bytes line size, 2 lines per sector';
