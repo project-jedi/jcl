@@ -1287,6 +1287,9 @@ var
   Elems: TJclSimpleXMLElem;
   SrcElem, DestElem: TJclSimpleXMLElem;
   I: Integer;
+  SrcProps, DestProps: TJclSimpleXMLProps;
+  SrcProp: TJclSimpleXMLProp;
+  SrcElems, DestElems: TJclSimpleXMLElems;
 begin
   Clear;
   if Value = nil then
@@ -1294,17 +1297,30 @@ begin
   Elems := TJclSimpleXMLElem(Value);
   Name := Elems.Name;
   Self.Value := Elems.Value;
-  for I := 0 to Elems.Properties.Count - 1 do
-    Properties.Add(Elems.Properties[I].Name, Elems.Properties[I].Value);
-
-  for I := 0 to Elems.Items.Count - 1 do
+  SrcProps := Elems.FProps;
+  if Assigned(SrcProps) then
   begin
-    // Create from the class type, so that the virtual constructor is called
-    // creating an element of the correct class type.
-    SrcElem := Elems.Items[I];
-    DestElem := TJclSimpleXMLElemClass(SrcElem.ClassType).Create(Self, SrcElem.Name);
-    DestElem.Assign(SrcElem);
-    Items.Add(DestElem);
+    DestProps := Properties;
+    for I := 0 to SrcProps.Count - 1 do
+    begin
+      SrcProp := SrcProps.Item[I];
+      DestProps.Add(SrcProp.Name, SrcProp.Value);
+    end;
+  end;
+
+  SrcElems := Elems.FItems;
+  if Assigned(SrcElems) then
+  begin
+    DestElems := Items;
+    for I := 0 to SrcElems.Count - 1 do
+    begin
+      // Create from the class type, so that the virtual constructor is called
+      // creating an element of the correct class type.
+      SrcElem := SrcElems.Item[I];
+      DestElem := TJclSimpleXMLElemClass(SrcElem.ClassType).Create(Self, SrcElem.Name);
+      DestElem.Assign(SrcElem);
+      DestElems.Add(DestElem);
+    end;
   end;
 end;
 
@@ -2799,6 +2815,8 @@ begin
           begin
             lValue := Items[0].Value;
             Items.Clear;
+            // free some memory
+            FreeAndNil(FItems);
           end;
           Break;
         end
@@ -2845,10 +2863,11 @@ begin
     St := Level + '<' + AName;
 
     StringStream.WriteString(St, 1, Length(St));
-    Properties.SaveToStringStream(StringStream);
+    if Assigned(FProps) then
+      FProps.SaveToStringStream(StringStream);
   end;
 
-  if (Items.Count = 0) then
+  if (ItemCount = 0) then
   begin
     tmp := Value;
     if (Name <> '') then
@@ -2876,7 +2895,7 @@ begin
     begin
       LevelAdd := SimpleXML.IndentString;
     end;
-    Items.SaveToStringStream(StringStream, Level + LevelAdd, AParent);
+    FItems.SaveToStringStream(StringStream, Level + LevelAdd, AParent);
     if Name <> '' then
     begin
       St := Level + '</' + AName + '>' + sLineBreak;
@@ -3212,7 +3231,8 @@ begin
   else
     St := St + Name;
   StringStream.WriteString(St, 1, Length(St));
-  Properties.SaveToStringStream(StringStream);
+  if Assigned(FProps) then
+    FProps.SaveToStringStream(StringStream);
   St := '?>' + sLineBreak;
   StringStream.WriteString(St, 1, Length(St));
   if AParent <> nil then
@@ -3243,8 +3263,11 @@ var
   EncodingProp: TJclSimpleXMLProp;
 begin
   inherited LoadFromStringStream(StringStream, AParent);
-  
-  EncodingProp := Properties.ItemNamed['encoding'];
+
+  if Assigned(FProps) then
+    EncodingProp := FProps.ItemNamed['encoding']
+  else
+    EncodingProp := nil;
   if Assigned(EncodingProp) and (EncodingProp.Value <> '') then
     CodePage := CodePageFromCharsetName(EncodingProp.Value)
   else
@@ -3640,6 +3663,7 @@ function TXMLVariant.DoFunction(var Dest: TVarData; const V: TVarData;
   const Name: string; const Arguments: TVarDataArray): Boolean;
 var
   VXML, LXML: TJclSimpleXMLElem;
+  VElems: TJclSimpleXMLElems;
   I, J, K: Integer;
 begin
   Result := False;
@@ -3649,16 +3673,19 @@ begin
     K := Arguments[0].vInteger;
     J := 0;
 
-    if K > 0 then
-      for I := 0 to VXML.Items.Count - 1 do
-        if UpperCase(VXML.Items[I].Name) = Name then
+    if (K > 0) and VXML.HasItems then
+    begin
+      VElems := VXML.Items;
+      for I := 0 to VElems.Count - 1 do
+        if UpperCase(VElems.Item[I].Name) = Name then
         begin
           Inc(J);
           if J = K then
             Break;
         end;
+    end;
 
-    if (J = K) and (J < VXML.Items.Count) then
+    if (J = K) and (J < VXML.ItemCount) then
     begin
       LXML := VXML.Items[J];
       if LXML <> nil then
@@ -3679,14 +3706,17 @@ var
 begin
   Result := False;
   VXML := TJclSimpleXMLElem(V.VAny);
-  LXML := VXML.Items.ItemNamed[Name];
-  if LXML <> nil then
+  if VXML.HasItems then
   begin
-    Dest.vType := VarXML;
-    Dest.vAny := Pointer(LXML);
-    Result := True;
-  end
-  else
+    LXML := VXML.Items.ItemNamed[Name];
+    if LXML <> nil then
+    begin
+      Dest.vType := VarXML;
+      Dest.vAny := Pointer(LXML);
+      Result := True;
+    end;
+  end;
+  if (not Result) and VXML.HasProperties then
   begin
     lProp := VXML.Properties.ItemNamed[Name];
     if lProp <> nil then
@@ -3702,7 +3732,7 @@ var
   VXML: TJclSimpleXMLElem;
 begin
   VXML := TJclSimpleXMLElem(V.VAny);
-  Result := (VXML = nil) or (VXML.Items.Count = 0);
+  Result := (VXML = nil) or (not VXML.HasItems);
 end;
 
 function TXMLVariant.SetProperty(const V: TVarData; const Name: string;
@@ -3723,8 +3753,16 @@ var
 begin
   Result := False;
   VXML := TJclSimpleXmlElem(V.VAny);
-  LXML := VXML.Items.ItemNamed[Name];
-  if LXML = nil then
+  if VXML.HasItems then
+  begin
+    LXML := VXML.Items.ItemNamed[Name];
+    if LXML <> nil then
+    begin
+      LXML.Value := GetStrValue;
+      Result := True;
+    end;
+  end;
+  if (not Result) and VXML.HasProperties then
   begin
     lProp := VXML.Properties.ItemNamed[Name];
     if lProp <> nil then
@@ -3732,11 +3770,6 @@ begin
       lProp.Value := GetStrValue;
       Result := True;
     end;
-  end
-  else
-  begin
-    LXML.Value := GetStrValue;
-    Result := True;
   end;
 end;
 
