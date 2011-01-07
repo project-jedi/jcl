@@ -317,6 +317,10 @@ type
     FProps: TJclSimpleXMLProps;
     FSimpleXML: TJclSimpleXML;
     FContainer: TJclSimpleXMLElems;
+    function GetHasItems: Boolean;
+    function GetHasProperties: Boolean;
+    function GetItemCount: Integer;
+    function GetPropertyCount: Integer;
   protected
     function GetSimpleXML: TJclSimpleXML;
     function GetChildsCount: Integer;
@@ -344,6 +348,10 @@ type
   published
     property Parent: TJclSimpleXMLElem read FParent write FParent;
     property ChildsCount: Integer read GetChildsCount;
+    property HasItems: Boolean read GetHasItems;
+    property HasProperties: Boolean read GetHasProperties;
+    property ItemCount: Integer read GetItemCount;
+    property PropertyCount: Integer read GetPropertyCount;
     property Items: TJclSimpleXMLElems read GetItems;
     property Properties: TJclSimpleXMLProps read GetProps;
   end;
@@ -1432,6 +1440,23 @@ begin
       Result := Result + FItems[I].ChildsCount;
 end;
 
+function TJclSimpleXMLElem.GetHasItems: Boolean;
+begin
+  Result := Assigned(FItems) and (FItems.Count > 0);
+end;
+
+function TJclSimpleXMLElem.GetHasProperties: Boolean;
+begin
+  Result := Assigned(FProps) and (FProps.Count > 0);
+end;
+
+function TJclSimpleXMLElem.GetItemCount: Integer;
+begin
+  Result := 0;
+  if Assigned(FItems) then
+    Result := FItems.Count;
+end;
+
 function TJclSimpleXMLElem.GetItems: TJclSimpleXMLElems;
 begin
   if FItems = nil then
@@ -1442,6 +1467,13 @@ end;
 function TJclSimpleXMLElem.GetNamedIndex(const AChild: TJclSimpleXMLElem): Integer;
 begin
   Result := Items.NamedElems[AChild.Name].IndexOf(AChild);
+end;
+
+function TJclSimpleXMLElem.GetPropertyCount: Integer;
+begin
+  Result := 0;
+  if Assigned(FProps) then
+    Result := FProps.Count;
 end;
 
 function TJclSimpleXMLElem.GetProps: TJclSimpleXMLProps;
