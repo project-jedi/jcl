@@ -1,0 +1,38 @@
+﻿; This is a Doc-O-Matic version 6.5.1.1382 project file.
+; This file is maintained by Doc-O-Matic, do not edit manually.
+
+
+[*Control*]
+MasterFile=..\..\..\help\JclTemplate.dox
+
+[Configurations\H2\{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\HTMLHelp]
+Help2Collection=JclContainers_COL_MASTER.HxC
+Help2ID=JclContainers
+HTMLHelp2Filename=..\..\help\JclContainers.HxS
+
+[Configurations\HLP\{C81B476F-5DE3-416C-A73A-9674B8ECC110}\Basic]
+HLPFilename=..\..\help\JclContainers.hlp
+
+[Project Database Files]
+Count=1
+File0=Jcl.doxdb
+
+[Source Files]
+Count=17
+File1=..\..\source\common\JclAbstractContainers.pas
+File2=..\..\source\common\JclAlgorithms.pas
+File3=..\..\source\common\JclArrayLists.pas
+File4=..\..\source\common\JclArraySets.pas
+File5=..\..\source\common\JclBinaryTrees.pas
+File6=..\..\source\common\JclContainerIntf.pas
+File7=..\..\source\common\JclHashMaps.pas
+File8=..\..\source\common\JclHashSets.pas
+File9=..\..\source\common\JclLinkedLists.pas
+File10=..\..\source\common\JclQueues.pas
+File11=..\..\source\common\JclSortedMaps.pas
+File12=..\..\source\common\JclStacks.pas
+File13=..\..\source\common\JclTrees.pas
+File14=..\..\source\common\JclVectors.pas
+File15=..\..\..\help\ContainerCopies.dtx
+File16=..\..\..\help\Containers.dtx
+File17=..\..\..\help\JclContainers.dtx

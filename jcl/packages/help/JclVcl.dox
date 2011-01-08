@@ -1,0 +1,36 @@
+﻿; This is a Doc-O-Matic version 6.5.1.1382 project file.
+; This file is maintained by Doc-O-Matic, do not edit manually.
+
+
+[*Control*]
+MasterFile=..\..\..\help\JclTemplate.dox
+
+[Configurations\H2\{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\HTMLHelp]
+Help2Collection=JclVcl_COL_MASTER.HxC
+Help2ID=JclVcl
+HTMLHelp2Filename=..\..\help\JclVcl.HxS
+
+[Configurations\HLP\{C81B476F-5DE3-416C-A73A-9674B8ECC110}\Basic]
+HLPFilename=..\..\help\JclVcl.hlp
+
+[Project Database Files]
+Count=1
+File0=Jcl.doxdb
+
+[Source Files]
+Count=15
+File1=..\..\source\vcl\JclPrint.pas
+File2=..\..\source\vcl\JclGraphUtils.pas
+File3=..\..\source\vcl\JclGraphics.pas
+File4=..\..\source\vcl\JclFont.pas
+File5=..\..\source\vcl\JclOpenDialogHooks.pas
+File6=..\..\source\vcl\JclOpenDialogFavorites.pas
+File7=..\..\source\vcl\JclVclResources.pas
+File8=..\..\source\vcl\JclVersionControl.pas
+File9=..\..\source\vcl\JclVersionCtrlCVSImpl.pas
+File10=..\..\source\vcl\JclVersionCtrlSVNImpl.pas
+File11=..\..\..\help\Bitmap32.dtx
+File12=..\..\..\help\Font.dtx
+File13=..\..\..\help\Graphics.dtx
+File14=..\..\..\help\JclVcl.dtx
+File15=..\..\..\help\Regions.dtx

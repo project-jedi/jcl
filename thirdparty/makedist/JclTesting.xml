@@ -171,8 +171,29 @@
     </action>
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="%DMCC%"/>
-      <configuration index="1" caption="Working directory" value="sandbox\help"/>
-      <configuration index="2" caption="Parameters" value="-config &quot;HLP&quot; -noshow -w3 JclHelp.dox"/>
+      <configuration index="1" caption="Working directory" value="sandbox\jcl\packages\help"/>
+      <configuration index="2" caption="Parameters" value="-config &quot;HLP&quot; -noshow -w3 Jcl.dox"/>
+      <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
+      <configuration index="4" caption="Result file" value=""/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%DMCC%"/>
+      <configuration index="1" caption="Working directory" value="sandbox\jcl\packages\help"/>
+      <configuration index="2" caption="Parameters" value="-config &quot;HLP&quot; -noshow -w3 JclContainers.dox"/>
+      <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
+      <configuration index="4" caption="Result file" value=""/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%DMCC%"/>
+      <configuration index="1" caption="Working directory" value="sandbox\jcl\packages\help"/>
+      <configuration index="2" caption="Parameters" value="-config &quot;HLP&quot; -noshow -w3 JclDeveloperTools.dox"/>
+      <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
+      <configuration index="4" caption="Result file" value=""/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%DMCC%"/>
+      <configuration index="1" caption="Working directory" value="sandbox\jcl\packages\help"/>
+      <configuration index="2" caption="Parameters" value="-config &quot;HLP&quot; -noshow -w3 JclVcl.dox"/>
       <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
       <configuration index="4" caption="Result file" value=""/>
     </action>
@@ -180,7 +201,7 @@
       <configuration index="0" caption="Directory" value="sandbox\%PREFIX%"/>
     </action>
     <action classname="TDelay">
-      <configuration index="0" caption="Delay" value="30"/>
+      <configuration index="0" caption="Delay" value="60"/>
     </action>
     <action classname="TFileMover">
       <configuration index="0" caption="Old file name" value="sandbox\jcl\help"/>
@@ -245,13 +266,34 @@
     </action>
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="%DMCC%"/>
-      <configuration index="1" caption="Working directory" value="sandbox\help"/>
-      <configuration index="2" caption="Parameters" value="-config &quot;H2&quot; -noshow -w3 JclHelp.dox"/>
+      <configuration index="1" caption="Working directory" value="sandbox\jcl\packages\help"/>
+      <configuration index="2" caption="Parameters" value="-config &quot;H2&quot; -noshow -w3 Jcl.dox"/>
+      <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
+      <configuration index="4" caption="Result file" value=""/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%DMCC%"/>
+      <configuration index="1" caption="Working directory" value="sandbox\jcl\packages\help"/>
+      <configuration index="2" caption="Parameters" value="-config &quot;H2&quot; -noshow -w3 JclContainers.dox"/>
+      <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
+      <configuration index="4" caption="Result file" value=""/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%DMCC%"/>
+      <configuration index="1" caption="Working directory" value="sandbox\jcl\packages\help"/>
+      <configuration index="2" caption="Parameters" value="-config &quot;H2&quot; -noshow -w3 JclDeveloperTools.dox"/>
+      <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
+      <configuration index="4" caption="Result file" value=""/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%DMCC%"/>
+      <configuration index="1" caption="Working directory" value="sandbox\jcl\packages\help"/>
+      <configuration index="2" caption="Parameters" value="-config &quot;H2&quot; -noshow -w3 JclVcl.dox"/>
       <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
       <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TDelay">
-      <configuration index="0" caption="Delay" value="30"/>
+      <configuration index="0" caption="Delay" value="60"/>
     </action>
     <action classname="TFileRemover">
       <configuration index="0" caption="Directory" value="sandbox\jcl\help"/>
@@ -324,13 +366,34 @@
     </action>
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="%DMCC%"/>
-      <configuration index="1" caption="Working directory" value="sandbox\help"/>
-      <configuration index="2" caption="Parameters" value="-config &quot;CHM&quot; -noshow -w3 JclHelp.dox"/>
+      <configuration index="1" caption="Working directory" value="sandbox\jcl\packages\help"/>
+      <configuration index="2" caption="Parameters" value="-config &quot;CHM&quot; -noshow -w3 Jcl.dox"/>
+      <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
+      <configuration index="4" caption="Result file" value=""/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%DMCC%"/>
+      <configuration index="1" caption="Working directory" value="sandbox\jcl\packages\help"/>
+      <configuration index="2" caption="Parameters" value="-config &quot;CHM&quot; -noshow -w3 JclContainers.dox"/>
+      <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
+      <configuration index="4" caption="Result file" value=""/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%DMCC%"/>
+      <configuration index="1" caption="Working directory" value="sandbox\jcl\packages\help"/>
+      <configuration index="2" caption="Parameters" value="-config &quot;CHM&quot; -noshow -w3 JclDeveloperTools.dox"/>
+      <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
+      <configuration index="4" caption="Result file" value=""/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%DMCC%"/>
+      <configuration index="1" caption="Working directory" value="sandbox\jcl\packages\help"/>
+      <configuration index="2" caption="Parameters" value="-config &quot;CHM&quot; -noshow -w3 JclVcl.dox"/>
       <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
       <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TDelay">
-      <configuration index="0" caption="Delay" value="30"/>
+      <configuration index="0" caption="Delay" value="60"/>
     </action>
     <action classname="TFileRemover">
       <configuration index="0" caption="Directory" value="sandbox\jcl\help"/>

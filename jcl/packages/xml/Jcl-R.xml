@@ -50,6 +50,22 @@
     <File Name="..\..\source\common\JclWideStrings.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\pcre.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\zlibh.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\source\include\crossplatform.inc" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\source\include\jcl.inc" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\source\include\jclc6.inc" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\source\include\jclcs1.inc" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\source\include\jcld6.inc" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\source\include\jcld7.inc" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\source\include\jcld8.inc" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\source\include\jcld9.inc" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\source\include\jcld10.inc" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\source\include\jcld11.inc" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\source\include\jcld12.inc" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\source\include\jcld14.inc" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\source\include\jcld15.inc" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\source\include\jclfpc.inc" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\source\include\unixonly.inc" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\source\include\windowsonly.inc" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\source\windows\Hardlinks.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclAppInst.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclCIL.pas" Targets="Windows" Formname="" Condition=""/>
@@ -87,5 +103,49 @@
     <File Name="..\..\source\windows\MSTask.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\sevenzip.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\Snmp.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\..\help\8087.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\AppInst.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Base.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Com.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Complex.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Counter.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\DateTime.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Debug.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\ExprEval.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\FileUtils.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Hardlinks.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\IncludedFiles.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\IniFiles.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Jcl.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\LANMan.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Locales.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Logic.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Mapi.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Math.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Midi.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Mime.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Miscel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Multimedia.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Notify.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\NTFS.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\pcre.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\PE.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Registry.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\RTTI.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Schedule.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Security.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Shell.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Statistics.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Streams.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\StrHashMap.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Strings.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\SvcCtrl.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Synch.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\SysInfo.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\SysUtils.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Unicode.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\UnitConv.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\WideStrings.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Win32.dtx" Targets="help" Formname="" Condition=""/>
   </Contains>
 </Package>

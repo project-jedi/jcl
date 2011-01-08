@@ -1,22 +1,7 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
 <Configuration>
   <!-- These are the values stored by jaxStore -->
-  <pgEdit>
-    <FormVersion>0</FormVersion>
-    <ShowCmd>1</ShowCmd>
-    <Flags>0</Flags>
-    <PixelsPerInch>96</PixelsPerInch>
-    <MinMaxPos_1680x1050_>-1,-1,-1,-1</MinMaxPos_1680x1050_>
-    <MinMaxPos>-1,-1,-1,-1</MinMaxPos>
-    <NormPos_1680x1050_>432,220,1247,829</NormPos_1680x1050_>
-    <NormPos>432,220,1247,829</NormPos>
-    <pnlList_Width>137</pnlList_Width>
-    <jsgDependencies_Height>165</jsgDependencies_Height>
-    <pnlEdit_Width>668</pnlEdit_Width>
-    <jsgFiles_Height>196</jsgFiles_Height>
-    <odlAddFiles_InitialDir>..\..\run</odlAddFiles_InitialDir>
-    <cmbModel_ItemIndex>-1</cmbModel_ItemIndex>
-  </pgEdit>
+  <pgEdit/>
   <!--
     The nodes below are read by the generation process.
     Packages are generated according to a model. The models are defined
@@ -76,6 +61,7 @@
   <models>
     <Model format="%p%n" name="JCL" prefix="Jcl" packages="..\packages" incfile="" nolibsuffixformat="%p%n%e%v0" dotnetprefix="Jedi.Jcl">
       <targets>
+        <target name="help"/>
         <target name="fpc"/>
         <target name="c6" defines="BCB"/>
         <target name="d6"/>
@@ -95,13 +81,13 @@
         <alias name="Bcb" value="c6,d10,d11,d12,d14,d15"/>
         <alias name="Pascal" value="fpc,d6,d7,d9,d10,d11,d12,d14,d15"/>
         <!-- platform aliases -->
-        <alias name="Windows" value="fpc,c6,d6,d7,d9,d10,d11,d12,d14,d15"/>
-        <alias name="Linux" value="fpc"/>
+        <alias name="Windows" value="help,fpc,c6,d6,d7,d9,d10,d11,d12,d14,d15"/>
+        <alias name="Linux" value="help,fpc"/>
         <!-- package aliases -->
         <alias name="allv11up" value="d11,d12,d14,d15"/>
         <!-- GUI aliases -->
-        <alias name="Clx" value="c6,d6,d7"/>
-        <alias name="Vcl" value="c6,d6,d7,d9,d10,d11,d12,d14,d15"/>
+        <alias name="Clx" value="help,c6,d6,d7"/>
+        <alias name="Vcl" value="help,c6,d6,d7,d9,d10,d11,d12,d14,d15"/>
         <!-- IDE aliases -->
         <alias name="BDS" value="cs1,d8,d9,d10,d11,d12,d14,d15"/>
         <alias name="runtimeBDS" value="d9,d10,d11,d12,d14,d15"/>

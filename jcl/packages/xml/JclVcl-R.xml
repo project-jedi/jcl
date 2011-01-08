@@ -24,5 +24,10 @@
     <File Name="..\..\source\vcl\JclVersionControl.pas" Targets="Vcl" Formname="" Condition=""/>
     <File Name="..\..\source\vcl\JclVersionCtrlCVSImpl.pas" Targets="Vcl" Formname="" Condition=""/>
     <File Name="..\..\source\vcl\JclVersionCtrlSVNImpl.pas" Targets="Vcl" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Bitmap32.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Font.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Graphics.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JclVcl.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Regions.dtx" Targets="help" Formname="" Condition=""/>
   </Contains>
 </Package>
