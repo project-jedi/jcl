@@ -39,7 +39,7 @@
     <Description Value="JEDI Code Library Developer Tools package"/>
     <License Value="Copyright (C) 1999, 2009 Project JEDI"/>
     <Version Major="2" Minor="3" Release="0" Build="3847"/>
-    <Files Count="29">
+    <Files Count="28">
       <Item1>
         <Filename Value="..\..\source\common\JclCompilerUtils.pas"/>
         <UnitName Value="JclCompilerUtils"/>
@@ -128,30 +128,30 @@
         <Filename Value="..\..\source\common\JclPreProcessorStacksTemplates.pas"/>
         <UnitName Value="JclPreProcessorStacksTemplates"/>
       </Item22>
-      <Item24>
+      <Item23>
         <Filename Value="..\..\source\common\JclPreProcessorTemplates.pas"/>
         <UnitName Value="JclPreProcessorTemplates"/>
-      </Item24>
-      <Item25>
+      </Item23>
+      <Item24>
         <Filename Value="..\..\source\common\JclPreProcessorTreesTemplates.pas"/>
         <UnitName Value="JclPreProcessorTreesTemplates"/>
-      </Item25>
-      <Item26>
+      </Item24>
+      <Item25>
         <Filename Value="..\..\source\common\JclPreProcessorVectorsTemplates.pas"/>
         <UnitName Value="JclPreProcessorVectorsTemplates"/>
-      </Item26>
-      <Item27>
+      </Item25>
+      <Item26>
         <Filename Value="..\..\source\common\JclUsesUtils.pas"/>
         <UnitName Value="JclUsesUtils"/>
-      </Item27>
-      <Item28>
+      </Item26>
+      <Item27>
         <Filename Value="..\..\source\windows\JclHelpUtils.pas"/>
         <UnitName Value="JclHelpUtils"/>
-      </Item28>
-      <Item29>
+      </Item27>
+      <Item28>
         <Filename Value="..\..\source\windows\MSHelpServices_TLB.pas"/>
         <UnitName Value="MSHelpServices_TLB"/>
-      </Item29>
+      </Item28>
     </Files>
     <RequiredPkgs Count="3">
       <Item1>
