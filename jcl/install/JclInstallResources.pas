@@ -319,6 +319,10 @@ resourcestring
   RsLogFailedAddDebugDCUPath = 'Failed to add debug DCU path';
   RsLogDelDebugDCUPath = 'Removed "%s" from debug DCU Path.';
   RsLogFailedDelDebugDCUPath = 'Failed to remove debug DCU Path.';
+  RsLogAddIdeTools = 'Added %s to %s IDE Tools';
+  RsLogFailedAddIdeTools = 'Failed to add help file to IDE Tools';
+  RsLogDelIdeTools = 'Removing %s from %s IDE Tools';
+  RsLogFailedDelIdeTools = 'Failed to remove help file from IDE Tools';
   RsLogAddOpenHelp = 'Added %s to %s Open Help';
   RsLogFailedAddOpenHelp = 'Failed to add help file to Open Help';
   RsLogDelOpenHelp = 'Removing %s from %s Open Help';

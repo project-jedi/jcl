@@ -233,9 +233,21 @@ type
     FVclDialogSendFileName: string;
     FVclDialogIconFileName: string;
     FVclDialogSendIconFileName: string;
+    FJclOldChmHelpFileName: string;
     FJclChmHelpFileName: string;
+    FJclContainersChmHelpFileName: string;
+    FJclDeveloperToolsChmHelpFileName: string;
+    FJclVclChmHelpFileName: string;
+    FJclOldHlpHelpFileName: string;
     FJclHlpHelpFileName: string;
+    FJclContainersHlpHelpFileName: string;
+    FJclDeveloperToolsHlpHelpFileName: string;
+    FJclVclHlpHelpFileName: string;
+    FJclOldHxSHelpFileName: string;
     FJclHxSHelpFileName: string;
+    FJclContainersHxSHelpFileName: string;
+    FJclDeveloperToolsHxSHelpFileName: string;
+    FJclVclHxSHelpFileName: string;
     FJclReadmeFileName: string;
     FJclLicenseFileName: string;
     FGUI: IJediInstallGUI;
@@ -295,9 +307,21 @@ type
     property VclDialogSendFileName: string read FVclDialogSendFileName;
     property VclDialogIconFileName: string read FVclDialogIconFileName;
     property VclDialogSendIconFileName: string read FVclDialogSendIconFileName;
+    property JclOldChmHelpFileName: string read FJclOldChmHelpFileName;
     property JclChmHelpFileName: string read FJclChmHelpFileName;
+    property JclContainersChmHelpFileName: string read FJclContainersChmHelpFileName;
+    property JclDeveloperToolsChmHelpFileName: string read FJclDeveloperToolsChmHelpFileName;
+    property JclVclChmHelpFileName: string read FJclVclChmHelpFileName;
+    property JclOldHlpHelpFileName: string read FJclOldHlpHelpFileName;
     property JclHlpHelpFileName: string read FJclHlpHelpFileName;
+    property JclContainersHlpHelpFileName: string read FJclContainersHlpHelpFileName;
+    property JclDeveloperToolsHlpHelpFileName: string read FJclDeveloperToolsHlpHelpFileName;
+    property JclVclHlpHelpFileName: string read FJclVclHlpHelpFileName;
+    property JclOldHxSHelpFileName: string read FJclOldHxSHelpFileName;
     property JclHxSHelpFileName: string read FJclHxSHelpFileName;
+    property JclContainersHxSHelpFileName: string read FJclContainersHxSHelpFileName;
+    property JclDeveloperToolsHxSHelpFileName: string read FJclDeveloperToolsHxSHelpFileName;
+    property JclVclHxSHelpFileName: string read FJclVclHxSHelpFileName;
     property JclReadmeFileName: string read FJclReadmeFileName;
     property JclLicenseFileName: string read FJclLicenseFileName;
     property RadToolInstallations: TJclBorRADToolInstallations read FRadToolInstallations;
@@ -438,10 +462,10 @@ const
   VersionDirExp = '\%%s';
 
   // native packages
-  JclDpk               = 'Jcl';
-  JclContainersDpk     = 'JclContainers';
-  JclDeveloperToolsDpk = 'JclDeveloperTools';
-  JclVclDpk            = 'JclVcl';
+  JclPackage               = 'Jcl';
+  JclContainersPackage     = 'JclContainers';
+  JclDeveloperToolsPackage = 'JclDeveloperTools';
+  JclVclPackage            = 'JclVcl';
 
   JclExpertBase             = 'JclBaseExpert';
   JclExpertDebug            = 'JclDebugExpert';
@@ -495,21 +519,51 @@ const
   ExceptIcoVclFileName    = 'ExceptDlg.ico';
   ExceptIcoVclSndFileName = 'ExceptDlgMail.ico';
 
-  JclChmHelpFile    = 'help' + DirDelimiter + 'JCLHelp.chm';
-  JclHlpHelpFile    = 'help' + DirDelimiter + 'JCLHelp.hlp';
-  JclHxSHelpFile    = 'help' + DirDelimiter + 'JCLHelp.HxS';
+  JclOldChmHelpFile            = 'help' + DirDelimiter + 'JCLHelp.chm';
+  JclChmHelpFile               = 'help' + DirDelimiter + JclPackage + '.chm';
+  JclContainersChmHelpFile     = 'help' + DirDelimiter + JclContainersPackage + '.chm';
+  JclDeveloperToolsChmHelpFile = 'help' + DirDelimiter + JclDeveloperToolsPackage + '.chm';
+  JclVclChmHelpFile            = 'help' + DirDelimiter + JclVclPackage + '.chm';
+  JclOldHlpHelpFile            = 'help' + DirDelimiter + 'JCLHelp.hlp';
+  JclHlpHelpFile               = 'help' + DirDelimiter + JclPackage + '.hlp';
+  JclContainersHlpHelpFile     = 'help' + DirDelimiter + JclContainersPackage + '.hlp';
+  JclDeveloperToolsHlpHelpFile = 'help' + DirDelimiter + JclDeveloperToolsPackage + '.hlp';
+  JclVclHlpHelpFile            = 'help' + DirDelimiter + JclVclPackage + '.hlp';
+  JclOldHxSHelpFile            = 'help' + DirDelimiter + 'JCLHelp.HxS';
+  JclHxSHelpFile               = 'help' + DirDelimiter + JclPackage + '.HxS';
+  JclContainersHxSHelpFile     = 'help' + DirDelimiter + JclContainersPackage + '.HxS';
+  JclDeveloperToolsHxSHelpFile = 'help' + DirDelimiter + JclDeveloperToolsPackage + '.HxS';
+  JclVclHxSHelpFile            = 'help' + DirDelimiter + JclVclPackage + '.HxS';
 
-  Help2NameSpace         = 'Jedi.Jcl';
-  Help2Collection        = 'JCLHelp_COL_MASTER.HxC';
-  Help2Description       = 'JEDI Code Library';
-  Help2Identifier        = 'JCLHelp';
-  Help2LangId            = 1033;         // en/english
-  Help2HxSFile           = 'JCLHelp.HxS';
-  Help2HxIFile           = 'JCLHelp.HxI';
+  JclHelp2NameSpace                = 'Jedi.Jcl';
+  JclHelp2Collection               = 'JCLHelp_COL_MASTER.HxC';
+  JclHelp2Description              = 'JEDI Code Library';
+  JclHelp2LangId                   = 1033;         // en/english
+  JclOldHelp2Identifier            = 'JCLHelp';
+  JclHelp2Identifier               = 'Jcl';
+  JclContainersHelp2Identifier     = 'JclContainers';
+  JclDeveloperToolsHelp2Identifier = 'JclDeveloperTools';
+  JclVclHelp2Identifier            = 'JclVcl';
+  JclOldHelp2HxSFile               = 'JCLHelp.HxS';
+  JclOldHelp2HxIFile               = 'JCLHelp.HxI';
+  JclHelp2HxSFile                  = 'Jcl.HxS';
+  JclHelp2HxIFile                  = 'Jcl.HxI';
+  JclContainersHelp2HxSFile        = 'JclContainers.HxS';
+  JclContainersHelp2HxIFile        = 'JclContainers.HxI';
+  JclDeveloperToolsHelp2HxSFile    = 'JclDeveloperTools.HxS';
+  JclDeveloperToolsHelp2HxIFile    = 'JclDeveloperTools.HxI';
+  JclVclHelp2HxSFile               = 'JclVcl.HxS';
+  JclVclHelp2HxIFile               = 'JclVcl.HxI';
 
-  JclHelpTitle      = 'JCL %d.%d Help';
-  JclHelpIndexName  = 'JEDI Code Library Reference';
-  HHFileName        = 'HH.EXE';
+  JclHelpTitle                   = 'JCL %d.%d Help';
+  JclHelpIndexName               = 'JEDI Code Library Reference';
+  JclContainersHelpTitle         = 'JCL %d.%d Containers Help';
+  JclContainersHelpIndexName     = 'JEDI Code Library Containers Reference';
+  JclDeveloperToolsHelpTitle     = 'JCL %d.%d Developer Tools Help';
+  JclDeveloperToolsHelpIndexName = 'JEDI Code Library Developer Tools Reference';
+  JclVclHelpTitle                = 'JCL %d.%d VCL Help';
+  JclVclHelpIndexName            = 'JEDI Code Library VCL Package Reference';
+  HHFileName = 'HH.EXE';
 
   ReadmeFileName = 'Readme.txt';
   LicenseFileName = 'LICENSE.txt';
@@ -1539,12 +1593,12 @@ var
     begin
       MarkOptionBegin(joJCLPackages);
 
-      Result := CompilePackage(FullPackageFileName(Target, JclDpk))
-        and CompilePackage(FullPackageFileName(Target, JclContainersDpk))
-        and CompilePackage(FullPackageFileName(Target, JclDeveloperToolsDpk));
+      Result := CompilePackage(FullPackageFileName(Target, JclPackage))
+        and CompilePackage(FullPackageFileName(Target, JclContainersPackage))
+        and CompilePackage(FullPackageFileName(Target, JclDeveloperToolsPackage));
 
       if Result and Target.SupportsVCL then
-        Result := Result and CompilePackage(FullPackageFileName(Target, JclVclDpk));
+        Result := Result and CompilePackage(FullPackageFileName(Target, JclVclPackage));
 
       MarkOptionEnd(joJCLPackages, Result);
     end;
@@ -1698,43 +1752,60 @@ var
   {$IFDEF MSWINDOWS}
   function InstallHelpFiles: Boolean;
     function AddHelpToIdeTools: Boolean;
-    var
-      ToolsIndex: Integer;
-      HelpTitle: string;
-      IdeTool: TJclBorRADToolIdeTool;
-    begin
-      Result := True;
-      try
-        IdeTool := Target.IdeTools;
-        HelpTitle := Format(JclHelpTitle, [JclVersionMajor, JclVersionMinor]);
-        if IdeTool.IndexOfTitle(HelpTitle) = -1 then
-        begin
+      function AddFile(const Title, FileName: string): Boolean;
+      var
+        ToolsIndex: Integer;
+        IdeTool: TJclBorRADToolIdeTool;
+      begin
+        Result := True;
+        try
+          IdeTool := Target.IdeTools;
           ToolsIndex := IdeTool.Count;
-          IdeTool.Count := ToolsIndex + 1;
-          IdeTool.Title[ToolsIndex] := HelpTitle;
+          IdeTool.Count := ToolsIndex + 4;
+
+          IdeTool.Title[ToolsIndex] := Format(Title, [JclVersionMajor, JclVersionMinor]);
           IdeTool.Path[ToolsIndex] := HHFileName;
-          IdeTool.Parameters[ToolsIndex] := StrDoubleQuote(FDistribution.FJclChmHelpFileName);
+          IdeTool.Parameters[ToolsIndex] := StrDoubleQuote(FileName);
           IdeTool.WorkingDir[ToolsIndex] := Distribution.JclPath;
+        except
+          Result := False;
         end;
-      except
-        Result := False;
+        if Result then
+          WriteLog(Format(LoadResString(@RsLogAddIDETools), [FileName, Target.RADToolName]))
+        else
+          WriteLog(LoadResString(@RsLogFailedAddIDETools));
       end;
+    begin
+      Result := AddFile(JclHelpTitle, Distribution.JclChmHelpFileName) and
+                AddFile(JclContainersHelpTitle, Distribution.JclContainersChmHelpFileName) and
+                AddFile(JclDeveloperToolsHelpTitle, Distribution.JclDeveloperToolsChmHelpFileName) and
+                AddFile(JclVclHelpTitle, Distribution.JclVclChmHelpFileName);
     end;
 
     function AddHelpToOpenHelp: Boolean;
+      function AddFile(const FileName, IndexName: string): Boolean;
+      begin
+        Result := Target.OpenHelp.AddHelpFile(FileName, IndexName);
+        if Result then
+          WriteLog(Format(LoadResString(@RsLogAddOpenHelp), [FileName, Target.RADToolName]))
+        else
+          WriteLog(LoadResString(@RsLogFailedAddOpenHelp));
+      end;
     begin
-      Result := Target.OpenHelp.AddHelpFile(Distribution.FJclHlpHelpFileName, JclHelpIndexName);
-      if Result then
-        WriteLog(Format(LoadResString(@RsLogAddOpenHelp), [Distribution.FJclHlpHelpFileName, Target.RADToolName]))
-      else
-        WriteLog(LoadResString(@RsLogFailedAddOpenHelp));
+      Result := AddFile(Distribution.JclHlpHelpFileName, JclHelpIndexName) and
+                AddFile(Distribution.JclContainersHlpHelpFileName, JclContainersHelpIndexName) and
+                AddFile(Distribution.JclDeveloperToolsHlpHelpFileName, JclDeveloperToolsHelpIndexName) and
+                AddFile(Distribution.JclVclHlpHelpFileName, JclVclHelpIndexName);
     end;
 
     function RegisterHelp2Files: Boolean;
     var
-      //CurrentDir: string;
-      NameSpace, Collection, Description, Identifier, HxSFile, HxIFile: WideString;
-      LangId: Integer;
+      JclNameSpace, JclCollection, JclDescription,
+      JclIdentifier, JclHxSFile, JclHxIFile,
+      JclContainersIdentifier, JclContainersHxSFile, JclContainersHxIFile,
+      JclDeveloperToolsIdentifier, JclDeveloperToolsHxSFile, JclDeveloperToolsHxIFile,
+      JclVclIdentifier, JclVclHxSFile, JclVclHxIFile: WideString;
+      JclLangId: Integer;
     begin
       Result := True;
       if (Target.RadToolKind <> brBorlandDevStudio) or (Target.VersionNumber < 3) then
@@ -1743,21 +1814,33 @@ var
       WriteLog(LoadResString(@RsLogAddHelp2Files));
 
       // to avoid Write AV, data have to be copied in data segment
-      NameSpace := Help2NameSpace;
-      Collection := Help2Collection;
-      Description := Help2Description;
-      Identifier := Help2Identifier;
-      LangId := Help2LangId;
-      HxSFile := Help2HxSFile;
-      HxIFile := Help2HxIFile;
+      JclNameSpace := JclHelp2NameSpace;
+      JclCollection := JclHelp2Collection;
+      JclDescription := JclHelp2Description;
+      JclLangId := JclHelp2LangId;
+      JclIdentifier := JclHelp2Identifier;
+      JclHxSFile := JclHelp2HxSFile;
+      JclHxIFile := JclHelp2HxIFile;
+      JclContainersIdentifier := JclContainersHelp2Identifier;
+      JclContainersHxSFile := JclContainersHelp2HxSFile;
+      JclContainersHxIFile := JclContainersHelp2HxIFile;
+      JclDeveloperToolsIdentifier := JclDeveloperToolsHelp2Identifier;
+      JclDeveloperToolsHxSFile := JclDeveloperToolsHelp2HxSFile;
+      JclDeveloperToolsHxIFile := JclDeveloperToolsHelp2HxIFile;
+      JclVclIdentifier := JclVclHelp2Identifier;
+      JclVclHxSFile := JclVclHelp2HxSFile;
+      JclVclHxIFile := JclVclHelp2HxIFile;
 
       Distribution.RegHelpCreateTransaction;
-      Distribution.RegHelpRegisterNameSpace(NameSpace, Collection, Description);
-      Distribution.RegHelpRegisterHelpFile(NameSpace, Identifier, LangId, HxSFile, HxIFile);
+      Distribution.RegHelpRegisterNameSpace(JclNameSpace, JclCollection, JclDescription);
+      Distribution.RegHelpRegisterHelpFile(JclNameSpace, JclIdentifier, JclLangId, JclHxSFile, JclHxIFile);
+      Distribution.RegHelpRegisterHelpFile(JclNameSpace, JclContainersIdentifier, JclLangId, JclContainersHxSFile, JclContainersHxIFile);
+      Distribution.RegHelpRegisterHelpFile(JclNameSpace, JclDeveloperToolsIdentifier, JclLangId, JclDeveloperToolsHxSFile, JclDeveloperToolsHxIFile);
+      Distribution.RegHelpRegisterHelpFile(JclNameSpace, JclVclIdentifier, JclLangId, JclVclHxSFile, JclVclHxIFile);
       if OptionChecked[joJCLHelpHxSPlugin] then
       begin
         MarkOptionBegin(joJCLHelpHxSPlugin);
-        Distribution.RegHelpPlugNameSpaceIn(NameSpace, TJclBDSInstallation(Target).Help2Manager.IdeNamespace);
+        Distribution.RegHelpPlugNameSpaceIn(JclNameSpace, TJclBDSInstallation(Target).Help2Manager.IdeNamespace);
         MarkOptionEnd(joJCLHelpHxSPlugin, Result);
       end;
 
@@ -2007,18 +2090,18 @@ function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
     if ATarget.RadToolKind = brBorlandDevStudio then
     begin
       ABDSTarget := ATarget as TJclBDSInstallation;
-      ABDSTarget.CleanPackageCache(BinaryFileName(GetBPLPath, Distribution.JclPath + FullPackageFileName(ATarget, JclDpk)));
-      ABDSTarget.CleanPackageCache(BinaryFileName(GetBPLPath, Distribution.JclPath + FullPackageFileName(ATarget, JclContainersDpk)));
-      ABDSTarget.CleanPackageCache(BinaryFileName(GetBPLPath, Distribution.JclPath + FullPackageFileName(ATarget, JclDeveloperToolsDpk)));
+      ABDSTarget.CleanPackageCache(BinaryFileName(GetBPLPath, Distribution.JclPath + FullPackageFileName(ATarget, JclPackage)));
+      ABDSTarget.CleanPackageCache(BinaryFileName(GetBPLPath, Distribution.JclPath + FullPackageFileName(ATarget, JclContainersPackage)));
+      ABDSTarget.CleanPackageCache(BinaryFileName(GetBPLPath, Distribution.JclPath + FullPackageFileName(ATarget, JclDeveloperToolsPackage)));
       if RuntimeInstallation and ATarget.SupportsVCL then
-        ABDSTarget.CleanPackageCache(BinaryFileName(GetBPLPath, Distribution.JclPath + FullPackageFileName(ATarget, JclVclDpk)));
+        ABDSTarget.CleanPackageCache(BinaryFileName(GetBPLPath, Distribution.JclPath + FullPackageFileName(ATarget, JclVclPackage)));
     end;
     //ioJclPackages
-    ATarget.UnregisterPackage(Distribution.JclPath + FullPackageFileName(ATarget, JclDpk), GetBplPath);
-    ATarget.UnregisterPackage(Distribution.JclPath + FullPackageFileName(ATarget, JclContainersDpk), GetBplPath);
-    ATarget.UnregisterPackage(Distribution.JclPath + FullPackageFileName(ATarget, JclDeveloperToolsDpk), GetBplPath);
+    ATarget.UnregisterPackage(Distribution.JclPath + FullPackageFileName(ATarget, JclPackage), GetBplPath);
+    ATarget.UnregisterPackage(Distribution.JclPath + FullPackageFileName(ATarget, JclContainersPackage), GetBplPath);
+    ATarget.UnregisterPackage(Distribution.JclPath + FullPackageFileName(ATarget, JclDeveloperToolsPackage), GetBplPath);
     if RuntimeInstallation and ATarget.SupportsVCL then
-      ATarget.UnregisterPackage(Distribution.JclPath + FullPackageFileName(ATarget, JclVclDpk), GetBplPath);
+      ATarget.UnregisterPackage(Distribution.JclPath + FullPackageFileName(ATarget, JclVclPackage), GetBplPath);
     {$IFDEF MSWINDOWS}
     RemoveJediRegInformation(Target.ConfigDataLocation, 'JCL', ATarget.RootKey);
     {$ENDIF MSWINDOWS}
@@ -2026,11 +2109,11 @@ function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
 
   procedure DeletePackages;
   begin
-    DeletePackage(FullPackageFileName(Target, JclDpk));
-    DeletePackage(FullPackageFileName(Target, JclContainersDpk));
-    DeletePackage(FullPackageFileName(Target, JclDeveloperToolsDpk));
+    DeletePackage(FullPackageFileName(Target, JclPackage));
+    DeletePackage(FullPackageFileName(Target, JclContainersPackage));
+    DeletePackage(FullPackageFileName(Target, JclDeveloperToolsPackage));
     if RuntimeInstallation and Target.SupportsVCL then
-      DeletePackage(FullPackageFileName(Target, JclVclDpk));
+      DeletePackage(FullPackageFileName(Target, JclVclPackage));
   end;
   {$IFDEF MSWINDOWS}
   procedure UnregisterExperts(ATarget: TJclBorRADToolInstallation);
@@ -2092,31 +2175,47 @@ function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
 
   procedure UninstallHelp;
     procedure RemoveHelpFromIdeTools;
-    var
-      HelpIndex: Integer;
-      HelpTitle: string;
-    begin
-      HelpTitle := Format(JclHelpTitle, [JclVersionMajor, JclVersionMinor]);
-      with Target.IdeTools do
+      procedure RemoveIdeTool(const Title: string);
+      var
+        HelpIndex: Integer;
       begin
-        HelpIndex := IndexOfTitle(HelpTitle);
+        HelpIndex := Target.IdeTools.IndexOfTitle(Title);
         if HelpIndex <> -1 then
-          RemoveIndex(HelpIndex);
+        begin
+          Target.IdeTools.RemoveIndex(HelpIndex);
+          WriteLog(Format(LoadResString(@RsLogDelIdeTools), [Title, Target.RADToolName]))
+        end
+        else
+          WriteLog(LoadResString(@RsLogFailedDelIdeTools));
       end;
+    begin
+      RemoveIdeTool(Format(JclHelpTitle, [JclVersionMajor, JclVersionMinor]));
+      RemoveIdeTool(Format(JclContainersHelpTitle, [JclVersionMajor, JclVersionMinor]));
+      RemoveIdeTool(Format(JclDeveloperToolsHelpTitle, [JclVersionMajor, JclVersionMinor]));
+      RemoveIdeTool(Format(JclVclHelpTitle, [JclVersionMajor, JclVersionMinor]));
     end;
 
     procedure RemoveHelpFromOpenHelp;
+      procedure RemoveFile(const FileName, IndexName: string);
+      begin
+        if Target.OpenHelp.RemoveHelpFile(FileName, IndexName) then
+          WriteLog(Format(LoadResString(@RsLogDelOpenHelp), [FileName, Target.RADToolName]))
+        else
+          WriteLog(LoadResString(@RsLogFailedDelOpenHelp));
+      end;
     begin
-      if Target.OpenHelp.RemoveHelpFile(Distribution.FJclHlpHelpFileName, JclHelpIndexName) then
-        WriteLog(Format(LoadResString(@RsLogDelOpenHelp), [Distribution.FJclHlpHelpFileName, Target.RADToolName]))
-      else
-        WriteLog(LoadResString(@RsLogFailedDelOpenHelp));
+      RemoveFile(Distribution.JclOldHlpHelpFileName, JclHelpIndexName);
+      RemoveFile(Distribution.JclHlpHelpFileName, JclHelpIndexName);
+      RemoveFile(Distribution.JclContainersHlpHelpFileName, JclContainersHelpIndexName);
+      RemoveFile(Distribution.JclDeveloperToolsHlpHelpFileName, JclDeveloperToolsHelpIndexName);
+      RemoveFile(Distribution.JclVclHlpHelpFileName, JclVclHelpIndexName);
     end;
 
     procedure UnregisterHelp2Files;
     var
-      NameSpace, Identifier, HxSFile, HxIFile: WideString;
-      LangId: Integer;
+      JclNameSpace, JclOldIdentifier, JclIdentifier, JclContainersIdentifier,
+      JclDeveloperToolsIdentifier, JclVclIdentifier: WideString;
+      JclLangId: Integer;
     begin
       if (Target.RadToolKind <> brBorlandDevStudio) or (Target.VersionNumber < 3) then
         Exit;
@@ -2124,16 +2223,22 @@ function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
       WriteLog(LoadResString(@RsLogDelHelp2Files));
 
       // to avoid Write AV, data has to be copied in data segment
-      NameSpace := Help2NameSpace;
-      Identifier := Help2Identifier;
-      LangId := Help2LangId;
-      HxSFile := Help2HxSFile;
-      HxIFile := Help2HxIFile;
+      JclNameSpace := JclHelp2NameSpace;
+      JclLangId := JclHelp2LangId;
+      JclOldIdentifier := JclOldHelp2Identifier;
+      JclIdentifier := JclHelp2Identifier;
+      JclContainersIdentifier := JclContainersHelp2Identifier;
+      JclDeveloperToolsIdentifier := JclDeveloperToolsHelp2Identifier;
+      JclVclIdentifier := JclVclHelp2Identifier;
 
       Distribution.RegHelpCreateTransaction;
-      Distribution.RegHelpUnPlugNameSpace(NameSpace, TJclBDSInstallation(Target).Help2Manager.IdeNamespace);
-      Distribution.RegHelpUnregisterHelpFile(NameSpace, Identifier, LangId);
-      Distribution.RegHelpUnregisterNameSpace(NameSpace);
+      Distribution.RegHelpUnPlugNameSpace(JclNameSpace, TJclBDSInstallation(Target).Help2Manager.IdeNamespace);
+      Distribution.RegHelpUnregisterHelpFile(JclNameSpace, JclOldIdentifier, JclLangId);
+      Distribution.RegHelpUnregisterHelpFile(JclNameSpace, JclIdentifier, JclLangId);
+      Distribution.RegHelpUnregisterHelpFile(JclNameSpace, JclContainersIdentifier, JclLangId);
+      Distribution.RegHelpUnregisterHelpFile(JclNameSpace, JclDeveloperToolsIdentifier, JclLangId);
+      Distribution.RegHelpUnregisterHelpFile(JclNameSpace, JclVclIdentifier, JclLangId);
+      Distribution.RegHelpUnregisterNameSpace(JclNameSpace);
       Distribution.RegHelpCommitTransaction;
 
       WriteLog(LoadResString(@RsLogDefered));
@@ -3090,15 +3195,42 @@ procedure TJclDistribution.Init;
     ExceptDialogsPath := JclPath + ExceptIcoPath;
     FVclDialogIconFileName := ExceptDialogsPath + ExceptIcoVclFileName;
     FVclDialogSendIconFileName := ExceptDialogsPath + ExceptIcoVclSndFileName;
+    FJclOldChmHelpFileName := JclPath + JclOldChmHelpFile;
     FJclChmHelpFileName := JclPath + JclChmHelpFile;
+    FJclContainersChmHelpFileName := JclPath + JclContainersChmHelpFile;
+    FJclDeveloperToolsChmHelpFileName := JclPath + JclDeveloperToolsChmHelpFile;
+    FJclVclChmHelpFileName := JclPath + JclVclChmHelpFile;
+    FJclOldHlpHelpFileName := JclPath + JclOldHlpHelpFile;
     FJclHlpHelpFileName := JclPath + JclHlpHelpFile;
+    FJclContainersHlpHelpFileName := JclPath + JclContainersHlpHelpFile;
+    FJclDeveloperToolsHlpHelpFileName := JclPath + JclDeveloperToolsHlpHelpFile;
+    FJclVclHlpHelpFileName := JclPath + JclVclHlpHelpFile;
+    FJclOldHxSHelpFileName := JclPath + JclOldHxSHelpFile;
     FJclHxSHelpFileName := JclPath + JclHxSHelpFile;
+    FJclContainersHxSHelpFileName := JclPath + JclContainersHxSHelpFile;
+    FJclDeveloperToolsHxSHelpFileName := JclPath + JclDeveloperToolsHxSHelpFile;
+    FJclVclHxSHelpFileName := JclPath + JclVclHxSHelpFile;
     if not FileExists(FJclChmHelpFileName) then
+    begin
       FJclChmHelpFileName := '';
+      FJclContainersChmHelpFileName := '';
+      FJclDeveloperToolsChmHelpFileName := '';
+      FJclVclChmHelpFileName := '';
+    end;
     if not FileExists(FJclHlpHelpFileName) then
+    begin
       FJclHlpHelpFileName := '';
+      FJclContainersHlpHelpFileName := '';
+      FJclDeveloperToolsHlpHelpFileName := '';
+      FJclVclHlpHelpFileName := '';
+    end;
     if not FileExists(FJclHxSHelpFileName) then
+    begin
       FJclHxSHelpFileName := '';
+      FJclContainersHxSHelpFileName := '';
+      FJclDeveloperToolsHxSHelpFileName := '';
+      FJclVclHxSHelpFileName := '';
+    end;
     {$IFDEF MSWINDOWS}
     // Reset ReadOnly flag for dialog forms
     FileSetAttr(FVclDialogFileName, faArchive);
