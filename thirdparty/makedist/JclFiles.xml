@@ -227,6 +227,11 @@
       <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
       <configuration index="4" caption="Result file" value=""/>
     </action>
+    <action classname="TFileCopier">
+      <configuration index="0" caption="From directory" value="sandbox\help"/>
+      <configuration index="1" caption="Filter" value="index.html"/>
+      <configuration index="2" caption="To directory" value="sandbox\jcl\help"/>
+    </action>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox\%PREFIX%"/>
     </action>
@@ -300,6 +305,11 @@
       <configuration index="2" caption="Parameters" value="-config &quot;CHM&quot; -noshow -w3 JclVcl.dox"/>
       <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
       <configuration index="4" caption="Result file" value=""/>
+    </action>
+    <action classname="TFileCopier">
+      <configuration index="0" caption="From directory" value="sandbox\help"/>
+      <configuration index="1" caption="Filter" value="index.html"/>
+      <configuration index="2" caption="To directory" value="sandbox\jcl\help"/>
     </action>
     <action classname="TDelay">
       <configuration index="0" caption="Delay" value="30"/>
@@ -379,6 +389,11 @@
       <configuration index="2" caption="Parameters" value="-config &quot;H2&quot; -noshow -w3 JclVcl.dox"/>
       <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
       <configuration index="4" caption="Result file" value=""/>
+    </action>
+    <action classname="TFileCopier">
+      <configuration index="0" caption="From directory" value="sandbox\help"/>
+      <configuration index="1" caption="Filter" value="index.html"/>
+      <configuration index="2" caption="To directory" value="sandbox\jcl\help"/>
     </action>
     <action classname="TDelay">
       <configuration index="0" caption="Delay" value="30"/>

@@ -80,7 +80,7 @@
     <File Name="..\..\source\windows\JclHookExcept.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclLANMan.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclLocales.pas" Targets="Windows" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclMapi.pas" Targets="Delphi,BCB" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclMapi.pas" Targets="help,Delphi,BCB" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclMetadata.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclMiscel.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclMsdosSys.pas" Targets="Windows" Formname="" Condition=""/>
@@ -98,8 +98,8 @@
     <File Name="..\..\source\windows\JclWin32.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclWin32Ex.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclWinMIDI.pas" Targets="Windows" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\mscoree_TLB.pas" Targets="Pascal" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\mscorlib_TLB.pas" Targets="Pascal" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\mscoree_TLB.pas" Targets="help,Pascal" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\mscorlib_TLB.pas" Targets="help,Pascal" Formname="" Condition=""/>
     <File Name="..\..\source\windows\MSTask.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\sevenzip.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\Snmp.pas" Targets="Windows" Formname="" Condition=""/>

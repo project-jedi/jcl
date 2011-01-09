@@ -1,9 +1,16 @@
 ﻿; This is a Doc-O-Matic version 6.5.1.1382 project file.
 ; This file is maintained by Doc-O-Matic, do not edit manually.
 
-
 [*Control*]
 MasterFile=..\..\..\help\JclTemplate.dox
+
+[Configurations\CHM\{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\Compatibility]
+ContentFile=JclContainerscontents.html
+IndexFile=JclContainersidx.html
+
+[Configurations\H2\{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\Compatibility]
+ContentFile=JclContainerscontents.html
+IndexFile=JclContainersidx.html
 
 [Configurations\H2\{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\HTMLHelp]
 Help2Collection=JclContainers_COL_MASTER.HxC
@@ -12,6 +19,10 @@ HTMLHelp2Filename=..\..\help\JclContainers.HxS
 
 [Configurations\HLP\{C81B476F-5DE3-416C-A73A-9674B8ECC110}\Basic]
 HLPFilename=..\..\help\JclContainers.hlp
+
+[Configurations\HTML\{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\Compatibility]
+ContentFile=JclContainerscontents.html
+IndexFile=JclContainersidx.html
 
 [Project Database Files]
 Count=1

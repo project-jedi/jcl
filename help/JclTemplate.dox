@@ -9836,7 +9836,7 @@ DHTMLFixedHeader=1
 FrameOption=0
 
 [Configurations\CHM\{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\General]
-ClearDirectoryBeforeExport=1
+ClearDirectoryBeforeExport=0
 CustomHEADCode=
 ExpandTOCLevels=1
 GenerateHEADContent=1
@@ -21792,7 +21792,7 @@ DHTMLFixedHeader=1
 FrameOption=0
 
 [Configurations\H2\{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\General]
-ClearDirectoryBeforeExport=1
+ClearDirectoryBeforeExport=0
 CustomHEADCode=
 ExpandTOCLevels=1
 GenerateHEADContent=1
@@ -37508,7 +37508,7 @@ DHTMLFixedHeader=1
 FrameOption=0
 
 [Configurations\HTML\{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\General]
-ClearDirectoryBeforeExport=1
+ClearDirectoryBeforeExport=0
 CustomHEADCode=
 ExpandTOCLevels=1
 GenerateHEADContent=1
