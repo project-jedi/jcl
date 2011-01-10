@@ -197,6 +197,18 @@
       <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
       <configuration index="4" caption="Result file" value=""/>
     </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%DMCC%"/>
+      <configuration index="1" caption="Working directory" value="sandbox\help"/>
+      <configuration index="2" caption="Parameters" value="-config &quot;HLP&quot; -noshow -w3 JclHelp.dox"/>
+      <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
+      <configuration index="4" caption="Result file" value=""/>
+    </action>
+    <action classname="TFileCopier">
+      <configuration index="0" caption="From directory" value="sandbox\help"/>
+      <configuration index="1" caption="Filter" value="JclHelp.cnt"/>
+      <configuration index="2" caption="To directory" value="sandbox\jcl\help"/>
+    </action>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox\%PREFIX%"/>
     </action>
@@ -294,7 +306,7 @@
     </action>
     <action classname="TFileCopier">
       <configuration index="0" caption="From directory" value="sandbox\help"/>
-      <configuration index="1" caption="Filter" value="index.html"/>
+      <configuration index="1" caption="Filter" value="*.HxC;*.HxT;*.HxK"/>
       <configuration index="2" caption="To directory" value="sandbox\jcl\help"/>
     </action>
     <action classname="TDelay">
@@ -302,7 +314,7 @@
     </action>
     <action classname="TFileRemover">
       <configuration index="0" caption="Directory" value="sandbox\jcl\help"/>
-      <configuration index="1" caption="Filter" value="*.html;*.css;*.js;*.gif;*.jpg;*.png;*.c;*.h;*.inc;*.log"/>
+      <configuration index="1" caption="Filter" value="*_COL_MASTER.HxC;*_COL_MASTER.HxT;*_COL_MASTER_A.HxK;*_COL_MASTER_F.HxK;*_COL_MASTER_K.HxK;*_COL_MASTER_NamedURL.HxK;*.html;*.css;*.js;*.gif;*.jpg;*.png;*.c;*.h;*.inc;*.log"/>
       <configuration index="2" caption="Move to recycle bin" value="no"/>
     </action>
     <action classname="TDirectoryCreator">

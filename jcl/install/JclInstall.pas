@@ -536,7 +536,7 @@ const
   JclVclHxSHelpFile            = 'help' + DirDelimiter + JclVclPackage + '.HxS';
 
   JclHelp2NameSpace                = 'Jedi.Jcl';
-  JclHelp2Collection               = 'JCLHelp_COL_MASTER.HxC';
+  JclHelp2Collection               = 'JclHelp.HxC';
   JclHelp2Description              = 'JEDI Code Library';
   JclHelp2LangId                   = 1033;         // en/english
   JclOldHelp2Identifier            = 'JCLHelp';
