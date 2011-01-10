@@ -440,7 +440,7 @@ begin
 
   FileList := TStringList.Create;
   try
-    BuildFileList(PathAddSeparator(Directory)+Filter, faNormalFile, FileList);
+    BuildFileList(PathAddSeparator(Directory)+Filter, faAnyFile and (not faDirectory), FileList);
     for Index := 0 to FileList.Count - 1 do
     begin
       FileName := PathAddSeparator(Directory) + FileList.Strings[Index];
@@ -548,7 +548,7 @@ begin
 
   FileList := TStringList.Create;
   try
-    BuildFileList(PathAddSeparator(FromDirectory) + Filter, faNormalFile, FileList);
+    BuildFileList(PathAddSeparator(FromDirectory) + Filter, faAnyFile, FileList);
     if FileList.Count > 0 then
     begin
       Result := True;
@@ -556,7 +556,7 @@ begin
       begin
         FileName := FileList.Strings[Index];
         Result := FileCopy(PathAddSeparator(FromDirectory) + FileName,
-                           PathAddSeparator(ToDirectory) + FileName, False);
+                           PathAddSeparator(ToDirectory) + FileName, True);
         if not Result then
         begin
           AMessageHandler('Failed to copy ' + PathAddSeparator(FromDirectory) + FileName
