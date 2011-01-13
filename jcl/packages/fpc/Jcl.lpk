@@ -37,8 +37,8 @@
       </Other>
     </CompilerOptions>
     <Description Value="JEDI Code Library RTL package"/>
-    <License Value="Copyright (C) 1999, 2009 Project JEDI"/>
-    <Version Major="2" Minor="2" Release="1" Build="3886"/>
+    <License Value="Copyright (C) 1999, 2011 Project JEDI"/>
+    <Version Major="2" Minor="2" Release="1" Build="3970"/>
     <Files Count="75">
       <Item1>
         <Filename Value="..\..\source\common\bzip2.pas"/>

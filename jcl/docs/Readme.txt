@@ -3,8 +3,8 @@
 
 JEDI Code Library
 Release 2.2
-Build 3886
-21-October-2010
+Build 3970
+13-January-2011
 
 
 --------------------------------------------------------------------------------
@@ -26,7 +26,9 @@ Getting involved in JCL development
 
 
 About this release
-JCL release 2.2 provides support for RAD Studio XE (including Delphi XE and C++Builder XE) an updated support for all targets.
+JCL release 2.2 provides support for RAD Studio XE Update 1 (including Delphi XE Update 1 and C++Builder XE Update 1) an updated support for all targets.
+
+JCL release 2.2 Build 3970 is not compatible with RAD Studio XE without Update 1, use previously released JCL 2.2.1.3886 instead.
 
 Multiple bugs have been fixed; for detailed change logs, use the facilities of our Subversion repository at Sourceforge.net  http://sourceforge.net/projects/jcl/ , see below.
 
