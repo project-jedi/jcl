@@ -64,7 +64,7 @@
           <VersionInfoKeys Name="FileDescription">JCL Package containing common units for JCL Experts</VersionInfoKeys>
           <VersionInfoKeys Name="FileVersion">2.3.0.3847</VersionInfoKeys>
           <VersionInfoKeys Name="InternalName">JclBaseExpert</VersionInfoKeys>
-          <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2009 Project JEDI</VersionInfoKeys>
+          <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2011 Project JEDI</VersionInfoKeys>
           <VersionInfoKeys Name="LegalTrademarks"/>
           <VersionInfoKeys Name="OriginalFilename">JclBaseExpert110.bpl</VersionInfoKeys>
           <VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>

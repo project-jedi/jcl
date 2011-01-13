@@ -153,7 +153,7 @@
       <VersionInfoKeys Name="FileDescription">JCL Open and Save IDE dialogs with favorite folders</VersionInfoKeys>
       <VersionInfoKeys Name="FileVersion">2.3.0.3847</VersionInfoKeys>
       <VersionInfoKeys Name="InternalName">JclFavoriteFoldersExpertDLL</VersionInfoKeys>
-      <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2009 Project JEDI</VersionInfoKeys>
+      <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2011 Project JEDI</VersionInfoKeys>
       <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
       <VersionInfoKeys Name="OriginalFilename">JclFavoriteFoldersExpertDLL100.dll</VersionInfoKeys>
       <VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>

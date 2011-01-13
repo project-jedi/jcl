@@ -37,7 +37,7 @@
       </Other>
     </CompilerOptions>
     <Description Value="%DESCRIPTION%"/>
-    <License Value="Copyright (C) 1999, 2009 Project JEDI"/>
+    <License Value="%COPYRIGHT%"/>
     <Version Major="%VERSION_MAJOR_NUMBER%" Minor="%VERSION_MINOR_NUMBER%" Release="%RELEASE_NUMBER%" Build="%BUILD_NUMBER%"/>
     <Files Count="%CONTAINCOUNT%">
 <%%% START FILES %%%>

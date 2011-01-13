@@ -19,7 +19,7 @@ BEGIN
               VALUE "FileDescription", "JCL Stack Trace Viewer\0"
               VALUE "FileVersion", "2.3.0.3847\0"
               VALUE "InternalName", "JclStackTraceViewerExpertDLL\0"
-              VALUE "LegalCopyright", "Copyright (C) 1999, 2009 Project JEDI\0"
+              VALUE "LegalCopyright", "Copyright (C) 1999, 2011 Project JEDI\0"
               VALUE "OriginalFilename", "JclStackTraceViewerExpertDLL150.dll\0"
               VALUE "ProductName", "JEDI Code Library\0"
               VALUE "ProductVersion", "2.3 Build 3847\0"

@@ -100,6 +100,7 @@
         <ProjectProperty name="VersionMinorNumber" value="3"/>
         <ProjectProperty name="ReleaseNumber" value="0"/>
         <ProjectProperty name="BuildNumber" value="3847"/>
+        <ProjectProperty name="Copyright" value="Copyright (C) 1999, 2011 Project JEDI"/>
       </ProjectProperties>
     </Model>
   </models>

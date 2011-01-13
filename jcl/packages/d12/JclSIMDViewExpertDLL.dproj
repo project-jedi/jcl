@@ -114,7 +114,7 @@
 						<VersionInfoKeys Name="FileDescription">JCL Debug Window of XMM registers</VersionInfoKeys>
 						<VersionInfoKeys Name="FileVersion">2.3.0.3847</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName">JclSIMDViewExpertDLL</VersionInfoKeys>
-						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2009 Project JEDI</VersionInfoKeys>
+						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2011 Project JEDI</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename">JclSIMDViewExpertDLL120.dll</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>

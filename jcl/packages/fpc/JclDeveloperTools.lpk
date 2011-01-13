@@ -37,7 +37,7 @@
       </Other>
     </CompilerOptions>
     <Description Value="JEDI Code Library Developer Tools package"/>
-    <License Value="Copyright (C) 1999, 2009 Project JEDI"/>
+    <License Value="Copyright (C) 1999, 2011 Project JEDI"/>
     <Version Major="2" Minor="3" Release="0" Build="3847"/>
     <Files Count="28">
       <Item1>

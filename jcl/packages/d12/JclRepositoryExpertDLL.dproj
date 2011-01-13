@@ -122,7 +122,7 @@
 						<VersionInfoKeys Name="FileDescription">JCL Package containing repository wizards</VersionInfoKeys>
 						<VersionInfoKeys Name="FileVersion">2.3.0.3847</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName">JclRepositoryExpertDLL</VersionInfoKeys>
-						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2009 Project JEDI</VersionInfoKeys>
+						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2011 Project JEDI</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename">JclRepositoryExpertDLL120.dll</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
