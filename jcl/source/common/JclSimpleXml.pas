@@ -19,6 +19,7 @@
 { Contributor(s):                                                                                  }
 {   Christophe Paris,                                                                              }
 {   Florent Ouchet (move from the JVCL to the JCL)                                                 }
+{   Teträm                                                                                         }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -99,6 +100,8 @@ type
   {$ENDIF ~TYPEINFO_ON}
   TJclSimpleXMLElems = class;
   TJclSimpleXMLProps = class;
+  TJclSimpleXMLElemsProlog = class;
+  TJclSimpleXMLNamedElems = class;
   TJclSimpleXMLElemComment = class;
   TJclSimpleXMLElemClassic = class;
   TJclSimpleXMLElemCData = class;
@@ -140,6 +143,19 @@ type
     property Parent: TJclSimpleXMLProps read FParent write FParent;
   end;
 
+  {$IFDEF SUPPORTS_FOR_IN}
+  TJclSimpleXMLPropsEnumerator = class
+  private
+    FIndex: Integer;
+    FList: TJclSimpleXMLProps;
+  public
+    constructor Create(AList: TJclSimpleXMLProps);
+    function GetCurrent: TJclSimpleXMLProp; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    function MoveNext: Boolean;
+    property Current: TJclSimpleXMLProp read GetCurrent;
+  end;
+  {$ENDIF SUPPORTS_FOR_IN}
+
   TJclSimpleXMLProps = class(TObject)
   private
     FProperties: THashedStringList;
@@ -168,6 +184,9 @@ type
     procedure Clear; virtual;
     procedure Delete(const Index: Integer); overload;
     procedure Delete(const Name: string); overload;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: TJclSimpleXMLPropsEnumerator;
+    {$ENDIF SUPPORTS_FOR_IN}
     function Value(const Name: string; const Default: string = ''): string;
     function IntValue(const Name: string; const Default: Int64 = -1): Int64;
     function BoolValue(const Name: string; Default: Boolean = True): Boolean;
@@ -178,6 +197,19 @@ type
     property ItemNamed[const Name: string]: TJclSimpleXMLProp read GetItemNamed;
     property Count: Integer read GetCount;
   end;
+
+  {$IFDEF SUPPORTS_FOR_IN}
+  TJclSimpleXMLElemsPrologEnumerator = class
+  private
+    FIndex: Integer;
+    FList: TJclSimpleXMLElemsProlog;
+  public
+    constructor Create(AList: TJclSimpleXMLElemsProlog);
+    function GetCurrent: TJclSimpleXMLElem; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    function MoveNext: Boolean;
+    property Current: TJclSimpleXMLElem read GetCurrent;
+  end;
+  {$ENDIF SUPPORTS_FOR_IN}
 
   TJclSimpleXMLElemsProlog = class(TObject)
   private
@@ -204,12 +236,28 @@ type
     function AddMSOApplication(const AProgId : string): TJclSimpleXMLElemMSOApplication;
     procedure LoadFromStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML = nil);
     procedure SaveToStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML = nil);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: TJclSimpleXMLElemsPrologEnumerator;
+    {$ENDIF SUPPORTS_FOR_IN}
     property Item[const Index: Integer]: TJclSimpleXMLElem read GetItem; default;
     property Count: Integer read GetCount;
     property Encoding: string read GetEncoding write SetEncoding;
     property StandAlone: Boolean read GetStandAlone write SetStandAlone;
     property Version: string read GetVersion write SetVersion;
   end;
+
+  {$IFDEF SUPPORTS_FOR_IN}
+  TJclSimpleXMLNamedElemsEnumerator = class
+  private
+    FIndex: Integer;
+    FList: TJclSimpleXMLNamedElems;
+  public
+    constructor Create(AList: TJclSimpleXMLNamedElems);
+    function GetCurrent: TJclSimpleXMLElem; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    function MoveNext: Boolean;
+    property Current: TJclSimpleXMLElem read GetCurrent;
+  end;
+  {$ENDIF SUPPORTS_FOR_IN}
 
   TJclSimpleXMLNamedElems = class(TObject)
   private
@@ -237,12 +285,28 @@ type
     procedure Move(const CurIndex, NewIndex: Integer);
     function IndexOf(const Value: TJclSimpleXMLElem): Integer; overload;
     function IndexOf(const Value: string): Integer; overload;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: TJclSimpleXMLNamedElemsEnumerator;
+    {$ENDIF SUPPORTS_FOR_IN}
 
     property Elems: TJclSimpleXMLElems read FElems;
     property Item[const Index: Integer]: TJclSimpleXMLElem read GetItem; default;
     property Count: Integer read GetCount;
     property Name: string read FName;
   end;
+
+  {$IFDEF SUPPORTS_FOR_IN}
+  TJclSimpleXMLElemsEnumerator = class
+  private
+    FIndex: Integer;
+    FList: TJclSimpleXMLElems;
+  public
+    constructor Create(AList: TJclSimpleXMLElems);
+    function GetCurrent: TJclSimpleXMLElem; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    function MoveNext: Boolean;
+    property Current: TJclSimpleXMLElem read GetCurrent;
+  end;
+  {$ENDIF SUPPORTS_FOR_IN}
 
   TJclSimpleXMLElemCompare = function(Elems: TJclSimpleXMLElems; Index1, Index2: Integer): Integer of object;
   TJclSimpleXMLElems = class(TObject)
@@ -291,6 +355,9 @@ type
     procedure Delete(const Name: string); overload;
     function Remove(Value: TJclSimpleXMLElem): Integer;
     procedure Move(const CurIndex, NewIndex: Integer);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: TJclSimpleXMLElemsEnumerator;
+    {$ENDIF SUPPORTS_FOR_IN}
     function IndexOf(const Value: TJclSimpleXMLElem): Integer; overload;
     function IndexOf(const Name: string): Integer; overload;
     function Value(const Name: string; const Default: string = ''): string;
@@ -1555,6 +1622,29 @@ begin
   end;
 end;
 
+//=== { TJclSimpleXMLNamedElemsEnumerator } ==================================
+
+{$IFDEF SUPPORTS_FOR_IN}
+constructor TJclSimpleXMLNamedElemsEnumerator.Create(AList: TJclSimpleXMLNamedElems);
+begin
+  inherited Create;
+  FIndex := -1;
+  FList := AList;
+end;
+
+function TJclSimpleXMLNamedElemsEnumerator.GetCurrent: TJclSimpleXMLElem;
+begin
+  Result := FList[FIndex];
+end;
+
+function TJclSimpleXMLNamedElemsEnumerator.MoveNext: Boolean;
+begin
+  Result := FIndex < FList.Count - 1;
+  if Result then
+    Inc(FIndex);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 //=== { TJclSimpleXMLNamedElems } ============================================
 
 constructor TJclSimpleXMLNamedElems.Create(const AOwner: TJClSimpleXMLElems; const AName: string);
@@ -1635,6 +1725,13 @@ begin
   Result := FItems.Count;
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclSimpleXMLNamedElems.GetEnumerator: TJclSimpleXMLNamedElemsEnumerator;
+begin
+  Result := TJclSimpleXMLNamedElemsEnumerator.Create(Self);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclSimpleXMLNamedElems.GetItem(const Index: Integer): TJclSimpleXMLElem;
 begin
   if (Index >= 0) then
@@ -1687,6 +1784,29 @@ begin
   Elems.Move(ElemsCurIndex, ElemsNewIndex);
   FItems.Move(CurIndex, NewIndex);
 end;
+
+//=== { TJclSimpleXMLElemsEnumerator } =======================================
+
+{$IFDEF SUPPORTS_FOR_IN}
+constructor TJclSimpleXMLElemsEnumerator.Create(AList: TJclSimpleXMLElems);
+begin
+  inherited Create;
+  FIndex := -1;
+  FList := AList;
+end;
+
+function TJclSimpleXMLElemsEnumerator.GetCurrent: TJclSimpleXMLElem;
+begin
+  Result := FList[FIndex];
+end;
+
+function TJclSimpleXMLElemsEnumerator.MoveNext: Boolean;
+begin
+  Result := FIndex < FList.Count - 1;
+  if Result then
+    Inc(FIndex);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 //=== { TJclSimpleXMLElems } =================================================
 
@@ -1974,6 +2094,13 @@ begin
   else
     Result := FElems.Count;
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclSimpleXMLElems.GetEnumerator: TJclSimpleXMLElemsEnumerator;
+begin
+  Result := TJclSimpleXMLElemsEnumerator.Create(Self);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 function TJclSimpleXMLElems.GetItem(const Index: Integer): TJclSimpleXMLElem;
 begin
@@ -2303,6 +2430,29 @@ begin
     FElems.Sort;
 end;
 
+//=== { TJclSimpleXMLPropsEnumerator } =======================================
+
+{$IFDEF SUPPORTS_FOR_IN}
+constructor TJclSimpleXMLPropsEnumerator.Create(AList: TJclSimpleXMLProps);
+begin
+  inherited Create;
+  FIndex := -1;
+  FList := AList;
+end;
+
+function TJclSimpleXMLPropsEnumerator.GetCurrent: TJclSimpleXMLProp;
+begin
+  Result := FList[FIndex];
+end;
+
+function TJclSimpleXMLPropsEnumerator.MoveNext: Boolean;
+begin
+  Result := FIndex < FList.Count - 1;
+  if Result then
+    Inc(FIndex);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 //=== { TJclSimpleXMLProps } =================================================
 
 function TJclSimpleXMLProps.Add(const Name, Value: string): TJclSimpleXMLProp;
@@ -2459,6 +2609,13 @@ begin
   else
     Result := FProperties.Count;
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclSimpleXMLProps.GetEnumerator: TJclSimpleXMLPropsEnumerator;
+begin
+  Result := TJclSimpleXMLPropsEnumerator.Create(Self);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 function TJclSimpleXMLProps.GetItem(const Index: Integer): TJclSimpleXMLProp;
 begin
@@ -3410,6 +3567,29 @@ begin
     AParent.DoSaveProgress;
 end;
 
+//=== { TJclSimpleXMLElemsPrologEnumerator } =================================
+
+{$IFDEF SUPPORTS_FOR_IN}
+constructor TJclSimpleXMLElemsPrologEnumerator.Create(AList: TJclSimpleXMLElemsProlog);
+begin
+  inherited Create;
+  FIndex := -1;
+  FList := AList;
+end;
+
+function TJclSimpleXMLElemsPrologEnumerator.GetCurrent: TJclSimpleXMLElem;
+begin
+  Result := FList[FIndex];
+end;
+
+function TJclSimpleXMLElemsPrologEnumerator.MoveNext: Boolean;
+begin
+  Result := FIndex < FList.Count - 1;
+  if Result then
+    Inc(FIndex);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 //=== { TJclSimpleXMLElemsProlog } ===========================================
 
 constructor TJclSimpleXMLElemsProlog.Create;
@@ -3812,6 +3992,13 @@ begin
   else
     Result := 'UTF-8';
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclSimpleXMLElemsProlog.GetEnumerator: TJclSimpleXMLElemsPrologEnumerator;
+begin
+  Result := TJclSimpleXMLElemsPrologEnumerator.Create(Self);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 function TJclSimpleXMLElemsProlog.GetStandAlone: Boolean;
 var
