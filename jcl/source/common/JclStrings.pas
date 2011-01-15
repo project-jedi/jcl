@@ -249,12 +249,15 @@ procedure StrFillChar(var S; Count: SizeInt; C: Char);
 function StrRepeatChar(C: Char; Count: SizeInt): string;
 function StrFind(const Substr, S: string; const Index: SizeInt = 1): SizeInt;
 function StrHasPrefix(const S: string; const Prefixes: array of string): Boolean;
+function StrHasSuffix(const S: string; const Suffixes: array of string): Boolean;
 function StrIndex(const S: string; const List: array of string; CaseSensitive: Boolean = False): SizeInt;
 function StrIHasPrefix(const S: string; const Prefixes: array of string): Boolean;
+function StrIHasSuffix(const S: string; const Suffixes: array of string): Boolean;
 function StrILastPos(const SubStr, S: string): SizeInt;
 function StrIPos(const SubStr, S: string): SizeInt;
 function StrIPrefixIndex(const S: string; const Prefixes: array of string): SizeInt;
 function StrIsOneOf(const S: string; const List: array of string): Boolean;
+function StrISuffixIndex(const S: string; const Suffixes: array of string): SizeInt;
 function StrLastPos(const SubStr, S: string): SizeInt;
 function StrMatch(const Substr, S: string; Index: SizeInt = 1): SizeInt;
 function StrMatches(const Substr, S: string; const Index: SizeInt = 1): Boolean;
@@ -262,6 +265,7 @@ function StrNIPos(const S, SubStr: string; N: SizeInt): SizeInt;
 function StrNPos(const S, SubStr: string; N: SizeInt): SizeInt;
 function StrPrefixIndex(const S: string; const Prefixes: array of string): SizeInt;
 function StrSearch(const Substr, S: string; const Index: SizeInt = 1): SizeInt;
+function StrSuffixIndex(const S: string; const Suffixes: array of string): SizeInt;
 
 // String Extraction
 function StrAfter(const SubStr, S: string): string;
@@ -2314,6 +2318,11 @@ begin
   Result := StrPrefixIndex(S, Prefixes) > -1;
 end;
 
+function StrHasSuffix(const S: string; const Suffixes: array of string): Boolean;
+begin
+  Result := StrSuffixIndex(S, Suffixes) > -1;
+end;
+
 function StrIndex(const S: string; const List: array of string; CaseSensitive: Boolean): SizeInt;
 var
   I: SizeInt;
@@ -2332,6 +2341,11 @@ end;
 function StrIHasPrefix(const S: string; const Prefixes: array of string): Boolean;
 begin
   Result := StrIPrefixIndex(S, Prefixes) > -1;
+end;
+
+function StrIHasSuffix(const S: string; const Suffixes: array of string): Boolean;
+begin
+  Result := StrISuffixIndex(S, Suffixes) > -1;
 end;
 
 function StrILastPos(const SubStr, S: string): SizeInt;
@@ -2364,6 +2378,23 @@ end;
 function StrIsOneOf(const S: string; const List: array of string): Boolean;
 begin
   Result := StrIndex(S, List) > -1;
+end;
+
+function StrISuffixIndex(const S: string; const Suffixes: array of string): SizeInt;
+var
+  I: SizeInt;
+  Test: string;
+begin
+  Result := -1;
+  for I := Low(Suffixes) to High(Suffixes) do
+  begin
+    Test := StrRight(S, Length(Suffixes[I]));
+    if CompareText(Test, Suffixes[I]) = 0 then
+    begin
+      Result := I;
+      Break;
+    end;
+  end;
 end;
 
 function StrLastPos(const SubStr, S: string): SizeInt;
@@ -2627,6 +2658,23 @@ begin
   end
   else
     Result := 0;
+end;
+
+function StrSuffixIndex(const S: string; const Suffixes: array of string): SizeInt;
+var
+  I: SizeInt;
+  Test: string;
+begin
+  Result := -1;
+  for I := Low(Suffixes) to High(Suffixes) do
+  begin
+    Test := StrRight(S, Length(Suffixes[I]));
+    if CompareStr(Test, Suffixes[I]) = 0 then
+    begin
+      Result := I;
+      Break;
+    end;
+  end;
 end;
 
 //=== String Extraction ======================================================

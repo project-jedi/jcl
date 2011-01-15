@@ -386,10 +386,15 @@ function StrCompareRange(const S1, S2: AnsiString; Index, Count: SizeInt; CaseSe
 function StrRepeatChar(C: AnsiChar; Count: SizeInt): AnsiString;
 function StrFind(const Substr, S: AnsiString; const Index: SizeInt = 1): SizeInt;
 function StrHasPrefix(const S: AnsiString; const Prefixes: array of AnsiString): Boolean;
-function StrIndex(const S: AnsiString; const List: array of AnsiString): SizeInt;
+function StrHasSuffix(const S: AnsiString; const Suffixes: array of AnsiString): Boolean;
+function StrIHasPrefix(const S: AnsiString; const Prefixes: array of AnsiString): Boolean;
+function StrIHasSuffix(const S: AnsiString; const Suffixes: array of AnsiString): Boolean;
+function StrIndex(const S: AnsiString; const List: array of AnsiString; CaseSensitive: Boolean = False): SizeInt;
 function StrILastPos(const SubStr, S: AnsiString): SizeInt;
 function StrIPos(const SubStr, S: AnsiString): SizeInt;
+function StrIPrefixIndex(const S: AnsiString; const Prefixes: array of AnsiString): SizeInt;
 function StrIsOneOf(const S: AnsiString; const List: array of AnsiString): Boolean;
+function StrISuffixIndex(const S: AnsiString; const Suffixes: array of AnsiString): SizeInt;
 function StrLastPos(const SubStr, S: AnsiString): SizeInt;
 function StrMatch(const Substr, S: AnsiString; Index: SizeInt = 1): SizeInt;
 function StrMatches(const Substr, S: AnsiString; const Index: SizeInt = 1): Boolean;
@@ -397,6 +402,7 @@ function StrNIPos(const S, SubStr: AnsiString; N: SizeInt): SizeInt;
 function StrNPos(const S, SubStr: AnsiString; N: SizeInt): SizeInt;
 function StrPrefixIndex(const S: AnsiString; const Prefixes: array of AnsiString): SizeInt;
 function StrSearch(const Substr, S: AnsiString; const Index: SizeInt = 1): SizeInt;
+function StrSuffixIndex(const S: AnsiString; const Suffixes: array of AnsiString): SizeInt;
 
 // String Extraction
 function StrAfter(const SubStr, S: AnsiString): AnsiString;
@@ -2568,14 +2574,29 @@ begin
   Result := StrPrefixIndex(S, Prefixes) > -1;
 end;
 
-function StrIndex(const S: AnsiString; const List: array of AnsiString): SizeInt;
+function StrHasSuffix(const S: AnsiString; const Suffixes: array of AnsiString): Boolean;
+begin
+  Result := StrSuffixIndex(S, Suffixes) > -1;
+end;
+
+function StrIHasPrefix(const S: AnsiString; const Prefixes: array of AnsiString): Boolean;
+begin
+  Result := StrIPrefixIndex(S, Prefixes) > -1;
+end;
+
+function StrIHasSuffix(const S: AnsiString; const Suffixes: array of AnsiString): Boolean;
+begin
+  Result := StrISuffixIndex(S, Suffixes) > -1;
+end;
+
+function StrIndex(const S: AnsiString; const List: array of AnsiString; CaseSensitive: Boolean): SizeInt;
 var
   I: SizeInt;
 begin
   Result := -1;
   for I := Low(List) to High(List) do
   begin
-    if StrSame(S, List[I]) then
+    if StrCompare(S, List[I], CaseSensitive) = 0 then
     begin
       Result := I;
       Break;
@@ -2593,9 +2614,43 @@ begin
   Result := Pos(StrUpper(SubStr), StrUpper(S));
 end;
 
+function StrIPrefixIndex(const S: AnsiString; const Prefixes: array of AnsiString): SizeInt;
+var
+  I: SizeInt;
+  Test: AnsiString;
+begin
+  Result := -1;
+  for I := Low(Prefixes) to High(Prefixes) do
+  begin
+    Test := StrLeft(S, Length(Prefixes[I]));
+    if CompareText(Test, Prefixes[I]) = 0 then
+    begin
+      Result := I;
+      Break;
+    end;
+  end;
+end;
+
 function StrIsOneOf(const S: AnsiString; const List: array of AnsiString): Boolean;
 begin
   Result := StrIndex(S, List) > -1;
+end;
+
+function StrISuffixIndex(const S: AnsiString; const Suffixes: array of AnsiString): SizeInt;
+var
+  I: SizeInt;
+  Test: AnsiString;
+begin
+  Result := -1;
+  for I := Low(Suffixes) to High(Suffixes) do
+  begin
+    Test := StrRight(S, Length(Suffixes[I]));
+    if CompareText(Test, Suffixes[I]) = 0 then
+    begin
+      Result := I;
+      Break;
+    end;
+  end;
 end;
 
 function StrLastPos(const SubStr, S: AnsiString): SizeInt;
@@ -2832,7 +2887,7 @@ begin
   for I := Low(Prefixes) to High(Prefixes) do
   begin
     Test := StrLeft(S, Length(Prefixes[I]));
-    if StrSame(Test, Prefixes[I]) then
+    if CompareStr(Test, Prefixes[I]) = 0 then
     begin
       Result := I;
       Break;
@@ -2861,6 +2916,23 @@ begin
   end
   else
     Result := 0;
+end;
+
+function StrSuffixIndex(const S: AnsiString; const Suffixes: array of AnsiString): SizeInt;
+var
+  I: SizeInt;
+  Test: AnsiString;
+begin
+  Result := -1;
+  for I := Low(Suffixes) to High(Suffixes) do
+  begin
+    Test := StrRight(S, Length(Suffixes[I]));
+    if CompareStr(Test, Suffixes[I]) = 0 then
+    begin
+      Result := I;
+      Break;
+    end;
+  end;
 end;
 
 //=== String Extraction ======================================================
