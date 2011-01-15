@@ -2177,7 +2177,7 @@ var
 begin
   St := '';
   lPos := rsWaitingTag;
-  KeepWhiteSpace := sxoKeepWhitespace in AParent.Options;
+  KeepWhiteSpace := (AParent <> nil) and (sxoKeepWhitespace in AParent.Options);
   ContainsText := False;
   ContainsWhiteSpace := False;
 
