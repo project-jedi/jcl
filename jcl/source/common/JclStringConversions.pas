@@ -1790,7 +1790,7 @@ end;
 // AnsiSkipChars = skip NbSeq characters starting from StrPos
 // returns False if String is too small
 // StrPos will be incremented by the number of chars that were skipped
-// On return, NbChar contains the number of UTF16 sequences that were skipped
+// On return, NbChar contains the number of chars that were skipped
 function AnsiSkipChars(const S: AnsiString; var StrPos: SizeInt; var NbSeq: SizeInt): Boolean;
 var
   StrLen: SizeInt;
@@ -1847,7 +1847,7 @@ end;
 // StrPos will be incremented by the number of chars that were written (1)
 function AnsiSetNextChar(var S: AnsiString; var StrPos: SizeInt; Ch: UCS4): Boolean;
 var
-  StrLen, TmpPos: SizeInt;
+  StrLen, TmpPos, AnsiStrLen: SizeInt;
   UTF16Buffer: TUTF16String;
   AnsiBuffer: AnsiString;
 begin
@@ -1859,37 +1859,37 @@ begin
     TmpPos := 1;
     Result := UTF16SetNextChar(UTF16Buffer, TmpPos, Ch);
     if Result and (TmpPos = 2) then
-    begin
       // one wide character
-      AnsiBuffer := AnsiString(WideString(UTF16Buffer[1]));
-      S[StrPos] := AnsiBuffer[1];
-      Inc(StrPos);
-    end
+      AnsiBuffer := AnsiString(WideString(UTF16Buffer[1]))
     else
     if Result and (TmpPos = 3) then
-    begin
       // one surrogate pair
-      AnsiBuffer := AnsiString(UTF16Buffer);
-      S[StrPos] := AnsiBuffer[1];
-      Inc(StrPos);
-    end
+      AnsiBuffer := AnsiString(UTF16Buffer)
     else
     begin
-      {$IFDEF UNICODE_SILENT_FAILURE}
       // add ReplacementCharacter
-      S[StrPos] := AnsiReplacementCharacter;
-      Inc(StrPos);
-      {$ELSE ~UNICODE_SILENT_FAILURE}
+      AnsiBuffer := AnsiReplacementCharacter;
+      {$IFNDEF UNICODE_SILENT_FAILURE}
       Result := False;
       StrPos := -1;
       {$ENDIF ~UNICODE_SILENT_FAILURE}
+    end;
+    AnsiStrLen := Length(AnsiBuffer);
+    Result := Result and ((StrPos + AnsiStrLen) <= (StrLen + 1));
+    if Result then
+    begin
+      for TmpPos := 1 to AnsiStrLen do
+      begin
+        S[StrPos] := AnsiBuffer[TmpPos];
+        Inc(StrPos);
+      end;
     end;
   end;
 end;
 
 function AnsiSetNextCharToStream(S: TStream; Ch: UCS4): Boolean;
 var
-  TmpPos: SizeInt;
+  TmpPos, I: SizeInt;
   UTF16Buffer: TUTF16String;
   AnsiBuffer: AnsiString;
 begin
@@ -1898,34 +1898,29 @@ begin
   Result := UTF16SetNextChar(UTF16Buffer, TmpPos, Ch);
 
   if Result and (TmpPos = 2) then
-  begin
     // one wide character
-    AnsiBuffer := AnsiString(WideString(UTF16Buffer[1]));
-    Result := StreamWriteByte(S, Ord(AnsiBuffer[1]));
-  end
+    AnsiBuffer := AnsiString(WideString(UTF16Buffer[1]))
   else
   if Result and (TmpPos = 3) then
-  begin
     // one surrogate pair
-    AnsiBuffer := AnsiString(UTF16Buffer);
-    Result := StreamWriteByte(S, Ord(AnsiBuffer[1]));
-  end
+    AnsiBuffer := AnsiString(UTF16Buffer)
   else
   begin
-    {$IFDEF UNICODE_SILENT_FAILURE}
     // add ReplacementCharacter
-    Result := StreamWriteByte(S, Ord(AnsiReplacementCharacter));
-    {$ELSE ~UNICODE_SILENT_FAILURE}
+    AnsiBuffer := AnsiReplacementCharacter;
+    {$IFNDEF UNICODE_SILENT_FAILURE}
     Result := False;
     {$ENDIF ~UNICODE_SILENT_FAILURE}
   end;
+  for I := 1 to Length(AnsiBuffer) do
+    Result := Result and StreamWriteByte(S, Ord(AnsiBuffer[I]));
 end;
 
 function AnsiSetNextChar(var S: AnsiString; CodePage: Word; var StrPos: SizeInt; Ch: UCS4): Boolean;
 var
-  StrLen, TmpPos: SizeInt;
+  StrLen, TmpPos, AnsiStrLen: SizeInt;
   UTF16Buffer: TUTF16String;
-  AnsiCharacter: AnsiChar;
+  AnsiBuffer: AnsiString;
 begin
   StrLen := Length(S);
   Result := (StrPos > 0) and (StrPos <= StrLen);
@@ -1934,47 +1929,52 @@ begin
     SetLength(UTF16Buffer, 2);
     TmpPos := 1;
     Result := UTF16SetNextChar(UTF16Buffer, TmpPos, Ch);
-    Result := Result and (WideCharToMultiByte(CodePage, 0, PWideChar(UTF16Buffer), TmpPos-1, @AnsiCharacter, 1, nil, nil) > 0);
-    if Result then
-    begin
-      S[StrPos] := AnsiCharacter;
-      Inc(StrPos);
-    end;
+    AnsiStrLen := WideCharToMultiByte(CodePage, 0, PWideChar(UTF16Buffer), TmpPos-1, nil, 0, nil, nil);
+    SetLength(AnsiBuffer, AnsiStrLen);
+    Result := Result and (WideCharToMultiByte(CodePage, 0, PWideChar(UTF16Buffer), TmpPos-1, @AnsiBuffer[1], AnsiStrLen, nil, nil) > 0);
     if not Result then
     begin
-      {$IFDEF UNICODE_SILENT_FAILURE}
       // add ReplacementCharacter
-      S[StrPos] := AnsiReplacementCharacter;
-      Inc(StrPos);
-      {$ELSE ~UNICODE_SILENT_FAILURE}
+      AnsiBuffer := AnsiReplacementCharacter;
+      AnsiStrLen := 1;
+      {$IFNDEF UNICODE_SILENT_FAILURE}
       Result := False;
       StrPos := -1;
       {$ENDIF ~UNICODE_SILENT_FAILURE}
+    end;
+    Result := Result and ((StrPos + AnsiStrLen) <= (StrLen + 1));
+    if Result then
+      for TmpPos := 1 to AnsiStrLen do
+    begin
+      S[StrPos] := AnsiBuffer[TmpPos];
+      Inc(StrPos);
     end;
   end;
 end;
 
 function AnsiSetNextCharToStream(S: TStream; CodePage: Word; Ch: UCS4): Boolean;
 var
-  TmpPos: SizeInt;
+  TmpPos, AnsiStrLen: SizeInt;
   UTF16Buffer: TUTF16String;
-  AnsiCharacter: AnsiChar;
+  AnsiBuffer: AnsiString;
 begin
   SetLength(UTF16Buffer, 2);
   TmpPos := 1;
   Result := UTF16SetNextChar(UTF16Buffer, TmpPos, Ch);
-  Result := Result and (WideCharToMultiByte(CodePage, 0, PWideChar(UTF16Buffer), TmpPos-1, @AnsiCharacter, 1, nil, nil) > 0);
-  if Result then
-    Result := StreamWriteByte(S, Ord(AnsiCharacter));
+  AnsiStrLen := WideCharToMultiByte(CodePage, 0, PWideChar(UTF16Buffer), TmpPos-1, nil, 0, nil, nil);
+  SetLength(AnsiBuffer, AnsiStrLen);
+  Result := Result and (WideCharToMultiByte(CodePage, 0, PWideChar(UTF16Buffer), TmpPos-1, @AnsiBuffer[1], AnsiStrLen, nil, nil) > 0);
   if not Result then
   begin
-    {$IFDEF UNICODE_SILENT_FAILURE}
     // add ReplacementCharacter
-    Result := StreamWriteByte(S, Ord(AnsiReplacementCharacter));
-    {$ELSE ~UNICODE_SILENT_FAILURE}
+    AnsiBuffer := AnsiReplacementCharacter;
+    AnsiStrLen := 1;
+    {$IFNDEF UNICODE_SILENT_FAILURE}
     Result := False;
     {$ENDIF ~UNICODE_SILENT_FAILURE}
   end;
+  for TmpPos := 1 to AnsiStrLen do
+    Result := Result and StreamWriteByte(S, Ord(AnsiBuffer[TmpPos]));
 end;
 
 // StringGetNextChar = read next character/sequence at StrPos
