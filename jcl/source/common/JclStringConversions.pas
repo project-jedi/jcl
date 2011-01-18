@@ -397,7 +397,7 @@ end;
 function UTF8GetNextChar(const S: TUTF8String; var StrPos: SizeInt): UCS4;
 var
   StrLength: SizeInt;
-  ChNext: UCS4;
+  Ch: UCS4;
 begin
   StrLength := Length(S);
 
@@ -412,161 +412,160 @@ begin
       $C0..$DF:
         begin
           // 2 bytes to read
-          if StrPos >= StrLength then
+          if StrPos < StrLength then
           begin
+            Ch := UCS4(S[StrPos + 1]);
+            if (Ch and $C0) = $80 then
+            begin
+              Result := ((Result and $1F) shl 6) or (Ch and $3F);
+              Inc(StrPos, 2);
+            end
+            else
+              FlagInvalidSequence(StrPos, 1, Result);
+          end
+          else
             FlagInvalidSequence(StrPos, 1, Result);
-            Exit;
-          end;
-          ChNext := UCS4(S[StrPos + 1]);
-          if (ChNext and $C0) <> $80 then
-          begin
-            FlagInvalidSequence(StrPos, 1, Result);
-            Exit;
-          end;
-          Result := ((Result and $1F) shl 6) or (ChNext and $3F);
-          Inc(StrPos, 2);
         end;
       $E0..$EF:
         begin
           // 3 bytes to read
-          if (StrPos + 1) >= StrLength then
+          if (StrPos + 1) < StrLength then
           begin
+            Ch := UCS4(S[StrPos + 1]);
+            if (Ch and $C0) = $80 then
+            begin
+              Result := ((Result and $0F) shl 12) or ((Ch and $3F) shl 6);
+              Ch := UCS4(S[StrPos + 2]);
+              if (Ch and $C0) = $80 then
+              begin
+                Result := Result or (Ch and $3F);
+                Inc(StrPos, 3);
+              end
+              else
+                FlagInvalidSequence(StrPos, 2, Result);
+            end
+            else
+              FlagInvalidSequence(StrPos, 1, Result);
+          end
+          else
             FlagInvalidSequence(StrPos, 1, Result);
-            Exit;
-          end;
-          ChNext := UCS4(S[StrPos + 1]);
-          if (ChNext and $C0) <> $80 then
-          begin
-            FlagInvalidSequence(StrPos, 1, Result);
-            Exit;
-          end;
-          Result := ((Result and $0F) shl 12) or ((ChNext and $3F) shl 6);
-          ChNext := UCS4(S[StrPos + 2]);
-          if (ChNext and $C0) <> $80 then
-          begin
-            FlagInvalidSequence(StrPos, 2, Result);
-            Exit;
-          end;
-          Result := Result or (ChNext and $3F);
-          Inc(StrPos, 3);
         end;
       $F0..$F7:
         begin
           // 4 bytes to read
-          if (StrPos + 2) >= StrLength then
+          if (StrPos + 2) < StrLength then
           begin
+            Ch := UCS4(S[StrPos + 1]);
+            if (Ch and $C0) = $80 then
+            begin
+              Result := ((Result and $07) shl 18) or ((Ch and $3F) shl 12);
+              Ch := UCS4(S[StrPos + 2]);
+              if (Ch and $C0) = $80 then
+              begin
+                Result := Result or ((Ch and $3F) shl 6);
+                Ch := UCS4(S[StrPos + 3]);
+                if (Ch and $C0) = $80 then
+                begin
+                  Result := Result or (Ch and $3F);
+                  Inc(StrPos, 4);
+                end
+                else
+                  FlagInvalidSequence(StrPos, 3, Result);
+              end
+              else
+                FlagInvalidSequence(StrPos, 2, Result);
+            end
+            else
+              FlagInvalidSequence(StrPos, 1, Result);
+          end
+          else
             FlagInvalidSequence(StrPos, 1, Result);
-            Exit;
-          end;
-          ChNext := UCS4(S[StrPos + 1]);
-          if (ChNext and $C0) <> $80 then
-          begin
-            FlagInvalidSequence(StrPos, 1, Result);
-            Exit;
-          end;
-          Result := ((Result and $07) shl 18) or ((ChNext and $3F) shl 12);
-          ChNext := UCS4(S[StrPos + 2]);
-          if (ChNext and $C0) <> $80 then
-          begin
-            FlagInvalidSequence(StrPos, 2, Result);
-            Exit;
-          end;
-          Result := Result or ((ChNext and $3F) shl 6);
-          ChNext := UCS4(S[StrPos + 3]);
-          if (ChNext and $C0) <> $80 then
-          begin
-            FlagInvalidSequence(StrPos, 3, Result);
-            Exit;
-          end;
-          Result := Result or (ChNext and $3F);
-          Inc(StrPos, 4);
         end;
       $F8..$FB:
         begin
           // 5 bytes to read
-          if (StrPos + 3) >= StrLength then
+          if (StrPos + 3) < StrLength then
           begin
+            Ch := UCS4(S[StrPos + 1]);
+            if (Ch and $C0) = $80 then
+            begin
+              Result := ((Result and $03) shl 24) or ((Ch and $3F) shl 18);
+              Ch := UCS4(S[StrPos + 2]);
+              if (Ch and $C0) = $80 then
+              begin
+                Result := Result or ((Ch and $3F) shl 12);
+                Ch := UCS4(S[StrPos + 3]);
+                if (Ch and $C0) = $80 then
+                begin
+                  Result := Result or ((Ch and $3F) shl 6);
+                  Ch := UCS4(S[StrPos + 4]);
+                  if (Ch and $C0) = $80 then
+                  begin
+                    Result := Result or (Ch and $3F);
+                    Inc(StrPos, 5);
+                  end
+                  else
+                    FlagInvalidSequence(StrPos, 4, Result);
+                end
+                else
+                  FlagInvalidSequence(StrPos, 3, Result);
+              end
+              else
+                FlagInvalidSequence(StrPos, 2, Result);
+            end
+            else
+              FlagInvalidSequence(StrPos, 1, Result);
+          end
+          else
             FlagInvalidSequence(StrPos, 1, Result);
-            Exit;
-          end;
-          ChNext := UCS4(S[StrPos + 1]);
-          if (ChNext and $C0) <> $80 then
-          begin
-            FlagInvalidSequence(StrPos, 1, Result);
-            Exit;
-          end;
-          Result := ((Result and $03) shl 24) or ((ChNext and $3F) shl 18);
-          ChNext := UCS4(S[StrPos + 2]);
-          if (ChNext and $C0) <> $80 then
-          begin
-            FlagInvalidSequence(StrPos, 2, Result);
-            Exit;
-          end;
-          Result := Result or ((ChNext and $3F) shl 12);
-          ChNext := UCS4(S[StrPos + 3]);
-          if (ChNext and $C0) <> $80 then
-          begin
-            FlagInvalidSequence(StrPos, 3, Result);
-            Exit;
-          end;
-          Result := Result or ((ChNext and $3F) shl 6);
-          ChNext := UCS4(S[StrPos + 4]);
-          if (ChNext and $C0) <> $80 then
-          begin
-            FlagInvalidSequence(StrPos, 4, Result);
-            Exit;
-          end;
-          Result := Result or (ChNext and $3F);
-          Inc(StrPos, 5);
         end;
       $FC..$FD:
         begin
           // 6 bytes to read
-          if (StrPos + 4) >= StrLength then
+          if (StrPos + 4) < StrLength then
           begin
+            Ch := UCS4(S[StrPos + 1]);
+            if (Ch and $C0) = $80 then
+            begin
+              Result := ((Result and $01) shl 30) or ((Ch and $3F) shl 24);
+              Ch := UCS4(S[StrPos + 2]);
+              if (Ch and $C0) = $80 then
+              begin
+                Result := Result or ((Ch and $3F) shl 18);
+                Ch := UCS4(S[StrPos + 3]);
+                if (Ch and $C0) = $80 then
+                begin
+                  Result := Result or ((Ch and $3F) shl 12);
+                  Ch := UCS4(S[StrPos + 4]);
+                  if (Ch and $C0) = $80 then
+                  begin
+                    Result := Result or ((Ch and $3F) shl 6);
+                    Ch := UCS4(S[StrPos + 5]);
+                    if (Ch and $C0) = $80 then
+                    begin
+                      Result := Result or (Ch and $3F);
+                      Inc(StrPos, 6);
+                    end
+                    else
+                      FlagInvalidSequence(StrPos, 5, Result);
+                  end
+                  else
+                    FlagInvalidSequence(StrPos, 4, Result);
+                end
+                else
+                  FlagInvalidSequence(StrPos, 3, Result);
+              end
+              else
+                FlagInvalidSequence(StrPos, 2, Result);
+            end
+            else
+              FlagInvalidSequence(StrPos, 1, Result);
+          end
+          else
             FlagInvalidSequence(StrPos, 1, Result);
-            Exit;
-          end;
-          ChNext := UCS4(S[StrPos + 1]);
-          if (ChNext and $C0) <> $80 then
-          begin
-            FlagInvalidSequence(StrPos, 1, Result);
-            Exit;
-          end;
-          Result := ((Result and $01) shl 30) or ((ChNext and $3F) shl 24);
-          ChNext := UCS4(S[StrPos + 2]);
-          if (ChNext and $C0) <> $80 then
-          begin
-            FlagInvalidSequence(StrPos, 2, Result);
-            Exit;
-          end;
-          Result := Result or ((ChNext and $3F) shl 18);
-          ChNext := UCS4(S[StrPos + 3]);
-          if (ChNext and $C0) <> $80 then
-          begin
-            FlagInvalidSequence(StrPos, 3, Result);
-            Exit;
-          end;
-          Result := Result or ((ChNext and $3F) shl 12);
-          ChNext := UCS4(S[StrPos + 4]);
-          if (ChNext and $C0) <> $80 then
-          begin
-            FlagInvalidSequence(StrPos, 4, Result);
-            Exit;
-          end;
-          Result := Result or ((ChNext and $3F) shl 6);
-          ChNext := UCS4(S[StrPos + 5]);
-          if (ChNext and $C0) <> $80 then
-          begin
-            FlagInvalidSequence(StrPos, 5, Result);
-            Exit;
-          end;
-          Result := Result or (ChNext and $3F);
-          Inc(StrPos, 6);
         end;
     else
       FlagInvalidSequence(StrPos, 1, Result);
-      Exit;
     end;
   end
   else
@@ -582,172 +581,177 @@ var
   B: Byte;
 begin
   Result := StreamReadByte(S,B);
-  if not Result then
-    Exit;
-  Ch := UCS4(B);
+  if Result then
+  begin
+    Ch := UCS4(B);
 
-  case Ch of
-    $00..$7F: ;
-      // 1 byte to read
-      // nothing to do
-    $C0..$DF:
-      begin
-        // 2 bytes to read
-        Result := StreamReadByte(S,B);
-        if not Result then
-          Exit;
-        if (B and $C0) <> $80 then
+    case Ch of
+      $00..$7F: ;
+        // 1 byte to read
+        // nothing to do
+      $C0..$DF:
         begin
-          FlagInvalidSequence(Ch);
-          Exit;
+          // 2 bytes to read
+          Result := StreamReadByte(S,B);
+          if Result then
+          begin
+            if (B and $C0) = $80 then
+              Ch := ((Ch and $1F) shl 6) or (B and $3F)
+            else
+              FlagInvalidSequence(Ch);
+          end;
         end;
-        Ch := ((Ch and $1F) shl 6) or (B and $3F);
-      end;
-    $E0..$EF:
-      begin
-        // 3 bytes to read
-        Result := StreamReadByte(S,B);
-        if not Result then
-          Exit;
-        if (B and $C0) <> $80 then
+      $E0..$EF:
         begin
-          FlagInvalidSequence(Ch);
-          Exit;
+          // 3 bytes to read
+          Result := StreamReadByte(S,B);
+          if Result then
+          begin
+            if (B and $C0) = $80 then
+            begin
+              Ch := ((Ch and $0F) shl 12) or ((B and $3F) shl 6);
+              Result := StreamReadByte(S,B);
+              if Result then
+              begin
+                if (B and $C0) = $80 then
+                  Ch := Ch or (B and $3F)
+                else
+                  FlagInvalidSequence(Ch);
+              end;
+            end
+            else
+              FlagInvalidSequence(Ch);
+          end;
         end;
-        Ch := ((Ch and $0F) shl 12) or ((B and $3F) shl 6);
-        Result := StreamReadByte(S,B);
-        if not Result then
-          Exit;
-        if (B and $C0) <> $80 then
+      $F0..$F7:
         begin
-          FlagInvalidSequence(Ch);
-          Exit;
+          // 4 bytes to read
+          Result := StreamReadByte(S,B);
+          if Result then
+          begin
+            if (B and $C0) = $80 then
+            begin
+              Ch := ((Ch and $07) shl 18) or ((B and $3F) shl 12);
+              Result := StreamReadByte(S,B);
+              if Result then
+              begin
+                if (B and $C0) = $80 then
+                begin
+                  Ch := Ch or ((B and $3F) shl 6);
+                  Result := StreamReadByte(S,B);
+                  if Result then
+                  begin
+                    if (B and $C0) = $80 then
+                      Ch := Ch or (B and $3F)
+                    else
+                      FlagInvalidSequence(Ch);
+                  end;
+                end
+                else
+                  FlagInvalidSequence(Ch);
+              end;
+            end
+            else
+              FlagInvalidSequence(Ch);
+          end;
         end;
-        Ch := Ch or (B and $3F);
-      end;
-    $F0..$F7:
-      begin
-        // 4 bytes to read
-        Result := StreamReadByte(S,B);
-        if not Result then
-          Exit;
-        if (B and $C0) <> $80 then
+      $F8..$FB:
         begin
-          FlagInvalidSequence(Ch);
-          Exit;
+          // 5 bytes to read
+          Result := StreamReadByte(S,B);
+          if Result then
+          begin
+            if (B and $C0) = $80 then
+            begin
+              Ch := ((Ch and $03) shl 24) or ((B and $3F) shl 18);
+              Result := StreamReadByte(S,B);
+              if Result then
+              begin
+                if (B and $C0) = $80 then
+                begin
+                  Ch := Ch or ((B and $3F) shl 12);
+                  Result := StreamReadByte(S,B);
+                  if Result then
+                  begin
+                    if (B and $C0) = $80 then
+                    begin
+                      Ch := Ch or ((B and $3F) shl 6);
+                      Result := StreamReadByte(S,B);
+                      if Result then
+                      begin
+                        if (B and $C0) = $80 then
+                          Ch := Ch or (B and $3F)
+                        else
+                          FlagInvalidSequence(Ch);
+                      end;
+                    end
+                    else
+                      FlagInvalidSequence(Ch);
+                  end;
+                end
+                else
+                  FlagInvalidSequence(Ch);
+              end;
+            end
+            else
+              FlagInvalidSequence(Ch);
+          end;
         end;
-        Ch := ((Ch and $07) shl 18) or ((B and $3F) shl 12);
-        Result := StreamReadByte(S,B);
-        if not Result then
-          Exit;
-        if (B and $C0) <> $80 then
+      $FC..$FD:
         begin
-          FlagInvalidSequence(Ch);
-          Exit;
+          // 6 bytes to read
+          Result := StreamReadByte(S,B);
+          if Result then
+          begin
+            if (B and $C0) = $80 then
+            begin
+              Ch := ((Ch and $01) shl 30) or ((B and $3F) shl 24);
+              Result := StreamReadByte(S,B);
+              if Result then
+              begin
+                if (B and $C0) = $80 then
+                begin
+                  Ch := Ch or ((B and $3F) shl 18);
+                  Result := StreamReadByte(S,B);
+                  if Result then
+                  begin
+                    if (B and $C0) = $80 then
+                    begin
+                      Ch := Ch or ((B and $3F) shl 12);
+                      Result := StreamReadByte(S,B);
+                      if Result then
+                      begin
+                        if (B and $C0) = $80 then
+                        begin
+                          Ch := Ch or ((B and $3F) shl 6);
+                          Result := StreamReadByte(S,B);
+                          if Result then
+                          begin
+                            if (B and $C0) = $80 then
+                              Ch := Ch or (B and $3F)
+                            else
+                              FlagInvalidSequence(Ch);
+                          end;
+                        end
+                        else
+                          FlagInvalidSequence(Ch);
+                      end;
+                    end
+                    else
+                      FlagInvalidSequence(Ch);
+                  end;
+                end
+                else
+                  FlagInvalidSequence(Ch);
+              end;
+            end
+            else
+              FlagInvalidSequence(Ch);
+          end;
         end;
-        Ch := Ch or ((B and $3F) shl 6);
-        Result := StreamReadByte(S,B);
-        if not Result then
-          Exit;
-        if (B and $C0) <> $80 then
-        begin
-          FlagInvalidSequence(Ch);
-          Exit;
-        end;
-        Ch := Ch or (B and $3F);
-      end;
-    $F8..$FB:
-      begin
-        // 5 bytes to read
-        Result := StreamReadByte(S,B);
-        if not Result then
-          Exit;
-        if (B and $C0) <> $80 then
-        begin
-          FlagInvalidSequence(Ch);
-          Exit;
-        end;
-        Ch := ((Ch and $03) shl 24) or ((B and $3F) shl 18);
-        Result := StreamReadByte(S,B);
-        if not Result then
-          Exit;
-        if (B and $C0) <> $80 then
-        begin
-          FlagInvalidSequence(Ch);
-          Exit;
-        end;
-        Ch := Ch or ((B and $3F) shl 12);
-        Result := StreamReadByte(S,B);
-        if not Result then
-          Exit;
-        if (B and $C0) <> $80 then
-        begin
-          FlagInvalidSequence(Ch);
-          Exit;
-        end;
-        Ch := Ch or ((B and $3F) shl 6);
-        Result := StreamReadByte(S,B);
-        if not Result then
-          Exit;
-        if (B and $C0) <> $80 then
-        begin
-          FlagInvalidSequence(Ch);
-          Exit;
-        end;
-        Ch := Ch or (B and $3F);
-      end;
-    $FC..$FD:
-      begin
-        // 6 bytes to read
-        Result := StreamReadByte(S,B);
-        if not Result then
-          Exit;
-        if (B and $C0) <> $80 then
-        begin
-          FlagInvalidSequence(Ch);
-          Exit;
-        end;
-        Ch := ((Ch and $01) shl 30) or ((B and $3F) shl 24);
-        Result := StreamReadByte(S,B);
-        if not Result then
-          Exit;
-        if (B and $C0) <> $80 then
-        begin
-          FlagInvalidSequence(Ch);
-          Exit;
-        end;
-        Ch := Ch or ((B and $3F) shl 18);
-        Result := StreamReadByte(S,B);
-        if not Result then
-          Exit;
-        if (B and $C0) <> $80 then
-        begin
-          FlagInvalidSequence(Ch);
-          Exit;
-        end;
-        Ch := Ch or ((B and $3F) shl 12);
-        Result := StreamReadByte(S,B);
-        if not Result then
-          Exit;
-        if (B and $C0) <> $80 then
-        begin
-          FlagInvalidSequence(Ch);
-          Exit;
-        end;
-        Ch := Ch or ((B and $3F) shl 6);
-        Result := StreamReadByte(S,B);
-        if not Result then
-          Exit;
-        if (B and $C0) <> $80 then
-        begin
-          FlagInvalidSequence(Ch);
-          Exit;
-        end;
-        Ch := Ch or (B and $3F);
-      end;
-  else
-    FlagInvalidSequence(Ch);
-    Exit;
+    else
+      FlagInvalidSequence(Ch);
+    end;
   end;
 end;
 
@@ -1135,7 +1139,7 @@ end;
 function UTF16GetNextChar(const S: TUTF16String; var StrPos: SizeInt): UCS4;
 var
   StrLength: SizeInt;
-  ChNext: UCS4;
+  Ch: UCS4;
 begin
   StrLength := Length(S);
 
@@ -1147,19 +1151,19 @@ begin
       SurrogateHighStart..SurrogateHighEnd:
         begin
           // 2 bytes to read
-          if StrPos >= StrLength then
+          if StrPos < StrLength then
           begin
+            Ch := UCS4(S[StrPos + 1]);
+            if (Ch >= SurrogateLowStart) and (Ch <= SurrogateLowEnd) then
+            begin
+              Result := ((Result - SurrogateHighStart) shl HalfShift) +  (Ch - SurrogateLowStart) + HalfBase;
+              Inc(StrPos, 2);
+            end
+            else
+              FlagInvalidSequence(StrPos, 1, Result);
+          end
+          else
             FlagInvalidSequence(StrPos, 1, Result);
-            Exit;
-          end;
-          ChNext := UCS4(S[StrPos + 1]);
-          if (ChNext < SurrogateLowStart) or (ChNext > SurrogateLowEnd) then
-          begin
-            FlagInvalidSequence(StrPos, 1, Result);
-            Exit;
-          end;
-          Result := ((Result - SurrogateHighStart) shl HalfShift) +  (ChNext - SurrogateLowStart) + HalfBase;
-          Inc(StrPos, 2);
         end;
       SurrogateLowStart..SurrogateLowEnd:
         FlagInvalidSequence(StrPos, 1, Result);
@@ -1183,7 +1187,7 @@ end;
 function UTF16GetNextChar(const S: UnicodeString; var StrPos: SizeInt): UCS4;
 var
   StrLength: SizeInt;
-  ChNext: UCS4;
+  Ch: UCS4;
 begin
   StrLength := Length(S);
 
@@ -1195,19 +1199,19 @@ begin
       SurrogateHighStart..SurrogateHighEnd:
         begin
           // 2 bytes to read
-          if StrPos >= StrLength then
+          if StrPos < StrLength then
           begin
+            Ch := UCS4(S[StrPos + 1]);
+            if (Ch >= SurrogateLowStart) and (Ch <= SurrogateLowEnd) then
+            begin
+              Result := ((Result - SurrogateHighStart) shl HalfShift) +  (Ch - SurrogateLowStart) + HalfBase;
+              Inc(StrPos, 2);
+            end
+            else
+              FlagInvalidSequence(StrPos, 1, Result);
+          end
+          else
             FlagInvalidSequence(StrPos, 1, Result);
-            Exit;
-          end;
-          ChNext := UCS4(S[StrPos + 1]);
-          if (ChNext < SurrogateLowStart) or (ChNext > SurrogateLowEnd) then
-          begin
-            FlagInvalidSequence(StrPos, 1, Result);
-            Exit;
-          end;
-          Result := ((Result - SurrogateHighStart) shl HalfShift) +  (ChNext - SurrogateLowStart) + HalfBase;
-          Inc(StrPos, 2);
         end;
       SurrogateLowStart..SurrogateLowEnd:
         FlagInvalidSequence(StrPos, 1, Result);
@@ -1230,29 +1234,29 @@ var
   W: Word;
 begin
   Result := StreamReadWord(S, W);
-  if not Result then
-    Exit;
-  Ch := UCS4(W);
+  if Result then
+  begin
+    Ch := UCS4(W);
 
-  case W of
-    SurrogateHighStart..SurrogateHighEnd:
-      begin
-        // 2 bytes to read
-        Result := StreamReadWord(S, W);
-        if not Result then
-          Exit;
-        if (W < SurrogateLowStart) or (W > SurrogateLowEnd) then
+    case W of
+      SurrogateHighStart..SurrogateHighEnd:
         begin
-          FlagInvalidSequence(Ch);
-          Exit;
+          // 2 bytes to read
+          Result := StreamReadWord(S, W);
+          if Result then
+          begin
+            if (W >= SurrogateLowStart) and (W <= SurrogateLowEnd) then
+              Ch := ((Ch - SurrogateHighStart) shl HalfShift) +  (W - SurrogateLowStart) + HalfBase
+            else
+              FlagInvalidSequence(Ch);
+          end;
         end;
-        Ch := ((Ch - SurrogateHighStart) shl HalfShift) +  (W - SurrogateLowStart) + HalfBase;
-      end;
-    SurrogateLowStart..SurrogateLowEnd:
-      FlagInvalidSequence(Ch);
-  else
-    // 1 byte to read
-    // nothing to do
+      SurrogateLowStart..SurrogateLowEnd:
+        FlagInvalidSequence(Ch);
+    else
+      // 1 byte to read
+      // nothing to do
+    end;
   end;
 end;
 
@@ -1276,19 +1280,19 @@ begin
       SurrogateLowStart..SurrogateLowEnd:
         begin
           // 2 bytes to read
-          if StrPos <= 2 then
+          if StrPos > 2 then
           begin
+            ChPrev := UCS4(S[StrPos - 2]);
+            if (ChPrev >= SurrogateHighStart) and (ChPrev <= SurrogateHighEnd) then
+            begin
+              Result := ((ChPrev - SurrogateHighStart) shl HalfShift) +  (Result - SurrogateLowStart) + HalfBase;
+              Dec(StrPos, 2);
+            end
+            else
+              FlagInvalidSequence(StrPos, -1, Result);
+          end
+          else
             FlagInvalidSequence(StrPos, -1, Result);
-            Exit;
-          end;
-          ChPrev := UCS4(S[StrPos - 2]);
-          if (ChPrev < SurrogateHighStart) or (ChPrev > SurrogateHighEnd) then
-          begin
-            FlagInvalidSequence(StrPos, -1, Result);
-            Exit;
-          end;
-          Result := ((ChPrev - SurrogateHighStart) shl HalfShift) +  (Result - SurrogateLowStart) + HalfBase;
-          Dec(StrPos, 2);
         end;
     else
       // 1 byte to read
@@ -1324,19 +1328,19 @@ begin
       SurrogateLowStart..SurrogateLowEnd:
         begin
           // 2 bytes to read
-          if StrPos <= 2 then
+          if StrPos > 2 then
           begin
+            ChPrev := UCS4(S[StrPos - 2]);
+            if (ChPrev >= SurrogateHighStart) and (ChPrev <= SurrogateHighEnd) then
+            begin
+              Result := ((ChPrev - SurrogateHighStart) shl HalfShift) +  (Result - SurrogateLowStart) + HalfBase;
+              Dec(StrPos, 2);
+            end
+            else
+              FlagInvalidSequence(StrPos, -1, Result);
+          end
+          else
             FlagInvalidSequence(StrPos, -1, Result);
-            Exit;
-          end;
-          ChPrev := UCS4(S[StrPos - 2]);
-          if (ChPrev < SurrogateHighStart) or (ChPrev > SurrogateHighEnd) then
-          begin
-            FlagInvalidSequence(StrPos, -1, Result);
-            Exit;
-          end;
-          Result := ((ChPrev - SurrogateHighStart) shl HalfShift) +  (Result - SurrogateLowStart) + HalfBase;
-          Dec(StrPos, 2);
         end;
     else
       // 1 byte to read
@@ -1359,7 +1363,7 @@ end;
 function UTF16SkipChars(const S: TUTF16String; var StrPos: SizeInt; var NbSeq: SizeInt): Boolean;
 var
   StrLength, Index: SizeInt;
-  Ch, ChNext: UCS4;
+  Ch: UCS4;
 begin
   Result := True;
   StrLength := Length(S);
@@ -1377,8 +1381,8 @@ begin
             FlagInvalidSequence(StrPos, 1)
           else
           begin
-            ChNext := UCS4(S[StrPos + 1]);
-            if (ChNext < SurrogateLowStart) or (ChNext > SurrogateLowEnd) then
+            Ch := UCS4(S[StrPos + 1]);
+            if (Ch < SurrogateLowStart) or (Ch > SurrogateLowEnd) then
               FlagInvalidSequence(StrPos, 1)
             else
               Inc(StrPos, 2);
@@ -1415,8 +1419,8 @@ begin
             FlagInvalidSequence(StrPos, -1)
           else
           begin
-            ChNext := UCS4(S[StrPos - 2]);
-            if (ChNext < SurrogateHighStart) or (ChNext > SurrogateHighEnd) then
+            Ch := UCS4(S[StrPos - 2]);
+            if (Ch < SurrogateHighStart) or (Ch > SurrogateHighEnd) then
               FlagInvalidSequence(StrPos, -1)
             else
               Dec(StrPos, 2);
@@ -1446,7 +1450,7 @@ end;
 function UTF16SkipChars(const S: UnicodeString; var StrPos: SizeInt; var NbSeq: SizeInt): Boolean;
 var
   StrLength, Index: SizeInt;
-  Ch, ChNext: UCS4;
+  Ch: UCS4;
 begin
   Result := True;
   StrLength := Length(S);
@@ -1464,8 +1468,8 @@ begin
             FlagInvalidSequence(StrPos, 1)
           else
           begin
-            ChNext := UCS4(S[StrPos + 1]);
-            if (ChNext < SurrogateLowStart) or (ChNext > SurrogateLowEnd) then
+            Ch := UCS4(S[StrPos + 1]);
+            if (Ch < SurrogateLowStart) or (Ch > SurrogateLowEnd) then
               FlagInvalidSequence(StrPos, 1)
             else
               Inc(StrPos, 2);
@@ -1502,8 +1506,8 @@ begin
             FlagInvalidSequence(StrPos, -1)
           else
           begin
-            ChNext := UCS4(S[StrPos - 2]);
-            if (ChNext < SurrogateHighStart) or (ChNext > SurrogateHighEnd) then
+            Ch := UCS4(S[StrPos - 2]);
+            if (Ch < SurrogateHighStart) or (Ch > SurrogateHighEnd) then
               FlagInvalidSequence(StrPos, -1)
             else
               Dec(StrPos, 2);
@@ -1715,12 +1719,13 @@ var
   UTF16Buffer: TUTF16String;
 begin
   Result := StreamReadByte(S, B);
-  if not Result then
-    Exit;
-  UTF16Buffer := WideString(AnsiString(Chr(B)));
-  TmpPos := 1;
-  Ch := UTF16GetNextChar(UTF16Buffer, TmpPos);
-  Result := TmpPos <> -1;
+  if Result then
+  begin
+    UTF16Buffer := WideString(AnsiString(Chr(B)));
+    TmpPos := 1;
+    Ch := UTF16GetNextChar(UTF16Buffer, TmpPos);
+    Result := TmpPos <> -1;
+  end;
 end;
 
 // AnsiGetNextChar = read next character at StrPos
@@ -1735,18 +1740,20 @@ begin
   if (StrPos <= StrLen) and (StrPos > 0) then
   begin
     SetLength(UTF16Buffer, 2);
-    if MultiByteToWideChar(CodePage, MB_PRECOMPOSED or MB_ERR_INVALID_CHARS, @S[StrPos], 1, PWideChar(UTF16Buffer), 2) = 0 then
+    if MultiByteToWideChar(CodePage, MB_PRECOMPOSED or MB_ERR_INVALID_CHARS, @S[StrPos], 1, PWideChar(UTF16Buffer), 2) > 0 then
+    begin
+      TmpPos := 1;
+      Result := UTF16GetNextChar(UTF16Buffer, TmpPos);
+      if TmpPos = -1 then
+        StrPos := -1
+      else
+        Inc(StrPos);
+    end
+    else
     begin
       Result := UCS4ReplacementCharacter;
-      FlagInvalidSequence(StrPos, 0, Result);
-      Exit;
+      FlagInvalidSequence(StrPos, 1, Result);
     end;
-    TmpPos := 1;
-    Result := UTF16GetNextChar(UTF16Buffer, TmpPos);
-    if TmpPos = -1 then
-      StrPos := -1
-    else
-      Inc(StrPos);
   end
   else
   begin
@@ -1763,18 +1770,21 @@ var
   UTF16Buffer: TUTF16String;
 begin
   Result := StreamReadByte(S, B);
-  if not Result then
-    Exit;
-  SetLength(UTF16Buffer, 2);
-  if MultiByteToWideChar(CodePage, MB_PRECOMPOSED or MB_ERR_INVALID_CHARS, @B, 1, PWideChar(UTF16Buffer), 2) = 0 then
+  if Result then
   begin
-    Result := False;
-    Ch := UCS4ReplacementCharacter;
-    Exit;
+    SetLength(UTF16Buffer, 2);
+    if MultiByteToWideChar(CodePage, MB_PRECOMPOSED or MB_ERR_INVALID_CHARS, @B, 1, PWideChar(UTF16Buffer), 2) <> 0 then
+    begin
+      TmpPos := 1;
+      Ch := UTF16GetNextChar(UTF16Buffer, TmpPos);
+      Result := TmpPos <> -1;
+    end
+    else
+    begin
+      Result := False;
+      Ch := UCS4ReplacementCharacter;
+    end;
   end;
-  TmpPos := 1;
-  Ch := UTF16GetNextChar(UTF16Buffer, TmpPos);
-  Result := TmpPos <> -1;
 end;
 
 // AnsiSkipChars = skip NbSeq characters starting from StrPos
@@ -2199,19 +2209,18 @@ begin
 
     SrcIndex := 1;
     DestIndex := 1;
-    while SrcIndex <= SrcLength do
+    while (SrcIndex > 0) and (SrcIndex <= SrcLength) do
     begin
       Ch := UTF8GetNextChar(S, SrcIndex);
-      if SrcIndex = -1 then
-      begin
+      if SrcIndex > 0 then
+        UTF16SetNextChar(D, DestIndex, Ch)
+      else
         Result := False;
-        D := '';
-        Exit;
-      end;
-
-      UTF16SetNextChar(D, DestIndex, Ch);
     end;
-    SetLength(D, DestIndex - 1); // now fix up length
+    if Result then
+      SetLength(D, DestIndex - 1) // now fix up length
+    else
+      D := '';
   end;
 end;
 
@@ -2256,19 +2265,18 @@ begin
 
     SrcIndex := 1;
     DestIndex := 1;
-    while SrcIndex <= SrcLength do
+    while (SrcIndex > 0) and (SrcIndex <= SrcLength) do
     begin
       Ch := UTF16GetNextChar(S, SrcIndex);
-      if SrcIndex = -1 then
-      begin
+      if SrcIndex > 0 then
+        UTF8SetNextChar(D, DestIndex, Ch)
+      else
         Result := False;
-        D := '';
-        Exit;
-      end;
-
-      UTF8SetNextChar(D, DestIndex, Ch);
     end;
-    SetLength(D, DestIndex - 1); // now fix up length
+    if Result then
+      SetLength(D, DestIndex - 1) // now fix up length
+    else
+      D := '';
   end;
 end;
 
@@ -2310,20 +2318,21 @@ begin
 
     SrcIndex := 1;
     DestIndex := 0;
-    while SrcIndex <= SrcLength do
+    while (SrcIndex > 0) and (SrcIndex <= SrcLength) do
     begin
       Ch := UTF8GetNextChar(S, SrcIndex);
-      if SrcIndex = -1 then
+      if SrcIndex > 0 then
       begin
+        D[DestIndex] := Ch;
+        Inc(DestIndex);
+      end
+      else
         Result := False;
-        SetLength(D, 0);
-        Exit;
-      end;
-
-      D[DestIndex] := Ch;
-      Inc(DestIndex);
     end;
-    SetLength(D, DestIndex); // now fix up length
+    if Result then
+      SetLength(D, DestIndex) // now fix up length
+    else
+      SetLength(D, 0);
   end;
 end;
 
@@ -2369,12 +2378,13 @@ begin
       if DestIndex = -1 then
       begin
         Result := False;
-        D := '';
-        Exit;
+        Break;
       end;
     end;
-
-    SetLength(D, DestIndex - 1); // set to actual length
+    if Result then
+      SetLength(D, DestIndex - 1) // set to actual length
+    else
+      D := '';
   end;
 end;
 
@@ -2416,20 +2426,21 @@ begin
 
     SrcIndex := 1;
     DestIndex := 0;
-    while SrcIndex <= SrcLength do
+    while (SrcIndex > 0) and (SrcIndex <= SrcLength) do
     begin
       Ch := UTF16GetNextChar(S, SrcIndex);
-      if SrcIndex = -1 then
+      if SrcIndex > 0 then
       begin
+        D[DestIndex] := Ch;
+        Inc(DestIndex);
+      end
+      else
         Result := False;
-        SetLength(D, 0);
-        Exit;
-      end;
-
-      D[DestIndex] := Ch;
-      Inc(DestIndex);
     end;
-    SetLength(D, DestIndex); // now fix up length
+    if Result then
+      SetLength(D, DestIndex) // now fix up length
+    else
+      SetLength(D, 0);
   end;
 end;
 
@@ -2475,12 +2486,14 @@ begin
       if DestIndex = -1 then
       begin
         Result := False;
-        D := '';
-        Exit;
+        Break;
       end;
     end;
 
-    SetLength(D, DestIndex - 1); // set to actual length
+    if Result then
+      SetLength(D, DestIndex - 1) // set to actual length
+    else
+      D := '';
   end;
 end;
 
