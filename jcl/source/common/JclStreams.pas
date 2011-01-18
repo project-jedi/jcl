@@ -445,23 +445,26 @@ type
     property VolumeMaxSizes[Index: Integer]: Int64 read GetVolumeMaxSize;
   end;
 
-  TJclStringStream = class(TJclBufferedStream)
+  TJclStringStream = class
   protected
+    FStream: TStream;
+    FOwnStream: Boolean;
     FBOM: array of Byte;
-    FPeekPosition: Int64;
-    function GetCalcedSize: Int64; override;
+    FPosition: Int64; // current read/write position in FStream
+    FPeekPosition: Int64; // current peek position in FStream
     function InternalGetNextChar(S: TStream; out Ch: UCS4): Boolean; virtual; abstract;
     function InternalSetNextChar(S: TStream; Ch: UCS4): Boolean; virtual; abstract;
-    procedure SetSize(const NewSize: Int64); override;
   public
     constructor Create(AStream: TStream; AOwnsStream: Boolean = False); virtual;
-    function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
+    destructor Destroy; override;
+    procedure Flush; virtual;
     function ReadString(var Buffer: string; Start, Count: Longint): Longint; overload;
     function ReadString(BufferSize: Longint = StreamDefaultBufferSize): string; overload;
     function ReadAnsiString(var Buffer: AnsiString; Start, Count: Longint): Longint; overload;
     function ReadAnsiString(BufferSize: Longint = StreamDefaultBufferSize): AnsiString; overload;
     function ReadWideString(var Buffer: WideString; Start, Count: Longint): Longint; overload;
     function ReadWideString(BufferSize: Longint = StreamDefaultBufferSize): WideString; overload;
+    function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; virtual;
     function WriteString(const Buffer: string; Start, Count: Longint): Longint;
     function WriteAnsiString(const Buffer: AnsiString; Start, Count: Longint): Longint;
     function WriteWideString(const Buffer: WideString; Start, Count: Longint): Longint;
@@ -477,6 +480,9 @@ type
     function SkipBOM: LongInt; virtual;
     function WriteBOM: Longint; virtual;
     property PeekPosition: Int64 read FPeekPosition;
+    property Position: Int64 read FPosition;
+    property Stream: TStream read FStream;
+    property OwnStream: Boolean read FOwnStream;
   end;
 
   TJclStringStreamClass = class of TJclStringStream;
@@ -2301,54 +2307,54 @@ end;
 
 constructor TJclStringStream.Create(AStream: TStream; AOwnsStream: Boolean);
 begin
-  inherited Create(AStream, AOwnsStream);
+  inherited Create;
+  FStream := AStream;
+  FOwnStream := AOwnsStream;
 end;
 
-function TJclStringStream.GetCalcedSize: Int64;
+destructor TJclStringStream.Destroy;
 begin
-  raise EJclStreamError.CreateRes(@RsStreamsSeekError);
+  if FOwnStream then
+    FStream.Free;
+  inherited;
+end;
+
+procedure TJclStringStream.Flush;
+begin
+  // to be implemented when a character buffer is available
 end;
 
 function TJclStringStream.PeekAnsiChar(out Buffer: AnsiChar): Boolean;
 var
-  Pos: Int64;
   Ch: UCS4;
 begin
-  Pos := FPosition;
-  FPosition := FPeekPosition;
-  Result := InternalGetNextChar(Self, Ch);
+  FStream.Seek(FPeekPosition, soBeginning);
+  Result := InternalGetNextChar(FStream, Ch);
   if Result then
     Buffer := UCS4ToAnsiChar(Ch);
-  FPeekPosition := FPosition;
-  FPosition := Pos;
+  FPeekPosition := FStream.Seek(0, soCurrent);
 end;
 
 function TJclStringStream.PeekChar(out Buffer: Char): Boolean;
 var
-  Pos: Int64;
   Ch: UCS4;
 begin
-  Pos := FPosition;
-  FPosition := FPeekPosition;
-  Result := InternalGetNextChar(Self, Ch);
+  FStream.Seek(FPeekPosition, soBeginning);
+  Result := InternalGetNextChar(FStream, Ch);
   if Result then
     Buffer := UCS4ToChar(Ch);
-  FPeekPosition := FPosition;
-  FPosition := Pos;
+  FPeekPosition := FStream.Seek(0, soCurrent);
 end;
 
 function TJclStringStream.PeekWideChar(out Buffer: WideChar): Boolean;
 var
-  Pos: Int64;
   Ch: UCS4;
 begin
-  Pos := FPosition;
-  FPosition := FPeekPosition;
-  Result := InternalGetNextChar(Self, Ch);
+  FStream.Seek(FPeekPosition, soBeginning);
+  Result := InternalGetNextChar(FStream, Ch);
   if Result then
     Buffer := UCS4ToWideChar(Ch);
-  FPeekPosition := FPosition;
-  FPosition := Pos;
+  FPeekPosition := FStream.Seek(0, soCurrent);
 end;
 
 function TJclStringStream.ReadString(var Buffer: string; Start, Count: Longint): Longint;
@@ -2358,9 +2364,10 @@ var
   Ch: UCS4;
 begin
   Index := Start;
+  FStream.Seek(FPosition, soBeginning);
   while Index < Start + Count - 1 do // avoid overflow on surrogate pairs for WideString
   begin
-    if InternalGetNextChar(Self, Ch) then
+    if InternalGetNextChar(FStream, Ch) then
     begin
       StrPos := Index;
       if StringSetNextChar(Buffer, StrPos, Ch) and (StrPos > 0) then
@@ -2372,6 +2379,7 @@ begin
       Break; // end of stream (read)
   end;
   Result := Index - Start;
+  FPosition := FStream.Seek(0, soCurrent);
   FPeekPosition := FPosition;
 end;
 
@@ -2393,9 +2401,11 @@ function TJclStringStream.ReadAnsiChar(out Buffer: AnsiChar): Boolean;
 var
   Ch: UCS4;
 begin
-  Result := InternalGetNextChar(Self, Ch);
+  FStream.Seek(FPosition, soBeginning);
+  Result := InternalGetNextChar(FStream, Ch);
   if Result then
     Buffer := UCS4ToAnsiChar(Ch);
+  FPosition := FStream.Seek(0, soCurrent);
   FPeekPosition := FPosition;
 end;
 
@@ -2406,9 +2416,10 @@ var
   Ch: UCS4;
 begin
   Index := Start;
+  FStream.Seek(FPosition, soBeginning);
   while Index < Start + Count do
   begin
-    if InternalGetNextChar(Self, Ch) then
+    if InternalGetNextChar(FStream, Ch) then
     begin
       StrPos := Index;
       if AnsiSetNextChar(Buffer, StrPos, Ch) and (StrPos > 0) then
@@ -2420,6 +2431,7 @@ begin
       Break; // end of stream (read)
   end;
   Result := Index - Start;
+  FPosition := FStream.Seek(0, soCurrent);
   FPeekPosition := FPosition;
 end;
 
@@ -2441,9 +2453,11 @@ function TJclStringStream.ReadChar(out Buffer: Char): Boolean;
 var
   Ch: UCS4;
 begin
-  Result := InternalGetNextChar(Self, Ch);
+  FStream.Seek(FPosition, soBeginning);
+  Result := InternalGetNextChar(FStream, Ch);
   if Result then
     Buffer := UCS4ToChar(Ch);
+  FPosition := FStream.Seek(0, soCurrent);
   FPeekPosition := FPosition;
 end;
 
@@ -2451,9 +2465,11 @@ function TJclStringStream.ReadWideChar(out Buffer: WideChar): Boolean;
 var
   Ch: UCS4;
 begin
-  Result := InternalGetNextChar(Self, Ch);
+  FStream.Seek(FPosition, soBeginning);
+  Result := InternalGetNextChar(FStream, Ch);
   if Result then
     Buffer := UCS4ToWideChar(Ch);
+  FPosition := FStream.Seek(0, soCurrent);
   FPeekPosition := FPosition;
 end;
 
@@ -2464,9 +2480,10 @@ var
   Ch: UCS4;
 begin
   Index := Start;
+  FStream.Seek(FPosition, soBeginning);
   while Index < Start + Count - 1 do // avoid overflow on surrogate pairs
   begin
-    if InternalGetNextChar(Self, Ch) then
+    if InternalGetNextChar(FStream, Ch) then
     begin
       StrPos := Index;
       if UTF16SetNextChar(Buffer, StrPos, Ch) and (StrPos > 0) then
@@ -2478,6 +2495,7 @@ begin
       Break; // end of stream (read)
   end;
   Result := Index - Start;
+  FPosition := FStream.Seek(0, soCurrent);
   FPeekPosition := FPosition;
 end;
 
@@ -2497,13 +2515,22 @@ end;
 
 function TJclStringStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
 begin
-  Result := inherited Seek(Offset, Origin);
-  FPeekPosition := FPosition;
-end;
-
-procedure TJclStringStream.SetSize(const NewSize: Int64);
-begin
-  inherited SetSize(NewSize);
+  case Origin of
+    soBeginning:
+      if Offset = 0 then
+        FPosition := 0
+      else
+        raise EJclStreamError.CreateRes(@RsStreamsSeekError);
+    soCurrent:
+      if Offset <> 0 then
+        raise EJclStreamError.CreateRes(@RsStreamsSeekError);
+    soEnd:
+      if Offset = 0 then
+        FPosition := FStream.Seek(0, soEnd)
+      else
+        raise EJclStreamError.CreateRes(@RsStreamsSeekError);
+  end;
+  Result := FPosition;
   FPeekPosition := FPosition;
 end;
 
@@ -2516,14 +2543,17 @@ begin
   if Length(FBOM) > 0 then
   begin
     SetLength(BOM, Length(FBOM));
-    Pos := Position;
-    Result := Read(BOM[0], Length(BOM) * SizeOf(BOM[0]));
+    Pos := FPosition;
+    FStream.Seek(FPosition, soBeginning);
+    Result := FStream.Read(BOM[0], Length(BOM) * SizeOf(BOM[0]));
     if Result = Length(FBOM) * SizeOf(FBOM[0]) then
       for I := Low(FBOM) to High(FBOM) do
         if BOM[I - Low(FBOM)] <> FBOM[I] then
           Result := 0;
-    if Result <> Length(FBOM) * SizeOf(FBOM[0]) then
-      Position := Pos;
+    if Result = Length(FBOM) * SizeOf(FBOM[0]) then
+      FPosition := FStream.Seek(0, soCurrent)
+    else
+      FPosition := Pos;
   end
   else
     Result := 0;
@@ -2534,7 +2564,9 @@ function TJclStringStream.WriteBOM: Longint;
 begin
   if Length(FBOM) > 0 then
   begin
-    Result := Write(FBOM[0], Length(FBOM) * SizeOf(FBOM[0]));
+    FStream.Seek(FPosition, soBeginning);
+    Result := FStream.Write(FBOM[0], Length(FBOM) * SizeOf(FBOM[0]));
+    FPosition := FStream.Seek(0, soCurrent);
   end
   else
     Result := 0;
@@ -2543,7 +2575,10 @@ end;
 
 function TJclStringStream.WriteChar(Value: Char): Boolean;
 begin
-  Result := InternalSetNextChar(Self, CharToUCS4(Value));
+  FStream.Seek(FPosition, soBeginning);
+  Result := InternalSetNextChar(FStream, CharToUCS4(Value));
+  FPosition := FStream.Seek(0, soCurrent);
+  FPeekPosition := FPosition;
 end;
 
 function TJclStringStream.WriteString(const Buffer: string; Start, Count: Longint): Longint;
@@ -2553,22 +2588,26 @@ var
   Ch: UCS4;
 begin
   Index := Start;
+  FStream.Seek(FPosition, soBeginning);
   while Index < Start + Count do
   begin
     StrPos := Index;
     Ch := StringGetNextChar(Buffer, StrPos);
-    if (StrPos > 0) and InternalSetNextChar(Self, Ch) then
+    if (StrPos > 0) and InternalSetNextChar(FStream, Ch) then
       Index := StrPos
     else
       Break; // end of string (read) or end of stream (write)
   end;
   Result := Index - Start;
+  FPosition := FStream.Seek(0, soCurrent);
   FPeekPosition := FPosition;
 end;
 
 function TJclStringStream.WriteAnsiChar(Value: AnsiChar): Boolean;
 begin
-  Result := InternalSetNextChar(Self, AnsiCharToUCS4(Value));
+  FStream.Seek(FPosition, soBeginning);
+  Result := InternalSetNextChar(FStream, AnsiCharToUCS4(Value));
+  FPosition := FStream.Seek(0, soCurrent);
   FPeekPosition := FPosition;
 end;
 
@@ -2579,22 +2618,26 @@ var
   Ch: UCS4;
 begin
   Index := Start;
+  FStream.Seek(FPosition, soBeginning);
   while Index < Start + Count do
   begin
     StrPos := Index;
     Ch := AnsiGetNextChar(Buffer, StrPos);
-    if (StrPos > 0) and InternalSetNextChar(Self, Ch) then
+    if (StrPos > 0) and InternalSetNextChar(FStream, Ch) then
       Index := StrPos
     else
       Break; // end of string (read) or end of stream (write)
   end;
   Result := Index - Start;
+  FPosition := FStream.Seek(0, soCurrent);
   FPeekPosition := FPosition;
 end;
 
 function TJclStringStream.WriteWideChar(Value: WideChar): Boolean;
 begin
-  Result := InternalSetNextChar(Self, WideCharToUCS4(Value));
+  FStream.Seek(FPosition, soBeginning);
+  Result := InternalSetNextChar(FStream, WideCharToUCS4(Value));
+  FPosition := FStream.Seek(0, soCurrent);
   FPeekPosition := FPosition;
 end;
 
@@ -2605,16 +2648,18 @@ var
   Ch: UCS4;
 begin
   Index := Start;
+  FStream.Seek(FPosition, soBeginning);
   while Index < Start + Count do
   begin
     StrPos := Index;
     Ch := UTF16GetNextChar(Buffer, StrPos);
-    if (StrPos > 0) and InternalSetNextChar(Self, Ch) then
+    if (StrPos > 0) and InternalSetNextChar(FStream, Ch) then
       Index := StrPos
     else
       Break; // end of string (read) or end of stream (write)
   end;
   Result := Index - Start;
+  FPosition := FStream.Seek(0, soCurrent);
   FPeekPosition := FPosition;
 end;
 
@@ -2703,7 +2748,7 @@ begin
   Pos := FPosition;
 
   SetLength(BOM, MaxLength);
-  ReadLength := Read(BOM[0], Length(BOM) * SizeOf(BOM[0])) div SizeOf(BOM[0]);
+  ReadLength := FStream.Read(BOM[0], Length(BOM) * SizeOf(BOM[0])) div SizeOf(BOM[0]);
 
   FEncoding := seAuto;
 
