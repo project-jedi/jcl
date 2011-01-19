@@ -1356,6 +1356,16 @@ procedure LoadCombiningClassData;
 procedure LoadNumberData;
 procedure LoadCompositionData;
 
+// functions around TUCS4Array
+function UCS4Array(Ch: UCS4): TUCS4Array;
+function UCS4ArrayConcat(Left, Right: UCS4): TUCS4Array; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+procedure UCS4ArrayConcat(var Left: TUCS4Array; Right: UCS4); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+procedure UCS4ArrayConcat(var Left: TUCS4Array; const Right: TUCS4Array); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function UCS4ArrayEquals(const Left: TUCS4Array; const Right: TUCS4Array): Boolean; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function UCS4ArrayEquals(const Left: TUCS4Array; Right: UCS4): Boolean; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function UCS4ArrayEquals(const Left: TUCS4Array; const Right: AnsiString): Boolean; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function UCS4ArrayEquals(const Left: TUCS4Array; Right: AnsiChar): Boolean; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -7184,6 +7194,76 @@ end;
 function TranslateString(const S: AnsiString; CP1, CP2: Word): AnsiString;
 begin
   Result:= WideStringToStringEx(StringToWideStringEx(S, CP1), CP2);
+end;
+
+function UCS4Array(Ch: UCS4): TUCS4Array;
+begin
+  SetLength(Result, 1);
+  Result[0] := Ch;
+end;
+
+function UCS4ArrayConcat(Left, Right: UCS4): TUCS4Array;
+begin
+  SetLength(Result, 2);
+  Result[0] := Left;
+  Result[1] := Right;
+end;
+
+procedure UCS4ArrayConcat(var Left: TUCS4Array; Right: UCS4);
+var
+  I: SizeInt;
+begin
+  I := Length(Left);
+  SetLength(Left, I + 1);
+  Left[I] := Right;
+end;
+
+procedure UCS4ArrayConcat(var Left: TUCS4Array; const Right: TUCS4Array);
+var
+  I, J: SizeInt;
+begin
+  I := Length(Left);
+  J := Length(Right);
+  SetLength(Left, I + J);
+  Move(Right[0], Left[I], J * SizeOf(Right[0]));
+end;
+
+function UCS4ArrayEquals(const Left: TUCS4Array; const Right: TUCS4Array): Boolean;
+var
+  I: SizeInt;
+begin
+  I := Length(Left);
+  Result := I = Length(Right);
+  while Result do
+  begin
+    Dec(I);
+    Result := (I >= 0) and (Left[I] = Right[I]);
+  end;
+  Result := I < 0;
+end;
+
+function UCS4ArrayEquals(const Left: TUCS4Array; Right: UCS4): Boolean;
+begin
+  Result := (Length(Left) = 1) and (Left[0] = Right);
+end;
+
+function UCS4ArrayEquals(const Left: TUCS4Array; const Right: AnsiString): Boolean;
+var
+  I: SizeInt;
+begin
+  I := Length(Left);
+  Result := I = Length(Right);
+  while Result do
+  begin
+    Dec(I);
+    Result := (I >= 0) and (Left[I] = Ord(Right[I + 1]));
+  end;
+  Result := I < 0;
+end;
+
+function UCS4ArrayEquals(const Left: TUCS4Array; Right: AnsiChar): Boolean;
+begin
+  Result := (Length(Left) = 1) and (Left[0] = Ord(Right));
 end;
 
 procedure PrepareUnicodeData;

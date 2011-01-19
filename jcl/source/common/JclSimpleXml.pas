@@ -611,6 +611,8 @@ implementation
 uses
   JclCharsets,
   JclStrings,
+  JclUnicode,
+  JclStringConversions,
   JclResources;
 
 const
@@ -2170,12 +2172,12 @@ type
   TReadStatus = (rsWaitingTag, rsReadingTagKind);
 var
   lPos: TReadStatus;
-  St: string;
+  St: TUCS4Array;
   lElem: TJclSimpleXMLElem;
-  Ch: Char;
+  Ch: UCS4;
   ContainsText, ContainsWhiteSpace, KeepWhiteSpace: Boolean;
 begin
-  St := '';
+  SetLength(St, 0);
   lPos := rsWaitingTag;
   KeepWhiteSpace := (AParent <> nil) and (sxoKeepWhitespace in AParent.Options);
   ContainsText := False;
@@ -2187,18 +2189,18 @@ begin
   if AParent <> nil then
     AParent.DoLoadProgress(StringStream.Stream.Position, StringStream.Stream.Size);
 
-  while StringStream.PeekChar(Ch) do
+  while StringStream.PeekUCS4(Ch) do
   begin
     case lPos of
       rsWaitingTag: //We are waiting for a tag and thus avoiding spaces
         begin
-          if Ch = '<' then
+          if Ch = Ord('<') then
           begin
             lPos := rsReadingTagKind;
-            St := Ch;
+            St := UCS4Array(Ch);
           end
           else
-          if CharIsWhiteSpace(Ch) then
+          if UnicodeIsWhiteSpace(Ch) then
             ContainsWhiteSpace := True
           else
             ContainsText := True;
@@ -2208,8 +2210,8 @@ begin
         begin
           lElem := nil;
           case Ch of
-            '/':
-              if St = '<' then
+            Ord('/'):
+              if UCS4ArrayEquals(St, '<') then
               begin // "</"
                 // We have reached an end tag. If whitespace was found while
                 // waiting for the end tag, and the user told us to keep it
@@ -2231,14 +2233,14 @@ begin
               else
               begin
                 lElem := TJclSimpleXMLElemClassic.Create(Parent);
-                St := St + Ch; // "<name/"
+                UCS4ArrayConcat(St, Ch); // "<name/"
                 lPos := rsWaitingTag;
               end;
 
-            NativeSpace, '>', ':': //This should be a classic tag
+            Ord(NativeSpace), Ord('>'), Ord(':'): //This should be a classic tag
               begin    // "<XXX " or "<XXX:" or "<XXX>
                 lElem := TJclSimpleXMLElemClassic.Create(Parent);
-                St := '';
+                SetLength(St, 0);
                 lPos := rsWaitingTag;
               end;
           else
@@ -2252,27 +2254,27 @@ begin
             end
             else
             begin
-              if (St <> '<![CDATA') or not CharIsWhiteSpace(Ch) then
-                St := St + Ch;
-              if St = '<![CDATA[' then
+              if not UCS4ArrayEquals(St, '<![CDATA') or not UnicodeIsWhiteSpace(Ch) then
+                UCS4ArrayConcat(St, Ch);
+              if UCS4ArrayEquals(St, '<![CDATA[') then
               begin
                 lElem := TJclSimpleXMLElemCData.Create(Parent);
                 lPos := rsWaitingTag;
-                St := '';
+                SetLength(St, 0);
               end
               else
-              if St = '<!--' then
+              if UCS4ArrayEquals(St, '<!--') then
               begin
                 lElem := TJclSimpleXMLElemComment.Create(Parent);
                 lPos := rsWaitingTag;
-                St := '';
+                SetLength(St, 0);
               end
               else
-              if St = '<?' then
+              if UCS4ArrayEquals(St, '<?') then
               begin
                 lElem := TJclSimpleXMLElemProcessingInstruction.Create(Parent);
                 lPos := rsWaitingTag;
-                St := '';
+                SetLength(St, 0);
               end;
             end;
           end;
@@ -2683,106 +2685,108 @@ type
     );
 var
   lPos: TPosType;
-  lName, lValue, lNameSpace: string;
-  lPropStart: Char;
-  Ch: Char;
+  lName, lValue, lNameSpace: TUCS4Array;
+  sValue: string;
+  lPropStart: UCS4;
+  Ch: UCS4;
 begin
-  lValue := '';
-  lNameSpace := '';
-  lName := '';
-  lPropStart := NativeSpace;
+  SetLength(lValue, 0);
+  SetLength(lNameSpace, 0);
+  SetLength(lName, 0);
+  lPropStart := Ord(NativeSpace);
   lPos := ptWaiting;
 
   // We read from a stream, thus replacing the existing properties
   Clear;
 
-  while StringStream.PeekChar(Ch) do
+  while StringStream.PeekUCS4(Ch) do
   begin
     case lPos of
       ptWaiting: //We are waiting for a property
         begin
-          if CharIsWhiteSpace(Ch) then
-            StringStream.ReadChar(Ch)
+          if UnicodeIsWhiteSpace(Ch) then
+            StringStream.ReadUCS4(Ch)
           else
-          if CharIsValidIdentifierLetter(Ch) or (Ch = '-') or (Ch = '.') then
+          if UnicodeIsIdentifierStart(Ch) or (Ch = Ord('-')) or (Ch = Ord('.')) then
           begin
-            StringStream.ReadChar(Ch);
-            lName := Ch;
-            lNameSpace := '';
+            StringStream.ReadUCS4(Ch);
+            lName := UCS4Array(Ch);
+            SetLength(lNameSpace, 0);
             lPos := ptReadingName;
           end
           else
-          if (Ch = '/') or (Ch = '>') or (Ch = '?') then
+          if (Ch = Ord('/')) or (Ch = Ord('>')) or (Ch = Ord('?')) then
             // end of properties
             Break
           else
-            FmtError(LoadResString(@RsEInvalidXMLElementUnexpectedCharacte), [Ch, StringStream.PeekPosition]);
+            FmtError(LoadResString(@RsEInvalidXMLElementUnexpectedCharacte), [UCS4ToChar(Ch), StringStream.PeekPosition]);
         end;
 
       ptReadingName: //We are reading a property name
         begin
-          StringStream.ReadChar(Ch);
-          if CharIsValidIdentifierLetter(Ch) or (Ch = '-') or (Ch = '.') then
+          StringStream.ReadUCS4(Ch);
+          if UnicodeIsIdentifierPart(Ch) or (Ch = Ord('-')) or (Ch = Ord('.')) then
           begin
-            lName := lName + Ch;
+            UCS4ArrayConcat(lName, Ch);
           end
           else
-          if Ch = ':' then
+          if Ch = Ord(':') then
           begin
             lNameSpace := lName;
-            lName := '';
+            SetLength(lName, 0);
           end
           else
-          if Ch = '=' then
+          if Ch = Ord('=') then
             lPos := ptStartingContent
           else
-          if CharIsWhiteSpace(Ch) then
+          if UnicodeIsWhiteSpace(Ch) then
             lPos := ptSpaceBeforeEqual
           else
-            FmtError(LoadResString(@RsEInvalidXMLElementUnexpectedCharacte), [Ch, StringStream.PeekPosition]);
+            FmtError(LoadResString(@RsEInvalidXMLElementUnexpectedCharacte), [UCS4ToChar(Ch), StringStream.PeekPosition]);
         end;
 
       ptStartingContent: //We are going to start a property content
         begin
-          StringStream.ReadChar(Ch);
-          if CharIsWhiteSpace(Ch) then
+          StringStream.ReadUCS4(Ch);
+          if UnicodeIsWhiteSpace(Ch) then
             // ignore white space
           else
-          if (Ch = '''') or (Ch = '"') then
+          if (Ch = Ord('''')) or (Ch = Ord('"')) then
           begin
             lPropStart := Ch;
-            lValue := '';
+            SetLength(lValue, 0);
             lPos := ptReadingValue;
           end
           else
-            FmtError(LoadResString(@RsEInvalidXMLElementUnexpectedCharacte_), [Ch, StringStream.PeekPosition]);
+            FmtError(LoadResString(@RsEInvalidXMLElementUnexpectedCharacte_), [UCS4ToChar(Ch), StringStream.PeekPosition]);
         end;
 
       ptReadingValue: //We are reading a property
         begin
-          StringStream.ReadChar(Ch);
+          StringStream.ReadUCS4(Ch);
           if Ch = lPropStart then
           begin
+            sValue := UCS4ToString(lValue);
             if GetSimpleXML <> nil then
-              GetSimpleXML.DoDecodeValue(lValue);
-            with Add(lName, lValue) do
-              NameSpace := lNameSpace;
+              GetSimpleXML.DoDecodeValue(sValue);
+            with Add(UCS4ToString(lName), sValue) do
+              NameSpace := UCS4ToString(lNameSpace);
             lPos := ptWaiting;
           end
           else
-            lValue := lValue + Ch;
+            UCS4ArrayConcat(lValue, Ch);
         end;
 
       ptSpaceBeforeEqual: // We are reading the white space between a property name and the = sign
         begin
-          StringStream.ReadChar(Ch);
-          if CharIsWhiteSpace(Ch) then
+          StringStream.ReadUCS4(Ch);
+          if UnicodeIsWhiteSpace(Ch) then
             // more white space, stay in this state and ignore
           else
-          if Ch = '=' then
+          if Ch = Ord('=') then
             lPos := ptStartingContent
           else
-            FmtError(LoadResString(@RsEInvalidXMLElementUnexpectedCharacte), [Ch, StringStream.PeekPosition]);
+            FmtError(LoadResString(@RsEInvalidXMLElementUnexpectedCharacte), [UCS4ToChar(Ch), StringStream.PeekPosition]);
         end;
     else
       Assert(False, RsEUnexpectedValueForLPos);
@@ -2857,59 +2861,61 @@ type
     rsWaitingClosingTag1, rsWaitingClosingTag2, rsClosingName);
 var
   lPos: TReadStatus;
-  St, lName, lValue, lNameSpace: string;
-  Ch: Char;
+  St, lName, lNameSpace: TUCS4Array;
+  sValue: string;
+  Ch: UCS4;
 begin
-  St := '';
-  lValue := '';
-  lNameSpace := '';
+  SetLength(St, 0);
+  SetLength(lName, 0);
+  SetLength(lNameSpace, 0);
+  sValue := '';
   lPos := rsWaitingOpeningTag;
 
   if AParent <> nil then
     AParent.DoLoadProgress(StringStream.Stream.Position, StringStream.Stream.Size);
 
-  while StringStream.ReadChar(Ch) do
+  while StringStream.ReadUCS4(Ch) do
   begin
     case lPos of
       rsWaitingOpeningTag: // wait beginning of tag
-        if Ch = '<' then
+        if Ch = Ord('<') then
           lPos := rsOpeningName // read name
         else
-        if not CharIsWhiteSpace(Ch) then
-          FmtError(LoadResString(@RsEInvalidXMLElementExpectedBeginningO), [Ch, StringStream.PeekPosition]);
+        if not UnicodeIsWhiteSpace(Ch) then
+          FmtError(LoadResString(@RsEInvalidXMLElementExpectedBeginningO), [UCS4ToChar(Ch), StringStream.PeekPosition]);
 
       rsOpeningName:
-        if CharIsValidIdentifierLetter(Ch) or (Ch = '-') or (Ch = '.') then
-          St := St + Ch
+        if UnicodeIsIdentifierPart(Ch) or (Ch = Ord('-')) or (Ch = Ord('.')) then
+          UCS4ArrayConcat(St, Ch)
         else
-        if (Ch = ':') and (lNameSpace = '') then
+        if (Ch = Ord(':')) and (Length(lNameSpace) = 0) then
         begin
           lNameSpace := St;
-          st := '';
+          SetLength(st, 0);
         end
         else
-        if CharIsWhiteSpace(Ch) and (St = '') then
+        if UnicodeIsWhiteSpace(Ch) and (Length(St) = 0) then
           // whitespace after "<" (no name)
           FmtError(LoadResString(@RsEInvalidXMLElementMalformedTagFoundn), [StringStream.PeekPosition])
         else
-        if CharIsWhiteSpace(Ch) then
+        if UnicodeIsWhiteSpace(Ch) then
         begin
           lName := St;
-          St := '';
+          SetLength(St, 0);
           Properties.LoadFromStringStream(StringStream);
           lPos := rsTypeOpeningTag;
         end
         else
-        if Ch = '/' then // single tag
+        if Ch = Ord('/') then // single tag
         begin
           lName := St;
           lPos := rsEndSingleTag
         end
         else
-        if Ch = '>' then // 2 tags
+        if Ch = Ord('>') then // 2 tags
         begin
           lName := St;
-          St := '';
+          SetLength(St, 0);
           //Load elements
           Items.LoadFromStringStream(StringStream, AParent);
           lPos := rsWaitingClosingTag1;
@@ -2919,58 +2925,58 @@ begin
           FmtError(LoadResString(@RsEInvalidXMLElementMalformedTagFoundn), [StringStream.PeekPosition]);
 
       rsTypeOpeningTag:
-        if CharIsWhiteSpace(Ch) then
+        if UnicodeIsWhiteSpace(Ch) then
           // nothing, spaces after name or properties
         else
-        if Ch = '/' then
+        if Ch = Ord('/') then
           lPos := rsEndSingleTag // single tag
         else
-        if Ch = '>' then // 2 tags
+        if Ch = Ord('>') then // 2 tags
         begin
           //Load elements
           Items.LoadFromStringStream(StringStream, AParent);
           lPos := rsWaitingClosingTag1;
         end
         else
-          FmtError(LoadResString(@RsEInvalidXMLElementExpectedEndOfTagBu), [Ch, StringStream.PeekPosition]);
+          FmtError(LoadResString(@RsEInvalidXMLElementExpectedEndOfTagBu), [UCS4ToChar(Ch), StringStream.PeekPosition]);
 
       rsEndSingleTag:
-        if Ch = '>' then
+        if Ch = Ord('>') then
           Break
         else
-          FmtError(LoadResString(@RsEInvalidXMLElementExpectedEndOfTagBu), [Ch, StringStream.PeekPosition]);
+          FmtError(LoadResString(@RsEInvalidXMLElementExpectedEndOfTagBu), [UCS4ToChar(Ch), StringStream.PeekPosition]);
 
       rsWaitingClosingTag1:
-        if CharIsWhiteSpace(Ch) then
+        if UnicodeIsWhiteSpace(Ch) then
           // nothing, spaces before closing tag
         else
-        if Ch = '<' then
+        if Ch = Ord('<') then
           lPos := rsWaitingClosingTag2
         else
-          FmtError(LoadResString(@RsEInvalidXMLElementExpectedEndOfTagBu), [Ch, StringStream.PeekPosition]);
+          FmtError(LoadResString(@RsEInvalidXMLElementExpectedEndOfTagBu), [UCS4ToChar(Ch), StringStream.PeekPosition]);
 
       rsWaitingClosingTag2:
-        if Ch = '/' then
+        if Ch = Ord('/') then
           lPos := rsClosingName
         else
-          FmtError(LoadResString(@RsEInvalidXMLElementExpectedEndOfTagBu), [Ch, StringStream.PeekPosition]);
+          FmtError(LoadResString(@RsEInvalidXMLElementExpectedEndOfTagBu), [UCS4ToChar(Ch), StringStream.PeekPosition]);
 
       rsClosingName:
-        if CharIsWhiteSpace(Ch) or (Ch = '>') then
+        if UnicodeIsWhiteSpace(Ch) or (Ch = Ord('>')) then
         begin
-          if lNameSpace <> '' then
+          if Length(lNameSpace) > 0 then
           begin
-            if not StrSame(lNameSpace + ':' + lName, St) then
-              FmtError(LoadResString(@RsEInvalidXMLElementErroneousEndOfTagE), [lName, St, StringStream.PeekPosition]);
+            if not StrSame(UCS4ToString(lNameSpace) + ':' + UCS4ToString(lName), UCS4ToString(St)) then
+              FmtError(LoadResString(@RsEInvalidXMLElementErroneousEndOfTagE), [UCS4ToString(lName), UCS4ToString(St), StringStream.PeekPosition]);
           end
           else
-            if not StrSame(lName, St) then
-              FmtError(LoadResString(@RsEInvalidXMLElementErroneousEndOfTagE), [lName, St, StringStream.PeekPosition]);
+            if not UCS4ArrayEquals(lName, St) then
+              FmtError(LoadResString(@RsEInvalidXMLElementErroneousEndOfTagE), [UCS4ToString(lName), UCS4ToString(St), StringStream.PeekPosition]);
           //Set value if only one sub element
           //This might reduce speed, but this is for compatibility issues
           if (Items.Count = 1) and (Items[0] is TJclSimpleXMLElemText) then
           begin
-            lValue := Items[0].Value;
+            sValue := Items[0].Value;
             Items.Clear;
             // free some memory
             FreeAndNil(FItems);
@@ -2978,24 +2984,24 @@ begin
           Break;
         end
         else
-        if CharIsValidIdentifierLetter(Ch) or (Ch = '-') or (Ch = '.') or (Ch = ':') then
-          St := St + Ch
+        if UnicodeIsIdentifierPart(Ch) or (Ch = Ord('-')) or (Ch = Ord('.')) or (Ch = Ord(':')) then
+          UCS4ArrayConcat(St, Ch)
         else
           // other invalid characters
           FmtError(LoadResString(@RsEInvalidXMLElementMalformedTagFoundn), [StringStream.PeekPosition]);
     end;
   end;
 
-  Name := lName;
+  Name := UCS4ToString(lName);
   if GetSimpleXML <> nil then
-    GetSimpleXML.DoDecodeValue(lValue);
-  Value := lValue;
-  NameSpace := lNameSpace;
+    GetSimpleXML.DoDecodeValue(sValue);
+  Value := sValue;
+  NameSpace := UCS4ToString(lNameSpace);
 
   if AParent <> nil then
   begin
-    AParent.DoTagParsed(lName);
-    AParent.DoValueParsed(lName, lValue);
+    AParent.DoTagParsed(Name);
+    AParent.DoValueParsed(Name, sValue);
   end;
 end;
 
@@ -3072,41 +3078,42 @@ const
   CS_STOP_COMMENT  = '    -->';
 var
   lPos: Integer;
-  St: string;
-  Ch: Char;
+  St: TUCS4Array;
+  Ch: UCS4;
   lOk: Boolean;
 begin
-  St := '';
+  SetLength(St, 0);
   lPos := 1;
   lOk := False;
 
   if AParent <> nil then
     AParent.DoLoadProgress(StringStream.Stream.Position, StringStream.Stream.Size);
 
-  while StringStream.ReadChar(Ch) do
+  while StringStream.ReadUCS4(Ch) do
   begin
     case lPos of
       1..4: //<!--
-        if Ch = CS_START_COMMENT[lPos] then
+        if Ch = Ord(CS_START_COMMENT[lPos]) then
           Inc(lPos)
         else
-        if not CharIsWhiteSpace(Ch) then
-          FmtError(LoadResString(@RsEInvalidCommentExpectedsButFounds), [CS_START_COMMENT[lPos], Ch, StringStream.PeekPosition]);
+        if not UnicodeIsWhiteSpace(Ch) then
+          FmtError(LoadResString(@RsEInvalidCommentExpectedsButFounds), [CS_START_COMMENT[lPos], UCS4ToChar(Ch), StringStream.PeekPosition]);
       5:
-        if Ch = CS_STOP_COMMENT[lPos] then
+        if Ch = Ord(CS_STOP_COMMENT[lPos]) then
           Inc(lPos)
         else
-          St := St + Ch;
+          UCS4ArrayConcat(St, Ch);
       6: //-
-        if Ch = CS_STOP_COMMENT[lPos] then
+        if Ch = Ord(CS_STOP_COMMENT[lPos]) then
           Inc(lPos)
         else
         begin
-          St := St + '-' + Ch;
+          UCS4ArrayConcat(St, Ord('-'));
+          UCS4ArrayConcat(St, Ch);
           Dec(lPos);
         end;
       7: //>
-        if Ch = CS_STOP_COMMENT[lPos] then
+        if Ch = Ord(CS_STOP_COMMENT[lPos]) then
         begin
           lOk := True;
           Break; //End if
@@ -3119,11 +3126,11 @@ begin
   if not lOk then
     FmtError(LoadResString(@RsEInvalidCommentUnexpectedEndOfData), [StringStream.PeekPosition]);
 
-  Value := St;
+  Value := UCS4ToString(St);
   Name := '';
 
   if AParent <> nil then
-    AParent.DoValueParsed('', St);
+    AParent.DoValueParsed('', Value);
 end;
 
 procedure TJclSimpleXMLElemComment.SaveToStringStream(StringStream: TJclStringStream; const Level: string; AParent: TJclSimpleXML);
@@ -3149,52 +3156,55 @@ const
   CS_STOP_CDATA  = '         ]]>';
 var
   lPos: Integer;
-  St: string;
-  Ch: Char;
+  St: TUCS4Array;
+  Ch: UCS4;
   lOk: Boolean;
 begin
-  St := '';
+  SetLength(St, 0);
   lPos := 1;
   lOk := False;
 
   if AParent <> nil then
     AParent.DoLoadProgress(StringStream.Stream.Position, StringStream.Stream.Size);
 
-  while StringStream.ReadChar(Ch) do
+  while StringStream.ReadUCS4(Ch) do
   begin
     case lPos of
       1..9: //<![CDATA[
-        if Ch = CS_START_CDATA[lPos] then
+        if Ch = Ord(CS_START_CDATA[lPos]) then
           Inc(lPos)
         else
-        if not CharIsWhiteSpace(Ch) then
-          FmtError(LoadResString(@RsEInvalidCDATAExpectedsButFounds), [CS_START_CDATA[lPos], Ch, StringStream.PeekPosition]);
+        if not UnicodeIsWhiteSpace(Ch) then
+          FmtError(LoadResString(@RsEInvalidCDATAExpectedsButFounds), [CS_START_CDATA[lPos], UCS4ToChar(Ch), StringStream.PeekPosition]);
       10: // ]
-        if Ch = CS_STOP_CDATA[lPos] then
+        if Ch = Ord(CS_STOP_CDATA[lPos]) then
           Inc(lPos)
         else
-          St := St + Ch;
+          UCS4ArrayConcat(St, Ch);
       11: // ]
-        if Ch = CS_STOP_CDATA[lPos] then
+        if Ch = Ord(CS_STOP_CDATA[lPos]) then
           Inc(lPos)
         else
         begin
-          St := St + ']' + Ch;
+          UCS4ArrayConcat(St, Ord(']'));
+          UCS4ArrayConcat(St, Ch);
           Dec(lPos);
         end;
       12: //>
-        if Ch = CS_STOP_CDATA[lPos] then
+        if Ch = Ord(CS_STOP_CDATA[lPos]) then
         begin
           lOk := True;
           Break; //End if
         end
         else
         // ]]]
-        if Ch = CS_STOP_CDATA[lPos-1] then
-          St := St + ']'
+        if Ch = Ord(CS_STOP_CDATA[lPos-1]) then
+          UCS4ArrayConcat(St, Ord(']'))
         else
         begin
-          St := St + ']]' + Ch;
+          UCS4ArrayConcat(St, Ord(']'));
+          UCS4ArrayConcat(St, Ord(']'));
+          UCS4ArrayConcat(St, Ch);
           Dec(lPos, 2);
         end;
     end;
@@ -3203,11 +3213,11 @@ begin
   if not lOk then
     FmtError(LoadResString(@RsEInvalidCDATAUnexpectedEndOfData), [StringStream.PeekPosition]);
 
-  Value := St;
+  Value := UCS4ToString(St);
   Name := '';
 
   if AParent <> nil then
-    AParent.DoValueParsed('', St);
+    AParent.DoValueParsed('', Value);
 end;
 
 procedure TJclSimpleXMLElemCData.SaveToStringStream(StringStream: TJclStringStream; const Level: string; AParent: TJclSimpleXML);
@@ -3294,56 +3304,56 @@ type
 var
   lPos: TReadStatus;
   lOk: Boolean;
-  St, lName, lNameSpace: string;
-  Ch: Char;
+  St, lName, lNameSpace: TUCS4Array;
+  Ch: UCS4;
 begin
-  St := '';
-  lNameSpace := '';
+  SetLength(St, 0);
+  SetLength(lNameSpace, 0);
   lPos := rsWaitingOpeningTag;
   lOk := False;
 
   if AParent <> nil then
     AParent.DoLoadProgress(StringStream.Stream.Position, StringStream.Stream.Size);
 
-  while StringStream.ReadChar(Ch) do
+  while StringStream.ReadUCS4(Ch) do
   begin
     case lPos of
       rsWaitingOpeningTag: // wait beginning of tag
-        if Ch = '<' then
+        if Ch = Ord('<') then
           lPos := rsOpeningTag
         else
-        if not CharIsWhiteSpace(Ch) then
-          FmtError(LoadResString(@RsEInvalidXMLElementExpectedBeginningO), [Ch, StringStream.PeekPosition]);
+        if not UnicodeIsWhiteSpace(Ch) then
+          FmtError(LoadResString(@RsEInvalidXMLElementExpectedBeginningO), [UCS4ToChar(Ch), StringStream.PeekPosition]);
 
       rsOpeningTag:
-        if Ch = '?' then
+        if Ch = Ord('?') then
           lPos := rsOpeningName // read name
         else
           FmtError(LoadResString(@RsEInvalidXMLElementMalformedTagFoundn), [StringStream.PeekPosition]);
 
       rsOpeningName:
-        if CharIsValidIdentifierLetter(Ch) or (Ch = '-') or (Ch = '.') then
-          St := St + Ch
+        if UnicodeIsIdentifierPart(Ch) or (Ch = Ord('-')) or (Ch = Ord('.')) then
+          UCS4ArrayConcat(St, Ch)
         else
-        if (Ch = ':') and (lNameSpace = '') then
+        if (Ch = Ord(':')) and (Length(lNameSpace) = 0) then
         begin
           lNameSpace := St;
-          St := '';
+          SetLength(St, 0);
         end
         else
-        if CharIsWhiteSpace(Ch) and (St = '') then
+        if UnicodeIsWhiteSpace(Ch) and (Length(St) = 0) then
           // whitespace after "<" (no name)
           FmtError(LoadResString(@RsEInvalidXMLElementMalformedTagFoundn), [StringStream.PeekPosition])
         else
-        if CharIsWhiteSpace(Ch) then
+        if UnicodeIsWhiteSpace(Ch) then
         begin
           lName := St;
-          St := '';
+          SetLength(St, 0);
           Properties.LoadFromStringStream(StringStream);
           lPos := rsEndTag1;
         end
         else
-        if Ch = '?' then
+        if Ch = Ord('?') then
         begin
           lName := St;
           lPos := rsEndTag2;
@@ -3353,28 +3363,28 @@ begin
           FmtError(LoadResString(@RsEInvalidXMLElementMalformedTagFoundn), [StringStream.PeekPosition]);
 
       rsEndTag1:
-        if Ch = '?' then
+        if Ch = Ord('?') then
           lPos := rsEndTag2
         else
-        if not CharIsWhiteSpace(Ch) then
-          FmtError(LoadResString(@RsEInvalidXMLElementExpectedEndOfTagBu), [Ch, StringStream.PeekPosition]);
+        if not UnicodeIsWhiteSpace(Ch) then
+          FmtError(LoadResString(@RsEInvalidXMLElementExpectedEndOfTagBu), [UCS4ToChar(Ch), StringStream.PeekPosition]);
 
       rsEndTag2:
-        if Ch = '>' then
+        if Ch = Ord('>') then
         begin
           lOk := True;
           Break;
         end
         else
-          FmtError(LoadResString(@RsEInvalidXMLElementExpectedEndOfTagBu), [Ch, StringStream.PeekPosition]);
+          FmtError(LoadResString(@RsEInvalidXMLElementExpectedEndOfTagBu), [UCS4ToChar(Ch), StringStream.PeekPosition]);
     end;
   end;
 
   if not lOk then
     FmtError(LoadResString(@RsEInvalidCommentUnexpectedEndOfData), [StringStream.PeekPosition]);
 
-  Name := lName;
-  NameSpace := lNameSpace;
+  Name := UCS4ToString(lName);
+  NameSpace := UCS4ToString(lNameSpace);
 end;
 
 procedure TJclSimpleXMLElemProcessingInstruction.SaveToStringStream(
@@ -3503,45 +3513,45 @@ const
 var
   lPos: Integer;
   lOk: Boolean;
-  Ch, lChar: Char;
-  St: string;
+  Ch, lChar: UCS4;
+  St: TUCS4Array;
 begin
   lPos := 1;
   lOk := False;
-  lChar := '>';
-  St := '';
+  lChar := Ord('>');
+  SetLength(St, 0);
 
   if AParent <> nil then
     AParent.DoLoadProgress(StringStream.Stream.Position, StringStream.Stream.Size);
 
-  while StringStream.ReadChar(Ch) do
+  while StringStream.ReadUCS4(Ch) do
   begin
     case lPos of
       1..9: //<!DOCTYPE
-        if Ch = CS_START_DOCTYPE[lPos] then
+        if Ch = Ord(CS_START_DOCTYPE[lPos]) then
           Inc(lPos)
         else
-        if not CharIsWhiteSpace(Ch) then
-          FmtError(LoadResString(@RsEInvalidHeaderExpectedsButFounds), [CS_START_DOCTYPE[lPos], Ch, StringStream.PeekPosition]);
+        if not UnicodeIsWhiteSpace(Ch) then
+          FmtError(LoadResString(@RsEInvalidHeaderExpectedsButFounds), [CS_START_DOCTYPE[lPos], UCS4ToChar(Ch), StringStream.PeekPosition]);
       10: //]> or >
         if lChar = Ch then
         begin
-          if lChar = '>' then
+          if lChar = Ord('>') then
           begin
             lOk := True;
             Break; //This is the end
           end
           else
           begin
-            St := St + Ch;
-            lChar := '>';
+            UCS4ArrayConcat(St, Ch);
+            lChar := Ord('>');
           end;
         end
         else
         begin
-          St := St + Ch;
-          if Ch = '[' then
-            lChar := ']';
+          UCS4ArrayConcat(St, Ch);
+          if Ch = Ord('[') then
+            lChar := Ord(']');
         end;
     end;
   end;
@@ -3550,10 +3560,10 @@ begin
     FmtError(LoadResString(@RsEInvalidCommentUnexpectedEndOfData), [StringStream.PeekPosition]);
 
   Name := '';
-  Value := StrTrimCharsLeft(St, CharIsWhiteSpace);
+  Value := StrTrimCharsLeft(UCS4ToString(St), CharIsWhiteSpace);
 
   if AParent <> nil then
-    AParent.DoValueParsed('', St);
+    AParent.DoValueParsed('', Value);
 end;
 
 procedure TJclSimpleXMLElemDocType.SaveToStringStream(StringStream: TJclStringStream;
