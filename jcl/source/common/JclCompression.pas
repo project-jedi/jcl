@@ -6826,7 +6826,7 @@ end;
 
 function TJclZipCompressArchive.GetSupportedCompressionMethods: TJclCompressionMethods;
 begin
-  Result := [cmCopy,cmDeflate,cmDeflate64,cmBZip2,cmLZMA];
+  Result := [cmCopy,cmDeflate,cmDeflate64,cmBZip2,cmLZMA,cmPPMd];
 end;
 
 function TJclZipCompressArchive.GetSupportedEncryptionMethods: TJclEncryptionMethods;
