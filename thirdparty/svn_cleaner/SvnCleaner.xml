@@ -23,7 +23,7 @@
         <value>URL HeadURL Author LastChangedBy Date LastChangedDate Rev Revision LastChangedRevision Id</value>
       </property>
     </setting>
-    <setting path="" mask="*.pas *.cpp *.inc *.h *.c *.dpr *.dpk *.lpk *.bpr *.bpk *.bpf *.bmk *.def *.conf *.sh *.txt *.bat *.xml *.html *.css *.exc *.bpg *.bdsgroup *.bdsproj *.groupproj *.dproj *.cproj *.dof *.rc *.dfm *.xfm *.dtx *.dsf *.dox *.dfg *.ini *.mak *.int *.imp *.pl *.cmd *.manifest *.iss *.cs *.resx *.htaccess *.cfg" recurse="yes"  dironly="no">
+    <setting path="" mask="*.pas *.cpp *.inc *.h *.c *.dpr *.dpk *.lpk *.bpr *.bpk *.bpf *.bmk *.def *.conf *.sh *.txt *.bat *.xml *.html *.css *.exc *.bpg *.bdsgroup *.bdsproj *.groupproj *.dproj *.cproj *.dof *.rc *.dfm *.xfm *.dtx *.dsf *.dox *.dfg *.ini *.mak *.int *.imp *.pl *.cmd *.manifest *.iss *.cs *.resx *.htaccess *.cfg *.HxC *.HxK *.HxT *.cnt" recurse="yes"  dironly="no">
       <property name="svn:eol-style">
         <value>native</value>
       </property>
@@ -176,6 +176,7 @@
           <value>*.dproj</value>
           <value>*.bak</value>
           <value>*.cfg</value>
+          <value>*.hpp</value>
           <value>dcc32.cfg</value>
           <value>dcc32_command.cmd</value>
         </property>
@@ -301,6 +302,11 @@
           </property>
         </setting>
 
+        <setting path="" mask="help" recurse="no" dironly="yes">
+          <property name="svn:ignore">
+            <value>*.doxdb</value>
+          </property>
+        </setting>
       </setting>
 
       <setting path="source" mask="" recurse="no" dironly="yes">
