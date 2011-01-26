@@ -2569,17 +2569,22 @@ begin
       Compiler.Options.Add('-$Y-'); // symbol reference info
     end;
 
+    if Debug then
+      UnitOutputDir := FLibDebugDir
+    else
+      UnitOutputDir := FLibReleaseDir;
+
+    if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 4) then
+      Compiler.AddPathOption('N0', UnitOutputDir) // .dcu files
+    else
+      Compiler.AddPathOption('N', UnitOutputDir); // .dcu files
+
     if bpBCBuilder32 in Target.Personalities then
     begin
       Compiler.Options.Add('-D_RTLDLL' + DirSeparator + 'NO_STRICT' + DirSeparator + 'USEPACKAGES'); // $(SYSDEFINES)
-      if Debug then
-        UnitOutputDir := FLibDebugDir
-      else
-        UnitOutputDir := FLibReleaseDir;
 
       if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 4) then
       begin
-        Compiler.AddPathOption('N0', UnitOutputDir); // .dcu files
         //Compiler.AddPathOption('NH', FIncludeDir);   // .hpp files
         Compiler.AddPathOption('NO', UnitOutputDir); // .obj files
         if TJclBDSInstallation(Target).DualPackageInstallation and OptionChecked[joJCLCopyPackagesHppFiles] then
@@ -2587,7 +2592,6 @@ begin
       end
       else
       begin
-        Compiler.AddPathOption('N0', UnitOutputDir); // .dcu files
         //Compiler.AddPathOption('N1', FIncludeDir);   // .hpp files
         Compiler.AddPathOption('N2', UnitOutputDir); // .obj files
       end;
@@ -2595,16 +2599,8 @@ begin
       Compiler.Options.Add('--BCB');
       //Compiler.AddPathOption('O', Format(BCBIncludePath, [Distribution.JclIncludeDir, Distribution.JclSourcePath]));
       //Compiler.AddPathOption('U', Format(BCBObjectPath, [Distribution.JclIncludeDir, Distribution.JclSourcePath]));
-    end
-    else // Delphi
-    begin
-      if Debug then
-        UnitOutputDir := FLibDebugDir
-      else
-        UnitOutputDir := FLibReleaseDir;
-
-      Compiler.AddPathOption('N', UnitOutputDir); // .dcu files
     end;
+
     Compiler.AddPathOption('I', Distribution.JclIncludeDir);
     Compiler.AddPathOption('U', Distribution.JclSourcePath);
     Compiler.AddPathOption('R', Distribution.JclSourcePath);
