@@ -105,6 +105,7 @@ type
 
   // TypeInfo retrieval
   IJclBaseInfo = interface
+    ['{84E57A52-7219-4248-BDC7-4AACBFE2002D}']
     procedure WriteTo(const Dest: IJclInfoWriter);
     procedure DeclarationTo(const Dest: IJclInfoWriter);
   end;
@@ -122,15 +123,15 @@ type
     property TypeKind: TTypeKind read GetTypeKind;
   end;
 
-  TJclTypeInfo = class(TInterfacedObject, IJclTypeInfo)
+  TJclTypeInfo = class(TInterfacedObject, IJclTypeInfo, IJclBaseInfo)
   private
     FTypeData: PTypeData;
     FTypeInfo: PTypeInfo;
-  protected
-    procedure WriteTo(const Dest: IJclInfoWriter); virtual;
-    procedure DeclarationTo(const Dest: IJclInfoWriter); virtual;
   public
     constructor Create(ATypeInfo: PTypeInfo);
+    { IJclBaseInfo }
+    procedure WriteTo(const Dest: IJclInfoWriter); virtual;
+    procedure DeclarationTo(const Dest: IJclInfoWriter); virtual;
     { IJclTypeInfo }
     function GetName: string;
     function GetTypeData: PTypeData;
@@ -150,10 +151,11 @@ type
     property OrdinalType: TOrdType read GetOrdinalType;
   end;
 
-  TJclOrdinalTypeInfo = class(TJclTypeInfo, IJclOrdinalTypeInfo)
-  protected
-    procedure WriteTo(const Dest: IJclInfoWriter); override;
+  TJclOrdinalTypeInfo = class(TJclTypeInfo, IJclOrdinalTypeInfo,
+    IJclTypeInfo, IJclBaseInfo)
   public
+    { IJclBaseInfo }
+    procedure WriteTo(const Dest: IJclInfoWriter); override;
     { IJclOrdinalTypeInfo }
     function GetOrdinalType: TOrdType;
     property OrdinalType: TOrdType read GetOrdinalType;
@@ -168,11 +170,12 @@ type
     property MaxValue: Int64 read GetMaxValue;
   end;
 
-  TJclOrdinalRangeTypeInfo = class(TJclOrdinalTypeInfo, IJclOrdinalRangeTypeInfo)
-  protected
+  TJclOrdinalRangeTypeInfo = class(TJclOrdinalTypeInfo, IJclOrdinalRangeTypeInfo,
+    IJclOrdinalTypeInfo, IJclTypeInfo, IJclBaseInfo)
+  public
+    { IJclBaseInfo }
     procedure WriteTo(const Dest: IJclInfoWriter); override;
     procedure DeclarationTo(const Dest: IJclInfoWriter); override;
-  public
     { IJclOrdinalRangeTypeInfo }
     function GetMinValue: Int64;
     function GetMaxValue: Int64;
@@ -193,11 +196,12 @@ type
     property UnitName: string read GetUnitName;
   end;
 
-  TJclEnumerationTypeInfo = class(TJclOrdinalRangeTypeInfo, IJclEnumerationTypeInfo)
-  protected
+  TJclEnumerationTypeInfo = class(TJclOrdinalRangeTypeInfo, IJclEnumerationTypeInfo,
+    IJclOrdinalRangeTypeInfo, IJclOrdinalTypeInfo, IJclTypeInfo, IJclBaseInfo)
+  public
+    { IJclBaseInfo }
     procedure WriteTo(const Dest: IJclInfoWriter); override;
     procedure DeclarationTo(const Dest: IJclInfoWriter); override;
-  public
     { IJclEnumerationTypeInfo }
     function GetBaseType: IJclEnumerationTypeInfo;
     function GetNames(const I: Integer): string;
@@ -218,11 +222,12 @@ type
     property BaseType: IJclOrdinalTypeInfo read GetBaseType;
   end;
 
-  TJclSetTypeInfo = class(TJclOrdinalTypeInfo, IJclSetTypeInfo)
-  protected
+  TJclSetTypeInfo = class(TJclOrdinalTypeInfo, IJclSetTypeInfo, IJclOrdinalTypeInfo,
+    IJclTypeInfo, IJclBaseInfo)
+  public
+    { IJclBaseInfo }
     procedure WriteTo(const Dest: IJclInfoWriter); override;
     procedure DeclarationTo(const Dest: IJclInfoWriter); override;
-  public
     { IJclSetTypeInfo }
     function GetBaseType: IJclOrdinalTypeInfo;
     procedure GetAsList(const Value; const WantRanges: Boolean;
@@ -239,11 +244,12 @@ type
     property FloatType: TFloatType read GetFloatType;
   end;
 
-  TJclFloatTypeInfo = class(TJclTypeInfo, IJclFloatTypeInfo)
-  protected
+  TJclFloatTypeInfo = class(TJclTypeInfo, IJclFloatTypeInfo,
+    IJclTypeInfo, IJclBaseInfo)
+  public
+    { IJclBaseInfo }
     procedure WriteTo(const Dest: IJclInfoWriter); override;
     procedure DeclarationTo(const Dest: IJclInfoWriter); override;
-  public
     { IJclFloatTypeInfo }
     function GetFloatType: TFloatType;
     property FloatType: TFloatType read GetFloatType;
@@ -257,11 +263,12 @@ type
     property MaxLength: Integer read GetMaxLength;
   end;
 
-  TJclStringTypeInfo = class(TJclTypeInfo, IJclStringTypeInfo)
-  protected
+  TJclStringTypeInfo = class(TJclTypeInfo, IJclStringTypeInfo,
+    IJclTypeInfo, IJclBaseInfo)
+  public
+    { IJclBaseInfo }
     procedure WriteTo(const Dest: IJclInfoWriter); override;
     procedure DeclarationTo(const Dest: IJclInfoWriter); override;
-  public
     { IJclStringTypeInfo }
     function GetMaxLength: Integer;
     property MaxLength: Integer read GetMaxLength;
@@ -374,11 +381,12 @@ type
     property UnitName: string read GetUnitName;
   end;
 
-  TJclClassTypeInfo = class(TJclTypeInfo, IJclClassTypeInfo)
-  protected
+  TJclClassTypeInfo = class(TJclTypeInfo, IJclClassTypeInfo,
+    IJclTypeInfo, IJclBaseInfo)
+  public
+    { IJclBaseInfo }
     procedure WriteTo(const Dest: IJclInfoWriter); override;
     procedure DeclarationTo(const Dest: IJclInfoWriter); override;
-  public
     { IJclClassTypeInfo }
     function GetClassRef: TClass;
     function GetParent: IJclClassTypeInfo;
@@ -443,11 +451,11 @@ type
     property ResultTypeName: string read GetResultTypeName;
   end;
 
-  TJclEventTypeInfo = class(TJclTypeInfo, IJclEventTypeInfo)
-  protected
+  TJclEventTypeInfo = class(TJclTypeInfo, IJclEventTypeInfo, IJclTypeInfo, IJclBaseInfo)
+  public
+    { IJclBaseInfo }
     procedure WriteTo(const Dest: IJclInfoWriter); override;
     procedure DeclarationTo(const Dest: IJclInfoWriter); override;
-  public
     { IJclEventTypeInfo }
     function GetMethodKind: TMethodKind;
     function GetParameterCount: Integer;
@@ -476,11 +484,12 @@ type
     property UnitName: string read GetUnitName;
   end;
 
-  TJclInterfaceTypeInfo = class(TJclTypeInfo, IJclInterfaceTypeInfo)
-  protected
+  TJclInterfaceTypeInfo = class(TJclTypeInfo, IJclInterfaceTypeInfo, IJclTypeInfo,
+    IJclBaseInfo)
+  public
+    { IJclBaseInfo }
     procedure WriteTo(const Dest: IJclInfoWriter); override;
     procedure DeclarationTo(const Dest: IJclInfoWriter); override;
-  public
     { IJclInterfaceTypeInfo }
     function GetParent: IJclInterfaceTypeInfo;
     function GetFlags: TIntfFlagsBase;
@@ -503,11 +512,12 @@ type
     property MaxValue: Int64 read GetMaxValue;
   end;
 
-  TJclInt64TypeInfo = class(TJclTypeInfo, IJclInt64TypeInfo)
-  protected
+  TJclInt64TypeInfo = class(TJclTypeInfo, IJclInt64TypeInfo,
+    IJclTypeInfo, IJclBaseInfo)
+  public
+    { IJclBaseInfo }
     procedure WriteTo(const Dest: IJclInfoWriter); override;
     procedure DeclarationTo(const Dest: IJclInfoWriter); override;
-  public
     { IJclInt64TypeInfo }
     function GetMinValue: Int64;
     function GetMaxValue: Int64;
@@ -531,11 +541,12 @@ type
     property UnitName: string read GetUnitName;
   end;
 
-  TJclDynArrayTypeInfo = class(TJclTypeInfo, IJclDynArrayTypeInfo)
-  protected
+  TJclDynArrayTypeInfo = class(TJclTypeInfo, IJclDynArrayTypeInfo, IJclTypeInfo,
+    IJclBaseInfo)
+  public
+    { IJclBaseInfo }
     procedure WriteTo(const Dest: IJclInfoWriter); override;
     procedure DeclarationTo(const Dest: IJclInfoWriter); override;
-  public
     { IJclDynArrayTypeInfo }
     function GetElementSize: Longint;
     function GetElementType: IJclTypeInfo;
