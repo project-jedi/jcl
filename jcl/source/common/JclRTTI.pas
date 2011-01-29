@@ -1145,20 +1145,37 @@ end;
 
 function TJclStringTypeInfo.GetMaxLength: Integer;
 begin
-  Result := TypeData.MaxLength;
+  if FTypeInfo^.Kind = tkString then
+    Result := TypeData.MaxLength
+  else
+    Result := 0;
 end;
 
 procedure TJclStringTypeInfo.WriteTo(const Dest: IJclInfoWriter);
 begin
   inherited WriteTo(Dest);
-  Dest.Writeln(LoadResString(@RsRTTIMaxLen) + IntToStr(MaxLength));
+  if FTypeInfo^.Kind = tkString then
+    Dest.Writeln(LoadResString(@RsRTTIMaxLen) + IntToStr(MaxLength));
 end;
 
 procedure TJclStringTypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
 begin
   if Name[1] <> '.' then
     Dest.Write(Name + ' = ');
-  Dest.Write('string[' + IntToStr(MaxLength) + ']');
+
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  if FTypeInfo^.Kind = tkUString then
+    Dest.Write('UnicodeString')
+  else
+  {$ENDIF SUPPORTS_UNICODE_STRING}
+  if FTypeInfo^.Kind = tkLString then
+    Dest.Write('AnsiString')
+  else
+  if FTypeInfo^.Kind = tkWString then
+    Dest.Write('WideString')
+  else
+    Dest.Write('string[' + IntToStr(MaxLength) + ']');
+
   if Name[1] <> '.' then
     Dest.Writeln(';');
 end;
@@ -1893,7 +1910,12 @@ begin
       Result := TJclSetTypeInfo.Create(ATypeInfo);
     tkFloat:
       Result := TJclFloatTypeInfo.Create(ATypeInfo);
-    tkString:
+    tkString,
+    tkLString,
+    {$IFDEF SUPPORTS_UNICODE_STRING}
+    tkUString,
+    {$ENDIF SUPPORTS_UNICODE_STRING}
+    tkWString:
       Result := TJclStringTypeInfo.Create(ATypeInfo);
     tkClass:
       Result := TJclClassTypeInfo.Create(ATypeInfo);
