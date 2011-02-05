@@ -48,6 +48,7 @@
 		<LibDirVersion Condition=" Exists('$(BDS)\bin\dcc140.dll') ">d14</LibDirVersion> <!-- 2010 -->
 		<LibDirVersion Condition=" Exists('$(BDS)\bin\dcc150.dll') ">d15</LibDirVersion> <!-- XE   -->
 		<LibDirVersion Condition=" Exists('$(BDS)\bin\dcc160.dll') ">d16</LibDirVersion> <!-- XE2  -->
+		<LibDirVersion Condition=" Exists('$(BDS)\bin\dcc170.dll') ">d17</LibDirVersion> <!-- XE3  -->
 	</PropertyGroup>
 
 
@@ -79,6 +80,7 @@
 
 		<!-- Compiler command line options -->
 		<BaseOptions>$(BaseOptions) -M -D_RTLDLL;NO_STRICT;USEPACKAGES</BaseOptions>
+		<BaseOptions Condition=" '$(UserDefines)' != '' ">$(BaseOptions) -D$(UsertDefines)</BaseOptions>
 		<BaseOptions Condition=" '$(BCBCompile)' == 'true' ">$(BaseOptions) -JPHNE --BCB</BaseOptions>
 		<BaseOptions>$(BaseOptions) -$X+ -$G+ -$H+ -$P+ -$U- -$T- -$V+ -$J+ -$Z1 -$J+</BaseOptions>
 		<BaseOptions>$(BaseOptions) -I&quot;$(IncludeDirs)&quot; -U&quot;$(UnitDirs)&quot; -R&quot;$(ResDirs)&quot;</BaseOptions>
@@ -179,7 +181,6 @@
 	<!-- Copy *.res files to the dcu output directories -->
 	<Target Name="CopyResFiles" Inputs="@(JclResFiles)" Outputs="$(JclResFileOutput)">
 		<Copy SourceFiles="@(JclResFiles)" DestinationFolder="$(DcuOutDir)" />
-		<Copy SourceFiles="@(JclResFiles)" DestinationFolder="$(DebugDcuOutDir)" />
 	</Target>
 
 	<!-- Create JclXXX.ini file if it doesn't exist -->
