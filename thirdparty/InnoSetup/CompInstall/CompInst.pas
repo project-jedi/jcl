@@ -103,7 +103,7 @@ begin
 
     ConfigDataLocation := Inst.ConfigDataLocation;
     if (ConfigDataLocation <> '') and (ConfigDataLocation[1] = PathDelim) then
-      ConfigDataLocation := Copy(ConfigDataLocation, 2, MaxInt); // there is no such thing as am absolute "\Software" registry key
+      ConfigDataLocation := Copy(ConfigDataLocation, 2, MaxInt); // there is no such thing as an absolute "\Software" registry key
 
     case Inst.RadToolKind of
       brDelphi:
@@ -269,6 +269,7 @@ begin
       begin
         TJclBDSInstallation(Inst).AddToCppBrowsingPath(BrowsePaths);
         TJclBDSInstallation(Inst).AddToCppIncludePath(IncludePaths);
+        TJclBDSInstallation(Inst).AddToCppLibraryPath(SearchPaths); // for .lib and .bpi
       end;
     end
     else
@@ -280,6 +281,7 @@ begin
       begin
         TJclBDSInstallation(Inst).RemoveFromCppBrowsingPath(BrowsePaths);
         TJclBDSInstallation(Inst).RemoveFromCppIncludePath(IncludePaths);
+        TJclBDSInstallation(Inst).RemoveFromCppLibraryPath(SearchPaths); // for .lib and .bpi
       end;
     end;
     Result := 1;
