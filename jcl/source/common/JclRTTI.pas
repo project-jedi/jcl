@@ -143,19 +143,29 @@ type
     property TypeKind: TTypeKind read GetTypeKind;
   end;
 
+  // for all values that can be serialized to/deserialized from strings
+  IJclValueTypeInfo = interface(IJclTypeInfo)
+    ['{522C6E39-F917-4C92-B085-223BD68C377F}']
+    function SaveValueToString(AnObj: TObject; const PropName: string): string;
+    procedure LoadValueFromString(AnObj: TObject; const PropName, Value: string);
+  end;
+
   // Ordinal types
-  IJclOrdinalTypeInfo = interface(IJclTypeInfo)
+  IJclOrdinalTypeInfo = interface(IJclValueTypeInfo)
     ['{7DAD5221-46EA-11D5-B0C0-4854E825F345}']
     function GetOrdinalType: TOrdType;
 
     property OrdinalType: TOrdType read GetOrdinalType;
   end;
 
-  TJclOrdinalTypeInfo = class(TJclTypeInfo, IJclOrdinalTypeInfo,
+  TJclOrdinalTypeInfo = class(TJclTypeInfo, IJclOrdinalTypeInfo, IJclValueTypeInfo,
     IJclTypeInfo, IJclBaseInfo)
   public
     { IJclBaseInfo }
     procedure WriteTo(const Dest: IJclInfoWriter); override;
+    { IJclValueTypeInfo }
+    function SaveValueToString(AnObj: TObject; const PropName: string): string;
+    procedure LoadValueFromString(AnObj: TObject; const PropName, Value: string);
     { IJclOrdinalTypeInfo }
     function GetOrdinalType: TOrdType;
     property OrdinalType: TOrdType read GetOrdinalType;
@@ -171,7 +181,7 @@ type
   end;
 
   TJclOrdinalRangeTypeInfo = class(TJclOrdinalTypeInfo, IJclOrdinalRangeTypeInfo,
-    IJclOrdinalTypeInfo, IJclTypeInfo, IJclBaseInfo)
+    IJclOrdinalTypeInfo, IJclValueTypeInfo, IJclTypeInfo, IJclBaseInfo)
   public
     { IJclBaseInfo }
     procedure WriteTo(const Dest: IJclInfoWriter); override;
@@ -197,11 +207,14 @@ type
   end;
 
   TJclEnumerationTypeInfo = class(TJclOrdinalRangeTypeInfo, IJclEnumerationTypeInfo,
-    IJclOrdinalRangeTypeInfo, IJclOrdinalTypeInfo, IJclTypeInfo, IJclBaseInfo)
+    IJclOrdinalRangeTypeInfo, IJclOrdinalTypeInfo, IJclValueTypeInfo, IJclTypeInfo, IJclBaseInfo)
   public
     { IJclBaseInfo }
     procedure WriteTo(const Dest: IJclInfoWriter); override;
     procedure DeclarationTo(const Dest: IJclInfoWriter); override;
+    { IJclValueTypeInfo }
+    function SaveValueToString(AnObj: TObject; const PropName: string): string;
+    procedure LoadValueFromString(AnObj: TObject; const PropName, Value: string);
     { IJclEnumerationTypeInfo }
     function GetBaseType: IJclEnumerationTypeInfo;
     function GetNames(const I: Integer): string;
@@ -223,11 +236,14 @@ type
   end;
 
   TJclSetTypeInfo = class(TJclOrdinalTypeInfo, IJclSetTypeInfo, IJclOrdinalTypeInfo,
-    IJclTypeInfo, IJclBaseInfo)
+    IJclValueTypeInfo, IJclTypeInfo, IJclBaseInfo)
   public
     { IJclBaseInfo }
     procedure WriteTo(const Dest: IJclInfoWriter); override;
     procedure DeclarationTo(const Dest: IJclInfoWriter); override;
+    { IJclValueInfo }
+    function SaveValueToString(AnObj: TObject; const PropName: string): string;
+    procedure LoadValueFromString(AnObj: TObject; const PropName, Value: string);
     { IJclSetTypeInfo }
     function GetBaseType: IJclOrdinalTypeInfo;
     procedure GetAsList(const Value; const WantRanges: Boolean;
@@ -237,38 +253,44 @@ type
   end;
 
   // Float types
-  IJclFloatTypeInfo = interface(IJclTypeInfo)
+  IJclFloatTypeInfo = interface(IJclValueTypeInfo)
     ['{7DAD5225-46EA-11D5-B0C0-4854E825F345}']
     function GetFloatType: TFloatType;
 
     property FloatType: TFloatType read GetFloatType;
   end;
 
-  TJclFloatTypeInfo = class(TJclTypeInfo, IJclFloatTypeInfo,
+  TJclFloatTypeInfo = class(TJclTypeInfo, IJclFloatTypeInfo, IJclValueTypeInfo,
     IJclTypeInfo, IJclBaseInfo)
   public
     { IJclBaseInfo }
     procedure WriteTo(const Dest: IJclInfoWriter); override;
     procedure DeclarationTo(const Dest: IJclInfoWriter); override;
+    { IJclValueInfo }
+    function SaveValueToString(AnObj: TObject; const PropName: string): string;
+    procedure LoadValueFromString(AnObj: TObject; const PropName, Value: string);
     { IJclFloatTypeInfo }
     function GetFloatType: TFloatType;
     property FloatType: TFloatType read GetFloatType;
   end;
 
   // Short string types
-  IJclStringTypeInfo = interface(IJclTypeInfo)
+  IJclStringTypeInfo = interface(IJclValueTypeInfo)
     ['{7DAD5226-46EA-11D5-B0C0-4854E825F345}']
     function GetMaxLength: Integer;
 
     property MaxLength: Integer read GetMaxLength;
   end;
 
-  TJclStringTypeInfo = class(TJclTypeInfo, IJclStringTypeInfo,
+  TJclStringTypeInfo = class(TJclTypeInfo, IJclStringTypeInfo, IJclValueTypeInfo,
     IJclTypeInfo, IJclBaseInfo)
   public
     { IJclBaseInfo }
     procedure WriteTo(const Dest: IJclInfoWriter); override;
     procedure DeclarationTo(const Dest: IJclInfoWriter); override;
+    { IJclValueInfo }
+    function SaveValueToString(AnObj: TObject; const PropName: string): string;
+    procedure LoadValueFromString(AnObj: TObject; const PropName, Value: string);
     { IJclStringTypeInfo }
     function GetMaxLength: Integer;
     property MaxLength: Integer read GetMaxLength;
@@ -299,6 +321,9 @@ type
     function IsStored(const AInstance: TObject): Boolean;
     function HasDefault: Boolean;
     function HasIndex: Boolean;
+
+    function SaveValueToString(AnObj: TObject): string;
+    procedure LoadValueFromString(AnObj: TObject; const Value: string);
 
     property PropInfo: PPropInfo read GetPropInfo;
     property PropType: IJclTypeInfo read GetPropType;
@@ -345,6 +370,9 @@ type
     function HasDefault: Boolean;
     function HasIndex: Boolean;
 
+    function SaveValueToString(AnObj: TObject): string;
+    procedure LoadValueFromString(AnObj: TObject; const Value: string);
+
     property PropInfo: PPropInfo read GetPropInfo;
     property PropType: IJclTypeInfo read GetPropType;
     property Reader: Pointer read GetReader;
@@ -362,7 +390,35 @@ type
     property Name: string read GetName;
   end;
 
-  IJclClassTypeInfo = interface(IJclTypeInfo)
+  IJclObjPropInfo = interface(IJclPropInfo)
+    function GetAbsoluteName: string;
+    function GetInstance: TObject;
+    function IsStored: Boolean; overload;
+
+    function SaveValueToString: string;
+    procedure LoadValueFromString(const Value: string);
+
+    property AbsoluteName: string read GetAbsoluteName;
+    property Instance: TObject read GetInstance;
+  end;
+
+  IJclObjPropInfoArray = array of IJclObjPropInfo;
+
+  TJclObjPropInfo = class(TJclPropInfo, IJclObjPropInfo, IJclPropInfo)
+  private
+    FPrefix: string;
+    FInstance: TObject;
+  public
+    constructor Create(const APropInfo: PPropInfo; const APrefix: string; AInstance: TObject);
+    { IJclObjPropInfo }
+    function GetAbsoluteName: string;
+    function GetInstance: TObject;
+    function IsStored: Boolean; overload;
+    function SaveValueToString: string; overload;
+    procedure LoadValueFromString(const Value: string); overload;
+  end;
+
+  IJclClassTypeInfo = interface(IJclValueTypeInfo)
     ['{7DAD5228-46EA-11D5-B0C0-4854E825F345}']
     function GetClassRef: TClass;
     function GetParent: IJclClassTypeInfo;
@@ -381,12 +437,15 @@ type
     property UnitName: string read GetUnitName;
   end;
 
-  TJclClassTypeInfo = class(TJclTypeInfo, IJclClassTypeInfo,
+  TJclClassTypeInfo = class(TJclTypeInfo, IJclClassTypeInfo, IJclValueTypeInfo,
     IJclTypeInfo, IJclBaseInfo)
   public
     { IJclBaseInfo }
     procedure WriteTo(const Dest: IJclInfoWriter); override;
     procedure DeclarationTo(const Dest: IJclInfoWriter); override;
+    { IJclValueInfo }
+    function SaveValueToString(AnObj: TObject; const PropName: string): string;
+    procedure LoadValueFromString(AnObj: TObject; const PropName, Value: string);
     { IJclClassTypeInfo }
     function GetClassRef: TClass;
     function GetParent: IJclClassTypeInfo;
@@ -401,6 +460,35 @@ type
     property PropertyCount: Integer read GetPropertyCount;
     property Properties[const PropIdx: Integer]: IJclPropInfo read GetProperties;
     property PropNames[const Name: string]: IJclPropInfo read GetPropNames;
+  end;
+
+  IJclObjClassTypeInfo = interface(IJclClassTypeInfo)
+    ['{5BF4383D-7FDD-4494-88CC-849D72B5E142}']
+    function GetInstance: TObject;
+    function GetObjProperties(const PropIdx: Integer): IJclObjPropInfo;
+    function GetObjPropNames(const Name: string): IJclObjPropInfo;
+
+    function SaveValueToString(const PropName: string): string; overload;
+    procedure LoadValueFromString(const PropName, Value: string); overload;
+
+    property Instance: TObject read GetInstance;
+    property ObjProperties[const PropIdx: Integer]: IJclObjPropInfo read GetObjProperties;
+    property ObjPropNames[const Name: string]: IJclObjPropInfo read GetObjPropNames;
+  end;
+
+  TJclObjClassTypeInfo = class(TJclClassTypeInfo, IJclObjClassTypeInfo,
+    IJclClassTypeInfo, IJclValueTypeInfo, IJclTypeInfo, IJclBaseInfo)
+  private
+    FPrefix: string;
+    FInstance: TObject;
+  public
+    constructor Create(const ATypeInfo: PTypeInfo; const APrefix: string; AInstance: TObject);
+    { IJclObjClassTypeInfo }
+    function GetInstance: TObject;
+    function GetObjProperties(const PropIdx: Integer): IJclObjPropInfo;
+    function GetObjPropNames(const Name: string): IJclObjPropInfo;
+    function SaveValueToString(const PropName: string): string; overload;
+    procedure LoadValueFromString(const PropName, Value: string); overload;
   end;
 
   // Event types
@@ -503,7 +591,7 @@ type
   end;
 
   // Int64 types
-  IJclInt64TypeInfo = interface(IJclTypeInfo)
+  IJclInt64TypeInfo = interface(IJclValueTypeInfo)
     ['{7DAD522C-46EA-11D5-B0C0-4854E825F345}']
     function GetMinValue: Int64;
     function GetMaxValue: Int64;
@@ -512,12 +600,15 @@ type
     property MaxValue: Int64 read GetMaxValue;
   end;
 
-  TJclInt64TypeInfo = class(TJclTypeInfo, IJclInt64TypeInfo,
+  TJclInt64TypeInfo = class(TJclTypeInfo, IJclInt64TypeInfo, IJclValueTypeInfo,
     IJclTypeInfo, IJclBaseInfo)
   public
     { IJclBaseInfo }
     procedure WriteTo(const Dest: IJclInfoWriter); override;
     procedure DeclarationTo(const Dest: IJclInfoWriter); override;
+    { IJclValueInfo }
+    function SaveValueToString(AnObj: TObject; const PropName: string): string;
+    procedure LoadValueFromString(AnObj: TObject; const PropName, Value: string);
     { IJclInt64TypeInfo }
     function GetMinValue: Int64;
     function GetMaxValue: Int64;
@@ -603,6 +694,9 @@ function JclIsClassByName(const AnObj: TObject; const AClass: TClass): Boolean;
 
 // returns all properties of type string (kind = tkLString or kind = tkUString when Unicode is enabled)
 function GetStringPropList(TypeInfo: PTypeInfo; out PropList: PPropList): Integer;
+
+// returns all object properties
+function GetObjectProperties(AnObj: TObject; Recurse: Boolean = False): IJclObjPropInfoArray;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -791,11 +885,23 @@ begin
   Result := TypeData.OrdType;
 end;
 
+procedure TJclOrdinalTypeInfo.LoadValueFromString(AnObj: TObject;
+  const PropName, Value: string);
+begin
+  SetOrdProp(AnObj, PropName, StrToInt(Value));
+end;
+
 procedure TJclOrdinalTypeInfo.WriteTo(const Dest: IJclInfoWriter);
 begin
   inherited WriteTo(Dest);
   Dest.Writeln(LoadResString(@RsRTTIOrdinalType) +
     JclEnumValueToIdent(System.TypeInfo(TOrdType), TypeData.OrdType));
+end;
+
+function TJclOrdinalTypeInfo.SaveValueToString(AnObj: TObject;
+  const PropName: string): string;
+begin
+  Result := IntToStr(GetOrdProp(AnObj, PropName));
 end;
 
 //=== { TJclOrdinalRangeTypeInfo } ===========================================
@@ -901,6 +1007,12 @@ begin
     Result := -1;
 end;
 
+procedure TJclEnumerationTypeInfo.LoadValueFromString(AnObj: TObject;
+  const PropName, Value: string);
+begin
+  SetEnumProp(AnObj, PropName, Value);
+end;
+
 procedure TJclEnumerationTypeInfo.WriteTo(const Dest: IJclInfoWriter);
 var
   Idx: Integer;
@@ -916,6 +1028,12 @@ begin
     Prefix := ', ';
   end;
   Dest.Writeln(')');
+end;
+
+function TJclEnumerationTypeInfo.SaveValueToString(AnObj: TObject;
+  const PropName: string): string;
+begin
+  Result := GetEnumProp(AnObj, PropName);
 end;
 
 procedure TJclEnumerationTypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
@@ -950,6 +1068,12 @@ end;
 function TJclSetTypeInfo.GetBaseType: IJclOrdinalTypeInfo;
 begin
   Result := JclTypeInfo(TypeData.CompType{$IFDEF BORLAND}^{$ENDIF}) as IJclOrdinalTypeInfo;
+end;
+
+procedure TJclSetTypeInfo.LoadValueFromString(AnObj: TObject; const PropName,
+  Value: string);
+begin
+  SetSetProp(AnObj, PropName, Value);
 end;
 
 procedure TJclSetTypeInfo.GetAsList(const Value; const WantRanges: Boolean;
@@ -1103,6 +1227,12 @@ begin
   end;
 end;
 
+function TJclSetTypeInfo.SaveValueToString(AnObj: TObject;
+  const PropName: string): string;
+begin
+  Result := GetSetProp(AnObj, PropName);
+end;
+
 procedure TJclSetTypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
 var
   Base: IJclOrdinalTypeInfo;
@@ -1135,11 +1265,23 @@ begin
   Result := TypeData.FloatType;
 end;
 
+procedure TJclFloatTypeInfo.LoadValueFromString(AnObj: TObject; const PropName,
+  Value: string);
+begin
+  SetFloatProp(AnObj, PropName, StrToFloat(Value));
+end;
+
 procedure TJclFloatTypeInfo.WriteTo(const Dest: IJclInfoWriter);
 begin
   inherited WriteTo(Dest);
   Dest.Writeln(LoadResString(@RsRTTIFloatType) +
     JclEnumValueToIdent(System.TypeInfo(TFloatType), TypeData.FloatType));
+end;
+
+function TJclFloatTypeInfo.SaveValueToString(AnObj: TObject;
+  const PropName: string): string;
+begin
+  Result := FloatToStr(GetFloatProp(AnObj, PropName));
 end;
 
 procedure TJclFloatTypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
@@ -1162,11 +1304,23 @@ begin
     Result := 0;
 end;
 
+procedure TJclStringTypeInfo.LoadValueFromString(AnObj: TObject; const PropName,
+  Value: string);
+begin
+  SetStrProp(AnObj, PropName, Value);
+end;
+
 procedure TJclStringTypeInfo.WriteTo(const Dest: IJclInfoWriter);
 begin
   inherited WriteTo(Dest);
   if FTypeInfo^.Kind = tkString then
     Dest.Writeln(LoadResString(@RsRTTIMaxLen) + IntToStr(MaxLength));
+end;
+
+function TJclStringTypeInfo.SaveValueToString(AnObj: TObject;
+  const PropName: string): string;
+begin
+  Result := GetStrProp(AnObj, PropName);
 end;
 
 procedure TJclStringTypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
@@ -1328,6 +1482,30 @@ begin
   Result := IsStoredProp(AInstance, FPropInfo);
 end;
 
+procedure TJclPropInfo.LoadValueFromString(AnObj: TObject; const Value: string);
+var
+  APropType: IJclTypeInfo;
+  AValueInfo: IJclValueTypeInfo;
+begin
+  APropType := PropType;
+  if Supports(APropType, IJclValueTypeInfo, AValueInfo) then
+    AValueInfo.LoadValueFromString(AnObj, Name, Value)
+  else
+    raise EJclRTTIError.CreateResFmt(@RsRTTINoStringValue, [Name, APropType.Name]);
+end;
+
+function TJclPropInfo.SaveValueToString(AnObj: TObject): string;
+var
+  APropType: IJclTypeInfo;
+  AValueInfo: IJclValueTypeInfo;
+begin
+  APropType := PropType;
+  if Supports(APropType, IJclValueTypeInfo, AValueInfo) then
+    Result := AValueInfo.SaveValueToString(AnObj, Name)
+  else
+    raise EJclRTTIError.CreateResFmt(@RsRTTINoStringValue, [Name, APropType.Name]);
+end;
+
 function TJclPropInfo.HasDefault: Boolean;
 begin
   Result := Longword(Default) <> $80000000;
@@ -1336,6 +1514,44 @@ end;
 function TJclPropInfo.HasIndex: Boolean;
 begin
   Result := Longword(Index) <> $80000000;
+end;
+
+//=== { TJclObjPropInfo } ====================================================
+
+constructor TJclObjPropInfo.Create(const APropInfo: PPropInfo;
+  const APrefix: string; AInstance: TObject);
+begin
+  inherited Create(APropInfo);
+  FPrefix := APrefix;
+  FInstance := AInstance;
+end;
+
+function TJclObjPropInfo.GetAbsoluteName: string;
+begin
+  if FPrefix <> '' then
+    Result := FPrefix + '.' + Name
+  else
+    Result := Name;
+end;
+
+function TJclObjPropInfo.GetInstance: TObject;
+begin
+  Result := FInstance;
+end;
+
+function TJclObjPropInfo.IsStored: Boolean;
+begin
+  Result := IsStoredProp(FInstance, Name);
+end;
+
+procedure TJclObjPropInfo.LoadValueFromString(const Value: string);
+begin
+  LoadValueFromString(FInstance, Value);
+end;
+
+function TJclObjPropInfo.SaveValueToString: string;
+begin
+  Result := SaveValueToString(FInstance);
 end;
 
 //=== { TJclClassTypeInfo } ==================================================
@@ -1411,6 +1627,44 @@ end;
 function TJclClassTypeInfo.GetUnitName: string;
 begin
   Result := string(TypeData.UnitName);
+end;
+
+procedure TJclClassTypeInfo.LoadValueFromString(AnObj: TObject; const PropName,
+  Value: string);
+var
+  DotPos: Integer;
+  BaseObj: TObject;
+  Prefix: string;
+  ValueInfo: IJclValueTypeInfo;
+begin
+  DotPos := CharPos(PropName, '.');
+  if DotPos = 0 then
+    raise EJclRTTIError.CreateResFmt(@RsRTTINoStringValue, [PropName, Name]);
+  Prefix := StrLeft(PropName, DotPos - 1);
+  BaseObj := GetObjectProp(AnObj, Prefix);
+  if Assigned(BaseObj) and Supports(PropNames[Prefix], IJclValueTypeInfo, ValueInfo) then
+    ValueInfo.LoadValueFromString(BaseObj, StrRestOf(PropName, DotPos + 1), Value)
+  else
+    raise EJclRTTIError.CreateResFmt(@RsRTTINoStringValue, [PropName, Name]);
+end;
+
+function TJclClassTypeInfo.SaveValueToString(AnObj: TObject;
+  const PropName: string): string;
+var
+  DotPos: Integer;
+  BaseObj: TObject;
+  Prefix: string;
+  ValueInfo: IJclValueTypeInfo;
+begin
+  DotPos := CharPos(PropName, '.');
+  if DotPos = 0 then
+    raise EJclRTTIError.CreateResFmt(@RsRTTINoStringValue, [PropName, Name]);
+  Prefix := StrLeft(PropName, DotPos - 1);
+  BaseObj := GetObjectProp(AnObj, Prefix);
+  if Assigned(BaseObj) and Supports(PropNames[Prefix], IJclValueTypeInfo, ValueInfo) then
+    Result := ValueInfo.SaveValueToString(BaseObj, StrRestOf(PropName, DotPos + 1))
+  else
+    raise EJclRTTIError.CreateResFmt(@RsRTTINoStringValue, [PropName, Name]);
 end;
 
 procedure TJclClassTypeInfo.WriteTo(const Dest: IJclInfoWriter);
@@ -1559,6 +1813,111 @@ begin
     end;
   end;
   Dest.Writeln('end;');
+end;
+
+//=== { TJclObjClassTypeInfo } ===============================================
+
+constructor TJclObjClassTypeInfo.Create(const ATypeInfo: PTypeInfo;
+  const APrefix: string; AInstance: TObject);
+begin
+  inherited Create(ATypeInfo);
+  FPrefix := APrefix;
+  FInstance := AInstance;
+end;
+
+function TJclObjClassTypeInfo.GetInstance: TObject;
+begin
+  Result := FInstance;
+end;
+
+function TJclObjClassTypeInfo.GetObjProperties(
+  const PropIdx: Integer): IJclObjPropInfo;
+var
+  PropData: ^TPropData;
+  Prop: PPropInfo;
+  Idx: Integer;
+  RecSize: Integer;
+begin
+  PropData := @TypeData.UnitName;
+  Inc(TJclAddr(PropData), 1 + Length(GetUnitName));
+  Prop := PPropInfo(PropData);
+  Inc(TJclAddr(Prop), 2);
+  if PropIdx > 0 then
+  begin
+    RecSize := SizeOf(TPropInfo) - SizeOf(ShortString);
+    Idx := PropIdx;
+    while Idx > 0 do
+    begin
+      Inc(TJclAddr(Prop), RecSize);
+      Inc(TJclAddr(Prop), 1 + PByte(Prop)^);
+      Dec(Idx);
+    end;
+  end;
+  Result := TJclObjPropInfo.Create(Prop, FPrefix, FInstance);
+end;
+
+function TJclObjClassTypeInfo.GetObjPropNames(
+  const Name: string): IJclObjPropInfo;
+var
+  PropInfo: PPropInfo;
+  DotPos: Integer;
+  Prefix, Suffix: string;
+  SubClassTypeInfo: IJclObjClassTypeInfo;
+  AInstance: TObject;
+begin
+  DotPos := CharPos(Name, '.');
+  if DotPos > 0 then
+  begin
+    Prefix := StrLeft(Name, DotPos - 1);
+    Suffix := StrRestOf(Name, DotPos + 1);
+    PropInfo := GetPropInfo(TypeInfo, Prefix);
+    if (PropInfo <> nil) and (PropInfo.PropType^.Kind = tkClass) then
+    begin
+      if FPrefix <> '' then
+        Prefix := FPrefix + '.' + Prefix;
+      AInstance := GetObjectProp(FInstance, PropInfo);
+      if AInstance <> nil then
+      begin
+        SubClassTypeInfo := TJclObjClassTypeInfo.Create(PropInfo.PropType^, Prefix, AInstance);
+        Result := SubClassTypeInfo.ObjPropNames[Suffix];
+      end
+      else
+        Result := nil;
+    end
+    else
+      Result := nil;
+  end
+  else
+  begin
+    PropInfo := GetPropInfo(TypeInfo, Name);
+    if PropInfo <> nil then
+      Result := TJclObjPropInfo.Create(PropInfo, FPrefix, FInstance)
+    else
+      Result := nil;
+  end;
+end;
+
+procedure TJclObjClassTypeInfo.LoadValueFromString(const PropName,
+  Value: string);
+var
+  ObjPropInfo: IJclObjPropInfo;
+begin
+  ObjPropInfo := GetObjPropNames(PropName);
+  if Assigned(ObjPropInfo) then
+    ObjPropInfo.LoadValueFromString(Value)
+  else
+    raise EJclRTTIError.CreateResFmt(@RsRTTINoStringValue, [Name, PropName]);
+end;
+
+function TJclObjClassTypeInfo.SaveValueToString(const PropName: string): string;
+var
+  ObjPropInfo: IJclObjPropInfo;
+begin
+  ObjPropInfo := GetObjPropNames(PropName);
+  if Assigned(ObjPropInfo) then
+    Result := ObjPropInfo.SaveValueToString
+  else
+    raise EJclRTTIError.CreateResFmt(@RsRTTINoStringValue, [Name, PropName]);
 end;
 
 //=== { TJclEventParamInfo } =================================================
@@ -1811,6 +2170,12 @@ begin
   Result := TypeData.MinInt64Value;
 end;
 
+procedure TJclInt64TypeInfo.LoadValueFromString(AnObj: TObject; const PropName,
+  Value: string);
+begin
+  SetInt64Prop(AnObj, PropName, StrToInt(Value));
+end;
+
 function TJclInt64TypeInfo.GetMaxValue: Int64;
 begin
   Result := TypeData.MaxInt64Value;
@@ -1821,6 +2186,12 @@ begin
   inherited WriteTo(Dest);
   Dest.Writeln(LoadResString(@RsRTTIMinValue) + IntToStr(MinValue));
   Dest.Writeln(LoadResString(@RsRTTIMaxValue) + IntToStr(MaxValue));
+end;
+
+function TJclInt64TypeInfo.SaveValueToString(AnObj: TObject;
+  const PropName: string): string;
+begin
+  Result := IntToStr(GetInt64Prop(AnObj, PropName));
 end;
 
 procedure TJclInt64TypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
@@ -2534,6 +2905,52 @@ begin
     Result := GetPropList(TypeInfo, [tkLString], PropList);
   end;
   {$ENDIF ~SUPPORTS_UNICODE_STRING}
+end;
+
+function GetObjectProperties(AnObj: TObject; Recurse: Boolean): IJclObjPropInfoArray;
+
+  procedure InternalGetObjectProperties(var PropCount: SizeInt; Current: TObject; const Prefix: string);
+  var
+    I, C: Integer;
+    PropList: PPropList;
+    SubObject: TObject;
+    AbsoluteName: string;
+  begin
+    if Assigned(Current) then
+    begin
+      C := GetPropList(Current, PropList);
+      try
+        for I := 0 to C - 1 do
+        begin
+          if PropCount = Length(Result) then
+            SetLength(Result, Length(Result) * 2);
+          Result[PropCount] := TJclObjPropInfo.Create(PropList[I], Prefix, Current);
+          Inc(PropCount);
+
+          if Recurse and (PropList[I]^.PropType^.Kind = tkClass) then
+          begin
+            SubObject := GetObjectProp(Current, PropList[I]);
+            if Prefix <> '' then
+              AbsoluteName := string(Prefix + '.' + PropList[I]^.Name)
+            else
+              AbsoluteName := string(PropList[I]^.Name);
+            InternalGetObjectProperties(PropCount, SubObject, AbsoluteName);
+          end;
+        end;
+      finally
+        if C > 0 then
+          FreeMem(PropList);
+      end;
+    end;
+  end;
+
+var
+  PropCount: Integer;
+begin
+  PropCount := 0;
+  SetLength(Result, 16);
+  InternalGetObjectProperties(PropCount, AnObj, '');
+  SetLength(Result, PropCount);
 end;
 
 initialization

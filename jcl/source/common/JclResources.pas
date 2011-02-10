@@ -1626,6 +1626,7 @@ resourcestring
   RsRTTIValueOutOfRange   = 'Value out of range (%s).';
   RsRTTIUnknownIdentifier = 'Unknown identifier ''%s''.';
   RsRTTIInvalidBaseType   = 'Invalid base type (%s is of type %s).';
+  RsRTTINoStringValue     = 'The property %s of type %s has no string value'; 
 
   RsRTTIVar           = 'var ';
   RsRTTIConst         = 'const ';
