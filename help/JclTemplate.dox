@@ -401,7 +401,7 @@ CValue_9=7872391
 
 [Configurations]
 Count=6
-Current=0
+Current=4
 Name0=HTML
 Name1=CHM
 Name2=H2
@@ -50084,7 +50084,7 @@ GenerateTopicStructure=1
 OutputDir=..\jcl\help
 OutputFilename=
 ShowDocumentation=1
-UseXMLDocTags=1
+UseXMLDocTags=0
 
 [Configurations\XML\AutoDocTitles]
 Saved=1
@@ -50635,7 +50635,7 @@ LocalClassHierarchyAsGraphics=0
 MultiLanguage_OriginalLanguage=0
 NavigationPageFileLineNumber=' (%LINENUMBER%)'
 NavigationPageFileRelativePath=
-NavigationPageOptions=7
+NavigationPageOptions=8199
 OutputSettings0=1
 OutputSettings1=1
 OutputSettings2=0

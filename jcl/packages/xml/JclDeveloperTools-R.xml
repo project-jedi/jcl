@@ -12,6 +12,7 @@
     <Package Name="rtl" Targets="Delphi,Bcb,Bds" Condition=""/>
     <Package Name="vcl" Targets="Delphi,Bcb,Bds" Condition=""/>
     <Package Name="FCL" Targets="fpc" Condition=""/>
+    <Package Name="..\..\..\help\VCL" Targets="help" Condition=""/>
     <Package Name="Jcl-R" Targets="all" Condition=""/>
     <Package Name="JclContainers-R" Targets="all" Condition=""/>
   </Requires>

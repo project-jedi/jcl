@@ -25,23 +25,24 @@ ContentFile=JclVclcontents.html
 IndexFile=JclVclidx.html
 
 [Project Database Files]
-Count=1
-File0=Jcl.doxdb
+Count=2
+File0=..\..\..\help\VCL.doxdb
+File1=Jcl.doxdb
 
 [Source Files]
 Count=15
-File1=..\..\source\vcl\JclPrint.pas
-File2=..\..\source\vcl\JclGraphUtils.pas
-File3=..\..\source\vcl\JclGraphics.pas
-File4=..\..\source\vcl\JclFont.pas
-File5=..\..\source\vcl\JclOpenDialogHooks.pas
-File6=..\..\source\vcl\JclOpenDialogFavorites.pas
-File7=..\..\source\vcl\JclVclResources.pas
-File8=..\..\source\vcl\JclVersionControl.pas
-File9=..\..\source\vcl\JclVersionCtrlCVSImpl.pas
-File10=..\..\source\vcl\JclVersionCtrlSVNImpl.pas
-File11=..\..\..\help\Bitmap32.dtx
-File12=..\..\..\help\Font.dtx
-File13=..\..\..\help\Graphics.dtx
-File14=..\..\..\help\JclVcl.dtx
-File15=..\..\..\help\Regions.dtx
+File0=..\..\source\vcl\JclPrint.pas
+File1=..\..\source\vcl\JclGraphUtils.pas
+File2=..\..\source\vcl\JclGraphics.pas
+File3=..\..\source\vcl\JclFont.pas
+File4=..\..\source\vcl\JclOpenDialogHooks.pas
+File5=..\..\source\vcl\JclOpenDialogFavorites.pas
+File6=..\..\source\vcl\JclVclResources.pas
+File7=..\..\source\vcl\JclVersionControl.pas
+File8=..\..\source\vcl\JclVersionCtrlCVSImpl.pas
+File9=..\..\source\vcl\JclVersionCtrlSVNImpl.pas
+File10=..\..\..\help\Bitmap32.dtx
+File11=..\..\..\help\Font.dtx
+File12=..\..\..\help\Graphics.dtx
+File13=..\..\..\help\JclVcl.dtx
+File14=..\..\..\help\Regions.dtx

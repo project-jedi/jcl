@@ -25,25 +25,26 @@ ContentFile=JclContainerscontents.html
 IndexFile=JclContainersidx.html
 
 [Project Database Files]
-Count=1
-File0=Jcl.doxdb
+Count=2
+File0=..\..\..\help\VCL.doxdb
+File1=Jcl.doxdb
 
 [Source Files]
 Count=17
-File1=..\..\source\common\JclAbstractContainers.pas
-File2=..\..\source\common\JclAlgorithms.pas
-File3=..\..\source\common\JclArrayLists.pas
-File4=..\..\source\common\JclArraySets.pas
-File5=..\..\source\common\JclBinaryTrees.pas
-File6=..\..\source\common\JclContainerIntf.pas
-File7=..\..\source\common\JclHashMaps.pas
-File8=..\..\source\common\JclHashSets.pas
-File9=..\..\source\common\JclLinkedLists.pas
-File10=..\..\source\common\JclQueues.pas
-File11=..\..\source\common\JclSortedMaps.pas
-File12=..\..\source\common\JclStacks.pas
-File13=..\..\source\common\JclTrees.pas
-File14=..\..\source\common\JclVectors.pas
-File15=..\..\..\help\ContainerCopies.dtx
-File16=..\..\..\help\Containers.dtx
-File17=..\..\..\help\JclContainers.dtx
+File0=..\..\source\common\JclAbstractContainers.pas
+File1=..\..\source\common\JclAlgorithms.pas
+File2=..\..\source\common\JclArrayLists.pas
+File3=..\..\source\common\JclArraySets.pas
+File4=..\..\source\common\JclBinaryTrees.pas
+File5=..\..\source\common\JclContainerIntf.pas
+File6=..\..\source\common\JclHashMaps.pas
+File7=..\..\source\common\JclHashSets.pas
+File8=..\..\source\common\JclLinkedLists.pas
+File9=..\..\source\common\JclQueues.pas
+File10=..\..\source\common\JclSortedMaps.pas
+File11=..\..\source\common\JclStacks.pas
+File12=..\..\source\common\JclTrees.pas
+File13=..\..\source\common\JclVectors.pas
+File14=..\..\..\help\ContainerCopies.dtx
+File15=..\..\..\help\Containers.dtx
+File16=..\..\..\help\JclContainers.dtx

@@ -45,5 +45,5 @@ File%INDEX0%=%NAME%.doxdb
 [Source Files]
 Count=%CONTAINCOUNT%
 <%%% START FILES %%%>
-File%INDEX%=%FILENAME%
+File%INDEX0%=%FILENAME%
 <%%% END FILES %%%>
