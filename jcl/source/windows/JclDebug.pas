@@ -4933,6 +4933,9 @@ begin
         StackInfo.CallerAddr := StackFrameCallerAddr - CallInstructionSize
       else
         StackInfo.CallerAddr := StackFrameCallerAddr;
+      // the stack may be messed up in big projects, avoid overflow in arithmetics
+      if StackFrameCallerFrame < TJclAddr(StackFrame) then
+        Break;
       StackInfo.DumpSize := StackFrameCallerFrame - TJclAddr(StackFrame);
       StackInfo.ParamSize := (StackInfo.DumpSize - SizeOf(TStackFrame)) div 4;
       if PStackFrame(StackFrame^.CallerFrame) = StackFrame then
