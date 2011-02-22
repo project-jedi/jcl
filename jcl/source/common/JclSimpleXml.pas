@@ -1325,7 +1325,7 @@ function TJclSimpleXML.SaveToString: string;
 var
   Stream: TStringStream;
 begin
-  Stream := TStringStream.Create('');
+  Stream := TStringStream.Create('' {$IFDEF SUPPORTS_UNICODE}, CP_UTF16LE{$ENDIF});
   try
     SaveToStream(Stream);
     Result := Stream.DataString;

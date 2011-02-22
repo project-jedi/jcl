@@ -2402,7 +2402,7 @@ end;
 
 procedure TJclStringStream.InvalidateBuffers;
 begin
-  FStrBufferStart := FStream.Seek(Length(FBOM), soCurrent);
+  FStrBufferStart := FStream.Seek(0, soCurrent);
   FStrBufferNext := FStrBufferStart;
   FStrBufferPosition := 0;
   FStrBufferCurrentSize := 0;
@@ -2953,8 +2953,6 @@ end;
 
 constructor TJclAutoStream.Create(AStream: TStream; AOwnsStream: Boolean);
 var
-  ResetPos: Boolean;
-  Pos: Int64;
   I, MaxLength, ReadLength: Integer;
   BOM: array of Byte;
 begin
@@ -2962,9 +2960,6 @@ begin
   MaxLength := Length(BOM_UTF8);
   if MaxLength < Length(BOM_UTF16_LSB) then
     MaxLength := Length(BOM_UTF16_LSB);
-
-  ResetPos := False;
-  Pos := FStream.Seek(0, soCurrent);
 
   SetLength(BOM, MaxLength);
   ReadLength := FStream.Read(BOM[0], Length(BOM) * SizeOf(BOM[0])) div SizeOf(BOM[0]);
@@ -2980,7 +2975,6 @@ begin
       if BOM[I - Low(BOM_UTF8)] <> BOM_UTF8[I] then
     begin
       FEncoding := seAuto;
-      ResetPos := True;
       Break;
     end;
   end;
@@ -2994,7 +2988,6 @@ begin
       if BOM[I - Low(BOM_UTF8)] <> BOM_UTF16_LSB[I] then
     begin
       FEncoding := seAuto;
-      ResetPos := True;
       Break;
     end;
   end;
@@ -3023,8 +3016,7 @@ begin
         SetLength(FBOM, 0);
       end;
   end;
-  if ResetPos then
-    FStream.Seek(Pos, soBeginning);
+  FStream.Seek(Length(FBOM) - ReadLength, soCurrent);
   InvalidateBuffers;
 end;
 
@@ -3090,6 +3082,7 @@ function TJclAutoStream.SkipBOM: LongInt;
 begin
   // already skipped to determine encoding
   Result := 0;
+  InvalidateBuffers;
 end;
 
 {$IFDEF UNITVERSIONING}
