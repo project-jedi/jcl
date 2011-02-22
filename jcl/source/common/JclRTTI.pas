@@ -2931,7 +2931,7 @@ function GetObjectProperties(AnObj: TObject; Recurse: Boolean): IJclObjPropInfoA
           begin
             SubObject := GetObjectProp(Current, PropList[I]);
             if Prefix <> '' then
-              AbsoluteName := string(Prefix + '.' + PropList[I]^.Name)
+              AbsoluteName := string(Prefix + '.' + string(PropList[I]^.Name))
             else
               AbsoluteName := string(PropList[I]^.Name);
             InternalGetObjectProperties(PropCount, SubObject, AbsoluteName);
