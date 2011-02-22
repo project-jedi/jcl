@@ -55,7 +55,7 @@ type
     FamilyCodePage: Word;
   end;
 
-const JclCharsetInfos: array [0..301] of TJclCharsetInfo =
+const JclCharsetInfos: array [0..305] of TJclCharsetInfo =
 (* Arabic (ASMO 708) ASMO-708 708 1256 *)
     ((Name: 'ASMO-708'; CodePage: 708; FamilyCodePage: 1256),
 (* Arabic (DOS) DOS-720 720 1256 *)
@@ -127,6 +127,7 @@ const JclCharsetInfos: array [0..301] of TJclCharsetInfo =
      (Name: 'cn-big5'; CodePage: 950; FamilyCodePage: 950),
      (Name: 'csbig5'; CodePage: 950; FamilyCodePage: 950),
      (Name: 'x-x-big5'; CodePage: 950; FamilyCodePage: 950),
+     (Name: 'MS950'; CodePage: 950; FamilyCodePage: 950),
 (* Chinese Traditional (CNS) x-Chinese-CNS 20000 950 *)
      (Name: 'x-Chinese-CNS'; CodePage: 20000; FamilyCodePage: 950),
 (* Chinese Traditional (Eten) x-Chinese-Eten 20002 950 *)
@@ -199,6 +200,7 @@ const JclCharsetInfos: array [0..301] of TJclCharsetInfo =
      (Name: 'x-mac-hebrew'; CodePage: 10005; FamilyCodePage: 1255),
 (* Hebrew (Windows) windows-1255 ISO_8859-8-I, ISO-8859-8, visual 1255 1255 *)
      (Name: 'windows-1255'; CodePage: 1255; FamilyCodePage: 1255),
+     (Name: 'CP1255'; CodePage: 1255; FamilyCodePage: 1255),
      (Name: 'ISO_8859-8-I'; CodePage: 1255; FamilyCodePage: 1255),
      (Name: 'ISO-8859-8'; CodePage: 1255; FamilyCodePage: 1255),
      (Name: 'visual'; CodePage: 1255; FamilyCodePage: 1255),
@@ -335,6 +337,7 @@ const JclCharsetInfos: array [0..301] of TJclCharsetInfo =
      (Name: 'shift-jis'; CodePage: 932; FamilyCodePage: 932),
      (Name: 'x-ms-cp932'; CodePage: 932; FamilyCodePage: 932),
      (Name: 'x-sjis'; CodePage: 932; FamilyCodePage: 932),
+     (Name: 'MS932'; CodePage: 932; FamilyCodePage: 932),
 (* Korean ks_c_5601-1987 csKSC56011987, euc-kr, iso-ir-149, korean, ks_c_5601, ks_c_5601_1987, ks_c_5601-1989, KSC_5601, KSC5601 949 949 *)
      (Name: 'ks_c_5601-1987'; CodePage: 949; FamilyCodePage: 949),
      (Name: 'csKSC56011987'; CodePage: 949; FamilyCodePage: 949),
@@ -459,6 +462,7 @@ const JclCharsetInfos: array [0..301] of TJclCharsetInfo =
      (Name: 'Windows-1252'; CodePage: 1252; FamilyCodePage: 1252),
      (Name: 'ANSI_X3.4-1968'; CodePage: 1252; FamilyCodePage: 1252),
      (Name: 'ANSI_X3.4-1986'; CodePage: 1252; FamilyCodePage: 1252),
+     (Name: 'CP1252'; CodePage: 1252; FamilyCodePage: 1252),
      (Name: 'ascii'; CodePage: 1252; FamilyCodePage: 1252),
      (Name: 'cp367'; CodePage: 1252; FamilyCodePage: 1252),
      (Name: 'cp819'; CodePage: 1252; FamilyCodePage: 1252),
