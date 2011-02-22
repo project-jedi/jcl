@@ -3308,6 +3308,7 @@ var
   Ch: UCS4;
 begin
   SetLength(St, 0);
+  SetLength(lName, 0);
   SetLength(lNameSpace, 0);
   lPos := rsWaitingOpeningTag;
   lOk := False;
