@@ -123,7 +123,7 @@ type
     property TypeKind: TTypeKind read GetTypeKind;
   end;
 
-  TJclTypeInfo = class(TInterfacedObject, IJclTypeInfo, IJclBaseInfo)
+  TJclTypeInfo = class(TInterfacedObject, IJclBaseInfo, IJclTypeInfo)
   private
     FTypeData: PTypeData;
     FTypeInfo: PTypeInfo;
@@ -158,8 +158,8 @@ type
     property OrdinalType: TOrdType read GetOrdinalType;
   end;
 
-  TJclOrdinalTypeInfo = class(TJclTypeInfo, IJclOrdinalTypeInfo, IJclValueTypeInfo,
-    IJclTypeInfo, IJclBaseInfo)
+  TJclOrdinalTypeInfo = class(TJclTypeInfo, IJclBaseInfo, IJclTypeInfo,
+    IJclValueTypeInfo, IJclOrdinalTypeInfo)
   public
     { IJclBaseInfo }
     procedure WriteTo(const Dest: IJclInfoWriter); override;
@@ -180,8 +180,8 @@ type
     property MaxValue: Int64 read GetMaxValue;
   end;
 
-  TJclOrdinalRangeTypeInfo = class(TJclOrdinalTypeInfo, IJclOrdinalRangeTypeInfo,
-    IJclOrdinalTypeInfo, IJclValueTypeInfo, IJclTypeInfo, IJclBaseInfo)
+  TJclOrdinalRangeTypeInfo = class(TJclOrdinalTypeInfo, IJclBaseInfo, IJclTypeInfo,
+    IJclValueTypeInfo, IJclOrdinalTypeInfo, IJclOrdinalRangeTypeInfo)
   public
     { IJclBaseInfo }
     procedure WriteTo(const Dest: IJclInfoWriter); override;
@@ -206,8 +206,8 @@ type
     property UnitName: string read GetUnitName;
   end;
 
-  TJclEnumerationTypeInfo = class(TJclOrdinalRangeTypeInfo, IJclEnumerationTypeInfo,
-    IJclOrdinalRangeTypeInfo, IJclOrdinalTypeInfo, IJclValueTypeInfo, IJclTypeInfo, IJclBaseInfo)
+  TJclEnumerationTypeInfo = class(TJclOrdinalRangeTypeInfo, IJclBaseInfo, IJclTypeInfo, 
+    IJclValueTypeInfo, IJclOrdinalTypeInfo, IJclOrdinalRangeTypeInfo, IJclEnumerationTypeInfo)
   public
     { IJclBaseInfo }
     procedure WriteTo(const Dest: IJclInfoWriter); override;
@@ -235,8 +235,8 @@ type
     property BaseType: IJclOrdinalTypeInfo read GetBaseType;
   end;
 
-  TJclSetTypeInfo = class(TJclOrdinalTypeInfo, IJclSetTypeInfo, IJclOrdinalTypeInfo,
-    IJclValueTypeInfo, IJclTypeInfo, IJclBaseInfo)
+  TJclSetTypeInfo = class(TJclOrdinalTypeInfo, IJclBaseInfo, IJclTypeInfo,
+    IJclValueTypeInfo, IJclOrdinalTypeInfo, IJclSetTypeInfo)
   public
     { IJclBaseInfo }
     procedure WriteTo(const Dest: IJclInfoWriter); override;
@@ -260,8 +260,8 @@ type
     property FloatType: TFloatType read GetFloatType;
   end;
 
-  TJclFloatTypeInfo = class(TJclTypeInfo, IJclFloatTypeInfo, IJclValueTypeInfo,
-    IJclTypeInfo, IJclBaseInfo)
+  TJclFloatTypeInfo = class(TJclTypeInfo, IJclBaseInfo, IJclTypeInfo,
+    IJclValueTypeInfo, IJclFloatTypeInfo)
   public
     { IJclBaseInfo }
     procedure WriteTo(const Dest: IJclInfoWriter); override;
@@ -282,8 +282,8 @@ type
     property MaxLength: Integer read GetMaxLength;
   end;
 
-  TJclStringTypeInfo = class(TJclTypeInfo, IJclStringTypeInfo, IJclValueTypeInfo,
-    IJclTypeInfo, IJclBaseInfo)
+  TJclStringTypeInfo = class(TJclTypeInfo, IJclBaseInfo, IJclTypeInfo,
+    IJclValueTypeInfo, IJclStringTypeInfo)
   public
     { IJclBaseInfo }
     procedure WriteTo(const Dest: IJclInfoWriter); override;
@@ -404,7 +404,7 @@ type
 
   IJclObjPropInfoArray = array of IJclObjPropInfo;
 
-  TJclObjPropInfo = class(TJclPropInfo, IJclObjPropInfo, IJclPropInfo)
+  TJclObjPropInfo = class(TJclPropInfo, IJclPropInfo, IJclObjPropInfo)
   private
     FPrefix: string;
     FInstance: TObject;
@@ -437,8 +437,8 @@ type
     property UnitName: string read GetUnitName;
   end;
 
-  TJclClassTypeInfo = class(TJclTypeInfo, IJclClassTypeInfo, IJclValueTypeInfo,
-    IJclTypeInfo, IJclBaseInfo)
+  TJclClassTypeInfo = class(TJclTypeInfo, IJclBaseInfo, IJclTypeInfo,
+    IJclValueTypeInfo, IJclClassTypeInfo)
   public
     { IJclBaseInfo }
     procedure WriteTo(const Dest: IJclInfoWriter); override;
@@ -476,8 +476,8 @@ type
     property ObjPropNames[const Name: string]: IJclObjPropInfo read GetObjPropNames;
   end;
 
-  TJclObjClassTypeInfo = class(TJclClassTypeInfo, IJclObjClassTypeInfo,
-    IJclClassTypeInfo, IJclValueTypeInfo, IJclTypeInfo, IJclBaseInfo)
+  TJclObjClassTypeInfo = class(TJclClassTypeInfo, IJclBaseInfo, IJclTypeInfo,
+    IJclValueTypeInfo, IJclClassTypeInfo, IJclObjClassTypeInfo)
   private
     FPrefix: string;
     FInstance: TObject;
@@ -539,7 +539,7 @@ type
     property ResultTypeName: string read GetResultTypeName;
   end;
 
-  TJclEventTypeInfo = class(TJclTypeInfo, IJclEventTypeInfo, IJclTypeInfo, IJclBaseInfo)
+  TJclEventTypeInfo = class(TJclTypeInfo, IJclBaseInfo, IJclTypeInfo, IJclEventTypeInfo)
   public
     { IJclBaseInfo }
     procedure WriteTo(const Dest: IJclInfoWriter); override;
@@ -572,8 +572,8 @@ type
     property UnitName: string read GetUnitName;
   end;
 
-  TJclInterfaceTypeInfo = class(TJclTypeInfo, IJclInterfaceTypeInfo, IJclTypeInfo,
-    IJclBaseInfo)
+  TJclInterfaceTypeInfo = class(TJclTypeInfo, IJclBaseInfo, IJclTypeInfo,
+    IJclInterfaceTypeInfo)
   public
     { IJclBaseInfo }
     procedure WriteTo(const Dest: IJclInfoWriter); override;
@@ -600,8 +600,8 @@ type
     property MaxValue: Int64 read GetMaxValue;
   end;
 
-  TJclInt64TypeInfo = class(TJclTypeInfo, IJclInt64TypeInfo, IJclValueTypeInfo,
-    IJclTypeInfo, IJclBaseInfo)
+  TJclInt64TypeInfo = class(TJclTypeInfo, IJclBaseInfo, IJclTypeInfo,
+    IJclValueTypeInfo, IJclInt64TypeInfo)
   public
     { IJclBaseInfo }
     procedure WriteTo(const Dest: IJclInfoWriter); override;
@@ -632,8 +632,8 @@ type
     property UnitName: string read GetUnitName;
   end;
 
-  TJclDynArrayTypeInfo = class(TJclTypeInfo, IJclDynArrayTypeInfo, IJclTypeInfo,
-    IJclBaseInfo)
+  TJclDynArrayTypeInfo = class(TJclTypeInfo, IJclBaseInfo, IJclTypeInfo,
+    IJclDynArrayTypeInfo)
   public
     { IJclBaseInfo }
     procedure WriteTo(const Dest: IJclInfoWriter); override;
