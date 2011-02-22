@@ -321,7 +321,13 @@ type
 function Addr64ToAddr32(const Value: TJclAddr64): TJclAddr32;
 function Addr32ToAddr64(const Value: TJclAddr32): TJclAddr64;
 
-{$IFDEF SUPPORTS_GENERICS}
+{$IFDEF FPC}
+type
+  HWND = type Windows.HWND;
+  HMODULE = type Windows.HMODULE;
+{$ENDIF FPC}
+
+ {$IFDEF SUPPORTS_GENERICS}
 //DOM-IGNORE-BEGIN
 
 type
