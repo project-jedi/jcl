@@ -2402,7 +2402,7 @@ end;
 
 procedure TJclStringStream.InvalidateBuffers;
 begin
-  FStrBufferStart := FStream.Seek(0, soCurrent);
+  FStrBufferStart := FStream.Seek(Length(FBOM), soCurrent);
   FStrBufferNext := FStrBufferStart;
   FStrBufferPosition := 0;
   FStrBufferCurrentSize := 0;

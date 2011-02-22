@@ -1200,7 +1200,7 @@ procedure TJclSimpleXML.LoadFromString(const Value: string);
 var
   Stream: TStringStream;
 begin
-  Stream := TStringStream.Create(Value);
+  Stream := TStringStream.Create(Value {$IFDEF SUPPORTS_UNICODE}, CP_UTF16LE{$ENDIF});
   try
     LoadFromStream(Stream);
   finally
