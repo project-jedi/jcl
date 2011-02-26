@@ -623,6 +623,13 @@
       </property>
     </setting>
 
+    <setting path="thirdparty/InnoSetup" mask="" recurse="no" dironly="yes">
+      <property name="svn:ignore">
+        <value>Output</value>
+        <value>setupbuild</value>
+      </property>
+    </setting>
+
     <setting path="website/sourceforge/daily" mask="" recurse="no" dironly="yes">
       <property name="svn:ignore">
         <value>*.7z</value>

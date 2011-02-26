@@ -407,9 +407,14 @@ begin
         AStringStream.Seek(0, soBeginning);
         Xml.LoadFromStringStream(AStringStream);
         FSvnProperties.LoadFromXml(Xml.Root);
+      finally
+        AStringStream.Free;
+      end;
 
-        AStringStream.Size := 0;
+      StorageStream.Size := 0;
 
+      AStringStream := TJclAutoStream.Create(StorageStream, False);
+      try
         // retrieve the list of SVN items
         WriteLn('getting SVN items...');
         SvnResult := ExecuteSvn('status -v --xml ' + FSettings.Root);
