@@ -267,10 +267,24 @@
       <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%XMLLINKS%"/>
+      <configuration index="1" caption="Working directory" value="..\..\jcl\packages\help"/>
+      <configuration index="2" caption="Parameters" value="Jcl.dox XML JCL_Help:%id"/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
+    </action>
+    <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="%DMCC%"/>
       <configuration index="1" caption="Working directory" value="..\..\jcl\packages\help"/>
       <configuration index="2" caption="Parameters" value="-config &quot;XML&quot; -noshow -w3 JclContainers.dox"/>
       <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
+      <configuration index="4" caption="Result file" value=""/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%XMLLINKS%"/>
+      <configuration index="1" caption="Working directory" value="..\..\jcl\packages\help"/>
+      <configuration index="2" caption="Parameters" value="JclContainers.dox XML JCL_Help:%id"/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
       <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TCommandLineCaller">
@@ -281,10 +295,24 @@
       <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%XMLLINKS%"/>
+      <configuration index="1" caption="Working directory" value="..\..\jcl\packages\help"/>
+      <configuration index="2" caption="Parameters" value="JclDeveloperTools.dox XML JCL_Help:%id"/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
+    </action>
+    <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="%DMCC%"/>
       <configuration index="1" caption="Working directory" value="..\..\jcl\packages\help"/>
       <configuration index="2" caption="Parameters" value="-config &quot;XML&quot; -noshow -w3 JclVcl.dox"/>
       <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
+      <configuration index="4" caption="Result file" value=""/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%XMLLINKS%"/>
+      <configuration index="1" caption="Working directory" value="..\..\jcl\packages\help"/>
+      <configuration index="2" caption="Parameters" value="JclVcl.dox XML JCL_Help:%id"/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
       <configuration index="4" caption="Result file" value=""/>
     </action>
   </task>

@@ -25,10 +25,11 @@ ContentFile=JclDeveloperToolscontents.html
 IndexFile=JclDeveloperToolsidx.html
 
 [Project Database Files]
-Count=3
+Count=4
 File0=..\..\..\help\VCL.doxdb
-File1=Jcl.doxdb
-File2=JclContainers.doxdb
+File1=..\..\..\help\JEDI.doxdb
+File2=Jcl.doxdb
+File3=JclContainers.doxdb
 
 [Source Files]
 Count=29
@@ -61,3 +62,11 @@ File25=..\..\source\common\JclUsesUtils.pas
 File26=..\..\source\windows\JclHelpUtils.pas
 File27=..\..\source\windows\MSHelpServices_TLB.pas
 File28=..\..\..\help\JclDeveloperTools.dtx
+
+[General]
+Copyright=Copyright (C) 1999, 2011 Project JEDI
+Summary=Documentation of the JEDI Code Library Developer Tools package
+Title=JEDI Code Library Developer Tools package
+VersionBuild=3847
+VersionMajor=2
+VersionMinor=3

@@ -25,9 +25,10 @@ ContentFile=JclContainerscontents.html
 IndexFile=JclContainersidx.html
 
 [Project Database Files]
-Count=2
+Count=3
 File0=..\..\..\help\VCL.doxdb
-File1=Jcl.doxdb
+File1=..\..\..\help\JEDI.doxdb
+File2=Jcl.doxdb
 
 [Source Files]
 Count=17
@@ -48,3 +49,11 @@ File13=..\..\source\common\JclVectors.pas
 File14=..\..\..\help\ContainerCopies.dtx
 File15=..\..\..\help\Containers.dtx
 File16=..\..\..\help\JclContainers.dtx
+
+[General]
+Copyright=Copyright (C) 1999, 2011 Project JEDI
+Summary=Documentation of the JEDI Code Library Containers package
+Title=JEDI Code Library Containers package
+VersionBuild=3847
+VersionMajor=2
+VersionMinor=3

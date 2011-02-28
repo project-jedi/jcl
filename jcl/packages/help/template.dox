@@ -47,3 +47,11 @@ Count=%CONTAINCOUNT%
 <%%% START FILES %%%>
 File%INDEX0%=%FILENAME%
 <%%% END FILES %%%>
+
+[General]
+Copyright=%COPYRIGHT%
+Summary=Documentation of the %DESCRIPTION%
+Title=%DESCRIPTION%
+VersionBuild=%BUILD_NUMBER%
+VersionMajor=%VERSION_MAJOR_NUMBER%
+VersionMinor=%VERSION_MINOR_NUMBER%

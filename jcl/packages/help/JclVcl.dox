@@ -25,9 +25,10 @@ ContentFile=JclVclcontents.html
 IndexFile=JclVclidx.html
 
 [Project Database Files]
-Count=2
+Count=3
 File0=..\..\..\help\VCL.doxdb
-File1=Jcl.doxdb
+File1=..\..\..\help\JEDI.doxdb
+File2=Jcl.doxdb
 
 [Source Files]
 Count=15
@@ -46,3 +47,11 @@ File11=..\..\..\help\Font.dtx
 File12=..\..\..\help\Graphics.dtx
 File13=..\..\..\help\JclVcl.dtx
 File14=..\..\..\help\Regions.dtx
+
+[General]
+Copyright=Copyright (C) 1999, 2011 Project JEDI
+Summary=Documentation of the JEDI Code Library VCL package
+Title=JEDI Code Library VCL package
+VersionBuild=3847
+VersionMajor=2
+VersionMinor=3

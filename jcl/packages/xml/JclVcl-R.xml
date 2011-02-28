@@ -12,6 +12,7 @@
     <Package Name="vcljpg" Targets="c6,d6,d7,d8,d9,d10,cs1,d11" Condition=""/>
     <Package Name="vclimg" Targets="allv11up" Condition=""/>
     <Package Name="..\..\..\help\VCL" Targets="help" Condition=""/>
+    <Package Name="..\..\..\help\JEDI" Targets="help" Condition=""/>
     <Package Name="Jcl-R" Targets="all" Condition=""/>
   </Requires>
   <Contains>

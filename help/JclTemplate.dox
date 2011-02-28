@@ -51330,10 +51330,10 @@ ID8=.dpr;.dpk
 ID9=.dsp
 
 [General]
-Author=JCL Team
+Author=Project JEDI
 AuthorEmail=JEDI-JCL@yahoogroups.com
 CategorizeTypeDefStructsAsStructs=1
-Copyright=Project JEDI
+Copyright=Copyright (c) 2002 - 2011 Project JEDI. All rights reserved.
 FoldersThreshold=0
 Keywords=
 Summary=Documentation of the JEDI Code Library
@@ -51364,7 +51364,7 @@ CPPConvertGetSetToProperties=0
 CPP_NonPrototypedFunctions=0
 DocUseTripleSlashOnly=0
 General_ExtendedVisibilityChecking=0
-General_ParseIncludeFiles=1
+General_ParseIncludeFiles=0
 HeaderUnderlineCharactersCenter==
 HeaderUnderlineCharactersJustify=#
 HeaderUnderlineCharactersLeft=-
@@ -52025,8 +52025,7 @@ SavedValues=1
 Count=0
 
 [Source Include Directories]
-Count=1
-Dir0=..\jcl\source\include
+Count=0
 
 [Topic Reports]
 Count=2
