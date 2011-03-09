@@ -32,14 +32,14 @@ type
 
 function ReBaseImage(CurrentImageName: PAnsiChar; SymbolPath: PAnsiChar; fReBase: BOOL;
   fRebaseSysfileOk: BOOL; fGoingDown: BOOL; CheckImageSize: ULONG;
-  var OldImageSize: ULONG; var OldImageBase: ULONG_PTR; var NewImageSize: ULONG;
-  var NewImageBase: ULONG_PTR; TimeStamp: ULONG): BOOL; stdcall;
+  var OldImageSize: TJclAddr32; var OldImageBase: TJclAddr;
+  var NewImageSize: TJclAddr32; var NewImageBase: TJclAddr; TimeStamp: ULONG): BOOL; stdcall;
 {$EXTERNALSYM ReBaseImage}
 
 function ReBaseImage64(CurrentImageName: PAnsiChar; SymbolPath: PAnsiChar; fReBase: BOOL;
   fRebaseSysfileOk: BOOL; fGoingDown: BOOL; CheckImageSize: ULONG;
-  var OldImageSize: ULONG; var OldImageBase: TJclAddr64; var NewImageSize: ULONG;
-  var NewImageBase: TJclAddr64; TimeStamp: ULONG): BOOL; stdcall;
+  var OldImageSize: TJclAddr; var OldImageBase: TJclAddr64;
+  var NewImageSize: TJclAddr; var NewImageBase: TJclAddr64; TimeStamp: ULONG): BOOL; stdcall;
 {$EXTERNALSYM ReBaseImage64}
 
 // line 199

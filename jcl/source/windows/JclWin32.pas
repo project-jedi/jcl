@@ -3138,14 +3138,14 @@ type
 
 function ReBaseImage(CurrentImageName: PAnsiChar; SymbolPath: PAnsiChar; fReBase: BOOL;
   fRebaseSysfileOk: BOOL; fGoingDown: BOOL; CheckImageSize: ULONG;
-  var OldImageSize: ULONG; var OldImageBase: ULONG_PTR; var NewImageSize: ULONG;
-  var NewImageBase: ULONG_PTR; TimeStamp: ULONG): BOOL; stdcall;
+  var OldImageSize: TJclAddr32; var OldImageBase: TJclAddr;
+  var NewImageSize: TJclAddr32; var NewImageBase: TJclAddr; TimeStamp: ULONG): BOOL; stdcall;
 {$EXTERNALSYM ReBaseImage}
 
 function ReBaseImage64(CurrentImageName: PAnsiChar; SymbolPath: PAnsiChar; fReBase: BOOL;
   fRebaseSysfileOk: BOOL; fGoingDown: BOOL; CheckImageSize: ULONG;
-  var OldImageSize: ULONG; var OldImageBase: TJclAddr64; var NewImageSize: ULONG;
-  var NewImageBase: TJclAddr64; TimeStamp: ULONG): BOOL; stdcall;
+  var OldImageSize: TJclAddr; var OldImageBase: TJclAddr64;
+  var NewImageSize: TJclAddr; var NewImageBase: TJclAddr64; TimeStamp: ULONG): BOOL; stdcall;
 {$EXTERNALSYM ReBaseImage64}
 
 // line 199
@@ -7694,16 +7694,16 @@ const
 type
   TReBaseImage = function (CurrentImageName: PAnsiChar; SymbolPath: PAnsiChar; fReBase: BOOL;
     fRebaseSysfileOk: BOOL; fGoingDown: BOOL; CheckImageSize: ULONG;
-    var OldImageSize: ULONG; var OldImageBase: ULONG_PTR; var NewImageSize: ULONG;
-    var NewImageBase: ULONG_PTR; TimeStamp: ULONG): BOOL; stdcall;
+    var OldImageSize: TJclAddr32; var OldImageBase: TJclAddr;
+    var NewImageSize: TJclAddr32; var NewImageBase: TJclAddr; TimeStamp: ULONG): BOOL; stdcall;
 
 var
   _ReBaseImage: TReBaseImage = nil;
 
 function ReBaseImage(CurrentImageName: PAnsiChar; SymbolPath: PAnsiChar; fReBase: BOOL;
   fRebaseSysfileOk: BOOL; fGoingDown: BOOL; CheckImageSize: ULONG;
-  var OldImageSize: ULONG; var OldImageBase: ULONG_PTR; var NewImageSize: ULONG;
-  var NewImageBase: ULONG_PTR; TimeStamp: ULONG): BOOL;
+  var OldImageSize: TJclAddr32; var OldImageBase: TJclAddr;
+  var NewImageSize: TJclAddr32; var NewImageBase: TJclAddr; TimeStamp: ULONG): BOOL;
 begin
   GetProcedureAddress(Pointer(@_ReBaseImage), ImageHlpLib, 'ReBaseImage');
   Result := _ReBaseImage(CurrentImageName, SymbolPath, fReBase, fRebaseSysfileOk, fGoingDown, CheckImageSize, OldImageSize, OldImageBase, NewImageSize, NewImageBase, TimeStamp);
@@ -7712,16 +7712,16 @@ end;
 type
   TReBaseImage64 = function (CurrentImageName: PAnsiChar; SymbolPath: PAnsiChar; fReBase: BOOL;
     fRebaseSysfileOk: BOOL; fGoingDown: BOOL; CheckImageSize: ULONG;
-    var OldImageSize: ULONG; var OldImageBase: TJclAddr64; var NewImageSize: ULONG;
-    var NewImageBase: TJclAddr64; TimeStamp: ULONG): BOOL; stdcall;
+    var OldImageSize: TJclAddr32; var OldImageBase: TJclAddr64;
+    var NewImageSize: TJclAddr32; var NewImageBase: TJclAddr64; TimeStamp: ULONG): BOOL; stdcall;
 
 var
   _ReBaseImage64: TReBaseImage64 = nil;
 
 function ReBaseImage64(CurrentImageName: PAnsiChar; SymbolPath: PAnsiChar; fReBase: BOOL;
   fRebaseSysfileOk: BOOL; fGoingDown: BOOL; CheckImageSize: ULONG;
-  var OldImageSize: ULONG; var OldImageBase: TJclAddr64; var NewImageSize: ULONG;
-  var NewImageBase: TJclAddr64; TimeStamp: ULONG): BOOL;
+  var OldImageSize: TJclAddr32; var OldImageBase: TJclAddr64;
+  var NewImageSize: TJclAddr32; var NewImageBase: TJclAddr64; TimeStamp: ULONG): BOOL;
 begin
   GetProcedureAddress(Pointer(@_ReBaseImage64), ImageHlpLib, 'ReBaseImage64');
   Result := _ReBaseImage64(CurrentImageName, SymbolPath, fReBase, fRebaseSysfileOk, fGoingDown, CheckImageSize, OldImageSize, OldImageBase, NewImageSize, NewImageBase, TimeStamp);
