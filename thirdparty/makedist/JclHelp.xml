@@ -248,6 +248,46 @@
       <configuration index="2" caption="To directory" value="..\..\jcl\help"/>
     </action>
   </task>
+  <task name="jcl-pdf.zip" selected="-1">
+    <action classname="TVariableSetter">
+      <configuration index="0" caption="Expression" value="-pdf"/>
+      <configuration index="1" caption="Environment variable" value="%SUFFIX%"/>
+    </action>
+    <action classname="TSubTask">
+      <configuration index="0" caption="Task name" value="Jcl-common"/>
+    </action>
+    <action classname="TDirectoryCreator">
+      <configuration index="0" caption="Directory" value="..\..\jcl\help"/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%DMCC%"/>
+      <configuration index="1" caption="Working directory" value="..\..\jcl\packages\help"/>
+      <configuration index="2" caption="Parameters" value="-config &quot;PDF&quot; -noshow -w3 Jcl.dox"/>
+      <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
+      <configuration index="4" caption="Result file" value=""/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%DMCC%"/>
+      <configuration index="1" caption="Working directory" value="..\..\jcl\packages\help"/>
+      <configuration index="2" caption="Parameters" value="-config &quot;PDF&quot; -noshow -w3 JclContainers.dox"/>
+      <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
+      <configuration index="4" caption="Result file" value=""/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%DMCC%"/>
+      <configuration index="1" caption="Working directory" value="..\..\jcl\packages\help"/>
+      <configuration index="2" caption="Parameters" value="-config &quot;PDF&quot; -noshow -w3 JclDeveloperTools.dox"/>
+      <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
+      <configuration index="4" caption="Result file" value=""/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%DMCC%"/>
+      <configuration index="1" caption="Working directory" value="..\..\jcl\packages\help"/>
+      <configuration index="2" caption="Parameters" value="-config &quot;PDF&quot; -noshow -w3 JclVcl.dox"/>
+      <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
+      <configuration index="4" caption="Result file" value=""/>
+    </action>
+  </task>
   <task name="jcl-xml.zip" selected="-1">
     <action classname="TVariableSetter">
       <configuration index="0" caption="Expression" value="-xml"/>
@@ -313,46 +353,6 @@
       <configuration index="1" caption="Working directory" value="..\..\jcl\packages\help"/>
       <configuration index="2" caption="Parameters" value="JclVcl.dox XML JCL_Help:%id"/>
       <configuration index="3" caption="Valid exit codes" value=""/>
-      <configuration index="4" caption="Result file" value=""/>
-    </action>
-  </task>
-  <task name="jcl-pdf.zip" selected="-1">
-    <action classname="TVariableSetter">
-      <configuration index="0" caption="Expression" value="-pdf"/>
-      <configuration index="1" caption="Environment variable" value="%SUFFIX%"/>
-    </action>
-    <action classname="TSubTask">
-      <configuration index="0" caption="Task name" value="Jcl-common"/>
-    </action>
-    <action classname="TDirectoryCreator">
-      <configuration index="0" caption="Directory" value="..\..\jcl\help"/>
-    </action>
-    <action classname="TCommandLineCaller">
-      <configuration index="0" caption="Application" value="%DMCC%"/>
-      <configuration index="1" caption="Working directory" value="..\..\jcl\packages\help"/>
-      <configuration index="2" caption="Parameters" value="-config &quot;PDF&quot; -noshow -w3 Jcl.dox"/>
-      <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
-      <configuration index="4" caption="Result file" value=""/>
-    </action>
-    <action classname="TCommandLineCaller">
-      <configuration index="0" caption="Application" value="%DMCC%"/>
-      <configuration index="1" caption="Working directory" value="..\..\jcl\packages\help"/>
-      <configuration index="2" caption="Parameters" value="-config &quot;PDF&quot; -noshow -w3 JclContainers.dox"/>
-      <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
-      <configuration index="4" caption="Result file" value=""/>
-    </action>
-    <action classname="TCommandLineCaller">
-      <configuration index="0" caption="Application" value="%DMCC%"/>
-      <configuration index="1" caption="Working directory" value="..\..\jcl\packages\help"/>
-      <configuration index="2" caption="Parameters" value="-config &quot;PDF&quot; -noshow -w3 JclDeveloperTools.dox"/>
-      <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
-      <configuration index="4" caption="Result file" value=""/>
-    </action>
-    <action classname="TCommandLineCaller">
-      <configuration index="0" caption="Application" value="%DMCC%"/>
-      <configuration index="1" caption="Working directory" value="..\..\jcl\packages\help"/>
-      <configuration index="2" caption="Parameters" value="-config &quot;PDF&quot; -noshow -w3 JclVcl.dox"/>
-      <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
       <configuration index="4" caption="Result file" value=""/>
     </action>
   </task>
