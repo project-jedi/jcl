@@ -253,7 +253,7 @@ begin
         EJclPrinterError.CreateRes(@RsNAStartPage);
       try
         // Send the data to the printer
-        if not WritePrinter(PrinterHandle, PChar(Data), Count, BytesWritten) then
+        if not WritePrinter(PrinterHandle, PChar(Data), Count * SizeOf(Char), BytesWritten) then
           EJclPrinterError.CreateRes(@RsNASendData);
       finally
         // End the page
@@ -270,7 +270,7 @@ begin
     ClosePrinter(PrinterHandle);
   end;
   // Check to see if correct number of bytes written
-  if BytesWritten <> Count then
+  if BytesWritten <> Count * SizeOf(Char) then
     EJclPrinterError.CreateRes(@RsNATransmission);
 end;
 
