@@ -1202,7 +1202,7 @@ var
 begin
   Stream := TStringStream.Create(Value {$IFDEF SUPPORTS_UNICODE}, CP_UTF16LE{$ENDIF});
   try
-    LoadFromStream(Stream);
+    LoadFromStream(Stream {$IFDEF SUPPORTS_UNICODE}, seUTF16, CP_UTF16LE{$ENDIF});
   finally
     Stream.Free;
   end;
