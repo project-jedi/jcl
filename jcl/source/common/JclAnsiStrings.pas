@@ -3064,15 +3064,19 @@ begin
   Result := (AnsiCharTypes[C] and C1_LOWER) <> 0;
 end;
 
+// JclSysUtils.TJclFormatSettings.GetDecimalSeparator is manually inlined in the 2 following functions
+// this fixes compiler warnings about functions not being inlined
+ 
 function CharIsNumberChar(const C: AnsiChar): Boolean;
 begin
   Result := ((AnsiCharTypes[C] and C1_DIGIT) <> 0) or (C = AnsiSignMinus) or (C = AnsiSignPlus) or
-    (Char(C) = JclFormatSettings.DecimalSeparator);
+    (Char(C) = {$IFDEF RTL220_UP}FormatSettings.DecimalSeparator{$ELSE}SysUtils.DecimalSeparator{$ENDIF});
 end;
 
 function CharIsNumber(const C: AnsiChar): Boolean;
 begin
-  Result := ((AnsiCharTypes[C] and C1_DIGIT) <> 0) or (Char(C) = JclFormatSettings.DecimalSeparator);
+  Result := ((AnsiCharTypes[C] and C1_DIGIT) <> 0) or
+    (Char(C) = {$IFDEF RTL220_UP}FormatSettings.DecimalSeparator{$ELSE}SysUtils.DecimalSeparator{$ENDIF});
 end;
 
 function CharIsPrintable(const C: AnsiChar): Boolean;
