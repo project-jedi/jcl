@@ -62,7 +62,7 @@ type
   end;
 
   TJclIntfLinkedList = class(TJclIntfAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclIntfEqualityComparer,
+    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclIntfEqualityComparer,
     IJclIntfCollection, IJclIntfList)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -146,7 +146,7 @@ type
   end;
 
   TJclAnsiStrLinkedList = class(TJclAnsiStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer, IJclAnsiStrFlatContainer, IJclAnsiStrEqualityComparer,
+    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclStrContainer, IJclAnsiStrContainer, IJclAnsiStrFlatContainer, IJclAnsiStrEqualityComparer,
     IJclAnsiStrCollection, IJclAnsiStrList)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -230,7 +230,7 @@ type
   end;
 
   TJclWideStrLinkedList = class(TJclWideStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclStrContainer, IJclWideStrContainer, IJclWideStrFlatContainer, IJclWideStrEqualityComparer,
+    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclStrContainer, IJclWideStrContainer, IJclWideStrFlatContainer, IJclWideStrEqualityComparer,
     IJclWideStrCollection, IJclWideStrList)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -317,7 +317,7 @@ type
 
   {$IFDEF SUPPORTS_UNICODE_STRING}
   TJclUnicodeStrLinkedList = class(TJclUnicodeStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclStrContainer, IJclUnicodeStrContainer, IJclUnicodeStrFlatContainer, IJclUnicodeStrEqualityComparer,
+    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclStrContainer, IJclUnicodeStrContainer, IJclUnicodeStrFlatContainer, IJclUnicodeStrEqualityComparer,
     IJclUnicodeStrCollection, IJclUnicodeStrList)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -434,7 +434,7 @@ type
   end;
 
   TJclSingleLinkedList = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclSingleContainer, IJclSingleEqualityComparer,
+    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclSingleContainer, IJclSingleEqualityComparer,
     IJclSingleCollection, IJclSingleList)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -518,7 +518,7 @@ type
   end;
 
   TJclDoubleLinkedList = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclDoubleContainer, IJclDoubleEqualityComparer,
+    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclDoubleContainer, IJclDoubleEqualityComparer,
     IJclDoubleCollection, IJclDoubleList)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -602,7 +602,7 @@ type
   end;
 
   TJclExtendedLinkedList = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclExtendedContainer, IJclExtendedEqualityComparer,
+    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclExtendedContainer, IJclExtendedEqualityComparer,
     IJclExtendedCollection, IJclExtendedList)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -716,7 +716,7 @@ type
   end;
 
   TJclIntegerLinkedList = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclIntegerEqualityComparer,
+    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclIntegerEqualityComparer,
     IJclIntegerCollection, IJclIntegerList)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -800,7 +800,7 @@ type
   end;
 
   TJclCardinalLinkedList = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclCardinalEqualityComparer,
+    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclCardinalEqualityComparer,
     IJclCardinalCollection, IJclCardinalList)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -884,7 +884,7 @@ type
   end;
 
   TJclInt64LinkedList = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclInt64EqualityComparer,
+    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclInt64EqualityComparer,
     IJclInt64Collection, IJclInt64List)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -968,7 +968,7 @@ type
   end;
 
   TJclPtrLinkedList = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclPtrEqualityComparer,
+    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclPtrEqualityComparer,
     IJclPtrCollection, IJclPtrList)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1052,7 +1052,7 @@ type
   end;
 
   TJclLinkedList = class(TJclAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclObjectOwner, IJclEqualityComparer,
+    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclObjectOwner, IJclEqualityComparer,
     IJclCollection, IJclList)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1142,8 +1142,9 @@ type
   TJclLinkedListIterator<T> = class;
 
   TJclLinkedList<T> = class(TJclAbstractContainer<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>,
+    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclItemOwner<T>, IJclEqualityComparer<T>,
     IJclCollection<T>, IJclList<T>)
+
   protected
     type
       TLinkedListItem = TJclLinkedListItem<T>;
@@ -1223,7 +1224,7 @@ type
   // E = External helper to compare items
   // GetHashCode is never called
   TJclLinkedListE<T> = class(TJclLinkedList<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclCollection<T>, IJclList<T>, IJclEqualityComparer<T>,
+    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclCollection<T>, IJclList<T>, IJclEqualityComparer<T>,
     IJclItemOwner<T>)
   private
     FEqualityComparer: IJclEqualityComparer<T>;
@@ -1240,7 +1241,7 @@ type
 
   // F = Function to compare items for equality
   TJclLinkedListF<T> = class(TJclLinkedList<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclCollection<T>, IJclList<T>, IJclEqualityComparer<T>,
+    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclCollection<T>, IJclList<T>, IJclEqualityComparer<T>,
     IJclItemOwner<T>)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1251,7 +1252,7 @@ type
 
   // I = Items can compare themselves to an other
   TJclLinkedListI<T: IEquatable<T>> = class(TJclLinkedList<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclCollection<T>, IJclList<T>, IJclEqualityComparer<T>,
+    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclCollection<T>, IJclList<T>, IJclEqualityComparer<T>,
     IJclItemOwner<T>)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;

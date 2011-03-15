@@ -432,7 +432,7 @@ begin
   if Result = '' then
     Result := TypeInfo.TypeAttributes[taContainerInterfaceName];
   if Result = '' then
-    Result := 'IJclContainer';
+    Result := 'IJclBaseContainer';
 end;
 
 function TJclContainerIntfAncestorParams.IsAncestorNameStored: Boolean;
@@ -464,7 +464,7 @@ begin
   if Result = '' then
     Result := TypeInfo.TypeAttributes[taContainerInterfaceName];
   if Result = '' then
-    Result := 'IJclContainer';
+    Result := 'IJclBaseContainer';
 end;
 
 //=== { TJclIterProcedureParams } ============================================

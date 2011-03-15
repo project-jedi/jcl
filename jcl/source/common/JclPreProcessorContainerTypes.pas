@@ -311,7 +311,7 @@ const
   MapAttributeInfos: array [TMapAttributeID] of TTypeAttributeInfo =
     ( {MapInterfaceName} (IsGUID: False; DefaultValue: 'TJcl%s%sMap'),
       {MapInterfaceGUID} (IsGUID: True; DefaultValue: ''),
-      {MapInterfaceAncestorName} (IsGUID: False; DefaultValue: 'IJclContainer'),
+      {MapInterfaceAncestorName} (IsGUID: False; DefaultValue: 'IJclBaseContainer'),
       {SortedMapInterfaceName} (IsGUID: False; DefaultValue: 'TJcl%s%sSortedMap'),
       {SortedMapInterfaceGUID} (IsGUID: True; DefaultValue: ''),
       {MapAncestorClassName} (IsGUID: False; DefaultValue: 'TJclContainer'),

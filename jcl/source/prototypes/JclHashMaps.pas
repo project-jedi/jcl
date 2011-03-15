@@ -92,7 +92,7 @@ public
   // GetHashCode and Equals methods of KeyEqualityComparer are used
   // GetHashCode of ValueEqualityComparer is not used
   TJclHashMapE<TKey, TValue> = class(TJclHashMap<TKey, TValue>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclMap<TKey,TValue>, IJclPairOwner<TKey, TValue>)
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclBaseContainer, IJclMap<TKey,TValue>, IJclPairOwner<TKey, TValue>)
   protected
     type
       TArrayList = TJclArrayListE<TValue>;
@@ -124,7 +124,7 @@ public
   // F = Functions to compare and hash items
   // KeyComparer is used only when getting KeySet
   TJclHashMapF<TKey, TValue> = class(TJclHashMap<TKey, TValue>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclMap<TKey,TValue>, IJclPairOwner<TKey, TValue>)
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclBaseContainer, IJclMap<TKey,TValue>, IJclPairOwner<TKey, TValue>)
   protected
     type
       TArrayList = TJclArrayListF<TValue>;
@@ -155,7 +155,7 @@ public
 
   // I = items can compare themselves to an other, items can create hash value from themselves
   TJclHashMapI<TKey: IComparable<TKey>, IEquatable<TKey>, IHashable; TValue: IEquatable<TValue>> = class(TJclHashMap<TKey, TValue>,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer,
+    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclBaseContainer,
     IJclMap<TKey,TValue>, IJclPairOwner<TKey, TValue>)
   protected
     type

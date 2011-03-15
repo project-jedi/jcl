@@ -2,7 +2,7 @@
   INTERFACEADDITIONAL, SECTIONADDITIONAL, COLLECTIONFLAGS,
   CONSTKEYWORD, PARAMETERNAME, TYPENAME)
   SELFCLASSNAME = class(ANCESTORCLASSNAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer,INTERFACEADDITIONAL
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclBaseContainer,INTERFACEADDITIONAL
     COLLECTIONINTERFACENAME, SETINTERFACENAME)SECTIONADDITIONAL
   private
     FMap: MAPINTERFACENAME;
@@ -19,7 +19,7 @@
     procedure SetAutoPackParameter(Value: Integer); override;
     procedure SetAutoPackStrategy(Value: TJclAutoPackStrategy); override;
     procedure SetCapacity(Value: Integer); override;
-    { IJclContainer }
+    { IJclBaseContainer }
     function GetAllowDefaultElements: Boolean; override;
     function GetDuplicates: TDuplicates; override;
     function GetReadOnly: Boolean; override;

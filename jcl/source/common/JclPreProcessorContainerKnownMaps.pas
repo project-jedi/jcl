@@ -44,7 +44,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclIntfIntfMap',
         {maMapInterfaceGUID} '{01D05399-4A05-4F3E-92F4-0C236BE77019}',
-        {maMapInterfaceAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclBaseContainer',
         {maSortedMapInterfaceName} 'IJclIntfIntfSortedMap',
         {maSortedMapInterfaceGUID} '{265A6EB2-4BB3-459F-8813-360FD32A4971}',
         {maMapAncestorClassName} 'TJclIntfAbstractContainer',
@@ -444,7 +444,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclIntegerIntfMap',
         {maMapInterfaceGUID} '{E535FE65-AC88-49D3-BEF2-FB30D92C2FA6}',
-        {maMapInterfaceAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclBaseContainer',
         {maSortedMapInterfaceName} 'IJclIntegerIntfSortedMap',
         {maSortedMapInterfaceGUID} '{8B22802C-61F2-4DA5-B1E9-DBB7840E7996}',
         {maMapAncestorClassName} 'TJclIntegerAbstractContainer',
@@ -460,7 +460,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclIntfIntegerMap',
         {maMapInterfaceGUID} '{E01DA012-BEE0-4259-8E30-0A7A1A87BED0}',
-        {maMapInterfaceAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclBaseContainer',
         {maSortedMapInterfaceName} 'IJclIntfIntegerSortedMap',
         {maSortedMapInterfaceGUID} '{8D3C9B7E-772D-409B-A58C-0CABFAFDEFF0}',
         {maMapAncestorClassName} 'TJclIntegerAbstractContainer',
@@ -476,7 +476,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclIntegerIntegerMap',
         {maMapInterfaceGUID} '{23A46BC0-DF8D-4BD2-89D2-4DACF1EC73A1}',
-        {maMapInterfaceAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclBaseContainer',
         {maSortedMapInterfaceName} 'IJclIntegerIntegerSortedMap',
         {maSortedMapInterfaceGUID} '{8A8BA17A-F468-469C-AF99-77D64C802F7A}',
         {maMapAncestorClassName} 'TJclIntegerAbstractContainer',
@@ -492,7 +492,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclCardinalIntfMap',
         {maMapInterfaceGUID} '{80D39FB1-0D10-49CE-8AF3-1CD98A1D4F6C}',
-        {maMapInterfaceAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclBaseContainer',
         {maSortedMapInterfaceName} 'IJclCardinalIntfSortedMap',
         {maSortedMapInterfaceGUID} '{BAE97425-4F2E-461B-88DD-F83D27657AFA}',
         {maMapAncestorClassName} 'TJclCardinalAbstractContainer',
@@ -508,7 +508,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclIntfCardinalMap',
         {maMapInterfaceGUID} '{E1A724AB-6BDA-45F0-AE21-5E7E789A751B}',
-        {maMapInterfaceAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclBaseContainer',
         {maSortedMapInterfaceName} 'IJclIntfCardinalSortedMap',
         {maSortedMapInterfaceGUID} '{BC66BACF-23AE-48C4-9573-EDC3B5110BE7}',
         {maMapAncestorClassName} 'TJclCardinalAbstractContainer',
@@ -524,7 +524,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclCardinalCardinalMap',
         {maMapInterfaceGUID} '{1CD3F54C-F92F-4AF4-82B2-0829C08AA83B}',
-        {maMapInterfaceAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclBaseContainer',
         {maSortedMapInterfaceName} 'IJclCardinalCardinalSortedMap',
         {maSortedMapInterfaceGUID} '{182ACDA4-7D74-4D29-BB5C-4C8189DA774E}',
         {maMapAncestorClassName} 'TJclCardinalAbstractContainer',
@@ -540,7 +540,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclInt64IntfMap',
         {maMapInterfaceGUID} '{B64FB2D1-8D45-4367-B950-98D3D05AC6A0}',
-        {maMapInterfaceAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclBaseContainer',
         {maSortedMapInterfaceName} 'IJclInt64IntfSortedMap',
         {maSortedMapInterfaceGUID} '{24391756-FB02-4901-81E3-A37738B73DAD}',
         {maMapAncestorClassName} 'TJclInt64AbstractContainer',
@@ -556,7 +556,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclIntfInt64Map',
         {maMapInterfaceGUID} '{9886BEE3-D15B-45D2-A3FB-4D3A0ADEC8AC}',
-        {maMapInterfaceAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclBaseContainer',
         {maSortedMapInterfaceName} 'IJclIntfInt64SortedMap',
         {maSortedMapInterfaceGUID} '{6E2AB647-59CC-4609-82E8-6AE75AED80CA}',
         {maMapAncestorClassName} 'TJclInt64AbstractContainer',
@@ -572,7 +572,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclInt64Int64Map',
         {maMapInterfaceGUID} '{EF2A2726-408A-4984-9971-DDC1B6EFC9F5}',
-        {maMapInterfaceAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclBaseContainer',
         {maSortedMapInterfaceName} 'IJclInt64Int64SortedMap',
         {maSortedMapInterfaceGUID} '{168581D2-9DD3-46D0-934E-EA0CCE5E3C0C}',
         {maMapAncestorClassName} 'TJclInt64AbstractContainer',
@@ -588,7 +588,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclPtrIntfMap',
         {maMapInterfaceGUID} '{B7C48542-39A0-453F-8F03-8C8CFAB0DCCF}',
-        {maMapInterfaceAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclBaseContainer',
         {maSortedMapInterfaceName} 'IJclPtrIntfSortedMap',
         {maSortedMapInterfaceGUID} '{6D7B8042-3CBC-4C8F-98B5-69AFAA104532}',
         {maMapAncestorClassName} 'TJclPtrAbstractContainer',
@@ -604,7 +604,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclIntfPtrMap',
         {maMapInterfaceGUID} '{DA51D823-58DB-4D7C-9B8E-07E0FD560B57}',
-        {maMapInterfaceAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclBaseContainer',
         {maSortedMapInterfaceName} 'IJclIntfPtrSortedMap',
         {maSortedMapInterfaceGUID} '{B054BDA2-536F-4C16-B6BB-BB64FA0818B3}',
         {maMapAncestorClassName} 'TJclPtrAbstractContainer',
@@ -620,7 +620,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclPtrPtrMap',
         {maMapInterfaceGUID} '{1200CB0F-A766-443F-9030-5A804C11B798}',
-        {maMapInterfaceAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclBaseContainer',
         {maSortedMapInterfaceName} 'IJclPtrPtrSortedMap',
         {maSortedMapInterfaceGUID} '{F1FAE922-0212-41D0-BB4E-76A8AB2CAB86}',
         {maMapAncestorClassName} 'TJclPtrAbstractContainer',
@@ -636,7 +636,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclIntfMap',
         {maMapInterfaceGUID} '{C70570C6-EDDB-47B4-9003-C637B486731D}',
-        {maMapInterfaceAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclBaseContainer',
         {maSortedMapInterfaceName} 'IJclIntfSortedMap',
         {maSortedMapInterfaceGUID} '{3CED1477-B958-4109-9BDA-7C84B9E063B2}',
         {maMapAncestorClassName} 'TJclIntfAbstractContainer',
@@ -780,7 +780,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclIntegerMap',
         {maMapInterfaceGUID} '{D6FA5D64-A4AF-4419-9981-56BA79BF8770}',
-        {maMapInterfaceAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclBaseContainer',
         {maSortedMapInterfaceName} 'IJclIntegerSortedMap',
         {maSortedMapInterfaceGUID} '{DD7B4C5E-6D51-44CC-9328-B38396A7E1C9}',
         {maMapAncestorClassName} 'TJclIntegerAbstractContainer',
@@ -796,7 +796,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclCardinalMap',
         {maMapInterfaceGUID} '{A2F92F4F-11CB-4DB2-932F-F10A14237126}',
-        {maMapInterfaceAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclBaseContainer',
         {maSortedMapInterfaceName} 'IJclCardinalSortedMap',
         {maSortedMapInterfaceGUID} '{4AEAF81F-D72E-4499-B10E-3D017F39915E}',
         {maMapAncestorClassName} 'TJclCardinalAbstractContainer',
@@ -812,7 +812,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclInt64Map',
         {maMapInterfaceGUID} '{4C720CE0-7A7C-41D5-BFC1-8D58A47E648F}',
-        {maMapInterfaceAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclBaseContainer',
         {maSortedMapInterfaceName} 'IJclInt64SortedMap',
         {maSortedMapInterfaceGUID} '{06C03F90-7DE9-4043-AA56-AAE071D8BD50}',
         {maMapAncestorClassName} 'TJclInt64AbstractContainer',
@@ -828,7 +828,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclPtrMap',
         {maMapInterfaceGUID} '{2FE029A9-026C-487D-8204-AD3A28BD2FA2}',
-        {maMapInterfaceAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclBaseContainer',
         {maSortedMapInterfaceName} 'IJclPtrSortedMap',
         {maSortedMapInterfaceGUID} '{578918DB-6A4A-4A9D-B44E-AE3E8FF70818}',
         {maMapAncestorClassName} 'TJclPtrAbstractContainer',
@@ -844,7 +844,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclMap',
         {maMapInterfaceGUID} '{A7D0A882-6952-496D-A258-23D47DDCCBC4}',
-        {maMapInterfaceAncestorName} 'IJclContainer',
+        {maMapInterfaceAncestorName} 'IJclBaseContainer',
         {maSortedMapInterfaceName} 'IJclSortedMap',
         {maSortedMapInterfaceGUID} '{F317A70F-7851-49C2-9DCF-092D8F4D4F98}',
         {maMapAncestorClassName} 'TJclAbstractContainerBase',

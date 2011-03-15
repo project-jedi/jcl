@@ -129,10 +129,10 @@ type
     function GetIteratorReference: TObject;
   end;
 
-  IJclContainer = interface{$IFDEF THREADSAFE}(IJclLockable){$ENDIF THREADSAFE}
+  IJclBaseContainer = interface{$IFDEF THREADSAFE}(IJclLockable){$ENDIF THREADSAFE}
     ['{C517175A-028E-486A-BF27-5EF7FC3101D9}']
-    procedure Assign(const Source: IJclContainer);
-    procedure AssignTo(const Dest: IJclContainer);
+    procedure Assign(const Source: IJclBaseContainer);
+    procedure AssignTo(const Dest: IJclBaseContainer);
     function GetAllowDefaultElements: Boolean;
     function GetContainerReference: TObject;
     function GetDuplicates: TDuplicates;
@@ -154,7 +154,7 @@ type
     property ThreadSafe: Boolean read GetThreadSafe write SetThreadSafe;
   end;
 
-  IJclStrContainer = interface(IJclContainer)
+  IJclStrContainer = interface(IJclBaseContainer)
     ['{9753E1D7-F093-4D5C-8B32-40403F6F700E}']
     function GetCaseSensitive: Boolean;
     procedure SetCaseSensitive(Value: Boolean);
@@ -221,21 +221,21 @@ type
   end;
   {$ENDIF SUPPORTS_UNICODE_STRING}
 
-  IJclSingleContainer = interface(IJclContainer)
+  IJclSingleContainer = interface(IJclBaseContainer)
     ['{22BE88BD-87D1-4B4D-9FAB-F1B6D555C6A9}']
     function GetPrecision: Single;
     procedure SetPrecision(const Value: Single);
     property Precision: Single read GetPrecision write SetPrecision;
   end;
 
-  IJclDoubleContainer = interface(IJclContainer)
+  IJclDoubleContainer = interface(IJclBaseContainer)
     ['{372B9354-DF6D-4CAA-A5A9-C50E1FEE5525}']
     function GetPrecision: Double;
     procedure SetPrecision(const Value: Double);
     property Precision: Double read GetPrecision write SetPrecision;
   end;
 
-  IJclExtendedContainer = interface(IJclContainer)
+  IJclExtendedContainer = interface(IJclBaseContainer)
     ['{431A6482-FD5C-45A7-BE53-339A3CF75AC9}']
     function GetPrecision: Extended;
     procedure SetPrecision(const Value: Extended);
@@ -417,7 +417,7 @@ type
 *)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
-  (*$JPPEXPANDMACRO COLLECTION(IJclCollection<T>,IJclContainer,{67EE8AF3-19B0-4DCA-A730-3C9B261B8EC5},const ,AItem,T,IJclIterator<T>)*)
+  (*$JPPEXPANDMACRO COLLECTION(IJclCollection<T>,IJclBaseContainer,{67EE8AF3-19B0-4DCA-A730-3C9B261B8EC5},const ,AItem,T,IJclIterator<T>)*)
   //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
@@ -490,7 +490,7 @@ type
     function GetHashCode: Integer;
   end;
 
-  (*$JPPEXPANDMACRO MAP(IJclMap<TKey\,TValue>,IJclContainer,{22624C43-4828-4A1E-BDD4-4A7FE59AE135},const ,TKey,IJclSet<TKey>,const ,TValue,IJclCollection<TValue>)*)
+  (*$JPPEXPANDMACRO MAP(IJclMap<TKey\,TValue>,IJclBaseContainer,{22624C43-4828-4A1E-BDD4-4A7FE59AE135},const ,TKey,IJclSet<TKey>,const ,TValue,IJclCollection<TValue>)*)
 
   //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
@@ -501,7 +501,7 @@ type
 *)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
-  (*$JPPEXPANDMACRO QUEUE(IJclQueue<T>,IJclContainer,{16AB909F-2194-46CF-BD89-B4207AC0CAB8},const ,AItem,T)*)
+  (*$JPPEXPANDMACRO QUEUE(IJclQueue<T>,IJclBaseContainer,{16AB909F-2194-46CF-BD89-B4207AC0CAB8},const ,AItem,T)*)
   //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
@@ -532,7 +532,7 @@ type
 *)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
-  (*$JPPEXPANDMACRO STACK(IJclStack<T>,IJclContainer,{2F08EAC9-270D-496E-BE10-5E975918A5F2},const ,AItem,T)*)
+  (*$JPPEXPANDMACRO STACK(IJclStack<T>,IJclBaseContainer,{2F08EAC9-270D-496E-BE10-5E975918A5F2},const ,AItem,T)*)
   //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
