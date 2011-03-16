@@ -741,6 +741,13 @@ procedure InitSimpleLog(const ALogFileName: string = ''; AOpenLog: Boolean = tru
 var
   SimpleLog : TJclSimpleLog;
 
+
+// Validates if then variant value is null or is empty
+function VarIsNullEmpty(const V: Variant): Boolean;
+// Validates if then variant value is null or is empty or VarToStr is a blank string
+function VarIsNullEmptyBlank(const V: Variant): Boolean;
+
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -767,7 +774,7 @@ uses
   {$IFDEF HAS_UNIT_ANSISTRINGS}
   AnsiStrings,
   {$ENDIF HAS_UNIT_ANSISTRINGS}
-  JclFileUtils, JclMath, JclResources, JclStrings, JclStringConversions, JclSysInfo;
+  JclFileUtils, JclMath, JclResources, JclStrings, JclStringConversions, JclSysInfo, Variants;
 
 // memory initialization
 procedure ResetMemory(out P; Size: Longint);
@@ -3929,6 +3936,18 @@ begin
   SysUtils.TwoDigitYearCenturyWindow:= AValue;
 {$ENDIF}
 end;
+
+function VarIsNullEmpty(const V: Variant): Boolean;
+begin
+  Result := VarIsNull(V) or VarIsEmpty(V);
+end;
+
+function VarIsNullEmptyBlank(const V: Variant): Boolean;
+begin
+  Result := VarIsNull(V) or VarIsEmpty(V) or (VarToStr(V) = '');
+end;
+
+
 
 initialization
   SimpleLog := nil;
