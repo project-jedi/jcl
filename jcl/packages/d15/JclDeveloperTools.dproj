@@ -35,7 +35,7 @@
 			<DllSuffix>150</DllSuffix>
 			<GenDll>true</GenDll>
 			<GenPackage>true</GenPackage>
-			<DCC_ImageBase>$48000000</DCC_ImageBase>
+			<DCC_ImageBase>$48380000</DCC_ImageBase>
 			<DCC_UsePackage>rtl;vcl;Jcl;JclContainers</DCC_UsePackage>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_Release)'!=''">

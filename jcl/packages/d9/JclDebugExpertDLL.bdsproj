@@ -113,7 +113,7 @@
       <Linker Name="GenerateDRC">False</Linker>
       <Linker Name="MinStackSize">16384</Linker>
       <Linker Name="MaxStackSize">1048576</Linker>
-      <Linker Name="ImageBase">$58020000</Linker>
+      <Linker Name="ImageBase">$58150000</Linker>
       <Linker Name="ExeDescription">JCL Debug IDE extension</Linker>
     </Linker>
     <Directories>

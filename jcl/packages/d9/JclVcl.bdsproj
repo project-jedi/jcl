@@ -113,7 +113,7 @@
       <Linker Name="GenerateDRC">False</Linker>
       <Linker Name="MinStackSize">16384</Linker>
       <Linker Name="MaxStackSize">1048576</Linker>
-      <Linker Name="ImageBase">$48400000</Linker>
+      <Linker Name="ImageBase">$48480000</Linker>
       <Linker Name="ExeDescription">JEDI Code Library VCL package</Linker>
     </Linker>
     <Directories>
