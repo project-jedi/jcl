@@ -132,6 +132,13 @@ resourcestring
   RsENoOpenHelp                 = 'open help not present in Borland Developer Studio';
   {$ENDIF MSWINDOWS}
 
+//=== JclMsBuild.pas =========================================================
+resourcestring
+  RsEEndOfString = 'Invalid condition: end of string';
+  RsEMissingParenthesis = 'Invalid condition: missing parenthesis';
+  RsEEmptyIdentifier = 'Invalid condition: empty identifier';
+  RsEUnknownOperator = 'Invalid condition: unknown operator';
+
 //=== JclUsesUtils.pas =======================================================
 resourcestring
   RsEDuplicateUnit = 'Duplicate unit ''%s''';
