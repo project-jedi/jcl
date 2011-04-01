@@ -3499,7 +3499,8 @@ begin
   if Assigned(Prop) then
     Prop.Value := Value
   else
-    Properties.Add('version', Value);
+    // Various XML parsers (including MSIE, Firefox) require the "version" to be the first
+    Properties.Insert(0, 'version', Value);
 end;
 
 //=== { TJclSimpleXMLElemDocType } ===========================================
