@@ -61,7 +61,7 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   SysUtils, Classes, TypInfo, SyncObjs,
-  JclBase;
+  JclBase, JclSynch;
 
 // memory initialization
 // first parameter is "out" to make FPC happy with uninitialized values
@@ -492,8 +492,21 @@ const
 
 function Execute(const CommandLine: string; OutputLineCallback: TTextHandler; RawOutput: Boolean = False;
   AbortPtr: PBoolean = nil): Cardinal; overload;
+function Execute(const CommandLine: string; AbortEvent: TJclEvent;
+  OutputLineCallback: TTextHandler; RawOutput: Boolean = False): Cardinal; overload;
 function Execute(const CommandLine: string; var Output: string; RawOutput: Boolean = False;
   AbortPtr: PBoolean = nil): Cardinal; overload;
+function Execute(const CommandLine: string; AbortEvent: TJclEvent;
+  var Output: string; RawOutput: Boolean = False): Cardinal; overload;
+
+function Execute(const CommandLine: string; OutputLineCallback, ErrorLineCallback: TTextHandler;
+  RawOutput: Boolean = False; RawError: Boolean = False; AbortPtr: PBoolean = nil): Cardinal; overload;
+function Execute(const CommandLine: string; AbortEvent: TJclEvent;
+  OutputLineCallback, ErrorLineCallback: TTextHandler; RawOutput: Boolean = False; RawError: Boolean = False): Cardinal; overload;
+function Execute(const CommandLine: string; var Output, Error: string;
+  RawOutput: Boolean = False; RawError: Boolean = False; AbortPtr: PBoolean = nil): Cardinal; overload;
+function Execute(const CommandLine: string; AbortEvent: TJclEvent;
+  var Output, Error: string; RawOutput: Boolean = False; RawError: Boolean = False): Cardinal; overload;
 
 type
 {$HPPEMIT 'namespace Jclsysutils'}
@@ -2622,9 +2635,24 @@ end;
 
 //=== Child processes ========================================================
 
+const
+  BufferSize = 255;
+type
+  TBuffer = array [0..BufferSize] of AnsiChar;
+
+  TPipeInfo = record
+    PipeRead, PipeWrite: THandle;
+    Buffer: TBuffer;
+    Line: string;
+    TextHandler: TTextHandler;
+    RawOutput: Boolean;
+    Event: TJclEvent;
+  end;
+  PPipeInfo = ^TPipeInfo;
+
 // MuteCRTerminatedLines was "outsourced" from Win32ExecAndRedirectOutput
 
-function MuteCRTerminatedLines(const RawOutput: string): string;
+function InternalExecuteMuteCRTerminatedLines(const RawOutput: string): string;
 const
   Delta = 1024;
 var
@@ -2662,117 +2690,242 @@ begin
   SetLength(Result, OutPos - 1);
 end;
 
-function InternalExecute(CommandLine: string; var Output: string; OutputLineCallback: TTextHandler;
-  RawOutput: Boolean; AbortPtr: PBoolean): Cardinal;
-
-const
-  BufferSize = 255;
-type
-  TBuffer = array [0..BufferSize] of AnsiChar;
-
-  procedure ProcessLine(const Line: string; LineEnd: Integer);
+procedure InternalExecuteProcessLine(const PipeInfo: TPipeInfo; LineEnd: Integer);
+begin
+  if PipeInfo.RawOutput or (PipeInfo.Line[LineEnd] <> NativeCarriageReturn) then
   begin
-    if RawOutput or (Line[LineEnd] <> NativeCarriageReturn) then
-    begin
-      while (LineEnd > 0) and CharIsReturn(Line[LineEnd]) do
-        Dec(LineEnd);
-      OutputLineCallback(Copy(Line, 1, LineEnd));
-    end;
+    while (LineEnd > 0) and CharIsReturn(PipeInfo.Line[LineEnd]) do
+      Dec(LineEnd);
+    PipeInfo.TextHandler(Copy(PipeInfo.Line, 1, LineEnd));
   end;
+end;
 
-  procedure ProcessBuffer(var Buffer: TBuffer; var Line: string; PipeBytesRead: Cardinal);
-  var
-    CR, LF: Integer;
-  begin
-    Buffer[PipeBytesRead] := #0;
-    Line := Line + string(Buffer);
-    if Assigned(OutputLineCallback) then
-    repeat
-      CR := Pos(NativeCarriageReturn, Line);
-      if CR = Length(Line) then
-        CR := 0;        // line feed at CR + 1 might be missing
-      LF := Pos(NativeLineFeed, Line);
-      if (CR > 0) and ((LF > CR + 1) or (LF = 0)) then
-        LF := CR;       // accept CR as line end
-      if LF > 0 then
-      begin
-        ProcessLine(Line, LF);
-        Delete(Line, 1, LF);
-      end;
-    until LF = 0;
-  end;
-
+procedure InternalExecuteProcessBuffer(var PipeInfo: TPipeInfo; PipeBytesRead: Cardinal);
 var
-  Buffer: TBuffer;
-  Line: string;
-  PipeBytesRead: Cardinal;
+  CR, LF: Integer;
+begin
+  PipeInfo.Buffer[PipeBytesRead] := #0;
+  PipeInfo.Line := PipeInfo.Line + string(PipeInfo.Buffer);
+  if Assigned(PipeInfo.TextHandler) then
+  repeat
+    CR := Pos(NativeCarriageReturn, PipeInfo.Line);
+    if CR = Length(PipeInfo.Line) then
+      CR := 0;        // line feed at CR + 1 might be missing
+    LF := Pos(NativeLineFeed, PipeInfo.Line);
+    if (CR > 0) and ((LF > CR + 1) or (LF = 0)) then
+      LF := CR;       // accept CR as line end
+    if LF > 0 then
+    begin
+      InternalExecuteProcessLine(PipeInfo, LF);
+      Delete(PipeInfo.Line, 1, LF);
+    end;
+  until LF = 0;
+end;
+
+procedure InternalExecuteReadPipe(var PipeInfo: TPipeInfo; var Overlapped: TOverlapped);
+var
+  NullDWORD: PDWORD;
+  Res: DWORD;
+begin
+  NullDWORD := nil;
+  if not ReadFile(PipeInfo.PipeRead, PipeInfo.Buffer[0], BufferSize, NullDWORD^, @Overlapped) then
+  begin
+    Res := GetLastError;
+    if Res = ERROR_BROKEN_PIPE then
+    begin
+      CloseHandle(PipeInfo.PipeRead);
+      PipeInfo.PipeRead := 0;
+    end
+    else
+      RaiseLastOSError(Res);
+  end;
+end;
+
+procedure InternalExecuteFlushPipe(var PipeInfo: TPipeInfo; var Overlapped: TOverlapped);
+var
+  PipeBytesRead: DWORD;
+begin
+  CancelIo(PipeInfo.PipeRead);
+  GetOverlappedResult(PipeInfo.PipeRead, Overlapped, PipeBytesRead, True);
+  if PipeBytesRead > 0 then
+    InternalExecuteProcessBuffer(PipeInfo, PipeBytesRead);
+  while PeekNamedPipe(PipeInfo.PipeRead, nil, 0, nil, @PipeBytesRead, nil) and (PipeBytesRead > 0) do
+  begin
+    if PipeBytesRead > BufferSize then
+      PipeBytesRead := BufferSize;
+    if not ReadFile(PipeInfo.PipeRead, PipeInfo.Buffer[0], PipeBytesRead, PipeBytesRead, nil) then
+      RaiseLastOSError;
+    InternalExecuteProcessBuffer(PipeInfo, PipeBytesRead);
+  end;
+end;
+
+function InternalExecute(CommandLine: string; AbortPtr: PBoolean; AbortEvent: TJclEvent;
+  var Output: string; OutputLineCallback: TTextHandler; RawOutput: Boolean;
+  MergeError: Boolean; var Error: string; ErrorLineCallback: TTextHandler; RawError: Boolean): Cardinal;
+var
+  OutPipeInfo, ErrorPipeInfo: TPipeInfo;
+  Index, PipeBytesRead: Cardinal;
 {$IFDEF MSWINDOWS}
 var
   StartupInfo: TStartupInfo;
   ProcessInfo: TProcessInformation;
   SecurityAttr: TSecurityAttributes;
-  PipeRead, PipeWrite: THandle;
+  OutOverlapped, ErrorOverlapped: TOverlapped;
+  ProcessEvent: TJclDispatcherObject;
+  WaitEvents: array of TJclDispatcherObject;
+  InternalAbort: Boolean;
 begin
+  // hack to pass a null reference to the parameter lpNumberOfBytesRead of ReadFile
   Result := $FFFFFFFF;
   SecurityAttr.nLength := SizeOf(SecurityAttr);
   SecurityAttr.lpSecurityDescriptor := nil;
   SecurityAttr.bInheritHandle := True;
-  PipeWrite := 0;
-  PipeRead := 0;
-  Line := '';
-  ResetMemory(Buffer, SizeOf(Buffer));
-  if not CreatePipe(PipeRead, PipeWrite, @SecurityAttr, 0) then
+  ResetMemory(OutPipeInfo, SizeOf(OutPipeInfo));
+  OutPipeInfo.TextHandler := OutputLineCallback;
+  OutPipeInfo.RawOutput := RawOutput;
+  if not CreatePipe(OutPipeInfo.PipeRead, OutPipeInfo.PipeWrite, @SecurityAttr, 0) then
   begin
     Result := GetLastError;
     Exit;
+  end;
+  OutPipeInfo.Event := TJclEvent.Create(@SecurityAttr, False {automatic reset}, False {not flagged}, '' {anonymous});
+  ResetMemory(ErrorPipeInfo, SizeOf(ErrorPipeInfo));
+  if not MergeError then
+  begin
+    ErrorPipeInfo.TextHandler := ErrorLineCallback;
+    ErrorPipeInfo.RawOutput := RawError;
+    if not CreatePipe(ErrorPipeInfo.PipeRead, ErrorPipeInfo.PipeWrite, @SecurityAttr, 0) then
+    begin
+      Result := GetLastError;
+      Exit;
+    end;
+    ErrorPipeInfo.Event := TJclEvent.Create(@SecurityAttr, False {automatic reset}, False {not flagged}, '' {anonymous});
   end;
   ResetMemory(StartupInfo, SizeOf(TStartupInfo));
   StartupInfo.cb := SizeOf(TStartupInfo);
   StartupInfo.dwFlags := STARTF_USESHOWWINDOW or STARTF_USESTDHANDLES;
   StartupInfo.wShowWindow := SW_HIDE;
   StartupInfo.hStdInput := GetStdHandle(STD_INPUT_HANDLE);
-  StartupInfo.hStdOutput := PipeWrite;
-  StartupInfo.hStdError := PipeWrite;
+  StartupInfo.hStdOutput := OutPipeInfo.PipeWrite;
+  if MergeError then
+    StartupInfo.hStdError := OutPipeInfo.PipeWrite
+  else
+    StartupInfo.hStdError := ErrorPipeInfo.PipeWrite;
   UniqueString(CommandLine); // CommandLine must be in a writable memory block
   ProcessInfo.dwProcessId := 0;
+  ProcessEvent := nil;
   try
     if CreateProcess(nil, PChar(CommandLine), nil, nil, True, NORMAL_PRIORITY_CLASS,
       nil, nil, StartupInfo, ProcessInfo) then
     begin
-      CloseHandle(PipeWrite);
-      PipeWrite := 0;
+      // init out and error events
+      CloseHandle(OutPipeInfo.PipeWrite);
+      OutPipeInfo.PipeWrite := 0;
+      if not MergeError then
+      begin
+        CloseHandle(ErrorPipeInfo.PipeWrite);
+        ErrorPipeInfo.PipeWrite := 0;
+      end;
+      InternalAbort := False;
       if AbortPtr <> nil then
-        {$IFDEF FPC}
-        AbortPtr^ := 0;
-        {$ELSE ~FPC}
-        AbortPtr^ := False;
-        {$ENDIF ~FPC}
-      PipeBytesRead := 0;
-      while ((AbortPtr = nil) or not LongBool(AbortPtr^)) and
-        ReadFile(PipeRead, Buffer, BufferSize, PipeBytesRead, nil) and (PipeBytesRead > 0) do
-        ProcessBuffer(Buffer, Line, PipeBytesRead);
-      if (AbortPtr <> nil) and LongBool(AbortPtr^) then
-        TerminateProcess(ProcessInfo.hProcess, Cardinal(ABORT_EXIT_CODE));
-      if (WaitForSingleObject(ProcessInfo.hProcess, INFINITE) = WAIT_OBJECT_0) and
-        not GetExitCodeProcess(ProcessInfo.hProcess, Result) then
-          Result := $FFFFFFFF;
+        AbortPtr^ := False
+      else
+        AbortPtr := @InternalAbort;
+      // init the array of events to wait for
+      ProcessEvent := TJclDispatcherObject.Attach(ProcessInfo.hProcess);
+      ProcessInfo.hProcess := 0; // ProcessEvent now "owns" the handle
+      SetLength(WaitEvents, 2);
+      // add the process first
+      WaitEvents[0] := ProcessEvent;
+      // add the output event
+      WaitEvents[1] := OutPipeInfo.Event;
+      // add the error event
+      if not MergeError then
+      begin
+        SetLength(WaitEvents, 3);
+        WaitEvents[2] := ErrorPipeInfo.Event;
+      end;
+      // add the abort event if any
+      if AbortEvent <> nil then
+      begin
+        AbortEvent.ResetEvent;
+        Index := Length(WaitEvents);
+        SetLength(WaitEvents, Index + 1);
+        WaitEvents[Index] := AbortEvent;
+      end;
+      // init the asynchronous reads
+      OutOverlapped.Internal := 0;
+      OutOverlapped.InternalHigh := 0;
+      OutOverlapped.Offset := 0;
+      OutOverlapped.OffsetHigh := 0;
+      OutOverlapped.hEvent := OutPipeInfo.Event.Handle;
+      InternalExecuteReadPipe(OutPipeInfo, OutOverlapped);
+      if not MergeError then
+      begin
+        ErrorOverlapped.Internal := 0;
+        ErrorOverlapped.InternalHigh := 0;
+        ErrorOverlapped.Offset := 0;
+        ErrorOverlapped.OffsetHigh := 0;
+        ErrorOverlapped.hEvent := ErrorPipeInfo.Event.Handle;
+        InternalExecuteReadPipe(ErrorPipeInfo, ErrorOverlapped);
+      end;
+      // event based loop
+      while not AbortPtr^ do
+      begin
+        Index := WaitAlertableForMultipleObjects(WaitEvents, False, INFINITE);
+        if Index = WAIT_OBJECT_0 then
+          // the subprocess has ended
+          Break
+        else
+        if Index = (WAIT_OBJECT_0 + 1) then
+        begin
+          // event on output
+          if not GetOverlappedResult(OutPipeInfo.PipeRead, OutOverlapped, PipeBytesRead, False) then
+            RaiseLastOSError;
+          InternalExecuteProcessBuffer(OutPipeInfo, PipeBytesRead);
+          // automatically launch the next read
+          InternalExecuteReadPipe(OutpipeInfo, OutOverlapped);
+        end
+        else
+        if (Index = (WAIT_OBJECT_0 + 2)) and not MergeError then
+        begin
+          // event on error
+          if not GetOverlappedResult(ErrorPipeInfo.PipeRead, ErrorOverlapped, PipeBytesRead, False) then
+            RaiseLastOSError;
+          InternalExecuteProcessBuffer(ErrorPipeInfo, PipeBytesRead);
+          // automatically launch the next read
+          InternalExecuteReadPipe(ErrorPipeInfo, ErrorOverlapped);
+        end
+        else
+        if ((Index = (WAIT_OBJECT_0 + 2)) and MergeError) or
+           ((Index = (WAIT_OBJECT_0 + 3)) and not MergeError) then
+          // event on abort
+          AbortPtr^ := True
+        else
+          RaiseLastOSError(Index);
+      end;
+      if AbortPtr^ then
+        TerminateProcess(ProcessEvent.Handle, Cardinal(ABORT_EXIT_CODE));
+      if (ProcessEvent.WaitForever = wrSignaled) and not GetExitCodeProcess(ProcessEvent.Handle, Result) then
+        Result := $FFFFFFFF;
       CloseHandle(ProcessInfo.hThread);
       ProcessInfo.hThread := 0;
-      CloseHandle(ProcessInfo.hProcess);
-      ProcessInfo.hProcess := 0;
-    end
-    else
-    begin
-      CloseHandle(PipeWrite);
-      PipeWrite := 0;
+      if OutPipeInfo.PipeRead <> 0 then
+        // read data remaining in output pipe
+        InternalExecuteFlushPipe(OutPipeinfo, OutOverlapped);
+      if (not MergeError) and (ErrorPipeInfo.PipeRead <> 0) then
+        // read data remaining in error pipe
+        InternalExecuteFlushPipe(ErrorPipeInfo, ErrorOverlapped);
     end;
-    CloseHandle(PipeRead);
-    PipeRead := 0;
   finally
-    if PipeRead <> 0 then
-      CloseHandle(PipeRead);
-    if PipeWrite <> 0 then
-      CloseHandle(PipeWrite);
+    if OutPipeInfo.PipeRead <> 0 then
+      CloseHandle(OutPipeInfo.PipeRead);
+    if OutPipeInfo.PipeWrite <> 0 then
+      CloseHandle(OutPipeInfo.PipeWrite);
+    if ErrorPipeInfo.PipeRead <> 0 then
+      CloseHandle(ErrorPipeInfo.PipeRead);
+    if ErrorPipeInfo.PipeWrite <> 0 then
+      CloseHandle(ErrorPipeInfo.PipeWrite);
     if ProcessInfo.hThread <> 0 then
       CloseHandle(ProcessInfo.hThread);
     if ProcessInfo.hProcess <> 0 then
@@ -2782,6 +2935,9 @@ begin
       GetExitCodeProcess(ProcessInfo.hProcess, Result);
       CloseHandle(ProcessInfo.hProcess);
     end;
+    ProcessEvent.Free; // this calls CloseHandle(ProcessInfo.hProcess)
+    OutPipeInfo.Event.Free;
+    ErrorPipeInfo.Event.Free;
   end;
 {$ENDIF MSWINDOWS}
 {$IFDEF UNIX}
@@ -2795,9 +2951,9 @@ begin
     Pipe := Libc.popen(PChar(Cmd), 'r');
     { TODO : handle Abort }
     repeat
-      PipeBytesRead := fread_unlocked(@Buffer, 1, BufferSize, Pipe);
+      PipeBytesRead := fread_unlocked(@OutBuffer, 1, BufferSize, Pipe);
       if PipeBytesRead > 0 then
-        ProcessBuffer(Buffer, Line, PipeBytesRead);
+        ProcessBuffer(OutBuffer, OutLine, PipeBytesRead);
     until PipeBytesRead = 0;
     Result := pclose(Pipe);
     Pipe := nil;
@@ -2808,39 +2964,110 @@ begin
     wait(nil);
   end;
 {$ENDIF UNIX}
-  if Line <> '' then
-    if Assigned(OutputLineCallback) then
+  if OutPipeInfo.Line <> '' then
+    if Assigned(OutPipeInfo.TextHandler) then
       // output wasn't terminated by a line feed...
       // (shouldn't happen, but you never know)
-      ProcessLine(Line, Length(Line))
+      InternalExecuteProcessLine(OutPipeInfo, Length(OutPipeInfo.Line))
     else
       if RawOutput then
-        Output := Output + Line
+        Output := Output + OutPipeInfo.Line
       else
-        Output := Output + MuteCRTerminatedLines(Line);
+        Output := Output + InternalExecuteMuteCRTerminatedLines(OutPipeInfo.Line);
+  if ErrorPipeInfo.Line <> '' then
+    if Assigned(ErrorPipeInfo.TextHandler) then
+      // error wasn't terminated by a line feed...
+      // (shouldn't happen, but you never know)
+      InternalExecuteProcessLine(ErrorPipeInfo, Length(ErrorPipeInfo.Line))
+    else
+      if RawError then
+        Error := Error + ErrorPipeInfo.Line
+      else
+        Error := Error + InternalExecuteMuteCRTerminatedLines(ErrorPipeInfo.Line);
 end;
 
 { TODO -cHelp :
 RawOutput: Do not process isolated carriage returns (#13).
 That is, for RawOutput = False, lines not terminated by a line feed (#10) are deleted from Output. }
 
-function Execute(const CommandLine: string; var Output: string; RawOutput: Boolean = False;
-  AbortPtr: PBoolean = nil): Cardinal;
+function Execute(const CommandLine: string; var Output: string; RawOutput: Boolean;
+  AbortPtr: PBoolean): Cardinal;
+var
+  Error: string;
 begin
-  Result := InternalExecute(CommandLine, Output, nil, RawOutput, AbortPtr);
+  Error := '';
+  Result := InternalExecute(CommandLine, AbortPtr, nil, Output, nil, RawOutput, True, Error, nil, False);
+end;
+
+function Execute(const CommandLine: string; AbortEvent: TJclEvent; var Output: string; RawOutput: Boolean): Cardinal;
+var
+  Error: string;
+begin
+  Error := '';
+  Result := InternalExecute(CommandLine, nil, AbortEvent, Output, nil, RawOutput, True, Error, nil, False);
 end;
 
 { TODO -cHelp :
 Author: Robert Rossmair
 OutputLineCallback called once per line of output. }
 
-function Execute(const CommandLine: string; OutputLineCallback: TTextHandler; RawOutput: Boolean = False;
-  AbortPtr: PBoolean = nil): Cardinal; overload;
+function Execute(const CommandLine: string; OutputLineCallback: TTextHandler; RawOutput: Boolean;
+  AbortPtr: PBoolean): Cardinal;
 var
-  Dummy: string;
+  Output, Error: string;
 begin
-  Dummy := '';
-  Result := InternalExecute(CommandLine, Dummy, OutputLineCallback, RawOutput, AbortPtr);
+  Output := '';
+  Error := '';
+  Result := InternalExecute(CommandLine, AbortPtr, nil, Output, OutputLineCallback, RawOutput, True, Error, nil, False);
+end;
+
+function Execute(const CommandLine: string; AbortEvent: TJclEvent; OutputLineCallback: TTextHandler; RawOutput: Boolean): Cardinal;
+var
+  Output, Error: string;
+begin
+  Output := '';
+  Error := '';
+  Result := InternalExecute(CommandLine, nil, AbortEvent, Output, OutputLineCallback, RawOutput, True, Error, nil, False);
+end;
+
+{ TODO -cHelp :
+RawOutput: Do not process isolated carriage returns (#13).
+That is, for RawOutput = False, lines not terminated by a line feed (#10) are deleted from Output. }
+
+function Execute(const CommandLine: string; var Output, Error: string; RawOutput, RawError: Boolean;
+  AbortPtr: PBoolean): Cardinal;
+begin
+  Result := InternalExecute(CommandLine, AbortPtr, nil, Output, nil, RawOutput, True, Error, nil, RawError);
+end;
+
+function Execute(const CommandLine: string; AbortEvent: TJclEvent; var Output, Error: string;
+  RawOutput, RawError: Boolean): Cardinal;
+begin
+  Result := InternalExecute(CommandLine, nil, AbortEvent, Output, nil, RawOutput, True, Error, nil, RawError);
+end;
+
+{ TODO -cHelp :
+Author: Robert Rossmair
+OutputLineCallback called once per line of output. }
+
+function Execute(const CommandLine: string; OutputLineCallback, ErrorLineCallback: TTextHandler;
+  RawOutput, RawError: Boolean; AbortPtr: PBoolean): Cardinal;
+var
+  Output, Error: string;
+begin
+  Output := '';
+  Error := '';
+  Result := InternalExecute(CommandLine, AbortPtr, nil, Output, OutputLineCallback, RawOutput, True, Error, ErrorLineCallback, RawError);
+end;
+
+function Execute(const CommandLine: string; AbortEvent: TJclEvent; OutputLineCallback, ErrorLineCallback: TTextHandler;
+  RawOutput, RawError: Boolean): Cardinal;
+var
+  Output, Error: string;
+begin
+  Output := '';
+  Error := '';
+  Result := InternalExecute(CommandLine, nil, AbortEvent, Output, OutputLineCallback, RawOutput, True, Error, ErrorLineCallback, RawError);
 end;
 
 //=== { TJclCommandLineTool } ================================================
