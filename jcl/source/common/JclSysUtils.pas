@@ -2737,7 +2737,11 @@ begin
       PipeInfo.PipeRead := 0;
     end
     else
+      {$IFDEF DELPHI11_UP}
       RaiseLastOSError(Res);
+      {$ELSE}
+      RaiseLastOSError;
+      {$ENDIF DELPHI11_UP}
   end;
 end;
 
@@ -2902,7 +2906,11 @@ begin
           // event on abort
           AbortPtr^ := True
         else
+          {$IFDEF DELPHI11_UP}
           RaiseLastOSError(Index);
+          {$ELSE}
+          RaiseLastOSError;
+          {$ENDIF DELPHI11_UP}
       end;
       if AbortPtr^ then
         TerminateProcess(ProcessEvent.Handle, Cardinal(ABORT_EXIT_CODE));
