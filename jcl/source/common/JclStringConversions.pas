@@ -2881,10 +2881,11 @@ begin
     begin
       // add ReplacementCharacter
       AnsiBuffer := AnsiReplacementCharacter;
-      {$IFNDEF UNICODE_SILENT_FAILURE}
-      Result := False;
+      {$IFDEF UNICODE_SILENT_FAILURE}
+      Result := True;
+      {$ELSE}
       StrPos := -1;
-      {$ENDIF ~UNICODE_SILENT_FAILURE}
+      {$ENDIF UNICODE_SILENT_FAILURE}
     end;
     AnsiStrLen := Length(AnsiBuffer);
     Result := Result and ((StrPos + AnsiStrLen) <= (StrLen + 1));
@@ -2928,8 +2929,9 @@ begin
     begin
       // add ReplacementCharacter
       AnsiBuffer := AnsiReplacementCharacter;
-      {$IFNDEF UNICODE_SILENT_FAILURE}
-      Success := False;
+      {$IFDEF UNICODE_SILENT_FAILURE}
+      Success := True;
+      {$ELSE}
       StrPos := -1;
       {$ENDIF ~UNICODE_SILENT_FAILURE}
     end;
@@ -2973,12 +2975,13 @@ begin
   begin
     // add ReplacementCharacter
     AnsiBuffer := AnsiReplacementCharacter;
-    {$IFNDEF UNICODE_SILENT_FAILURE}
-    Result := False;
-    {$ENDIF ~UNICODE_SILENT_FAILURE}
+    {$IFDEF UNICODE_SILENT_FAILURE}
+    Result := True;
+    {$ENDIF UNICODE_SILENT_FAILURE}
   end;
-  for I := 1 to Length(AnsiBuffer) do
-    Result := Result and StreamWriteByte(S, Ord(AnsiBuffer[I]));
+  if Result then
+    for I := 1 to Length(AnsiBuffer) do
+      Result := Result and StreamWriteByte(S, Ord(AnsiBuffer[I]));
 end;
 
 function AnsiSetNextBufferToStream(S: TStream; const Buffer: TUCS4Array; var Start: SizeInt; Count: SizeInt): SizeInt; overload;
@@ -3009,12 +3012,13 @@ begin
     begin
       // add ReplacementCharacter
       AnsiBuffer := AnsiReplacementCharacter;
-      {$IFNDEF UNICODE_SILENT_FAILURE}
-      Success := False;
-      {$ENDIF ~UNICODE_SILENT_FAILURE}
+      {$IFDEF UNICODE_SILENT_FAILURE}
+      Success := True;
+      {$ENDIF UNICODE_SILENT_FAILURE}
     end;
-    for I := 1 to Length(AnsiBuffer) do
-      Success := Success and StreamWriteByte(S, Ord(AnsiBuffer[I]));
+    if Success then
+      for I := 1 to Length(AnsiBuffer) do
+        Success := Success and StreamWriteByte(S, Ord(AnsiBuffer[I]));
     if Success then
     begin
       Inc(Start);
@@ -3045,18 +3049,19 @@ begin
       // add ReplacementCharacter
       AnsiBuffer := AnsiReplacementCharacter;
       AnsiStrLen := 1;
-      {$IFNDEF UNICODE_SILENT_FAILURE}
-      Result := False;
+      {$IFDEF UNICODE_SILENT_FAILURE}
+      Result := True;
+      {$ELSE}
       StrPos := -1;
       {$ENDIF ~UNICODE_SILENT_FAILURE}
     end;
     Result := Result and ((StrPos + AnsiStrLen) <= (StrLen + 1));
     if Result then
       for TmpPos := 1 to AnsiStrLen do
-    begin
-      S[StrPos] := AnsiBuffer[TmpPos];
-      Inc(StrPos);
-    end;
+      begin
+        S[StrPos] := AnsiBuffer[TmpPos];
+        Inc(StrPos);
+      end;
   end;
 end;
 
@@ -3086,18 +3091,19 @@ begin
       // add ReplacementCharacter
       AnsiBuffer := AnsiReplacementCharacter;
       AnsiStrLen := 1;
-      {$IFNDEF UNICODE_SILENT_FAILURE}
-      Success := False;
+      {$IFDEF UNICODE_SILENT_FAILURE}
+      Success := True;
+      {$ELSE}
       StrPos := -1;
-      {$ENDIF ~UNICODE_SILENT_FAILURE}
+      {$ENDIF UNICODE_SILENT_FAILURE}
     end;
     Success := Success and ((StrPos + AnsiStrLen) <= (StrLen + 1));
     if Success then
       for TmpPos := 1 to AnsiStrLen do
-    begin
-      S[StrPos] := AnsiBuffer[TmpPos];
-      Inc(StrPos);
-    end;
+      begin
+        S[StrPos] := AnsiBuffer[TmpPos];
+        Inc(StrPos);
+      end;
     if Success then
     begin
       Inc(Start);
@@ -3124,12 +3130,13 @@ begin
     // add ReplacementCharacter
     AnsiBuffer := AnsiReplacementCharacter;
     AnsiStrLen := 1;
-    {$IFNDEF UNICODE_SILENT_FAILURE}
-    Result := False;
-    {$ENDIF ~UNICODE_SILENT_FAILURE}
+    {$IFDEF UNICODE_SILENT_FAILURE}
+    Result := True;
+    {$ENDIF UNICODE_SILENT_FAILURE}
   end;
-  for TmpPos := 1 to AnsiStrLen do
-    Result := Result and StreamWriteByte(S, Ord(AnsiBuffer[TmpPos]));
+  if Result then
+    for TmpPos := 1 to AnsiStrLen do
+      Result := Result and StreamWriteByte(S, Ord(AnsiBuffer[TmpPos]));
 end;
 
 function AnsiSetNextBufferToStream(S: TStream; CodePage: Word; const Buffer: TUCS4Array; var Start: SizeInt; Count: SizeInt): SizeInt; overload;
@@ -3156,12 +3163,13 @@ begin
       // add ReplacementCharacter
       AnsiBuffer := AnsiReplacementCharacter;
       AnsiStrLen := 1;
-      {$IFNDEF UNICODE_SILENT_FAILURE}
-      Success := False;
-      {$ENDIF ~UNICODE_SILENT_FAILURE}
+      {$IFDEF UNICODE_SILENT_FAILURE}
+      Success := True;
+      {$ENDIF UNICODE_SILENT_FAILURE}
     end;
-    for TmpPos := 1 to AnsiStrLen do
-      Success := Success and StreamWriteByte(S, Ord(AnsiBuffer[TmpPos]));
+    if Success then
+      for TmpPos := 1 to AnsiStrLen do
+        Success := Success and StreamWriteByte(S, Ord(AnsiBuffer[TmpPos]));
     if Success then
     begin
       Inc(Start);
