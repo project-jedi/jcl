@@ -139,9 +139,9 @@ function JclCppExceptionFilterInstalled: Boolean;
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: $';
-    Revision: '$Revision: $';
-    Date: '$Date: $';
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
     LogPath: 'JCL\source\windows';
     Extra: '';
     Data: nil
