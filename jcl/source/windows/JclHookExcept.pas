@@ -565,14 +565,29 @@ begin
   NewResultExc := NewExceptObj;
 end;
 
+function GetCppRtlBase: Pointer;
+begin
+  Result := Pointer (FindHInstance (System.pfnDliNotifyHook)); { hooked by C++ RTL upon startup }
+end;
+
+function HasCppRtl: Boolean;
+begin
+  Result := GetCppRtlBase <> TJclPeMapImgHooks.SystemBase;
+end;
+
 function JclHookExceptions: Boolean;
 var
   RaiseExceptionAddressCache: Pointer;
 begin
+  RaiseExceptionAddressCache := RaiseExceptionAddress;
+  { Detect C++Builder applications and C++ packages loaded into Delphi applications.
+    Hook the C++ RTL regardless of ExceptionsHooked so that users can call JclHookException() after
+    loading a C++ package which might pull in the C++ RTL DLL. }
+  if HasCppRtl then
+    TJclPeMapImgHooks.ReplaceImport (GetCppRtlBase, kernel32, RaiseExceptionAddressCache, @HookedRaiseException);
   if not ExceptionsHooked then
   begin
     Recursive := False;
-    RaiseExceptionAddressCache := RaiseExceptionAddress;
     with TJclPeMapImgHooks do
       Result := ReplaceImport(SystemBase, kernel32, RaiseExceptionAddressCache, @HookedRaiseException);
     if Result then
@@ -595,6 +610,8 @@ end;
 
 function JclUnhookExceptions: Boolean;
 begin
+  if HasCppRtl then
+    TJclPeMapImgHooks.ReplaceImport (GetCppRtlBase, kernel32, @HookedRaiseException, @Kernel32_RaiseException);
   if ExceptionsHooked then
   begin
     with TJclPeMapImgHooks do
