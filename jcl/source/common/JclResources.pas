@@ -1152,6 +1152,10 @@ resourcestring
 resourcestring
   RsUnknownFunctionAt     = 'Unknown function at %s';
 
+//=== JclCppException ========================================================
+resourcestring
+  RsCppUnhandledExceptionMsg = 'Unhandled C++ exception of type ''%s'' occurred';
+
 //=== JclDotNet ==============================================================
 resourcestring
   RsEUnknownCLRVersion = '"%s" is not a known CLR version';

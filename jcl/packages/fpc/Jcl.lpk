@@ -39,7 +39,7 @@
     <Description Value="JEDI Code Library RTL package"/>
     <License Value="Copyright (C) 1999, 2011 Project JEDI"/>
     <Version Major="2" Minor="3" Release="0" Build="3847"/>
-    <Files Count="75">
+    <Files Count="76">
       <Item1>
         <Filename Value="..\..\source\common\bzip2.pas"/>
         <UnitName Value="bzip2"/>
@@ -340,6 +340,10 @@
         <Filename Value="..\..\source\windows\Snmp.pas"/>
         <UnitName Value="Snmp"/>
       </Item75>
+      <Item76>
+        <Filename Value="..\..\source\windows\JclCppException.pas"/>
+        <UnitName Value="JclCppException"/>
+      </Item76>
     </Files>
     <RequiredPkgs Count="1">
       <Item1>

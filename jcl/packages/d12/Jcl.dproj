@@ -137,6 +137,7 @@
 			<DCCReference Include="..\..\source\windows\MSTask.pas"/>
 			<DCCReference Include="..\..\source\windows\sevenzip.pas"/>
 			<DCCReference Include="..\..\source\windows\Snmp.pas"/>
+			<DCCReference Include="..\..\source\windows\JclCppException.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>

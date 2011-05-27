@@ -1,11 +1,16 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
 <Package Name="Jcl" Design="0">
   <Description>JEDI Code Library RTL package</Description>
   <GUID>{44DB645B-C167-410D-9334-38AF9F0C7913}</GUID>
-  <C6PFlags/>
-  <C6Libs/>
-  <CompilerDefines>RELEASE</CompilerDefines>
-  <ImageBase>48000000</ImageBase>
+  <Properties>
+    <Property Name="C6PFlags" Value=""/>
+    <Property Name="C6Libs" Value=""/>
+    <Property Name="CompilerDefines" Value="RELEASE"/>
+    <Property Name="ImageBase" Value="48000000"/>
+    <Property Name="VersionMajorNumber" Value=""/>
+    <Property Name="VersionMinorNumber" Value=""/>
+    <Property Name="ReleaseNumber" Value=""/>
+  </Properties>
   <Requires>
     <Package Name="rtl" Targets="Delphi,Bcb,Bds" Condition=""/>
     <Package Name="FCL" Targets="fpc" Condition=""/>
@@ -165,5 +170,6 @@
     <File Name="..\..\..\help\UnitConv.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\WideStrings.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\Win32.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclCppException.pas" Targets="Windows" Formname="" Condition=""/>
   </Contains>
 </Package>

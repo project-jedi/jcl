@@ -1,4 +1,4 @@
-﻿; This is a Doc-O-Matic version 6.5.1.1382 project file.
+; This is a Doc-O-Matic version 6.5.1.1382 project file.
 ; This file is maintained by Doc-O-Matic, do not edit manually.
 
 [*Control*]
@@ -30,7 +30,7 @@ File0=..\..\..\help\VCL.doxdb
 File1=..\..\..\help\JEDI.doxdb
 
 [Source Files]
-Count=151
+Count=152
 File0=..\..\source\include\crossplatform.inc
 File1=..\..\source\include\jcl.inc
 File2=..\..\source\include\jclc6.inc
@@ -182,6 +182,7 @@ File147=..\..\..\help\Unicode.dtx
 File148=..\..\..\help\UnitConv.dtx
 File149=..\..\..\help\WideStrings.dtx
 File150=..\..\..\help\Win32.dtx
+File151=..\..\source\windows\JclCppException.pas
 
 [General]
 Copyright=Copyright (C) 1999, 2011 Project JEDI
