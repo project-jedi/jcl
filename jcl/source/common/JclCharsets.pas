@@ -413,8 +413,8 @@ const JclCharsetInfos: array [0..305] of TJclCharsetInfo =
      (Name: 'iso-ir-148'; CodePage: 1254; FamilyCodePage: 1254),
      (Name: 'latin5'; CodePage: 1254; FamilyCodePage: 1254),
 (* Unicode unicode utf-16 1200 1200 *)
-     (Name: 'unicode'; CodePage: 1200; FamilyCodePage: 1200),
      (Name: 'utf-16'; CodePage: 1200; FamilyCodePage: 1200),
+     (Name: 'unicode'; CodePage: 1200; FamilyCodePage: 1200),
 (* Unicode (Big-Endian) unicodeFFFE 1201 1200 *)
      (Name: 'unicodeFFFE'; CodePage: 1201; FamilyCodePage: 1200),
 (* Unicode (UTF-7) utf-7 csUnicode11UTF7, unicode-1-1-utf-7, x-unicode-2-0-utf-7 65000 1200 *)
