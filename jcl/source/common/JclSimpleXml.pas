@@ -214,6 +214,7 @@ type
   TJclSimpleXMLElemsProlog = class(TObject)
   private
     FElems: THashedStringList;
+    FSimpleXml: TJclSimpleXml;
     function GetCount: Integer;
     function GetItem(const Index: Integer): TJclSimpleXMLElem;
     function GetEncoding: string;
@@ -242,6 +243,7 @@ type
     property Item[const Index: Integer]: TJclSimpleXMLElem read GetItem; default;
     property Count: Integer read GetCount;
     property Encoding: string read GetEncoding write SetEncoding;
+    property SimpleXML: TJclSimpleXML read FSimpleXML;
     property StandAlone: Boolean read GetStandAlone write SetStandAlone;
     property Version: string read GetVersion write SetVersion;
   end;
@@ -1025,6 +1027,7 @@ begin
   FRoot := TJclSimpleXMLElemClassic.Create(nil);
   FRoot.FSimpleXML := Self;
   FProlog := TJclSimpleXMLElemsProlog.Create;
+  FProlog.FSimpleXML := Self;
   FOptions := [sxoAutoIndent, sxoAutoEncodeValue, sxoAutoEncodeEntity];
   FIndentString := '  ';
 end;
@@ -3416,8 +3419,24 @@ end;
 //=== { TJclSimpleXMLElemHeader } ============================================
 
 function TJclSimpleXMLElemHeader.GetEncoding: string;
+var
+  ASimpleXml: TJclSimpleXml;
+  DefaultCodePage: Word;
 begin
-  Result := Properties.Value('encoding', 'iso-8859-1');
+  ASimpleXml := SimpleXml;
+  if Assigned(ASimpleXml) then
+    DefaultCodePage := ASimpleXml.FCodePage
+  else
+    {$IFDEF UNICODE}
+    DefaultCodePage := CP_UTF16LE;
+    {$ELSE ~UNICODE}
+    {$IFDEF MSWINDOWS}
+    DefaultCodePage := GetACP;
+    {$ELSE ~MSWINDOWS}
+    DefaultCodePage := 1252;
+    {$ENDIF ~MSWINDOWS}
+    {$ENDIF ~UNICODE}
+  Result := Properties.Value('encoding', CharsetNameFromCodePage(DefaultCodePage));
 end;
 
 function TJclSimpleXMLElemHeader.GetStandalone: Boolean;
@@ -4080,6 +4099,7 @@ begin
   // (p3) if we get here, an xml header was not found
   Result := TJclSimpleXMLElemHeader.Create(nil);
   Result.Name := 'xml';
+  Result.FSimpleXml := FSimpleXml;
   FElems.AddObject('', Result);
 end;
 
