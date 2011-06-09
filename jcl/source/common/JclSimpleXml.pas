@@ -1200,7 +1200,7 @@ procedure TJclSimpleXML.LoadFromString(const Value: string);
 var
   Stream: TStringStream;
 begin
-  Stream := TStringStream.Create(Value {$IFDEF SUPPORTS_UNICODE}, CP_UTF16LE{$ENDIF});
+  Stream := TStringStream.Create(Value {$IFDEF SUPPORTS_UNICODE}, TEncoding.Unicode{$ENDIF});
   try
     LoadFromStream(Stream {$IFDEF SUPPORTS_UNICODE}, seUTF16, CP_UTF16LE{$ENDIF});
   finally
@@ -1325,7 +1325,7 @@ function TJclSimpleXML.SaveToString: string;
 var
   Stream: TStringStream;
 begin
-  Stream := TStringStream.Create('' {$IFDEF SUPPORTS_UNICODE}, CP_UTF16LE{$ENDIF});
+  Stream := TStringStream.Create('' {$IFDEF SUPPORTS_UNICODE}, TEncoding.Unicode{$ENDIF});
   try
     SaveToStream(Stream);
     Result := Stream.DataString;
