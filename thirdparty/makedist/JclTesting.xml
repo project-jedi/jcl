@@ -81,6 +81,11 @@
       <configuration index="0" caption="File name" value="%PREFIX%%SUFFIX%.log"/>
       <configuration index="1" caption="Append" value="no"/>
     </action>
+    <action classname="TFileCopier">
+      <configuration index="0" caption="From directory" value="%JEDIHELP%"/>
+      <configuration index="1" caption="Filter" value="*.doxdb"/>
+      <configuration index="2" caption="To directory" value="sandbox\help\"/>
+    </action>
   </task>
   <task name="jcl-daily-source" selected="0">
     <action classname="TVariableSetter">
