@@ -567,7 +567,11 @@ end;
 
 function GetCppRtlBase: Pointer;
 begin
+  {$IFDEF SUPPORTS_DELAYED_LOADING}
   Result := Pointer (FindHInstance (System.pfnDliNotifyHook)); { hooked by C++ RTL upon startup }
+  {$ELSE}
+  Result := nil; // not supported
+  {$ENDIF SUPPORTS_DELAYED_LOADING}
 end;
 
 function HasCppRtl: Boolean;
