@@ -1279,9 +1279,15 @@ begin
 
     case Encoding of
       seUTF8:
-        AStringStream := TJclUTF8Stream.Create(AOutStream, False);
+        begin
+          AStringStream := TJclUTF8Stream.Create(AOutStream, False);
+          FCodePage := CP_UTF8;
+        end;
       seUTF16:
-        AStringStream := TJclUTF16Stream.Create(AOutStream, False);
+        begin
+          AStringStream := TJclUTF16Stream.Create(AOutStream, False);
+          FCodePage := CP_UTF16LE;
+        end
     else
       AStringStream := TJclAnsiStream.Create(AOutStream);
       TJclAnsiStream(AStringStream).CodePage := CodePage;
