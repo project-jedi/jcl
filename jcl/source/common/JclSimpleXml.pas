@@ -3425,7 +3425,13 @@ var
 begin
   ASimpleXml := SimpleXml;
   if Assigned(ASimpleXml) then
-    DefaultCodePage := ASimpleXml.FCodePage
+  begin
+    DefaultCodePage := ASimpleXml.FCodePage;
+    {$IFDEF MSWINDOWS}
+    if DefaultCodePage = CP_ACP then
+      DefaultCodePage := GetAcp;
+    {$ENDIF MSWINDOWS}
+  end
   else
     {$IFDEF UNICODE}
     DefaultCodePage := CP_UTF16LE;
