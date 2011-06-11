@@ -406,11 +406,14 @@ var
   InsideLineComment, InsideComment, InsideBrace: Boolean;
   procedure LoadNextBuffer;
   begin
+    Line := Line + Copy(Buffer, LineStart - BufferStart + 1, Position - LineStart);
     BufferStart := Position;
+    LineStart := BufferStart;
     BufferCount := AReader.GetText(BufferStart, PAnsiChar(Buffer), BufferSize);
     BufferPosition := Position - BufferStart;
   end;
 begin
+  Line := '';
   BufferStart := 0;
   BufferCount := 0;
   LineStart := 0;
@@ -441,13 +444,14 @@ begin
             InsideLineComment := False;
             if (LineStart - BufferStart) < 0 then
               raise EJclExpertException.CreateRes(@RsELineTooLong);
-            Line := Copy(Buffer, LineStart - BufferStart + 1, Position - LineStart);
+            Line := Line + Copy(Buffer, LineStart - BufferStart + 1, Position - LineStart);
             for PropIndex := 0 to PropCount - 1 do
               if Pos(PropIDs[PropIndex], Line) = 4 then
             begin
               Result[PropIndex] := LineStart + Length(PropIDs[PropIndex]) + 4;
               Inc(PropMatches);
             end;
+            Line := '';
           end;
           LineStart := Position + 1;
         end;
