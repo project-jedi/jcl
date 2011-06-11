@@ -436,7 +436,7 @@ begin
     begin
       IconIndex := 0;
       ExtractIcon.GetIconLocation(0, @IconFile, MAX_PATH, IconIndex, Flags);
-      if (IconIndex < 0) and ((Flags and GIL_NOTFILENAME) = GIL_NOTFILENAME) then
+      if (IconIndex < 0) or ((Flags and GIL_NOTFILENAME) = 0) then
         ExtractIconEx(@IconFile, IconIndex, F.IconLarge, F.IconSmall, 1)
       else
         ExtractIcon.Extract(@IconFile, IconIndex, F.IconLarge, F.IconSmall,
