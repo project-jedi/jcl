@@ -1182,8 +1182,14 @@ begin
       Inc(pszName);
       // Get the name
       FNames.Add(pszName);
-      // skip the length of name and a NULL at the end
-      Inc(pszName, Len + 1);
+      // first, skip the length of name
+      Inc(pszName, Len);
+      // the length is only correct modulo 256 because it is stored on a single byte,
+      // so we have to iterate until we find the real end of the string
+      while PszName^ <> #0 do
+        Inc(pszName, 256);
+      // then, skip a NULL at the end
+      Inc(pszName, 1);
     end;
   end;
 end;
