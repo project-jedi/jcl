@@ -1359,6 +1359,7 @@ function IsOutlookInstalled: Boolean;
 function IsInternetExplorerInstalled: Boolean;
 function IsMSProjectInstalled: Boolean;
 function IsOpenOfficeInstalled: Boolean;
+function IsLibreOfficeInstalled: Boolean;
 
 {$ENDIF MSWINDOWS}
 
@@ -5544,6 +5545,11 @@ end;
 function IsOpenOfficeInstalled: Boolean;
 begin
   Result := ProgIDExists('com.sun.star.ServiceManager');
+end;
+
+function IsLibreOfficeInstalled: Boolean;
+begin
+  Result := ProgIDExists('com.sun.star.ServiceManager.1');
 end;
 
 //=== Initialization/Finalization ============================================
