@@ -566,12 +566,25 @@ begin
 end;
 
 function GetCppRtlBase: Pointer;
-begin
-  {$IFDEF SUPPORTS_DELAYED_LOADING}
-  Result := Pointer (FindHInstance (System.pfnDliNotifyHook)); { hooked by C++ RTL upon startup }
+const
+  {$IFDEF COMPILER6} { Delphi/C++Builder 6 }
+  CppRtlVersion = 60;
+  {$ELSE ~COMPILER6}
+  {$IF (RtlVersion > 18.0) and (RtlVersion < 19.0)} { Delphi/C++Builder 2007 were aiming for
+                                                      binary compatibility with BDS2006, which
+                                                      complicates things a bit }
+  CppRtlVersion = 80;
   {$ELSE}
-  Result := nil; // not supported
-  {$ENDIF SUPPORTS_DELAYED_LOADING}
+  { Successive RTLDLL version numbers in the remaining cases: CB2006 has cc3270mt.dll,
+    CB2009 (= CB2006 + 2 releases) has cc3290mt.dll, CB2010 has cc32100mt.dll etc. }
+  CppRtlVersion = 70 + Trunc(RtlVersion - 18.0) * 10;
+  {$IFEND}
+  {$ENDIF ~COMPILER6}
+begin
+  Result := Pointer(GetModuleHandle(PChar(Format('cc32%dmt.dll', [CppRtlVersion]))));
+  { 'Result = nil' means that the C++ RTL has been linked statically or is not available at all;
+    in this case TJclPeMapImgHooks.ReplaceImport() is a no-op. The base module is also being
+    hooked separately, so we're covered. }
 end;
 
 function HasCppRtl: Boolean;
