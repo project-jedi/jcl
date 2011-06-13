@@ -160,6 +160,7 @@ uses
   {$ENDIF BDS8_UP}
   JclDebug, JclFileUtils, JclRegistry, JclShell, JclStrings,
   JclOtaConsts, JclOtaResources,
+  JclVersionCtrlGITImpl,
   JclVersionCtrlSVNImpl,
   JclVersionCtrlCVSImpl;
 

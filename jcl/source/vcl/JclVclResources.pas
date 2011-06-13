@@ -195,6 +195,11 @@ resourcestring
   RsVersionCtrlSVNName = 'subversion';
   RSENoTortoiseSVN = 'TortoiseSVN is not detected on the system';
 
+  //=== JclVersionCtrlGITImpl ==================================================
+resourcestring
+  RsVersionCtrlGITName = 'git';
+  RSENoTortoiseGIT = 'TortoiseGIT is not detected on the system';
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (

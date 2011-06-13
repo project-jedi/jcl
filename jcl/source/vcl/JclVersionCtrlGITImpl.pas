@@ -1,0 +1,284 @@
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclVersionCtrlGITImpl.pas                                                   }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is Florent Ouchet.                                    }
+{ Portions created by Florent Ouchet are Copyright (C) of Florent Ouchet.                          }
+{ Portions created by Elahn Ientile are Copyright (C) of Elahn Ientile.                            }
+{                                                                                                  }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date:: 2011-06-13 22:29:42 +0200 (Mo, 13 Jun 2011)                             $ }
+{ Revision:      $Rev:: 3537                                                                     $ }
+{ Author:        $Author:: jfudickar                                                             $ }
+{                                                                                                  }
+{**************************************************************************************************}
+
+unit JclVersionCtrlGITImpl;
+
+{$I jcl.inc}
+
+interface
+
+uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  SysUtils, Classes, Windows, Graphics,
+  JclVersionControl;
+
+type
+  TJclVersionControlGIT = class(TJclVersionControlPlugin)
+  private
+    FTortoiseGITProc: string;
+  protected
+    function GetSupportedActionTypes: TJclVersionControlActionTypes; override;
+    function GetFileActions(const FileName: TFileName): TJclVersionControlActionTypes; override;
+    function GetEnabled: Boolean; override;
+    function GetName: string; override;
+  public
+    constructor Create; override;
+    destructor Destroy; override;
+    function ExecuteAction(const FileName: TFileName;
+      const Action: TJclVersionControlActionType): Boolean; override;
+  end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/trunk/jcl/source/vcl/JclVersionCtrlGITImpl.pas $';
+    Revision: '$Revision: 3537 $';
+    Date: '$Date: 2011-06-13 22:29:42 +0200 (Mo, 13 Jun 2011) $';
+    LogPath: 'JCL\source\vcl';
+    Extra: '';
+    Data: nil
+    );
+{$ENDIF UNITVERSIONING}
+
+implementation
+
+uses
+  JclVclResources,
+  JclFileUtils, JclSysInfo, JclSysUtils, JclRegistry, JclStrings;
+
+const
+  JclVersionCtrlRegKeyName = 'SOFTWARE\TortoiseGIT';
+  JclVersionCtrlRegValueName = 'ProcPath';
+  JclVersionCtrlGITAddVerb = 'add';
+  JclVersionCtrlGITBlameVerb = 'blame';
+  //JclVersionCtrlGITBranchVerb = 'copy';
+  JclVersionCtrlGITCheckOutVerb = 'checkout';
+  JclVersionCtrlGITCommitVerb = 'commit';
+  JclVersionCtrlGITDiffVerb = 'diff';
+//  JclVersionCtrlGITGraphVerb = 'revisiongraph';
+  JclVersionCtrlGITLogVerb = 'log';
+  //JclVersionCtrlGITLockVerb = 'lock';
+  JclVersionCtrlGITMergeVerb = 'merge';
+  JclVersionCtrlGITRenameVerb = 'rename';
+  JclVersionCtrlGITRepoBrowserVerb = 'repobrowser';
+  JclVersionCtrlGITRevertVerb = 'revert';
+  JclVersionCtrlGITStatusVerb = 'repostatus';
+//  JclVersionCtrlGITTagVerb = 'copy';
+  JclVersionCtrlGITUpdateVerb = 'sync';
+//  JclVersionCtrlGITUpdateToParam = '/rev';
+  //JclVersionCtrlGITUnlockVerb = 'unlock';
+  JclVersionCtrlGITDirectory1 = '.git\';
+  JclVersionCtrlGITEntryFile = 'tortoisegit.data';
+
+  JclVersionCtrlGITDirectories: array [0..0] of string =
+   ( JclVersionCtrlGITDirectory1);
+
+//=== TJclVersionControlGIT ==================================================
+
+constructor TJclVersionControlGIT.Create;
+var
+  SaveAcc: TJclRegWOW64Access;
+begin
+  inherited Create;
+
+  if IsWindows64 then
+  begin
+    // on 64 bit machines look in the 64bit section of registy for tortoise GIT (64bit) registry stuff
+    SaveAcc := RegGetWOW64AccessMode;
+    try
+      RegSetWOW64AccessMode(ra64Key);
+      FTortoiseGITProc := RegReadStringDef(HKLM, JclVersionCtrlRegKeyName, JclVersionCtrlRegValueName, '');
+    finally
+      RegSetWOW64AccessMode(SaveAcc);
+    end;
+    if FTortoiseGITProc = '' then // when the 64bit Version is not found try to find the 32bit version
+      FTortoiseGITProc := RegReadStringDef(HKLM, JclVersionCtrlRegKeyName, JclVersionCtrlRegValueName, '');
+  end
+  else
+    FTortoiseGITProc := RegReadStringDef(HKLM, JclVersionCtrlRegKeyName, JclVersionCtrlRegValueName, '');
+end;
+
+destructor TJclVersionControlGIT.Destroy;
+begin
+  inherited Destroy;
+end;
+
+function TJclVersionControlGIT.ExecuteAction(const FileName: TFileName;
+  const Action: TJclVersionControlActionType): Boolean;
+
+  function CallTortoiseGITProc(const ActionName: string;
+    const Param: string = ''): Boolean;
+  var
+    StartupInfo: TStartupInfo;
+    ProcessInfo: TProcessInformation;
+    CurrentDir, CommandLine: string;
+  begin
+    ResetMemory(StartupInfo, SizeOf(TStartupInfo));
+    ResetMemory(ProcessInfo, SizeOf(TProcessInformation));
+    startupInfo.cb := SizeOf(TStartupInfo);
+    startupInfo.dwFlags := STARTF_USESHOWWINDOW;
+    startupInfo.wShowWindow := SW_SHOW;
+
+    if FileName = '' then
+      raise EJclVersionControlError.Create(RsEEmptyFileName);
+    if not Enabled then
+      raise EJclVersionControlError.Create(RsENoTortoiseGIT);
+
+    if FileName[Length(FileName)] = DirDelimiter then
+      CurrentDir := FileName
+    else
+      CurrentDir := ExtractFilePath(FileName);
+    CommandLine := Format('%s /command:%s /path:"%s" %s /notempfile', [FTortoiseGITProc, ActionName, FileName, Param]);
+
+    Result := CreateProcess(nil, PChar(CommandLine), nil,
+      nil, False, 0, nil, PChar(CurrentDir), StartupInfo, ProcessInfo);
+
+    if Result then
+    begin
+      CloseHandle(ProcessInfo.hProcess);
+      CloseHandle(ProcessInfo.hThread);
+    end;
+  end;
+
+begin
+  case Action of
+    vcaAdd,
+    vcaAddSandbox:
+      Result := CallTortoiseGITProc(JclVersionCtrlGITAddVerb);
+    vcaBlame :
+      Result := CallTortoiseGITProc(JclVersionCtrlGITBlameVerb);
+//    vcaBranch,
+//    vcaBranchSandbox:
+//      Result := CallTortoiseGITProc(JclVersionCtrlGITBranchVerb);
+    vcaCheckOutSandbox:
+      Result := CallTortoiseGITProc(JclVersionCtrlGITCheckOutVerb);
+    vcaCommit,
+    vcaCommitSandbox:
+      Result := CallTortoiseGITProc(JclVersionCtrlGITCommitVerb);
+    vcaDiff:
+      Result := CallTortoiseGITProc(JclVersionCtrlGITDiffVerb);
+//    vcaGraph:
+//      Result := CallTortoiseGITProc(JclVersionCtrlGITGraphVerb);
+    vcaLog,
+    vcaLogSandbox:
+      Result := CallTortoiseGITProc(JclVersionCtrlGITLogVerb);
+//    vcaLock,
+//    vcaLockSandbox:
+//      Result := CallTortoiseGITProc(JclVersionCtrlGITLockVerb);
+    vcaMerge,
+    vcaMergeSandbox:
+      Result := CallTortoiseGITProc(JclVersionCtrlGITMergeVerb);
+    vcaRename:
+      Result := CallTortoiseGITProc(JclVersionCtrlGITRenameVerb);
+    vcaRepoBrowser:
+      Result := CallTortoiseGITProc(JclVersionCtrlGITRepoBrowserVerb);
+    vcaRevert,
+    vcaRevertSandbox:
+      Result := CallTortoiseGITProc(JclVersionCtrlGITRevertVerb);
+    vcaStatus,
+    vcaStatusSandbox:
+      Result := CallTortoiseGITProc(JclVersionCtrlGITStatusVerb);
+//    vcaTag,
+//    vcaTagSandBox:
+//      Result := CallTortoiseGITProc(JclVersionCtrlGITTagVerb);
+    vcaUpdate,
+    vcaUpdateSandbox:
+      Result := CallTortoiseGITProc(JclVersionCtrlGITUpdateVerb);
+//    vcaUpdateTo,
+//    vcaUpdateSandboxTo:
+//      Result := CallTortoiseGITProc(JclVersionCtrlGITUpdateVerb, JclVersionCtrlGITUpdateToParam);
+//    vcaUnlock,
+//    vcaUnlockSandbox:
+//      Result := CallTortoiseGITProc(JclVersionCtrlGITUnlockVerb);
+    else
+      Result := inherited ExecuteAction(FileName, Action);
+  end;
+end;
+
+function TJclVersionControlGIT.GetEnabled: Boolean;
+begin
+  Result := FTortoiseGITProc <> '';
+end;
+
+function TJclVersionControlGIT.GetFileActions(
+  const FileName: TFileName): TJclVersionControlActionTypes;
+var
+  EntryFileName: TFileName;
+  IndexDir: Integer;
+begin
+  Result := inherited GetFileActions(FileName);
+
+  if Enabled then
+  begin
+
+    for IndexDir := Low(JclVersionCtrlGITDirectories) to High(JclVersionCtrlGITDirectories) do
+    begin
+      EntryFileName := PathAddSeparator(ExtractFilePath(FileName))
+        + JclVersionCtrlGITDirectories[IndexDir] + JclVersionCtrlGITEntryFile;
+      if FileExists(EntryFileName) then
+      begin
+        Result := GetSupportedActionTypes;
+      end;
+    end;
+    Result := Result + [vcaAdd];
+  end;
+end;
+
+function TJclVersionControlGIT.GetSupportedActionTypes: TJclVersionControlActionTypes;
+begin
+  Result := inherited GetSupportedActionTypes;
+  if Enabled then
+    Result := Result + [vcaAdd, {vcaAddSandbox, }vcaBlame, {vcaBranch,
+    vcaBranchSandbox, vcaCheckOutSandbox, }vcaCommit, {vcaCommitSandbox, }vcaDiff,
+    {vcaGraph, }vcaLog, {vcaLogSandbox, vcaLock, vcaLockSandbox, }vcaMerge,
+    {vcaMergeSandbox, }vcaRename, vcaRepoBrowser, vcaRevert, {vcaRevertSandbox,}
+    vcaStatus, {vcaStatusSandbox, vcaTag, vcaTagSandBox, }vcaUpdate{,
+    vcaUpdateSandbox, vcaUpdateTo, vcaUpdateSandboxTo, vcaUnlock, vcaUnlockSandbox}];
+end;
+
+function TJclVersionControlGIT.GetName: string;
+begin
+  Result := LoadResString(@RsVersionCtrlGITName);
+end;
+
+initialization
+
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+  RegisterVersionControlPluginClass(TJclVersionControlGIT);
+
+finalization
+
+  UnregisterVersionControlPluginClass(TJclVersionControlGIT);
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
+
+end.
