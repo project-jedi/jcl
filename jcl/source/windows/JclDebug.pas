@@ -34,7 +34,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -5743,12 +5743,12 @@ begin
   FThreadName := AThreadName;
   inherited Create(True);
   JclDebugThreadList.RegisterThread(Self, AThreadName);
-  {$IFDEF RTL210_UP}
-  Suspended := False;
-  {$ELSE ~RTL210_UP}
   if not ASuspended then
+    {$IFDEF RTL210_UP}
+    Suspended := False;
+    {$ELSE ~RTL210_UP}
     Resume;
-  {$ENDIF ~RTL210_UP}
+    {$ENDIF ~RTL210_UP}
 end;
 
 destructor TJclDebugThread.Destroy;
