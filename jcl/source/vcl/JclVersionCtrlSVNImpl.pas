@@ -121,6 +121,8 @@ begin
     finally
       RegSetWOW64AccessMode(SaveAcc);
     end;
+    if FTortoiseSVNProc = '' then // when the 64bit Version is not found try to find the 32bit version
+      FTortoiseSVNProc := RegReadStringDef(HKLM, JclVersionCtrlRegKeyName, JclVersionCtrlRegValueName, '');
   end
   else
     FTortoiseSVNProc := RegReadStringDef(HKLM, JclVersionCtrlRegKeyName, JclVersionCtrlRegValueName, '');
