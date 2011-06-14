@@ -31,7 +31,7 @@ File1=..\..\..\help\JEDI.doxdb
 File2=Jcl.doxdb
 
 [Source Files]
-Count=15
+Count=16
 File0=..\..\source\vcl\JclPrint.pas
 File1=..\..\source\vcl\JclGraphUtils.pas
 File2=..\..\source\vcl\JclGraphics.pas
@@ -41,12 +41,13 @@ File5=..\..\source\vcl\JclOpenDialogFavorites.pas
 File6=..\..\source\vcl\JclVclResources.pas
 File7=..\..\source\vcl\JclVersionControl.pas
 File8=..\..\source\vcl\JclVersionCtrlCVSImpl.pas
-File9=..\..\source\vcl\JclVersionCtrlSVNImpl.pas
-File10=..\..\..\help\Bitmap32.dtx
-File11=..\..\..\help\Font.dtx
-File12=..\..\..\help\Graphics.dtx
-File13=..\..\..\help\JclVcl.dtx
-File14=..\..\..\help\Regions.dtx
+File9=..\..\source\vcl\JclVersionCtrlGITImpl.pas
+File10=..\..\source\vcl\JclVersionCtrlSVNImpl.pas
+File11=..\..\..\help\Bitmap32.dtx
+File12=..\..\..\help\Font.dtx
+File13=..\..\..\help\Graphics.dtx
+File14=..\..\..\help\JclVcl.dtx
+File15=..\..\..\help\Regions.dtx
 
 [General]
 Copyright=Copyright (C) 1999, 2011 Project JEDI

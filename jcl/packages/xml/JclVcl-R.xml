@@ -25,6 +25,7 @@
     <File Name="..\..\source\vcl\JclVclResources.pas" Targets="Vcl" Formname="" Condition=""/>
     <File Name="..\..\source\vcl\JclVersionControl.pas" Targets="Vcl" Formname="" Condition=""/>
     <File Name="..\..\source\vcl\JclVersionCtrlCVSImpl.pas" Targets="Vcl" Formname="" Condition=""/>
+    <File Name="..\..\source\vcl\JclVersionCtrlGITImpl.pas" Targets="Vcl" Formname="" Condition=""/>
     <File Name="..\..\source\vcl\JclVersionCtrlSVNImpl.pas" Targets="Vcl" Formname="" Condition=""/>
     <File Name="..\..\..\help\Bitmap32.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\Font.dtx" Targets="help" Formname="" Condition=""/>

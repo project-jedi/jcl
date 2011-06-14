@@ -75,6 +75,7 @@
 			<DCCReference Include="..\..\source\vcl\JclVclResources.pas"/>
 			<DCCReference Include="..\..\source\vcl\JclVersionControl.pas"/>
 			<DCCReference Include="..\..\source\vcl\JclVersionCtrlCVSImpl.pas"/>
+			<DCCReference Include="..\..\source\vcl\JclVersionCtrlGITImpl.pas"/>
 			<DCCReference Include="..\..\source\vcl\JclVersionCtrlSVNImpl.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
