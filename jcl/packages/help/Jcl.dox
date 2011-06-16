@@ -1,4 +1,4 @@
-; This is a Doc-O-Matic version 6.5.1.1382 project file.
+﻿; This is a Doc-O-Matic version 6.5.1.1382 project file.
 ; This file is maintained by Doc-O-Matic, do not edit manually.
 
 [*Control*]
@@ -30,7 +30,7 @@ File0=..\..\..\help\VCL.doxdb
 File1=..\..\..\help\JEDI.doxdb
 
 [Source Files]
-Count=152
+Count=153
 File0=..\..\source\include\crossplatform.inc
 File1=..\..\source\include\jcl.inc
 File2=..\..\source\include\jclc6.inc
@@ -142,47 +142,48 @@ File107=..\..\..\help\8087.dtx
 File108=..\..\..\help\AppInst.dtx
 File109=..\..\..\help\Base.dtx
 File110=..\..\..\help\Com.dtx
-File111=..\..\..\help\Complex.dtx
-File112=..\..\..\help\Counter.dtx
-File113=..\..\..\help\DateTime.dtx
-File114=..\..\..\help\Debug.dtx
-File115=..\..\..\help\ExprEval.dtx
-File116=..\..\..\help\FileUtils.dtx
-File117=..\..\..\help\Hardlinks.dtx
-File118=..\..\..\help\IncludedFiles.dtx
-File119=..\..\..\help\IniFiles.dtx
-File120=..\..\..\help\Jcl.dtx
-File121=..\..\..\help\LANMan.dtx
-File122=..\..\..\help\Locales.dtx
-File123=..\..\..\help\Logic.dtx
-File124=..\..\..\help\Mapi.dtx
-File125=..\..\..\help\Math.dtx
-File126=..\..\..\help\Midi.dtx
-File127=..\..\..\help\Mime.dtx
-File128=..\..\..\help\Miscel.dtx
-File129=..\..\..\help\Multimedia.dtx
-File130=..\..\..\help\Notify.dtx
-File131=..\..\..\help\NTFS.dtx
-File132=..\..\..\help\pcre.dtx
-File133=..\..\..\help\PE.dtx
-File134=..\..\..\help\Registry.dtx
-File135=..\..\..\help\RTTI.dtx
-File136=..\..\..\help\Schedule.dtx
-File137=..\..\..\help\Security.dtx
-File138=..\..\..\help\Shell.dtx
-File139=..\..\..\help\Statistics.dtx
-File140=..\..\..\help\Streams.dtx
-File141=..\..\..\help\StrHashMap.dtx
-File142=..\..\..\help\Strings.dtx
-File143=..\..\..\help\SvcCtrl.dtx
-File144=..\..\..\help\Synch.dtx
-File145=..\..\..\help\SysInfo.dtx
-File146=..\..\..\help\SysUtils.dtx
-File147=..\..\..\help\Unicode.dtx
-File148=..\..\..\help\UnitConv.dtx
-File149=..\..\..\help\WideStrings.dtx
-File150=..\..\..\help\Win32.dtx
-File151=..\..\source\windows\JclCppException.pas
+File111=..\..\..\help\Common.dtx
+File112=..\..\..\help\Complex.dtx
+File113=..\..\..\help\Counter.dtx
+File114=..\..\..\help\DateTime.dtx
+File115=..\..\..\help\Debug.dtx
+File116=..\..\..\help\ExprEval.dtx
+File117=..\..\..\help\FileUtils.dtx
+File118=..\..\..\help\Hardlinks.dtx
+File119=..\..\..\help\IncludedFiles.dtx
+File120=..\..\..\help\IniFiles.dtx
+File121=..\..\..\help\Jcl.dtx
+File122=..\..\..\help\LANMan.dtx
+File123=..\..\..\help\Locales.dtx
+File124=..\..\..\help\Logic.dtx
+File125=..\..\..\help\Mapi.dtx
+File126=..\..\..\help\Math.dtx
+File127=..\..\..\help\Midi.dtx
+File128=..\..\..\help\Mime.dtx
+File129=..\..\..\help\Miscel.dtx
+File130=..\..\..\help\Multimedia.dtx
+File131=..\..\..\help\Notify.dtx
+File132=..\..\..\help\NTFS.dtx
+File133=..\..\..\help\pcre.dtx
+File134=..\..\..\help\PE.dtx
+File135=..\..\..\help\Registry.dtx
+File136=..\..\..\help\RTTI.dtx
+File137=..\..\..\help\Schedule.dtx
+File138=..\..\..\help\Security.dtx
+File139=..\..\..\help\Shell.dtx
+File140=..\..\..\help\Statistics.dtx
+File141=..\..\..\help\Streams.dtx
+File142=..\..\..\help\StrHashMap.dtx
+File143=..\..\..\help\Strings.dtx
+File144=..\..\..\help\SvcCtrl.dtx
+File145=..\..\..\help\Synch.dtx
+File146=..\..\..\help\SysInfo.dtx
+File147=..\..\..\help\SysUtils.dtx
+File148=..\..\..\help\Unicode.dtx
+File149=..\..\..\help\UnitConv.dtx
+File150=..\..\..\help\WideStrings.dtx
+File151=..\..\..\help\Win32.dtx
+File152=..\..\source\windows\JclCppException.pas
 
 [General]
 Copyright=Copyright (C) 1999, 2011 Project JEDI

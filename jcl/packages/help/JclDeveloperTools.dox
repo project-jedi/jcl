@@ -32,7 +32,7 @@ File2=Jcl.doxdb
 File3=JclContainers.doxdb
 
 [Source Files]
-Count=30
+Count=31
 File0=..\..\source\common\JclCompilerUtils.pas
 File1=..\..\source\common\JclDevToolsResources.pas
 File2=..\..\source\common\JclIDEUtils.pas
@@ -62,7 +62,8 @@ File25=..\..\source\common\JclPreProcessorVectorsTemplates.pas
 File26=..\..\source\common\JclUsesUtils.pas
 File27=..\..\source\windows\JclHelpUtils.pas
 File28=..\..\source\windows\MSHelpServices_TLB.pas
-File29=..\..\..\help\JclDeveloperTools.dtx
+File29=..\..\..\help\Common.dtx
+File30=..\..\..\help\JclDeveloperTools.dtx
 
 [General]
 Copyright=Copyright (C) 1999, 2011 Project JEDI

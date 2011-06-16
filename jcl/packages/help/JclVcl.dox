@@ -31,7 +31,7 @@ File1=..\..\..\help\JEDI.doxdb
 File2=Jcl.doxdb
 
 [Source Files]
-Count=16
+Count=17
 File0=..\..\source\vcl\JclPrint.pas
 File1=..\..\source\vcl\JclGraphUtils.pas
 File2=..\..\source\vcl\JclGraphics.pas
@@ -44,10 +44,11 @@ File8=..\..\source\vcl\JclVersionCtrlCVSImpl.pas
 File9=..\..\source\vcl\JclVersionCtrlGITImpl.pas
 File10=..\..\source\vcl\JclVersionCtrlSVNImpl.pas
 File11=..\..\..\help\Bitmap32.dtx
-File12=..\..\..\help\Font.dtx
-File13=..\..\..\help\Graphics.dtx
-File14=..\..\..\help\JclVcl.dtx
-File15=..\..\..\help\Regions.dtx
+File12=..\..\..\help\Common.dtx
+File13=..\..\..\help\Font.dtx
+File14=..\..\..\help\Graphics.dtx
+File15=..\..\..\help\JclVcl.dtx
+File16=..\..\..\help\Regions.dtx
 
 [General]
 Copyright=Copyright (C) 1999, 2011 Project JEDI

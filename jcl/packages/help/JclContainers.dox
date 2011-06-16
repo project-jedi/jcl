@@ -31,7 +31,7 @@ File1=..\..\..\help\JEDI.doxdb
 File2=Jcl.doxdb
 
 [Source Files]
-Count=17
+Count=18
 File0=..\..\source\common\JclAbstractContainers.pas
 File1=..\..\source\common\JclAlgorithms.pas
 File2=..\..\source\common\JclArrayLists.pas
@@ -46,9 +46,10 @@ File10=..\..\source\common\JclSortedMaps.pas
 File11=..\..\source\common\JclStacks.pas
 File12=..\..\source\common\JclTrees.pas
 File13=..\..\source\common\JclVectors.pas
-File14=..\..\..\help\ContainerCopies.dtx
-File15=..\..\..\help\Containers.dtx
-File16=..\..\..\help\JclContainers.dtx
+File14=..\..\..\help\Common.dtx
+File15=..\..\..\help\ContainerCopies.dtx
+File16=..\..\..\help\Containers.dtx
+File17=..\..\..\help\JclContainers.dtx
 
 [General]
 Copyright=Copyright (C) 1999, 2011 Project JEDI
