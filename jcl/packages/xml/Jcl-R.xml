@@ -130,6 +130,7 @@
     <File Name="..\..\..\help\AppInst.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\Base.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\Com.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\Complex.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\Counter.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\DateTime.dtx" Targets="help" Formname="" Condition=""/>

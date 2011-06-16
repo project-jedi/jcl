@@ -47,6 +47,7 @@
     <File Name="..\..\source\common\JclUsesUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclHelpUtils.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\MSHelpServices_TLB.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JclDeveloperTools.dtx" Targets="help" Formname="" Condition=""/>
   </Contains>
 </Package>

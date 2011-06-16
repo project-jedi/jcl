@@ -32,6 +32,7 @@
     <File Name="..\..\source\common\JclStacks.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclTrees.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclVectors.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\ContainerCopies.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\Containers.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JclContainers.dtx" Targets="help" Formname="" Condition=""/>
