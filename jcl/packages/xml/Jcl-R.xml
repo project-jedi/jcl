@@ -134,6 +134,7 @@
     <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\Complex.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\Counter.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\CppExceptions.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\DateTime.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\Debug.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\ExprEval.dtx" Targets="help" Formname="" Condition=""/>
