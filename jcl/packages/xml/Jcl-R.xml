@@ -95,6 +95,7 @@
     <File Name="..\..\source\windows\JclCLR.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclCOM.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclConsole.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclCppException.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclDebug.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclDebugSerialization.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclDebugXMLDeserializer.pas" Targets="Windows" Formname="" Condition=""/>
@@ -171,6 +172,5 @@
     <File Name="..\..\..\help\UnitConv.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\WideStrings.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\Win32.dtx" Targets="help" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclCppException.pas" Targets="Windows" Formname="" Condition=""/>
   </Contains>
 </Package>

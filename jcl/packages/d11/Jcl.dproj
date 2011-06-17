@@ -131,6 +131,7 @@
     <DCCReference Include="..\..\source\windows\JclCLR.pas"/>
     <DCCReference Include="..\..\source\windows\JclCOM.pas"/>
     <DCCReference Include="..\..\source\windows\JclConsole.pas"/>
+    <DCCReference Include="..\..\source\windows\JclCppException.pas"/>
     <DCCReference Include="..\..\source\windows\JclDebug.pas"/>
     <DCCReference Include="..\..\source\windows\JclDebugSerialization.pas"/>
     <DCCReference Include="..\..\source\windows\JclDebugXMLDeserializer.pas"/>
@@ -162,6 +163,5 @@
     <DCCReference Include="..\..\source\windows\MSTask.pas"/>
     <DCCReference Include="..\..\source\windows\sevenzip.pas"/>
     <DCCReference Include="..\..\source\windows\Snmp.pas"/>
-    <DCCReference Include="..\..\source\windows\JclCppException.pas"/>
   </ItemGroup>
 </Project>
