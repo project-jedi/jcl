@@ -144,6 +144,7 @@ function PathGetRelativePath(Origin, Destination: string): string;
 function PathGetTempPath: string;
 function PathIsAbsolute(const Path: string): Boolean;
 function PathIsChild(const Path, Base: string): Boolean;
+function PathIsEqualOrChild(const Path, Base: string): Boolean;
 function PathIsDiskDevice(const Path: string): Boolean;
 function PathIsUNC(const Path: string): Boolean;
 function PathRemoveSeparator(const Path: string): string;
@@ -2719,6 +2720,32 @@ begin
   {$ENDIF UNIX}
 end;
 
+function PathIsEqualOrChild(const Path, Base: string): Boolean;
+var
+  L: Integer;
+  B, P: string;
+begin
+  Result := False;
+  B := PathRemoveSeparator(Base);
+  P := PathRemoveSeparator(Path);
+  // an empty path or one that's not longer than base cannot be a subdirectory
+  L := Length(B);
+  {$IFDEF MSWINDOWS}
+  Result := AnsiSameText(P, B);
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  Result := AnsiSameStr(P, B);
+  {$ENDIF UNIX}
+  if Result or (P = '') or (L >= Length(P)) then
+    Exit;
+  {$IFDEF MSWINDOWS}
+  Result := AnsiSameText(StrLeft(P, L), B) and (P[L+1] = DirDelimiter);
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  Result := AnsiSameStr(StrLeft(P, L), B) and (P[L+1] = DirDelimiter);
+  {$ENDIF UNIX}
+end;
+
 function PathIsDiskDevice(const Path: string): Boolean;
 {$IFDEF UNIX}
 var
@@ -2894,7 +2921,7 @@ var
   L: Integer;
 begin
   L := Length(Path);
-  if (L <> 0) and (Path[Length(Path)] = DirDelimiter) then
+  if (L <> 0) and (Path[L] = DirDelimiter) then
     Result := Copy(Path, 1, L - 1)
   else
     Result := Path;
