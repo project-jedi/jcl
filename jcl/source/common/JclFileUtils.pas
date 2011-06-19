@@ -2725,7 +2725,6 @@ var
   L: Integer;
   B, P: string;
 begin
-  Result := False;
   B := PathRemoveSeparator(Base);
   P := PathRemoveSeparator(Path);
   // an empty path or one that's not longer than base cannot be a subdirectory

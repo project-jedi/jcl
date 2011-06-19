@@ -219,9 +219,6 @@ begin
 end;
 
 function TJclVersionControlGIT.GetFileActions(const FileName: TFileName): TJclVersionControlActionTypes;
-var
-  EntryFileName: TFileName;
-  IndexDir: Integer;
 begin
   Result := inherited GetFileActions(FileName);
 
@@ -261,10 +258,10 @@ end;
 function TJclVersionControlGIT.GetSandboxNames(const FileName: TFileName; SdBxNames: TStrings): Boolean;
 var
   DirectoryName: string;
-  IndexDir, IndexFileName: Integer;
   List: TStringList;
   i: Integer;
   Found: Boolean;
+  IndexDir: Integer;
 begin
   Result := True;
   Found := False;
