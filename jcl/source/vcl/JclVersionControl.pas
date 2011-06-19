@@ -556,8 +556,7 @@ begin
   Result := [];
 end;
 
-function TJclVersionControlPlugin.GetSandboxNames(const FileName: TFileName;
-  SdBxNames: TStrings): Boolean;
+function TJclVersionControlPlugin.GetSandboxNames(const FileName: TFileName; SdBxNames: TStrings): Boolean;
 var
   Index: Integer;
 begin
@@ -568,9 +567,7 @@ begin
     SdBxNames.Clear;
     for Index := Length(FileName) downto 1 do
       if FileName[Index] = DirDelimiter then
-    begin
-      SdBxNames.Add(Copy(FileName, 1, Index));
-    end;
+        SdBxNames.Add(Copy(FileName, 1, Index));
   finally
     SdBxNames.EndUpdate;
   end;
@@ -578,8 +575,7 @@ end;
 
 //=== TJclVersionControlCache ================================================
 
-constructor TJclVersionControlCache.Create(APlugin: TJclVersionControlPlugin;
-  const AFileName: TFileName);
+constructor TJclVersionControlCache.Create(APlugin: TJclVersionControlPlugin; const AFileName: TFileName);
 var
   Index: Integer;
   SandboxNames: TStrings;

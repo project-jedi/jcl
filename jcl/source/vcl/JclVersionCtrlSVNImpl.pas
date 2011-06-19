@@ -285,9 +285,9 @@ begin
         finally
           Entries.Free;
         end;
+        Result := Result + [vcaAdd];
       end;
     end;
-    Result := Result + [vcaAdd];
   end;
 end;
 
