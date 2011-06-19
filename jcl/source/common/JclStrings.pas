@@ -358,7 +358,9 @@ function WideMultiSzDup(const Source: PWideMultiSz): PWideMultiSz; {$IFDEF SUPPO
 // TStrings Manipulation
 procedure StrIToStrings(S, Sep: string; const List: TStrings; const AllowEmptyString: Boolean = True);
 procedure StrToStrings(S, Sep: string; const List: TStrings; const AllowEmptyString: Boolean = True);
-function StringsToStr(const List: TStrings; const Sep: string; const AllowEmptyString: Boolean = True): string;
+function StringsToStr(const List: TStrings; const Sep: string; const AllowEmptyString: Boolean = True): string; overload;
+function StringsToStr(const List: TStrings; const Sep: string; const NumberOfItems: SizeInt; const AllowEmptyString:
+    Boolean = True): string; overload;
 procedure TrimStrings(const List: TStrings; DeleteIfEmpty: Boolean = True);
 procedure TrimStringsRight(const List: TStrings; DeleteIfEmpty: Boolean = True);
 procedure TrimStringsLeft(const List: TStrings; DeleteIfEmpty: Boolean = True);
@@ -3322,7 +3324,7 @@ begin
   end;
 end;
 
-function StringsToStr(const List: TStrings; const Sep: string; const AllowEmptyString: Boolean): string;
+function StringsToStr(const List: TStrings; const Sep: string; const AllowEmptyString: Boolean = True): string;
 var
   I, L: SizeInt;
 begin
@@ -3337,7 +3339,34 @@ begin
     end;
   end;
   // remove terminating separator
-  if List.Count <> 0 then
+  if List.Count > 0 then
+  begin
+    L := Length(Sep);
+    Delete(Result, Length(Result) - L + 1, L);
+  end;
+end;
+
+function StringsToStr(const List: TStrings; const Sep: string; const NumberOfItems: SizeInt; const AllowEmptyString:
+    Boolean = True): string;
+var
+  I, L, N: SizeInt;
+begin
+  Result := '';
+  if List.Count > NumberOfItems then
+    N := NumberOfItems
+  else
+    N := List.Count;
+  for I := 0 to N - 1 do
+  begin
+    if (List[I] <> '') or AllowEmptyString then
+    begin
+      // don't combine these into one addition, somehow it hurts performance
+      Result := Result + List[I];
+      Result := Result + Sep;
+    end;
+  end;
+  // remove terminating separator
+  if N > 0 then
   begin
     L := Length(Sep);
     Delete(Result, Length(Result) - L + 1, L);
