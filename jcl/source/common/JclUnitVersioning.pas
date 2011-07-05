@@ -69,6 +69,7 @@ type
     function LogPath: string;
     function Data: Pointer;
     function DateTime: TDateTime;
+    function Summary: string;
   end;
 
   TUnitVersioningModule = class(TObject)
@@ -143,6 +144,7 @@ procedure UnregisterUnitVersion(Instance: THandle);
 
 function GetUnitVersioning: TUnitVersioning;
 
+procedure ExportUnitVersioningToFile(iFileName : string);
 const
   UnitVersioning: TUnitVersionInfo = (
     RCSfile: '$URL$';
@@ -328,6 +330,13 @@ begin
   Val(Copy(S, 1, Ps - 1), Second, Error);
 
   Result := EncodeDate(Year, Month, Day) + EncodeTime(Hour, Minute, Second, 0);
+end;
+
+function TUnitVersion.Summary: string;
+begin
+  Result := LogPath + #9 + RCSFile + #9 + Revision + #9 + Date;
+  if Extra <> '' then
+    Result := Result + #9 + Extra;
 end;
 
 //=== { TUnitVersioningModule } ==============================================
@@ -696,6 +705,23 @@ begin
   UnitVersioning := GetUnitVersioning;
   if Assigned(UnitVersioning) then
     UnitVersioning.UnregisterModule(Instance);
+end;
+
+procedure ExportUnitVersioningToFile(iFileName : string);
+var
+  I: Integer;
+  Item: TUnitVersion;
+  sl: TStringList;
+begin
+  sl := TStringList.Create;
+  try
+    for I := 0 to GetUnitVersioning.Count - 1 do
+      sl.Add(GetUnitVersioning.Items[I].Summary);
+    sl.Sort;
+    sl.SaveToFile(iFileName);
+  finally
+    sl.Free;
+  end;
 end;
 
 initialization
