@@ -145,6 +145,7 @@ procedure UnregisterUnitVersion(Instance: THandle);
 function GetUnitVersioning: TUnitVersioning;
 
 procedure ExportUnitVersioningToFile(iFileName : string);
+
 const
   UnitVersioning: TUnitVersionInfo = (
     RCSfile: '$URL$';
@@ -724,10 +725,15 @@ begin
   end;
 end;
 
+{$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
+{$ENDIF UNITVERSIONING}
 
 finalization
+{$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
   FinalizeUnitVersioning;
 
 end.
