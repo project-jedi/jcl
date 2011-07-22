@@ -725,8 +725,8 @@ begin
   end;
 end;
 
-{$IFDEF UNITVERSIONING}
 initialization
+{$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
 {$ENDIF UNITVERSIONING}
 
