@@ -3921,7 +3921,7 @@ begin
         Result := (SymLoadModuleFunc(ProcessHandle, 0, PAnsiChar(AnsiString(ModuleFileName)), nil, 0, 0) <> 0) and
                   SymGetModuleInfoAFunc(ProcessHandle, Module, ModuleInfoA);
       end;
-      Result := Result and (ModuleInfoW.BaseOfImage <> 0) and
+      Result := Result and (ModuleInfoA.BaseOfImage <> 0) and
                 not (ModuleInfoA.SymType in [SymNone, SymExport]);
     end
     else
