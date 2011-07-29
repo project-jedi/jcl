@@ -7241,7 +7241,6 @@ end;
 
 function TJclXzCompressArchive.GetCompressionMethod: TJclCompressionMethod;
 begin
-  CheckNotCompressing;
   Result := FCompressionMethod;
 end;
 
@@ -9508,8 +9507,6 @@ end;
 
 function TJclXzUpdateArchive.GetCompressionMethod: TJclCompressionMethod;
 begin
-  CheckNotDecompressing;
-  CheckNotCompressing;
   Result := FCompressionMethod;
 end;
 
