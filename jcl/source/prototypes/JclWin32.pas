@@ -130,11 +130,11 @@ type
 {$I win32api\WinUser.int}
 {$I win32api\PowrProf.int}
 {$I win32api\DelayImp.int}
-{$I win32api\PropIdl.int}
 {$I win32api\MsiDefs.int}
 {$I win32api\ShlGuid.int}
 {$I win32api\imgguids.int}
 {$I win32api\ObjBase.int}
+{$I win32api\PropIdl.int}
 {$I win32api\NtSecApi.int}
 {$I win32api\TlHelp32.int}
 {$I win32api\Winternl.int}
@@ -287,6 +287,7 @@ end;
 {$I win32api\WinNT.imp}
 {$I win32api\PowrProf.imp}
 {$I win32api\ObjBase.imp}
+{$I win32api\PropIdl.imp}
 {$I win32api\NtSecApi.imp}
 {$I win32api\TlHelp32.imp}
 {$I win32api\Winternl.imp}

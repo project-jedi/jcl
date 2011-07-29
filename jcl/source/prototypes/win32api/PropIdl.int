@@ -133,3 +133,6 @@ const
   PIDMSI_COPYRIGHT   = $0000000B; // VT_LPWSTR
   {$EXTERNALSYM PIDMSI_COPYRIGHT}
 
+function PropVariantClear(var Prop: TPropVariant): HResult; stdcall;
+{$EXTERNALSYM PropVariantClear}
+
