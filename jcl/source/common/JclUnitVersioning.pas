@@ -711,7 +711,6 @@ end;
 procedure ExportUnitVersioningToFile(iFileName : string);
 var
   I: Integer;
-  Item: TUnitVersion;
   sl: TStringList;
 begin
   sl := TStringList.Create;
