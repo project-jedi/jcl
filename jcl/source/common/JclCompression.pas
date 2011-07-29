@@ -557,6 +557,7 @@ type
   TJclCompressionVolumeMaxSizeEvent = procedure(Sender: TObject; Index: Integer;
     var AVolumeMaxSize: Int64) of object;
   TJclCompressionProgressEvent = procedure(Sender: TObject; const Value, MaxValue: Int64) of object;
+  TJclCompressionRatioEvent = procedure(Sender: TObject; const InSize, OutSize: Int64) of object;
 
   TJclCompressionItemProperty = (ipPackedName, ipPackedSize, ipPackedExtension,
     ipFileSize, ipFileName, ipAttributes, ipCreationTime, ipLastAccessTime,
@@ -729,6 +730,7 @@ type
   TJclCompressionArchive = class(TObject, IInterface)
   private
     FOnProgress: TJclCompressionProgressEvent;
+    FOnRatio: TJclCompressionRatioEvent;
     FOnVolume: TJclCompressionVolumeEvent;
     FOnVolumeMaxSize: TJclCompressionVolumeMaxSizeEvent;
     FPassword: WideString;
@@ -751,6 +753,7 @@ type
     function TranslateItemPath(const ItemPath, OldBase, NewBase: WideString): WideString;
 
     procedure DoProgress(const Value, MaxValue: Int64);
+    procedure DoRatio(const InSize, OutSize: Int64);
     function NeedStream(Index: Integer): TStream;
     function NeedStreamMaxSize(Index: Integer): Int64;
     procedure ReleaseVolumes;
@@ -806,6 +809,7 @@ type
     property VolumeIndexOffset: Integer read FVolumeIndexOffset write FVolumeIndexOffset;
 
     property OnProgress: TJclCompressionProgressEvent read FOnProgress write FOnProgress;
+    property OnRatio: TJclCompressionRatioEvent read FOnRatio write FOnRatio;
 
     // volume events
     property OnVolume: TJclCompressionVolumeEvent read FOnVolume write FOnVolume;
@@ -2023,7 +2027,7 @@ type
   end;
 
   TJclSevenzipExtractCallback = class(TInterfacedObject, IUnknown, IProgress,
-    IArchiveExtractCallback, ICryptoGetTextPassword)
+    IArchiveExtractCallback, ICryptoGetTextPassword, ICompressProgressInfo)
   private
     FArchive: TJclCompressionArchive;
     FLastStream: Cardinal;
@@ -2039,10 +2043,13 @@ type
     function SetTotal(Total: Int64): HRESULT; stdcall;
     // ICryptoGetTextPassword
     function CryptoGetTextPassword(password: PBStr): HRESULT; stdcall;
+    // ICompressProgressInfo
+    function SetRatioInfo(InSize: PInt64; OutSize: PInt64): HRESULT; stdcall;
   end;
 
   TJclSevenzipUpdateCallback = class(TInterfacedObject, IUnknown, IProgress,
-    IArchiveUpdateCallback, IArchiveUpdateCallback2, ICryptoGetTextPassword2)
+    IArchiveUpdateCallback, IArchiveUpdateCallback2, ICryptoGetTextPassword2,
+    ICompressProgressInfo)
   private
     FArchive: TJclCompressionArchive;
     FLastStream: Cardinal;
@@ -2064,6 +2071,8 @@ type
     // ICryptoGetTextPassword2
     function CryptoGetTextPassword2(PasswordIsDefined: PInteger;
       Password: PBStr): HRESULT; stdcall;
+    // ICompressProgressInfo  
+    function SetRatioInfo(InSize: PInt64; OutSize: PInt64): HRESULT; stdcall;
   end;
 
 type
@@ -2090,10 +2099,12 @@ procedure GetSevenzipArchiveCompressionProperties(AJclArchive: IInterface; ASeve
 procedure SetSevenzipArchiveCompressionProperties(AJclArchive: IInterface; ASevenzipArchive: IInterface);
 
 
-function Create7zFile(SourceFiles: TStrings; const DestinationFile: TFileName; VolumeSize: Int64 = 0; Password: String
-    = ''; OnArchiveProgress: TJclCompressionProgressEvent = nil): Boolean; overload;
+function Create7zFile(SourceFiles: TStrings; const DestinationFile: TFileName; VolumeSize: Int64 = 0;
+  Password: String = ''; OnArchiveProgress: TJclCompressionProgressEvent = nil;
+  OnArchiveRatio: TJclCompressionRatioEvent = nil): Boolean; overload;
 function Create7zFile(const SourceFile, DestinationFile: TFileName; VolumeSize: Int64 = 0; Password: String = '';
-    OnArchiveProgress: TJclCompressionProgressEvent = nil): Boolean; overload;
+  OnArchiveProgress: TJclCompressionProgressEvent = nil;
+  OnArchiveRatio: TJclCompressionRatioEvent = nil): Boolean; overload;
 
 {$ENDIF MSWINDOWS}
 
@@ -4747,6 +4758,12 @@ begin
     FOnProgress(Self, Value, MaxValue);
 end;
 
+procedure TJclCompressionArchive.DoRatio(const InSize, OutSize: Int64);
+begin
+  if Assigned(FOnRatio) then
+    FOnRatio(Self, InSize, OutSize);
+end;
+
 function TJclCompressionArchive.GetItem(Index: Integer): TJclCompressionItem;
 begin
   Result := TJclCompressionItem(FItems.Items[Index]);
@@ -6135,8 +6152,8 @@ begin
   end;
 end;
 
-function Create7zFile(SourceFiles: TStrings; const DestinationFile: TFileName; VolumeSize: Int64 = 0; Password: String
-    = ''; OnArchiveProgress: TJclCompressionProgressEvent = nil): Boolean;
+function Create7zFile(SourceFiles: TStrings; const DestinationFile: TFileName; VolumeSize: Int64; Password: String;
+  OnArchiveProgress: TJclCompressionProgressEvent; OnArchiveRatio: TJclCompressionRatioEvent): Boolean;
 var
   ArchiveFileName: string;
   SourceFile : String;
@@ -6161,6 +6178,7 @@ begin
     try
       Archive.Password := Password;
       Archive.OnProgress := OnArchiveProgress;
+      Archive.OnRatio := OnArchiveRatio;
 
       InnerList := tStringList.Create;
       try
@@ -6185,14 +6203,15 @@ begin
   end;
 end;
 
-function Create7zFile(const SourceFile, DestinationFile: TFileName; VolumeSize: Int64 = 0; Password: String = '';
-    OnArchiveProgress: TJclCompressionProgressEvent = nil): Boolean;
-var SourceFiles : TStringList;
+function Create7zFile(const SourceFile, DestinationFile: TFileName; VolumeSize: Int64; Password: String;
+  OnArchiveProgress: TJclCompressionProgressEvent; OnArchiveRatio: TJclCompressionRatioEvent): Boolean;
+var
+  SourceFiles : TStringList;
 begin
   SourceFiles := TStringList.Create;
   try
     SourceFiles.Add(SourceFile);
-    Result := Create7zFile(SourceFiles, DestinationFile, VolumeSize, Password, OnArchiveProgress);
+    Result := Create7zFile(SourceFiles, DestinationFile, VolumeSize, Password, OnArchiveProgress, OnArchiveRatio);
   finally
     SourceFiles.Free;
   end;
@@ -6481,6 +6500,23 @@ begin
     FArchive.Items[FLastStream].OperationSuccess := osUnknownError;
   end;
 
+  Result := S_OK;
+end;
+
+function TJclSevenzipUpdateCallback.SetRatioInfo(InSize,
+  OutSize: PInt64): HRESULT;
+var
+  AInSize, AOutSize: Int64;
+begin
+  if Assigned(InSize) then
+    AInSize := InSize^
+  else
+    AInSize := -1;
+  if Assigned(OutSize) then
+    AOutSize := OutSize^
+  else
+    AOutSize := -1;
+  FArchive.DoRatio(AInSize, AOutSize);
   Result := S_OK;
 end;
 
@@ -7363,6 +7399,23 @@ begin
     LastItem.DeleteOutputFile;
   end;
 
+  Result := S_OK;
+end;
+
+function TJclSevenzipExtractCallback.SetRatioInfo(InSize,
+  OutSize: PInt64): HRESULT;
+var
+  AInSize, AOutSize: Int64;
+begin
+  if Assigned(InSize) then
+    AInSize := InSize^
+  else
+    AInSize := -1;
+  if Assigned(OutSize) then
+    AOutSize := OutSize^
+  else
+    AOutSize := -1;
+  FArchive.DoRatio(AInSize, AOutSize);
   Result := S_OK;
 end;
 
