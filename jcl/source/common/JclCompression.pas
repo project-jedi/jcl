@@ -6107,7 +6107,9 @@ begin
         and (EncryptionMethod.EncryptionMethod <> emNone) then
         AddWideStringProperty('EM', EncryptionMethodNames[EncryptionMethod.EncryptionMethod]);
 
-      if Supports(AJclArchive, IJclArchiveDictionarySize, DictionarySize) and Assigned(DictionarySize) then
+      if Supports(AJclArchive, IJclArchiveDictionarySize, DictionarySize) and Assigned(DictionarySize) and
+        Supports(AJclArchive, IJclArchiveCompressionMethod, CompressionMethod) and Assigned(CompressionMethod) and
+        (CompressionMethod.CompressionMethod in [cmBZip2,cmLZMA,cmLZMA2]) then
         AddWideStringProperty('D', IntToStr(DictionarySize.DictionarySize) + 'B');
 
       if Supports(AJclArchive, IJclArchiveNumberOfPasses, NumberOfPasses) and Assigned(NumberOfPasses) then
