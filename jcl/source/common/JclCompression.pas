@@ -739,6 +739,7 @@ type
     FVolumeMaxSize: Int64;
     FVolumeFileNameMask: TFileName;
     FProgressMax: Int64;
+    FCancelCurrentOperation: Boolean;
     function GetItemCount: Integer;
     function GetItem(Index: Integer): TJclCompressionItem;
     function GetVolumeCount: Integer;
@@ -752,8 +753,8 @@ type
     function InternalOpenStream(const FileName: TFileName): TStream;
     function TranslateItemPath(const ItemPath, OldBase, NewBase: WideString): WideString;
 
-    procedure DoProgress(const Value, MaxValue: Int64);
-    procedure DoRatio(const InSize, OutSize: Int64);
+    function DoProgress(const Value, MaxValue: Int64): Boolean;
+    function DoRatio(const InSize, OutSize: Int64): Boolean;
     function NeedStream(Index: Integer): TStream;
     function NeedStreamMaxSize(Index: Integer): Int64;
     procedure ReleaseVolumes;
@@ -818,6 +819,7 @@ type
     property Password: WideString read FPassword write FPassword;
 
     property SupportsNestedArchive: Boolean read GetSupportsNestedArchive;
+    property CancelCurrentOperation: Boolean read FCancelCurrentOperation write FCancelCurrentOperation;
   end;
 
   TJclCompressionArchiveClass = class of TJclCompressionArchive;
@@ -4752,16 +4754,18 @@ begin
   // override to customize
 end;
 
-procedure TJclCompressionArchive.DoProgress(const Value, MaxValue: Int64);
+function TJclCompressionArchive.DoProgress(const Value, MaxValue: Int64): Boolean;
 begin
   if Assigned(FOnProgress) then
     FOnProgress(Self, Value, MaxValue);
+  Result := not FCancelCurrentOperation;
 end;
 
-procedure TJclCompressionArchive.DoRatio(const InSize, OutSize: Int64);
+function TJclCompressionArchive.DoRatio(const InSize, OutSize: Int64): Boolean;
 begin
   if Assigned(FOnRatio) then
     FOnRatio(Self, InSize, OutSize);
+  Result := not FCancelCurrentOperation;
 end;
 
 function TJclCompressionArchive.GetItem(Index: Integer): TJclCompressionItem;
@@ -5783,7 +5787,7 @@ end;
 
 procedure SevenzipCheck(Value: HRESULT);
 begin
-  if Value <> S_OK then
+  if (Value <> S_OK) and (Value <> E_ABORT) then
     raise EJclCompressionError.CreateResFmt(@RsCompression7zReturnError, [Value, SysErrorMessage(Value)]);
 end;
 
@@ -6485,9 +6489,9 @@ end;
 function TJclSevenzipUpdateCallback.SetCompleted(
   CompleteValue: PInt64): HRESULT;
 begin
-  if Assigned(CompleteValue) then
-    FArchive.DoProgress(CompleteValue^, FArchive.FProgressMax);
   Result := S_OK;
+  if Assigned(CompleteValue) and not FArchive.DoProgress(CompleteValue^, FArchive.FProgressMax) then
+    Result := E_ABORT;
 end;
 
 function TJclSevenzipUpdateCallback.SetOperationResult(
@@ -6522,14 +6526,19 @@ begin
     AOutSize := OutSize^
   else
     AOutSize := -1;
-  FArchive.DoRatio(AInSize, AOutSize);
-  Result := S_OK;
+  if FArchive.DoRatio(AInSize, AOutSize) then
+    Result := S_OK
+  else
+    Result := E_ABORT;
 end;
 
 function TJclSevenzipUpdateCallback.SetTotal(Total: Int64): HRESULT;
 begin
   FArchive.FProgressMax := Total;
-  Result := S_OK;
+  if FArchive.CancelCurrentOperation then
+    Result := E_ABORT
+  else
+    Result := S_OK;
 end;
 
 //=== { TJclSevenzipCompressArchive } ========================================
@@ -7304,16 +7313,19 @@ end;
 
 function TJclSevenzipOpenCallback.SetCompleted(Files, Bytes: PInt64): HRESULT;
 begin
-  if Assigned(Files) then
-    FArchive.DoProgress(Files^, FArchive.FProgressMax);
   Result := S_OK;
+  if Assigned(Files) and not FArchive.DoProgress(Files^, FArchive.FProgressMax) then
+    Result := E_ABORT;
 end;
 
 function TJclSevenzipOpenCallback.SetTotal(Files, Bytes: PInt64): HRESULT;
 begin
   if Assigned(Files) then
     FArchive.FProgressMax := Files^;
-  Result := S_OK;
+  if FArchive.CancelCurrentOperation then
+    Result := E_ABORT
+  else
+    Result := S_OK;
 end;
 
 //=== { TJclSevenzipExtractCallback } ========================================
@@ -7367,9 +7379,9 @@ end;
 function TJclSevenzipExtractCallback.SetCompleted(
   CompleteValue: PInt64): HRESULT;
 begin
-  if Assigned(CompleteValue) then
-    FArchive.DoProgress(CompleteValue^, FArchive.FProgressMax);
   Result := S_OK;
+  if Assigned(CompleteValue) and not FArchive.DoProgress(CompleteValue^, FArchive.FProgressMax) then
+    Result := E_ABORT;
 end;
 
 function TJclSevenzipExtractCallback.SetOperationResult(
@@ -7420,14 +7432,19 @@ begin
     AOutSize := OutSize^
   else
     AOutSize := -1;
-  FArchive.DoRatio(AInSize, AOutSize);
-  Result := S_OK;
+  if FArchive.DoRatio(AInSize, AOutSize) then
+    Result := S_OK
+  else
+    Result := E_ABORT;
 end;
 
 function TJclSevenzipExtractCallback.SetTotal(Total: Int64): HRESULT;
 begin
   FArchive.FProgressMax := Total;
-  Result := S_OK;
+  if FArchive.CancelCurrentOperation then
+    Result := E_ABORT
+  else
+    Result := S_OK;
 end;
 
 //=== { TJclSevenzipDecompressItem } =========================================
