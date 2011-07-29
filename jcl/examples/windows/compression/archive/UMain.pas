@@ -10,6 +10,9 @@ uses
   Dialogs, StdCtrls, ExtCtrls, ActnList, ComCtrls, ImgList, Contnrs,
   JclCompression;
 
+const
+  WM_SYNC_ARCHIVE_PROGRESS = WM_USER + 153;
+
 type
   TFormMain = class(TForm)
     ActionList1: TActionList;
@@ -86,9 +89,7 @@ type
   private
     FArchiveStack: TObjectList;
     FArchive: TJclCompressionArchive;
-    FProgressValue: Byte;
-    FProgressMax: Byte;
-    procedure SyncArchiveProgress;
+    procedure WmSyncArchiveProgress(var Message: TMessage); message WM_SYNC_ARCHIVE_PROGRESS;
   public
     procedure CloseArchive;
     procedure CloseAllArchive;
@@ -500,9 +501,7 @@ begin
     MyValue := MyValue shr 8;
   end;
 
-  FProgressMax := MyMaxValue;
-  FProgressValue := MyValue;
-  TThread.Synchronize(nil, SyncArchiveProgress);
+  PostMessage(Handle, WM_SYNC_ARCHIVE_PROGRESS, MyValue, MyMaxValue);
 end;
 
 procedure TFormMain.CloseAllArchive;
@@ -663,10 +662,10 @@ begin
     Item.SubItems.Add('');
 end;
 
-procedure TFormMain.SyncArchiveProgress;
+procedure TFormMain.WMSyncArchiveProgress(var Message: TMessage);
 begin
-  ProgressBar1.Max := FProgressMax;
-  ProgressBar1.Position := FProgressValue;
+  ProgressBar1.Max := Message.LParam;
+  ProgressBar1.Position := Message.WParam;
 end;
 
 initialization
