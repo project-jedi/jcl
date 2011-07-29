@@ -6019,6 +6019,7 @@ var
   InArchive, OutArchive: Boolean;
   Unused: IInterface;
   MultiThreadStrategy: IJclArchiveNumberOfThreads;
+  CompressionMethod: IJclArchiveCompressionMethod;
   CompressionLevel: IJclArchiveCompressionLevel;
   EncryptionMethod: IJclArchiveEncryptionMethod;
   DictionarySize: IJclArchiveDictionarySize;
@@ -6071,20 +6072,20 @@ var
     AddProperty(Name, PropValue);
   end;
 const
-  EncryptionMethodName: array [TJclEncryptionMethod] of WideString =
+  EncryptionMethodNames: array [TJclEncryptionMethod] of WideString =
     ( '' {emNone},
       kAES128MethodName {emAES128},
       kAES192MethodName {emAES192},
       kAES256MethodName {emAES256},
       kZipCryptoMethodName {emZipCrypto} );
-  // CompressionMethodNames: array [TJclCompressionMethod] of WideString =
-  //   ( kCopyMethodName {cmCopy},
-  //     kDeflateMethodName {cmDeflate},
-  //     kDeflate64MethodName {cmDeflate64},
-  //     kBZip2MethodName {cmBZip2},
-  //     kLZMAMethodName {cmLZMA},
-  //     kLZMA2MethodName {cmLZMA2},
-  //     kPPMdMethodName {cmPPMd} );
+  CompressionMethodNames: array [TJclCompressionMethod] of WideString =
+    ( kCopyMethodName {cmCopy},
+      kDeflateMethodName {cmDeflate},
+      kDeflate64MethodName {cmDeflate64},
+      kBZip2MethodName {cmBZip2},
+      kLZMAMethodName {cmLZMA},
+      kLZMA2MethodName {cmLZMA2},
+      kPPMdMethodName {cmPPMd} );
 begin
   if Supports(ASevenzipArchive, Sevenzip.ISetProperties, PropertySetter) and Assigned(PropertySetter) then
   begin
@@ -6096,12 +6097,15 @@ begin
 
     if OutArchive then
     begin
+      if Supports(AJclArchive, IJclArchiveCompressionMethod, CompressionMethod) and Assigned(CompressionMethod) then
+        AddWideStringProperty('M', CompressionMethodNames[CompressionMethod.CompressionMethod]);
+
       if Supports(AJclArchive, IJclArchiveCompressionLevel, CompressionLevel) and Assigned(CompressionLevel) then
         AddCardinalProperty('X', CompressionLevel.CompressionLevel);
 
       if Supports(AJclArchive, IJclArchiveEncryptionMethod, EncryptionMethod) and Assigned(EncryptionMethod)
         and (EncryptionMethod.EncryptionMethod <> emNone) then
-        AddWideStringProperty('EM', EncryptionMethodName[EncryptionMethod.EncryptionMethod]);
+        AddWideStringProperty('EM', EncryptionMethodNames[EncryptionMethod.EncryptionMethod]);
 
       if Supports(AJclArchive, IJclArchiveDictionarySize, DictionarySize) and Assigned(DictionarySize) then
         AddWideStringProperty('D', IntToStr(DictionarySize.DictionarySize) + 'B');
@@ -7246,13 +7250,13 @@ end;
 
 function TJclXzCompressArchive.GetSupportedCompressionMethods: TJclCompressionMethods;
 begin
-  Result := [cmLZMA];
+  Result := [cmLZMA2];
 end;
 
 procedure TJclXzCompressArchive.InitializeArchiveProperties;
 begin
   inherited InitializeArchiveProperties;
-  FCompressionMethod := cmLZMA;
+  FCompressionMethod := cmLZMA2;
 end;
 
 procedure TJclXzCompressArchive.SetCompressionMethod(
@@ -9512,13 +9516,13 @@ end;
 
 function TJclXzUpdateArchive.GetSupportedCompressionMethods: TJclCompressionMethods;
 begin
-  Result := [cmLZMA];
+  Result := [cmLZMA2];
 end;
 
 procedure TJclXzUpdateArchive.InitializeArchiveProperties;
 begin
   inherited InitializeArchiveProperties;
-  FCompressionMethod := cmLZMA
+  FCompressionMethod := cmLZMA2
 end;
 
 procedure TJclXzUpdateArchive.SetCompressionMethod(
