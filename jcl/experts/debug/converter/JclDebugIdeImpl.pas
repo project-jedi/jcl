@@ -486,7 +486,7 @@ begin
                 OutputToolMessage(Format(LoadResString(@RsInsertedJdbg), [MapFileName, MapFileSize, JclDebugDataSize]));
             end
             else
-              OutputToolMessage(Format(LoadResString(@RsEMapConversion), [MapFileName]));
+              OutputToolMessage(Format(LoadResString(@RsEMapInsertion), [MapFileName]));
           end
           else
             OutputToolMessage(Format(LoadResString(@RsEExecutableNotFound), [ProjectFileName]));

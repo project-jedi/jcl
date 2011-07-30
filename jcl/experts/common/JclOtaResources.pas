@@ -268,6 +268,7 @@ resourcestring
   RsDeletedMapFile = 'Deleted %s file "%s"';
   RsEFailedToDeleteMapFile = 'Failed to delete %s file "%s"';
   RsEMapConversion = 'Failed to convert MAP file "%s"';
+  RsEMapInsertion = 'Failed to insert MAP file "%s"';
   RsENoActiveProject = 'No active project';
   RsENoProjectMenuItem = 'Project menu item not found';
   RsEInsertDataMenuItemNotInserted = 'Can''t insert the insert data menu item';
