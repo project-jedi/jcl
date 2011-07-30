@@ -48,19 +48,19 @@ public
   procedure SETTERNAME(Index: Integer; CONSTKEYWORDPARAMETERNAME: TYPENAME);
   function SubList(First, Count: Integer): LISTINTERFACENAME;
 end;*)
-(*$JPPDEFINEMACRO JCLVECTORITRINT(SELFCLASSNAME, ITRINTERFACENAME, LISTINTERFACENAME,
+(*$JPPDEFINEMACRO JCLVECTORITRINT(SELFCLASSNAME, ITRINTERFACENAME, LISTCLASSNAME,
   CONSTKEYWORD, PARAMETERNAME, TYPENAME, GETTERNAME, SETTERNAME)
 SELFCLASSNAME = class(TJclAbstractIterator, ITRINTERFACENAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
   IJclIntfCloneable, IJclCloneable)
 private
   FCursor: Integer;
   FStart: TItrStart;
-  FOwnList: LISTINTERFACENAME;
+  FOwnList: LISTCLASSNAME;
 protected
   function CreateEmptyIterator: TJclAbstractIterator; override;
   procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
 public
-  constructor Create(const AOwnList: LISTINTERFACENAME; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+  constructor Create(AOwnList: LISTCLASSNAME; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   { ITRINTERFACENAME }
   function Add(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
   procedure Extract;

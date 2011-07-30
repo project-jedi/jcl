@@ -52,6 +52,7 @@ uses
   Classes,
   JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
 
+
 type
   TItrStart = (isFirst, isLast);
   TJclIntfVector = class(TJclIntfAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -109,12 +110,12 @@ type
   private
     FCursor: Integer;
     FStart: TItrStart;
-    FOwnList: IJclIntfList;
+    FOwnList: TJclIntfVector;
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
   public
-    constructor Create(const AOwnList: IJclIntfList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    constructor Create(AOwnList: TJclIntfVector; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
     { IJclIntfIterator }
     function Add(const AInterface: IInterface): Boolean;
     procedure Extract;
@@ -191,12 +192,12 @@ type
   private
     FCursor: Integer;
     FStart: TItrStart;
-    FOwnList: IJclAnsiStrList;
+    FOwnList: TJclAnsiStrVector;
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
   public
-    constructor Create(const AOwnList: IJclAnsiStrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    constructor Create(AOwnList: TJclAnsiStrVector; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
     { IJclAnsiStrIterator }
     function Add(const AString: AnsiString): Boolean;
     procedure Extract;
@@ -273,12 +274,12 @@ type
   private
     FCursor: Integer;
     FStart: TItrStart;
-    FOwnList: IJclWideStrList;
+    FOwnList: TJclWideStrVector;
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
   public
-    constructor Create(const AOwnList: IJclWideStrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    constructor Create(AOwnList: TJclWideStrVector; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
     { IJclWideStrIterator }
     function Add(const AString: WideString): Boolean;
     procedure Extract;
@@ -358,12 +359,12 @@ type
   private
     FCursor: Integer;
     FStart: TItrStart;
-    FOwnList: IJclUnicodeStrList;
+    FOwnList: TJclUnicodeStrVector;
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
   public
-    constructor Create(const AOwnList: IJclUnicodeStrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    constructor Create(AOwnList: TJclUnicodeStrVector; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
     { IJclUnicodeStrIterator }
     function Add(const AString: UnicodeString): Boolean;
     procedure Extract;
@@ -461,12 +462,12 @@ type
   private
     FCursor: Integer;
     FStart: TItrStart;
-    FOwnList: IJclSingleList;
+    FOwnList: TJclSingleVector;
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
   public
-    constructor Create(const AOwnList: IJclSingleList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    constructor Create(AOwnList: TJclSingleVector; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
     { IJclSingleIterator }
     function Add(const AValue: Single): Boolean;
     procedure Extract;
@@ -543,12 +544,12 @@ type
   private
     FCursor: Integer;
     FStart: TItrStart;
-    FOwnList: IJclDoubleList;
+    FOwnList: TJclDoubleVector;
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
   public
-    constructor Create(const AOwnList: IJclDoubleList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    constructor Create(AOwnList: TJclDoubleVector; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
     { IJclDoubleIterator }
     function Add(const AValue: Double): Boolean;
     procedure Extract;
@@ -625,12 +626,12 @@ type
   private
     FCursor: Integer;
     FStart: TItrStart;
-    FOwnList: IJclExtendedList;
+    FOwnList: TJclExtendedVector;
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
   public
-    constructor Create(const AOwnList: IJclExtendedList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    constructor Create(AOwnList: TJclExtendedVector; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
     { IJclExtendedIterator }
     function Add(const AValue: Extended): Boolean;
     procedure Extract;
@@ -727,12 +728,12 @@ type
   private
     FCursor: Integer;
     FStart: TItrStart;
-    FOwnList: IJclIntegerList;
+    FOwnList: TJclIntegerVector;
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
   public
-    constructor Create(const AOwnList: IJclIntegerList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    constructor Create(AOwnList: TJclIntegerVector; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
     { IJclIntegerIterator }
     function Add(AValue: Integer): Boolean;
     procedure Extract;
@@ -809,12 +810,12 @@ type
   private
     FCursor: Integer;
     FStart: TItrStart;
-    FOwnList: IJclCardinalList;
+    FOwnList: TJclCardinalVector;
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
   public
-    constructor Create(const AOwnList: IJclCardinalList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    constructor Create(AOwnList: TJclCardinalVector; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
     { IJclCardinalIterator }
     function Add(AValue: Cardinal): Boolean;
     procedure Extract;
@@ -891,12 +892,12 @@ type
   private
     FCursor: Integer;
     FStart: TItrStart;
-    FOwnList: IJclInt64List;
+    FOwnList: TJclInt64Vector;
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
   public
-    constructor Create(const AOwnList: IJclInt64List; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    constructor Create(AOwnList: TJclInt64Vector; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
     { IJclInt64Iterator }
     function Add(const AValue: Int64): Boolean;
     procedure Extract;
@@ -973,12 +974,12 @@ type
   private
     FCursor: Integer;
     FStart: TItrStart;
-    FOwnList: IJclPtrList;
+    FOwnList: TJclPtrVector;
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
   public
-    constructor Create(const AOwnList: IJclPtrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    constructor Create(AOwnList: TJclPtrVector; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
     { IJclPtrIterator }
     function Add(APtr: Pointer): Boolean;
     procedure Extract;
@@ -1055,12 +1056,12 @@ type
   private
     FCursor: Integer;
     FStart: TItrStart;
-    FOwnList: IJclList;
+    FOwnList: TJclVector;
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
   public
-    constructor Create(const AOwnList: IJclList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    constructor Create(AOwnList: TJclVector; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
     { IJclIterator }
     function Add(AObject: TObject): Boolean;
     procedure Extract;
@@ -1152,7 +1153,7 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
   public
-    constructor Create(const AOwnList: IJclList<T>; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    constructor Create(AOwnList: IJclList<T>; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
     { IJclIterator<T> }
     function Add(const AItem: T): Boolean;
     procedure Extract;
@@ -1896,7 +1897,7 @@ end;
 
 //=== { TJclIntfVectorIterator } ===========================================================
 
-constructor TJclIntfVectorIterator.Create(const AOwnList: IJclIntfList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+constructor TJclIntfVectorIterator.Create(AOwnList: TJclIntfVector; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AValid);
   FOwnList := AOwnList;
@@ -2713,7 +2714,7 @@ end;
 
 //=== { TJclAnsiStrVectorIterator } ===========================================================
 
-constructor TJclAnsiStrVectorIterator.Create(const AOwnList: IJclAnsiStrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+constructor TJclAnsiStrVectorIterator.Create(AOwnList: TJclAnsiStrVector; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AValid);
   FOwnList := AOwnList;
@@ -3530,7 +3531,7 @@ end;
 
 //=== { TJclWideStrVectorIterator } ===========================================================
 
-constructor TJclWideStrVectorIterator.Create(const AOwnList: IJclWideStrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+constructor TJclWideStrVectorIterator.Create(AOwnList: TJclWideStrVector; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AValid);
   FOwnList := AOwnList;
@@ -4351,7 +4352,7 @@ end;
 {$IFDEF SUPPORTS_UNICODE_STRING}
 //=== { TJclUnicodeStrVectorIterator } ===========================================================
 
-constructor TJclUnicodeStrVectorIterator.Create(const AOwnList: IJclUnicodeStrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+constructor TJclUnicodeStrVectorIterator.Create(AOwnList: TJclUnicodeStrVector; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AValid);
   FOwnList := AOwnList;
@@ -5169,7 +5170,7 @@ end;
 
 //=== { TJclSingleVectorIterator } ===========================================================
 
-constructor TJclSingleVectorIterator.Create(const AOwnList: IJclSingleList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+constructor TJclSingleVectorIterator.Create(AOwnList: TJclSingleVector; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AValid);
   FOwnList := AOwnList;
@@ -5986,7 +5987,7 @@ end;
 
 //=== { TJclDoubleVectorIterator } ===========================================================
 
-constructor TJclDoubleVectorIterator.Create(const AOwnList: IJclDoubleList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+constructor TJclDoubleVectorIterator.Create(AOwnList: TJclDoubleVector; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AValid);
   FOwnList := AOwnList;
@@ -6803,7 +6804,7 @@ end;
 
 //=== { TJclExtendedVectorIterator } ===========================================================
 
-constructor TJclExtendedVectorIterator.Create(const AOwnList: IJclExtendedList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+constructor TJclExtendedVectorIterator.Create(AOwnList: TJclExtendedVector; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AValid);
   FOwnList := AOwnList;
@@ -7620,7 +7621,7 @@ end;
 
 //=== { TJclIntegerVectorIterator } ===========================================================
 
-constructor TJclIntegerVectorIterator.Create(const AOwnList: IJclIntegerList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+constructor TJclIntegerVectorIterator.Create(AOwnList: TJclIntegerVector; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AValid);
   FOwnList := AOwnList;
@@ -8437,7 +8438,7 @@ end;
 
 //=== { TJclCardinalVectorIterator } ===========================================================
 
-constructor TJclCardinalVectorIterator.Create(const AOwnList: IJclCardinalList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+constructor TJclCardinalVectorIterator.Create(AOwnList: TJclCardinalVector; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AValid);
   FOwnList := AOwnList;
@@ -9254,7 +9255,7 @@ end;
 
 //=== { TJclInt64VectorIterator } ===========================================================
 
-constructor TJclInt64VectorIterator.Create(const AOwnList: IJclInt64List; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+constructor TJclInt64VectorIterator.Create(AOwnList: TJclInt64Vector; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AValid);
   FOwnList := AOwnList;
@@ -10071,7 +10072,7 @@ end;
 
 //=== { TJclPtrVectorIterator } ===========================================================
 
-constructor TJclPtrVectorIterator.Create(const AOwnList: IJclPtrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+constructor TJclPtrVectorIterator.Create(AOwnList: TJclPtrVector; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AValid);
   FOwnList := AOwnList;
@@ -10888,7 +10889,7 @@ end;
 
 //=== { TJclVectorIterator } ===========================================================
 
-constructor TJclVectorIterator.Create(const AOwnList: IJclList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+constructor TJclVectorIterator.Create(AOwnList: TJclVector; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AValid);
   FOwnList := AOwnList;
@@ -11703,7 +11704,7 @@ end;
 
 //=== { TJclVectorIterator<T> } ===========================================================
 
-constructor TJclVectorIterator<T>.Create(const AOwnList: IJclList<T>; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+constructor TJclVectorIterator<T>.Create(AOwnList: IJclList<T>; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AValid);
   FOwnList := AOwnList;

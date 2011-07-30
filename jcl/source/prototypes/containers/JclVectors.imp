@@ -1,8 +1,8 @@
-(*$JPPDEFINEMACRO JCLVECTORITRIMP(SELFCLASSNAME, ITRINTERFACENAME, LISTINTERFACENAME,
+(*$JPPDEFINEMACRO JCLVECTORITRIMP(SELFCLASSNAME, ITRINTERFACENAME, LISTCLASSNAME,
   CONSTKEYWORD, PARAMETERNAME, TYPENAME, GETTERNAME, SETTERNAME)
 //=== { SELFCLASSNAME } ===========================================================
 
-constructor SELFCLASSNAME.Create(const AOwnList: LISTINTERFACENAME; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+constructor SELFCLASSNAME.Create(AOwnList: LISTCLASSNAME; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AValid);
   FOwnList := AOwnList;
