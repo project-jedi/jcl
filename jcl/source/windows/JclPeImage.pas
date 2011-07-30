@@ -944,7 +944,13 @@ function PeMapImgNtHeaders32(const BaseAddress: Pointer): PImageNtHeaders32;
 function PeMapImgNtHeaders64(const BaseAddress: Pointer): PImageNtHeaders64;
 
 function PeMapImgLibraryName(const BaseAddress: Pointer): string;
+function PeMapImgLibraryName32(const BaseAddress: Pointer): string;
+function PeMapImgLibraryName64(const BaseAddress: Pointer): string;
+
 function PeMapImgSize(const BaseAddress: Pointer): DWORD;
+function PeMapImgSize32(const BaseAddress: Pointer): DWORD;
+function PeMapImgSize64(const BaseAddress: Pointer): DWORD;
+
 function PeMapImgTarget(const BaseAddress: Pointer): TJclPeTarget;
 
 // use PeMapImgSections32
@@ -5712,24 +5718,6 @@ begin
 end;
 
 function PeMapImgSize(const BaseAddress: Pointer): DWORD;
-  function PeMapImgSize32(const BaseAddress: Pointer): DWORD;
-  var
-    NtHeaders32: PImageNtHeaders32;
-  begin
-    Result := 0;
-    NtHeaders32 := PeMapImgNtHeaders32(BaseAddress);
-    if Assigned(NtHeaders32) then
-      Result := NtHeaders32^.OptionalHeader.SizeOfImage;
-  end;
-  function PeMapImgSize64(const BaseAddress: Pointer): DWORD;
-  var
-    NtHeaders64: PImageNtHeaders64;
-  begin
-    Result := 0;
-    NtHeaders64 := PeMapImgNtHeaders64(BaseAddress);
-    if Assigned(NtHeaders64) then
-      Result := NtHeaders64^.OptionalHeader.SizeOfImage;
-  end;
 begin
   case PeMapImgTarget(BaseAddress) of
     taWin32:
@@ -5742,49 +5730,27 @@ begin
   end;
 end;
 
+function PeMapImgSize32(const BaseAddress: Pointer): DWORD;
+var
+  NtHeaders32: PImageNtHeaders32;
+begin
+  Result := 0;
+  NtHeaders32 := PeMapImgNtHeaders32(BaseAddress);
+  if Assigned(NtHeaders32) then
+    Result := NtHeaders32^.OptionalHeader.SizeOfImage;
+end;
+
+function PeMapImgSize64(const BaseAddress: Pointer): DWORD;
+var
+  NtHeaders64: PImageNtHeaders64;
+begin
+  Result := 0;
+  NtHeaders64 := PeMapImgNtHeaders64(BaseAddress);
+  if Assigned(NtHeaders64) then
+    Result := NtHeaders64^.OptionalHeader.SizeOfImage;
+end;
+
 function PeMapImgLibraryName(const BaseAddress: Pointer): string;
-  function PeMapImgLibraryName32(const BaseAddress: Pointer): string;
-  var
-    NtHeaders: PImageNtHeaders32;
-    DataDir: TImageDataDirectory;
-    ExportDir: PImageExportDirectory;
-    UTF8Name: TUTF8String;
-  begin
-    Result := '';
-    NtHeaders := PeMapImgNtHeaders32(BaseAddress);
-    if NtHeaders = nil then
-      Exit;
-    DataDir := NtHeaders^.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT];
-    if DataDir.Size = 0 then
-      Exit;
-    ExportDir := PImageExportDirectory(TJclAddr(BaseAddress) + DataDir.VirtualAddress);
-    if IsBadReadPtr(ExportDir, SizeOf(TImageExportDirectory)) or (ExportDir^.Name = 0) then
-      Exit;
-    UTF8Name := PAnsiChar(TJclAddr(BaseAddress) + ExportDir^.Name);
-    if not TryUTF8ToString(UTF8Name, Result) then
-      Result := string(UTF8Name);
-  end;
-  function PeMapImgLibraryName64(const BaseAddress: Pointer): string;
-  var
-    NtHeaders: PImageNtHeaders64;
-    DataDir: TImageDataDirectory;
-    ExportDir: PImageExportDirectory;
-    UTF8Name: TUTF8String;
-  begin
-    Result := '';
-    NtHeaders := PeMapImgNtHeaders64(BaseAddress);
-    if NtHeaders = nil then
-      Exit;
-    DataDir := NtHeaders^.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT];
-    if DataDir.Size = 0 then
-      Exit;
-    ExportDir := PImageExportDirectory(TJclAddr(BaseAddress) + DataDir.VirtualAddress);
-    if IsBadReadPtr(ExportDir, SizeOf(TImageExportDirectory)) or (ExportDir^.Name = 0) then
-      Exit;
-    UTF8Name := PAnsiChar(TJclAddr(BaseAddress) + ExportDir^.Name);
-    if not TryUTF8ToString(UTF8Name, Result) then
-      Result := string(UTF8Name);
-  end;
 begin
   case PeMapImgTarget(BaseAddress) of
     taWin32:
@@ -5795,6 +5761,50 @@ begin
   else
     Result := '';
   end;
+end;
+
+function PeMapImgLibraryName32(const BaseAddress: Pointer): string;
+var
+  NtHeaders: PImageNtHeaders32;
+  DataDir: TImageDataDirectory;
+  ExportDir: PImageExportDirectory;
+  UTF8Name: TUTF8String;
+begin
+  Result := '';
+  NtHeaders := PeMapImgNtHeaders32(BaseAddress);
+  if NtHeaders = nil then
+    Exit;
+  DataDir := NtHeaders^.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT];
+  if DataDir.Size = 0 then
+    Exit;
+  ExportDir := PImageExportDirectory(TJclAddr(BaseAddress) + DataDir.VirtualAddress);
+  if IsBadReadPtr(ExportDir, SizeOf(TImageExportDirectory)) or (ExportDir^.Name = 0) then
+    Exit;
+  UTF8Name := PAnsiChar(TJclAddr(BaseAddress) + ExportDir^.Name);
+  if not TryUTF8ToString(UTF8Name, Result) then
+    Result := string(UTF8Name);
+end;
+
+function PeMapImgLibraryName64(const BaseAddress: Pointer): string;
+var
+  NtHeaders: PImageNtHeaders64;
+  DataDir: TImageDataDirectory;
+  ExportDir: PImageExportDirectory;
+  UTF8Name: TUTF8String;
+begin
+  Result := '';
+  NtHeaders := PeMapImgNtHeaders64(BaseAddress);
+  if NtHeaders = nil then
+    Exit;
+  DataDir := NtHeaders^.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT];
+  if DataDir.Size = 0 then
+    Exit;
+  ExportDir := PImageExportDirectory(TJclAddr(BaseAddress) + DataDir.VirtualAddress);
+  if IsBadReadPtr(ExportDir, SizeOf(TImageExportDirectory)) or (ExportDir^.Name = 0) then
+    Exit;
+  UTF8Name := PAnsiChar(TJclAddr(BaseAddress) + ExportDir^.Name);
+  if not TryUTF8ToString(UTF8Name, Result) then
+    Result := string(UTF8Name);
 end;
 
 function PeMapImgTarget(const BaseAddress: Pointer): TJclPeTarget;
