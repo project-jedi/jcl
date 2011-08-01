@@ -1117,6 +1117,16 @@ resourcestring
   RsCompressionApmExtensions         = '*.';
   RsCompressionPpmdName              = 'PPMD archive';
   RsCompressionPpmdExtensions        = '*.pmd';
+  RsCompressionTEName                = 'Terse Executable';
+  RsCompressionTEExtensions          = '*.te';
+  RsCompressionUEFIcName             = 'UEFIc archive';
+  RsCompressionUEFIcExtensions       = '*.scap';
+  RsCompressionUEFIsName             = 'UEFIs archive';
+  RsCompressionUEFIsExtensions       = '*.';
+  RsCompressionSquashFSName          = 'SquashFS archive';
+  RsCompressionSquashFSExtensions    = '*.squashfs';
+  RsCompressionCramFSName            = 'CramFS archive';
+  RsCompressionCramFSExtensions      = '*.cramfs';
   RsCompressionDuplicate             = 'The file %s already exists in the archive';
   RsCompressionReplaceError          = 'At least one compression volumes could not be replaced after an archive out-of-place update';
 
