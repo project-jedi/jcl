@@ -1024,6 +1024,7 @@ const
 implementation
 
 uses
+  RTLConsts,
   {$IFDEF HAS_UNIT_CHARACTER}
   Character,
   {$ENDIF HAS_UNIT_CHARACTER}
@@ -2226,9 +2227,12 @@ function InsertDebugDataIntoExecutableFile(const ExecutableFileName: TFileName;
   BinDebug: TJclBinDebugGenerator; out LinkerBugUnit: string;
   out MapFileSize, JclDebugDataSize, LineNumberErrors: Integer): Boolean;
 var
-  ImageStream: TMemoryStream;
-  NtHeaders32: PImageNtHeaders32;
-  Sections, LastSection, JclDebugSection: PImageSectionHeader;
+  ImageStream: TStream;
+  NtHeaders32: TImageNtHeaders32;
+  ImageSectionHeaders: TImageSectionHeaderArray;
+  NtHeaders32Position, ImageSectionHeadersPosition, JclDebugSectionPosition: Int64;
+  JclDebugSection: TImageSectionHeader;
+  LastSection: PImageSectionHeader;
   VirtualAlignedSize: DWORD;
   I, X, NeedFill: Integer;
 
@@ -2257,69 +2261,75 @@ begin
   if not Result then
     Exit;
 
-  ImageStream := TMemoryStream.Create;
+  ImageStream := TFileStream.Create(ExecutableFileName, fmOpenReadWrite or fmShareExclusive);
   try
     try
-      ImageStream.LoadFromFile(ExecutableFileName);
-      if PeMapImgTarget(ImageStream.Memory) = taWin32 then
+      if PeMapImgTarget(ImageStream, 0) = taWin32 then
       begin
         MapFileSize := BinDebug.Stream.Size;
         JclDebugDataSize := BinDebug.DataStream.Size;
-        NtHeaders32 := PeMapImgNtHeaders32(ImageStream.Memory);
-        Assert(NtHeaders32 <> nil);
-        Sections := PeMapImgSections32(NtHeaders32);
-        Assert(Sections <> nil);
+        NtHeaders32Position := PeMapImgNtHeaders32(ImageStream, 0, NtHeaders32);
+        Assert(NtHeaders32Position <> -1);
+        ImageSectionHeadersPosition := PeMapImgSections32(ImageStream, NtHeaders32Position, NtHeaders32, ImageSectionHeaders);
+        Assert(ImageSectionHeadersPosition <> -1);
         // Check whether there is not a section with the name already. If so, return True (#0000069)
-        if PeMapImgFindSection32(NtHeaders32, JclDbgDataResName) <> nil then
+        if PeMapImgFindSection(ImageSectionHeaders, JclDbgDataResName) <> -1 then
         begin
           Result := True;
           Exit;
         end;
 
-        LastSection := Sections;
-        Inc(LastSection, NtHeaders32^.FileHeader.NumberOfSections - 1);
-        JclDebugSection := LastSection;
-        Inc(JclDebugSection);
-
+        JclDebugSectionPosition := ImageSectionHeadersPosition + (SizeOf(ImageSectionHeaders[0]) * Length(ImageSectionHeaders));
+        LastSection := @ImageSectionHeaders[High(ImageSectionHeaders)];
+        
         // Increase the number of sections
-        Inc(NtHeaders32^.FileHeader.NumberOfSections);
-        ResetMemory(JclDebugSection^, SizeOf(TImageSectionHeader));
+        Inc(NtHeaders32.FileHeader.NumberOfSections);
+
+        ResetMemory(JclDebugSection, SizeOf(JclDebugSection));
         // JCLDEBUG Virtual Address
-        JclDebugSection^.VirtualAddress := LastSection^.VirtualAddress + LastSection^.Misc.VirtualSize;
-        RoundUpToAlignment(JclDebugSection^.VirtualAddress, NtHeaders32^.OptionalHeader.SectionAlignment);
+        JclDebugSection.VirtualAddress := LastSection^.VirtualAddress + LastSection^.Misc.VirtualSize;
+        RoundUpToAlignment(JclDebugSection.VirtualAddress, NtHeaders32.OptionalHeader.SectionAlignment);
         // JCLDEBUG Physical Offset
-        JclDebugSection^.PointerToRawData := LastSection^.PointerToRawData + LastSection^.SizeOfRawData;
-        RoundUpToAlignment(JclDebugSection^.PointerToRawData, NtHeaders32^.OptionalHeader.FileAlignment);
+        JclDebugSection.PointerToRawData := LastSection^.PointerToRawData + LastSection^.SizeOfRawData;
+        RoundUpToAlignment(JclDebugSection.PointerToRawData, NtHeaders32.OptionalHeader.FileAlignment);
         // JCLDEBUG Section name
-        StrPLCopy(PAnsiChar(@JclDebugSection^.Name), JclDbgDataResName, IMAGE_SIZEOF_SHORT_NAME);
+        StrPLCopy(PAnsiChar(@JclDebugSection.Name), JclDbgDataResName, IMAGE_SIZEOF_SHORT_NAME);
         // JCLDEBUG Characteristics flags
-        JclDebugSection^.Characteristics := IMAGE_SCN_MEM_READ or IMAGE_SCN_CNT_INITIALIZED_DATA;
+        JclDebugSection.Characteristics := IMAGE_SCN_MEM_READ or IMAGE_SCN_CNT_INITIALIZED_DATA;
 
         // Size of virtual data area
-        JclDebugSection^.Misc.VirtualSize := JclDebugDataSize;
+        JclDebugSection.Misc.VirtualSize := JclDebugDataSize;
         VirtualAlignedSize := JclDebugDataSize;
-        RoundUpToAlignment(VirtualAlignedSize, NtHeaders32^.OptionalHeader.SectionAlignment);
+        RoundUpToAlignment(VirtualAlignedSize, NtHeaders32.OptionalHeader.SectionAlignment);
         // Update Size of Image
-        Inc(NtHeaders32^.OptionalHeader.SizeOfImage, VirtualAlignedSize);
+        Inc(NtHeaders32.OptionalHeader.SizeOfImage, VirtualAlignedSize);
         // Raw data size
-        JclDebugSection^.SizeOfRawData := JclDebugDataSize;
-        RoundUpToAlignment(JclDebugSection^.SizeOfRawData, NtHeaders32^.OptionalHeader.FileAlignment);
+        JclDebugSection.SizeOfRawData := JclDebugDataSize;
+        RoundUpToAlignment(JclDebugSection.SizeOfRawData, NtHeaders32.OptionalHeader.FileAlignment);
         // Update Initialized data size
-        Inc(NtHeaders32^.OptionalHeader.SizeOfInitializedData, JclDebugSection^.SizeOfRawData);
+        Inc(NtHeaders32.OptionalHeader.SizeOfInitializedData, JclDebugSection.SizeOfRawData);
+
+        // write NT Headers 32
+        if (ImageStream.Seek(NtHeaders32Position, soBeginning) <> NtHeaders32Position) or
+          (ImageStream.Write(NtHeaders32, SizeOf(NtHeaders32)) <> SizeOf(NtHeaders32)) then
+          raise EJclPeImageError.CreateRes(@SWriteError);
+
+        // write section header
+        if (ImageStream.Seek(JclDebugSectionPosition, soBeginning) <> JclDebugSectionPosition) or
+          (ImageStream.Write(JclDebugSection, SizeOf(JclDebugSection)) <> SizeOf(JclDebugSection)) then
+          raise EJclPeImageError.CreateRes(@SWriteError);
 
         // Fill data to alignment
-        NeedFill := INT_PTR(JclDebugSection^.SizeOfRawData) - JclDebugDataSize;
+        NeedFill := INT_PTR(JclDebugSection.SizeOfRawData) - JclDebugDataSize;
 
         // Note: Delphi linker seems to generate incorrect (unaligned) size of
         // the executable when adding TD32 debug data so the position could be
         // behind the size of the file then.
-        ImageStream.Seek(JclDebugSection^.PointerToRawData, soFromBeginning);
+        ImageStream.Seek({0 +} JclDebugSection.PointerToRawData, soFromBeginning);
         ImageStream.CopyFrom(BinDebug.DataStream, 0);
         X := 0;
         for I := 1 to NeedFill do
           ImageStream.WriteBuffer(X, 1);
-
-        ImageStream.SaveToFile(ExecutableFileName);
       end
       else
         Result := False;
