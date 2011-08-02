@@ -2646,31 +2646,39 @@ end;
 
 function AnsiGetNextBufferFromStream(S: TStream; var Buffer: TUCS4Array; var Start: SizeInt; Count: SizeInt): SizeInt; overload;
 var
-  B: Byte;
+  B: TDynByteArray;
   ReadSuccess: Boolean;
-  TmpPos: SizeInt;
+  ReadCount, TmpPos: SizeInt;
   UTF16Buffer: TUTF16String;
 begin
   Result := 0;
   ReadSuccess := True;
+  SetLength(B, Count);
+  SetLength(UTF16Buffer, 2 * Count);
   while ReadSuccess and (Count > 0) do
   begin
-    if StreamReadByte(S, B) then
+    ReadCount := S.Read(B[0], Count);
+    if ReadCount > 0 then
     begin
-      UTF16Buffer := WideString(AnsiString(Chr(B)));
-      TmpPos := 1;
-      Buffer[Start] := UTF16GetNextChar(UTF16Buffer, TmpPos);
-      if TmpPos <> -1 then
+      ReadCount := MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED or MB_ERR_INVALID_CHARS, @B[0], ReadCount, PWideChar(UTF16Buffer), 2 * Count);
+      if ReadCount > 0 then
       begin
-        Inc(Result);
-        Inc(Start);
+        TmpPos := 1;
+        ReadCount := UTF16GetNextBuffer(UTF16Buffer, TmpPos, Buffer, Start, Count);
+        if TmpPos <> -1 then
+          Inc(Result, ReadCount)
+        else
+          ReadSuccess := False;
       end
       else
-        ReadSuccess := False;
+      begin
+        Result := 0;
+        FlagInvalidSequence;
+      end;
     end
     else
       ReadSuccess := False;
-    Dec(Count);
+    Dec(Count, ReadCount);
   end;
 end;
 
@@ -2763,27 +2771,27 @@ end;
 
 function AnsiGetNextBufferFromStream(S: TStream; CodePage: Word; var Buffer: TUCS4Array; var Start: SizeInt; Count: SizeInt): SizeInt; overload;
 var
-  B: Byte;
+  B: TDynByteArray;
   ReadSuccess: Boolean;
-  TmpPos: SizeInt;
+  ReadCount, TmpPos: SizeInt;
   UTF16Buffer: TUTF16String;
 begin
   Result := 0;
   ReadSuccess := True;
+  SetLength(B, Count);
+  SetLength(UTF16Buffer, 2 * Count);
   while ReadSuccess and (Count > 0) do
   begin
-    if StreamReadByte(S, B) then
+    ReadCount := S.Read(B[0], Count);
+    if ReadCount > 0 then
     begin
-      SetLength(UTF16Buffer, 2);
-      if MultiByteToWideChar(CodePage, MB_PRECOMPOSED or MB_ERR_INVALID_CHARS, @B, 1, PWideChar(UTF16Buffer), 2) <> 0 then
+      ReadCount := MultiByteToWideChar(CodePage, MB_PRECOMPOSED or MB_ERR_INVALID_CHARS, @B[0], ReadCount, PWideChar(UTF16Buffer), 2 * Count);
+      if ReadCount > 0 then
       begin
         TmpPos := 1;
-        Buffer[Start] := UTF16GetNextChar(UTF16Buffer, TmpPos);
+        ReadCount := UTF16GetNextBuffer(UTF16Buffer, TmpPos, Buffer, Start, Count);
         if TmpPos <> -1 then
-        begin
-          Inc(Result);
-          Inc(Start);
-        end
+          Inc(Result, ReadCount)
         else
           ReadSuccess := False;
       end
@@ -2795,7 +2803,7 @@ begin
     end
     else
       ReadSuccess := False;
-    Dec(Count);
+    Dec(Count, ReadCount);
   end;
 end;
 
