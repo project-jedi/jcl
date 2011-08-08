@@ -491,7 +491,7 @@ type
 
   TJclSimpleXMLOptions = set of (sxoAutoCreate, sxoAutoIndent, sxoAutoEncodeValue,
     sxoAutoEncodeEntity, sxoDoNotSaveProlog, sxoTrimPrecedingTextWhitespace,
-    sxoTrimFollowingTextWhitespace, sxoKeepWhitespace);
+    sxoTrimFollowingTextWhitespace, sxoKeepWhitespace, sxoDoNotSaveBOM);
   TJclSimpleXMLEncodeEvent = procedure(Sender: TObject; var Value: string) of object;
   TJclSimpleXMLEncodeStreamEvent = procedure(Sender: TObject; InStream, OutStream: TStream) of object;
 
@@ -1293,7 +1293,8 @@ begin
       TJclAnsiStream(AStringStream).CodePage := CodePage;
     end;
     try
-      AStringStream.WriteBOM;
+      if not (sxoDoNotSaveBOM in Options) then
+        AStringStream.WriteBOM;
       SaveToStringStream(AStringStream);
       AStringStream.Flush;
     finally
