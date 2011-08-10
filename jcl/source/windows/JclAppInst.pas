@@ -208,17 +208,17 @@ begin
 end;
 
 function TJclAppInstances.CheckInstance(const MaxInstances: Word): Boolean;
+var
+  SharedData: PJclAISharedData;
 begin
   FOptex.Enter;
   try
-    with PJclAISharedData(FMappingView.Memory)^ do
-    begin
-      if MaxInst = 0 then
-        MaxInst := MaxInstances;
-      Result := Count < MaxInst;
-      ProcessIDs[Count] := GetCurrentProcessId;
-      Inc(Count);
-    end;
+    SharedData := PJclAISharedData(FMappingView.Memory);
+    if SharedData^.MaxInst = 0 then
+      SharedData^.MaxInst := MaxInstances;
+    Result := SharedData^.Count < SharedData^.MaxInst;
+    SharedData^.ProcessIDs[SharedData^.Count] := GetCurrentProcessId;
+    Inc(SharedData^.Count);
   finally
     FOptex.Leave;
   end;
@@ -292,33 +292,34 @@ end;
 function TJclAppInstances.GetInstanceIndex(ProcessID: DWORD): Integer;
 var
   I: Integer;
+  SharedData: PJclAISharedData;
 begin
   Result := -1;
   FOptex.Enter;
   try
-    with PJclAISharedData(FMappingView.Memory)^ do
-    begin
-      for I := 0 to Count - 1 do
-        if ProcessIDs[I] = ProcessID then
-        begin
-          Result := I;
-          Break;
-        end;
-    end;
+    SharedData := PJclAISharedData(FMappingView.Memory);
+    for I := 0 to SharedData^.Count - 1 do
+      if SharedData^.ProcessIDs[I] = ProcessID then
+      begin
+        Result := I;
+        Break;
+      end;
   finally
     FOptex.Leave;
   end;
 end;
 
 function TJclAppInstances.GetProcessIDs(Index: Integer): DWORD;
+var
+  SharedData: PJclAISharedData;
 begin
   FOptex.Enter;
   try
-    with PJclAISharedData(FMappingView.Memory)^ do
-      if Index >= Count then
-        Result := 0
-      else
-        Result := ProcessIDs[Index];
+    SharedData := PJclAISharedData(FMappingView.Memory);
+    if Index >= SharedData^.Count then
+      Result := 0
+    else
+      Result := SharedData^.ProcessIDs[Index];
   finally
     FOptex.Leave;
   end;
@@ -354,8 +355,7 @@ end;
 
 function EnumNotifyWinProc(Wnd: THandle; Message: PMessage): BOOL; stdcall;
 begin
-  with Message^ do
-    SendNotifyMessage(Wnd, Msg, WParam, LParam);
+  SendNotifyMessage(Wnd, Message^.Msg, Message^.WParam, Message^.LParam);
   Result := True;
 end;
 
@@ -365,26 +365,27 @@ var
   Wnd: THandle;
   TID: DWORD;
   Msg: TMessage;
+  SharedData: PJclAISharedData;
 begin
   FOptex.Enter;
   try
-    with PJclAISharedData(FMappingView.Memory)^ do
-      for I := 0 to Count - 1 do
-      begin
-        Wnd := GetApplicationWnd(ProcessIDs[I]);
-        TID := GetWindowThreadProcessId(Wnd, nil);
-        while Wnd <> 0 do
-        begin // Send message to TApplication queue
-          if PostThreadMessage(TID, FMessageID, W, L) or
-            (GetLastError = ERROR_INVALID_THREAD_ID) then
-            Break;
-          Sleep(1);
-        end;
-        Msg.Msg := FMessageID;
-        Msg.WParam := W;
-        Msg.LParam := L;
-        EnumThreadWindows(TID, @EnumNotifyWinProc, LPARAM(@Msg));
+    SharedData := PJclAISharedData(FMappingView.Memory);
+    for I := 0 to SharedData^.Count - 1 do
+    begin
+      Wnd := GetApplicationWnd(SharedData^.ProcessIDs[I]);
+      TID := GetWindowThreadProcessId(Wnd, nil);
+      while Wnd <> 0 do
+      begin // Send message to TApplication queue
+        if PostThreadMessage(TID, FMessageID, W, L) or
+          (GetLastError = ERROR_INVALID_THREAD_ID) then
+          Break;
+        Sleep(1);
       end;
+      Msg.Msg := FMessageID;
+      Msg.WParam := W;
+      Msg.LParam := L;
+      EnumThreadWindows(TID, @EnumNotifyWinProc, LPARAM(@Msg));
+    end;
   finally
     FOptex.Leave;
   end;
@@ -393,18 +394,19 @@ end;
 procedure TJclAppInstances.RemoveInstance;
 var
   I: Integer;
+  SharedData: PJclAISharedData;
 begin
   FOptex.Enter;
   try
-    with PJclAISharedData(FMappingView.Memory)^ do
-      for I := 0 to Count - 1 do
-        if ProcessIDs[I] = FCPID then
-        begin
-          ProcessIDs[I] := 0;
-          Move(ProcessIDs[I + 1], ProcessIDs[I], (Count - I) * SizeOf(DWORD));
-          Dec(Count);
-          Break;
-        end;
+    SharedData := PJclAISharedData(FMappingView.Memory);
+    for I := 0 to SharedData^.Count - 1 do
+      if SharedData^.ProcessIDs[I] = FCPID then
+      begin
+        SharedData^.ProcessIDs[I] := 0;
+        Move(SharedData^.ProcessIDs[I + 1], SharedData^.ProcessIDs[I], (SharedData^.Count - I) * SizeOf(DWORD));
+        Dec(SharedData^.Count);
+        Break;
+      end;
   finally
     FOptex.Leave;
   end;
@@ -441,6 +443,7 @@ var
   I: Integer;
   PID: DWORD;
   Found: Boolean;
+  SharedData: PJclAISharedData;
 begin
   if (GetClassName(Wnd, ClassName, Length(ClassName) - 1) > 0) and
     (StrComp(ClassName, Data.WindowClassName) = 0) then
@@ -449,13 +452,13 @@ begin
     Found := False;
     Data.Self.FOptex.Enter;
     try
-      with PJclAISharedData(Data.Self.FMappingView.Memory)^ do
-        for I := 0 to Count - 1 do
-          if ProcessIDs[I] = PID then
-          begin
-            Found := True;
-            Break;
-          end;
+      SharedData := PJclAISharedData(Data.Self.FMappingView.Memory);
+      for I := 0 to SharedData^.Count - 1 do
+        if SharedData^.ProcessIDs[I] = PID then
+        begin
+          Found := True;
+          Break;
+        end;
     finally
       Data.Self.FOptex.Leave;
     end;
@@ -560,32 +563,29 @@ end;
 
 procedure ReadMessageData(const Message: TMessage; var Data: Pointer; var Size: Integer);
 begin
-  with TWMCopyData(Message) do
-    if Msg = WM_COPYDATA then
-    begin
-      Size := CopyDataStruct^.cbData;
-      GetMem(Data, Size);
-      Move(CopyDataStruct^.lpData^, Data^, Size);
-    end;
+  if TWMCopyData(Message).Msg = WM_COPYDATA then
+  begin
+    Size := TWMCopyData(Message).CopyDataStruct^.cbData;
+    GetMem(Data, Size);
+    Move(TWMCopyData(Message).CopyDataStruct^.lpData^, Data^, Size);
+  end;
 end;
 
 procedure ReadMessageString(const Message: TMessage; out S: string);
 begin
-  with TWMCopyData(Message) do
-    if Msg = WM_COPYDATA then
-      SetString(S, PChar(CopyDataStruct^.lpData), CopyDataStruct^.cbData div SizeOf(Char));
+  if TWMCopyData(Message).Msg = WM_COPYDATA then
+    SetString(S, PChar(TWMCopyData(Message).CopyDataStruct^.lpData), TWMCopyData(Message).CopyDataStruct^.cbData div SizeOf(Char));
 end;
 
 procedure ReadMessageStrings(const Message: TMessage; const Strings: TStrings);
 var
   S: string;
 begin
-  with TWMCopyData(Message) do
-    if Msg = WM_COPYDATA then
-    begin
-      ReadMessageString(Message, S);
-      Strings.Text := S;
-    end;
+  if TWMCopyData(Message).Msg = WM_COPYDATA then
+  begin
+    ReadMessageString(Message, S);
+    Strings.Text := S;
+  end;
 end;
 
 function SendData(const Wnd, OriginatorWnd: HWND;
