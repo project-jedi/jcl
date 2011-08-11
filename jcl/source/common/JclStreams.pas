@@ -2436,7 +2436,7 @@ begin
     Inc(FStrBufferPosition, FStrBufferCurrentSize);
     FStrBufferStart := FStrBufferNext;
     FStream.Seek(FStrBufferStart, soBeginning);
-    FStrBufferCurrentSize := InternalGetNextBuffer(FStream, FStrBuffer, 0, Length(FStrBuffer));
+    FStrBufferCurrentSize := InternalGetNextBuffer(FStream, FStrBuffer, 0, FBufferSize);
     FStrBufferNext := FStream.Seek(0, soCurrent);
     // reset the peek buffer
     FStrPeekBufferPosition := FStrBufferPosition + FStrBufferCurrentSize;
@@ -2462,7 +2462,7 @@ begin
   FStrPeekBufferStart := FStrPeekBufferNext;
   Inc(FStrPeekBufferPosition, FStrPeekBufferCurrentSize);
   FStream.Seek(FStrPeekBufferStart, soBeginning);
-  FStrPeekBufferCurrentSize := InternalGetNextBuffer(FStream, FStrPeekBuffer, 0, Length(FStrPeekBuffer));
+  FStrPeekBufferCurrentSize := InternalGetNextBuffer(FStream, FStrPeekBuffer, 0, FBufferSize);
   FStrPeekBufferNext := FStream.Seek(0, soCurrent);
   Result := (FStrPeekPosition >= FStrPeekBufferPosition) and (FStrPeekPosition < (FStrPeekBufferPosition + FStrPeekBufferCurrentSize));
 end;
