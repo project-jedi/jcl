@@ -1,4 +1,4 @@
-{**************************************************************************************************}
+﻿{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -134,10 +134,9 @@ resourcestring
 
 //=== JclMsBuild.pas =========================================================
 resourcestring
-  RsEEndOfString = 'Invalid condition: end of string';
-  RsEMissingParenthesis = 'Invalid condition: missing parenthesis';
-  RsEEmptyIdentifier = 'Invalid condition: empty identifier';
-  RsEUnknownOperator = 'Invalid condition: unknown operator';
+  RsEEndOfString = 'Invalid condition: end of string in condition "%s"';
+  RsEMissingParenthesis = 'Invalid condition: missing parenthesis in condition "%s"';
+  RsEUnknownOperator = 'Invalid condition: unknown operator in condition "%s"';
   RsEReservedProperty = 'Attempt to override or to delete a reserved MsBuild property';
   RsENoProjectElem = 'Project element expected, got "%s"';
   RsEUnknownSchema = 'Unknown schema "%s"';
@@ -147,10 +146,14 @@ resourcestring
   RsEMultipleOtherwise = 'Multiple otherwise';
   RsEConditionNotUnique = 'Condition is not unique';
   RsEMissingItemInclude = 'Missing item include';
+  RsEMissingTargetName = 'Missing target name';
   RsEMissingTaskName = 'Missing task name';
   RsEMissingAssembly = 'Missing assembly';
   RsEMissingTaskParameter = 'Missing task parameter';
   RsEMissingOutputName = 'Missing output name';
+  RsEMSBuildPath = 'Unable to locate MSBuild.exe';
+  RsEFunctionProperty = 'Unable to evaluate function property "%s"';
+  RsERegistryProperty = 'Unable to evaluate registry property root="%s" path="%s" name="%s"';
 
 //=== JclUsesUtils.pas =======================================================
 resourcestring

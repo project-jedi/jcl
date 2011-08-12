@@ -23,7 +23,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -40,18 +40,315 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  Windows,
+  SysUtils,
   Classes,
+  Contnrs,
   JclBase,
-  JclSimpleXml;
+  JclFileUtils,
+  JclRegistry,
+  JclStreams,
+  JclSimpleXml,
+  JclSysInfo;
+
+(* simple test procedure: load Jcl.dproj and emit custom properties and files to be compiled
+
+procedure Test;
+var
+  MsBuildParser: TJclMsBuildParser;
+begin
+  MsBuildParser := TJclMsBuildParser.Create('C:\dev\jcl\jcl\packages\d11\Jcl.dproj');
+  try
+    MsBuildParser.Init;
+    MsBuildParser.Parse;
+    WriteLn(MsBuildParser.Properties.CustomProperties.Text);
+    WriteLn(MsBuildParser.EvaluateString('@(DCCReference->''%(FullPath)'')'));
+  finally
+    MsBuildParser.Free;
+  end;
+end; *)
 
 type
   EJclMsBuildError = class(EJclError);
 
-// this function parses MsBuild condition as described at:
-// http://msdn.microsoft.com/en-us/library/7szfhaft.aspx
-function ParseCondition(const Condition: string; Defines: TStrings): Boolean; overload;
-function ParseCondition(const Condition: string; var Position: Integer; Len: Integer;
-  Defines: TStrings): Boolean; overload;
+  TJclMsBuildItem = class
+  private
+    FItemName: string;
+    FItemInclude: string;
+    FItemFullInclude: string; //full path
+    FItemExclude: string;
+    FItemRemove: string;
+    FItemMetaData: TStrings;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    property ItemName: string read FItemName;
+    property ItemInclude: string read FItemInclude;
+    property ItemFullInclude: string read FItemFullInclude;
+    property ItemExclude: string read FItemExclude;
+    property ItemRemove: string read FItemRemove;
+    property ItemMetaData: TStrings read FItemMetaData;
+  end;
+
+  TJclMsBuildTaskOutput = class
+  private
+    FTaskParameter: string;
+    FPropertyName: string;
+    FItemName: string;
+  public
+    property TaskParameter: string read FTaskParameter;
+    property PropertyName: string read FPropertyName;
+    property ItemName: string read FItemName;
+  end;
+
+  TJclMsBuildParameter = class
+  private
+    FParameterName: string;
+    FParameterType: string;
+    FOutput: Boolean;
+    FRequired: Boolean;
+  public
+    property ParameterName: string read FParameterName;
+    property ParameterType: string read FParameterType;
+    property Output: Boolean read FOutput;
+    property Required: Boolean read FRequired;
+  end;
+
+  TJclMsBuildUsingTask = class
+  private
+    FAssemblyName: string;
+    FAssemblyFile: string;
+    FTaskFactory: string;
+    FTaskName: string;
+    FParameters: TObjectList;
+    FTaskBody: string;
+    function AddParameter(Parameter: TJclMsBuildParameter): Integer;
+    function GetParameterCount: Integer;
+    function GetParameter(Index: Integer): TJclMsBuildParameter;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    property AssemblyName: string read FAssemblyName;
+    property AssemblyFile: string read FAssemblyFile;
+    property TaskFactory: string read FTaskFactory;
+    property TaskName: string read FTaskName;
+    property ParameterCount: Integer read GetParameterCount;
+    property Parameters[Index: Integer]: TJclMsBuildParameter read GetParameter;
+    property TaskBody: string read FTaskBody;
+  end;
+
+  TJclMsBuildTask = class
+  private
+    FTaskName: string;
+    FContinueOnError: Boolean;
+    FParameters: TStrings;
+    FOutputs: TObjectList;
+    function AddOutput(AOutput: TJclMsBuildTaskOutput): Integer;
+    function GetOutputCount: Integer;
+    function GetOutput(Index: Integer): TJclMsBuildTaskOutput;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    property TaskName: string read FTaskName;
+    property ContinueOnError: Boolean read FContinueOnError;
+    property Parameters: TStrings read FParameters;
+    property OutputCount: Integer read GetOutputCount;
+    property Outputs[Index: Integer]: TJclMsBuildTaskOutput read GetOutput;
+  end;
+
+  TJclMsBuildTarget = class
+  private
+    FTargetName: string;
+    FDepends: TStrings;
+    FReturns: TStrings;
+    FInputs: TStrings;
+    FOutputs: TStrings;
+    FBeforeTargets: TStrings;
+    FAfterTargets: TStrings;
+    FKeepDuplicateOutputs: Boolean;
+    FTasks: TObjectList;
+    FErrorTargets: TStrings;
+    function AddTask(Task: TJclMsBuildTask): Integer;
+    function GetTaskCount: Integer;
+    function GetTask(Index: Integer): TJclMsBuildTask;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    property TargetName: string read FTargetName;
+    property Depends: TStrings read FDepends;
+    property Returns: TStrings read FReturns;
+    property Inputs: TStrings read FInputs;
+    property Outputs: TStrings read FOutputs;
+    property BeforeTargets: TStrings read FBeforeTargets;
+    property AfterTargets: TStrings read FAfterTargets;
+    property KeepDuplicateOutputs: Boolean read FKeepDuplicateOutputs;
+    property TaskCount: Integer read GetTaskCount;
+    property Tasks[Index: Integer]: TJclMsBuildTask read GetTask;
+    property ErrorTargets: TStrings read FErrorTargets;
+  end;
+
+  TJclMsBuildParser = class;
+
+  // TStrings wrapper for all the MsBuild properties, values are searched
+  // in the following ordered property classes:
+  //  - reserved properties defined by MsBuild,
+  //      their value cannot be overriden or an error will be raised
+  //  - properties taken from the emulated "command line"
+  //      their value cannot be overriden, no error is raised
+  //  - custom properties defined by the script
+  //  - environment properties taken from the environment variables
+  //      their value can be silently overriden
+  //  - registry properties handled by event
+  //  - function properties handled by event
+
+  TJclMsBuildProperties = class(TStrings)
+  private
+    FParser: TJclMsBuildParser;
+    FReservedProperties: TStrings;
+    FGlobalProperties: TStrings;
+    FCustomProperties: TStrings;
+    FEnvironmentProperties: TStrings;
+  protected
+    function Get(Index: Integer): string; override;
+    function GetCount: Integer; override;
+    function GetObject(Index: Integer): TObject; override;
+    procedure Put(Index: Integer; const S: string); override;
+    procedure PutObject(Index: Integer; AObject: TObject); override;
+  public
+    constructor Create(AParser: TJclMsBuildParser);
+    destructor Destroy; override;
+
+    property Parser: TJclMsBuildParser read FParser;
+
+    procedure Clear; override;
+
+    procedure Delete(Index: Integer); override;
+    function IndexOf(const S: string): Integer; override;
+    procedure Insert(Index: Integer; const S: string); override;
+
+    property ReservedProperties: TStrings read FReservedProperties;
+    property EnvironmentProperties: TStrings read FEnvironmentProperties;
+    property GlobalProperties: TStrings read FGlobalProperties;
+    property CustomProperties: TStrings read FCustomProperties;
+  end;
+
+  TJclMsBuildImportEvent = procedure (Sender: TJclMsBuildParser; var FileName: TFileName;
+    var SubXml: TJclSimpleXml; var SubOwnsXml: Boolean) of object;
+  TJclMsBuildToolsVersionEvent = procedure (Sender: TJclMsBuildParser; const ToolsVersion: string) of object;
+  TJclMsBuildRegistryPropertyEvent = function (Sender: TJclMsBuildParser; Root: HKEY;
+    const Path, Name: string; out Value: string): Boolean of object;
+  TJclMsBuildFunctionPropertyEvent = function (Sender: TJclMsBuildParser; const Command: string;
+    out Value: string): Boolean of object;
+
+  TJclMsBuildParser = class
+  private
+    FCurrentFileName: TFileName;
+    FProjectFileName: TFileName;
+    FXml: TJclSimpleXml;
+    FOwnsXml: Boolean;
+    FProperties: TJclMsBuildProperties;
+    FItems: TObjectList;
+    FItemDefinitions: TObjectList;
+    FTargets: TObjectList;
+    FUsingTasks: TObjectList;
+    FInitialTargets: TStrings;
+    FDefaultTargets: TStrings;
+    FToolsVersion: string;
+    FDotNetVersion: string;
+    FWorkingDirectory: string;
+    FProjectExtensions: TJclSimpleXMLElem;
+    FOnImport: TJclMsBuildImportEvent;
+    FOnToolsVersion: TJclMsBuildToolsVersionEvent;
+    FOnRegistryProperty: TJclMsBuildRegistryPropertyEvent;
+    FOnFunctionProperty: TJclMsBuildFunctionPropertyEvent;
+    function GetItemCount: Integer;
+    function GetItem(Index: Integer): TJclMsBuildItem;
+    function GetItemDefinitionCount: Integer;
+    function GetItemDefinition(Index: Integer): TJclMsBuildItem;
+    function GetTargetCount: Integer;
+    function GetTarget(Index: Integer): TJclMsBuildTarget;
+    function GetUsingTaskCount: Integer;
+    function GetUsingTask(Index: Integer): TJclMsBuildUsingTask;
+    procedure ParseChoose(XmlElem: TJclSimpleXmlElem);
+    procedure ParseImport(XmlElem: TJclSimpleXmlElem);
+    procedure ParseImportGroup(XmlElem: TJclSimpleXmlElem);
+    procedure ParseItem(XmlElem: TJclSimpleXmlElem; Definition: Boolean);
+    procedure ParseItemDefinitionGroup(XmlElem: TJclSimpleXmlElem);
+    procedure ParseItemGroup(XmlElem: TJclSimpleXmlElem);
+    procedure ParseItemMetaData(XmlElem: TJclSimpleXmlElem; ItemMetaData: TStrings);
+    procedure ParseOnError(XmlElem: TJclSimpleXMLElem; Target: TJclMsBuildTarget);
+    function ParseOtherwise(XmlElem: TJclSimpleXmlElem; Skip: Boolean): Boolean;
+    procedure ParseOutput(XmlElem: TJclSimpleXMLElem; Task: TJclMsBuildTask);
+    procedure ParseParameter(XmlElem: TJclSimpleXMLElem; UsingTask: TJclMsBuildUsingTask);
+    procedure ParseParameterGroup(XmlElem: TJclSimpleXMLElem; UsingTask: TJclMsBuildUsingTask);
+    procedure ParseProject(XmlElem: TJclSimpleXmlElem);
+    procedure ParseProperty(XmlElem: TJclSimpleXmlElem);
+    procedure ParsePropertyGroup(XmlElem: TJclSimpleXmlElem);
+    procedure ParseTarget(XmlElem: TJclSimpleXmlElem);
+    procedure ParseTask(XmlElem: TJclSimpleXMLElem; Target: TJclMsBuildTarget);
+    procedure ParseTaskBody(XmlElem: TJclSimpleXMLElem; UsingTask: TJclMsBuildUsingTask);
+    procedure ParseUsingTask(XmlElem: TJclSimpleXmlElem);
+    function ParseWhen(XmlElem: TJclSimpleXmlElem; Skip: Boolean): Boolean;
+    procedure ParseXml(AXml: TJclSimpleXML);
+  public
+    // evaluate known MsBuild properties
+    // http://msdn.microsoft.com/en-us/library/ms171458.aspx
+    function EvaluateFunctionProperty(const Command: string): string;
+    function EvaluateList(const Name: string): string;
+    function EvaluateRegistryProperty(Root: HKEY; const Path, Name: string): string;
+    function EvaluateString(const S: string): string;
+    function EvaluateTransform(ItemList: TStrings; const Transform: string): string; 
+  public
+    // this function parses MsBuild condition as described at:
+    // http://msdn.microsoft.com/en-us/library/7szfhaft.aspx
+    function ParseCondition(const Condition: string): Boolean;
+    function ParseConditionLength(const Condition: string; var Position: Integer; Len: Integer): Boolean;
+    function ParseConditionOperand(const Condition: string; var Position: Integer; Len: Integer): Boolean;
+    function ParseConditionString(const Condition: string; var Position: Integer; Len: Integer): string;
+  public
+    constructor Create(const AFileName: TFileName; AXml: TJclSimpleXml; AOwnsXml: Boolean = False); overload;
+    constructor Create(const AFileName: TFileName; Encoding: TJclStringEncoding = seAuto; CodePage: Word = CP_ACP); overload;
+    destructor Destroy; override;
+
+    procedure Clear;
+    procedure ClearItems;
+    procedure ClearItemDefinitions;
+    procedure ClearTargets;
+
+    procedure Parse;
+
+    procedure FindItemIncludes(const ItemName: string; List: TStrings);
+    function FindItemDefinition(const ItemName: string): TJclMsBuildItem;
+    function FindTarget(const TargetName: string): TJclMsBuildTarget;
+
+    procedure Init;
+    procedure InitEnvironmentProperties;
+    procedure InitReservedProperties;
+
+    property CurrentFileName: TFileName read FCurrentFileName;
+    property ProjectFileName: TFileName read FProjectFileName;
+    property Xml: TJclSimpleXml read FXml;
+    property OwnsXml: Boolean read FOwnsXml write FOwnsXml;
+    property Properties: TJclMsBuildProperties read FProperties;
+    property ItemCount: Integer read GetItemCount;
+    property Items[Index: Integer]: TJclMsBuildItem read GetItem;
+    property ItemDefinitionCount: Integer read GetItemDefinitionCount;
+    property ItemDefinitions[Index: Integer]: TJclMsBuildItem read GetItemDefinition;
+    property TargetCount: Integer read GetTargetCount;
+    property Targets[Index: Integer]: TJclMsBuildTarget read GetTarget;
+    property UsingTaskCount: Integer read GetUsingTaskCount;
+    property UsingTasks[Index: Integer]: TJclMsBuildUsingTask read GetUsingTask;
+    property ProjectExtensions: TJclSimpleXMLElem read FProjectExtensions;
+    property InitialTargets: TStrings read FInitialTargets;
+    property DefaultTargets: TStrings read FDefaultTargets;
+    property ToolsVersion: string read FToolsVersion;
+    property DotNetVersion: string read FDotNetVersion write FDotNetVersion;
+    property WorkingDirectory: string read FWorkingDirectory write FWorkingDirectory;
+    property OnImport: TJclMsBuildImportEvent read FOnImport write FOnImport;
+    property OnToolsVersion: TJclMsBuildToolsVersionEvent read FOnToolsVersion write FOnToolsVersion;
+    property OnRegistryProperty: TJclMsBuildRegistryPropertyEvent read FOnRegistryProperty write FOnRegistryProperty;
+    property OnFunctionProperty: TJclMsBuildFunctionPropertyEvent read FOnFunctionProperty write FOnFunctionProperty;
+  end;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -68,35 +365,614 @@ const
 implementation
 
 uses
-  SysUtils,
+  SysConst,
+  JclWin32,
+  JclDotNet,
+  JclShell,
   JclStrings,
   JclDevToolsResources;
 
-function EvaluateString(const Condition: string; Defines: TStrings): string;
-var
-  Start, Position, Len: Integer;
-  PropertyName: string;
+//=== { TJclMsBuildItem } ====================================================
+
+constructor TJclMsBuildItem.Create;
 begin
-  Result := Condition;
+  inherited Create;
+  FItemMetaData := TStringList.Create;
+end;
+
+destructor TJclMsBuildItem.Destroy;
+begin
+  FItemMetaData.Free;
+  inherited Destroy;
+end;
+
+//=== { TJclMsBuildUsingTask } ===============================================
+
+function TJclMsBuildUsingTask.AddParameter(Parameter: TJclMsBuildParameter): Integer;
+begin
+  Result := FParameters.Add(Parameter);
+end;
+
+constructor TJclMsBuildUsingTask.Create;
+begin
+  inherited Create;
+  FParameters := TObjectList.Create(True);
+end;
+
+destructor TJclMsBuildUsingTask.Destroy;
+begin
+  FParameters.Free;
+  inherited Destroy;
+end;
+
+function TJclMsBuildUsingTask.GetParameter(
+  Index: Integer): TJclMsBuildParameter;
+begin
+  Result := TJclMsBuildParameter(FParameters.Items[Index]);
+end;
+
+function TJclMsBuildUsingTask.GetParameterCount: Integer;
+begin
+  Result := FParameters.Count;
+end;
+
+//=== { TJclMsBuildTask } ====================================================
+
+constructor TJclMsBuildTask.Create;
+begin
+  inherited Create;
+  FParameters := TStringList.Create;
+  FOutputs := TObjectList.Create(True);
+end;
+
+destructor TJclMsBuildTask.Destroy;
+begin
+  FOutputs.Free;
+  FParameters.Free;
+  inherited Destroy;
+end;
+
+function TJclMsBuildTask.AddOutput(AOutput: TJclMsBuildTaskOutput): Integer;
+begin
+  Result := FOutputs.Add(AOutput);
+end;
+
+function TJclMsBuildTask.GetOutput(Index: Integer): TJclMsBuildTaskOutput;
+begin
+  Result := TJclMsBuildTaskOutput(FOutputs.Items[Index]);
+end;
+
+function TJclMsBuildTask.GetOutputCount: Integer;
+begin
+  Result := FOutputs.Count;
+end;
+
+//=== { TJclMsBuildTarget } ==================================================
+
+constructor TJclMsBuildTarget.Create;
+begin
+  inherited Create;
+  FDepends := TStringList.Create;
+  FReturns := TStringList.Create;
+  FInputs := TStringList.Create;
+  FOutputs := TStringList.Create;
+  FBeforeTargets := TStringList.Create;
+  FAfterTargets := TStringList.Create;
+  FTasks := TObjectList.Create(True);
+  FErrorTargets := TStringList.Create;
+end;
+
+destructor TJclMsBuildTarget.Destroy;
+begin
+  FErrorTargets.Free;
+  FTasks.Free;
+  FAfterTargets.Free;
+  FBeforeTargets.Free;
+  FOutputs.Free;
+  FInputs.Free;
+  FReturns.Free;
+  FDepends.Free;
+  inherited Destroy;
+end;
+
+function TJclMsBuildTarget.AddTask(Task: TJclMsBuildTask): Integer;
+begin
+  Result := FTasks.Add(Task);
+end;
+
+function TJclMsBuildTarget.GetTask(Index: Integer): TJclMsBuildTask;
+begin
+  Result := TJclMsBuildTask(FTasks.Items[Index]);
+end;
+
+function TJclMsBuildTarget.GetTaskCount: Integer;
+begin
+  Result := FTasks.Count;
+end;
+
+//=== { TJclMsBuildProperties } ==============================================
+
+constructor TJclMsBuildProperties.Create(AParser: TJclMsBuildParser);
+begin
+  inherited Create;
+  FParser := AParser;
+  FReservedProperties := TStringList.Create;
+  FGlobalProperties := TStringList.Create;
+  FCustomProperties := TStringList.Create;
+  FEnvironmentProperties := TStringList.Create;
+end;
+
+destructor TJclMsBuildProperties.Destroy;
+begin
+  FEnvironmentProperties.Free;
+  FCustomProperties.Free;
+  FGlobalProperties.Free;
+  FReservedProperties.Free;
+  inherited Destroy;
+end;
+
+procedure TJclMsBuildProperties.Clear;
+begin
+  ReservedProperties.Clear;
+  CustomProperties.Clear;
+  EnvironmentProperties.Clear;
+  GlobalProperties.Clear;
+end;
+
+procedure TJclMsBuildProperties.Delete(Index: Integer);
+begin
+  //  - reserved properties defined by MsBuild,
+  //      their value cannot be overriden or an error will be raised
+  if (Index >= 0) and (Index < FReservedProperties.Count) then
+    raise EJclMsBuildError.CreateRes(@RsEReservedProperty);
+  Dec(Index, FReservedProperties.Count);
+
+  //  - properties taken from the emulated "command line"
+  //      their value cannot be overriden, no error is raised
+  if (Index >= 0) and (Index < FGlobalProperties.Count) then
+    Exit;
+  Dec(Index, FGlobalProperties.Count);
+  
+  //  - custom properties defined by the script
+  if (Index >= 0) and (Index < FCustomProperties.Count) then
+  begin
+    FCustomProperties.Delete(Index);
+    Exit;
+  end;
+  Dec(Index, FCustomProperties.Count);
+
+  //  - environment properties taken from the environment variables
+  //      their value can be silently overriden
+  if (Index >= 0) and (Index < FEnvironmentProperties.Count) then
+  begin
+    FEnvironmentProperties.Delete(Index);
+    Exit;
+  end;
+  
+  raise EJclMsBuildError.CreateRes(@SRangeError);
+end;
+
+function TJclMsBuildProperties.Get(Index: Integer): string;
+begin
+  //  - reserved properties defined by MsBuild,
+  if (Index >= 0) and (Index < FReservedProperties.Count) then
+  begin
+    Result := FReservedProperties.Strings[Index];
+    Exit;
+  end;
+  Dec(Index, FReservedProperties.Count);
+
+  //  - properties taken from the emulated "command line"
+  if (Index >= 0) and (Index < FGlobalProperties.Count) then
+  begin
+    Result := FGlobalProperties.Strings[Index];
+    Exit;
+  end;
+  Dec(Index, FGlobalProperties.Count);
+
+  //  - custom properties defined by the script
+  if (Index >= 0) and (Index < FCustomProperties.Count) then
+  begin
+    Result := FCustomProperties.Strings[Index];
+    Exit;
+  end;
+  Dec(Index, FCustomProperties.Count);
+
+  //  - environment properties taken from the environment variables
+  if (Index >= 0) and (Index < FEnvironmentProperties.Count) then
+  begin
+    Result := FEnvironmentProperties.Strings[Index];
+    Exit;
+  end;
+  
+  raise EJclMsBuildError.CreateRes(@SRangeError);
+end;
+
+function TJclMsBuildProperties.GetCount: Integer;
+begin
+  Result := FReservedProperties.Count + FGlobalProperties.Count +
+    FCustomProperties.Count + FEnvironmentProperties.Count;
+end;
+
+function TJclMsBuildProperties.GetObject(Index: Integer): TObject;
+begin
+  //  - reserved properties defined by MsBuild,
+  if (Index >= 0) and (Index < FReservedProperties.Count) then
+  begin
+    Result := FReservedProperties.Objects[Index];
+    Exit;
+  end;
+  Dec(Index, FReservedProperties.Count);
+
+  //  - properties taken from the emulated "command line"
+  if (Index >= 0) and (Index < FGlobalProperties.Count) then
+  begin
+    Result := FGlobalProperties.Objects[Index];
+    Exit;
+  end;
+  Dec(Index, FGlobalProperties.Count);
+
+  //  - custom properties defined by the script
+  if (Index >= 0) and (Index < FCustomProperties.Count) then
+  begin
+    Result := FCustomProperties.Objects[Index];
+    Exit;
+  end;
+  Dec(Index, FCustomProperties.Count);
+
+  //  - environment properties taken from the environment variables
+  if (Index >= 0) and (Index < FEnvironmentProperties.Count) then
+  begin
+    Result := FEnvironmentProperties.Objects[Index];
+    Exit;
+  end;
+  
+  raise EJclMsBuildError.CreateRes(@SRangeError);
+end;
+
+function TJclMsBuildProperties.IndexOf(const S: string): Integer;
+begin
+  //  - reserved properties defined by MsBuild,
+  Result := FReservedProperties.IndexOf(S);
+  if Result >= 0 then
+    Exit;
+
+  //  - properties taken from the emulated "command line"
+  Result := FGlobalProperties.IndexOf(S);
+  if Result >= 0 then
+  begin
+    Inc(Result, FReservedProperties.Count);
+    Exit;
+  end;
+
+  //  - custom properties defined by the script
+  Result := FCustomProperties.IndexOf(S);
+  if Result >= 0 then
+  begin
+    Inc(Result, FReservedProperties.Count);
+    Inc(Result, FGlobalProperties.Count);
+    Exit;
+  end;
+
+  //  - environment properties taken from the environment variables
+  Result := FEnvironmentProperties.IndexOf(S);
+  if Result >= 0 then
+  begin
+    Inc(Result, FReservedProperties.Count);
+    Inc(Result, FGlobalProperties.Count);
+    Inc(Result, FCustomProperties.Count);
+    Exit;
+  end;
+end;
+
+procedure TJclMsBuildProperties.Insert(Index: Integer; const S: string);
+begin
+  //  - reserved properties defined by MsBuild,
+  //      their value cannot be overriden or an error will be raised
+  if (Index >= 0) and (Index < FReservedProperties.Count) then
+    raise EJclMsBuildError.CreateRes(@RsEReservedProperty);
+  Dec(Index, FReservedProperties.Count);
+
+  //  - properties taken from the emulated "command line"
+  //      their value cannot be overriden, no error is raised
+  if (Index >= 0) and (Index < FGlobalProperties.Count) then
+    Exit;
+  Dec(Index, FGlobalProperties.Count);
+
+  //  - custom properties defined by the script
+  if (Index >= 0) and (Index < FCustomProperties.Count) then
+  begin
+    FCustomProperties.Insert(Index, S);
+    Exit;
+  end;
+  Dec(Index, FCustomProperties.Count);
+
+  //  - environment properties taken from the environment variables
+  //      their value can be silently overriden
+  if (Index >= 0) and (Index <= FEnvironmentProperties.Count) then
+  begin
+    FCustomProperties.Add(S);
+    Exit;
+  end;
+  
+  raise EJclMsBuildError.CreateRes(@SRangeError);
+end;
+
+procedure TJclMsBuildProperties.Put(Index: Integer; const S: string);
+begin
+  //  - reserved properties defined by MsBuild,
+  //      their value cannot be overriden or an error will be raised
+  if (Index >= 0) and (Index < FReservedProperties.Count) then
+    raise EJclMsBuildError.CreateRes(@RsEReservedProperty);
+  Dec(Index, FReservedProperties.Count);
+
+  //  - properties taken from the emulated "command line"
+  //      their value cannot be overriden, no error is raised
+  if (Index >= 0) and (Index < FGlobalProperties.Count) then
+    Exit;
+  Dec(Index, FGlobalProperties.Count);
+
+  //  - custom properties defined by the script
+  if (Index >= 0) and (Index < FCustomProperties.Count) then
+  begin
+    FCustomProperties.Strings[Index] := S;
+    Exit;
+  end;
+  Dec(Index, FCustomProperties.Count);
+
+  //  - environment properties taken from the environment variables
+  //      their value can be silently overriden
+  if (Index >= 0) and (Index < FEnvironmentProperties.Count) then
+  begin
+    if (FCustomProperties.Count > 0) and (FCustomProperties.Strings[FCustomProperties.Count - 1] = '') then
+      FCustomProperties.Strings[FCustomProperties.Count - 1] := S
+    else
+      FCustomProperties.Add(S);
+    Exit;
+  end;
+  
+  raise EJclMsBuildError.CreateRes(@SRangeError);
+end;
+
+procedure TJclMsBuildProperties.PutObject(Index: Integer; AObject: TObject);
+begin
+  //  - reserved properties defined by MsBuild,
+  if (Index >= 0) and (Index < FReservedProperties.Count) then
+  begin
+    FReservedProperties.Objects[Index] := AObject;
+    Exit;
+  end;
+  Dec(Index, FReservedProperties.Count);
+
+  //  - properties taken from the emulated "command line"
+  if (Index >= 0) and (Index < FGlobalProperties.Count) then
+  begin
+    FGlobalProperties.Objects[Index] := AObject;
+    Exit;
+  end;
+  Dec(Index, FGlobalProperties.Count);
+
+  //  - custom properties defined by the script
+  if (Index >= 0) and (Index < FCustomProperties.Count) then
+  begin
+    FCustomProperties.Objects[Index] := AObject;
+    Exit;
+  end;
+  Dec(Index, FCustomProperties.Count);
+
+  //  - environment properties taken from the environment variables
+  if (Index >= 0) and (Index < FEnvironmentProperties.Count) then
+  begin
+    FEnvironmentProperties.Objects[Index] := AObject;
+    Exit;
+  end;
+  
+  raise EJclMsBuildError.CreateRes(@SRangeError);
+end;
+
+//=== { TJclMsBuildParser } ==================================================
+
+constructor TJclMsBuildParser.Create(const AFileName: TFileName; Encoding: TJclStringEncoding; CodePage: Word);
+var
+  AXml: TJclSimpleXML;
+begin
+  AXml := TJclSimpleXML.Create;
+  try
+    AXml.LoadFromFile(AFileName, Encoding, CodePage);
+  except
+    AXml.Free;
+    raise;
+  end;
+  Create(AFileName, AXml, True);
+end;
+
+constructor TJclMsBuildParser.Create(const AFileName: TFileName;
+  AXml: TJclSimpleXml; AOwnsXml: Boolean);
+begin
+  inherited Create;
+  FProjectFileName := AFileName;
+  FXml := AXml;
+  FOwnsXml := AOwnsXml;
+  FProperties := TJclMsBuildProperties.Create(Self);
+  FItems := TObjectList.Create(True);
+  FItemDefinitions := TObjectList.Create(True);
+  FTargets := TObjectList.Create(True);
+  FUsingTasks := TObjectList.Create(True);
+  FInitialTargets := TStringList.Create;
+  FDefaultTargets := TStringList.Create;
+end;
+
+destructor TJclMsBuildParser.Destroy;
+begin
+  FDefaultTargets.Free;
+  FInitialTargets.Free;
+  FUsingTasks.Free;
+  FTargets.Free;
+  FItemDefinitions.Free;
+  FItems.Free;
+  FProperties.Free;
+  if FOwnsXml then
+    FXml.Free;
+  inherited Destroy;
+end;
+
+procedure TJclMsBuildParser.Clear;
+begin
+  ClearItems;
+  ClearItemDefinitions;
+  ClearTargets;
+  FProperties.Clear;
+  FInitialTargets.Clear;
+  FDefaultTargets.Clear;
+  FProjectExtensions := nil;
+end;
+
+procedure TJclMsBuildParser.ClearItemDefinitions;
+begin
+  FItemDefinitions.Clear;
+end;
+
+procedure TJclMsBuildParser.ClearItems;
+begin
+  FItems.Clear;
+end;
+
+procedure TJclMsBuildParser.ClearTargets;
+begin
+  FTargets.Clear;
+end;
+
+function TJclMsBuildParser.EvaluateString(const S: string): string;
+  procedure FindClosingBrace(const R: string; var Position: Integer);
+  var
+    Index, Len, BraceCount: Integer;
+    Quotes: string;
+  begin
+    Len := Length(R);
+    BraceCount := 0;
+    Quotes := '';
+    while (Position <= Len) do
+    begin
+      // handle quotes first
+      if (R[Position] = NativeSingleQuote) then
+      begin
+        Index := JclStrings.CharPos(Quotes, NativeSingleQuote);
+        if Index >= 0 then
+          SetLength(Quotes, Index - 1)
+        else
+          Quotes := Quotes + NativeSingleQuote;
+      end;
+
+      if (R[Position] = NativeDoubleQuote) then
+      begin
+        Index := JclStrings.CharPos(Quotes, NativeDoubleQuote);
+        if Index >= 0 then
+          SetLength(Quotes, Index - 1)
+        else
+          Quotes := Quotes + NativeDoubleQuote;
+      end;
+
+      if (R[Position] = '`') then
+      begin
+        Index := JclStrings.CharPos(Quotes, '`');
+        if Index >= 0 then
+          SetLength(Quotes, Index - 1)
+        else
+          Quotes := Quotes + '`';
+      end;
+
+      if Quotes = '' then
+      begin
+        if R[Position] = ')' then
+        begin
+          Dec(BraceCount);
+          if BraceCount = 0 then
+            Break;
+        end
+        else
+        if R[Position] = '(' then
+          Inc(BraceCount);
+      end;
+      Inc(Position);
+    end;
+    if Position > Len then
+      raise EJclMsBuildError.CreateResFmt(@RsEEndOfString, [S]);
+  end;
+var
+  Start, Position, Index: Integer;
+  PropertyName, PropertyValue, Path, Name: string;
+  Prop, Reg: Boolean;
+  Root: THandle;
+begin
+  Result := S;
   if Result <> '' then
   begin
-    // evaluate variables
     repeat
       // start with the last match in order to convert $(some$(other))
+      // evaluate properties
       Start := StrLastPos('$(', Result);
       if Start > 0 then
       begin
-        Len := Length(Result);
         Position := Start;
-        while (Position <= Len) and (Result[Position] <> ')') do
-          Inc(Position);
-        if Position > Len then
-          raise EJclMsBuildError.CreateRes(@RsEEndOfString);
+        FindClosingBrace(Result, Position);
         PropertyName := Copy(Result, Start + 2, Position - Start - 2);
+
+        Prop := True;
+        for Index := 1 to Length(PropertyName) do
+          if not CharIsValidIdentifierLetter(PropertyName[Index]) then
+        begin
+          Prop := False;
+          Break;
+        end;
+        if Prop then
+          PropertyValue := Properties.Values[PropertyName]
+        else
+        begin
+          Reg := Copy(PropertyName, 1, 9) = 'registry:';
+          if Reg then
+          begin
+            PropertyName := Copy(PropertyName, 10, Length(PropertyName) - 9);
+            Index := CharPos(PropertyName, '\');
+            Root := RootKeyValue(Copy(PropertyName, 1, Index - 1));
+            PropertyName := Copy(PropertyName, Index + 1, Length(PropertyName) - Index);
+            Index := CharPos(PropertyName, '@');
+            if Index >= 0 then
+            begin
+              Path := Copy(PropertyName, 1, Index - 1);
+              Name := Copy(PropertyName, Index + 1, Length(PropertyName) - Index);
+            end
+            else
+            begin
+              Path := PropertyName;
+              Name := '';
+            end;
+            PropertyValue := EvaluateRegistryProperty(Root, Path, Name);
+          end
+          else
+            PropertyValue := EvaluateFunctionProperty(PropertyName);
+        end;
         StrReplace(Result,
-                   Copy(Result, Start, Position - Start + 1), // $(some)
-                   Defines.Values[PropertyName], // some
-                   [rfReplaceAll]);
+                   Copy(Result, Start, Position - Start + 1), // $(PropertyName)
+                   PropertyValue,
+                   [rfReplaceAll])
+      end;
+      if Start = 0 then
+      begin
+        // evaluate item list
+        Start := StrLastPos('@(', Result);
+        if Start > 0 then
+        begin
+          Position := Start;
+          FindClosingBrace(Result, Position);
+          PropertyName := Copy(Result, Start + 2, Position - Start - 2);
+
+          PropertyValue := EvaluateList(PropertyName);
+          
+          StrReplace(Result,
+                     Copy(Result, Start, Position - Start + 1), // @(PropertyName...)
+                     PropertyValue,
+                     [rfReplaceAll])
+        end;
       end;
     until Start = 0;
     // convert hexa to decimal
@@ -105,8 +981,634 @@ begin
   end;
 end;
 
-function ParseString(const Condition: string; var Position: Integer; Len: Integer;
-  Defines: TStrings): string;
+function TJclMsBuildParser.EvaluateTransform(ItemList: TStrings; const Transform: string): string;
+type
+  TVarRecArray = array of TVarRec;
+
+  function GetTransformPattern(const Transform: string): string;
+  begin
+    Result := Transform;
+    StrReplace(Result, '%(FullPath)', '%0:s', [rfReplaceAll]);
+    StrReplace(Result, '%(RootDir)', '%1:s', [rfReplaceAll]);
+    StrReplace(Result, '%(Filename)', '%2:s', [rfReplaceAll]);
+    StrReplace(Result, '%(Extension)', '%3:s', [rfReplaceAll]);
+    StrReplace(Result, '%(RelativeDir)', '%4:s', [rfReplaceAll]);
+    StrReplace(Result, '%(Directory)', '%5:s', [rfReplaceAll]);
+    StrReplace(Result, '%(RecursiveDir)', '%6:s', [rfReplaceAll]);
+    StrReplace(Result, '%(Identity)', '%7:s', [rfReplaceAll]);
+    StrReplace(Result, '%(ModifiedTime)', '%8:s', [rfReplaceAll]);
+    StrReplace(Result, '%(CreatedTime)', '%9:s', [rfReplaceAll]);
+    StrReplace(Result, '%(AccessedTime)', '%10:s', [rfReplaceAll]);
+  end;
+
+  procedure GetTransformParameters(Item: TJclMsBuildItem; var Storage: TDynStringArray;
+    var Formats: TVarRecArray);
+  const
+    DateTimeFormat = 'yyyy-mm-dd hh:nn:ss.zzz';
+  var
+    Index: Integer;
+    ItemFullInclude: string;
+    LocalDateTime: TDateTime;
+  begin
+    if Length(Formats) <> 11 then
+    begin
+      SetLength(Formats, 11);
+      for Index := Low(Formats) to High(Formats) do
+      begin
+        {$IFDEF SUPPORTS_UNICODE}
+        Formats[Index].VType := vtPWideChar;
+        Formats[Index].VPWideChar := nil;
+        {$ELSE ~SUPPORTS_UNICODE}
+        Formats[Index].VType := vtPChar;
+        Formats[Index].VPChar := nil;
+        {$ENDIF ~SUPPORTS_UNICODE}
+      end;
+    end;
+
+    if Length(Storage) <> 11 then
+      SetLength(Storage, 11);
+
+    ItemFullInclude := Item.ItemFullInclude;
+    
+    // %(FullPath) Contains the full path of the item. For example:
+    Storage[0] := ItemFullInclude;
+
+    // %(RootDir) Contains the root directory of the item. For example:
+    if PathIsAbsolute(ItemFullInclude) and not PathIsUNC(ItemFullInclude) and
+       (ItemFullInclude <> '') and CharIsDriveLetter(ItemFullInclude[1]) then
+      Storage[1] := ItemFullInclude[1] + ':\'
+    else
+      Storage[1] := '';
+
+    // %(Filename) Contains the file name of the item, without the extension. For example:
+    Storage[2] := ChangeFileExt(ExtractFileName(Item.ItemInclude), '');
+
+    // %(Extension) Contains the file name extension of the item. For example:
+    Storage[3] := ExtractFileExt(Item.ItemInclude);
+
+    // %(RelativeDir) Contains the path specified in the Include attribute, up to the final backslash (\). For example:
+    Storage[4] := PathAddSeparator(ExtractFilePath(Item.ItemInclude));
+
+    // %(Directory) Contains the directory of the item, without the root directory. For example:
+    Index := CharPos(ItemFullInclude, '\');
+    if Index > 0 then
+      // skip the root
+      Index := CharPos(ItemFullInclude, '\', Index + 1);
+    if Index > 0 then
+      Storage[5] := Copy(ItemFullInclude, Index + 1, Length(ItemFullInclude) - Index)
+    else
+      Storage[5] := '';
+
+    // %(RecursiveDir)
+    Storage[6] := ''; // TODO: path expansion
+
+    // %(Identity) The item specified in the Include attribute.. For example:
+    Storage[7] := Item.ItemInclude;
+
+    // %(ModifiedTime) Contains the timestamp from the last time the item was modified. For example:
+    if GetFileLastWrite(ItemFullInclude, LocalDateTime) then
+      Storage[8] := FormatDateTime(DateTimeFormat, LocalDateTime)
+    else
+      Storage[8] := '';
+
+    // %(CreatedTime) Contains the timestamp from when the item was created. For example:
+    if GetFileCreation(ItemFullInclude, LocalDateTime) then
+      Storage[9] := FormatDateTime(DateTimeFormat, LocalDateTime)
+    else
+      Storage[9] := '';
+
+    // %(AccessedTime) Contains the timestamp from the last time the time was accessed.
+    if GetFileLastAccess(ItemFullInclude, LocalDateTime) then
+      Storage[10] := FormatDateTime(DateTimeFormat, LocalDateTime)
+    else
+      Storage[10] := '';
+
+    for Index := Low(Formats) to High(Formats) do
+      {$IFDEF SUPPORTS_UNICODE}
+      Formats[Index].VPWideChar := PChar(Storage[Index]);
+      {$ELSE ~SUPPORTS_UNICODE}
+      Formats[Index].VPChar := PChar(Storage[Index]);
+      {$ENDIF ~SUPPORTS_UNICODE}
+  end;
+var
+  Index: Integer;
+  TransformPattern, TransformResult: string;
+  TransformParameters: TVarRecArray;
+  TransformStorage: TDynStringArray;
+begin
+  TransformPattern := GetTransformPattern(Transform);
+
+  Result := '';
+  for Index := 0 to ItemList.Count - 1 do
+  begin
+    GetTransformParameters(TJclMsBuildItem(ItemList.Objects[Index]), TransformStorage, TransformParameters);
+    TransformResult := Format(TransformPattern, TransformParameters);
+    if Result <> '' then
+      Result := Result + ';' + TransformResult
+    else
+      Result := TransformResult;
+  end;
+end;
+
+function TJclMsBuildParser.EvaluateFunctionProperty(const Command: string): string;
+begin
+  if not Assigned(FOnFunctionProperty) or not FOnFunctionProperty(Self, Command, Result) then
+    raise EJclMsBuildError.CreateResFmt(@RsEFunctionProperty, [Command]);
+end;
+
+function TJclMsBuildParser.EvaluateList(const Name: string): string;
+var
+  Index: Integer;
+  Transform: string;
+  List: TStrings;
+begin
+  Index := Pos('->', Name);
+  if Index = 0 then
+  begin
+    // no transformation
+    List := TStringList.Create;
+    try
+      FindItemIncludes(Name, List);
+      Result := StringsToStr(List, ';', False);
+    finally
+      List.Free;
+    end;
+  end
+  else
+  begin
+    Transform := Copy(Name, Index + 2, Length(Name) - Index - 1);
+    Transform := StrTrimCharLeft(StrTrimCharRight(Transform, NativeSingleQuote), NativeSingleQuote);
+    List := TStringList.Create;
+    try
+      FindItemIncludes(Copy(Name, 1, Index - 1), List);
+      Result := EvaluateTransform(List, Transform);
+    finally
+      List.Free;
+    end;
+  end;
+end;
+
+function TJclMsBuildParser.EvaluateRegistryProperty(Root: HKEY; const Path, Name: string): string;
+begin
+  if (not Assigned(FOnRegistryProperty) or not FOnRegistryProperty(Self, Root, Path, Name, Result)) and
+     (not RegReadStringEx(Root, Path, Name, Result, False)) then
+    raise EJclMsBuildError.CreateResFmt(@RsERegistryProperty, [RootKeyName(Root), Path, Name]);
+end;
+
+function TJclMsBuildParser.FindItemDefinition(
+  const ItemName: string): TJclMsBuildItem;
+var
+  Index: Integer;
+begin
+  for Index := 0 to FItemDefinitions.Count - 1 do
+  begin
+    Result := TJclMsBuildItem(FItemDefinitions.Items[Index]);
+    if Result.ItemName = ItemName then
+      Exit;
+  end;
+  Result := nil;
+end;
+
+procedure TJclMsBuildParser.FindItemIncludes(const ItemName: string; List: TStrings);
+var
+  Index: Integer;
+  Item: TJclMsBuildItem;
+begin
+  List.Clear;
+  List.BeginUpdate;
+  try
+    for Index := 0 to FItems.Count - 1 do
+    begin
+      Item := TJclMsBuildItem(FItems.Items[Index]);
+      if Item.ItemName = ItemName then
+        List.AddObject(Item.ItemInclude, Item);
+    end;
+  finally
+    List.EndUpdate;
+  end;
+end;
+
+function TJclMsBuildParser.FindTarget(const TargetName: string): TJclMsBuildTarget;
+var
+  Index: Integer;
+begin
+  for Index := 0 to FTargets.Count - 1 do
+  begin
+    Result := TJclMsBuildTarget(FTargets.Items[Index]);
+    if Result.TargetName = TargetName then
+      Exit;
+  end;
+  Result := nil;
+end;
+
+function TJclMsBuildParser.GetItem(Index: Integer): TJclMsBuildItem;
+begin
+  Result := TJclMsBuildItem(FItems.Items[Index]);
+end;
+
+function TJclMsBuildParser.GetItemCount: Integer;
+begin
+  Result := FItems.Count;
+end;
+
+function TJclMsBuildParser.GetItemDefinition(
+  Index: Integer): TJclMsBuildItem;
+begin
+  Result := TJclMsBuildItem(FItemDefinitions.Items[Index]);
+end;
+
+function TJclMsBuildParser.GetItemDefinitionCount: Integer;
+begin
+  Result := FItemDefinitions.Count;
+end;
+
+function TJclMsBuildParser.GetTarget(Index: Integer): TJclMsBuildTarget;
+begin
+  Result := TJclMsBuildTarget(FTargets.Items[Index]);
+end;
+
+function TJclMsBuildParser.GetTargetCount: Integer;
+begin
+  Result := FTargets.Count;
+end;
+
+function TJclMsBuildParser.GetUsingTask(Index: Integer): TJclMsBuildUsingTask;
+begin
+  Result := TJclMsBuildUsingTask(FUsingTasks.Items[Index]);
+end;
+
+function TJclMsBuildParser.GetUsingTaskCount: Integer;
+begin
+  Result := FUsingTasks.Count;
+end;
+
+procedure TJclMsBuildParser.Init;
+begin
+  InitReservedProperties;
+  InitEnvironmentProperties;
+end;
+
+procedure TJclMsBuildParser.InitEnvironmentProperties;
+begin
+  Properties.EnvironmentProperties.Clear;
+  GetEnvironmentVars(Properties.EnvironmentProperties, True);
+
+  // from http://msdn.microsoft.com/en-us/library/ms164309.aspx
+
+  // MSBuildExtensionsPath
+  // can be overriden, not used by Embarcadero's project files
+
+  // MSBuildExtensionsPath32
+  // can be overriden, not used by Embarcadero's project files
+
+  // MSBuildExtensionsPath64
+  // can be overriden, not used by Embarcadero's project files
+end;
+
+procedure TJclMsBuildParser.InitReservedProperties;
+var
+  Index: Integer;
+  Path: string;
+  DotNetVersions: TStrings;
+begin
+  Properties.ReservedProperties.Clear;
+
+  // from http://msdn.microsoft.com/en-us/library/ms164309.aspx
+
+  // MSBuildProjectDirectory
+  Properties.ReservedProperties.Values['MSBuildProjectDirectory'] := PathRemoveSeparator(ExtractFileDir(ProjectFileName));
+
+  // MSBuildProjectFile
+  Properties.ReservedProperties.Values['MSBuildProjectFile'] := ExtractFileName(ProjectFileName);
+
+  // MSBuildProjectExtension
+  Properties.ReservedProperties.Values['MSBuildProjectExtension'] := ExtractFileExt(ProjectFileName);
+
+  // MSBuildProjectFullPath
+  Properties.ReservedProperties.Values['MSBuildProjectFullPath'] := ProjectFileName;
+
+  // MSBuildProjectName
+  Properties.ReservedProperties.Values['MSBuildProjectExtension'] := ChangeFileExt(ExtractFileName(ProjectFileName), '');
+
+  DotNetVersions := TStringList.Create;
+  try
+    TJclClrHost.GetClrVersions(DotNetVersions);
+    for Index := DotNetVersions.Count - 1 downto 0 do
+    begin
+      Path := DotNetVersions.Values[DotNetVersions.Names[Index]];
+      if not FileExists(PathAddSeparator(Path) + 'MSBuild.exe') then
+        DotNetVersions.Delete(Index);
+    end;
+
+    if DotNetVersion <> '' then
+    begin
+      Path := DotNetVersions.Values[DotNetVersion];
+      // MSBuildToolsVersion
+      Properties.ReservedProperties.Values['MSBuildToolsVersion'] := DotNetVersion;
+    end
+    else
+    if DotNetVersions.Count > 0 then
+    begin
+      Path := DotNetVersions.Values[DotNetVersions.Names[0]];
+      // MSBuildToolsVersion
+      Properties.ReservedProperties.Values['MSBuildToolsVersion'] := DotNetVersions.Names[0];
+    end
+    else
+      Path := '';
+
+    if Path <> '' then
+    begin
+      // MSBuildBinPath
+      Properties.ReservedProperties.Values['MSBuildBinPath'] := Path;
+      // MSBuildToolsPath
+      Properties.ReservedProperties.Values['MSBuildToolsPath'] := Path;
+    end
+    else
+      raise EJclMsBuildError.CreateRes(@RsEMSBuildPath);
+  finally
+    DotNetVersions.Free;
+  end;
+
+  // MSBuildProjectDefaultTargets
+  // postponed to the ParseProject
+
+  // MSBuildExtensionsPath
+  // in the environment variables
+
+  // MSBuildExtensionsPath32
+  // in the environment variables
+
+  // MSBuildExtensionsPath64
+  // in the environment variables
+
+  // MSBuildStartupDirectory
+  if WorkingDirectory <> '' then
+    Path := PathRemoveSeparator(WorkingDirectory)
+  else
+    Path := PathRemoveSeparator(ExtractFilePath(ProjectFileName));
+  Properties.ReservedProperties.Values['MSBuildStartupDirectory'] := Path;
+
+  // MSBuildNodeCount
+  Properties.ReservedProperties.Values['MSBuildNodeCount'] := '1';
+
+  // MSBuildLastTaskResult
+  Properties.ReservedProperties.Values['MSBuildLastTaskResult'] := 'true';
+
+  // MSBuildOverrideTasksPath
+  // supported only in .net 4.0
+
+  // MSBuildProgramFiles32
+  Path := GetSpecialFolderLocation(CSIDL_PROGRAM_FILESX86);
+  if Path = '' then
+    Path := GetSpecialFolderLocation(CSIDL_PROGRAM_FILES);
+  Properties.ReservedProperties.Values['MSBuildProgramFiles32'] := Path;
+
+  // MSBuildProjectDirectoryNoRoot
+  Path := PathRemoveSeparator(ExtractFilePath(ProjectFileName));
+  if PathIsAbsolute(Path) and not PathIsUNC(Path) and (Path <> '') and CharIsDriveLetter(Path[1]) then
+    Path := Copy(Path, 3, Length(Path) - 2);
+  Properties.ReservedProperties.Values['MSBuildProjectDirectoryNoRoot'] := Path;
+
+  // MSBuildThisFile
+  Properties.ReservedProperties.Values['MSBuildProjectDirectoryNoRoot'] := CurrentFileName;
+
+  // MSBuildThisFileDirectory
+  Properties.ReservedProperties.Values['MSBuildProjectDirectoryNoRoot'] := PathRemoveSeparator(ExtractFilePath(CurrentFileName));
+end;
+
+procedure TJclMsBuildParser.Parse;
+begin
+  FCurrentFileName := FProjectFileName;
+  ParseXml(FXml);
+end;
+
+procedure TJclMsBuildParser.ParseChoose(XmlElem: TJclSimpleXmlElem);
+var
+  Index: Integer;
+  Prop: TJclSimpleXmlProp;
+  SubElem: TJclSimpleXmlElem;
+  Executed, Otherwise: Boolean;
+begin
+  for Index := 0 to XmlElem.PropertyCount - 1 do
+  begin
+    Prop := XmlElem.Properties.Item[Index];
+    raise EJclMsBuildError.CreateResFmt(@RsEUnknownProperty, [Prop.Name]);
+  end;
+
+  Executed := False;
+  Otherwise := False;
+  
+  for Index := 0 to XmlElem.ItemCount - 1 do
+  begin
+    SubElem := XmlElem.Items.Item[Index];
+    if SubElem.Name = 'When' then
+      Executed := ParseWhen(SubElem, Executed)
+    else
+    if SubElem.Name = 'Otherwise' then
+    begin
+      if Otherwise then
+        raise EJclMsBuildError.CreateRes(@RsEMultipleOtherwise);
+      Otherwise := True;
+      Executed := ParseOtherwise(SubElem, Executed);
+    end
+    else
+    if not (SubElem is TJclSimpleXMLElemComment) then
+      raise EJclMsBuildError.CreateResFmt(@RsEUnknownElement, [SubElem.Name]);
+  end;
+end;
+
+function TJclMsBuildParser.ParseCondition(const Condition: string): Boolean;
+var
+  Position, Len: Integer;
+begin
+  Len := Length(Condition);
+  Position := 1;
+  Result := ParseConditionLength(Condition, Position, Len);
+end;
+
+function TJclMsBuildParser.ParseConditionLength(const Condition: string; var Position: Integer; Len: Integer): Boolean;
+type
+  TOperator = (opUnknown, opAnd, opOr);
+var
+  LeftOperand, RightOperand: Boolean;
+  MiddleOperator: TOperator;
+begin
+  Result := True;
+  if Condition <> '' then
+  begin
+    // read first word
+    LeftOperand := ParseConditionOperand(Condition, Position, Len);
+    if (Position <= Len) and (Condition[Position] = '(') then
+    begin
+      // skip opening parenthesis
+      Inc(Position);
+      LeftOperand := ParseConditionLength(Condition, Position, Len);
+      while (Position <= Len) and CharIsWhiteSpace(Condition[Position]) do
+        Inc(Position);
+      if Condition[Position] <> ')' then
+        raise EJclMsBuildError.CreateResFmt(@RsEMissingParenthesis, [Condition]);
+      // skip closing parenthesis
+      Inc(Position);
+    end;
+    while (Position <= Len) and CharIsWhiteSpace(Condition[Position]) do
+      Inc(Position);
+    while True do
+    begin
+      // read infix operator
+      MiddleOperator := opUnknown;
+      if (Position <= (Len + 2)) and (MiddleOperator = opUnknown) then
+      begin
+        if ((Condition[Position] = 'A') or (Condition[Position] = 'a')) and
+           ((Condition[Position + 1] = 'N') or (Condition[Position + 1] = 'n')) and
+           ((Condition[Position + 2] = 'D') or (Condition[Position + 2] = 'd'))  then
+          MiddleOperator := opAnd;
+        if MiddleOperator <> opUnknown then
+          Inc(Position, 3);
+      end;
+      if (Position <= (Len + 1)) and (MiddleOperator = opUnknown) then
+      begin
+        if ((Condition[Position] = 'O') or (Condition[Position] = 'o')) and
+           ((Condition[Position + 1] = 'R') or (Condition[Position + 1] = 'r')) then
+          MiddleOperator := opOr;
+        if MiddleOperator <> opUnknown then
+          Inc(Position, 2);
+      end;
+      if MiddleOperator <> opUnknown then
+      begin
+        // read right operand if any
+        RightOperand := ParseConditionOperand(Condition, Position, Len);
+        if (Position <= Len) and (Condition[Position] = '(') then
+        begin
+          // skip opening parenthesis
+          Inc(Position);
+          RightOperand := ParseConditionLength(Condition, Position, Len);
+          while (Position <= Len) and CharIsWhiteSpace(Condition[Position]) do
+            Inc(Position);
+          if Condition[Position] <> ')' then
+            raise EJclMsBuildError.CreateResFmt(@RsEMissingParenthesis, [Condition]);
+          // skip closing parenthesis
+          Inc(Position);
+        end;
+        while (Position <= Len) and CharIsWhiteSpace(Condition[Position]) do
+          Inc(Position);
+
+        case MiddleOperator of
+          opUnknown:
+            raise EJclMsBuildError.CreateResFmt(@RsEUnknownOperator, [Condition]);
+          opAnd:
+            LeftOperand := LeftOperand and RightOperand;
+          opOr:
+            LeftOperand := LeftOperand or RightOperand;
+        end;
+      end
+      else
+        Break;
+    end;
+    // no second word
+    Result := LeftOperand
+  end;
+end;
+
+function TJclMsBuildParser.ParseConditionOperand(const Condition: string; var Position: Integer; Len: Integer): Boolean;
+type
+  TOperator = (opUnknown, opEqual, opNotEqual, opLess, opLessOrEqual, opGreater, OpGreaterOrEqual);
+var
+  LeftString, RightString: string;
+  MiddleOperator: TOperator;
+begin
+  Result := True;
+  if Condition <> '' then
+  begin
+    // read first word
+    LeftString := ParseConditionString(Condition, Position, Len);
+    if (LeftString = '') and (Position <= Len) and (Condition[Position] = '(') then
+    begin
+      // skip opening parenthesis
+      Inc(Position);
+      LeftString := BoolToStr(ParseConditionLength(Condition, Position, Len), True);
+      while (Position <= Len) and CharIsWhiteSpace(Condition[Position]) do
+        Inc(Position);
+      if Condition[Position] <> ')' then
+        raise EJclMsBuildError.CreateResFmt(@RsEMissingParenthesis, [Condition]);
+      // skip closing parenthesis
+      Inc(Position);
+    end;
+    while (Position <= Len) and CharIsWhiteSpace(Condition[Position]) do
+      Inc(Position);
+    // read infix operator
+    MiddleOperator := opUnknown;
+    if (Position <= (Len + 1)) and (MiddleOperator = opUnknown) then
+    begin
+      if (Condition[Position] = '=') and (Condition[Position + 1] = '=') then
+        MiddleOperator := opEqual
+      else
+      if (Condition[Position] = '!') and (Condition[Position + 1] = '=') then
+        MiddleOperator := opNotEqual
+      else
+      if (Condition[Position] = '<') and (Condition[Position + 1] = '=') then
+        MiddleOperator := opLessOrEqual
+      else
+      if (Condition[Position] = '>') and (Condition[Position + 1] = '=') then
+        MiddleOperator := OpGreaterOrEqual;
+      if MiddleOperator <> opUnknown then
+        Inc(Position, 2);
+    end;
+    if (Position <= Len) and (MiddleOperator = opUnknown) then
+    begin
+      if Condition[Position] = '<' then
+        MiddleOperator := opLess
+      else
+      if Condition[Position] = '>' then
+        MiddleOperator := opGreater;
+      if MiddleOperator <> opUnknown then
+        Inc(Position);
+    end;
+    if MiddleOperator <> opUnknown then
+    begin
+      // read right operand if needed
+      RightString := ParseConditionString(Condition, Position, Len);
+      if (RightString = '') and (Position <= Len) and (Condition[Position] = '(') then
+      begin
+        // skip opening parenthesis
+        Inc(Position);
+        RightString := BoolToStr(ParseConditionLength(Condition, Position, Len), True);
+        while (Position <= Len) and CharIsWhiteSpace(Condition[Position]) do
+          Inc(Position);
+        if Condition[Position] <> ')' then
+          raise EJclMsBuildError.CreateResFmt(@RsEMissingParenthesis, [Condition]);
+        // skip closing parenthesis
+        Inc(Position);
+      end;
+      while (Position <= Len) and CharIsWhiteSpace(Condition[Position]) do
+        Inc(Position);
+
+      case MiddleOperator of
+        opUnknown:
+          raise EJclMsBuildError.CreateResFmt(@RsEUnknownOperator, [Condition]);
+        opEqual:
+          Result := LeftString = RightString;
+        opNotEqual:
+          Result := LeftString <> RightString;
+        opLess:
+          Result := StrToInt(LeftString) < StrToInt(RightString);
+        opLessOrEqual:
+          Result := StrToInt(LeftString) <= StrToInt(RightString);
+        opGreater:
+          Result := StrToInt(LeftString) > StrToInt(RightString);
+        OpGreaterOrEqual:
+          Result := StrToInt(LeftString) >= StrToInt(RightString);
+      end;
+    end
+    else
+    if LeftString = '' then
+      Result := True
+    else
+      // no second word
+      Result := StrToBool(LeftString)
+  end;
+end;
+
+function TJclMsBuildParser.ParseConditionString(const Condition: string; var Position: Integer; Len: Integer): string;
 var
   StartPos, EndPos: Integer;
   HasQuote: Boolean;
@@ -126,7 +1628,7 @@ begin
     while (Position <= Len) and (Condition[Position] <> NativeSingleQuote) do
       Inc(Position);
     if Position > Len then
-      raise EJclMsBuildError.CreateRes(@RsEEndOfString);
+      raise EJclMsBuildError.CreateResFmt(@RsEEndOfString, [Condition]);
     EndPos := Position;
     // skip closing quote
     Inc(Position);
@@ -144,7 +1646,7 @@ begin
   if (Result = '') and (Condition[StartPos] = '!') and not HasQuote then
   begin
     Inc(Position);
-    Result := BoolToStr(not StrToBool(ParseString(Condition, Position, Len, Defines)), True);
+    Result := BoolToStr(not StrToBool(ParseConditionString(Condition, Position, Len)), True);
   end
   else
   if (CompareText(Result, 'Exists') = 0) and not HasQuote then
@@ -153,15 +1655,15 @@ begin
       Inc(Position);
     // skip opening parenthesis
     if Condition[Position] <> '(' then
-      raise EJclMsBuildError.CreateRes(@RsEMissingParenthesis);
+      raise EJclMsBuildError.CreateResFmt(@RsEMissingParenthesis, [Condition]);
     Inc(Position);
-    FileOrDirectory := ParseString(Condition, Position, Len, Defines);
+    FileOrDirectory := ParseConditionString(Condition, Position, Len);
     Result := BoolToStr(FileExists(FileOrDirectory) or DirectoryExists(FileOrDirectory), True);
     while (Position <= Len) and CharIsWhiteSpace(Condition[Position]) do
       Inc(Position);
     // skip closing parenthesis
     if Condition[Position] <> ')' then
-      raise EJclMsBuildError.CreateRes(@RsEMissingParenthesis);
+      raise EJclMsBuildError.CreateResFmt(@RsEMissingParenthesis, [Condition]);
     Inc(Position);
   end
   else
@@ -171,151 +1673,859 @@ begin
       Inc(Position);
     // skip opening parenthesis
     if Condition[Position] <> '(' then
-      raise EJclMsBuildError.CreateRes(@RsEMissingParenthesis);
+      raise EJclMsBuildError.CreateResFmt(@RsEMissingParenthesis, [Condition]);
     Inc(Position);
-    FileOrDirectory := ParseString(Condition, Position, Len, Defines);
+    FileOrDirectory := ParseConditionString(Condition, Position, Len);
     Result := BoolToStr((FileOrDirectory <> '') and (FileOrDirectory[Length(FileOrDirectory)] = PathDelim), True);
     while (Position <= Len) and CharIsWhiteSpace(Condition[Position]) do
       Inc(Position);
     // skip closing parenthesis
     if Condition[Position] <> ')' then
-      raise EJclMsBuildError.CreateRes(@RsEMissingParenthesis);
+      raise EJclMsBuildError.CreateResFmt(@RsEMissingParenthesis, [Condition]);
     Inc(Position);
   end
   else
-    Result := EvaluateString(Result, Defines);
+    Result := EvaluateString(Result);
   // skip tailing spaces
   while (Position <= Len) and CharIsWhiteSpace(Condition[Position]) do
     Inc(Position);
 end;
 
-function ParseCondition(const Condition: string; var Position: Integer; Len: Integer;
-  Defines: TStrings): Boolean;
-type
-  TOperator = (opUnknown, opEqual, opNotEqual, opLess, opLessOrEqual, opGreater, OpGreaterOrEqual, opAnd, opOr);
+procedure TJclMsBuildParser.ParseImport(XmlElem: TJclSimpleXmlElem);
 var
-  LeftOperand, RightOperand: string;
-  MiddleOperator: TOperator;
+  Index: Integer;
+  Prop: TJclSimpleXMLProp;
+  SubElem, OldProjectExtensions: TJclSimpleXmlElem;
+  Condition: Boolean;
+  Project: TFileName;
+  SubXml: TJclSimpleXml;
+  SubOwnsXml: Boolean;
+  OldCurrentFileName: TFileName;
 begin
-  Result := True;
-  if Condition <> '' then
-  begin
-    // read first word
-    LeftOperand := ParseString(Condition, Position, Len, Defines);
-    if (LeftOperand = '') and (Position <= Len) and (Condition[Position] = '(') then
-    begin
-      // skip opening parenthesis
-      Inc(Position);
-      LeftOperand := BoolToStr(ParseCondition(Condition, Position, Len, Defines), True);
-      while (Position <= Len) and CharIsWhiteSpace(Condition[Position]) do
-        Inc(Position);
-      if Condition[Position] <> ')' then
-        raise EJclMsBuildError.CreateRes(@RsEMissingParenthesis);
-      // skip closing parenthesis
-      Inc(Position);
-    end;
-    while (Position <= Len) and CharIsWhiteSpace(Condition[Position]) do
-      Inc(Position);
-    // read second word if any
-    if Position <= Len then
-    begin
-      // read infix operator
-      MiddleOperator := opUnknown;
-      if (Position <= (Len + 2)) and (MiddleOperator = opUnknown) then
-      begin
-        if ((Condition[Position] = 'A') or (Condition[Position] = 'a')) and
-           ((Condition[Position + 1] = 'N') or (Condition[Position + 1] = 'n')) and
-           ((Condition[Position + 2] = 'D') or (Condition[Position + 2] = 'd'))  then
-          MiddleOperator := opAnd;
-        if MiddleOperator <> opUnknown then
-          Inc(Position, 3);
-      end;
-      if (Position <= (Len + 1)) and (MiddleOperator = opUnknown) then
-      begin
-        if (Condition[Position] = '=') and (Condition[Position + 1] = '=') then
-          MiddleOperator := opEqual
-        else
-        if (Condition[Position] = '!') and (Condition[Position + 1] = '=') then
-          MiddleOperator := opNotEqual
-        else
-        if (Condition[Position] = '<') and (Condition[Position + 1] = '=') then
-          MiddleOperator := opLessOrEqual
-        else
-        if (Condition[Position] = '>') and (Condition[Position + 1] = '=') then
-          MiddleOperator := OpGreaterOrEqual
-        else
-        if ((Condition[Position] = 'O') or (Condition[Position] = 'o')) and
-           ((Condition[Position + 1] = 'R') or (Condition[Position + 1] = 'r')) then
-          MiddleOperator := opOr;
-        if MiddleOperator <> opUnknown then
-          Inc(Position, 2);
-      end;
-      if (Position <= Len) and (MiddleOperator = opUnknown) then
-      begin
-        if Condition[Position] = '<' then
-          MiddleOperator := opLess
-        else
-        if Condition[Position] = '>' then
-          MiddleOperator := opGreater;
-        if MiddleOperator <> opUnknown then
-          Inc(Position);
-      end;
-      // read right operand
-      RightOperand := ParseString(Condition, Position, Len, Defines);
-      if (RightOperand = '') and (Position <= Len) and (Condition[Position] = '(') then
-      begin
-        // skip opening parenthesis
-        Inc(Position);
-        RightOperand := BoolToStr(ParseCondition(Condition, Position, Len, Defines), True);
-        while (Position <= Len) and CharIsWhiteSpace(Condition[Position]) do
-          Inc(Position);
-        if Condition[Position] <> ')' then
-          raise EJclMsBuildError.CreateRes(@RsEMissingParenthesis);
-        // skip closing parenthesis
-        Inc(Position);
-      end;
-      while (Position <= Len) and CharIsWhiteSpace(Condition[Position]) do
-        Inc(Position);
+  Condition := True;
 
-      if RightOperand = '' then
-        raise EJclMsBuildError.CreateRes(@RsEEmptyIdentifier);
-      case MiddleOperator of
-        opUnknown:
-          raise EJclMsBuildError.CreateRes(@RsEUnknownOperator);
-        opEqual:
-          Result := LeftOperand = RightOperand;
-        opNotEqual:
-          Result := LeftOperand <> RightOperand;
-        opLess:
-          Result := StrToInt(LeftOperand) < StrToInt(RightOperand);
-        opLessOrEqual:
-          Result := StrToInt(LeftOperand) <= StrToInt(RightOperand);
-        opGreater:
-          Result := StrToInt(LeftOperand) > StrToInt(RightOperand);
-        OpGreaterOrEqual:
-          Result := StrToInt(LeftOperand) >= StrToInt(RightOperand);
-        opAnd:
-          Result := StrToBool(LeftOperand) and StrToBool(RightOperand);
-        opOr:
-          Result := StrToBool(LeftOperand) or StrToBool(RightOperand);
+  for Index := 0 to XmlElem.PropertyCount - 1 do
+  begin
+    Prop := XmlElem.Properties.Item[Index];
+    if Prop.Name = 'Condition' then
+      Condition := ParseCondition(Prop.Value)
+    else
+    if Prop.Name = 'Project' then
+      Project := TFileName(EvaluateString(Prop.Value))
+    else
+      raise EJclMsBuildError.CreateResFmt(@RsEUnknownProperty, [Prop.Name]);
+  end;
+
+  for Index := 0 to XmlElem.ItemCount - 1 do
+  begin
+    SubElem := XmlElem.Items.Item[Index];
+    if not (SubElem is TJclSimpleXMLElemComment) then
+      raise EJclMsBuildError.CreateResFmt(@RsEUnknownElement, [SubElem.Name]);
+  end;
+
+  if Condition then
+  begin
+    SubXml := nil;
+    SubOwnsXml := False;
+
+    if not PathIsAbsolute(Project) then
+      Project := PathCanonicalize(PathGetRelativePath(ExtractFilePath(CurrentFileName), Project));
+
+    if Assigned(FOnImport) then
+      FOnImport(Self, Project, SubXml, SubOwnsXml);
+
+    try
+      if not Assigned(SubXml) then
+      begin
+        SubXml := TJclSimpleXML.Create;
+        SubXml.LoadFromFile(Project);
+        SubOwnsXml := True;
       end;
-    end
-    else
-    if LeftOperand = '' then
-      raise EJclMsBuildError.CreateRes(@RsEEmptyIdentifier)
-    else
-      // no second word
-      Result := StrToBool(LeftOperand)
+
+      OldCurrentFileName := CurrentFileName;
+      OldProjectExtensions := ProjectExtensions;
+      try
+        FCurrentFileName := Project;
+        FProjectExtensions := nil;
+        InitReservedProperties;
+        ParseXml(SubXml);
+      finally
+        FCurrentFileName := OldCurrentFileName;
+        FProjectExtensions := OldProjectExtensions;
+        InitReservedProperties;
+      end;
+
+    finally
+      if SubOwnsXml then
+        SubXml.Free;
+    end;
+    
   end;
 end;
 
-function ParseCondition(const Condition: string; Defines: TStrings): Boolean;
+procedure TJclMsBuildParser.ParseImportGroup(XmlElem: TJclSimpleXmlElem);
 var
-  Position, Len: Integer;
+  Index: Integer;
+  Prop: TJclSimpleXMLProp;
+  SubElem: TJclSimpleXmlElem;
+  Condition: Boolean;
 begin
-  Len := Length(Condition);
-  Position := 1;
-  Result := ParseCondition(Condition, Position, Len, Defines);
+  Condition := True;
+
+  for Index := 0 to XmlElem.PropertyCount - 1 do
+  begin
+    Prop := XmlElem.Properties.Item[Index];
+    if Prop.Name = 'Condition' then
+      Condition := ParseCondition(Prop.Value)
+    else
+      raise EJclMsBuildError.CreateResFmt(@RsEUnknownProperty, [Prop.Name]);
+  end;
+
+  for Index := 0 to XmlElem.ItemCount - 1 do
+  begin
+    SubElem := XmlElem.Items.Item[Index];
+    if SubElem.Name = 'Import' then
+    begin
+      if Condition then
+        ParseImport(SubElem);
+    end
+    else
+    if not (SubElem is TJclSimpleXMLElemComment) then
+      raise EJclMsBuildError.CreateResFmt(@RsEUnknownElement, [SubElem.Name]);
+  end;
+end;
+
+procedure TJclMsBuildParser.ParseItem(XmlElem: TJclSimpleXmlElem; Definition: Boolean);
+var
+  Index: Integer;
+  Prop: TJclSimpleXMLProp;
+  SubElem: TJclSimpleXmlElem;
+  Condition: Boolean;
+  Item: TJclMsBuildItem;
+  ItemName, ItemExclude, ItemInclude, ItemRemove: string;
+begin
+  Condition := True;
+
+  ItemName := XmlElem.Name;
+
+  for Index := 0 to XmlElem.PropertyCount - 1 do
+  begin
+    Prop := XmlElem.Properties.Item[Index];
+    if Prop.Name = 'Condition' then
+      Condition := ParseCondition(Prop.Value)
+    else
+    if Prop.Name = 'Exclude' then
+      ItemExclude := Prop.Value
+    else
+    if Prop.Name = 'Include' then
+      ItemInclude := Prop.Value
+    else
+    if Prop.Name = 'Remove' then
+      ItemRemove := Prop.Value
+    else
+      raise EJclMsBuildError.CreateResFmt(@RsEUnknownProperty, [Prop.Name]);
+  end;
+
+  if ItemInclude = '' then
+    raise EJclMsBuildError.CreateRes(@RsEMissingItemInclude);
+
+  if Condition then
+  begin
+    Item := TJclMsBuildItem.Create;
+    Item.FItemName := ItemName;
+    Item.FItemInclude := ItemInclude;
+    Item.FItemExclude := ItemExclude;
+    Item.FItemRemove := ItemRemove;
+
+    if PathIsAbsolute(ItemInclude) then
+      Item.FItemFullInclude := ItemInclude
+    else
+    if PathIsAbsolute(CurrentFileName) then
+      Item.FItemFullInclude := PathCanonicalize(PathGetRelativePath(ExtractFilePath(CurrentFileName), ItemInclude))
+    else
+      Item.FItemFullInclude := PathCanonicalize(PathGetRelativePath(WorkingDirectory, ItemInclude));
+    if not FileExists(Item.FItemFullInclude) then
+      Item.FItemFullInclude := Item.FItemInclude;
+
+    if Definition then
+      FItemDefinitions.Add(Item)
+    else
+      FItems.Add(Item);
+      
+    for Index := 0 to XmlElem.ItemCount - 1 do
+    begin
+      SubElem := XmlElem.Items.Item[Index];
+      ParseItemMetaData(SubElem, Item.ItemMetaData);
+    end;
+  end;
+end;
+
+procedure TJclMsBuildParser.ParseItemDefinitionGroup(XmlElem: TJclSimpleXmlElem);
+var
+  Index: Integer;
+  Prop: TJclSimpleXMLProp;
+  SubElem: TJclSimpleXmlElem;
+  Condition: Boolean;
+begin
+  Condition := True;
+
+  for Index := 0 to XmlElem.PropertyCount - 1 do
+  begin
+    Prop := XmlElem.Properties.Item[Index];
+    if Prop.Name = 'Condition' then
+      Condition := ParseCondition(Prop.Value)
+    else
+      raise EJclMsBuildError.CreateResFmt(@RsEUnknownProperty, [Prop.Name]);
+  end;
+
+  if Condition then
+    for Index := 0 to XmlElem.ItemCount - 1 do
+  begin
+    SubElem := XmlElem.Items.Item[Index];
+    ParseItem(SubElem, True);
+  end;
+end;
+
+procedure TJclMsBuildParser.ParseItemGroup(XmlElem: TJclSimpleXmlElem);
+var
+  Index: Integer;
+  Prop: TJclSimpleXMLProp;
+  SubElem: TJclSimpleXmlElem;
+  Condition: Boolean;
+begin
+  Condition := True;
+
+  for Index := 0 to XmlElem.PropertyCount - 1 do
+  begin
+    Prop := XmlElem.Properties.Item[Index];
+    if Prop.Name = 'Condition' then
+      Condition := ParseCondition(Prop.Value)
+    else
+      raise EJclMsBuildError.CreateResFmt(@RsEUnknownProperty, [Prop.Name]);
+  end;
+
+  if Condition then
+    for Index := 0 to XmlElem.ItemCount - 1 do
+  begin
+    SubElem := XmlElem.Items.Item[Index];
+    ParseItem(SubElem, False);
+  end;
+end;
+
+procedure TJclMsBuildParser.ParseItemMetaData(XmlElem: TJclSimpleXmlElem; ItemMetaData: TStrings);
+var
+  Index: Integer;
+  Prop: TJclSimpleXMLProp;
+  SubElem: TJclSimpleXmlElem;
+  Condition: Boolean;
+begin
+  Condition := True;
+
+  for Index := 0 to XmlElem.PropertyCount - 1 do
+  begin
+    Prop := XmlElem.Properties.Item[Index];
+    if Prop.Name = 'Condition' then
+      Condition := ParseCondition(Prop.Value)
+    else
+      raise EJclMsBuildError.CreateResFmt(@RsEUnknownProperty, [Prop.Name]);
+  end;
+
+  if Condition then
+    for Index := 0 to XmlElem.ItemCount - 1 do
+  begin
+    SubElem := XmlElem.Items.Item[Index];
+    ItemMetaData.Values[SubElem.Name] := SubElem.Value;
+  end;
+end;
+
+procedure TJclMsBuildParser.ParseOnError(XmlElem: TJclSimpleXMLElem; Target: TJclMsBuildTarget);
+var
+  Index: Integer;
+  Prop: TJclSimpleXMLProp;
+  SubElem: TJclSimpleXmlElem;
+  Condition: Boolean;
+  ExecuteTargets: string;
+  TempStrings: TStrings;
+begin
+  Condition := True;
+
+  for Index := 0 to XmlElem.PropertyCount - 1 do
+  begin
+    Prop := XmlElem.Properties.Item[Index];
+    if Prop.Name = 'Condition' then
+      Condition := ParseCondition(Prop.Value)
+    else
+    if Prop.Name = 'ExecuteTargets' then
+      ExecuteTargets := Prop.Value
+    else
+      raise EJclMsBuildError.CreateResFmt(@RsEUnknownProperty, [Prop.Name]);
+  end;
+
+  for Index := 0 to XmlElem.ItemCount - 1 do
+  begin
+    SubElem := XmlElem.Items.Item[Index];
+    if not (SubElem is TJclSimpleXMLElemComment) then
+      raise EJclMsBuildError.CreateResFmt(@RsEUnknownElement, [SubElem.Name]);
+  end;
+
+  if Condition then
+  begin
+    TempStrings := TStringList.Create;
+    try
+      StrToStrings(ExecuteTargets, ';', TempStrings, False);
+      Target.ErrorTargets.AddStrings(TempStrings);
+    finally
+      TempStrings.Free;
+    end;
+  end;
+end;
+
+function TJclMsBuildParser.ParseOtherwise(XmlElem: TJclSimpleXmlElem; Skip: Boolean): Boolean;
+var
+  Index: Integer;
+  Prop: TJclSimpleXMLProp;
+  SubElem: TJclSimpleXmlElem;
+begin
+  for Index := 0 to XmlElem.PropertyCount - 1 do
+  begin
+    Prop := XmlElem.Properties.Item[Index];
+    raise EJclMsBuildError.CreateResFmt(@RsEUnknownProperty, [Prop.Name]);
+  end;
+
+  Result := not Skip;
+
+  for Index := 0 to XmlElem.ItemCount - 1 do
+  begin
+    SubElem := XmlElem.Items.Item[Index];
+    if SubElem.Name = 'Choose' then
+    begin
+      if Result then
+        ParseChoose(SubElem);
+    end
+    else
+    if SubElem.Name = 'ItemGroup' then
+    begin
+      if Result then
+        ParseItemGroup(SubElem);
+    end
+    else
+    if SubElem.Name = 'PropertyGroup' then
+    begin
+      if Result then
+        ParsePropertyGroup(SubElem);
+    end
+    else
+    if not (SubElem is TJclSimpleXMLElemComment) then
+      raise EJclMsBuildError.CreateResFmt(@RsEUnknownElement, [SubElem.Name]);
+  end;
+end;
+
+procedure TJclMsBuildParser.ParseOutput(XmlElem: TJclSimpleXMLElem; Task: TJclMsBuildTask);
+var
+  Index: Integer;
+  Prop: TJclSimpleXMLProp;
+  SubElem: TJclSimpleXmlElem;
+  Condition: Boolean;
+  TaskParameter, PropertyName, ItemName: string;
+  TaskOutput: TJclMsBuildTaskOutput;
+begin
+  Condition := True;
+
+  for Index := 0 to XmlElem.PropertyCount - 1 do
+  begin
+    Prop := XmlElem.Properties.Item[Index];
+    if Prop.Name = 'Condition' then
+      Condition := ParseCondition(Prop.Value)
+    else
+    if Prop.Name = 'TaskParameter' then
+      TaskParameter := Prop.Value
+    else
+    if Prop.Name = 'PropertyName' then
+      PropertyName := Prop.Value
+    else
+    if Prop.Name = 'ItemName' then
+      ItemName := Prop.Value
+    else
+      raise EJclMsBuildError.CreateResFmt(@RsEUnknownProperty, [Prop.Name]);
+  end;
+
+  for Index := 0 to XmlElem.ItemCount - 1 do
+  begin
+    SubElem := XmlElem.Items.Item[Index];
+    if not (SubElem is TJclSimpleXMLElemComment) then
+      raise EJclMsBuildError.CreateResFmt(@RsEUnknownElement, [SubElem.Name]);
+  end;
+
+  if TaskParameter = '' then
+    raise EJclMsBuildError.CreateRes(@RsEMissingTaskParameter);
+
+  if (PropertyName = '') and (ItemName = '') then
+    raise EJclMsBuildError.CreateRes(@RsEMissingOutputName);
+
+  if Condition then
+  begin
+    TaskOutput := TJclMsBuildTaskOutput.Create;
+    TaskOutput.FTaskParameter := TaskParameter;
+    TaskOutput.FPropertyName := PropertyName;
+    TaskOutput.FItemName := ItemName;
+    Task.AddOutput(TaskOutput);
+  end;
+end;
+
+procedure TJclMsBuildParser.ParseParameter(XmlElem: TJclSimpleXMLElem; UsingTask: TJclMsBuildUsingTask);
+var
+  Index: Integer;
+  Prop: TJclSimpleXMLProp;
+  SubElem: TJclSimpleXmlElem;
+  ParameterName, ParameterType: string;
+  Output, Required: Boolean;
+  Parameter: TJclMsBuildParameter;
+begin
+  Output := False;
+  Required := False;
+
+  ParameterName := XmlElem.Name;
+
+  for Index := 0 to XmlElem.PropertyCount - 1 do
+  begin
+    Prop := XmlElem.Properties.Item[Index];
+    if Prop.Name = 'ParameterType' then
+      ParameterType := Prop.Value
+    else
+    if Prop.Name = 'Output' then
+      Output := Prop.BoolValue
+    else
+    if Prop.Name = 'Required' then
+      Required := Prop.BoolValue
+    else
+      raise EJclMsBuildError.CreateResFmt(@RsEUnknownProperty, [Prop.Name]);
+  end;
+
+  for Index := 0 to XmlElem.ItemCount - 1 do
+  begin
+    SubElem := XmlElem.Items.Item[Index];
+    if not (SubElem is TJclSimpleXMLElemComment) then
+      raise EJclMsBuildError.CreateResFmt(@RsEUnknownElement, [SubElem.Name]);
+  end;
+
+  Parameter := TJclMsBuildParameter.Create;
+  Parameter.FParameterName := ParameterName;
+  Parameter.FParameterType := ParameterType;
+  Parameter.FOutput := Output;
+  Parameter.FRequired := Required;
+  UsingTask.AddParameter(Parameter);
+end;
+
+procedure TJclMsBuildParser.ParseParameterGroup(XmlElem: TJclSimpleXMLElem; UsingTask: TJclMsBuildUsingTask);
+var
+  Index: Integer;
+  Prop: TJclSimpleXMLProp;
+  SubElem: TJclSimpleXmlElem;
+begin
+  for Index := 0 to XmlElem.PropertyCount - 1 do
+  begin
+    Prop := XmlElem.Properties.Item[Index];
+    raise EJclMsBuildError.CreateResFmt(@RsEUnknownProperty, [Prop.Name]);
+  end;
+
+  for Index := 0 to XmlElem.ItemCount - 1 do
+  begin
+    SubElem := XmlElem.Items.Item[Index];
+    ParseParameter(SubElem, UsingTask);
+  end;
+end;
+
+procedure TJclMsBuildParser.ParseProject(XmlElem: TJclSimpleXmlElem);
+var
+  Index: Integer;
+  Prop: TJclSimpleXMLProp;
+  SubElem: TJclSimpleXmlElem;
+begin
+  for Index := 0 to XmlElem.PropertyCount - 1 do
+  begin
+    Prop := XmlElem.Properties.Item[Index];
+    if Prop.Name = 'InitialTargets' then
+      StrToStrings(Prop.Value, ';', FInitialTargets, False)
+    else
+    if Prop.Name = 'DefaultTargets' then
+    begin
+      Properties.ReservedProperties.Values['MSBuildProjectDefaultTargets'] := Prop.Value;
+      StrToStrings(Prop.Value, ';', FDefaultTargets, False)
+    end
+    else
+    if Prop.Name = 'ToolsVersion' then
+    begin
+      if Assigned(FOnToolsVersion) then
+        FOnToolsVersion(Self, Prop.Value);
+      FToolsVersion := Prop.Value;
+    end
+    else
+    if Prop.Name = 'xmlns' then
+    begin
+      if Prop.Value <> 'http://schemas.microsoft.com/developer/msbuild/2003' then
+        raise EJclMsBuildError.CreateResFmt(@RsEUnknownSchema, [Prop.Value]);
+    end
+    else
+      raise EJclMsBuildError.CreateResFmt(@RsEUnknownProperty, [Prop.Name]);
+  end;
+  
+  for Index := 0 to XmlElem.ItemCount - 1 do
+  begin
+    SubElem := XmlElem.Items.Item[Index];
+    if SubElem.Name = 'Choose' then
+      ParseChoose(SubElem)
+    else
+    if SubElem.Name = 'Import' then
+      ParseImport(SubElem)
+    else
+    if SubElem.Name = 'ImportGroup' then
+      ParseImportGroup(SubElem)
+    else
+    if SubElem.Name = 'ItemDefinitionGroup' then
+      ParseItemDefinitionGroup(SubElem)
+    else
+    if SubElem.Name = 'ItemGroup' then
+      ParseItemGroup(SubElem)
+    else
+    if SubElem.Name = 'ProjectExtensions' then
+    begin
+      if Assigned(FProjectExtensions) then
+        raise EJclMsBuildError.CreateRes(@RsEMultipleProjectExtensions);
+      FProjectExtensions := SubElem;
+    end
+    else
+    if SubElem.Name = 'PropertyGroup' then
+      ParsePropertyGroup(SubElem)
+    else
+    if SubElem.Name = 'Target' then
+      ParseTarget(SubElem)
+    else
+    if SubElem.Name = 'UsingTask' then
+      ParseUsingTask(SubElem)
+    else
+    if not (SubElem is TJclSimpleXMLElemComment) then
+      raise EJclMsBuildError.CreateResFmt(@RsEUnknownElement, [SubElem.Name]);
+  end;
+end;
+
+procedure TJclMsBuildParser.ParseProperty(XmlElem: TJclSimpleXmlElem);
+var
+  Index: Integer;
+  Prop: TJclSimpleXMLProp;
+  SubElem: TJclSimpleXmlElem;
+  Condition: Boolean;
+begin
+  Condition := True;
+
+  for Index := 0 to XmlElem.PropertyCount - 1 do
+  begin
+    Prop := XmlElem.Properties.Item[Index];
+    if Prop.Name = 'Condition' then
+      Condition := ParseCondition(Prop.Value)
+    else
+      raise EJclMsBuildError.CreateResFmt(@RsEUnknownProperty, [Prop.Name]);
+  end;
+
+  for Index := 0 to XmlElem.ItemCount - 1 do
+  begin
+    SubElem := XmlElem.Items.Item[Index];
+    if not (SubElem is TJclSimpleXMLElemComment) then
+      raise EJclMsBuildError.CreateResFmt(@RsEUnknownElement, [SubElem.Name]);
+  end;
+
+  if Condition then
+    Properties.Values[XmlElem.Name] := XmlElem.Value;
+end;
+
+procedure TJclMsBuildParser.ParsePropertyGroup(XmlElem: TJclSimpleXmlElem);
+var
+  Index: Integer;
+  Prop: TJclSimpleXmlProp;
+  SubElem: TJclSimpleXmlElem;
+  Condition: Boolean;
+begin
+  Condition := True;
+
+  for Index := 0 to XmlElem.PropertyCount - 1 do
+  begin
+    Prop := XmlElem.Properties.Item[Index];
+    if Prop.Name = 'Condition' then
+      Condition := ParseCondition(Prop.Value)
+    else
+      raise EJclMsBuildError.CreateResFmt(@RsEUnknownProperty, [Prop.Name]);
+  end;
+
+  if Condition then
+    for Index := 0 to XmlElem.ItemCount - 1 do
+  begin
+    SubElem := XmlElem.Items.Item[Index];
+    ParseProperty(SubElem);
+  end;
+end;
+
+procedure TJclMsBuildParser.ParseTarget(XmlElem: TJclSimpleXMLElem);
+var
+  Index: Integer;
+  Prop: TJclSimpleXMLProp;
+  SubElem: TJclSimpleXmlElem;
+  Condition, KeepDuplicateOutput: Boolean;
+  TargetName, Depends, Returns, Inputs, Outputs, BeforeTargets, AfterTargets: string;
+  Target: TJclMsBuildTarget;
+begin
+  Condition := True;
+  KeepDuplicateOutput := False;
+
+  for Index := 0 to XmlElem.PropertyCount - 1 do
+  begin
+    Prop := XmlElem.Properties.Item[Index];
+    if Prop.Name = 'Condition' then
+      Condition := ParseCondition(Prop.Value)
+    else
+    if Prop.Name = 'Name' then
+      TargetName := Prop.Value
+    else
+    if Prop.Name = 'DependsOnTargets' then
+      Depends := Prop.Value
+    else
+    if Prop.Name = 'Returns' then
+      Returns := Prop.Value
+    else
+    if Prop.Name = 'Inputs' then
+      Inputs := Prop.Value
+    else
+    if Prop.Name = 'Outputs' then
+      Outputs := Prop.Value
+    else
+    if Prop.Name = 'BeforeTargets' then
+      BeforeTargets := Prop.Value
+    else
+    if Prop.Name = 'AfterTargets' then
+      AfterTargets := Prop.Value
+    else
+    if Prop.Name = 'KeepDuplicateOutputs' then
+      KeepDuplicateOutput := Prop.BoolValue
+    else
+      raise EJclMsBuildError.CreateResFmt(@RsEUnknownProperty, [Prop.Name]);
+  end;
+
+  if TargetName = '' then
+    raise EJclMsBuildError.CreateRes(@RsEMissingTargetName);
+
+  Target := TJclMsBuildTarget.Create;
+  Target.FTargetName := TargetName;
+  StrToStrings(Depends, ';', Target.FDepends, False);
+  StrToStrings(Returns, ';', Target.FReturns, False);
+  StrToStrings(Inputs, ';', Target.FInputs, False);
+  StrToStrings(Outputs, ';', Target.FOutputs, False);
+  StrToStrings(BeforeTargets, ';', Target.FBeforeTargets, False);
+  StrToStrings(AfterTargets, ';', Target.FAfterTargets, False);
+  Target.FKeepDuplicateOutputs := KeepDuplicateOutput;
+  
+  if Condition then
+    for Index := 0 to XmlElem.ItemCount - 1 do
+  begin
+    SubElem := XmlElem.Items.Item[Index];
+    if SubElem.Name = 'OnError' then
+      ParseOnError(SubElem, Target)
+    else
+      ParseTask(SubElem, Target);
+  end;
+end;
+
+procedure TJclMsBuildParser.ParseTask(XmlElem: TJclSimpleXMLElem; Target: TJclMsBuildTarget);
+var
+  Index: Integer;
+  Prop: TJclSimpleXMLProp;
+  SubElem: TJclSimpleXmlElem;
+  TaskName: string;
+  Condition, ContinueOnError: Boolean;
+  Task: TJclMsBuildTask;
+begin
+  Condition := True;
+  ContinueOnError := False;
+
+  TaskName := XmlElem.Name;
+  
+  for Index := 0 to XmlElem.PropertyCount - 1 do
+  begin
+    Prop := XmlElem.Properties.Item[Index];
+    if Prop.Name = 'Condition' then
+      Condition := ParseCondition(Prop.Value)
+    else
+    if Prop.Name = 'ContinueOnError' then
+      ContinueOnError := Prop.BoolValue;
+  end;
+
+  if Condition then
+  begin
+    Task := TJclMsBuildTask.Create;
+    Task.FTaskName := TaskName;
+    Task.FContinueOnError := ContinueOnError;
+    Target.AddTask(Task);
+
+    for Index := 0 to XmlElem.PropertyCount - 1 do
+    begin
+      Prop := XmlElem.Properties.Item[Index];
+      if (Prop.Name <> 'Condition') and (Prop.Name <> 'ContinueOnError') then
+        Task.Parameters.Values[Prop.Name] := Prop.Value;
+    end;
+
+    for Index := 0 to XmlElem.ItemCount - 1 do
+    begin
+      SubElem := XmlElem.Items.Item[Index];
+      if SubElem.Name = 'Output' then
+        ParseOutput(SubElem, Task)
+      else
+      if not (SubElem is TJclSimpleXMLElemComment) then
+        raise EJclMsBuildError.CreateResFmt(@RsEUnknownElement, [SubElem.Name]);
+    end;
+
+  end;
+end;
+
+procedure TJclMsBuildParser.ParseTaskBody(XmlElem: TJclSimpleXMLElem; UsingTask: TJclMsBuildUsingTask);
+var
+  Index: Integer;
+  Prop: TJclSimpleXMLProp;
+  SubElem: TJclSimpleXmlElem;
+  Evaluate: Boolean;
+begin
+  Evaluate := False;
+  
+  for Index := 0 to XmlElem.PropertyCount - 1 do
+  begin
+    Prop := XmlElem.Properties.Item[Index];
+    if Prop.Name = 'Evaluate' then
+      Evaluate := Prop.BoolValue
+    else
+      raise EJclMsBuildError.CreateResFmt(@RsEUnknownProperty, [Prop.Name]);
+  end;
+
+  for Index := 0 to XmlElem.ItemCount - 1 do
+  begin
+    SubElem := XmlElem.Items.Item[Index];
+    if not (SubElem is TJclSimpleXMLElemComment) then
+      raise EJclMsBuildError.CreateResFmt(@RsEUnknownElement, [SubElem.Name]);
+  end;
+
+  if Evaluate then
+    UsingTask.FTaskBody := EvaluateString(XmlElem.Value)
+  else
+    UsingTask.FTaskBody := XmlElem.Value;
+end;
+
+procedure TJclMsBuildParser.ParseUsingTask(XmlElem: TJclSimpleXmlElem);
+var
+  Index: Integer;
+  Prop: TJclSimpleXmlProp;
+  SubElem: TJclSimpleXmlElem;
+  Condition: Boolean;
+  AssemblyName, AssemblyFile, TaskFactory, TaskName: string;
+  UsingTask: TJclMsBuildUsingTask;
+begin
+  Condition := True;
+
+  for Index := 0 to XmlElem.PropertyCount - 1 do
+  begin
+    Prop := XmlElem.Properties.Item[Index];
+    if Prop.Name = 'Condition' then
+      Condition := ParseCondition(Prop.Value)
+    else
+    if Prop.Name = 'TaskName' then
+      TaskName := Prop.Value
+    else
+    if Prop.Name = 'TaskFactory' then
+      TaskFactory := Prop.Value
+    else
+    if Prop.Name = 'AssemblyName' then
+      AssemblyName := Prop.Value
+    else
+    if Prop.Name = 'AssemblyFile' then
+      AssemblyFile := Prop.Value
+    else
+      raise EJclMsBuildError.CreateResFmt(@RsEUnknownProperty, [Prop.Name]);
+  end;
+
+  if TaskName = '' then
+    raise EJclMsBuildError.CreateRes(@RsEMissingTaskName);
+
+  if (AssemblyName = '') and (AssemblyFile = '') then
+    raise EJclMsBuildError.CreateRes(@RsEMissingAssembly);
+
+  if Condition then
+  begin
+    UsingTask := TJclMsBuildUsingTask.Create;
+    UsingTask.FAssemblyName := AssemblyName;
+    UsingTask.FAssemblyFile := AssemblyFile;
+    UsingTask.FTaskFactory := TaskFactory;
+    UsingTask.FTaskName := TaskName;
+    for Index := 0 to XmlElem.ItemCount - 1 do
+    begin
+      SubElem := XmlElem.Items.Item[Index];
+      if SubElem.Name = 'ParameterGroup' then
+        ParseParameterGroup(SubElem, UsingTask)
+      else
+      if SubElem.Name = 'TaskBody' then
+        ParseTaskBody(SubElem, UsingTask)
+      else
+      if not (SubElem is TJclSimpleXMLElemComment) then
+        raise EJclMsBuildError.CreateResFmt(@RsEUnknownElement, [SubElem.Name]);
+    end;
+    FUsingTasks.Add(UsingTask);
+  end;
+end;
+
+function TJclMsBuildParser.ParseWhen(XmlElem: TJclSimpleXmlElem; Skip: Boolean): Boolean;
+var
+  Index: Integer;
+  Prop: TJclSimpleXmlProp;
+  SubElem: TJclSimpleXmlElem;
+begin
+  Result := False;
+
+  for Index := 0 to XmlElem.PropertyCount - 1 do
+  begin
+    Prop := XmlElem.Properties.Item[Index];
+    if Prop.Name = 'Condition' then
+      Result := Skip or ParseCondition(Prop.Value)
+    else
+      raise EJclMsBuildError.CreateResFmt(@RsEUnknownProperty, [Prop.Name]);
+  end;
+
+  if XmlElem.PropertyCount <> 1 then
+    raise EJclMsBuildError.CreateRes(@RsEConditionNotUnique);
+
+  for Index := 0 to XmlElem.ItemCount - 1 do
+  begin
+    SubElem := XmlElem.Items.Item[Index];
+    if SubElem.Name = 'Choose' then
+    begin
+      if Result then
+        ParseChoose(SubElem);
+    end
+    else
+    if SubElem.Name = 'ItemGroup' then
+    begin
+      if Result then
+        ParseItemGroup(SubElem);
+    end
+    else
+    if SubElem.Name = 'PropertyGroup' then
+    begin
+      if Result then
+        ParsePropertyGroup(SubElem);
+    end
+    else
+    if not (SubElem is TJclSimpleXMLElemComment) then
+      raise EJclMsBuildError.CreateResFmt(@RsEUnknownElement, [SubElem.Name]);
+  end;
+end;
+
+procedure TJclMsBuildParser.ParseXml(AXml: TJclSimpleXML);
+begin
+  if AXml.Root.Name <> 'Project' then
+    raise EJclMsBuildError.CreateResFmt(@RsENoProjectElem, [AXml.Root.Name]);
+  ParseProject(AXml.Root);
 end;
 
 {$IFDEF UNITVERSIONING}
