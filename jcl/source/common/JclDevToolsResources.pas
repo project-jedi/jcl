@@ -138,6 +138,19 @@ resourcestring
   RsEMissingParenthesis = 'Invalid condition: missing parenthesis';
   RsEEmptyIdentifier = 'Invalid condition: empty identifier';
   RsEUnknownOperator = 'Invalid condition: unknown operator';
+  RsEReservedProperty = 'Attempt to override or to delete a reserved MsBuild property';
+  RsENoProjectElem = 'Project element expected, got "%s"';
+  RsEUnknownSchema = 'Unknown schema "%s"';
+  RsEUnknownProperty = 'Unknown property "%s"';
+  RsEUnknownElement = 'Unknown element "%s"';
+  RsEMultipleProjectExtensions = 'Multiple project extensions';
+  RsEMultipleOtherwise = 'Multiple otherwise';
+  RsEConditionNotUnique = 'Condition is not unique';
+  RsEMissingItemInclude = 'Missing item include';
+  RsEMissingTaskName = 'Missing task name';
+  RsEMissingAssembly = 'Missing assembly';
+  RsEMissingTaskParameter = 'Missing task parameter';
+  RsEMissingOutputName = 'Missing output name';
 
 //=== JclUsesUtils.pas =======================================================
 resourcestring

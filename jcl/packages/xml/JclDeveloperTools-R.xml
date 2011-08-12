@@ -21,7 +21,6 @@
     <File Name="..\..\source\common\JclCompilerUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclDevToolsResources.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclIDEUtils.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclMsBuild.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclPreProcessorAlgorithmsTemplates.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclPreProcessorArrayListsTemplates.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclPreProcessorArraySetsTemplates.pas" Targets="all" Formname="" Condition=""/>
@@ -46,6 +45,7 @@
     <File Name="..\..\source\common\JclPreProcessorVectorsTemplates.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclUsesUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclHelpUtils.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclMsBuild.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\MSHelpServices_TLB.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JclDeveloperTools.dtx" Targets="help" Formname="" Condition=""/>

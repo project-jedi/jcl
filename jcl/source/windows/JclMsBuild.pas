@@ -32,7 +32,7 @@
 unit JclMsBuild;
 
 {$I jcl.inc}
-{$I crossplatform.inc}
+{$I windowsonly.inc}
 
 interface
 
@@ -59,7 +59,7 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\common';
+    LogPath: 'JCL\source\windows';
     Extra: '';
     Data: nil
     );
