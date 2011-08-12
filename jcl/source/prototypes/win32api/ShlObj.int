@@ -7,6 +7,7 @@ const
   CSIDL_PROGRAM_FILES        = $0026; { C:\Program Files }
   CSIDL_MYPICTURES           = $0027; { C:\Program Files\My Pictures }
   CSIDL_PROFILE              = $0028; { USERPROFILE }
+  CSIDL_PROGRAM_FILESX86     = $002A; { C:\Program Files (x86)\My Pictures }
   CSIDL_PROGRAM_FILES_COMMON = $002B; { C:\Program Files\Common }
   CSIDL_COMMON_TEMPLATES     = $002D; { All Users\Templates }
   CSIDL_COMMON_DOCUMENTS     = $002E; { All Users\Documents }
