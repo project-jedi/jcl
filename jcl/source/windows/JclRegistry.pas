@@ -86,6 +86,9 @@ const
   HKDD = DelphiHKEY(HKEY_DYN_DATA);
 {$ENDIF FPC}
 
+function RootKeyName(const RootKey: THandle): string;
+function RootKeyValue(const Name: string): THandle;
+
 const
   RegKeyDelimiter = '\';
 
@@ -445,6 +448,19 @@ begin
     Result := Format('0x%.8x', [RootKey]);
     {$ENDIF BCB}
   end;
+end;
+
+function RootKeyValue(const Name: string): THandle;
+var
+  Index: Integer;
+begin
+  for Index := Low(RootKeys) to High(RootKeys) do
+    if RootKeys[Index].AnsiName = Name then
+  begin
+    Result := RootKeys[Index].Key;
+    Exit;
+  end;
+  raise EJclRegistryError.CreateResFmt(@RsInconsistentPath, [Name]);
 end;
 
 procedure ReadError(const RootKey: THandle; const Key: string);
