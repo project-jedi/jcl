@@ -23,7 +23,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -303,7 +303,7 @@ type
     function EvaluateList(const Name: string): string;
     function EvaluateRegistryProperty(Root: HKEY; const Path, Name: string): string;
     function EvaluateString(const S: string): string;
-    function EvaluateTransform(ItemList: TStrings; const Transform: string): string; 
+    function EvaluateTransform(ItemList: TStrings; const Transform: string): string;
   public
     // this function parses MsBuild condition as described at:
     // http://msdn.microsoft.com/en-us/library/7szfhaft.aspx
@@ -331,6 +331,9 @@ type
     procedure Init;
     procedure InitEnvironmentProperties;
     procedure InitReservedProperties;
+
+    // do not encode '
+    procedure XMLEncodeValue(Sender: TObject; var Value: string);
 
     property CurrentFileName: TFileName read FCurrentFileName;
     property ProjectFileName: TFileName read FProjectFileName;
@@ -806,7 +809,7 @@ begin
     XmlElem.Value := Value
   else
   if Assigned(Parser.FFirstPropertyGroup) then
-    Parser.FFirstPropertyGroup.Items.AddText(Name, Value)
+    Parser.FFirstPropertyGroup.Items.Add(Name, Value)
   else
     raise EJclMsBuildError.CreateResFmt(@RsELocateXmlElem, [Name]);
 end;
@@ -819,6 +822,8 @@ var
 begin
   AXml := TJclSimpleXML.Create;
   try
+    AXml.Options := AXml.Options - [sxoAutoEncodeValue,sxoAutoEncodeEntity];
+    AXml.OnEncodeValue := XMLEncodeValue;
     AXml.LoadFromFile(AFileName, Encoding, CodePage);
   except
     AXml.Free;
@@ -1779,10 +1784,13 @@ begin
     if Assigned(FOnImport) then
       FOnImport(Self, Project, SubXml, SubOwnsXml);
 
+    if (Project <> '') or (SubXml <> nil) then // abort if both are not assigned
     try
       if not Assigned(SubXml) then
       begin
         SubXml := TJclSimpleXML.Create;
+        SubXml.Options := SubXml.Options - [sxoAutoEncodeValue,sxoAutoEncodeEntity];
+        SubXml.OnEncodeValue := XMLEncodeValue;
         SubXml.LoadFromFile(Project);
         SubOwnsXml := True;
       end;
@@ -2289,7 +2297,8 @@ begin
     if CurrentFileName = ProjectFileName then
     begin
       Index := Properties.IndexOfName(XmlElem.Name);
-      Properties.Objects[Index] := XmlElem;
+      if Index >= 0 then
+        Properties.Objects[Index] := XmlElem;
     end;
   end;
 end;
@@ -2593,6 +2602,12 @@ end;
 procedure TJclMsBuildParser.Save;
 begin
   Xml.SaveToFile(ProjectFileName);
+end;
+
+procedure TJclMsBuildParser.XMLEncodeValue(Sender: TObject; var Value: string);
+begin
+  Value := SimpleXMLEncode(Value);
+  StrReplace(Value, '&apos;', NativeSingleQuote, [rfReplaceAll]);
 end;
 
 {$IFDEF UNITVERSIONING}
