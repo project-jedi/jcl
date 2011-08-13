@@ -23,7 +23,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                       $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -255,6 +255,7 @@ type
     FDefaultTargets: TStrings;
     FToolsVersion: string;
     FDotNetVersion: string;
+    FIgnoreFunctionProperties: Boolean;
     FWorkingDirectory: string;
     FProjectExtensions: TJclSimpleXMLElem;
     FOnImport: TJclMsBuildImportEvent;
@@ -343,6 +344,7 @@ type
     property DefaultTargets: TStrings read FDefaultTargets;
     property ToolsVersion: string read FToolsVersion;
     property DotNetVersion: string read FDotNetVersion write FDotNetVersion;
+    property IgnoreFunctionProperties: Boolean read FIgnoreFunctionProperties write FIgnoreFunctionProperties;
     property WorkingDirectory: string read FWorkingDirectory write FWorkingDirectory;
     property OnImport: TJclMsBuildImportEvent read FOnImport write FOnImport;
     property OnToolsVersion: TJclMsBuildToolsVersionEvent read FOnToolsVersion write FOnToolsVersion;
@@ -800,6 +802,7 @@ begin
   FUsingTasks := TObjectList.Create(True);
   FInitialTargets := TStringList.Create;
   FDefaultTargets := TStringList.Create;
+  FIgnoreFunctionProperties := True;
 end;
 
 destructor TJclMsBuildParser.Destroy;
@@ -1112,7 +1115,8 @@ end;
 
 function TJclMsBuildParser.EvaluateFunctionProperty(const Command: string): string;
 begin
-  if not Assigned(FOnFunctionProperty) or not FOnFunctionProperty(Self, Command, Result) then
+  if (not Assigned(FOnFunctionProperty) or not FOnFunctionProperty(Self, Command, Result)) and
+     (not IgnoreFunctionProperties) then
     raise EJclMsBuildError.CreateResFmt(@RsEFunctionProperty, [Command]);
 end;
 
@@ -1288,7 +1292,7 @@ begin
   Properties.ReservedProperties.Values['MSBuildProjectFullPath'] := ProjectFileName;
 
   // MSBuildProjectName
-  Properties.ReservedProperties.Values['MSBuildProjectExtension'] := ChangeFileExt(ExtractFileName(ProjectFileName), '');
+  Properties.ReservedProperties.Values['MSBuildProjectName'] := ChangeFileExt(ExtractFileName(ProjectFileName), '');
 
   DotNetVersions := TStringList.Create;
   try
@@ -1646,7 +1650,7 @@ begin
   if (Result = '') and (Condition[StartPos] = '!') and not HasQuote then
   begin
     Inc(Position);
-    Result := BoolToStr(not StrToBool(ParseConditionString(Condition, Position, Len)), True);
+    Result := BoolToStr(not ParseConditionLength(Condition, Position, Len));
   end
   else
   if (CompareText(Result, 'Exists') = 0) and not HasQuote then
@@ -1815,13 +1819,13 @@ begin
       Condition := ParseCondition(Prop.Value)
     else
     if Prop.Name = 'Exclude' then
-      ItemExclude := Prop.Value
+      ItemExclude := EvaluateString(Prop.Value)
     else
     if Prop.Name = 'Include' then
-      ItemInclude := Prop.Value
+      ItemInclude := EvaluateString(Prop.Value)
     else
     if Prop.Name = 'Remove' then
-      ItemRemove := Prop.Value
+      ItemRemove := EvaluateString(Prop.Value)
     else
       raise EJclMsBuildError.CreateResFmt(@RsEUnknownProperty, [Prop.Name]);
   end;
@@ -1934,7 +1938,7 @@ begin
     for Index := 0 to XmlElem.ItemCount - 1 do
   begin
     SubElem := XmlElem.Items.Item[Index];
-    ItemMetaData.Values[SubElem.Name] := SubElem.Value;
+    ItemMetaData.Values[SubElem.Name] := EvaluateString(SubElem.Value);
   end;
 end;
 
@@ -1956,7 +1960,7 @@ begin
       Condition := ParseCondition(Prop.Value)
     else
     if Prop.Name = 'ExecuteTargets' then
-      ExecuteTargets := Prop.Value
+      ExecuteTargets := EvaluateString(Prop.Value)
     else
       raise EJclMsBuildError.CreateResFmt(@RsEUnknownProperty, [Prop.Name]);
   end;
@@ -2038,13 +2042,13 @@ begin
       Condition := ParseCondition(Prop.Value)
     else
     if Prop.Name = 'TaskParameter' then
-      TaskParameter := Prop.Value
+      TaskParameter := EvaluateString(Prop.Value)
     else
     if Prop.Name = 'PropertyName' then
-      PropertyName := Prop.Value
+      PropertyName := EvaluateString(Prop.Value)
     else
     if Prop.Name = 'ItemName' then
-      ItemName := Prop.Value
+      ItemName := EvaluateString(Prop.Value)
     else
       raise EJclMsBuildError.CreateResFmt(@RsEUnknownProperty, [Prop.Name]);
   end;
@@ -2090,7 +2094,7 @@ begin
   begin
     Prop := XmlElem.Properties.Item[Index];
     if Prop.Name = 'ParameterType' then
-      ParameterType := Prop.Value
+      ParameterType := EvaluateString(Prop.Value)
     else
     if Prop.Name = 'Output' then
       Output := Prop.BoolValue
@@ -2140,24 +2144,27 @@ var
   Index: Integer;
   Prop: TJclSimpleXMLProp;
   SubElem: TJclSimpleXmlElem;
+  S: string;
 begin
   for Index := 0 to XmlElem.PropertyCount - 1 do
   begin
     Prop := XmlElem.Properties.Item[Index];
     if Prop.Name = 'InitialTargets' then
-      StrToStrings(Prop.Value, ';', FInitialTargets, False)
+      StrToStrings(EvaluateString(Prop.Value), ';', FInitialTargets, False)
     else
     if Prop.Name = 'DefaultTargets' then
     begin
-      Properties.ReservedProperties.Values['MSBuildProjectDefaultTargets'] := Prop.Value;
-      StrToStrings(Prop.Value, ';', FDefaultTargets, False)
+      S := EvaluateString(Prop.Value);
+      Properties.ReservedProperties.Values['MSBuildProjectDefaultTargets'] := S;
+      StrToStrings(S, ';', FDefaultTargets, False)
     end
     else
     if Prop.Name = 'ToolsVersion' then
     begin
+      S := EvaluateString(Prop.Value);
       if Assigned(FOnToolsVersion) then
-        FOnToolsVersion(Self, Prop.Value);
-      FToolsVersion := Prop.Value;
+        FOnToolsVersion(Self, S);
+      FToolsVersion := S;
     end
     else
     if Prop.Name = 'xmlns' then
@@ -2234,7 +2241,7 @@ begin
   end;
 
   if Condition then
-    Properties.Values[XmlElem.Name] := XmlElem.Value;
+    Properties.Values[XmlElem.Name] := EvaluateString(XmlElem.Value);
 end;
 
 procedure TJclMsBuildParser.ParsePropertyGroup(XmlElem: TJclSimpleXmlElem);
@@ -2282,25 +2289,25 @@ begin
       Condition := ParseCondition(Prop.Value)
     else
     if Prop.Name = 'Name' then
-      TargetName := Prop.Value
+      TargetName := EvaluateString(Prop.Value)
     else
     if Prop.Name = 'DependsOnTargets' then
-      Depends := Prop.Value
+      Depends := EvaluateString(Prop.Value)
     else
     if Prop.Name = 'Returns' then
-      Returns := Prop.Value
+      Returns := EvaluateString(Prop.Value)
     else
     if Prop.Name = 'Inputs' then
-      Inputs := Prop.Value
+      Inputs := EvaluateString(Prop.Value)
     else
     if Prop.Name = 'Outputs' then
-      Outputs := Prop.Value
+      Outputs := EvaluateString(Prop.Value)
     else
     if Prop.Name = 'BeforeTargets' then
-      BeforeTargets := Prop.Value
+      BeforeTargets := EvaluateString(Prop.Value)
     else
     if Prop.Name = 'AfterTargets' then
-      AfterTargets := Prop.Value
+      AfterTargets := EvaluateString(Prop.Value)
     else
     if Prop.Name = 'KeepDuplicateOutputs' then
       KeepDuplicateOutput := Prop.BoolValue
@@ -2367,7 +2374,7 @@ begin
     begin
       Prop := XmlElem.Properties.Item[Index];
       if (Prop.Name <> 'Condition') and (Prop.Name <> 'ContinueOnError') then
-        Task.Parameters.Values[Prop.Name] := Prop.Value;
+        Task.Parameters.Values[Prop.Name] := EvaluateString(Prop.Value);
     end;
 
     for Index := 0 to XmlElem.ItemCount - 1 do
@@ -2432,16 +2439,16 @@ begin
       Condition := ParseCondition(Prop.Value)
     else
     if Prop.Name = 'TaskName' then
-      TaskName := Prop.Value
+      TaskName := EvaluateString(Prop.Value)
     else
     if Prop.Name = 'TaskFactory' then
-      TaskFactory := Prop.Value
+      TaskFactory := EvaluateString(Prop.Value)
     else
     if Prop.Name = 'AssemblyName' then
-      AssemblyName := Prop.Value
+      AssemblyName := EvaluateString(Prop.Value)
     else
     if Prop.Name = 'AssemblyFile' then
-      AssemblyFile := Prop.Value
+      AssemblyFile := EvaluateString(Prop.Value)
     else
       raise EJclMsBuildError.CreateResFmt(@RsEUnknownProperty, [Prop.Name]);
   end;
