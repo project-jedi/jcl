@@ -222,7 +222,7 @@ uses
   {$ENDIF HAS_UNIT_LIBC}
   JclFileUtils, JclDevToolsResources,
   JclAnsiStrings, JclWideStrings, JclStrings,
-  JclSysInfo, JclSimpleXml;
+  JclSysInfo, JclSimpleXml, JclMsBuild;
 
 const
   // DOF options
@@ -252,20 +252,13 @@ const
   BDSProjDirectoriesNodeName = 'Directories';
 
   // DProj options
-  DProjProjectExtensionsNodeName = 'ProjectExtensions';
   DProjPersonalityNodeName = 'Borland.Personality';
   DProjDelphiPersonalityValue = 'Delphi.Personality';
   DProjDelphiDotNetPersonalityValue = 'DelphiDotNet.Personality';
-  DProjPropertyGroupNodeName = 'PropertyGroup';
-  DProjConditionValueName = 'Condition';
   DProjUsePackageNodeName = 'DCC_UsePackage';
   DProjDcuOutputDirNodeName = 'DCC_DcuOutput';
   DProjUnitSearchPathNodeName = 'DCC_UnitSearchPath';
   DProjDefineNodeName = 'DCC_Define';
-  DProjConfigurationNodeName = 'Configuration';
-  DProjPlatformNodeName = 'Platform';
-  DProjProjectVersionNodeName = 'ProjectVersion';
-  DProjConfigNodeName = 'Config';
 
   DelphiLibSuffixOption   = '{$LIBSUFFIX ''';
   DelphiDescriptionOption = '{$DESCRIPTION ''';
@@ -791,24 +784,21 @@ end;
 
 function TJclDCC32.AddDProjOptions(const ProjectFileName: string; var ProjectOptions: TProjectOptions): Boolean;
 var
-  DProjFileName, ProjectConfiguration, ProjectPlatform, PersonalityName: string;
-  OptionsXmlFile: TJclSimpleXML;
-  ProjectExtensionsNode, PropertyGroupNode, PersonalityNode, ChildNode: TJclSimpleXMLElem;
-  NodeIndex: Integer;
-  ConditionProperty: TJclSimpleXMLProp;
-  Version: string;
+  DProjFileName, PersonalityName: string;
+  MsBuildOptions: TJclMsBuildParser;
+  ProjectExtensionsNode, PersonalityNode: TJclSimpleXMLElem;
 begin
-  Version := '';
   DProjFileName := ChangeFileExt(ProjectFileName, SourceExtensionDProject);
   Result := FileExists(DProjFileName) and (CompilerSettingsFormat = csfMsBuild);
   if Result then
   begin
-    OptionsXmlFile := TJclSimpleXML.Create;
+    MsBuildOptions := TJclMsBuildParser.Create(DProjFileName);
     try
-      OptionsXmlFile.LoadFromFile(DProjFileName);
-      OptionsXmlFile.Options := OptionsXmlFile.Options - [sxoAutoCreate];
+      MsBuildOptions.Init;
+      MsBuildOptions.Parse;
+      
       PersonalityName := '';
-      ProjectExtensionsNode := OptionsXmlFile.Root.Items.ItemNamed[DProjProjectExtensionsNodeName];
+      ProjectExtensionsNode := MsBuildOptions.ProjectExtensions;
       if Assigned(ProjectExtensionsNode) then
       begin
         PersonalityNode := ProjectExtensionsNode.Items.ItemNamed[DProjPersonalityNodeName];
@@ -818,69 +808,14 @@ begin
       if StrHasPrefix(PersonalityName, [DProjDelphiPersonalityValue]) or
         AnsiSameText(PersonalityName, DProjDelphiDotNetPersonalityValue) then
       begin
-        ProjectConfiguration := '';
-        ProjectPlatform := '';
-        for NodeIndex := 0 to OptionsXmlFile.Root.Items.Count - 1 do
-        begin
-          PropertyGroupNode := OptionsXmlFile.Root.Items.Item[NodeIndex];
-          if AnsiSameText(PropertyGroupNode.Name, DProjPropertyGroupNodeName) then
-          begin
-            ConditionProperty := PropertyGroupNode.Properties.ItemNamed[DProjConditionValueName];
-            if Assigned(ConditionProperty) then
-            begin
-              if ((Version = '') and (ProjectConfiguration <> '') and (ProjectPlatform <> '') and
-                  (AnsiPos(Format('%s|%s', [ProjectConfiguration, ProjectPlatform]), ConditionProperty.Value) > 0))
-                 or
-                 ((Version <> '') and (ProjectConfiguration <> '') and
-                  (AnsiPos(ProjectConfiguration, ConditionProperty.Value) > 0))
-                 or
-                 ((Version <> '') and (ProjectConfiguration <> '') and
-                  (AnsiPos('$(Base)', ConditionProperty.Value) > 0)) then
-              begin
-                // this is the active configuration, check for overrides
-                ChildNode := PropertyGroupNode.Items.ItemNamed[DProjUsePackageNodeName];
-                if Assigned(ChildNode) then
-                  ProjectOptions.DynamicPackages := ChildNode.Value;
-                ProjectOptions.UsePackages := ProjectOptions.DynamicPackages <> '';
-                ChildNode := PropertyGroupNode.Items.ItemNamed[DProjDcuOutputDirNodeName];
-                if Assigned(ChildNode) then
-                  ProjectOptions.UnitOutputDir := ChildNode.Value;
-                ChildNode := PropertyGroupNode.Items.ItemNamed[DProjUnitSearchPathNodeName];
-                if Assigned(ChildNode) then
-                  ProjectOptions.SearchPath := ChildNode.Value;
-                ChildNode := PropertyGroupNode.Items.ItemNamed[DProjDefineNodeName];
-                if Assigned(ChildNode) then
-                  ProjectOptions.Conditionals := ChildNode.Value;
-              end;
-            end
-            else
-            begin
-              // check for version and default configurations
-              ChildNode := PropertyGroupNode.Items.ItemNamed[DProjProjectVersionNodeName];
-              if Assigned(ChildNode) then
-                Version := ChildNode.Value;
-
-              if Version = '' then
-              begin
-                ChildNode := PropertyGroupNode.Items.ItemNamed[DProjConfigurationNodeName];
-                if Assigned(ChildNode) then
-                  ProjectConfiguration := ChildNode.Value;
-                ChildNode := PropertyGroupNode.Items.ItemNamed[DProjPlatformNodeName];
-                if Assigned(ChildNode) then
-                  ProjectPlatform := ChildNode.Value;
-              end
-              else
-              begin
-                ChildNode := PropertyGroupNode.Items.ItemNamed[DProjConfigNodeName];
-                if Assigned(ChildNode) then
-                  ProjectConfiguration := ChildNode.Value;
-              end;
-            end;
-          end;
-        end;
+        ProjectOptions.DynamicPackages := MsBuildOptions.Properties.Values[DProjUsePackageNodeName];
+        ProjectOptions.UsePackages := ProjectOptions.DynamicPackages <> '';
+        ProjectOptions.UnitOutputDir := MsBuildOptions.Properties.Values[DProjDcuOutputDirNodeName];
+        ProjectOptions.SearchPath := MsBuildOptions.Properties.Values[DProjUnitSearchPathNodeName];
+        ProjectOptions.Conditionals := MsBuildOptions.Properties.Values[DProjDefineNodeName];
       end;
     finally
-      OptionsXmlFile.Free;
+      MsBuildOptions.Free;
     end;
   end;
 end;

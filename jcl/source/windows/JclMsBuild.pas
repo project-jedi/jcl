@@ -23,7 +23,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                       $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -212,8 +212,10 @@ type
     function Get(Index: Integer): string; override;
     function GetCount: Integer; override;
     function GetObject(Index: Integer): TObject; override;
+    function GetRawValue(const Name: string): string;
     procedure Put(Index: Integer; const S: string); override;
     procedure PutObject(Index: Integer; AObject: TObject); override;
+    procedure SetRawValue(const Name, Value: string);
   public
     constructor Create(AParser: TJclMsBuildParser);
     destructor Destroy; override;
@@ -230,6 +232,8 @@ type
     property EnvironmentProperties: TStrings read FEnvironmentProperties;
     property GlobalProperties: TStrings read FGlobalProperties;
     property CustomProperties: TStrings read FCustomProperties;
+
+    property RawValues[const Name: string]: string read GetRawValue write SetRawValue;
   end;
 
   TJclMsBuildImportEvent = procedure (Sender: TJclMsBuildParser; var FileName: TFileName;
@@ -257,6 +261,7 @@ type
     FDotNetVersion: string;
     FIgnoreFunctionProperties: Boolean;
     FWorkingDirectory: string;
+    FFirstPropertyGroup: TJclSimpleXMLElem;
     FProjectExtensions: TJclSimpleXMLElem;
     FOnImport: TJclMsBuildImportEvent;
     FOnToolsVersion: TJclMsBuildToolsVersionEvent;
@@ -317,6 +322,7 @@ type
     procedure ClearTargets;
 
     procedure Parse;
+    procedure Save;
 
     procedure FindItemIncludes(const ItemName: string; List: TStrings);
     function FindItemDefinition(const ItemName: string): TJclMsBuildItem;
@@ -632,6 +638,21 @@ begin
   raise EJclMsBuildError.CreateRes(@SRangeError);
 end;
 
+function TJclMsBuildProperties.GetRawValue(const Name: string): string;
+var
+  Index: Integer;
+  XmlElem: TJclSimpleXmlElem;
+begin
+  Index := IndexOfName(Name);
+  XmlElem := nil;
+  if Index >= 0 then
+    XmlElem := TJclSimpleXMLElem(Objects[Index]);
+  if Assigned(XmlElem) then
+    Result := XmlElem.Value
+  else
+    Result := '';
+end;
+
 function TJclMsBuildProperties.IndexOf(const S: string): Integer;
 begin
   //  - reserved properties defined by MsBuild,
@@ -770,6 +791,24 @@ begin
   end;
   
   raise EJclMsBuildError.CreateRes(@SRangeError);
+end;
+
+procedure TJclMsBuildProperties.SetRawValue(const Name, Value: string);
+var
+  Index: Integer;
+  XmlElem: TJclSimpleXmlElem;
+begin
+  Index := IndexOfName(Name);
+  XmlElem := nil;
+  if Index >= 0 then
+    XmlElem := TJclSimpleXMLElem(Objects[Index]);
+  if Assigned(XmlElem) then
+    XmlElem.Value := Value
+  else
+  if Assigned(Parser.FFirstPropertyGroup) then
+    Parser.FFirstPropertyGroup.Items.AddText(Name, Value)
+  else
+    raise EJclMsBuildError.CreateResFmt(@RsELocateXmlElem, [Name]);
 end;
 
 //=== { TJclMsBuildParser } ==================================================
@@ -1382,6 +1421,8 @@ end;
 
 procedure TJclMsBuildParser.Parse;
 begin
+  FFirstPropertyGroup := nil;
+  FProjectExtensions := nil;
   FCurrentFileName := FProjectFileName;
   ParseXml(FXml);
 end;
@@ -1460,7 +1501,7 @@ begin
     begin
       // read infix operator
       MiddleOperator := opUnknown;
-      if (Position <= (Len + 2)) and (MiddleOperator = opUnknown) then
+      if ((Position + 2) <= Len) and (MiddleOperator = opUnknown) then
       begin
         if ((Condition[Position] = 'A') or (Condition[Position] = 'a')) and
            ((Condition[Position + 1] = 'N') or (Condition[Position + 1] = 'n')) and
@@ -1469,7 +1510,7 @@ begin
         if MiddleOperator <> opUnknown then
           Inc(Position, 3);
       end;
-      if (Position <= (Len + 1)) and (MiddleOperator = opUnknown) then
+      if ((Position + 1) <= Len) and (MiddleOperator = opUnknown) then
       begin
         if ((Condition[Position] = 'O') or (Condition[Position] = 'o')) and
            ((Condition[Position + 1] = 'R') or (Condition[Position + 1] = 'r')) then
@@ -1541,7 +1582,7 @@ begin
       Inc(Position);
     // read infix operator
     MiddleOperator := opUnknown;
-    if (Position <= (Len + 1)) and (MiddleOperator = opUnknown) then
+    if ((Position + 1) <= Len) and (MiddleOperator = opUnknown) then
     begin
       if (Condition[Position] = '=') and (Condition[Position + 1] = '=') then
         MiddleOperator := opEqual
@@ -1829,9 +1870,6 @@ begin
     else
       raise EJclMsBuildError.CreateResFmt(@RsEUnknownProperty, [Prop.Name]);
   end;
-
-  if ItemInclude = '' then
-    raise EJclMsBuildError.CreateRes(@RsEMissingItemInclude);
 
   if Condition then
   begin
@@ -2202,7 +2240,11 @@ begin
     end
     else
     if SubElem.Name = 'PropertyGroup' then
+    begin
+      if (CurrentFileName = ProjectFileName) and not Assigned(FFirstPropertyGroup) then
+        FFirstPropertyGroup := SubElem;
       ParsePropertyGroup(SubElem)
+    end
     else
     if SubElem.Name = 'Target' then
       ParseTarget(SubElem)
@@ -2241,7 +2283,15 @@ begin
   end;
 
   if Condition then
+  begin
     Properties.Values[XmlElem.Name] := EvaluateString(XmlElem.Value);
+    // store the XML element for further modifications in the current file
+    if CurrentFileName = ProjectFileName then
+    begin
+      Index := Properties.IndexOfName(XmlElem.Name);
+      Properties.Objects[Index] := XmlElem;
+    end;
+  end;
 end;
 
 procedure TJclMsBuildParser.ParsePropertyGroup(XmlElem: TJclSimpleXmlElem);
@@ -2533,6 +2583,11 @@ begin
   if AXml.Root.Name <> 'Project' then
     raise EJclMsBuildError.CreateResFmt(@RsENoProjectElem, [AXml.Root.Name]);
   ParseProject(AXml.Root);
+end;
+
+procedure TJclMsBuildParser.Save;
+begin
+  Xml.SaveToFile(ProjectFileName);
 end;
 
 {$IFDEF UNITVERSIONING}

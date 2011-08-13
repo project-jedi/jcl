@@ -697,7 +697,7 @@ uses
   {$ENDIF HAS_UNIT_LIBC}
   JclFileUtils, JclLogic, JclDevToolsResources,
   JclAnsiStrings, JclWideStrings, JclStrings,
-  JclSysInfo, JclSimpleXml;
+  JclSysInfo, JclSimpleXml, JclMsBuild;
 
 // Internal
 
@@ -850,7 +850,6 @@ const
   MsBuildCBuilderBrowsingPathNodeName = 'CBuilderBrowsingPath';
   MsBuildCBuilderLibraryPathNodeName = 'CBuilderLibraryPath';
   MsBuildCBuilderIncludePathNodeName = 'CBuilderIncludePath';
-  MsBuildPropertyGroupNodeName = 'PropertyGroup';
 
 {$IFDEF MSWINDOWS}
 
@@ -3522,25 +3521,17 @@ end;
 
 function TJclBDSInstallation.GetMsBuildEnvOption(const OptionName: string): string;
 var
-  EnvOptionsFile: TJclSimpleXML;
-  PropertyGroupNode, PropertyNode: TJclSimpleXMLElem;
+  EnvOptions: TJclMsBuildParser;
 begin
   Result := '';
 
-  EnvOptionsFile := TJclSimpleXML.Create;
+  EnvOptions := TJclMsBuildParser.Create(GetMsBuildEnvOptionsFileName);
   try
-    EnvOptionsFile.LoadFromFile(GetMsBuildEnvOptionsFileName);
-    EnvOptionsFile.Options := EnvOptionsFile.Options - [sxoAutoCreate];
-
-    PropertyGroupNode := EnvOptionsFile.Root.Items.ItemNamed[MsBuildPropertyGroupNodeName];
-    if Assigned(PropertyGroupNode) then
-    begin
-      PropertyNode := PropertyGroupNode.Items.ItemNamed[OptionName];
-      if Assigned(PropertyNode) then
-        Result := PropertyNode.Value;
-    end;
+    EnvOptions.Init;
+    EnvOptions.Parse;
+    Result := EnvOptions.Properties.RawValues[OptionName];
   finally
-    EnvOptionsFile.Free;
+    EnvOptions.Free;
   end;
 end;
 
@@ -3763,26 +3754,23 @@ end;
 procedure TJclBDSInstallation.SetMsBuildEnvOption(const OptionName, Value: string);
 var
   EnvOptionsFileName, BakEnvOptionsFileName: string;
-  EnvOptionsFile: TJclSimpleXML;
-  PropertyGroupNode, PropertyNode: TJclSimpleXMLElem;
+  EnvOptions: TJclMsBuildParser;
 begin
-  EnvOptionsFile := TJclSimpleXML.Create;
+  EnvOptionsFileName := GetMsBuildEnvOptionsFileName;
+  EnvOptions := TJclMsBuildParser.Create(EnvOptionsFileName);
   try
-    EnvOptionsFileName := GetMsBuildEnvOptionsFileName;
-    EnvOptionsFile.LoadFromFile(EnvOptionsFileName);
-    EnvOptionsFile.Options := EnvOptionsFile.Options + [sxoAutoCreate,sxoDoNotSaveProlog];
-
-    PropertyGroupNode := EnvOptionsFile.Root.Items.ItemNamed[MsBuildPropertyGroupNodeName];
-    PropertyNode := PropertyGroupNode.Items.ItemNamed[OptionName];
-
-    PropertyNode.Value := Value;
+    EnvOptions.Init;
+    EnvOptions.Parse;
+    
+    EnvOptions.Properties.RawValues[OptionName] := Value;
 
     { Do not overwrite the original file if something goes wrong }
     BakEnvOptionsFileName := EnvOptionsFileName + '.bak';
     DeleteFile(BakEnvOptionsFileName);
     RenameFile(EnvOptionsFileName, BakEnvOptionsFileName);
     try
-      EnvOptionsFile.SaveToFile(EnvOptionsFileName);
+      EnvOptions.Xml.Options := EnvOptions.Xml.Options + [sxoDoNotSaveProlog];
+      EnvOptions.Save;
       DeleteFile(BakEnvOptionsFileName);
     except
       DeleteFile(EnvOptionsFileName);
@@ -3790,7 +3778,7 @@ begin
       raise;
     end;
   finally
-    EnvOptionsFile.Free;
+    EnvOptions.Free;
   end;
 end;
 

@@ -145,7 +145,6 @@ resourcestring
   RsEMultipleProjectExtensions = 'Multiple project extensions';
   RsEMultipleOtherwise = 'Multiple otherwise';
   RsEConditionNotUnique = 'Condition is not unique';
-  RsEMissingItemInclude = 'Missing item include';
   RsEMissingTargetName = 'Missing target name';
   RsEMissingTaskName = 'Missing task name';
   RsEMissingAssembly = 'Missing assembly';
@@ -154,6 +153,7 @@ resourcestring
   RsEMSBuildPath = 'Unable to locate MSBuild.exe';
   RsEFunctionProperty = 'Unable to evaluate function property "%s"';
   RsERegistryProperty = 'Unable to evaluate registry property root="%s" path="%s" name="%s"';
+  RsELocateXmlElem = 'Unable to locate the XML element for MSBuild property "%s"';
 
 //=== JclUsesUtils.pas =======================================================
 resourcestring
