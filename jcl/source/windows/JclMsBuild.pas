@@ -2385,6 +2385,11 @@ begin
     if SubElem.Name = 'OnError' then
       ParseOnError(SubElem, Target)
     else
+    if (SubElem.Name = 'PropertyGroup') or (SubElem.Name = 'ItemGroup') then
+      // apparently targets can contain several other nodes
+      // see comments in http://msdn.microsoft.com/en-us/library/t50z2hka.aspx
+      // they should be ignored during the static analysis implemented in this parser
+    else
       ParseTask(SubElem, Target);
   end;
 end;
