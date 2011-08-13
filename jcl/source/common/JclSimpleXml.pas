@@ -2717,7 +2717,7 @@ begin
           if UnicodeIsWhiteSpace(Ch) then
             StringStream.ReadUCS4(Ch)
           else
-          if UnicodeIsIdentifierStart(Ch) or (Ch = Ord('-')) or (Ch = Ord('.')) then
+          if UnicodeIsIdentifierStart(Ch) or (Ch = Ord('-')) or (Ch = Ord('.')) or (Ch = Ord('_')) then
           begin
             StringStream.ReadUCS4(Ch);
             lName := UCS4Array(Ch);
