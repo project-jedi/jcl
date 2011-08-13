@@ -455,7 +455,7 @@ var
   Index: Integer;
 begin
   for Index := Low(RootKeys) to High(RootKeys) do
-    if RootKeys[Index].AnsiName = Name then
+    if string(RootKeys[Index].AnsiName) = Name then
   begin
     Result := RootKeys[Index].Key;
     Exit;
