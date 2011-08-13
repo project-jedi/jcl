@@ -127,7 +127,8 @@ resourcestring
   RsENotABcbProject             = '%s not a C++Builder project source file';
   RsENoSupportedPersonality     = 'No personalities supported';
   RsEDualPackageNotSupported    = 'This installation of %s doesn''t support dual packages';
-  RsEx64PlatformNotValid        = 'This installation cannot generate x64 binaries';
+  RsEx64PlatformNotValid        = 'This installation cannot generate binaries for Win64';
+  RsEPlatformNotValid           = 'This installation cannot generate binaries for unknown target';
   {$IFDEF MSWINDOWS}
   RsENoOpenHelp                 = 'open help not present in Borland Developer Studio';
   {$ENDIF MSWINDOWS}
