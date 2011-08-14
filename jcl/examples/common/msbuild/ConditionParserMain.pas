@@ -30,9 +30,9 @@ uses
   JclMsBuild;
 
 procedure TFormMain.FormCreate(Sender: TObject);
-  procedure Evaluate(const Condition: string; Defines: TStrings);
+  procedure Evaluate(const Condition: string; Properties: TJclMsBuildProperties);
   begin
-    MemoConditions.Lines.Add('"' + Condition + '"  =  ' + BoolToStr(ParseCondition(Condition, Defines), True));
+    MemoConditions.Lines.Add('"' + Condition + '"  =  ' + BoolToStr(ParseCondition(Condition, Properties), True));
   end;
 var
   Defines: TStringList;

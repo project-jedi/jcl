@@ -4,11 +4,12 @@
   </PropertyGroup>
   <ItemGroup />
   <ItemGroup>
+    <Projects Include="..\examples\common\msbuild\ConditionParser.dproj" />
     <Projects Include="d11\Jcl.dproj" />
     <Projects Include="d11\JclBaseExpert.dproj" />
     <Projects Include="d11\JclContainers.dproj" />
-    <Projects Include="d11\JclDeveloperTools.dproj" />
     <Projects Include="d11\JclDebugExpert.dproj" />
+    <Projects Include="d11\JclDeveloperTools.dproj" />
     <Projects Include="d11\JclFavoriteFoldersExpert.dproj" />
     <Projects Include="d11\JclProjectAnalysisExpert.dproj" />
     <Projects Include="d11\JclRepositoryExpert.dproj" />
@@ -131,14 +132,23 @@
   <Target Name="JclVersionControlExpert:Make">
     <MSBuild Projects="d11\JclVersionControlExpert.dproj" Targets="Make" />
   </Target>
+  <Target Name="ConditionParser">
+    <MSBuild Projects="..\examples\common\msbuild\ConditionParser.dproj" Targets="" />
+  </Target>
+  <Target Name="ConditionParser:Clean">
+    <MSBuild Projects="..\examples\common\msbuild\ConditionParser.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="ConditionParser:Make">
+    <MSBuild Projects="..\examples\common\msbuild\ConditionParser.dproj" Targets="Make" />
+  </Target>
   <Target Name="Build">
-    <CallTarget Targets="Jcl;JclVcl;JclContainers;JclDeveloperTools;JclBaseExpert;JclDebugExpert;JclFavoriteFoldersExpert;JclProjectAnalysisExpert;JclRepositoryExpert;JclSIMDViewExpert;JclStackTraceViewerExpert;JclVersionControlExpert" />
+    <CallTarget Targets="Jcl;JclVcl;JclContainers;JclDeveloperTools;JclBaseExpert;JclDebugExpert;JclFavoriteFoldersExpert;JclProjectAnalysisExpert;JclRepositoryExpert;JclSIMDViewExpert;JclStackTraceViewerExpert;JclVersionControlExpert;ConditionParser" />
   </Target>
   <Target Name="Clean">
-    <CallTarget Targets="Jcl:Clean;JclVcl:Clean;JclContainers:Clean;JclDeveloperTools:Clean;JclBaseExpert:Clean;JclDebugExpert:Clean;JclFavoriteFoldersExpert:Clean;JclProjectAnalysisExpert:Clean;JclRepositoryExpert:Clean;JclSIMDViewExpert:Clean;JclStackTraceViewerExpert:Clean;JclVersionControlExpert:Clean" />
+    <CallTarget Targets="Jcl:Clean;JclVcl:Clean;JclContainers:Clean;JclDeveloperTools:Clean;JclBaseExpert:Clean;JclDebugExpert:Clean;JclFavoriteFoldersExpert:Clean;JclProjectAnalysisExpert:Clean;JclRepositoryExpert:Clean;JclSIMDViewExpert:Clean;JclStackTraceViewerExpert:Clean;JclVersionControlExpert:Clean;ConditionParser:Clean" />
   </Target>
   <Target Name="Make">
-    <CallTarget Targets="Jcl:Make;JclVcl:Make;JclContainers:Make;JclDeveloperTools:Make;JclBaseExpert:Make;JclDebugExpert:Make;JclFavoriteFoldersExpert:Make;JclProjectAnalysisExpert:Make;JclRepositoryExpert:Make;JclSIMDViewExpert:Make;JclStackTraceViewerExpert:Make;JclVersionControlExpert:Make" />
+    <CallTarget Targets="Jcl:Make;JclVcl:Make;JclContainers:Make;JclDeveloperTools:Make;JclBaseExpert:Make;JclDebugExpert:Make;JclFavoriteFoldersExpert:Make;JclProjectAnalysisExpert:Make;JclRepositoryExpert:Make;JclSIMDViewExpert:Make;JclStackTraceViewerExpert:Make;JclVersionControlExpert:Make;ConditionParser:Make" />
   </Target>
   <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
 </Project>

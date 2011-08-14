@@ -1103,8 +1103,6 @@ procedure TJclInstallation.Init;
     AConfiguration := InstallCore.Configuration;
     if not Assigned(AConfiguration) then
       Exit;
-    // options in included files jcl/source/include/jclXX.inc overrides stored settings
-    LoadStaticValues(AConfiguration);
     if AConfiguration.SectionExists(TargetName) then
     begin
       ResetDefaultValue := not AConfiguration.OptionAsBool[TargetName, OptionData[joJediCodeLibrary].Id];
@@ -1117,9 +1115,16 @@ procedure TJclInstallation.Init;
         if ResetDefaultValue then
           GUIPage.OptionChecked[Id] := False;
       end;
+      if not ResetDefaultValue then
+        // options in included files jcl/source/include/jclXX.inc overrides stored settings
+        LoadStaticValues(AConfiguration);
     end
     else
+    begin
       GUIPage.OptionChecked[OptionData[joJediCodeLibrary].Id] := True;
+      // options in included files jcl/source/include/jclXX.inc overrides stored settings
+      LoadStaticValues(AConfiguration);
+    end;
 
     if not Target.IsTurboExplorer then
     begin
