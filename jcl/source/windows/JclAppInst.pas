@@ -48,7 +48,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Classes, Messages,
-  JclFileUtils, JclSynch;
+  JclBase, JclFileUtils, JclSynch, JclWin32;
 
 // Message constants and types
 type
@@ -67,18 +67,46 @@ type
   TJclAppInstances = class(TObject)
   private
     FCPID: DWORD;
-    FMapping: TJclSwapFileMapping;
-    FMappingView: TJclFileMappingView;
+    FAllMapping: TJclSwapFileMapping;
+    FAllMappingView: TJclFileMappingView;
+    FSessionMapping: TJclSwapFileMapping;
+    FSessionMappingView: TJclFileMappingView;
+    FUserMapping: TJclSwapFileMapping;
+    FUserMappingView: TJclFileMappingView;
     FMessageID: DWORD;
     FOptex: TJclOptex;
-    function GetAppWnds(Index: Integer): THandle;
-    function GetInstanceCount: Integer;
-    function GetProcessIDs(Index: Integer): DWORD;
-    function GetInstanceIndex(ProcessID: DWORD): Integer;
+    FUniqueAppID: string;
+    function GetAllAppWnds(Index: Integer): THandle;
+    function GetAllInstanceCount: Integer;
+    function GetAllInstanceIndex(ProcessID: DWORD): Integer;
+    function GetAllProcessIDs(Index: Integer): DWORD;
+    function GetInstanceCount(MappingView: TJclFileMappingView): Integer;
+    function GetInstanceIndex(MappingView: TJclFileMappingView; ProcessID: DWORD): Integer;
+    function GetProcessIDs(MappingView: TJclFileMappingView; Index: Integer): DWORD;
+    function GetSessionAppWnds(Index: Integer): THandle;
+    function GetSessionInstanceCount: Integer;
+    function GetSessionInstanceIndex(ProcessID: DWORD): Integer;
+    function GetSessionProcessIDs(Index: Integer): DWORD;
+    function GetUserAppWnds(Index: Integer): THandle;
+    function GetUserInstanceCount: Integer;
+    function GetUserInstanceIndex(ProcessID: DWORD): Integer;
+    function GetUserProcessIDs(Index: Integer): DWORD;
   protected
     procedure InitData;
+    procedure InitAllData;
+    procedure InitSessionData;
+    procedure InitUserData;
     procedure NotifyInstances(const W, L: Longint);
-    procedure RemoveInstance;
+    procedure RemoveInstance(MappingView: TJclFileMappingView);
+    procedure SecurityFree(UserInfo: PTokenUser; SID: PSID; ACL: PACL;
+      SecurityDescriptor: PSecurityDescriptor; SecurityAttributes: PSecurityAttributes);
+    procedure SecurityGetAllUsers(out UserInfo: PTokenUser; out SID: PSID; out ACL: PACL;
+      out SecurityDescriptor: PSecurityDescriptor; out SecurityAttributes: PSecurityAttributes);
+    procedure SecurityGetCurrentUser(out UserInfo: PTokenUser; out SID: PSID; out ACL: PACL;
+      out SecurityDescriptor: PSecurityDescriptor; out SecurityAttributes: PSecurityAttributes);
+    procedure SecurityGetCurrentUserInfo(out UserInfo: PTokenUser);
+    procedure SecurityGetSecurityAttributes(OwnerSID, AccessSID: PSID; out ACL: PACL;
+      out SecurityDescriptor: PSecurityDescriptor; out SecurityAttributes: PSecurityAttributes);
   public
     constructor Create;
     destructor Destroy; override;
@@ -86,8 +114,10 @@ type
     class function GetApplicationWnd(const ProcessID: DWORD): THandle;
     class procedure KillInstance;
     class function SetForegroundWindow98(const Wnd: THandle): Boolean;
-    function CheckInstance(const MaxInstances: Word): Boolean;
-    procedure CheckMultipleInstances(const MaxInstances: Word);
+    function CheckInstance(MaxInstances: Word; MaxSessionInstances: Word = 0;
+      MaxUserInstances: Word = 0): Boolean;
+    procedure CheckMultipleInstances(MaxInstances: Word; MaxSessionInstances: Word = 0;
+      MaxUserInstances: Word = 0);
     procedure CheckSingleInstance;
     function SendCmdLineParams(const WindowClassName: string; const OriginatorWnd: THandle): Boolean;
     function SendData(const WindowClassName: string; const DataKind: TJclAppInstDataKind;
@@ -97,13 +127,23 @@ type
       const S: string; OriginatorWnd: THandle): Boolean;
     function SendStrings(const WindowClassName: string; const DataKind: TJclAppInstDataKind;
       const Strings: TStrings; OriginatorWnd: THandle): Boolean;
-    function SwitchTo(const Index: Integer): Boolean;
-    procedure UserNotify(const Param: Longint);
-    property AppWnds[Index: Integer]: THandle read GetAppWnds;
-    property InstanceIndex[ProcessID: DWORD]: Integer read GetInstanceIndex;
-    property InstanceCount: Integer read GetInstanceCount;
+    function SessionSwitchTo(Index: Integer): Boolean;
+    function SwitchTo(Index: Integer): Boolean;
+    function UserSwitchTo(Index: Integer): Boolean;
+    procedure UserNotify(Param: Longint);
+    property AppWnds[Index: Integer]: THandle read GetAllAppWnds;
+    property InstanceIndex[ProcessID: DWORD]: Integer read GetAllInstanceIndex;
+    property InstanceCount: Integer read GetAllInstanceCount;
     property MessageID: DWORD read FMessageID;
-    property ProcessIDs[Index: Integer]: DWORD read GetProcessIDs;
+    property ProcessIDs[Index: Integer]: DWORD read GetAllProcessIDs;
+    property SessionAppWnds[Index: Integer]: THandle read GetSessionAppWnds;
+    property SessionInstanceIndex[ProcessID: DWORD]: Integer read GetSessionInstanceIndex;
+    property SessionInstanceCount: Integer read GetSessionInstanceCount;
+    property SessionProcessIDs[Index: Integer]: DWORD read GetSessionProcessIDs;
+    property UserAppWnds[Index: Integer]: THandle read GetUserAppWnds;
+    property UserInstanceIndex[ProcessID: DWORD]: Integer read GetUserInstanceIndex;
+    property UserInstanceCount: Integer read GetUserInstanceCount;
+    property UserProcessIDs[Index: Integer]: DWORD read GetUserProcessIDs;
   end;
 
 function JclAppInstances: TJclAppInstances; overload;
@@ -139,6 +179,7 @@ implementation
 
 uses
   SysUtils,
+  JclSecurity,
   JclStrings;
 
 {$IFDEF FPC}  // missing declaration from unit Messages
@@ -155,7 +196,9 @@ const
   { strings to form a unique name for file mapping and optex objects }
   JclAIPrefix = 'Jcl';
   JclAIOptex = '_Otx';
-  JclAIMapping = '_Map';
+  JclAIAllMapping = '_All';
+  JclAISessionMapping = '_Session_';
+  JclAIUserMapping = '_User_';
 
   { window message used for communication between instances }
   JclAIMessage = '_Msg';
@@ -193,9 +236,18 @@ end;
 
 destructor TJclAppInstances.Destroy;
 begin
-  if (FMapping <> nil) and (FOptex <> nil) then
-    RemoveInstance;
-  FreeAndNil(FMapping);
+  if FAllMapping <> nil then
+    RemoveInstance(FAllMappingView);
+  if FSessionMapping <> nil then
+    RemoveInstance(FSessionMappingView);
+  if FUserMapping <> nil then
+    RemoveInstance(FUserMappingView);
+
+  NotifyInstances(AI_INSTANCEDESTROYED, Integer(FCPID));
+
+  FreeAndNil(FAllMapping);
+  FreeAndNil(FSessionMapping);
+  FreeAndNil(FUserMapping);
   FreeAndNil(FOptex);
   inherited Destroy;
 end;
@@ -207,17 +259,36 @@ begin
   Result := SetForegroundWindow98(Wnd);
 end;
 
-function TJclAppInstances.CheckInstance(const MaxInstances: Word): Boolean;
+function TJclAppInstances.CheckInstance(MaxInstances, MaxSessionInstances, MaxUserInstances: Word): Boolean;
 var
   SharedData: PJclAISharedData;
+  CurrentProcessId: DWORD;
 begin
+  CurrentProcessId := GetCurrentProcessId;
   FOptex.Enter;
   try
-    SharedData := PJclAISharedData(FMappingView.Memory);
+    // check all instances
+    SharedData := PJclAISharedData(FAllMappingView.Memory);
     if SharedData^.MaxInst = 0 then
       SharedData^.MaxInst := MaxInstances;
-    Result := SharedData^.Count < SharedData^.MaxInst;
-    SharedData^.ProcessIDs[SharedData^.Count] := GetCurrentProcessId;
+    Result := (SharedData^.MaxInst = 0) or (SharedData^.Count < SharedData^.MaxInst);
+    SharedData^.ProcessIDs[SharedData^.Count] := CurrentProcessId;
+    Inc(SharedData^.Count);
+
+    // check session instances
+    SharedData := PJclAISharedData(FSessionMappingView.Memory);
+    if SharedData^.MaxInst = 0 then
+      SharedData^.MaxInst := MaxSessionInstances;
+    Result := Result and ((SharedData^.MaxInst = 0) or (SharedData^.Count < SharedData^.MaxInst));
+    SharedData^.ProcessIDs[SharedData^.Count] := CurrentProcessId;
+    Inc(SharedData^.Count);
+
+    // check user instances
+    SharedData := PJclAISharedData(FUserMappingView.Memory);
+    if SharedData^.MaxInst = 0 then
+      SharedData^.MaxInst := MaxUserInstances;
+    Result := Result and ((SharedData^.MaxInst = 0) or (SharedData^.Count < SharedData^.MaxInst));
+    SharedData^.ProcessIDs[SharedData^.Count] := CurrentProcessId;
     Inc(SharedData^.Count);
   finally
     FOptex.Leave;
@@ -226,9 +297,9 @@ begin
     NotifyInstances(AI_INSTANCECREATED, Integer(FCPID));
 end;
 
-procedure TJclAppInstances.CheckMultipleInstances(const MaxInstances: Word);
+procedure TJclAppInstances.CheckMultipleInstances(MaxInstances, MaxSessionInstances, MaxUserInstances: Word);
 begin
-  if not CheckInstance(MaxInstances) then
+  if not CheckInstance(MaxInstances, MaxSessionInstances, MaxUserInstances) then
   begin
     SwitchTo(0);
     KillInstance;
@@ -274,22 +345,37 @@ begin
   Result := TopLevelWnd.Wnd;
 end;
 
-function TJclAppInstances.GetAppWnds(Index: Integer): THandle;
+function TJclAppInstances.GetAllAppWnds(Index: Integer): THandle;
 begin
-  Result := GetApplicationWnd(GetProcessIDs(Index));
+  Result := GetApplicationWnd(GetAllProcessIDs(Index));
 end;
 
-function TJclAppInstances.GetInstanceCount: Integer;
+function TJclAppInstances.GetAllInstanceCount: Integer;
+begin
+  Result := GetInstanceCount(FAllMappingView);
+end;
+
+function TJclAppInstances.GetAllInstanceIndex(ProcessID: DWORD): Integer;
+begin
+  Result := GetInstanceIndex(FAllMappingView, ProcessID);
+end;
+
+function TJclAppInstances.GetAllProcessIDs(Index: Integer): DWORD;
+begin
+  Result := GetProcessIDs(FAllMappingView, Index);
+end;
+
+function TJclAppInstances.GetInstanceCount(MappingView: TJclFileMappingView): Integer;
 begin
   FOptex.Enter;
   try
-    Result := PJclAISharedData(FMappingView.Memory)^.Count;
+    Result := PJclAISharedData(MappingView.Memory)^.Count;
   finally
     FOptex.Leave;
   end;
 end;
 
-function TJclAppInstances.GetInstanceIndex(ProcessID: DWORD): Integer;
+function TJclAppInstances.GetInstanceIndex(MappingView: TJclFileMappingView; ProcessID: DWORD): Integer;
 var
   I: Integer;
   SharedData: PJclAISharedData;
@@ -297,7 +383,7 @@ begin
   Result := -1;
   FOptex.Enter;
   try
-    SharedData := PJclAISharedData(FMappingView.Memory);
+    SharedData := PJclAISharedData(MappingView.Memory);
     for I := 0 to SharedData^.Count - 1 do
       if SharedData^.ProcessIDs[I] = ProcessID then
       begin
@@ -309,13 +395,13 @@ begin
   end;
 end;
 
-function TJclAppInstances.GetProcessIDs(Index: Integer): DWORD;
+function TJclAppInstances.GetProcessIDs(MappingView: TJclFileMappingView; Index: Integer): DWORD;
 var
   SharedData: PJclAISharedData;
 begin
   FOptex.Enter;
   try
-    SharedData := PJclAISharedData(FMappingView.Memory);
+    SharedData := PJclAISharedData(MappingView.Memory);
     if Index >= SharedData^.Count then
       Result := 0
     else
@@ -325,27 +411,181 @@ begin
   end;
 end;
 
+function TJclAppInstances.GetSessionAppWnds(Index: Integer): THandle;
+begin
+  Result := GetApplicationWnd(GetProcessIDs(FSessionMappingView, Index));
+end;
+
+function TJclAppInstances.GetSessionInstanceCount: Integer;
+begin
+  Result := GetInstanceCount(FSessionMappingView);
+end;
+
+function TJclAppInstances.GetSessionInstanceIndex(ProcessID: DWORD): Integer;
+begin
+  Result := GetInstanceIndex(FSessionMappingView, ProcessID);
+end;
+
+function TJclAppInstances.GetSessionProcessIDs(Index: Integer): DWORD;
+begin
+  Result := GetProcessIDs(FSessionMappingView, Index);
+end;
+
+function TJclAppInstances.GetUserAppWnds(Index: Integer): THandle;
+begin
+  Result := GetApplicationWnd(GetProcessIDs(FUserMappingView, Index));
+end;
+
+function TJclAppInstances.GetUserInstanceCount: Integer;
+begin
+  Result := GetInstanceCount(FUserMappingView);
+end;
+
+function TJclAppInstances.GetUserInstanceIndex(ProcessID: DWORD): Integer;
+begin
+  Result := GetInstanceIndex(FUserMappingView, ProcessID);
+end;
+
+function TJclAppInstances.GetUserProcessIDs(Index: Integer): DWORD;
+begin
+  Result := GetProcessIDs(FUserMappingView, Index);
+end;
+
+const
+  ACL_REVISION = 2;
+
+type
+  _ACE_HEADER = record
+    AceType: BYTE;
+    AceFlags: BYTE;
+    AceSize: WORD;
+  end;
+  ACE_HEADER = _ACE_HEADER;
+  PACE_HEADER = ^_ACE_HEADER;
+
+  _ACCESS_ALLOWED_ACE = record
+    Header: ACE_HEADER;
+    Mask: ACCESS_MASK;
+    SidStart: DWORD;
+  end;
+
+  ACCESS_ALLOWED_ACE = _ACCESS_ALLOWED_ACE;
+  PACCESS_ALLOWED_ACE = ^_ACCESS_ALLOWED_ACE;
+  
 procedure TJclAppInstances.InitData;
-var
-  UniqueAppID: string;
 begin
   if ExplicitUniqueAppId <> '' then
-    UniqueAppID := JclAIPrefix + ExplicitUniqueAppId
+    FUniqueAppID := JclAIPrefix + ExplicitUniqueAppId
   else
-    UniqueAppID := AnsiUpperCase(JclAIPrefix + ParamStr(0));
-  CharReplace(UniqueAppID, '\', '_');
-  FOptex := TJclOptex.Create(UniqueAppID + JclAIOptex, 4000);
-  FOptex.Enter;
+    FUniqueAppID := AnsiUpperCase(JclAIPrefix + ParamStr(0));
+
+  CharReplace(FUniqueAppID, '\', '_');
+
+  FMessageID := RegisterWindowMessage(PChar(FUniqueAppID + JclAIMessage));
+
+  FOptex := TJclOptex.Create(FUniqueAppID + JclAIOptex, 4000);
+
+  InitAllData;
+  InitSessionData;
+  InitUserData;
+end;
+
+procedure TJclAppInstances.InitAllData;
+var
+  UserInfo: PTokenUser;
+  ACL: PACL;
+  SID: PSID;
+  SecurityAttributes: PSecurityAttributes;
+  SecurityDescriptor: PSecurityDescriptor;
+begin
+  UserInfo := nil;
+  ACL := nil;
+  SID := nil;
+  SecurityDescriptor := nil;
+  SecurityAttributes := nil;
   try
-    FMapping := TJclSwapFileMapping.Create(UniqueAppID + JclAIMapping,
-      PAGE_READWRITE, SizeOf(TJclAISharedData), nil);
-    FMappingView := FMapping.Views[FMapping.Add(FILE_MAP_ALL_ACCESS, SizeOf(TJclAISharedData), 0)];
-    if not FMapping.Existed then
-      FillChar(FMappingView.Memory^, SizeOf(TJclAISharedData), #0);
+    SecurityGetAllUsers(UserInfo, SID, ACL, SecurityDescriptor, SecurityAttributes);
+
+    FOptex.Enter;
+    try
+      FAllMapping := TJclSwapFileMapping.Create(FUniqueAppID + JclAIAllMapping,
+        PAGE_READWRITE, SizeOf(TJclAISharedData), SecurityAttributes);
+      FAllMappingView := FAllMapping.Views[FAllMapping.Add(FILE_MAP_ALL_ACCESS, SizeOf(TJclAISharedData), 0)];
+      if not FAllMapping.Existed then
+        FillChar(FAllMappingView.Memory^, SizeOf(TJclAISharedData), #0);
+    finally
+      FOptex.Leave;
+    end;
   finally
-    FOptex.Leave;
+    SecurityFree(UserInfo, SID, ACL, SecurityDescriptor, SecurityAttributes);
   end;
-  FMessageID := RegisterWindowMessage(PChar(UniqueAppID + JclAIMessage));
+end;
+
+procedure TJclAppInstances.InitSessionData;
+var
+  UserInfo: PTokenUser;
+  ACL: PACL;
+  SID: PSID;
+  SecurityAttributes: PSecurityAttributes;
+  SecurityDescriptor: PSecurityDescriptor;
+  SessionID: DWORD;
+begin
+  UserInfo := nil;
+  ACL := nil;
+  SID := nil;
+  SecurityDescriptor := nil;
+  SecurityAttributes := nil;
+  try
+    SecurityGetAllUsers(UserInfo, SID, ACL, SecurityDescriptor, SecurityAttributes);
+
+    SessionID := 0;
+    ProcessIdToSessionId(GetCurrentProcessId, SessionID); // RESULT
+    FOptex.Enter;
+    try
+      FSessionMapping := TJclSwapFileMapping.Create(FUniqueAppID + JclAISessionMapping + IntToStr(SessionID),
+        PAGE_READWRITE, SizeOf(TJclAISharedData), SecurityAttributes);
+      FSessionMappingView := FSessionMapping.Views[FSessionMapping.Add(FILE_MAP_ALL_ACCESS, SizeOf(TJclAISharedData), 0)];
+      if not FSessionMapping.Existed then
+        FillChar(FSessionMappingView.Memory^, SizeOf(TJclAISharedData), #0);
+    finally
+      FOptex.Leave;
+    end;
+  finally
+    SecurityFree(UserInfo, SID, ACL, SecurityDescriptor, SecurityAttributes);
+  end;
+end;
+
+procedure TJclAppInstances.InitUserData;
+var
+  UserInfo: PTokenUser;
+  ACL: PACL;
+  SID: PSID;
+  SecurityAttributes: PSecurityAttributes;
+  SecurityDescriptor: PSecurityDescriptor;
+  UserName, GroupName: string;
+begin
+  UserInfo := nil;
+  ACL := nil;
+  SID := nil;
+  SecurityDescriptor := nil;
+  SecurityAttributes := nil;
+  try
+    SecurityGetCurrentUser(UserInfo, SID, ACL, SecurityDescriptor, SecurityAttributes);
+    LookupAccountBySid(UserInfo.User.Sid, UserName, GroupName);
+
+    FOptex.Enter;
+    try
+      FUserMapping := TJclSwapFileMapping.Create(FUniqueAppID + JclAIUserMapping + UserName + '_' + GroupName,
+        PAGE_READWRITE, SizeOf(TJclAISharedData), SecurityAttributes);
+      FUserMappingView := FUserMapping.Views[FUserMapping.Add(FILE_MAP_ALL_ACCESS, SizeOf(TJclAISharedData), 0)];
+      if not FUserMapping.Existed then
+        FillChar(FUserMappingView.Memory^, SizeOf(TJclAISharedData), #0);
+    finally
+      FOptex.Leave;
+    end;
+  finally
+    SecurityFree(UserInfo, SID, ACL, SecurityDescriptor, SecurityAttributes);
+  end;
 end;
 
 class procedure TJclAppInstances.KillInstance;
@@ -369,7 +609,7 @@ var
 begin
   FOptex.Enter;
   try
-    SharedData := PJclAISharedData(FMappingView.Memory);
+    SharedData := PJclAISharedData(FAllMappingView.Memory);
     for I := 0 to SharedData^.Count - 1 do
     begin
       Wnd := GetApplicationWnd(SharedData^.ProcessIDs[I]);
@@ -391,14 +631,14 @@ begin
   end;
 end;
 
-procedure TJclAppInstances.RemoveInstance;
+procedure TJclAppInstances.RemoveInstance(MappingView: TJclFileMappingView);
 var
   I: Integer;
   SharedData: PJclAISharedData;
 begin
   FOptex.Enter;
   try
-    SharedData := PJclAISharedData(FMappingView.Memory);
+    SharedData := PJclAISharedData(MappingView.Memory);
     for I := 0 to SharedData^.Count - 1 do
       if SharedData^.ProcessIDs[I] = FCPID then
       begin
@@ -410,7 +650,107 @@ begin
   finally
     FOptex.Leave;
   end;
-  NotifyInstances(AI_INSTANCEDESTROYED, Integer(FCPID));
+end;
+
+procedure TJclAppInstances.SecurityFree(UserInfo: PTokenUser; SID: PSID; ACL: PACL;
+  SecurityDescriptor: PSecurityDescriptor; SecurityAttributes: PSecurityAttributes);
+begin
+  if Assigned(UserInfo) then
+    FreeMem(UserInfo);
+  if Assigned(SID) then
+    FreeSID(SID);
+  if Assigned(ACL) then
+    FreeMem(ACL);
+  if Assigned(SecurityDescriptor) then
+    FreeMem(SecurityDescriptor);
+  if Assigned(SecurityAttributes) then
+    FreeMem(SecurityAttributes);
+end;
+
+procedure TJclAppInstances.SecurityGetAllUsers(out UserInfo: PTokenUser; out SID: PSID; out ACL: PACL;
+  out SecurityDescriptor: PSecurityDescriptor; out SecurityAttributes: PSecurityAttributes);
+var
+  WorldAuth: Windows.SID_IDENTIFIER_AUTHORITY;
+begin
+  UserInfo := nil;
+  ACL := nil;
+  SID := nil;
+  SecurityDescriptor := nil;
+  SecurityAttributes := nil;
+
+  SecurityGetCurrentUserInfo(UserInfo);
+
+    // Retrieve the SID of the Everyone group.
+  WorldAuth := JclWin32.SECURITY_WORLD_SID_AUTHORITY;
+  AllocateAndInitializeSid(WorldAuth, 1, SECURITY_WORLD_RID, 0, 0, 0, 0, 0, 0, 0, SID); // RESULT
+
+  SecurityGetSecurityAttributes(UserInfo^.User.Sid, SID, ACL, SecurityDescriptor, SecurityAttributes);
+end;
+
+procedure TJclAppInstances.SecurityGetCurrentUser(out UserInfo: PTokenUser; out SID: PSID; out ACL: PACL; 
+  out SecurityDescriptor: PSecurityDescriptor; out SecurityAttributes: PSecurityAttributes);
+begin
+  UserInfo := nil;
+  ACL := nil;
+  SID := nil;
+  SecurityDescriptor := nil;
+  SecurityAttributes := nil;
+  SecurityGetCurrentUserInfo(UserInfo);
+  SecurityGetSecurityAttributes(UserInfo^.User.Sid, UserInfo.User.Sid, ACL, SecurityDescriptor, SecurityAttributes);
+end;
+
+procedure TJclAppInstances.SecurityGetCurrentUserInfo(out UserInfo: PTokenUser);
+var
+  ProcessToken: THandle;
+  TokenInfoSize: DWORD;
+  HaveToken: Boolean;
+begin
+  UserInfo := nil;
+  ProcessToken := 0;
+  try
+    HaveToken := OpenThreadToken(GetCurrentThread, TOKEN_QUERY, True, ProcessToken);
+    if (not HaveToken) and (GetLastError = ERROR_NO_TOKEN) then
+      HaveToken := OpenProcessToken(GetCurrentProcess, TOKEN_QUERY, ProcessToken);
+    if not HaveToken then
+      RaiseLastOSError;
+
+    if GetTokenInformation(ProcessToken, TokenUser, nil, 0, TokenInfoSize) or
+     (GetLastError <> ERROR_INSUFFICIENT_BUFFER) then
+       RaiseLastOSError;
+    UserInfo := PTokenUser(AllocMem(TokenInfoSize));
+    Win32Check(GetTokenInformation(ProcessToken, TokenUser, UserInfo, TokenInfoSize, TokenInfoSize));
+  finally
+    if ProcessToken <> 0 then
+      CloseHandle(ProcessToken);
+  end;
+end;
+
+procedure TJclAppInstances.SecurityGetSecurityAttributes(OwnerSID, AccessSID: PSID; out ACL: PACL;
+ out SecurityDescriptor: PSecurityDescriptor; out SecurityAttributes: PSecurityAttributes);
+var
+  ACLSize: SizeInt;
+begin
+  // create the ACL
+  ACLSize := SizeOf(TACL) + SizeOf(ACCESS_ALLOWED_ACE) + SizeOf(DWORD) + GetLengthSid(AccessSID);
+  ACL := AllocMem(ACLSize);
+  Win32Check(InitializeAcl(ACL^, ACLSize, ACL_REVISION));
+  Win32Check(AddAccessAllowedAce(ACL^, ACL_REVISION, FILE_MAP_ALL_ACCESS, AccessSID));
+  Assert(IsValidAcl(ACL^));
+
+  // create the security descriptor
+  SecurityDescriptor := AllocMem(SECURITY_DESCRIPTOR_MIN_LENGTH);
+  Win32Check(InitializeSecurityDescriptor(SecurityDescriptor, SECURITY_DESCRIPTOR_REVISION));
+  Win32Check(SetSecurityDescriptorSacl(SecurityDescriptor, False, nil, True));
+  Win32Check(SetSecurityDescriptorOwner(SecurityDescriptor, OwnerSID, False));
+  Win32Check(SetSecurityDescriptorGroup(SecurityDescriptor, OwnerSID, False));
+  Win32Check(SetSecurityDescriptorDacl(SecurityDescriptor, True, ACL, False));
+  Assert(IsValidSecurityDescriptor(SecurityDescriptor));
+
+  // create the security attributes
+  SecurityAttributes := AllocMem(SizeOf(SecurityAttributes^));
+  SecurityAttributes^.nLength := SizeOf(SecurityAttributes^);
+  SecurityAttributes^.lpSecurityDescriptor := SecurityDescriptor;
+  SecurityAttributes^.bInheritHandle := False;
 end;
 
 function TJclAppInstances.SendCmdLineParams(const WindowClassName: string; const OriginatorWnd: THandle): Boolean;
@@ -452,7 +792,7 @@ begin
     Found := False;
     Data.Self.FOptex.Enter;
     try
-      SharedData := PJclAISharedData(Data.Self.FMappingView.Memory);
+      SharedData := PJclAISharedData(Data.Self.FAllMappingView.Memory);
       for I := 0 to SharedData^.Count - 1 do
         if SharedData^.ProcessIDs[I] = PID then
         begin
@@ -499,6 +839,11 @@ begin
   Result := SendString(WindowClassName, DataKind, Strings.Text, OriginatorWnd);
 end;
 
+function TJclAppInstances.SessionSwitchTo(Index: Integer): Boolean;
+begin
+  Result := BringAppWindowToFront(SessionAppWnds[Index]);
+end;
+
 class function TJclAppInstances.SetForegroundWindow98(const Wnd: THandle): Boolean;
 var
   ForeThreadID, NewThreadID: DWORD;
@@ -522,14 +867,19 @@ begin
     Result := True;
 end;
 
-function TJclAppInstances.SwitchTo(const Index: Integer): Boolean;
+function TJclAppInstances.SwitchTo(Index: Integer): Boolean;
 begin
   Result := BringAppWindowToFront(AppWnds[Index]);
 end;
 
-procedure TJclAppInstances.UserNotify(const Param: Integer);
+procedure TJclAppInstances.UserNotify(Param: Longint);
 begin
   NotifyInstances(AI_USERMSG, Param);
+end;
+
+function TJclAppInstances.UserSwitchTo(Index: Integer): Boolean;
+begin
+  Result := BringAppWindowToFront(UserAppWnds[Index]);
 end;
 
 function JclAppInstances: TJclAppInstances;

@@ -3094,8 +3094,11 @@ function LocateExtendedFeature(ContextEx: PCONTEXT_EX; FeatureId: DWORD; Length:
 function LocateLegacyContext(ContextEx: PCONTEXT_EX; Length: PDWORD): PCONTEXT; stdcall;
 {$EXTERNALSYM LocateLegacyContext}
 
-procedure SetExtendedFeaturesMask(ContextEx: PCONTEXT_EX; const FeatureMask: Int64);
+procedure SetExtendedFeaturesMask(ContextEx: PCONTEXT_EX; const FeatureMask: Int64); stdcall;
 {$EXTERNALSYM SetExtendedFeaturesMask}
+
+function ProcessIdToSessionId(dwProcessId: DWORD; out dwSessionId: DWORD): BOOL; stdcall;
+{$EXTERNALSYM ProcessIdToSessionId}
 
 
 // From JwaAclApi
@@ -8527,7 +8530,7 @@ begin
 end;
 
 type
-  TSetExtendedFeaturesMask = procedure (ContextEx: PCONTEXT_EX; const FeatureMask: Int64);
+  TSetExtendedFeaturesMask = procedure (ContextEx: PCONTEXT_EX; const FeatureMask: Int64); stdcall;
 
 var
   _SetExtendedFeaturesMask: TSetExtendedFeaturesMask = nil;
@@ -8536,6 +8539,18 @@ procedure SetExtendedFeaturesMask(ContextEx: PCONTEXT_EX; const FeatureMask: Int
 begin
   GetProcedureAddress(Pointer(@_SetExtendedFeaturesMask), kernel32, 'SetExtendedFeaturesMask');
   _SetExtendedFeaturesMask(ContextEx, FeatureMask);
+end;
+
+type
+  TProcessIdToSessionId = function (dwProcessId: DWORD; out dwSessionId: DWORD): BOOL; stdcall;
+
+var
+  _ProcessIdToSessionId: TProcessIdToSessionId = nil;
+
+function ProcessIdToSessionId(dwProcessId: DWORD; out dwSessionId: DWORD): BOOL;
+begin
+  GetProcedureAddress(Pointer(@_ProcessIdToSessionId), kernel32, 'ProcessIdToSessionId');
+  Result := _ProcessIdToSessionId(dwProcessId, dwSessionId);
 end;
 
 

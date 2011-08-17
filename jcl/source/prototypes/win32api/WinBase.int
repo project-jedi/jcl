@@ -176,7 +176,10 @@ function LocateExtendedFeature(ContextEx: PCONTEXT_EX; FeatureId: DWORD; Length:
 function LocateLegacyContext(ContextEx: PCONTEXT_EX; Length: PDWORD): PCONTEXT; stdcall;
 {$EXTERNALSYM LocateLegacyContext}
 
-procedure SetExtendedFeaturesMask(ContextEx: PCONTEXT_EX; const FeatureMask: Int64);
+procedure SetExtendedFeaturesMask(ContextEx: PCONTEXT_EX; const FeatureMask: Int64); stdcall;
 {$EXTERNALSYM SetExtendedFeaturesMask}
+
+function ProcessIdToSessionId(dwProcessId: DWORD; out dwSessionId: DWORD): BOOL; stdcall;
+{$EXTERNALSYM ProcessIdToSessionId}
 
 {$ENDIF MSWINDOWS}
