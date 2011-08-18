@@ -38,7 +38,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -1955,6 +1955,7 @@ resourcestring
   RsProductTypeWebEdition       = 'Web Edition';
 
   RsEOpenGLInfo = 'GetOpenGLVersion: %s failed';
+  RsENetWkstaGetInfo = 'NetWkstaGetInfo failed';
 
   {$IFDEF MSWINDOWS}
   RsSPInfo = 'SP%u';

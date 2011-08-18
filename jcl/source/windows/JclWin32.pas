@@ -5041,6 +5041,25 @@ type
 function NetApiBufferFree(Buffer: Pointer): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetApiBufferFree}
 
+type
+  _WKSTA_INFO_100 = record
+    wki100_platform_id: DWORD;
+    wki100_computername: LMSTR;
+    wki100_langroup: LMSTR;
+    wki100_ver_major: DWORD;
+    wki100_ver_minor: DWORD;
+  end;
+  {$EXTERNALSYM _WKSTA_INFO_100}
+  WKSTA_INFO_100 = _WKSTA_INFO_100;
+  {$EXTERNALSYM WKSTA_INFO_100}
+  PWKSTA_INFO_100 = ^_WKSTA_INFO_100;
+  {$EXTERNALSYM PWKSTA_INFO_100}
+  LPWKSTA_INFO_100 = ^_WKSTA_INFO_100;
+  {$EXTERNALSYM LPWKSTA_INFO_100}
+
+function NetWkstaGetInfo(servername: PWideChar; level: DWORD; out bufptr: PByte): NET_API_STATUS; stdcall;
+{$EXTERNALSYM NetWkstaGetInfo}
+
 (****************************************************************
  *                                                              *
  *              Data structure templates                        *
@@ -8230,6 +8249,20 @@ function NetApiBufferFree(Buffer: Pointer): NET_API_STATUS;
 begin
   GetProcedureAddress(Pointer(@_NetApiBufferFree), netapi32, 'NetApiBufferFree');
   Result := _NetApiBufferFree(Buffer);
+end;
+
+
+
+type
+  TNetWkstaGetInfo = function (servername: PWideChar; level: DWORD; out bufptr: PByte): NET_API_STATUS; stdcall;
+
+var
+  _NetWkstaGetInfo: TNetWkstaGetInfo = nil;
+
+function NetWkstaGetInfo(servername: PWideChar; level: DWORD; out bufptr: PByte): NET_API_STATUS; stdcall;
+begin
+  GetProcedureAddress(Pointer(@_NetWkstaGetInfo), netapi32, 'NetWkstaGetInfo');
+  Result := _NetWkstaGetInfo(servername, level, bufptr);
 end;
 
 

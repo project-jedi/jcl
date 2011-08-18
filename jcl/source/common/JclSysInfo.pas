@@ -190,6 +190,7 @@ function GetLocalComputerName: string;
 function GetLocalUserName: string;
 {$IFDEF MSWINDOWS}
 function GetUserDomainName(const CurUser: string): string;
+function GetWorkGroupName: WideString;
 {$ENDIF MSWINDOWS}
 function GetDomainName: string;
 {$IFDEF MSWINDOWS}
@@ -2277,6 +2278,18 @@ begin
   finally
     FreeMem(Sd);
   end;
+end;
+
+function GetWorkGroupName: WideString;
+var
+  WkstaInfo: PByte;
+  WkstaInfo100: PWKSTA_INFO_100;
+begin
+  if NetWkstaGetInfo(nil, 100, WkstaInfo) <> NERR_Success then
+    raise EJclWin32Error.CreateRes(@RsENetWkstaGetInfo);
+  WkstaInfo100 := PWKSTA_INFO_100(WkstaInfo);
+  Result := WideString(PWideChar(WkstaInfo100^.wki100_langroup));
+  NetApiBufferFree(Pointer(WkstaInfo));
 end;
 
 {$ENDIF MSWINDOWS}

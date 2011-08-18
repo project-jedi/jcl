@@ -119,6 +119,7 @@ type
 {$I win32api\LmCons.int}
 {$I win32api\LmAccess.int}
 {$I win32api\LmApiBuf.int}
+{$I win32api\Lmwksta.int}
 {$I win32api\Nb30.int}
 {$I win32api\RasDlg.int}
 {$I win32api\Reason.int}
@@ -280,6 +281,7 @@ end;
 {$I win32api\ImageHlp.imp}
 {$I win32api\LmAccess.imp}
 {$I win32api\LmApiBuf.imp}
+{$I win32api\Lmwksta.imp}
 {$I win32api\Nb30.imp}
 {$I win32api\WinBase.imp}
 {$I win32api\WinNLS.imp}
