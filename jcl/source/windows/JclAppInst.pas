@@ -562,7 +562,7 @@ var
   SID: PSID;
   SecurityAttributes: PSecurityAttributes;
   SecurityDescriptor: PSecurityDescriptor;
-  UserName, GroupName: string;
+  UserName, GroupName: WideString;
 begin
   UserInfo := nil;
   ACL := nil;
