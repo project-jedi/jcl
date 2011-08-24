@@ -23,7 +23,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -332,8 +332,10 @@ type
     procedure InitEnvironmentProperties;
     procedure InitReservedProperties;
 
-    // do not encode '
+    // encode just <, > and &
     procedure XMLEncodeValue(Sender: TObject; var Value: string);
+    // decode all entities
+    procedure XMLDecodeValue(Sender: TObject; var Value: string);
 
     property CurrentFileName: TFileName read FCurrentFileName;
     property ProjectFileName: TFileName read FProjectFileName;
@@ -824,6 +826,7 @@ begin
   try
     AXml.Options := AXml.Options - [sxoAutoEncodeValue,sxoAutoEncodeEntity];
     AXml.OnEncodeValue := XMLEncodeValue;
+    AXml.OnDecodeValue := XMLDecodeValue;
     AXml.LoadFromFile(AFileName, Encoding, CodePage);
   except
     AXml.Free;
@@ -1791,6 +1794,7 @@ begin
         SubXml := TJclSimpleXML.Create;
         SubXml.Options := SubXml.Options - [sxoAutoEncodeValue,sxoAutoEncodeEntity];
         SubXml.OnEncodeValue := XMLEncodeValue;
+        SubXml.OnDecodeValue := XMLDecodeValue;
         SubXml.LoadFromFile(Project);
         SubOwnsXml := True;
       end;
@@ -2604,10 +2608,16 @@ begin
   Xml.SaveToFile(ProjectFileName);
 end;
 
+procedure TJclMsBuildParser.XMLDecodeValue(Sender: TObject; var Value: string);
+begin
+  Value := XMLDecode(Value);
+end;
+
 procedure TJclMsBuildParser.XMLEncodeValue(Sender: TObject; var Value: string);
 begin
-  Value := SimpleXMLEncode(Value);
-  StrReplace(Value, '&apos;', NativeSingleQuote, [rfReplaceAll]);
+  StrReplace(Value, '&', '&amp;', [rfReplaceAll]);
+  StrReplace(Value, '<', '&lt;', [rfReplaceAll]);
+  StrReplace(Value, '>', '&gt;', [rfReplaceAll]);
 end;
 
 {$IFDEF UNITVERSIONING}
