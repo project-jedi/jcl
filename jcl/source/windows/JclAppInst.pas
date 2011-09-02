@@ -30,7 +30,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -47,7 +47,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.Windows, System.Classes, Winapi.Messages,
+  {$ELSE ~HAS_UNITSCOPE}
   Windows, Classes, Messages,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclBase, JclFileUtils, JclSynch, JclWin32;
 
 // Message constants and types
@@ -178,7 +182,11 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.SysUtils,
+  {$ELSE ~HAS_UNITSCOPE}
   SysUtils,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclSecurity,
   JclStrings;
 
@@ -670,7 +678,7 @@ end;
 procedure TJclAppInstances.SecurityGetAllUsers(out UserInfo: PTokenUser; out SID: PSID; out ACL: PACL;
   out SecurityDescriptor: PSecurityDescriptor; out SecurityAttributes: PSecurityAttributes);
 var
-  WorldAuth: Windows.SID_IDENTIFIER_AUTHORITY;
+  WorldAuth: {$IFDEF HAS_UNITSCOPE}WinApi.{$ENDIF HAS_UNITSCOPE}Windows.SID_IDENTIFIER_AUTHORITY;
 begin
   UserInfo := nil;
   ACL := nil;

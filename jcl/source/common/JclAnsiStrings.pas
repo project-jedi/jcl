@@ -63,6 +63,15 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  {$IFDEF MSWINDOWS}
+  Winapi.Windows,
+  {$ENDIF MSWINDOWS}
+  System.Classes, System.SysUtils,
+  {$IFDEF HAS_UNIT_ANSISTRINGS}
+  System.AnsiStrings,
+  {$ENDIF HAS_UNIT_ANSISTRINGS}
+  {$ELSE ~HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
@@ -70,6 +79,7 @@ uses
   {$IFDEF HAS_UNIT_ANSISTRINGS}
   AnsiStrings,
   {$ENDIF HAS_UNIT_ANSISTRINGS}
+  {$ENDIF ~HAS_UNITSCOPE}
   JclBase;
 
 // Ansi types
@@ -599,8 +609,8 @@ begin
       {$IFDEF MSWINDOWS}
       LoCaseChar := CurrChar;
       UpCaseChar := CurrChar;
-      Windows.CharLowerBuffA(@LoCaseChar, 1);
-      Windows.CharUpperBuffA(@UpCaseChar, 1);
+      {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.CharLowerBuffA(@LoCaseChar, 1);
+      {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.CharUpperBuffA(@UpCaseChar, 1);
       {$DEFINE CASE_MAP_INITIALIZED}
       {$ENDIF MSWINDOWS}
       {$IFDEF LINUX}

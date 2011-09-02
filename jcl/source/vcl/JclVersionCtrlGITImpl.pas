@@ -19,9 +19,9 @@
 { }
 { ************************************************************************************************** }
 { }
-{ Last modified: $Date:: 2011-06-13 22:29:42 +0200 (Mo, 13 Jun 2011)                             $ }
-{ Revision:      $Rev:: 3537                                                                     $ }
-{ Author:        $Author:: jfudickar                                                             $ }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 { }
 { ************************************************************************************************** }
 
@@ -35,7 +35,11 @@ uses
 {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
 {$ENDIF UNITVERSIONING}
-  SysUtils, Classes, Windows, Graphics,
+  {$IFDEF HAS_UNITSCOPE}
+  System.SysUtils, Winapi.Windows, System.Classes, Vcl.Graphics,
+  {$ELSE ~HAS_UNITSCOPE}
+  SysUtils, Windows, Classes, Graphics,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclVersionControl;
 
 type
@@ -60,8 +64,8 @@ type
 
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/trunk/jcl/source/vcl/JclVersionCtrlGITImpl.pas $';
-    Revision: '$Revision: 3537 $'; Date: '$Date: 2011-06-13 22:29:42 +0200 (Mo, 13 Jun 2011) $';
+    RCSfile: '$URL$';
+    Revision: '$Revision$'; Date: '$Date$';
     LogPath: 'JCL\source\vcl'; Extra: ''; Data: nil);
 {$ENDIF UNITVERSIONING}
 

@@ -39,14 +39,22 @@ unit JclUnitVersioningProviders;
 interface
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  {$IFDEF MSWINDOWS}
+  Winapi.Windows,
+  JclPeImage,
+  {$ENDIF MSWINDOWS}
+  System.SysUtils, System.Classes, System.Contnrs,
+  {$ELSE ~HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
   Windows,
   JclPeImage,
   {$ENDIF MSWINDOWS}
+  SysUtils, Classes, Contnrs,
+  {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF LINUX}
   Types,
   {$ENDIF LINUX}
-  SysUtils, Classes, Contnrs,
   JclUnitVersioning;
 
 type

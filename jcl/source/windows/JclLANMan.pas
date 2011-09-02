@@ -52,7 +52,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.Windows, System.SysUtils, System.Classes;
+  {$ELSE ~HAS_UNITSCOPE}
   Windows, SysUtils, Classes;
+  {$ENDIF ~HAS_UNITSCOPE}
 
 // User Management
 type
@@ -380,7 +384,7 @@ end;
 
 function LookupGroupName(const Server: string; const RID: TNetWellKnownRID): string;
 var
-  sia: Windows.SID_IDENTIFIER_AUTHORITY;
+  sia: {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.SID_IDENTIFIER_AUTHORITY;
   rd1, rd2: DWORD;
   ridCount: Integer;
   sd: PSID;

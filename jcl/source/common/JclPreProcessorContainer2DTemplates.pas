@@ -175,10 +175,17 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.TypInfo,
+  System.SysUtils,
+  Winapi.ActiveX,
+  System.Win.ComObj,
+  {$ELSE ~HAS_UNITSCOPE}
   TypInfo,
   SysUtils,
   ActiveX,
   ComObj,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclRTTI,
   JclSysUtils,
   JclContainerIntf,

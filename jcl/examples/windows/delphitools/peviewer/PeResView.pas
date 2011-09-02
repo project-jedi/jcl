@@ -30,9 +30,15 @@ unit PeResView;
 interface
 
 uses
+  //SHDocVw_TLB needs an adjustment for XE2
+  {$IFDEF RTL230_UP}
+  SHDocVw,
+  {$ELSE ~RTL230_UP}
+  SHDocVw_TLB,
+  {$ENDIF ~RTL230_UP}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   JclPeImage, PeResource, JclLogic, JclGraphUtils, ComCtrls, StdCtrls,
-  ExtCtrls, Grids, ToolWin, ActnList, OleCtrls, Menus, SHDocVw_TLB;
+  ExtCtrls, Grids, ToolWin, ActnList, OleCtrls, Menus;
 
 type
   TPeResViewChild = class(TForm)

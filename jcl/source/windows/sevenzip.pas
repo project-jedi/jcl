@@ -59,8 +59,11 @@ interface
 {$I windowsonly.inc}
 
 uses
-  Windows,
-  ActiveX,
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.ActiveX, Winapi.Windows,
+  {$ELSE ~HAS_UNITSCOPE}
+  ActiveX, Windows,
+  {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}

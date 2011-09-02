@@ -43,7 +43,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.Windows, System.Classes, System.SysUtils, System.Contnrs,
+  {$ELSE ~HAS_UNITSCOPE}
   Windows, Classes, SysUtils, Contnrs,
+  {$ENDIF ~HAS_UNITSCOPE}
   MSTask,
   JclBase, JclSysUtils, JclSysInfo, JclWideStrings, JclWin32;
 
@@ -152,8 +156,8 @@ type
     function GetExitCode: DWORD;
     function GetDeadlineMinutes: Word;
     function GetIdleMinutes: Word;
-    function GetMostRecentRunTime: Windows.TSystemTime;
-    function GetNextRunTime: Windows.TSystemTime;
+    function GetMostRecentRunTime: {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.TSystemTime;
+    function GetNextRunTime: {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.TSystemTime;
     function GetStatus: TJclScheduledTaskStatus;
     function GetErrorRetryCount: Word;
     procedure SetErrorRetryCount(const Value: Word);
@@ -186,8 +190,8 @@ type
     property OwnerData: TStream read GetData write SetData;  { TODO : wrong design, get: stream is owned by instance, set stream is owned by caller }
     property IdleMinutes: Word read GetIdleMinutes;
     property DeadlineMinutes: Word read GetDeadlineMinutes;
-    property MostRecentRunTime: Windows.TSystemTime read GetMostRecentRunTime;
-    property NextRunTime: Windows.TSystemTime read GetNextRunTime;
+    property MostRecentRunTime: {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.TSystemTime read GetMostRecentRunTime;
+    property NextRunTime: {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.TSystemTime read GetNextRunTime;
     property Status: TJclScheduledTaskStatus read GetStatus;
     property Flags: TJclScheduledTaskFlags read GetFlags write SetFlags;
     property Triggers[const Idx: Integer]: TJclTaskTrigger read GetTrigger; default;
@@ -235,10 +239,17 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.ActiveX, System.Win.ComObj,
+  {$IFDEF BORLAND}
+  Winapi.CommCtrl,
+  {$ENDIF BORLAND}
+  {$ELSE ~HAS_UNITSCOPE}
   ActiveX, ComObj,
   {$IFDEF BORLAND}
   CommCtrl,
   {$ENDIF BORLAND}
+  {$ENDIF ~HAS_UNITSCOPE}
   JclSvcCtrl;
 
 const
@@ -704,7 +715,7 @@ begin
     SetLength(Result, Count);
     for I := 0 to Count-1 do
     begin
-      Result[I] := SystemTimeToDateTime(Windows.PSystemTime(TaskTimes)^);
+      Result[I] := SystemTimeToDateTime({$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.PSystemTime(TaskTimes)^);
       Inc(TaskTimes);
     end;
   finally

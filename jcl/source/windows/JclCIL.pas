@@ -45,10 +45,17 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
-  Windows, 
+  Winapi.Windows,
+  {$ENDIF MSWINDOWS}
+  System.Classes, System.SysUtils, System.Contnrs,
+  {$ELSE ~HAS_UNITSCOPE}
+  {$IFDEF MSWINDOWS}
+  Windows,
   {$ENDIF MSWINDOWS}
   Classes, SysUtils, Contnrs,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclBase, JclSysUtils, JclMetadata;
 
 type
@@ -214,7 +221,11 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.Variants,
+  {$ELSE ~HAS_UNITSCOPE}
   Variants,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclCLR,
   JclPeImage,
   JclStrings, JclResources;

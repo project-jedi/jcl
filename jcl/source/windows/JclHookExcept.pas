@@ -43,7 +43,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.Windows, System.SysUtils, System.Classes;
+  {$ELSE ~HAS_UNITSCOPE}
   Windows, SysUtils, Classes;
+  {$ENDIF ~HAS_UNITSCOPE}
 
 type
   // Exception hooking notifiers routines

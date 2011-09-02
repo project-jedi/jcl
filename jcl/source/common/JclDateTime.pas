@@ -58,9 +58,17 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  {$IFDEF MSWINDOWS}
+  Winapi.Windows,
+  {$ENDIF MSWINDOWS}
+  System.SysUtils,
+  {$ELSE ~HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
+  SysUtils,
+  {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
@@ -71,7 +79,6 @@ uses
   {$ENDIF ~LINUX}
   {$ENDIF FPC}
   {$ENDIF}
-  SysUtils,
   JclBase, JclResources;
 
 const
@@ -259,7 +266,7 @@ const
 function EncodeDate(const Year: Integer; Month, Day: Word): TDateTime; overload;
 begin
   if (Year > 0) and (Year < EncodeDateMaxYear + 1) then
-    Result := SysUtils.EncodeDate(Year, Month, Day)
+    Result := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.EncodeDate(Year, Month, Day)
   else
   begin
     if Year <= 0 then
@@ -277,7 +284,7 @@ end;
 
 procedure DecodeDate(Date: TDateTime; out Year, Month, Day: Word);
 begin
-  SysUtils.DecodeDate(Date, Year, Month, Day);
+  {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.DecodeDate(Date, Year, Month, Day);
 end;
 
 procedure DecodeDate(Date: TDateTime; out Year, Month, Day: Integer);
@@ -296,7 +303,7 @@ var
 begin
   if (Date >= DateTimeBaseDay) and (Date < DateTimeMaxDay) then
   begin
-    SysUtils.DecodeDate(Date, WYear, Month, Day);
+    {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.DecodeDate(Date, WYear, Month, Day);
     Year := WYear;
   end
   else
@@ -457,7 +464,7 @@ function ISODayOfWeek(const DateTime: TDateTime): Word;
 var
   TmpDayOfWeek: Word;
 begin
-  TmpDayOfWeek := SysUtils.DayOfWeek(DateTime);
+  TmpDayOfWeek := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.DayOfWeek(DateTime);
   if TmpDayOfWeek = 1 then
     Result := 7
   else
@@ -558,7 +565,7 @@ end;
 
 function IsLeapYear(const Year: Integer): Boolean;
 begin
-  Result := SysUtils.IsLeapYear(Year);
+  Result := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.IsLeapYear(Year);
 end;
 
 function IsLeapYear(const DateTime: TDateTime): Boolean;
@@ -828,7 +835,7 @@ end;
 
 function DosDateTimeToDateTime(const DosTime: TDosDateTime): TDateTime;
 begin
-  Result := SysUtils.FileDateToDateTime(DosTime);
+  Result := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.FileDateToDateTime(DosTime);
 end;
 
 // DateTimeToDosDateTime performs the same action as SysUtils.DateTimeToFileDate
@@ -845,14 +852,14 @@ end;
 
 function DateTimeToDosDateTime(const DateTime: TDateTime): TDosDateTime;
 begin
-  Result := SysUtils.DateTimeToFileDate(DateTime);
+  Result := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.DateTimeToFileDate(DateTime);
 end;
 
 {$IFDEF MSWINDOWS}
 
 function FileTimeToSystemTime(const FileTime: TFileTime): TSystemTime; overload;
 begin
-  ResultCheck(Windows.FileTimeToSystemTime(FileTime, Result));
+  ResultCheck({$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.FileTimeToSystemTime(FileTime, Result));
 end;
 
 procedure FileTimeToSystemTime(const FileTime: TFileTime; out ST: TSystemTime); overload;
@@ -860,41 +867,41 @@ begin
   {$IFDEF FPC}
   ST.Day := 0;
   {$ENDIF FPC}
-  Windows.FileTimeToSystemTime(FileTime, ST);
+  {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.FileTimeToSystemTime(FileTime, ST);
 end;
 
 function SystemTimeToFileTime(const SystemTime: TSystemTime): TFileTime;  overload;
 begin
   Result.dwHighDateTime := 0;
   Result.dwLowDateTime := 0;
-  ResultCheck(Windows.SystemTimeToFileTime(SystemTime, Result));
+  ResultCheck({$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.SystemTimeToFileTime(SystemTime, Result));
 end;
 
 procedure SystemTimeToFileTime(const SystemTime: TSystemTime; FTime: TFileTime); overload;
 begin
-  Windows.SystemTimeToFileTime(SystemTime, FTime);
+  {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.SystemTimeToFileTime(SystemTime, FTime);
 end;
 
 function DateTimeToSystemTime(DateTime: TDateTime): TSystemTime;  overload;
 begin
-  SysUtils.DateTimeToSystemTime(DateTime, Result);
+  {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.DateTimeToSystemTime(DateTime, Result);
 end;
 
 procedure DateTimeToSystemTime(DateTime: TDateTime; out SysTime: TSystemTime); overload;
 begin
-  SysUtils.DateTimeToSystemTime(DateTime, SysTime);
+  {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.DateTimeToSystemTime(DateTime, SysTime);
 end;
 
 function DosDateTimeToFileTime(DosTime: TDosDateTime): TFileTime; overload;
 begin
   Result.dwHighDateTime := 0;
   Result.dwLowDateTime := 0;
-  ResultCheck(Windows.DosDateTimeToFileTime(HIWORD(DosTime), LOWORD(DosTime), Result));
+  ResultCheck({$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.DosDateTimeToFileTime(HIWORD(DosTime), LOWORD(DosTime), Result));
 end;
 
 procedure DosDateTimeToFileTime(DTH, DTL: Word; FT: TFileTime); overload;
 begin
-  Windows.DosDateTimeToFileTime(DTH, DTL, FT);
+  {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.DosDateTimeToFileTime(DTH, DTL, FT);
 end;
 
 function FileTimeToDosDateTime(const FileTime: TFileTime): TDosDateTime; overload;
@@ -903,7 +910,7 @@ var
 begin
   Date := 0;
   Time := 0;
-  ResultCheck(Windows.FileTimeToDosDateTime(FileTime, Date, Time));
+  ResultCheck({$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.FileTimeToDosDateTime(FileTime, Date, Time));
   Result := (Date shl 16) or Time;
 end;
 
@@ -911,7 +918,7 @@ procedure FileTimeToDosDateTime(const FileTime: TFileTime; out Date, Time: Word)
 begin
   Date := 0;
   Time := 0;
-  Windows.FileTimeToDosDateTime(FileTime, Date, Time);
+  {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.FileTimeToDosDateTime(FileTime, Date, Time);
 end;
 
 {$ENDIF MSWINDOWS}
@@ -1126,7 +1133,7 @@ begin
       Inc(N);
     end;
   end;
-  Result := SysUtils.FormatDateTime(Result + Form, DateTime);
+  Result := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.FormatDateTime(Result + Form, DateTime);
 end;
 
 // FAT has a granularity of 2 seconds

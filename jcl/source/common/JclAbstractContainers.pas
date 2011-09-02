@@ -46,7 +46,11 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
+  {$IFDEF HAS_UNITSCOPE}
+  System.Classes,
+  {$ELSE ~HAS_UNITSCOPE}
   Classes,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclBase, JclContainerIntf, JclSynch, JclSysUtils,
   JclWideStrings,
   JclAnsiStrings;
@@ -774,12 +778,18 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  {$IFDEF HAS_UNIT_ANSISTRINGS}
+  System.AnsiStrings,
+  {$ENDIF HAS_UNIT_ANSISTRINGS}
+  System.SysUtils,
+  {$ELSE ~HAS_UNITSCOPE}
   {$IFDEF HAS_UNIT_ANSISTRINGS}
   AnsiStrings,
   {$ENDIF HAS_UNIT_ANSISTRINGS}
-  JclStringConversions, JclUnicode,
-  JclAlgorithms,
-  SysUtils;
+  SysUtils,
+  {$ENDIF ~HAS_UNITSCOPE}
+  JclStringConversions, JclUnicode, JclAlgorithms;
 
 //=== { TJclAbstractLockable } ===============================================
 

@@ -100,6 +100,10 @@ type
   TProcessData = packed record
     UsageCnt: Word;
     RelocateCnt: Word;
+    {$IFDEF CPU64}
+    //Padding byte to workaround typecast error
+    Padding: DWORD;
+    {$ENDIF CPU64}
   end;
 var
   ML: TStringList;

@@ -48,7 +48,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.Windows, System.Classes, Vcl.StdCtrls, System.SysUtils,
+  {$ELSE ~HAS_UNITSCOPE}
   Windows, Classes, StdCtrls, SysUtils,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclBase;
 
 const
@@ -190,7 +194,11 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  Vcl.Graphics, System.IniFiles, Winapi.Messages, Vcl.Printers, Winapi.WinSpool,
+  {$ELSE ~HAS_UNITSCOPE}
   Graphics, IniFiles, Messages, Printers, WinSpool,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclSysInfo, JclVclResources;
 
 const
@@ -454,7 +462,7 @@ begin
             Result := SetPrinter(hPrinter, 2, PI2, 0);
             if Result then
               SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, 0,
-                LPARAM(cWindows), SMTO_NORMAL, 1000, Needed);
+                LPARAM(cWindows), SMTO_NORMAL, 1000, {$IFDEF RTL230_UP}@{$ENDIF}Needed);
           end;
         finally
           FreeMem(PI2);
@@ -483,7 +491,7 @@ begin
             Result := WriteProfileString(cWindows, cDevice, PChar(PrinterStr));
             if Result then
               SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, 0, 0,
-                SMTO_NORMAL, 1000, Needed);
+                SMTO_NORMAL, 1000, {$IFDEF RTL230_UP}@{$ENDIF}Needed);
           end;
         finally
           FreeMem(PI2);

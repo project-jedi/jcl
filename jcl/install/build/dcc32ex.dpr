@@ -346,8 +346,6 @@ begin
       DxgettextDir := ''
     else
     begin
-      if Version = 5 then
-        S := S + '\delphi5';
       if ExtraUnitDirs <> '' then
         ExtraUnitDirs := ExtraUnitDirs + ';' + S
       else
@@ -507,22 +505,38 @@ begin
     if Result.RootDir = '' then
       Exit;
     Result.Version := IDEVersion;
-    if Typ = ttBDS then
-    begin
-      if IDEVersion <= 2 then // C#Builder 1 and Delphi 8 can't build the installer
-      begin
-        Result.Typ := ttNone;
-        Result.Version := 0;
-        Result.IDEVersion := 0;
-        Result.RootDir := '';
-        Result.KeyName := '';
-        Result.Id := '';
-        Exit;
-      end;
-      if IDEVersion < 7 then
-        Inc(Result.Version, 6)  // 3.0 => 9
-      else
-        Inc(Result.Version, 7); // 7.0 => 14
+    case Typ of 
+      ttBDS:
+        begin
+          if IDEVersion <= 2 then // C#Builder 1 and Delphi 8 can't build the installer
+          begin
+            Result.Typ := ttNone;
+            Result.Version := 0;
+            Result.IDEVersion := 0;
+            Result.RootDir := '';
+            Result.KeyName := '';
+            Result.Id := '';
+            Exit;
+          end;
+          if IDEVersion < 7 then
+            Inc(Result.Version, 6)  // 3.0 => 9
+          else
+            Inc(Result.Version, 7); // 7.0 => 14
+        end;
+      ttDelphi,
+      ttBCB:
+        begin
+          if IDEVersion < 6 then   // Delphi 5 and under are not supported
+          begin
+            Result.Typ := ttNone;
+            Result.Version := 0;
+            Result.IDEVersion := 0;
+            Result.RootDir := '';
+            Result.KeyName := '';
+            Result.Id := '';
+            Exit;
+          end;
+        end;
     end;
     Result.Typ := Typ;
     Result.IDEVersion := IDEVersion;
@@ -544,6 +558,7 @@ begin
           6: Result.Name := 'CodeGear RAD Studio 2009';
           7: Result.Name := 'Embarcadero RAD Studio 2010';
           8: Result.Name := 'Embarcadero RAD Studio XE';
+          9: Result.Name := 'Embarcadero RAD Studio XE2';
         end;
     end;
 
@@ -571,8 +586,11 @@ begin
     JediLibDirs := '';
     if RequireJcl and
        (RegOpenKeyEx(HKEY_CURRENT_USER, PChar(Result.KeyName + '\Jedi\JCL'), 0,
-                     KEY_QUERY_VALUE or KEY_READ, Reg) = ERROR_SUCCESS) then
+                      KEY_QUERY_VALUE or KEY_READ, Reg) = ERROR_SUCCESS) then
     begin
+      if Result.Version >= 16 then
+        RegOpenKeyEx(HKEY_CURRENT_USER, PChar(Result.KeyName + '\Jedi\JCL\Win32'), 0, KEY_QUERY_VALUE or KEY_READ, Reg);
+
       DcpDir := ExcludeTrailingPathDelimiter(ExpandDirMacros(ExcludeTrailingPathDelimiter(RegReadStr(Reg, 'DcpDir')), Result.RootDir));
       RootDir := ExcludeTrailingPathDelimiter(ExpandDirMacros(ExcludeTrailingPathDelimiter(RegReadStr(Reg, 'RootDir')), Result.RootDir));
       Result.JclVersion := RegReadStr(Reg, 'Version');
@@ -1128,36 +1146,23 @@ begin
   WriteLn(f, '-I"' + Target.LibDirs + '"');
   WriteLn(f, '-R"' + Target.LibDirs + '"');
   WriteLn(f, '-O"' + Target.LibDirs + '"');
-  if (Target.Version = 5) then
-  begin
-    if RuntimePackageRtl or RuntimePackageVcl then
-      WriteLn(f, '-LUvcl50')
-  end
-  else
-  begin
-    if RuntimePackageRtl then
-      WriteLn(f, '-LUrtl');
-    if RuntimePackageVcl then
-      WriteLn(f, '-LUvcl');
-  end;
+  if RuntimePackageRtl then
+    WriteLn(f, '-LUrtl');
+  if RuntimePackageVcl then
+    WriteLn(f, '-LUvcl');
+  {$MESSAGE HINT '-ns fix for Pulsar Beta 4 is quick and dirty (not sure if this is the best solution)'}
+  if Target.Version >= 16 then
+    WriteLn(f, '-nsSystem;System.Win;WinAPI;Vcl;Vcl.Imaging');
   CloseFile(f);
   {$I+}
   if IOResult <> 0 then
   begin
     //WriteLn(ErrOutput, 'Failed to write file ', Dcc32Cfg);
     ExtraOpts := ExtraOpts + '-U"' + Target.LibDirs + '" -I"' + Target.LibDirs + '" -R"' + Target.LibDirs + '" -O"' + Target.LibDirs + '" ';
-    if (Target.Version = 5) then
-    begin
-      if RuntimePackageRtl or RuntimePackageVcl then
-        ExtraOpts := ExtraOpts + '-LUvcl50 '
-    end
-    else
-    begin
-      if RuntimePackageRtl then
-        ExtraOpts := ExtraOpts + '-LUrtl ';
-      if RuntimePackageVcl then
-        ExtraOpts := ExtraOpts + '-LUvcl ';
-    end;
+    if RuntimePackageRtl then
+      ExtraOpts := ExtraOpts + '-LUrtl ';
+    if RuntimePackageVcl then
+      ExtraOpts := ExtraOpts + '-LUvcl ';
     DeleteFile(PChar(Dcc32Cfg));
     Dcc32Cfg := '';
   end;
@@ -1194,7 +1199,7 @@ begin
   begin
     WriteLn;
     WriteLn('Additional options (must be specified before any dcc32 parameter):');
-    WriteLn('  --delphi-version=d15   Prefer this version, overrides environment variable');
+    WriteLn('  --delphi-version=d16   Prefer this version, overrides environment variable');
     WriteLn('  --verbose              Show warnings and errors during the compiler detection');
     WriteLn('  --use-search-paths     Use the IDE''s search paths');
     WriteLn('  --preserve-config      Keep the dcc32.cfg file and create a dcc32_command.cmd');
@@ -1206,8 +1211,8 @@ begin
     WriteLn('  --runtime-package-vcl  Link the executable against the vcl package');
     WriteLn;
     WriteLn('Environment variables:');
-    WriteLn('  DELPHIVERSION = d15    Prefer this Delphi/BCB/BDS version');
-    WriteLn('                         (d5, d6, d7, c5, c6, d9, d10, d11, d12, d14, d15, ...)');
+    WriteLn('  DELPHIVERSION = d16    Prefer this Delphi/BCB/BDS version');
+    WriteLn('                         (d6, d7, c6, d9, d10, d11, d12, d14, d15, d16, ...)');
   end;
 
   ExitCode := Status;

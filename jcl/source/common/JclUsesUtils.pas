@@ -32,11 +32,14 @@ unit JclUsesUtils;
 interface
 
 uses
-  Classes, SysUtils,
+  {$IFDEF HAS_UNITSCOPE}
+  System.Classes, System.SysUtils, Winapi.Windows,
+  {$ELSE ~HAS_UNITSCOPE}
+  Classes, SysUtils, Windows,
+  {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows,
   JclBase;
 
 type
@@ -123,10 +126,17 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.RtlConsts,
+  {$IFDEF HAS_UNIT_CHARACTER}
+  System.Character,
+  {$ENDIF HAS_UNIT_CHARACTER}
+  {$ELSE ~HAS_UNITSCOPE}
   RtlConsts,
   {$IFDEF HAS_UNIT_CHARACTER}
   Character,
   {$ENDIF HAS_UNIT_CHARACTER}
+  {$ENDIF ~HAS_UNITSCOPE}
   JclStrings,
   JclDevToolsResources;
 

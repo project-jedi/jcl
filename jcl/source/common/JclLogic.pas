@@ -118,6 +118,7 @@ function CountBitsCleared(P: Pointer; Count: Cardinal): Cardinal; overload;
 function LRot(const Value: Byte; const Count: TBitRange): Byte; overload;
 function LRot(const Value: Word; const Count: TBitRange): Word; overload;
 function LRot(const Value: Integer; const Count: TBitRange): Integer; overload;
+function LRot(const Value: Int64; const Count: TBitRange): Int64; overload;
 function ReverseBits(Value: Byte): Byte; overload;
 function ReverseBits(Value: Shortint): Shortint; overload;
 function ReverseBits(Value: Smallint): Smallint; overload;
@@ -130,6 +131,7 @@ function ReverseBits(P: Pointer; Count: Integer): Pointer; overload;
 function RRot(const Value: Byte; const Count: TBitRange): Byte; overload;
 function RRot(const Value: Word; const Count: TBitRange): Word; overload;
 function RRot(const Value: Integer; const Count: TBitRange): Integer; overload;
+function RRot(const Value: Int64; const Count: TBitRange): Int64; overload;
 
 function Sar(const Value: Shortint; const Count: TBitRange): Shortint; overload;
 function Sar(const Value: Smallint; const Count: TBitRange): Smallint; overload;
@@ -409,16 +411,16 @@ asm
   BSR     EAX, ECX
   JNZ     @@End
   MOV     EAX, -1
+@@End:
   {$ENDIF CPU32}
   {$IFDEF CPU64}
   // --> ECX X
   // <-- RAX
-  MOV     RAX, -1
-  BSR     RAX, ECX
-  JNZ     @@End
-  MOV     RAX, -1
+  MOV     EAX, -1
+  MOV     R10D, EAX
+  BSR     EAX, ECX
+  CMOVZ   EAX, R10D
   {$ENDIF CPU64}
-@@End:
 end;
 
 function BitsHighest(X: Integer): Integer;
@@ -431,16 +433,16 @@ asm
   BSR     EAX, ECX
   JNZ     @@End
   MOV     EAX, -1
+@@End:
   {$ENDIF CPU32}
   {$IFDEF CPU64}
   // --> ECX X
   // <-- RAX
-  MOV     RAX, -1
-  BSR     RAX, ECX
-  JNZ     @@End
-  MOV     RAX, -1
+  MOV     EAX, -1
+  MOV     R10D, EAX
+  BSR     EAX, ECX
+  CMOVZ   EAX, R10D
   {$ENDIF CPU64}
-@@End:
 end;
 
 function BitsHighest(X: Byte): Integer;
@@ -476,11 +478,14 @@ end;
 asm
   // --> RCX X
   // <-- RAX
-  MOV     RAX, -1
+
+  // this is much shorter than "MOV RAX, -1"
+  XOR     RAX, RAX
+  DEC     EAX
+
+  MOV     R10, RAX
   BSR     RAX, RCX
-  JNZ     @@End
-  MOV     RAX, -1
-@@End:
+  CMOVZ   RAX, R10
 end;
 {$ENDIF CPU64}
 
@@ -494,16 +499,16 @@ asm
   BSF     EAX, ECX
   JNZ     @@End
   MOV     EAX, -1
+@@End:
   {$ENDIF CPU32}
   {$IFDEF CPU64}
   // --> RCX X
   // <-- EAX
-  MOV     RAX, -1
-  BSF     RAX, ECX
-  JNZ     @@End
-  MOV     RAX, -1
+  MOV     EAX, -1
+  MOV     R10D, EAX
+  BSF     EAX, ECX
+  CMOVZ   EAX, R10D
   {$ENDIF CPU64}
-@@End:
 end;
 
 function BitsLowest(X: Integer): Integer;
@@ -516,16 +521,16 @@ asm
   BSF     EAX, ECX
   JNZ     @@End
   MOV     EAX, -1
+@@End:
   {$ENDIF CPU32}
   {$IFDEF CPU64}
   // --> RCX X
   // <-- EAX
-  MOV     RAX, -1
-  BSF     RAX, ECX
-  JNZ     @@End
-  MOV     RAX, -1
+  MOV     EAX, -1
+  MOV     R10D, EAX
+  BSF     EAX, ECX
+  CMOVZ   EAX, R10D
   {$ENDIF CPU64}
-@@End:
 end;
 
 function BitsLowest(X: Byte): Integer;
@@ -549,12 +554,28 @@ begin
 end;
 
 function BitsLowest(X: Int64): Integer;
+{$IFDEF CPU32}
 begin
   if TJclULargeInteger(X).LowPart = 0 then
     Result := BitsLowest(TJclULargeInteger(X).HighPart) + 32
   else
     Result := BitsLowest(TJclULargeInteger(X).LowPart);
 end;
+{$ENDIF CPU32}
+{$IFDEF CPU64}
+asm
+  // --> RCX X
+  // <-- RAX
+
+  // this is much shorter than "MOV RAX, -1"
+  XOR     RAX, RAX
+  DEC     EAX
+
+  MOV     R10, RAX
+  BSF     RAX, RCX
+  CMOVZ   RAX, R10
+end;
+{$ENDIF CPU64}
 
 function ClearBit(const Value: Byte; const Bit: TBitRange): Byte;
 asm
@@ -566,7 +587,7 @@ asm
   //    <-- AL Result
   AND    EDX, BitsPerByte - 1   // modulo BitsPerByte
   {$IFDEF CPU64}
-  MOVZX  RAX, CL
+  MOVZX  EAX, CL
   {$ENDIF CPU64}
   BTR    EAX, EDX
 end;
@@ -581,7 +602,7 @@ asm
   //    <-- AL Result
   AND    EDX, BitsPerShortint - 1   // modulo BitsPerShortint
   {$IFDEF CPU64}
-  MOVZX  RAX, CL
+  MOVZX  EAX, CL
   {$ENDIF CPU64}
   BTR    EAX, EDX
 end;
@@ -596,7 +617,7 @@ asm
   //    <-- AX Result
   AND    EDX, BitsPerSmallint - 1   // modulo BitsPerSmallint
   {$IFDEF CPU64}
-  MOVZX  RAX, CX
+  MOVZX  EAX, CX
   {$ENDIF CPU64}
   BTR    EAX, EDX
 end;
@@ -611,7 +632,7 @@ asm
   //    <-- AX Result
   AND    EDX, BitsPerWord - 1   // modulo BitsPerWord
   {$IFDEF CPU64}
-  MOVZX  RAX, CX
+  MOVZX  EAX, CX
   {$ENDIF CPU64}
   BTR    EAX, EDX
 end;
@@ -625,7 +646,6 @@ asm
   //        DL  Bit
   //    <-- EAX Result
   {$IFDEF CPU64}
-  XOR    RAX, RAX
   MOV    EAX, ECX
   {$ENDIF CPU64}
   BTR    EAX, EDX
@@ -640,7 +660,6 @@ asm
   //        DL  Bit
   //    <-- EAX Result
   {$IFDEF CPU64}
-  XOR    RAX, RAX
   MOV    EAX, ECX
   {$ENDIF CPU64}
   BTR    EAX, EDX
@@ -658,7 +677,7 @@ asm
   //     DL  Bit
   // <-- RAX Result
   MOV    RAX, RCX
-  BTR    RAX, EDX
+  BTR    RAX, RDX
 end;
 {$ENDIF CPU64}
 
@@ -829,7 +848,7 @@ begin
   Result := Count * BitsPerByte - CountBitsSet(P, Count);
 end;
 
-function LRot(const Value: Byte; const Count: TBitRange): Byte; assembler;
+function LRot(const Value: Byte; const Count: TBitRange): Byte;
 asm
   {$IFDEF CPU32}
   // --> AL Value
@@ -848,7 +867,7 @@ asm
   {$ENDIF CPU64}
 end;
 
-function LRot(const Value: Word; const Count: TBitRange): Word; assembler;
+function LRot(const Value: Word; const Count: TBitRange): Word;
 asm
   {$IFDEF CPU32}
   // --> AX Value
@@ -867,7 +886,7 @@ asm
   {$ENDIF CPU64}
 end;
 
-function LRot(const Value: Integer; const Count: TBitRange): Integer; assembler;
+function LRot(const Value: Integer; const Count: TBitRange): Integer;
 asm
   {$IFDEF CPU32}
   // --> EAX Value
@@ -885,6 +904,84 @@ asm
   ROL    EAX, CL
   {$ENDIF CPU64}
 end;
+
+function LRot(const Value: Int64; const Count: TBitRange): Int64;
+{$IFDEF CPU32}
+asm
+  // --> Value on stack
+  //     AL  Count
+  // <-- EDX:EAX Result
+
+  PUSH   ESI
+  PUSH   EDI
+
+  MOV    CL, Count
+  MOV    EDX, DWORD PTR [Value + 4]
+  MOV    EAX, DWORD PTR [Value]
+
+  // Count := Count mod 64
+  AND    CL, $3F
+  JZ     @@End
+
+  CMP    CL, 32
+  JL     @@RolBits
+
+  // Count >= 32: "rol Count" = "rol 32" + "rol (32 - Count)"
+@@Swap:
+  // "rol 32"
+  XCHG   EAX, EDX
+  // Count := 32 - Count
+  SUB    CL, 32
+
+@@RolBits:
+  MOV    EDI, EDX
+  MOV    ESI, EAX
+
+  // shift the bits
+  SHL    EDX, CL
+  SHL    EAX, CL
+
+  // CounterShiftCount := 32 - Count
+  NEG    CL
+  ADD    CL, 32
+  // bitwise-or the counter shifted bits
+  SHR    EDI, CL
+  SHR    ESI, CL
+  OR     EAX, EDI
+  OR     EDX, ESI
+
+@@End:
+  POP    EDI
+  POP    ESI
+end;
+{$ENDIF CPU32}
+{$IFDEF CPU64}
+asm
+  // --> RCX Value
+  //     DL  Count
+  // <-- RAX Result
+  MOV    RAX, RCX
+  MOV    CL,  DL
+  ROL    RAX, CL
+end;
+{$ENDIF CPU64}
+
+function RRot(const Value: Int64; const Count: TBitRange): Int64;
+{$IFDEF CPU32}
+begin
+  Result := LRot(Value, 64 - (Count and $3F));
+end;
+{$ENDIF CPU32}
+{$IFDEF CPU64}
+asm
+  // --> RCX Value
+  //     DL  Count
+  // <-- RAX Result
+  MOV    RAX, RCX
+  MOV    CL,  DL
+  ROR    RAX, CL
+end;
+{$ENDIF CPU64}
 
 const
   // Lookup table of bit reversed nibbles, used by simple overloads of ReverseBits
@@ -1010,7 +1107,7 @@ begin
   Result := P;
 end;
 
-function RRot(const Value: Byte; const Count: TBitRange): Byte; assembler;
+function RRot(const Value: Byte; const Count: TBitRange): Byte;
 asm
   {$IFDEF CPU32}
   // --> AL Value
@@ -1029,7 +1126,7 @@ asm
   {$ENDIF CPU64}
 end;
 
-function RRot(const Value: Word; const Count: TBitRange): Word; assembler;
+function RRot(const Value: Word; const Count: TBitRange): Word;
 asm
   {$IFDEF CPU32}
   // --> AX Value
@@ -1048,7 +1145,7 @@ asm
   {$ENDIF CPU64}
 end;
 
-function RRot(const Value: Integer; const Count: TBitRange): Integer; assembler;
+function RRot(const Value: Integer; const Count: TBitRange): Integer;
 asm
   {$IFDEF CPU32}
   // --> EAX Value
@@ -1067,7 +1164,7 @@ asm
   {$ENDIF CPU64}
 end;
 
-function Sar(const Value: Shortint; const Count: TBitRange): Shortint; assembler;
+function Sar(const Value: Shortint; const Count: TBitRange): Shortint;
 asm
   {$IFDEF CPU32}
   // --> AL Value
@@ -1086,7 +1183,7 @@ asm
   {$ENDIF CPU64}
 end;
 
-function Sar(const Value: Smallint; const Count: TBitRange): Smallint; assembler;
+function Sar(const Value: Smallint; const Count: TBitRange): Smallint;
 asm
   {$IFDEF CPU32}
   // --> AX Value
@@ -1105,7 +1202,7 @@ asm
   {$ENDIF CPU64}
 end;
 
-function Sar(const Value: Integer; const Count: TBitRange): Integer; assembler;
+function Sar(const Value: Integer; const Count: TBitRange): Integer;
 asm
   {$IFDEF CPU32}
   // --> EAX Value
@@ -1134,7 +1231,7 @@ asm
   //    <-- AL Result
   AND    EDX, BitsPerByte - 1   // modulo BitsPerByte
   {$IFDEF CPU64}
-  MOVZX  RAX, CL
+  MOVZX  EAX, CL
   {$ENDIF CPU64}
   BTS    EAX, EDX
 end;
@@ -1149,7 +1246,7 @@ asm
   //    <-- AL Result
   AND    EDX, BitsPerShortInt - 1   // modulo BitsPerShortInt
   {$IFDEF CPU64}
-  MOVZX  RAX, CL
+  MOVZX  EAX, CL
   {$ENDIF CPU64}
   BTS    EAX, EDX
 end;
@@ -1164,7 +1261,7 @@ asm
   //    <-- AX Result
   AND    EDX, BitsPerSmallInt - 1   // modulo BitsPerSmallInt
   {$IFDEF CPU64}
-  MOVZX  RAX, CX
+  MOVZX  EAX, CX
   {$ENDIF CPU64}
   BTS    EAX, EDX
 end;
@@ -1179,7 +1276,7 @@ asm
   //    <-- AX Result
   AND    EDX, BitsPerWord - 1   // modulo BitsPerWord
   {$IFDEF CPU64}
-  MOVZX  RAX, CX
+  MOVZX  EAX, CX
   {$ENDIF CPU64}
   BTS    EAX, EDX
 end;
@@ -1193,7 +1290,6 @@ asm
   //        DL  Bit
   //    <-- EAX Result
   {$IFDEF CPU64}
-  XOR    RAX, RAX
   MOV    EAX, ECX
   {$ENDIF CPU64}
   BTS    EAX, EDX
@@ -1208,7 +1304,6 @@ asm
   //        DL  Bit
   //    <-- EAX Result
   {$IFDEF CPU64}
-  XOR    RAX, RAX
   MOV    EAX, ECX
   {$ENDIF CPU64}
   BTS    EAX, EDX
@@ -1226,7 +1321,7 @@ asm
   //     DL  Bit
   // <-- RAX Result
   MOV    RAX, RCX
-  BTS    RAX, EDX
+  BTS    RAX, RDX
 end;
 {$ENDIF CPU64}
 
@@ -1281,7 +1376,7 @@ asm
   //    <-- AL Result
   AND    EDX, BitsPerByte - 1   // modulo BitsPerByte
   {$IFDEF CPU64}
-  MOVZX  RAX, CL
+  MOVZX  EAX, CL
   {$ENDIF CPU64}
   BT     EAX, EDX
   SETC   AL
@@ -1303,7 +1398,7 @@ asm
   //    <-- AL Result
   AND    EDX, BitsPerShortInt - 1   // modulo BitsPerShortInt
   {$IFDEF CPU64}
-  MOVZX  RAX, CL
+  MOVZX  EAX, CL
   {$ENDIF CPU64}
   BT     EAX, EDX
   SETC   AL
@@ -1325,7 +1420,7 @@ asm
   //    <-- AX Result
   AND    EDX, BitsPerSmallInt - 1   // modulo BitsPerSmallInt
   {$IFDEF CPU64}
-  MOVZX  RAX, CX
+  MOVZX  EAX, CX
   {$ENDIF CPU64}
   BT     EAX, EDX
   SETC   AL
@@ -1347,7 +1442,7 @@ asm
   //    <-- AX Result
   AND    EDX, BitsPerWord - 1   // modulo BitsPerWord
   {$IFDEF CPU64}
-  MOVZX  RAX, CX
+  MOVZX  EAX, CX
   {$ENDIF CPU64}
   BT     EAX, EDX
   SETC   AL
@@ -1368,7 +1463,6 @@ asm
   //        DL  Bit
   //    <-- EAX Result
   {$IFDEF CPU64}
-  XOR    RAX, RAX
   MOV    EAX, ECX
   {$ENDIF CPU64}
   BT     EAX, EDX
@@ -1390,7 +1484,6 @@ asm
   //        DL  Bit
   //    <-- EAX Result
   {$IFDEF CPU64}
-  XOR    RAX, RAX
   MOV    EAX, ECX
   {$ENDIF CPU64}
   BT     EAX, EDX
@@ -1410,7 +1503,7 @@ asm
   //     DL  Bit
   // <-- RAX Result
   MOV    RAX, RCX
-  BT     RAX, EDX
+  BT     RAX, RDX
   SETC   AL
 end;
 {$ENDIF ~PUREPASCAL}
@@ -1503,7 +1596,7 @@ asm
   //    <-- AL Result
   AND    EDX, BitsPerByte - 1   // modulo BitsPerByte
   {$IFDEF CPU64}
-  MOVZX  RAX, CL
+  MOVZX  EAX, CL
   {$ENDIF CPU64}
   BTC    EAX, EDX
 end;
@@ -1524,7 +1617,7 @@ asm
   //    <-- AL Result
   AND    EDX, BitsPerShortInt - 1   // modulo BitsPerShortInt
   {$IFDEF CPU64}
-  MOVZX  RAX, CL
+  MOVZX  EAX, CL
   {$ENDIF CPU64}
   BTC    EAX, EDX
 end;
@@ -1545,7 +1638,7 @@ asm
   //    <-- AX Result
   AND    EDX, BitsPerSmallInt - 1   // modulo BitsPerSmallInt
   {$IFDEF CPU64}
-  MOVZX  RAX, CX
+  MOVZX  EAX, CX
   {$ENDIF CPU64}
   BTC    EAX, EDX
 end;
@@ -1566,7 +1659,7 @@ asm
   //    <-- AX Result
   AND    EDX, BitsPerWord - 1   // modulo BitsPerWord
   {$IFDEF CPU64}
-  MOVZX  RAX, CX
+  MOVZX  EAX, CX
   {$ENDIF CPU64}
   BTC    EAX, EDX
 end;
@@ -1586,7 +1679,6 @@ asm
   //        DL  Bit
   //    <-- EAX Result
   {$IFDEF CPU64}
-  XOR    RAX, RAX
   MOV    EAX, ECX
   {$ENDIF CPU64}
   BTC    EAX, EDX
@@ -1607,7 +1699,6 @@ asm
   //        DL  Bit
   //    <-- EAX Result
   {$IFDEF CPU64}
-  XOR    RAX, RAX
   MOV    EAX, ECX
   {$ENDIF CPU64}
   BTC    EAX, EDX
@@ -1626,7 +1717,7 @@ asm
   //     DL  Bit
   // <-- RAX Result
   MOV    RAX, RCX
-  BTC    RAX, EDX
+  BTC    RAX, RDX
 end;
 {$ENDIF CPU64}
 

@@ -116,6 +116,17 @@
         </property>
       </setting>
 
+      <setting path="bin64" mask="" recurse="no" dironly="yes">
+        <property name="svn:ignore">
+          <value>*.exe</value>
+          <value>*.log</value>
+          <value>*.ini</value>
+          <value>*.dll</value>
+          <value>*.pdb</value>
+          <value>*.map</value>
+        </property>
+      </setting>
+
       <setting path="devtools" mask="" recurse="no" dironly="yes">
         <property name="svn:ignore">
           <value>*.exe</value>
@@ -215,7 +226,7 @@
       </setting>
 
       <setting path="lib" mask="" recurse="no" dironly="no">
-        <setting path="" mask="d? d?? c? cs1" recurse="no" dironly="yes">
+        <setting path="" mask="d? d?? c? cs1 d??/win32 d??/win64" recurse="yes" dironly="yes">
           <property name="svn:ignore">
             <value>*.dcu</value>
             <value>*.ddp</value>
@@ -227,7 +238,7 @@
           </property>
         </setting>
 
-        <setting path="" mask="d?/debug d??/debug c?/debug" recurse="yes" dironly="yes">
+        <setting path="" mask="d?/debug d??/debug c?/debug d??/win32/debug d??/win64/debug" recurse="yes" dironly="yes">
           <property name="svn:ignore">
             <value>*.dcu</value>
             <value>*.obj</value>

@@ -45,10 +45,17 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  {$IFDEF SUPPORTS_GENERICS}
+  System.Generics.Collections,
+  JclAlgorithms,
+  {$ENDIF SUPPORTS_GENERICS}
+  {$ELSE ~HAS_UNITSCOPE}
   {$IFDEF SUPPORTS_GENERICS}
   Generics.Collections,
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
+  {$ENDIF ~HAS_UNITSCOPE}
   JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
 
 type

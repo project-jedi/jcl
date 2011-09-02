@@ -33,8 +33,13 @@ interface
 {$I jcl.inc}
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.Classes,
+  Vcl.Forms,
+  {$ELSE ~HAS_UNITSCOPE}
   Classes,
   Forms,
+  {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
@@ -120,11 +125,19 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  {$IFDEF MSWINDOWS}
+  Winapi.Windows,
+  {$ENDIF MSWINDOWS}
+  System.TypInfo,
+  System.SysUtils,
+  {$ELSE ~HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
   TypInfo,
   SysUtils,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclRTTI,
   JclSysUtils,
   JclStrings,

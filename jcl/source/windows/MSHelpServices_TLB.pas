@@ -69,7 +69,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.ActiveX, System.Classes;
+  {$ELSE ~HAS_UNITSCOPE}
   ActiveX, Classes;
+  {$ENDIF ~HAS_UNITSCOPE}
 
 //DOM-IGNORE-BEGIN
 
@@ -1605,7 +1609,12 @@ const
 
 implementation
 
-uses ComObj;
+uses 
+  {$IFDEF HAS_UNITSCOPE}
+  System.Win.ComObj;
+  {$ELSE ~HAS_UNITSCOPE}
+  ComObj;
+  {$ENDIF ~HAS_UNITSCOPE}
 
 class function CoHxSession.Create: IHxSession;
 begin

@@ -39,8 +39,11 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   JclBase,
-  SysUtils, Classes, Contnrs,
-  Graphics, Controls, ActnList, ImgList;
+  {$IFDEF HAS_UNITSCOPE}
+  System.SysUtils, System.Classes, System.Contnrs, Vcl.Graphics, Vcl.Controls, Vcl.ActnList, Vcl.ImgList;
+  {$ELSE ~HAS_UNITSCOPE}
+  SysUtils, Classes, Contnrs, Graphics, Controls, ActnList, ImgList;
+  {$ENDIF ~HAS_UNITSCOPE}
 
 type
   EJclVersionControlError = class(EJclError);
@@ -212,7 +215,11 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.Windows, Vcl.Forms, System.TypInfo,
+  {$ELSE ~HAS_UNITSCOPE}
   Windows, Forms, TypInfo,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclVclResources, JclFileUtils, JclRegistry, JclShell, JclStrings;
 
 //=== JclVersionControl.pas ===================================================

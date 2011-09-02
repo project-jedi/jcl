@@ -485,18 +485,31 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  {$IFDEF COMPILER11_UP}
+  Winapi.Windows,
+  {$ENDIF COMPILER11_UP}
+  {$IFDEF HAS_UNIT_ANSISTRINGS}
+  System.AnsiStrings,
+  {$ENDIF HAS_UNIT_ANSISTRINGS}
+  System.SysUtils,
+  {$ELSE ~HAS_UNITSCOPE}
+  {$IFDEF COMPILER11_UP}
+  Windows,
+  {$ENDIF COMPILER11_UP}
   {$IFDEF HAS_UNIT_ANSISTRINGS}
   AnsiStrings,
   {$ENDIF HAS_UNIT_ANSISTRINGS}
-  JclAnsiStrings, JclStringConversions, JclUnicode,
-  SysUtils;
+  SysUtils,
+  {$ENDIF ~HAS_UNITSCOPE}
+  JclAnsiStrings, JclStringConversions, JclUnicode;
 
 function IntfSimpleCompare(const Obj1, Obj2: IInterface): Integer;
 begin
-  if Integer(Obj1) < Integer(Obj2) then
+  if INT_PTR(Obj1) < INT_PTR(Obj2) then
     Result := -1
   else
-  if Integer(Obj1) > Integer(Obj2) then
+  if INT_PTR(Obj1) > INT_PTR(Obj2) then
     Result := 1
   else
     Result := 0;
@@ -523,7 +536,7 @@ end;
 // case-insensitive
 function WideStrSimpleCompareI(const Obj1, Obj2: WideString): Integer;
 begin
-  Result := WideCompareText(Obj1, Obj2);
+  Result := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.WideCompareText(Obj1, Obj2);
 end;
 
 {$IFDEF SUPPORTS_UNICODE_STRING}
@@ -635,10 +648,10 @@ end;
 
 function PtrSimpleCompare(Obj1, Obj2: Pointer): Integer;
 begin
-  if Integer(Obj1) < Integer(Obj2) then
+  if INT_PTR(Obj1) < INT_PTR(Obj2) then
     Result := -1
   else
-  if Integer(Obj1) > Integer(Obj2) then
+  if INT_PTR(Obj1) > INT_PTR(Obj2) then
     Result := 1
   else
     Result := 0;
@@ -646,10 +659,10 @@ end;
 
 function SimpleCompare(Obj1, Obj2: TObject): Integer;
 begin
-  if Integer(Obj1) < Integer(Obj2) then
+  if INT_PTR(Obj1) < INT_PTR(Obj2) then
     Result := -1
   else
-  if Integer(Obj1) > Integer(Obj2) then
+  if INT_PTR(Obj1) > INT_PTR(Obj2) then
     Result := 1
   else
     Result := 0;
@@ -657,10 +670,10 @@ end;
 
 function IntegerCompare(Obj1, Obj2: TObject): Integer;
 begin
-  if Integer(Obj1) < Integer(Obj2) then
+  if INT_PTR(Obj1) < INT_PTR(Obj2) then
     Result := -1
   else
-  if Integer(Obj1) > Integer(Obj2) then
+  if INT_PTR(Obj1) > INT_PTR(Obj2) then
     Result := 1
   else
     Result := 0;
@@ -668,7 +681,7 @@ end;
 
 function IntfSimpleEqualityCompare(const Obj1, Obj2: IInterface): Boolean;
 begin
-  Result := Integer(Obj1) = Integer(Obj2);
+  Result := INT_PTR(Obj1) = INT_PTR(Obj2);
 end;
 
 // default is case-sensitive
@@ -692,7 +705,7 @@ end;
 // case-insensitive
 function WideStrSimpleEqualityCompareI(const Obj1, Obj2: WideString): Boolean;
 begin
-  Result := WideCompareText(Obj1, Obj2) = 0;
+  Result := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.WideCompareText(Obj1, Obj2) = 0;
 end;
 
 {$IFDEF SUPPORTS_UNICODE_STRING}
@@ -758,17 +771,20 @@ end;
 
 function PtrSimpleEqualityCompare(Obj1, Obj2: Pointer): Boolean;
 begin
-  Result := Integer(Obj1) = Integer(Obj2);
+  Result := INT_PTR(Obj1) = INT_PTR(Obj2);
 end;
 
 function SimpleEqualityCompare(Obj1, Obj2: TObject): Boolean;
 begin
-  Result := Integer(Obj1) = Integer(Obj2);
+  Result := INT_PTR(Obj1) = INT_PTR(Obj2);
 end;
 
 function IntfSimpleHashConvert(const AInterface: IInterface): Integer;
 begin
-  Result := Integer(AInterface) and MaxInt;
+  {$IFDEF DELPHI64_TEMPORARY}
+  {$MESSAGE WARN 'This and related functions high likely needs to be adjusted for 64-bit'}
+  {$ENDIF DELPHI64_TEMPORARY}
+  Result := INT_PTR(AInterface) and MaxInt;
 end;
 
 // from "Fast Hashing of Variable-Length Text Strings", Peter K. Pearson, 1990
@@ -828,7 +844,7 @@ end;
 // case-sensitive and UTF8-encoded
 function AnsiStrSimpleHashConvertU(const AString: AnsiString): Integer;
 var
-  I: Integer;
+  I: SizeInt;
   C, IntegerHash: TIntegerHash;
 begin
   IntegerHash.H1 := 0;
@@ -852,7 +868,8 @@ end;
 // case-insensitive and UTF8-encoded
 function AnsiStrSimpleHashConvertUI(const AString: AnsiString): Integer;
 var
-  I, J: Integer;
+  I: SizeInt;
+  J: Integer;
   C, IntegerHash: TIntegerHash;
   CA: TUCS4Array;
 begin
@@ -883,7 +900,7 @@ end;
 // default is case-sensitive
 function WideStrSimpleHashConvert(const AString: WideString): Integer;
 var
-  I: Integer;
+  I: SizeInt;
   C, IntegerHash: TIntegerHash;
 begin
   IntegerHash.H1 := 0;
@@ -907,7 +924,8 @@ end;
 // case-insensitive
 function WideStrSimpleHashConvertI(const AString: WideString): Integer;
 var
-  I, J: Integer;
+  I: SizeInt;
+  J: Integer;
   C, IntegerHash: TIntegerHash;
   CA: TUCS4Array;
 begin
@@ -939,7 +957,7 @@ end;
 // default is case-sensitive
 function UnicodeStrSimpleHashConvert(const AString: UnicodeString): Integer;
 var
-  I: Integer;
+  I: SizeInt;
   C, IntegerHash: TIntegerHash;
 begin
   IntegerHash.H1 := 0;
@@ -963,7 +981,8 @@ end;
 // case-insensitive
 function UnicodeStrSimpleHashConvertI(const AString: UnicodeString): Integer;
 var
-  I, J: Integer;
+  I: SizeInt;
+  J: Integer;
   C, IntegerHash: TIntegerHash;
   CA: TUCS4Array;
 begin

@@ -558,8 +558,11 @@ begin
   acProperties.Enabled := (tvDocInfo.Selected <> nil);
 end;
 
+{$IFDEF RTL230_UP}
+function TreeSort(lParam1, lParam2, lParamSort: LPARAM): Integer; stdcall;
+{$ELSE ~RTL230_UP}
 function TreeSort(lParam1, lParam2, lParamSort: Longint): Integer; stdcall;
-
+{$ENDIF ~RTL230_UP}
 begin
   if IsFolder(TTreeNode(lParam1)) = IsFolder(TTreeNode(lParam2)) then
     Result := AnsiCompareText(TTreeNode(lParam1).Text, TTreeNode(lParam2).Text)

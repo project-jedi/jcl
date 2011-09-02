@@ -48,9 +48,12 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclAlgorithms,
+  {$IFDEF HAS_UNITSCOPE}
+  System.Classes,
+  {$ELSE ~HAS_UNITSCOPE}
   Classes,
-  JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
+  {$ENDIF ~HAS_UNITSCOPE}
+  JclAlgorithms, JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
 
 
 type
@@ -1230,7 +1233,11 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.SysUtils;
+  {$ELSE ~HAS_UNITSCOPE}
   SysUtils;
+  {$ENDIF ~HAS_UNITSCOPE}
 
 //=== { TJclIntfVector } ======================================================
 

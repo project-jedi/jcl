@@ -3,7 +3,11 @@ unit ContainerPerformanceTests;
 interface
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.Classes, Vcl.Grids, Vcl.Menus;
+  {$ELSE ~HAS_UNITSCOPE}
   Classes;
+  {$ENDIF ~HAS_UNITSCOPE}
 
 procedure TestList(Results: TStrings);
 procedure TestJclArrayList(Results: TStrings);
@@ -21,8 +25,13 @@ implementation
 {$I jcl.inc}
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.SysUtils, Vcl.Forms, Vcl.Controls, System.Math,
+  System.Contnrs, System.IniFiles,
+  {$ELSE ~HAS_UNITSCOPE}
   SysUtils, Forms, Controls, Math,
   Contnrs, IniFiles,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclContainerIntf, JclArrayLists, JclLinkedLists, JclHashMaps, JclVectors;
 
 const

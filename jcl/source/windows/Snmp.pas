@@ -64,7 +64,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.Windows, System.SysUtils;
+  {$ELSE ~HAS_UNITSCOPE}
   Windows, SysUtils;
+  {$ENDIF ~HAS_UNITSCOPE}
 
 //DOM-IGNORE-BEGIN
 

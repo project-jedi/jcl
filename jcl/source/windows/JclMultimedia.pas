@@ -47,7 +47,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.Windows, System.Classes, Winapi.MMSystem, System.Contnrs,
+  {$ELSE ~HAS_UNITSCOPE}
   Windows, Classes, MMSystem, Contnrs,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclBase, JclSynch, JclStrings;
 
 type
@@ -324,7 +328,11 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.SysUtils,
+  {$ELSE ~HAS_UNITSCOPE}
   SysUtils,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclResources, JclSysUtils;
 
 //=== { TJclMultimediaTimer } ================================================
@@ -1154,7 +1162,7 @@ end;
 
 function GetMciErrorMessage(const MciErrNo: MCIERROR): string;
 var
-  Buffer: array [0..MMSystem.MAXERRORLENGTH - 1] of Char;
+  Buffer: array [0..{$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}MMSystem.MAXERRORLENGTH - 1] of Char;
 begin
   if mciGetErrorString(MciErrNo, Buffer, SizeOf(Buffer)) then
     Result := Buffer

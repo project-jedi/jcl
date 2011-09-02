@@ -42,7 +42,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  System.Classes, System.SysUtils;
+  {$ELSE ~HAS_UNITSCOPE}
   Classes, SysUtils;
+  {$ENDIF ~HAS_UNITSCOPE}
 
 type
   IJclMsdosSys = interface

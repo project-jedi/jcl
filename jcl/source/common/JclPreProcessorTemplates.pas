@@ -33,7 +33,11 @@ interface
 {$I jcl.inc}
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.Classes,
+  {$ELSE ~HAS_UNITSCOPE}
   Classes,
+  {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
@@ -74,8 +78,13 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.SysUtils,
+  System.TypInfo,
+  {$ELSE ~HAS_UNITSCOPE}
   SysUtils,
   TypInfo,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclStrings, JclSysUtils;
 
 //=== { TJclTemplateParams } =================================================

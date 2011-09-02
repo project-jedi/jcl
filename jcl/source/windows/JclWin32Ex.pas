@@ -36,7 +36,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Sysutils;
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.Windows, System.SysUtils;
+  {$ELSE ~HAS_UNITSCOPE}
+  Windows, SysUtils;
+  {$ENDIF ~HAS_UNITSCOPE}
 
 type
   TJclWin32ExFunction = (jwfTryEnterCriticalSection, jwfSignalObjectAndWait,

@@ -23,7 +23,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -314,6 +314,7 @@ type
   public
     constructor Create(const AFileName: TFileName; AXml: TJclSimpleXml; AOwnsXml: Boolean = False); overload;
     constructor Create(const AFileName: TFileName; Encoding: TJclStringEncoding = seAuto; CodePage: Word = CP_ACP); overload;
+    constructor Create(const AFileName: TFileName; ExtraImportsFileName: array of string; Encoding: TJclStringEncoding = seAuto; CodePage: Word = CP_ACP); overload;
     destructor Destroy; override;
 
     procedure Clear;
@@ -833,6 +834,16 @@ begin
     raise;
   end;
   Create(AFileName, AXml, True);
+end;
+
+constructor TJclMsBuildParser.Create(const AFileName: TFileName; ExtraImportsFileName: array of string; Encoding: TJclStringEncoding = seAuto; CodePage: Word = CP_ACP);
+var
+  I: Integer;
+begin
+  Create(AFileName, Encoding, CodePage);
+
+  for I := Low(ExtraImportsFileName) to High(ExtraImportsFileName) do
+    FXML.Root.Items.Insert('Import', I - Low(ExtraImportsFileName)).Properties.Add('Project', ExtraImportsFileName[I]);
 end;
 
 constructor TJclMsBuildParser.Create(const AFileName: TFileName;

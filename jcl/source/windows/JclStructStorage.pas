@@ -71,7 +71,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.Windows, System.Classes, System.SysUtils, Winapi.ActiveX,
+  {$ELSE ~HAS_UNITSCOPE}
   Windows, Classes, SysUtils, ActiveX,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclBase;
 
 type
@@ -241,7 +245,11 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.Win.ComObj,
+  {$ELSE ~HAS_UNITSCOPE}
   ComObj,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclResources;
 
 var

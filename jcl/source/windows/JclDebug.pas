@@ -51,10 +51,17 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  {$IFDEF MSWINDOWS}
+  Winapi.Windows,
+  {$ENDIF MSWINDOWS}
+  System.Classes, System.SysUtils, System.Contnrs,
+  {$ELSE ~HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
   Classes, SysUtils, Contnrs,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclBase, JclFileUtils, JclPeImage,
   {$IFDEF BORLAND}
   JclTD32,
@@ -1024,10 +1031,17 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.RTLConsts,
+  {$IFDEF HAS_UNIT_CHARACTER}
+  System.Character,
+  {$ENDIF HAS_UNIT_CHARACTER}
+  {$ELSE ~HAS_UNITSCOPE}
   RTLConsts,
   {$IFDEF HAS_UNIT_CHARACTER}
   Character,
   {$ENDIF HAS_UNIT_CHARACTER}
+  {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
   JclRegistry,
   {$ENDIF MSWINDOWS}

@@ -71,10 +71,17 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
+  {$IFDEF HAS_UNITSCOPE}
+  {$IFDEF MSWINDOWS}
+  Winapi.Windows, JclWin32,
+  {$ENDIF MSWINDOWS}
+  System.Classes, System.SysUtils,
+  {$ELSE ~HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
   Windows, JclWin32,
   {$ENDIF MSWINDOWS}
   Classes, SysUtils,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclBase, JclSysUtils;
 
 // Path Manipulation
@@ -1055,6 +1062,16 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  {$IFDEF HAS_UNIT_CHARACTER}
+  System.Character,
+  {$ENDIF HAS_UNIT_CHARACTER}
+  System.Math,
+  {$IFDEF MSWINDOWS}
+  Winapi.ShellApi, Winapi.ActiveX, System.Win.ComObj, Winapi.ShlObj,
+  JclShell, JclSysInfo, JclSecurity,
+  {$ENDIF MSWINDOWS}
+  {$ELSE ~HAS_UNITSCOPE}
   {$IFDEF HAS_UNIT_CHARACTER}
   Character,
   {$ENDIF HAS_UNIT_CHARACTER}
@@ -1063,6 +1080,7 @@ uses
   ShellApi, ActiveX, ComObj, ShlObj,
   JclShell, JclSysInfo, JclSecurity,
   {$ENDIF MSWINDOWS}
+  {$ENDIF ~HAS_UNITSCOPE}
   JclDateTime, JclResources,
   JclStrings;
 
@@ -2660,10 +2678,10 @@ function PathGetTempPath: string;
 var
   BufSize: Cardinal;
 begin
-  BufSize := Windows.GetTempPath(0, nil);
+  BufSize := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.GetTempPath(0, nil);
   SetLength(Result, BufSize);
   { TODO : Check length (-1 or not) }
-  Windows.GetTempPath(BufSize, PChar(Result));
+  {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.GetTempPath(BufSize, PChar(Result));
   StrResetLength(Result);
 end;
 {$ENDIF MSWINDOWS}
@@ -3191,7 +3209,7 @@ begin
         end;
       end;
     finally
-      SysUtils.FindClose(SearchRec);
+      {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.FindClose(SearchRec);
       List.EndUpdate;
     end;
   finally
@@ -3474,7 +3492,7 @@ begin
   if MoveToRecycleBin then
     Result := SHDeleteFiles(0, FileName, [doSilent, doAllowUndo, doFilesOnly])
   else
-    Result := Windows.DeleteFile(PChar(FileName));
+    Result := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.DeleteFile(PChar(FileName));
 end;
 {$ENDIF MSWINDOWS}
 {$IFDEF UNIX}
@@ -3817,7 +3835,7 @@ function GetDirectorySize(const Path: string): Int64;
     {$ENDIF MSWINDOWS}
   begin
     Result := 0;
-    R := SysUtils.FindFirst(Path + '*.*', faAnyFile, F);
+    R := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.FindFirst(Path + '*.*', faAnyFile, F);
     if R = 0 then
     try
       while R = 0 do
@@ -3839,12 +3857,12 @@ function GetDirectorySize(const Path: string): Int64;
             Inc(Result, Int64(F.Size));
           {$ENDIF UNIX}
         end;
-        R := SysUtils.FindNext(F);
+        R := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.FindNext(F);
       end;
       if R <> ERROR_NO_MORE_FILES then
         Abort;
     finally
-      SysUtils.FindClose(F);
+      {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.FindClose(F);
     end;
   end;
 
@@ -3973,7 +3991,7 @@ function GetFileInformation(const FileName: string; out FileInfo: TSearchRec): B
 begin
   Result := FindFirst(FileName, faAnyFile, FileInfo) = 0;
   if Result then
-    SysUtils.FindClose(FileInfo);
+    {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.FindClose(FileInfo);
 end;
 
 function GetFileInformation(const FileName: string): TSearchRec;
@@ -4154,7 +4172,7 @@ begin
   L := MAX_PATH + 1;
   SetLength(Result, L);
   {$IFDEF MSWINDOWS}
-  L := Windows.GetModuleFileName(Module, Pointer(Result), L);
+  L := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.GetModuleFileName(Module, Pointer(Result), L);
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   {$IFDEF FPC}
@@ -4356,10 +4374,10 @@ begin
   if Handle <> INVALID_HANDLE_VALUE then
   try
     //SysUtils.DateTimeToSystemTime(DateTimeToLocalDateTime(DateTime), SystemTime);
-    SysUtils.DateTimeToSystemTime(DateTime, SystemTime);
+    {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.DateTimeToSystemTime(DateTime, SystemTime);
     FileTime.dwLowDateTime := 0;
     FileTime.dwHighDateTime := 0;
-    if Windows.SystemTimeToFileTime(SystemTime, FileTime) then
+    if {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.SystemTimeToFileTime(SystemTime, FileTime) then
     begin
       case Times of
         ftLastAccess:
@@ -4438,10 +4456,10 @@ begin
       OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, 0);
     if Handle <> INVALID_HANDLE_VALUE then
     try
-      SysUtils.DateTimeToSystemTime(DateTime, SystemTime);
+      {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.DateTimeToSystemTime(DateTime, SystemTime);
       FileTime.dwLowDateTime := 0;
       FileTime.dwHighDateTime := 0;
-      Windows.SystemTimeToFileTime(SystemTime, FileTime);
+      {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.SystemTimeToFileTime(SystemTime, FileTime);
       case Times of
         ftLastAccess:
           Result := SetFileTime(Handle, nil, @FileTime, nil);
@@ -4743,8 +4761,8 @@ begin
   Result := '';
   if Window <> 0 then
   begin
-    Windows.GetWindowThreadProcessId(Window, @ProcessID);
-    hProcess := Windows.OpenProcess(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ, false, ProcessID);
+    {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.GetWindowThreadProcessId(Window, @ProcessID);
+    hProcess := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.OpenProcess(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ, false, ProcessID);
     if hProcess <> 0 then
     begin
       if GetWindowsVersion() < WVWin2000 then
@@ -5753,7 +5771,7 @@ begin
 
   Attr := faAnyFile and not RejectedAttributes;
 
-  Found := SysUtils.FindFirst(Path, Attr, FileInfo) = 0;
+  Found := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.FindFirst(Path, Attr, FileInfo) = 0;
   try
     while Found do
     begin
@@ -5783,7 +5801,7 @@ begin
 
   Attr := faAnyFile and not RejectedAttributes;
 
-  Found := SysUtils.FindFirst(Path, Attr, FileInfo) = 0;
+  Found := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.FindFirst(Path, Attr, FileInfo) = 0;
   try
     while Found do
     begin
@@ -5815,7 +5833,7 @@ var
   begin
     HandleDirectory(Directory);
 
-    Found := SysUtils.FindFirst(Directory + '*', Attr, DirInfo) = 0;
+    Found := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.FindFirst(Directory + '*', Attr, DirInfo) = 0;
     try
       while Found do
       begin

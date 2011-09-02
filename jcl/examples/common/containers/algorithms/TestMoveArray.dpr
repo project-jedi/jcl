@@ -3,7 +3,11 @@ program TestMoveArray;
 {$APPTYPE CONSOLE}
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.SysUtils,
+  {$ELSE ~HAS_UNITSCOPE}
   SysUtils,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclBase,
   JclAlgorithms;
 

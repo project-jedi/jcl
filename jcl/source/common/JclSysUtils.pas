@@ -57,10 +57,17 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  {$IFDEF MSWINDOWS}
+  Winapi.Windows,
+  {$ENDIF MSWINDOWS}
+  System.SysUtils, System.Classes, System.TypInfo, System.SyncObjs,
+  {$ELSE ~HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
   SysUtils, Classes, TypInfo, SyncObjs,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclBase, JclSynch;
 
 // memory initialization
@@ -643,10 +650,20 @@ type
   end;
 
 type
+  {$IFDEF BORLAND}
+  {$IFDEF COMPILER16_UP}
+  TFileHandle = THandle;
+  {$ELSE ~COMPILER16_UP}
+  TFileHandle = Integer;
+  {$ENDIF ~COMPILER16_UP}
+  {$ELSE ~BORLAND}
+  TFileHandle = THandle;
+  {$ENDIF ~BORLAND}
+
   TJclSimpleLog = class (TObject)
   private
     FDateTimeFormatStr: String;
-    FLogFileHandle: {$IFDEF BORLAND}Integer{$ELSE}THandle{$ENDIF};
+    FLogFileHandle: TFileHandle;
     FLogFileName: string;
     FLoggingActive: Boolean;
     FLogWasEmpty: Boolean;
@@ -776,18 +793,24 @@ const
 implementation
 
 uses
-  Types,
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF MSWINDOWS}
   JclConsole,
   {$ENDIF MSWINDOWS}
-  Contnrs,
+  {$IFDEF HAS_UNITSCOPE}
+  System.Variants, System.Types, System.Contnrs,
+  {$IFDEF HAS_UNIT_ANSISTRINGS}
+  System.AnsiStrings,
+  {$ENDIF HAS_UNIT_ANSISTRINGS}
+  {$ELSE ~HAS_UNITSCOPE}
+  Variants, Types, Contnrs,
   {$IFDEF HAS_UNIT_ANSISTRINGS}
   AnsiStrings,
   {$ENDIF HAS_UNIT_ANSISTRINGS}
-  JclFileUtils, JclMath, JclResources, JclStrings, JclStringConversions, JclSysInfo, Variants;
+  {$ENDIF ~HAS_UNITSCOPE}
+  JclFileUtils, JclMath, JclResources, JclStrings, JclStringConversions, JclSysInfo; 
 
 // memory initialization
 procedure ResetMemory(out P; Size: Longint);
@@ -1347,7 +1370,7 @@ begin
     while L <= H do
     begin
       I := (L + H) shr 1;
-      C := SortFunc(List.List^[I], Item);
+      C := SortFunc(List.List{$IFNDEF RTL230_UP}^{$ENDIF !RTL230_UP}[I], Item);
       if C < 0 then
         L := I + 1
       else
@@ -3617,11 +3640,7 @@ begin
     FLogFileName := CreateDefaultFileName
   else
     FLogFileName := ALogFileName;
-  {$IFDEF BORLAND}
-  FLogFileHandle := Integer(INVALID_HANDLE_VALUE);
-  {$ELSE ~BORLAND}
-  FLogFileHandle := INVALID_HANDLE_VALUE;
-  {$ENDIF ~BORLAND}
+  FLogFileHandle := TFileHandle(INVALID_HANDLE_VALUE);
   FLoggingActive := True;
 end;
 
@@ -3657,11 +3676,7 @@ begin
   if LogOpen then
   begin
     FileClose(FLogFileHandle);
-    {$IFDEF BORLAND}
-    FLogFileHandle := Integer(INVALID_HANDLE_VALUE);
-    {$ELSE ~BORLAND}
-    FLogFileHandle := INVALID_HANDLE_VALUE;
-    {$ENDIF ~BORLAND}
+    FLogFileHandle := TFileHandle(INVALID_HANDLE_VALUE);
     FLogWasEmpty := False;
   end;
 end;

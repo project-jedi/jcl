@@ -172,11 +172,17 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  {$IFDEF MSWINDOWS}
+  Winapi.Windows,
+  {$ENDIF MSWINDOWS}
+  System.SysUtils, System.Classes,
+  {$ELSE ~HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  SysUtils,
-  Classes,
+  SysUtils, Classes,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclBase;
 
 {$IFNDEF FPC}
@@ -1399,7 +1405,11 @@ implementation
 
 uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
+  {$IFDEF HAS_UNITSCOPE}
+  System.RtlConsts,
+  {$ELSE ~HAS_UNITSCOPE}
   RtlConsts,
+  {$ENDIF ~HAS_UNITSCOPE}
   {$ENDIF HAS_UNIT_RTLCONSTS}
   {$IFDEF UNICODE_BZIP2_DATA}
   BZip2,

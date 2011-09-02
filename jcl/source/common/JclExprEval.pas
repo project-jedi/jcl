@@ -60,7 +60,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  System.SysUtils, System.Classes,
+  {$ELSE ~HAS_UNITSCOPE}
   SysUtils, Classes,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclBase, JclSysUtils, JclStrHashMap, JclResources;
 
 const
@@ -969,7 +973,11 @@ implementation
 
 uses
   {$IFDEF SUPPORTS_INLINE}
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.Windows, // inline of AnsiSameText
+  {$ELSE ~HAS_UNITSCOPE}
   Windows, // inline of AnsiSameText
+  {$ENDIF ~HAS_UNITSCOPE}
   {$ENDIF SUPPORTS_INLINE}
   JclStrings;
 
@@ -2690,7 +2698,7 @@ begin
     for I := 0 to FCodeList.Count - 1 do
       TExprVirtMachOp(FCodeList[I]).Execute; }
     I := FCodeList.Count;
-    pop := @FCodeList.List^[0];
+    pop := @FCodeList.List{$IFNDEF RTL230_UP}^{$ENDIF !RTL230_UP}[0];
     while I > 0 do
     begin
       pop^.Execute;

@@ -34,7 +34,11 @@ unit JclDebugSerialization;
 interface
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.SysUtils, System.Classes, System.Contnrs,
+  {$ELSE ~HAS_UNITSCOPE}
   SysUtils, Classes, Contnrs,
+  {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}

@@ -1,7 +1,8 @@
-JEDI Code Library v 2.2 Installation
+JEDI Code Library v 2.3 Installation
 
 Supported development tools versions:
 
+- Delphi XE2 and C++Builder XE2;
 - Delphi XE and C++Builder XE;
 - Delphi 2010 and C++Builder 2010;
 - Delphi 2009 and C++Builder 2009;

@@ -42,11 +42,14 @@ unit JclHashSets;
 interface
 
 uses
-  SysUtils,
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Classes,
+  {$IFDEF HAS_UNITSCOPE}
+  System.SysUtils, System.Classes,
+  {$ELSE ~HAS_UNITSCOPE}
+  SysUtils, Classes,
+  {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF SUPPORTS_GENERICS}
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}

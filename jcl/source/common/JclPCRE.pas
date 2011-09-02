@@ -48,7 +48,11 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
+  {$IFDEF HAS_UNITSCOPE}
+  System.Classes, System.SysUtils,
+  {$ELSE ~HAS_UNITSCOPE}
   Classes, SysUtils,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclBase, JclStringConversions;
 
 const
@@ -184,7 +188,11 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.SysConst,
+  {$ELSE ~HAS_UNITSCOPE}
   SysConst,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclResources;
 
 function EncodeString(const S: string; ToUTF8: Boolean): AnsiString; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}

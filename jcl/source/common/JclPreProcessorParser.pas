@@ -51,7 +51,11 @@ unit JclPreProcessorParser;
 interface
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.SysUtils, System.Classes,
+  {$ELSE ~HAS_UNITSCOPE}
   SysUtils, Classes,
+  {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
@@ -219,7 +223,11 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.TypInfo,
+  {$ELSE ~HAS_UNITSCOPE}
   TypInfo,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclStrings, JclStreams, JclSysUtils, JclArrayLists, JclHashMaps, JclStacks;
   
 function AllWhiteSpace(P: PChar; KeepTabAndSpaces: Boolean): Boolean;

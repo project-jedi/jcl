@@ -143,7 +143,7 @@ var
   S: string;
 begin
   S := PeStripFunctionAW(Name);
-  WinHelp(Application.Handle, PChar(FWin32Help), HELP_KEY, DWORD(S));
+  WinHelp(Application.Handle, PChar(FWin32Help), HELP_KEY, {$IFDEF RTL230_UP}NativeUInt(S){$ELSE}DWORD(S){$ENDIF});
 end;
 
 procedure TMainForm.OpenFile(const FileName: TFileName; CheckIfOpen: Boolean);

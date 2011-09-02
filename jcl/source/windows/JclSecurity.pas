@@ -51,7 +51,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.Windows, System.SysUtils,
+  {$ELSE ~HAS_UNITSCOPE}
   Windows, SysUtils,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclBase;
 
 type
@@ -123,7 +127,11 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.Classes,
+  {$ELSE ~HAS_UNITSCOPE}
   Classes,
+  {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF BORLAND}
   AccCtrl,
   {$ENDIF BORLAND}

@@ -56,7 +56,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.Windows, System.SysUtils, System.Classes, Winapi.ActiveX,
+  {$ELSE ~HAS_UNITSCOPE}
   Windows, SysUtils, Classes, ActiveX,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclBase, JclWin32;
 
 // NTFS Exception
@@ -573,7 +577,12 @@ const
 implementation
 
 uses
-  ComObj, Hardlinks,
+  {$IFDEF HAS_UNITSCOPE}
+  System.Win.ComObj,
+  {$ELSE ~HAS_UNITSCOPE}
+  ComObj,
+  {$ENDIF ~HAS_UNITSCOPE}
+  Hardlinks,
   JclSysUtils, JclFileUtils, JclSysInfo, JclResources;
 
 //=== NTFS - Compression =====================================================
@@ -679,7 +688,7 @@ begin
       until R <> 0;
       Result := (R = ERROR_NO_MORE_FILES);
     finally
-      SysUtils.FindClose(SearchRec);
+      {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.FindClose(SearchRec);
     end;
   end;
 end;
@@ -1260,7 +1269,7 @@ begin
     // Read stream header
     BytesToRead := DWORD(TJclAddr(@Header.cStreamName[0]) - TJclAddr(@Header.dwStreamId));
     BytesRead := 0;
-    if not Windows.BackupRead(Data.Internal.FileHandle, (@Header), BytesToRead, BytesRead,
+    if not {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.BackupRead(Data.Internal.FileHandle, (@Header), BytesToRead, BytesRead,
       False, True, Data.Internal.Context) then
     begin
       SetLastError(ERROR_READ_FAULT);
@@ -1280,7 +1289,7 @@ begin
         SetLastError(ERROR_OUTOFMEMORY);
         Exit;
       end;
-      if not Windows.BackupRead(Data.Internal.FileHandle, Pointer(StreamName),
+      if not {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.BackupRead(Data.Internal.FileHandle, Pointer(StreamName),
         Header.dwStreamNameSize, BytesRead, False, True, Data.Internal.Context) then
       begin
         HeapFree(GetProcessHeap, 0, StreamName);
@@ -1375,7 +1384,7 @@ begin
   begin
     // Call BackupRead one last time to signal that we're done with it
     BytesRead := 0;
-    Result := Windows.BackupRead(0, nil, 0, BytesRead, True, False, Data.Internal.Context);
+    Result := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.BackupRead(0, nil, 0, BytesRead, True, False, Data.Internal.Context);
     if not Result then
       LastError := GetLastError;
     CloseHandle(Data.Internal.FileHandle);
@@ -1517,7 +1526,7 @@ begin
       end;
       Result := R = ERROR_NO_MORE_FILES;
     finally
-      SysUtils.FindClose(SearchRec);
+      {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.FindClose(SearchRec);
       List.EndUpdate;
     end;
   end;

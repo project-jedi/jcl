@@ -38,13 +38,20 @@ unit JclUnitVersioning;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
+  {$IFDEF HAS_UNITSCOPE}
+  {$IFDEF MSWINDOWS}
+  Winapi.Windows,
+  {$ENDIF MSWINDOWS}
+  System.SysUtils, System.Contnrs;
+  {$ELSE ~HAS_UNITSCOPE}
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
   SysUtils, Contnrs;
+  {$ENDIF ~HAS_UNITSCOPE}
 
 type
   PUnitVersionInfo = ^TUnitVersionInfo;
@@ -160,7 +167,11 @@ implementation
 
 uses
   // make TObjectList functions inlined
+  {$IFDEF HAS_UNITSCOPE}
+  System.Classes,
+  {$ELSE ~HAS_UNITSCOPE}
   Classes,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclSysUtils, JclSynch;
 
 // Delphi 5 does not know this function //(usc) D6/7 Per does have StartsWith

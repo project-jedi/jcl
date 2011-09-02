@@ -55,10 +55,17 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  {$IFDEF MSWINDOWS}
+  Winapi.Windows, Winapi.ActiveX,
+  {$ENDIF MSWINDOWS}
+  System.Classes, System.SysUtils, System.Contnrs,
+  {$ELSE ~HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
   Windows, ActiveX,
   {$ENDIF MSWINDOWS}
   Classes, SysUtils, Contnrs,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclBase, JclWideStrings,
   mscoree_TLB, mscorlib_TLB;
 
@@ -350,8 +357,11 @@ const
 implementation
 
 uses
-  ComObj,
-  Variants,
+  {$IFDEF HAS_UNITSCOPE}
+  System.Win.ComObj, System.Variants,
+  {$ELSE ~HAS_UNITSCOPE}
+  ComObj, Variants,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclSysUtils, JclResources, JclStrings;
 
 function CompareCLRVersions(const LeftVersion, RightVersion: string): Integer;
@@ -905,7 +915,7 @@ begin
         end;
       until not FindNextFileW(SearchHandle, FindData);
     finally
-      Windows.FindClose(SearchHandle);
+      {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.FindClose(SearchHandle);
     end;
   end;
 end;
