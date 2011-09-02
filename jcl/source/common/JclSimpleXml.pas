@@ -45,12 +45,21 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  {$IFDEF MSWINDOWS}
+  Winapi.Windows, // Delphi 2005 inline
+  {$ENDIF MSWINDOWS}
+  System.SysUtils, System.Classes,
+  System.Variants,
+  System.IniFiles,
+  {$ELSE ~HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
   Windows, // Delphi 2005 inline
   {$ENDIF MSWINDOWS}
   SysUtils, Classes,
   Variants,
   IniFiles,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclBase, JclStreams;
 
 type
@@ -1215,7 +1224,7 @@ procedure TJclSimpleXML.SaveToFile(const FileName: TFileName; Encoding: TJclStri
 var
   Stream: TFileStream;
 begin
-  if SysUtils.FileExists(FileName) then
+  if {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.FileExists(FileName) then
   begin
     Stream := TFileStream.Create(FileName, fmOpenWrite);
     Stream.Size := 0;

@@ -48,11 +48,19 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.Windows, System.Classes, System.SysUtils, System.Contnrs,
+  {$ELSE ~HAS_UNITSCOPE}
   Windows, Classes, SysUtils, Contnrs,
+  {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF FPC}
   JwaWinNT, JwaWinSvc,
   {$ELSE ~FPC}
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.WinSvc,
+  {$ELSE ~HAS_UNITSCOPE}
   WinSvc,
+  {$ENDIF ~HAS_UNITSCOPE}
   {$ENDIF ~FPC}
   JclBase, JclSysUtils;
 
@@ -373,9 +381,17 @@ uses
   {$IFDEF FPC}
   JwaRegStr,
   {$ELSE ~FPC}
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.RegStr,
+  {$ELSE ~HAS_UNITSCOPE}
   RegStr,
+  {$ENDIF ~HAS_UNITSCOPE}
   {$ENDIF ~FPC}
+  {$IFDEF HAS_UNITSCOPE}
+  System.Math,
+  {$ELSE ~HAS_UNITSCOPE}
   Math,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclRegistry, JclStrings, JclSysInfo;
 
 const
@@ -644,7 +660,7 @@ procedure TJclNtService.Refresh;
 var
   Ret: BOOL;
   BytesNeeded: DWORD;
-  PQrySvcCnfg: PQueryServiceConfig;
+  PQrySvcCnfg: {$IFDEF RTL230_UP}LPQUERY_SERVICE_CONFIG{$ELSE}PQueryServiceConfig{$ENDIF RTL230_UP};
 begin
   Open(SERVICE_QUERY_STATUS or SERVICE_QUERY_CONFIG);
   try
@@ -673,7 +689,7 @@ procedure TJclNtService.Commit;
 var
   Ret: BOOL;
   BytesNeeded: DWORD;
-  PQrySvcCnfg: PQueryServiceConfig;
+  PQrySvcCnfg: {$IFDEF RTL230_UP}LPQUERY_SERVICE_CONFIG{$ELSE}PQueryServiceConfig{$ENDIF RTL230_UP};
 begin
  if not FCommitNeeded then
    Exit;

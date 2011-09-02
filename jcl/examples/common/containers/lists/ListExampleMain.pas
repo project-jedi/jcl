@@ -3,13 +3,20 @@ unit ListExampleMain;
 interface
 
 uses
-  {$IFDEF WIN32}
-  Windows, Messages, Graphics, Controls, Forms, Dialogs, StdCtrls,
-  {$ENDIF}
   {$IFDEF LINUX}
   QForms, QControls, QStdCtrls,
   {$ENDIF}
+  {$IFDEF HAS_UNITSCOPE}
+  {$IFDEF MSWINDOWS}
+  Winapi.Windows, Winapi.Messages, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,
+  {$ENDIF}
+  System.SysUtils, System.Classes;
+  {$ELSE ~HAS_UNITSCOPE}
+  {$IFDEF MSWINDOWS}
+  Windows, Messages, Graphics, Controls, Forms, Dialogs, StdCtrls,
+  {$ENDIF}
   SysUtils, Classes;
+  {$ENDIF ~HAS_UNITSCOPE}
 
 type
   TMainForm = class(TForm)

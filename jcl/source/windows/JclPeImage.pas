@@ -33,7 +33,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -50,7 +50,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.Windows, System.Classes, System.SysUtils, System.TypInfo, System.Contnrs,
+  {$ELSE ~HAS_UNITSCOPE}
   Windows, Classes, SysUtils, TypInfo, Contnrs,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclBase, JclDateTime, JclFileUtils, JclSysInfo, JclWin32;
 
 type
@@ -1098,10 +1102,17 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.RTLConsts,
+  {$IFDEF HAS_UNIT_CHARACTER}
+  System.Character,
+  {$ENDIF HAS_UNIT_CHARACTER}
+  {$ELSE ~HAS_UNITSCOPE}
   RTLConsts,
   {$IFDEF HAS_UNIT_CHARACTER}
   Character,
   {$ENDIF HAS_UNIT_CHARACTER}
+  {$ENDIF ~HAS_UNITSCOPE}
   JclLogic, JclResources, JclSysUtils, JclStrings, JclStringConversions;
 
 const
@@ -2088,7 +2099,14 @@ function TJclPeExportFuncItem.GetIsExportedVariable: Boolean;
 begin
   case FExportList.Image.Target of
     taWin32:
+    begin
+      {$IFDEF DELPHI64_TEMPORARY}
+      System.Error(rePlatformNotImplemented);//there is no BaseOfData in the 32-bit header for Win64
+      Result := False;
+      {$ELSE ~DELPHI64_TEMPORARY}
       Result := (Address >= FExportList.Image.OptionalHeader32.BaseOfData);
+      {$ENDIF ~DELPHI64_TEMPORARY}
+    end;
     taWin64:
       Result := False;
       // TODO equivalent for 64-bit modules
@@ -2329,7 +2347,7 @@ begin
         ExportItem := TJclPeExportFuncItem.Create(Self, '',
           ForwardedName, Address, $FFFF, TJclAddr(I) + FBase, icNotChecked);
 
-        List^[I] := ExportItem;
+        List{$IFNDEF RTL230_UP}^{$ENDIF !RTL230_UP}[I] := ExportItem;
       end;
 
       for I := 0 to NameCount - 1 do
@@ -2339,7 +2357,7 @@ begin
         if not TryUTF8ToString(UTF8Name, ExportName) then
           ExportName := string(UTF8Name);
 
-        ExportItem := TJclPeExportFuncItem(List^[NameOrdinals^]);
+        ExportItem := TJclPeExportFuncItem(List{$IFNDEF RTL230_UP}^{$ENDIF !RTL230_UP}[NameOrdinals^]);
         ExportItem.FName := ExportName;
         ExportItem.FHint := I;
 
@@ -3480,7 +3498,11 @@ function TJclPeImage.GetHeaderValues(Index: TJclPeHeader): string;
       JclPeHeader_BaseOfCode:
         Result := IntToHex(OptionalHeader.BaseOfCode, 8);
       JclPeHeader_BaseOfData:
+        {$IFDEF DELPHI64_TEMPORARY}
+        System.Error(rePlatformNotImplemented);
+        {$ELSE ~DELPHI64_TEMPORARY}
         Result := IntToHex(OptionalHeader.BaseOfData, 8);
+        {$ENDIF ~DELPHI64_TEMPORARY}
       JclPeHeader_ImageBase:
         Result := IntToHex(OptionalHeader.ImageBase, 8);
       JclPeHeader_SectionAlignment:
@@ -5013,9 +5035,11 @@ function PeRebaseImage32(const ImageName: TFileName; NewBase: TJclAddr32;
   end;
 
 {$IFDEF CPU64}
+{$IFNDEF DELPHI64_TEMPORARY}
 var
   NewIB, OldIB: QWord;
 {$ENDIF CPU64}
+{$ENDIF ~DELPHI64_TEMPORARY}
 begin
   if NewBase = 0 then
     NewBase := CalculateBaseAddress;
@@ -5028,12 +5052,16 @@ begin
       OldImageSize, OldImageBase, NewImageSize, NewImageBase, TimeStamp));
     {$ENDIF CPU32}
     {$IFDEF CPU64}
+    {$IFDEF DELPHI64_TEMPORARY}
+    System.Error(rePlatformNotImplemented);
+    {$ELSE ~DELPHI64_TEMPORARY}
     NewIB := NewImageBase;
     OldIB := OldImageBase;
     Win32Check(ReBaseImage(PAnsiChar(AnsiString(ImageName)), nil, True, False, False, MaxNewSize,
       OldImageSize, OldIB, NewImageSize, NewIB, TimeStamp));
     NewImageBase := NewIB;
     OldImageBase := OldIB;
+    {$ENDIF ~DELPHI64_TEMPORARY}
     {$ENDIF CPU64}
   end;
 end;
@@ -6441,12 +6469,17 @@ begin
 end;
 
 // Image access under a debbuger
-
+{$IFDEF USE_64BIT_TYPES}
+function InternalReadProcMem(ProcessHandle: THandle; Address: DWORD;
+  Buffer: Pointer; Size: SIZE_T): Boolean;
+var
+  BR: SIZE_T;
+{$ELSE}
 function InternalReadProcMem(ProcessHandle: THandle; Address: DWORD;
   Buffer: Pointer; Size: Integer): Boolean;
-// TODO 64 bit version
 var
   BR: DWORD;
+{$ENDIF}
 begin
   BR := 0;
   Result := ReadProcessMemory(ProcessHandle, Pointer(Address), Buffer, Size, BR);
@@ -6660,7 +6693,7 @@ begin
     Result := urError;
   end;
   NameU^ := #0;
-  SetLength(UTF8Unmangled, SysUtils.StrLen(PAnsiChar(UTF8Unmangled))); // SysUtils prefix due to compiler bug
+  SetLength(UTF8Unmangled, {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.StrLen(PAnsiChar(UTF8Unmangled))); // SysUtils prefix due to compiler bug
   if not TryUTF8ToString(UTF8Unmangled, Unmangled) then
     Unmangled := string(UTF8Unmangled);
 end;

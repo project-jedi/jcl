@@ -33,7 +33,11 @@ interface
 {$I jcl.inc}
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.Classes,
+  {$ELSE ~HAS_UNITSCOPE}
   Classes,
+  {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
@@ -182,6 +186,18 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  {$IFDEF MSWINDOWS}
+  Winapi.Windows,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF HAS_UNIT_RTLCONSTS}
+  System.RTLConsts,
+  {$ENDIF HAS_UNIT_RTLCONTST}
+  System.TypInfo,
+  System.SysUtils,
+  Winapi.ActiveX,
+  System.Win.ComObj,
+  {$ELSE ~HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
@@ -192,6 +208,7 @@ uses
   SysUtils,
   ActiveX,
   ComObj,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclRTTI,
   JclSysUtils,
   JclContainerIntf,

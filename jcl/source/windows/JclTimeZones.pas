@@ -60,7 +60,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.Windows, System.SysUtils, System.Contnrs, System.Classes,
+  {$ELSE ~HAS_UNITSCOPE}
   Windows, SysUtils, Contnrs, Classes,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclBase;
 
 type
@@ -183,7 +187,11 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.Messages,
+  {$ELSE ~HAS_UNITSCOPE}
   Messages,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclResources,
   JclDateTime, JclRegistry;
 

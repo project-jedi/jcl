@@ -45,7 +45,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.Windows, System.Classes, System.Contnrs, Winapi.Mapi, System.SysUtils,
+  {$ELSE ~HAS_UNITSCOPE}
   Windows, Classes, Contnrs, Mapi, SysUtils,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclBase, JclAnsiStrings;
 
 type
@@ -297,9 +301,15 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  {$IFDEF HAS_UNIT_ANSISTRINGS}
+  System.AnsiStrings,
+  {$ENDIF HAS_UNIT_ANSISTRINGS}
+  {$ELSE ~HAS_UNITSCOPE}
   {$IFDEF HAS_UNIT_ANSISTRINGS}
   AnsiStrings,
   {$ENDIF HAS_UNIT_ANSISTRINGS}
+  {$ENDIF ~HAS_UNITSCOPE}
   JclFileUtils, JclLogic, JclRegistry, JclResources, JclSysInfo, JclSysUtils;
 
 const
@@ -1021,12 +1031,12 @@ begin
           if (AttachmentFiles.Count > I) and (AttachmentFiles[I] <> '') then
           begin
             AttachmentFileNames[I] := Attachments[I];
-            AttachmentPathNames[I] := AnsiString(SysUtils.ExpandFileName(AttachmentFiles[I]));
+            AttachmentPathNames[I] := AnsiString({$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.ExpandFileName(AttachmentFiles[I]));
           end
           else
           begin
             AttachmentFileNames[I] := ExtractFileName(AnsiString(Attachments[I]));
-            AttachmentPathNames[I] := AnsiString(SysUtils.ExpandFileName(string(Attachments[I])));
+            AttachmentPathNames[I] := AnsiString({$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.ExpandFileName(string(Attachments[I])));
           end;
           AttachArray[I].lpszFileName := PAnsiChar(AttachmentFileNames[I]);
           AttachArray[I].lpszPathName := PAnsiChar(AttachmentPathNames[I]);

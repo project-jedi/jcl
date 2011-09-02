@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="en-us">
 <head>
-  <title>JEDI Code Library Release 2.2</title>
+  <title>JEDI Code Library Release 2.3</title>
   <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
   <link rel="stylesheet" type="text/css" href="styles/default.css">
   <meta content="Project JEDI" name="author">
@@ -14,9 +14,9 @@
 
 <h1>JEDI Code Library</h1>
 
-<p>Release 2.2<br>
-Build 3817<br>
-13-August-2010</p>
+<p>Release 2.3<br>
+Build 4197<br>
+28-August-2011</p>
 
 <hr><br>
 
@@ -49,8 +49,8 @@ Build 3817<br>
 <hr><br>
 
 <h3><a name="about">About this release</a></h3>
-<p>JCL release 2.2 provides support for RAD Studio XE (including
-Delphi XE and C++Builder XE) an updated support for all targets.</p>
+<p>JCL release 2.2 provides support for RAD Studio XE2 (including
+Delphi XE2 and C++Builder XE2) an updated support for all targets.</p>
 
 <p>Multiple bugs have been
 fixed; for detailed change logs, use the facilities of our Subversion repository
@@ -63,15 +63,14 @@ at Sourceforge.net&nbsp;
 
 <ul>
 
- <li>PCRE is updated to 8.02</li>
- <li>The JEDI PreProcessor is now merged to JCL runtime code, you can embed it in your own application</li>
- <li>ZLib is updated to 1.2.5</li>
- <li>7z is updated to 9.15</li>
- <li>The JCL packages are heavily reorganized: all developer tools (JclBorlandTools has been split for instance, JclParseUses is moved to runtime code) are moved to a separate package</li>
- <li>The JCLDebug code was heavily reworked to avoid internal exceptions</li>
- <li>The Unicode Character Database (UCD) is updated to 5.2.0, this resource is now more packed than previously</li>
- <li>The EDI units are removed from the library because of maintenance lack</li>
- <li>The MoveArray functions are moved to JclAlgorithms, this move breaks backward compatibility</li>
+ <li>New unit JclMsBuild to query and update MsBuild files;</li>
+ <li>New string index, prefix and suffix functions in JclAnsiStrings and JclStrings;</li>
+ <li>Speed improvements in string conversion functions and in TJclSimpleXml;</li>
+ <li>Improvement of JclSysUtils.Execute to add STD_ERROR callbacks and event to immediatly kill the nested application;</li>
+ <li>New code to catch and report exceptions raised in C++ code (donation by Moritz Beutel);</li>
+ <li>New wrapper for TortoiseGIT actions (donation by Jens Fudickar);</li>
+ <li>Wrappers for new archive formats WIM, TED, UEFIc, UEFIs, SquashFS and CramFS introduced in 7zip 9.22.</li>
+ <li>Application instances: new features to limit the number of instances on a per-user, per-session and per-machine scope.</li>
 
 </ul>
 
@@ -99,7 +98,7 @@ them if the "Packages" node is checked.</p>
 can be linked into binaries to become JCL debug data or be converted to .jdbg files.
 Once linked MAP files could be deleted. These options are subnodes of the "Packages" node.</p>
 
-<p>For BDS 2006, RAD Studio 2007, RAD Studio 2009, RAD Studio 2010 and RAD Studio XE the
+<p>For BDS 2006, RAD Studio 2007, RAD Studio 2009, RAD Studio 2010, RAD Studio XE and RAD Studio XE2 the
 compiler introduced a new option to make the same packages available in C++,
 by checking the "Dual packages" option of the "Packages" node, you will be able
 to call functions of the JCL from C++ code.</p>
@@ -150,6 +149,8 @@ to call functions of the JCL from C++ code.</p>
   <li>Delphi 2010 and C++Builder 2010.</li>
 
   <li>Delphi XE and C++Builder XE.</li>
+
+  <li>Delphi XE2 and C++Builder XE2.</li>
 
 </ul>
 
@@ -245,6 +246,10 @@ file.
     <li>For Delphi 2010 and C++Builder 2010: source\include\jcld14.inc</li>
 
     <li>For Delphi XE and C++Builder XE: source\include\jcld15.inc</li>
+
+    <li>For Delphi XE2 and C++Builder XE2 Win32: source\include\jcld16win32.inc</li>
+
+    <li>For Delphi XE2 Win64: source\include\jcld16win64.inc</li>
 
     <li>For FreePascal: source\include\jclfpc.inc</li>
   </ul>

@@ -48,7 +48,12 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
-  Windows, JclWin32,
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.Windows,
+  {$ELSE ~HAS_UNITSCOPE}
+  Windows,
+  {$ENDIF ~HAS_UNITSCOPE}
+  JclWin32,
   {$ENDIF MSWINDOWS}
   JclBase;
 
@@ -115,7 +120,11 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.SysUtils,
+  {$ELSE ~HAS_UNITSCOPE}
   SysUtils,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclResources, JclSecurity, JclStrings, JclSysUtils, JclSysInfo;
 
 function SetDisplayResolution(const XRes, YRes: DWORD): Longint;

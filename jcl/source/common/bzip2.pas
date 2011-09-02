@@ -326,6 +326,18 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  {$IFDEF BZIP2_LINKONREQUEST}
+  {$IFDEF MSWINDOWS}
+  Winapi.Windows,
+  {$ENDIF MSWINDOWS}
+  {$ENDIF BZIP2_LINKONREQUEST}
+  System.Types,
+  {$IFDEF HAS_UNIT_LIBC}
+  Libc,
+  {$ENDIF HAS_UNIT_LIBC}
+  System.SysUtils;
+  {$ELSE ~HAS_UNITSCOPE}
   {$IFDEF BZIP2_LINKONREQUEST}
   {$IFDEF MSWINDOWS}
   Windows,
@@ -336,6 +348,7 @@ uses
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
   SysUtils;
+  {$ENDIF ~HAS_UNITSCOPE}
 
 {$IFDEF BZIP2_STATICLINK}
 function BZ2_bzCompressInit; external;

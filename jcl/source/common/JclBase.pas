@@ -46,17 +46,24 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  {$IFDEF MSWINDOWS}
+  Winapi.Windows,
+  {$ENDIF MSWINDOWS}
+  System.SysUtils;
+  {$ELSE ~HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
   SysUtils;
+  {$ENDIF ~HAS_UNITSCOPE}
 
 // Version
 const
   JclVersionMajor   = 2;    // 0=pre-release|beta/1, 2, ...=final
   JclVersionMinor   = 3;    // Fifth minor release since JCL 1.90
-  JclVersionRelease = 0;    // 0: pre-release|beta/ 1: release
-  JclVersionBuild   = 3847; // build number, days since march 1, 2000
+  JclVersionRelease = 1;    // 0: pre-release|beta/ 1: release
+  JclVersionBuild   = 4197; // build number, days since march 1, 2000
   JclVersion = (JclVersionMajor shl 24) or (JclVersionMinor shl 16) or
     (JclVersionRelease shl 15) or (JclVersionBuild shl 0);
 
@@ -90,7 +97,7 @@ type
   SizeInt = Integer;
   {$ENDIF CPU32}
   {$IFDEF CPU64}
-  SizeInt = Int64;
+  SizeInt = NativeInt;
   {$ENDIF CPU64}
   PSizeInt = ^SizeInt;
   PPointer = ^Pointer;
@@ -312,7 +319,12 @@ type
   {$ENDIF FPC}
   {$IFDEF BORLAND}
   TJclAddr64 = Int64;
+  {$IFDEF CPU64}
+  TJclAddr = TJclAddr64;
+  {$ENDIF CPU64}
+  {$IFDEF CPU32}
   TJclAddr = TJclAddr32;
+  {$ENDIF CPU32}
   {$ENDIF BORLAND}
   PJclAddr = ^TJclAddr;
 

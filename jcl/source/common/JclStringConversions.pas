@@ -34,7 +34,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -47,7 +47,11 @@ unit JclStringConversions;
 interface
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.Classes,
+  {$ELSE ~HAS_UNITSCOPE}
   Classes,
+  {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
@@ -291,9 +295,15 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  {$IFDEF MSWINDOWS}
+  Winapi.Windows,
+  {$ENDIF MSWINDOWS}
+  {$ELSE ~HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
+  {$ENDIF ~HAS_UNITSCOPE}
   JclResources;
 
 const MB_ERR_INVALID_CHARS = 8;
@@ -354,18 +364,17 @@ asm
        // --> RCX Source
        //     RDX Target
        //     R8  Count
-       MOV     RAX, RCX
-       MOV     RCX, R8
-       JRCXZ   @@Finish           // go out if there is nothing to do (ECX = 0)
-       MOV     RSI, RAX
-       XOR     RAX, RAX
+
+       DEC     R8    // go out if there is nothing to do (R8 = 0)
+       JS      @@Finish
 @@1:
-       MOV     AL, [RSI]
-       INC     RSI
-       MOV     [RDX], AX
+       MOVZX   AX, BYTE PTR [RCX]
+       INC     RCX
+       MOV     WORD PTR [RDX], AX
        ADD     RDX, 2
-       DEC     RCX
-       JNZ     @@1
+@@2:
+       DEC     R8
+       JNS     @@1
        {$ENDIF CPU64}
 @@Finish:
 end;
@@ -2664,7 +2673,7 @@ begin
       if ReadCount > 0 then
       begin
         TmpPos := 1;
-        ReadCount := UTF16GetNextBuffer(UTF16Buffer, TmpPos, Buffer, Start, Count);
+        ReadCount := UTF16GetNextBuffer(UTF16Buffer, TmpPos, Buffer, Start, ReadCount);
         if TmpPos <> -1 then
           Inc(Result, ReadCount)
         else
@@ -2719,17 +2728,18 @@ end;
 
 function AnsiGetNextBuffer(const S: AnsiString; CodePage: Word; var StrPos: SizeInt; var Buffer: TUCS4Array; var Start: SizeInt; Count: SizeInt): SizeInt; overload;
 var
-  StrLength, TmpPos: SizeInt;
+  ReadCount, StrLength, TmpPos: SizeInt;
   UTF16Buffer: TUTF16String;
 begin
   StrLength := Length(S);
   if (StrPos > 0) and (StrPos <= StrLength) then
   begin
     SetLength(Buffer, 2 * Count);
-    if MultiByteToWideChar(CodePage, MB_PRECOMPOSED or MB_ERR_INVALID_CHARS, @S[StrPos], Count, PWideChar(UTF16Buffer), 2 * Count) > 0 then
+    ReadCount :=MultiByteToWideChar(CodePage, MB_PRECOMPOSED or MB_ERR_INVALID_CHARS, @S[StrPos], Count, PWideChar(UTF16Buffer), 2 * Count);
+    if ReadCount > 0 then
     begin
       TmpPos := 1;
-      Result := UTF16GetNextBuffer(UTF16Buffer, TmpPos, Buffer, Start, Count);
+      Result := UTF16GetNextBuffer(UTF16Buffer, TmpPos, Buffer, Start, ReadCount);
       if TmpPos > 0 then
         Inc(StrPos, Result)
       else
@@ -2789,7 +2799,7 @@ begin
       if ReadCount > 0 then
       begin
         TmpPos := 1;
-        ReadCount := UTF16GetNextBuffer(UTF16Buffer, TmpPos, Buffer, Start, Count);
+        ReadCount := UTF16GetNextBuffer(UTF16Buffer, TmpPos, Buffer, Start, ReadCount);
         if TmpPos <> -1 then
           Inc(Result, ReadCount)
         else

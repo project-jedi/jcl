@@ -35,7 +35,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Classes, Windows, Graphics,
+  {$IFDEF HAS_UNITSCOPE}
+  System.SysUtils, Winapi.Windows, System.Classes, Vcl.Graphics,
+  {$ELSE ~HAS_UNITSCOPE}
+  SysUtils, Windows, Classes, Graphics,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclVersionControl;
 
 type

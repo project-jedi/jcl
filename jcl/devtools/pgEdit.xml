@@ -74,32 +74,33 @@
         <target name="d12" defines="BCB" IsBds="1"/>
         <target name="d14" defines="BCB" IsBds="1"/>
         <target name="d15" defines="BCB" IsBds="1"/>
+        <target name="d16" defines="BCB" IsBds="1"/>
       </targets>
       <aliases>
         <!-- language aliases -->
-        <alias name="Delphi" value="d6,d7,d9,d10,d11,d12,d14,d15"/>
-        <alias name="Bcb" value="c6,d10,d11,d12,d14,d15"/>
-        <alias name="Pascal" value="fpc,d6,d7,d9,d10,d11,d12,d14,d15"/>
+        <alias name="Delphi" value="d6,d7,d9,d10,d11,d12,d14,d15,d16"/>
+        <alias name="Bcb" value="c6,d10,d11,d12,d14,d15,d16"/>
+        <alias name="Pascal" value="fpc,d6,d7,d9,d10,d11,d12,d14,d15,d16"/>
         <!-- platform aliases -->
-        <alias name="Windows" value="help,fpc,c6,d6,d7,d9,d10,d11,d12,d14,d15"/>
+        <alias name="Windows" value="help,fpc,c6,d6,d7,d9,d10,d11,d12,d14,d15,d16"/>
         <alias name="Linux" value="help,fpc"/>
         <!-- package aliases -->
-        <alias name="allv11up" value="d11,d12,d14,d15"/>
+        <alias name="allv11up" value="d11,d12,d14,d15,d16"/>
         <!-- GUI aliases -->
         <alias name="Clx" value="help,c6,d6,d7"/>
-        <alias name="Vcl" value="help,c6,d6,d7,d9,d10,d11,d12,d14,d15"/>
+        <alias name="Vcl" value="help,c6,d6,d7,d9,d10,d11,d12,d14,d15,d16"/>
         <!-- IDE aliases -->
-        <alias name="BDS" value="cs1,d8,d9,d10,d11,d12,d14,d15"/>
-        <alias name="runtimeBDS" value="d9,d10,d11,d12,d14,d15"/>
+        <alias name="BDS" value="cs1,d8,d9,d10,d11,d12,d14,d15,d16"/>
+        <alias name="runtimeBDS" value="d9,d10,d11,d12,d14,d15,d16"/>
         <alias name="OldStyleIDE" value="c6,d6,d7"/>
-        <alias name="runtimeIDE" value="c6,d6,d7,d9,d10,d11,d12,d14,d15"/>
-        <alias name="designtimeIDE" value="c6,d6,d7,d8,d9,d10,cs1,d11,d12,d14,d15"/>
+        <alias name="runtimeIDE" value="c6,d6,d7,d9,d10,d11,d12,d14,d15,d16"/>
+        <alias name="designtimeIDE" value="c6,d6,d7,d8,d9,d10,cs1,d11,d12,d14,d15,d16"/>
       </aliases>
       <ProjectProperties>
         <ProjectProperty name="VersionMajorNumber" value="2"/>
         <ProjectProperty name="VersionMinorNumber" value="3"/>
-        <ProjectProperty name="ReleaseNumber" value="0"/>
-        <ProjectProperty name="BuildNumber" value="3847"/>
+        <ProjectProperty name="ReleaseNumber" value="1"/>
+        <ProjectProperty name="BuildNumber" value="4197"/>
         <ProjectProperty name="Copyright" value="Copyright (C) 1999, 2011 Project JEDI"/>
       </ProjectProperties>
     </Model>

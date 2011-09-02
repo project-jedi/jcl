@@ -1,16 +1,24 @@
 unit AlgorithmsExampleMain;
 
+{$I jcl.inc}
+
 interface
 
 uses
-  {$IFDEF WIN32}
-  Windows, Messages, Forms, ComCtrls, Graphics, Controls,
-  Dialogs, StdCtrls,
-  {$ENDIF}
   {$IFDEF LINUX}
   QForms, QStdCtrls, QControls, QComCtrls,
   {$ENDIF}
+  {$IFDEF HAS_UNITSCOPE}
+  {$IFDEF MSWINDOWS}
+  Winapi.Windows, Winapi.Messages, Vcl.Forms, Vcl.ComCtrls, Vcl.Graphics, Vcl.Controls, Vcl.Dialogs, Vcl.StdCtrls,
+  {$ENDIF}
+  System.SysUtils, System.Classes,
+  {$ELSE ~HAS_UNITSCOPE}
+  {$IFDEF MSWINDOWS}
+  Windows, Messages, Forms, ComCtrls, Graphics, Controls, Dialogs, StdCtrls,
+  {$ENDIF}
   SysUtils, Classes,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclContainerIntf, JclArrayLists, JclLinkedLists;
 
 type

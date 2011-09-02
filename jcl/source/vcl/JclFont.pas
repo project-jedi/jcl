@@ -42,7 +42,11 @@ procedure SetObjectFontToSystemFont(const AObject: TObject; const FontType: TFon
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  Vcl.StdCtrls, Vcl.ComCtrls, Vcl.Graphics, System.TypInfo,
+  {$ELSE ~HAS_UNITSCOPE}
   StdCtrls, ComCtrls, Graphics, TypInfo,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclSysUtils, JclSysInfo;
 
 procedure SetCaptionFont(const AObjectFont: TFont);

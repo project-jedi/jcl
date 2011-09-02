@@ -361,7 +361,7 @@ procedure TMemoryDumpForm.DumpListViewData(Sender: TObject; Item: TListItem);
 var
   Address: Pointer;
   LineData: packed array[0..63] of Byte;
-  NR: DWORD;
+  NR: {$IFDEF RTL230_UP}NativeUInt{$ELSE}DWORD{$ENDIF};
   Hex, Ascii, S: string;
   I: Integer;
   W: PWideChar;
@@ -493,7 +493,7 @@ end;
 procedure TMemoryDumpForm.SaveData1Execute(Sender: TObject);
 var
   MS: TMemoryStream;
-  NR: DWORD;
+  NR: {$IFDEF RTL230_UP}NativeUInt{$ELSE}DWORD{$ENDIF};
 begin
   with SaveDataDialog, FMemoryInfo[PagesListView.Selected.Index].MemInfo do
   begin

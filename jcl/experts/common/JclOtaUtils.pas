@@ -818,12 +818,15 @@ end;
 
 function TJclOTAExpertBase.GetJCLRootDir: string;
 var
-  IDERegKey, JclVersion, JclDcpDir, JclBplDir: string;
+  IDERegKey, JclVersion, JclDcpDir, JclBplDir, PlatformStr: string;
 begin
   if FJCLRootDir = '' then
   begin
     IDERegKey := StrEnsureNoSuffix('\', GetOTAServices.GetBaseRegistryKey);
-    if not ReadJediRegInformation(IDERegKey, 'JCL', JclVersion, JclDcpDir, JclBplDir, FJCLRootDir)
+    {$IFDEF BDS9_UP}
+    PlatformStr := 'Win32';
+    {$ENDIF BDS9_UP}
+    if not ReadJediRegInformation(IDERegKey, 'JCL', PlatformStr, JclVersion, JclDcpDir, JclBplDir, FJCLRootDir)
        or (FJCLRootDir = '') then
     begin
       if SelectDirectory(LoadResString(@RsBrowseToJCLRootDir), '', FJCLRootDir)
@@ -833,7 +836,7 @@ begin
         JclVersion := Format('%d.%d.%d.%d', [JclVersionMajor, JclVersionMinor, JclVersionRelease, JclVersionBuild]);
         JclDcpDir := JCLSettings.Values['DCP-Path'];
         JclBplDir := JCLSettings.Values['BPL-Path'];
-        InstallJediRegInformation(IDERegKey, 'JCL', JclVersion, JclDcpDir, JclBplDir, FJCLRootDir);
+        InstallJediRegInformation(IDERegKey, 'JCL', PlatformStr, JclVersion, JclDcpDir, JclBplDir, FJCLRootDir);
       end
       else
         raise EJclExpertException.CreateRes(@RsENoRootDir);
@@ -1303,7 +1306,10 @@ begin
     {$IFDEF BDS8_UP}
     // add the config environment variable
     if Supports(Project.ProjectOptions, IOTAProjectOptionsConfigurations, Configurations) then
+    begin
       EnvVariables.Values['Config'] := Configurations.ActiveConfigurationName;
+      EnvVariables.Values['Platform'] := Configurations.ActivePlatformName;
+    end;
     {$ENDIF BDS8_UP}
     while Pos('$(', Result) > 0 do
     begin

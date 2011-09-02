@@ -37,7 +37,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -54,11 +54,15 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.Windows, System.Classes,
+  {$ELSE ~HAS_UNITSCOPE}
   Windows, Classes,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclBase, JclStrings;
 
 type
-  DelphiHKEY = Longword;
+  DelphiHKEY = {$IFDEF CPUX64}type Winapi.Windows.HKEY{$ELSE}Longword{$ENDIF CPUX64};
   {$HPPEMIT '// BCB users must typecast the HKEY values to DelphiHKEY or use the HK-values below.'}
 
   TExecKind = (ekMachineRun, ekMachineRunOnce, ekUserRun, ekUserRunOnce,
@@ -371,7 +375,11 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.SysUtils,
+  {$ELSE ~HAS_UNITSCOPE}
   SysUtils,
+  {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF FPC}
 //  JwaAccCtrl,
   {$ELSE ~FPC}
@@ -433,6 +441,15 @@ end;
 function RootKeyName(const RootKey: THandle): string;
 begin
   case RootKey of
+    {$IFDEF DELPHI64_TEMPORARY}
+    Integer(HKCR) : Result := HKCRLongName;
+    Integer(HKCU) : Result := HKCULongName;
+    Integer(HKLM) : Result := HKLMLongName;
+    Integer(HKUS) : Result := HKUSLongName;
+    Integer(HKPD) : Result := HKPDLongName;
+    Integer(HKCC) : Result := HKCCLongName;
+    Integer(HKDD) : Result := HKDDLongName;
+    {$ELSE ~DELPHI64_TEMPORARY}
     HKCR : Result := HKCRLongName;
     HKCU : Result := HKCULongName;
     HKLM : Result := HKLMLongName;
@@ -440,6 +457,7 @@ begin
     HKPD : Result := HKPDLongName;
     HKCC : Result := HKCCLongName;
     HKDD : Result := HKDDLongName;
+    {$ENDIF ~DELPHI64_TEMPORARY}
   else
     {$IFDEF DELPHICOMPILER}
     Result := Format('$%.8x', [RootKey]);
@@ -852,7 +870,7 @@ var
   RegKey: HKEY;
 begin
   RegKey := 0;
-  Result := Windows.RegCreateKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, nil, 0,
+  Result := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.RegCreateKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, nil, 0,
     GetWOW64AccessMode(KEY_ALL_ACCESS), nil, RegKey, nil);
   if Result = ERROR_SUCCESS then
     RegCloseKey(RegKey);
@@ -907,7 +925,7 @@ begin
       end;
     RegCloseKey(RegKey);
     if Result then
-      Result := Windows.RegDeleteKey(RootKey, RelativeKey(RootKey, PChar(Key))) = ERROR_SUCCESS;
+      Result := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.RegDeleteKey(RootKey, RelativeKey(RootKey, PChar(Key))) = ERROR_SUCCESS;
   end
   else
     WriteError(RootKey, Key);
@@ -2059,18 +2077,27 @@ function AllowRegKeyForEveryone(const RootKey: DelphiHKEY; Path: string): Boolea
 var
   WidePath: PWideChar;
   Len: Integer;
+
+// This is an ugly kludge until the x64 compiler allows 64bit constants in case statements
+// http://qc.embarcadero.com/wc/qcmain.aspx?d=95499
+const
+  HKLM2 = Cardinal(HKLM);
+  HKCU2 = Cardinal(HKCU);
+  HKCR2 = Cardinal(HKCR);
+  HKUS2 = Cardinal(HKUS);
+
 begin
   Result := Win32Platform <> VER_PLATFORM_WIN32_NT;
   if not Result then // Win 2000/XP
   begin
-    case RootKey of
-      HKLM:
+    case Cardinal(RootKey) of
+      HKLM2:
         Path := HKLMLongName + RegKeyDelimiter + RelativeKey(RootKey, PChar(Path));
-      HKCU:
+      HKCU2:
         Path := HKCULongName + RegKeyDelimiter + RelativeKey(RootKey, PChar(Path));
-      HKCR:
+      HKCR2:
         Path := HKCRLongName + RegKeyDelimiter + RelativeKey(RootKey, PChar(Path));
-      HKUS:
+      HKUS2:
         Path := HKUSLongName + RegKeyDelimiter + RelativeKey(RootKey, PChar(Path));
     end;
     Len := (Length(Path) + 1) * SizeOf(WideChar);

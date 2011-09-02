@@ -51,8 +51,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows,
-  Classes, SysUtils, Contnrs,
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.Windows, System.Classes, System.SysUtils, System.Contnrs,
+  {$ELSE ~HAS_UNITSCOPE}
+  Windows, Classes, SysUtils, Contnrs,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclBase;
 
 // Console
@@ -406,7 +409,11 @@ uses
   {$IFDEF FPC}
   JwaWinNT,
   {$ENDIF FPC}
+  {$IFDEF HAS_UNITSCOPE}
+  System.Math, System.TypInfo,
+  {$ELSE ~HAS_UNITSCOPE}
   Math, TypInfo,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclFileUtils, JclResources, JclSysUtils;
 
 {$IFDEF FPC}

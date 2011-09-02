@@ -140,6 +140,18 @@ ALERT_jedi_inc_incompatible
       {$DEFINE JCL_CONFIGURED}
     {$ENDIF BDS8}
     {----------------------------}
+    {$IFDEF BDS9}
+      {$IFDEF MSWINDOWS}
+      {$IFDEF CPUX86}
+      {$I jcld16win32.inc}
+      {$ENDIF CPUX86}
+      {$IFDEF CPUX64}
+      {$I jcld16win64.inc}
+      {$ENDIF CPUX64}
+      {$DEFINE JCL_CONFIGURED}
+      {$ENDIF MSWINDOWS}
+    {$ENDIF BDS9}
+    {----------------------------}
     {$IFDEF FPC}
       {$I jclfpc.inc}
       {$DEFINE JCL_CONFIGURED}

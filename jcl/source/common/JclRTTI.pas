@@ -47,11 +47,19 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  System.Types,
+  {$IFDEF MSWINDOWS}
+  Winapi.Windows,
+  {$ENDIF MSWINDOWS}
+  System.Classes, System.SysUtils, System.TypInfo,
+  {$ELSE ~HAS_UNITSCOPE}
   Types,
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
   Classes, SysUtils, TypInfo,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclBase;
 
 type
@@ -713,7 +721,11 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.SysConst,
+  {$ELSE ~HAS_UNITSCOPE}
   SysConst,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclLogic, JclResources, JclStrings, JclSysUtils;
 
 //=== { TJclInfoWriter } =====================================================
@@ -842,7 +854,7 @@ constructor TJclTypeInfo.Create(ATypeInfo: PTypeInfo);
 begin
   inherited Create;
   FTypeInfo := ATypeInfo;
-  FTypeData := TypInfo.GetTypeData(ATypeInfo);
+  FTypeData := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}TypInfo.GetTypeData(ATypeInfo);
 end;
 
 function TJclTypeInfo.GetName: string;
@@ -2945,7 +2957,7 @@ function GetObjectProperties(AnObj: TObject; Recurse: Boolean): IJclObjPropInfoA
   end;
 
 var
-  PropCount: Integer;
+  PropCount: SizeInt;
 begin
   PropCount := 0;
   SetLength(Result, 16);

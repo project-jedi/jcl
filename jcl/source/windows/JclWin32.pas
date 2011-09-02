@@ -63,11 +63,17 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.Windows, System.SysUtils,
+  {$IFNDEF FPC}
+  Winapi.AccCtrl, Winapi.ActiveX,
+  {$ENDIF ~FPC}
+  {$ELSE ~HAS_UNITSCOPE}
   Windows, SysUtils,
   {$IFNDEF FPC}
-  AccCtrl,
-  ActiveX,
+  AccCtrl, ActiveX,
   {$ENDIF ~FPC}
+  {$ENDIF ~HAS_UNITSCOPE}
   JclBase;
 
 {$HPPEMIT '#include <WinDef.h>'}
@@ -94,6 +100,14 @@ uses
 {$HPPEMIT '#include <objbase.h>'}
 {$HPPEMIT '#include <ntsecapi.h>'}
 {$HPPEMIT ''}
+{$IFDEF RTL230_UP}
+{$HPPEMIT '// To avoid ambiguity between IMAGE_LOAD_CONFIG_DIRECTORY32 and  Winapi::Windows::IMAGE_LOAD_CONFIG_DIRECTORY32'}
+{$HPPEMIT '#define IMAGE_LOAD_CONFIG_DIRECTORY32 ::IMAGE_LOAD_CONFIG_DIRECTORY32'}
+{$HPPEMIT ''}
+{$HPPEMIT '// To avoid ambiguity between IMAGE_LOAD_CONFIG_DIRECTORY64 and  Winapi::Windows::IMAGE_LOAD_CONFIG_DIRECTORY64'}
+{$HPPEMIT '#define IMAGE_LOAD_CONFIG_DIRECTORY64 ::IMAGE_LOAD_CONFIG_DIRECTORY64'}
+{$HPPEMIT ''}
+{$ENDIF RTL230_UP}
 
 // EJclWin32Error
 type
@@ -3147,8 +3161,8 @@ function ReBaseImage(CurrentImageName: PAnsiChar; SymbolPath: PAnsiChar; fReBase
 
 function ReBaseImage64(CurrentImageName: PAnsiChar; SymbolPath: PAnsiChar; fReBase: BOOL;
   fRebaseSysfileOk: BOOL; fGoingDown: BOOL; CheckImageSize: ULONG;
-  var OldImageSize: TJclAddr; var OldImageBase: TJclAddr64;
-  var NewImageSize: TJclAddr; var NewImageBase: TJclAddr64; TimeStamp: ULONG): BOOL; stdcall;
+  var OldImageSize: TJclAddr32; var OldImageBase: TJclAddr64;
+  var NewImageSize: TJclAddr32; var NewImageBase: TJclAddr64; TimeStamp: ULONG): BOOL; stdcall;
 {$EXTERNALSYM ReBaseImage64}
 
 // line 199
@@ -7238,7 +7252,7 @@ type
   _LSA_UNICODE_STRING = record
     Length: USHORT;
     MaximumLength: USHORT;
-    Buffer: Windows.LPWSTR;
+    Buffer: {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.LPWSTR;
   end;
   LSA_UNICODE_STRING = _LSA_UNICODE_STRING;
   TLsaUnicodeString = LSA_UNICODE_STRING;
@@ -7257,7 +7271,7 @@ type
   PLSA_OBJECT_ATTRIBUTES = ^LSA_OBJECT_ATTRIBUTES;
   _LSA_OBJECT_ATTRIBUTES = record
     Length: ULONG;
-    RootDirectory: Windows.THandle;
+    RootDirectory: {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.THandle;
     ObjectName: PLSA_UNICODE_STRING;
     Attributes: ULONG;
     SecurityDescriptor: Pointer; // Points to type SECURITY_DESCRIPTOR
@@ -7379,7 +7393,7 @@ type
   PPOLICY_ACCOUNT_DOMAIN_INFO = ^POLICY_ACCOUNT_DOMAIN_INFO;
   _POLICY_ACCOUNT_DOMAIN_INFO = record
     DomainName: LSA_UNICODE_STRING;
-    DomainSid: Windows.PSID;
+    DomainSid: {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.PSID;
   end;
   POLICY_ACCOUNT_DOMAIN_INFO = _POLICY_ACCOUNT_DOMAIN_INFO;
   TPolicyAccountDomainInfo = POLICY_ACCOUNT_DOMAIN_INFO;

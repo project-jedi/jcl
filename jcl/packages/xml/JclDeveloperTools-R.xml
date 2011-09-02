@@ -17,6 +17,10 @@
     <Package Name="Jcl-R" Targets="all" Condition=""/>
     <Package Name="JclContainers-R" Targets="all" Condition=""/>
   </Requires>
+  <Platforms>
+    <Platform Name="Win32" Condition=""/>
+    <Platform Name="Win64" Condition=""/>
+  </Platforms>
   <Contains>
     <File Name="..\..\source\common\JclCompilerUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclDevToolsResources.pas" Targets="all" Formname="" Condition=""/>

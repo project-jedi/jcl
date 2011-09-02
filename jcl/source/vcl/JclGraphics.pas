@@ -53,13 +53,15 @@ unit JclGraphics;
 interface
 
 uses
-  Windows,
-  Classes, SysUtils,
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.Windows, System.Classes, System.SysUtils, Vcl.Graphics, Vcl.Controls, Vcl.Forms,
+  {$ELSE ~HAS_UNITSCOPE}
+  Windows, Classes, SysUtils, Graphics, Controls, Forms,
+  {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Graphics, JclGraphUtils, Controls, Forms,
-  JclBase;
+  JclGraphUtils, JclBase;
 
 type
   EJclGraphicsError = class(EJclError);
@@ -558,6 +560,17 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.Math,
+  Winapi.CommCtrl, Winapi.ShellApi,
+  {$IFDEF HAS_UNIT_GIFIMG}
+  Vcl.Imaging.GifImg,
+  {$ENDIF HAS_UNIT_GIFIMG}
+  {$IFDEF HAS_UNIT_PNGIMAGE}
+  Vcl.Imaging.PngImage,
+  {$ENDIF HAS_UNIT_PNGIMAGE}
+  Vcl.ClipBrd, Vcl.Imaging.JPeg, System.TypInfo,
+  {$ELSE ~HAS_UNITSCOPE}
   Math,
   CommCtrl, ShellApi,
   {$IFDEF HAS_UNIT_GIFIMG}
@@ -567,6 +580,7 @@ uses
   PngImage,
   {$ENDIF HAS_UNIT_PNGIMAGE}
   ClipBrd, JPeg, TypInfo,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclVclResources,
   JclSysUtils,
   JclLogic;
@@ -627,7 +641,7 @@ threadvar
 
 function IntToByte(Value: Integer): Byte;
 begin
-  Result := Math.Max(0, Math.Min(255, Value));
+  Result := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}Math.Max(0, {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}Math.Min(255, Value));
 end;
 
 procedure CheckBitmaps(Dst, Src: TJclBitmap32);
@@ -951,8 +965,8 @@ begin
       begin
         ContributorList[I].N := 0;
         Center := I / ScaleX;
-        Left := Math.Floor(Center - Width);
-        Right := Math.Ceil(Center + Width);
+        Left := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}Math.Floor(Center - Width);
+        Right := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}Math.Ceil(Center + Width);
         SetLength(ContributorList[I].Contributors, Right - Left + 1);
         for J := Left to Right do
         begin
@@ -982,8 +996,8 @@ begin
       begin
         ContributorList[I].N := 0;
         Center := I / ScaleX;
-        Left := Math.Floor(Center - Radius);
-        Right := Math.Ceil(Center + Radius);
+        Left := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}Math.Floor(Center - Radius);
+        Right := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}Math.Ceil(Center + Radius);
         SetLength(ContributorList[I].Contributors, Right - Left + 1);
         for J := Left to Right do
         begin
@@ -1042,8 +1056,8 @@ begin
       begin
         ContributorList[I].N := 0;
         Center := I / ScaleY;
-        Left := Math.Floor(Center - Width);
-        Right := Math.Ceil(Center + Width);
+        Left := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}Math.Floor(Center - Width);
+        Right := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}Math.Ceil(Center + Width);
         SetLength(ContributorList[I].Contributors, Right - Left + 1);
         for J := Left to Right do
         begin
@@ -1073,8 +1087,8 @@ begin
       begin
         ContributorList[I].N := 0;
         Center := I / ScaleY;
-        Left := Math.Floor(Center - Radius);
-        Right := Math.Ceil(Center + Radius);
+        Left := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}Math.Floor(Center - Radius);
+        Right := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}Math.Ceil(Center + Radius);
         SetLength(ContributorList[I].Contributors, Right - Left + 1);
         for J := Left to Right do
         begin
@@ -1114,7 +1128,7 @@ begin
         with ContributorList[I] do
         begin
           DestPixel^ := ApplyContributors(N, ContributorList[I].Contributors);
-          Inc(Integer(DestPixel), DestDelta);
+          Inc(INT_PTR(DestPixel), DestDelta);
         end;
       Inc(SourceLine);
       Inc(DestLine);
@@ -4347,7 +4361,7 @@ begin
   begin
     SelectObject(Handle, Font.Handle);
     SetTextColor(Handle, ColorToRGB(Font.Color));
-    SetBkMode(Handle, Windows.TRANSPARENT);
+    SetBkMode(Handle, {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.TRANSPARENT);
   end;
 end;
 
@@ -4386,7 +4400,7 @@ begin
   UpdateFont;
   Result.cX := 0;
   Result.cY := 0;
-  Windows.GetTextExtentPoint32(Handle, PChar(Text), Length(Text), Result);
+  {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.GetTextExtentPoint32(Handle, PChar(Text), Length(Text), Result);
 end;
 
 procedure TJclBitmap32.TextOut(X, Y: Integer; const Text: string);

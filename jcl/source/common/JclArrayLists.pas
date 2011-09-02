@@ -42,7 +42,11 @@ unit JclArrayLists;
 interface
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.Classes,
+  {$ELSE ~HAS_UNITSCOPE}
   Classes,
+  {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
@@ -1218,7 +1222,11 @@ const
 implementation
 
 uses
-  SysUtils;
+  	{$IFDEF SUPPORTNAMESPACES}
+  System.SysUtils;
+{$ELSE}
+SysUtils;
+{$ENDIF}
 
 //=== { TJclIntfArrayList } ======================================================
 

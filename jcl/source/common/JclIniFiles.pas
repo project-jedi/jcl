@@ -40,7 +40,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  System.SysUtils, System.Classes, System.IniFiles;
+  {$ELSE ~HAS_UNITSCOPE}
   SysUtils, Classes, IniFiles;
+  {$ENDIF ~HAS_UNITSCOPE}
 
 // Initialization (ini) Files
 function IniReadBool(const FileName, Section, Line: string): Boolean;              // John C Molyneux

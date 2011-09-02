@@ -149,8 +149,8 @@
       <VersionInfo Name="AutoIncBuild">False</VersionInfo>
       <VersionInfo Name="MajorVer">2</VersionInfo>
       <VersionInfo Name="MinorVer">3</VersionInfo>
-      <VersionInfo Name="Release">0</VersionInfo>
-      <VersionInfo Name="Build">3847</VersionInfo>
+      <VersionInfo Name="Release">1</VersionInfo>
+      <VersionInfo Name="Build">4197</VersionInfo>
       <VersionInfo Name="Debug">False</VersionInfo>
       <VersionInfo Name="PreRelease">False</VersionInfo>
       <VersionInfo Name="Special">False</VersionInfo>
@@ -162,13 +162,13 @@
     <VersionInfoKeys>
       <VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
       <VersionInfoKeys Name="FileDescription">JCL Debug Window of XMM registers</VersionInfoKeys>
-      <VersionInfoKeys Name="FileVersion">2.3.0.3847</VersionInfoKeys>
+      <VersionInfoKeys Name="FileVersion">2.3.1.4197</VersionInfoKeys>
       <VersionInfoKeys Name="InternalName">JclSIMDViewExpertDLL</VersionInfoKeys>
       <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2011 Project JEDI</VersionInfoKeys>
       <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
       <VersionInfoKeys Name="OriginalFilename">JclSIMDViewExpertDLL90.dll</VersionInfoKeys>
       <VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
-      <VersionInfoKeys Name="ProductVersion">2.3 Build 3847</VersionInfoKeys>
+      <VersionInfoKeys Name="ProductVersion">2.3 Build 4197</VersionInfoKeys>
     </VersionInfoKeys>
   </Delphi.Personality>
 </BorlandProject>

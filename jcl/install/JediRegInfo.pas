@@ -52,22 +52,22 @@ type
 { InstallJediInformation() writes the "Version", "DcpDir", "BplDir" and "RootDir"
   values into the registry key IdeRegKey\Jedi\ProjectName. Returns True if the
   values could be written. }
-function InstallJediRegInformation(const IdeRegKey, ProjectName, Version, DcpDir,
+function InstallJediRegInformation(const IdeRegKey, ProjectName, PlatformName, Version, DcpDir,
   BplDir, RootDir: string; RootKey: HKEY = HKEY_CURRENT_USER): Boolean;
 
 { RemoveJediInformation() deletes the registry key IdeRegKey\Jedi\ProjectName.
   If there is no further subkeys to IdeRegKey\Jedi and no values in this key,
   the whole Jedi-key is deleted. }
-procedure RemoveJediRegInformation(const IdeRegKey, ProjectName: string;
+procedure RemoveJediRegInformation(const IdeRegKey, ProjectName, PlatformName: string;
   RootKey: HKEY = HKEY_CURRENT_USER);
 
 { ReadJediInformation() reads the JEDI Information from the registry. Returns
   False if Version='' or DcpDir='' or BplDir='' or RootDir=''. }
-function ReadJediRegInformation(const IdeRegKey, ProjectName: string; out Version,
+function ReadJediRegInformation(const IdeRegKey, ProjectName, PlatformName: string; out Version,
   DcpDir, BplDir, RootDir: string; RootKey: HKEY = HKEY_CURRENT_USER): Boolean; overload;
 
 { ReadJediInformation() reads the JEDI Information from the registry. }
-function ReadJediRegInformation(const IdeRegKey, ProjectName: string
+function ReadJediRegInformation(const IdeRegKey, ProjectName, PlatformName: string
   ; RootKey: HKEY = HKEY_CURRENT_USER): TJediInformation; overload;
 
 { ParseVersionNumber() converts a version number 'major.minor.release.build' to
@@ -80,10 +80,11 @@ implementation
 uses
   Registry;
 
-function InstallJediRegInformation(const IdeRegKey, ProjectName, Version, DcpDir,
+function InstallJediRegInformation(const IdeRegKey, ProjectName, PlatformName, Version, DcpDir,
   BplDir, RootDir: string; RootKey: HKEY): Boolean;
 var
   Reg: TRegistry;
+  PlatformKeyStr: string;
 begin
   Result := False;
   if (Version <> '') and (DcpDir <> '') and (BplDir <> '') and (RootDir <> '') then
@@ -93,7 +94,15 @@ begin
       Reg.RootKey := RootKey;
       if Reg.OpenKey(IdeRegKey + '\Jedi', True) then // do not localize
         Reg.CloseKey;
-      if Reg.OpenKey(IdeRegKey + '\Jedi\' + ProjectName, True) then // do not localize
+      if PlatformName <> '' then
+      begin
+        if Reg.OpenKey(IdeRegKey + '\Jedi\' + ProjectName, True) then // do not localize
+          Reg.CloseKey;
+        PlatformKeyStr := '\' + PlatformName;
+      end
+      else
+        PlatformKeyStr := '';
+      if Reg.OpenKey(IdeRegKey + '\Jedi\' + ProjectName + PlatformKeyStr, True) then // do not localize
       begin
         Reg.WriteString('Version', Version); // do not localize
         Reg.WriteString('DcpDir', ExcludeTrailingPathDelimiter(DcpDir)); // do not localize
@@ -107,11 +116,11 @@ begin
   end;
 end;
 
-procedure RemoveJediRegInformation(const IdeRegKey, ProjectName: string; RootKey: HKEY);
+procedure RemoveJediRegInformation(const IdeRegKey, ProjectName, PlatformName: string; RootKey: HKEY);
 var
   Reg: TRegistry;
   Names: TStringList;
-  JediKeyName, ProjectKeyName: string;
+  JediKeyName, ProjectKeyName, ProjectPlatformKeyName: string;
 begin
   Reg := TRegistry.Create;
   try
@@ -121,8 +130,11 @@ begin
 
     JediKeyName := IdeRegKey + '\Jedi';                  // do not localize
     ProjectKeyName := JediKeyName + '\' + ProjectName;   // do not localize
+    ProjectPlatformKeyName := ProjectKeyName;
+    if PlatformName <> '' then
+      ProjectPlatformKeyName := ProjectPlatformKeyName + '\' + PlatformName;
 
-    if Reg.OpenKey(ProjectKeyName, False) then
+    if Reg.OpenKey(ProjectPlatformKeyName, False) then
     begin
       Reg.DeleteValue('Version'); // do not localize
       Reg.DeleteValue('DcpDir'); // do not localize
@@ -138,7 +150,7 @@ begin
           if Names.Count = 0 then
           begin
             Reg.CloseKey;
-            Reg.DeleteKey(ProjectKeyName); // do not localize
+            Reg.DeleteKey(ProjectPlatformKeyName); // do not localize
           end;
         end;
       finally
@@ -146,6 +158,27 @@ begin
       end;
     end;
 
+    if ProjectPlatformKeyName <> ProjectKeyName then
+    begin
+      if Reg.OpenKey(ProjectKeyName, False) then // do not localize
+      begin
+        Names := TStringList.Create;
+        try
+          Reg.GetKeyNames(Names);
+          if Names.Count = 0 then
+          begin
+            Reg.GetValueNames(Names);
+            if Names.Count = 0 then
+            begin
+              Reg.CloseKey;
+              Reg.DeleteKey(ProjectKeyName); // do not localize
+            end;
+          end;
+        finally
+          Names.Free;
+        end;
+      end;
+    end;
 
     if Reg.OpenKey(JediKeyName, False) then // do not localize
     begin
@@ -170,10 +203,11 @@ begin
   end;
 end;
 
-function ReadJediRegInformation(const IdeRegKey, ProjectName: string; out Version,
+function ReadJediRegInformation(const IdeRegKey, ProjectName, PlatformName: string; out Version,
   DcpDir, BplDir, RootDir: string; RootKey: HKEY): Boolean; overload;
 var
   Reg: TRegistry;
+  PlatformKeyStr: string;
 begin
   Version := '';
   DcpDir := '';
@@ -182,7 +216,11 @@ begin
   Reg := TRegistry.Create;
   try
     Reg.RootKey := RootKey;
-    if Reg.OpenKeyReadOnly(IdeRegKey + '\Jedi\' + ProjectName) then // do not localize
+    if PlatformName <> '' then
+      PlatformKeyStr := '\' + PlatformName
+    else
+      PlatformKeyStr := '';
+    if Reg.OpenKeyReadOnly(IdeRegKey + '\Jedi\' + ProjectName + PlatformKeyStr) then // do not localize
     begin
       if Reg.ValueExists('Version') then // do not localize
         Version := Reg.ReadString('Version'); // do not localize
@@ -199,9 +237,9 @@ begin
   Result := (Version <> '') and (DcpDir <> '') and (BplDir <> '') and (RootDir <> '');
 end;
 
-function ReadJediRegInformation(const IdeRegKey, ProjectName: string; RootKey: HKEY): TJediInformation;
+function ReadJediRegInformation(const IdeRegKey, ProjectName, PlatformName: string; RootKey: HKEY): TJediInformation;
 begin
-  ReadJediRegInformation(IdeRegKey, ProjectName, Result.Version, Result.DcpDir,
+  ReadJediRegInformation(IdeRegKey, ProjectName, PlatformName, Result.Version, Result.DcpDir,
     Result.BplDir, Result.RootDir, RootKey);
 end;
 

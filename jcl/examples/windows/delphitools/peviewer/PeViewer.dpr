@@ -17,8 +17,11 @@ uses
   About in '..\Common\About.pas' {AboutBox},
   PeGenDef in 'PeGenDef.pas' {PeGenDefChild},
   FindDlg in '..\Common\FindDlg.pas' {FindTextForm},
-  ExceptDlg in '..\..\..\..\experts\repository\ExceptionDialog\StandardDialogs\ExceptDlg.pas' {ExceptionDialog},
-  SHDocVw_TLB in '..\Common\SHDocVw_TLB.pas';
+  ExceptDlg in '..\..\..\..\experts\repository\ExceptionDialog\StandardDialogs\ExceptDlg.pas' {ExceptionDialog}
+  {$IFNDEF RTL230_UP} 
+  , SHDocVw_TLB in '..\Common\SHDocVw_TLB.pas'
+  {$ENDIF ~RTL230_UP}
+  ;
 
 {$R *.TLB}
 

@@ -254,7 +254,7 @@ end;
 
 procedure THeapDumpForm.ReadHeapEntry(Item: TListItem);
 var
-  BlockSize, BytesRead: DWORD;
+  BlockSize, BytesRead: {$IFDEF RTL230_UP}NativeUInt{$ELSE}DWORD{$ENDIF};
   Buffer, BufferEnd, P: PChar;
 begin
   with HeapEntryMemo do {if DWORD(Item.SubItems.Objects[2]) <> LF32_FREE then}

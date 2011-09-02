@@ -53,8 +53,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  ActiveX,
-  Windows;
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.ActiveX, Winapi.Windows;
+  {$ELSE ~HAS_UNITSCOPE}
+  ActiveX, Windows;
+  {$ENDIF ~HAS_UNITSCOPE}
 
 //DOM-IGNORE-BEGIN
 

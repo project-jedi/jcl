@@ -5,13 +5,20 @@ unit ContainerPerformanceMain;
 interface
 
 uses
-  {$IFDEF WIN32}
-  Windows, Messages, Graphics, Controls, Forms, Dialogs, StdCtrls,
-  {$ENDIF WIN32}
   {$IFDEF LINUX}
   QForms, QStdCtrls, QControls,
   {$ENDIF LINUX}
+  {$IFDEF HAS_UNITSCOPE}
+  {$IFDEF MSWINDOWS}
+  Winapi.Windows, Winapi.Messages, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,
+  {$ENDIF MSWINDOWS}
+  System.SysUtils, System.Classes, Vcl.Grids, Vcl.Menus;
+  {$ELSE ~HAS_UNITSCOPE}
+  {$IFDEF MSWINDOWS}
+  Windows, Messages, Graphics, Controls, Forms, Dialogs, StdCtrls,
+  {$ENDIF MSWINDOWS}
   SysUtils, Classes, Grids, Menus;
+  {$ENDIF ~HAS_UNITSCOPE}
 
 type
   TMainForm = class(TForm)

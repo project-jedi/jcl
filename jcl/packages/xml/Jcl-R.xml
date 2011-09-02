@@ -11,6 +11,10 @@
     <Property Name="VersionMinorNumber" Value=""/>
     <Property Name="ReleaseNumber" Value=""/>
   </Properties>
+  <Platforms>
+    <Platform Name="Win32" Condition=""/>
+    <Platform Name="Win64" Condition=""/>
+  </Platforms>
   <Requires>
     <Package Name="rtl" Targets="Delphi,Bcb,Bds" Condition=""/>
     <Package Name="FCL" Targets="fpc" Condition=""/>
@@ -31,6 +35,7 @@
     <File Name="..\..\source\include\jcld12.inc" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\source\include\jcld14.inc" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\source\include\jcld15.inc" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\source\include\jcld16.inc" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\source\include\jclfpc.inc" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\source\include\unixonly.inc" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\source\include\windowsonly.inc" Targets="help" Formname="" Condition=""/>
@@ -86,6 +91,7 @@
     <File Name="..\..\source\include\jcld12.inc" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\source\include\jcld14.inc" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\source\include\jcld15.inc" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\source\include\jcld16.inc" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\source\include\jclfpc.inc" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\source\include\unixonly.inc" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\source\include\windowsonly.inc" Targets="help" Formname="" Condition=""/>

@@ -4,7 +4,11 @@ program AlgorithmsExample;
 
 uses
   {$IFDEF MSWINDOWS}
+		{$IFDEF SUPPORTS_NAMESPACES}
+  Vcl.Forms,
+		{$ELSE}
   Forms,
+		{$ENDIF SUPPORTS_NAMESPACES}
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   QForms,

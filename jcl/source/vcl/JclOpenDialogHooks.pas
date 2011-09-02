@@ -34,7 +34,11 @@ interface
 {$I jcl.inc}
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.Windows, Winapi.Messages, System.Classes, System.SysUtils, Vcl.Controls, Vcl.StdCtrls, Vcl.ExtCtrls,
+  {$ELSE ~HAS_UNITSCOPE}
   Windows, Messages, Classes, SysUtils, Controls, StdCtrls, ExtCtrls,
+  {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
@@ -104,7 +108,11 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.CommDlg, Winapi.Dlgs,
+  {$ELSE ~HAS_UNITSCOPE}
   CommDlg, Dlgs,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclFileUtils, JclStrings, JclSysInfo, JclSysUtils,
   JclVclResources;
 
@@ -121,10 +129,10 @@ type
 var
   OldGetOpenFileName: TGetOpenFileName;
   OldGetSaveFileName: TGetOpenFileName;
-  OldExplorerHook: function(Wnd: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): UINT stdcall;
+  OldExplorerHook: function(Wnd: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): {$IFDEF RTL230_UP}UINT_PTR{$ELSE}UINT{$ENDIF RTL230_UP} stdcall;
   GlobalOpenDialogHook: TJclOpenDialogHook;
 
-function NewExplorerHook(Wnd: HWnd; Msg: UINT; WParam: WPARAM; LParam: LPARAM): UINT; stdcall;
+function NewExplorerHook(Wnd: HWnd; Msg: UINT; WParam: WPARAM; LParam: LPARAM): {$IFDEF RTL230_UP}UINT_PTR{$ELSE}UINT{$ENDIF RTL230_UP}; stdcall;
 begin
   Result := OldExplorerHook(Wnd, Msg, WParam, LParam);
   if (Msg = WM_INITDIALOG) and Assigned(GlobalOpenDialogHook) then

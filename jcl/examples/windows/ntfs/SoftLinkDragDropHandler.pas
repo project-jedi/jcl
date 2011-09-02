@@ -13,6 +13,8 @@
 //
 unit SoftLinkDragDropHandler;
 
+{$I jcl.inc}
+
 interface
 
 uses
@@ -34,8 +36,13 @@ type
     function QueryContextMenu(Menu: HMENU; indexMenu, idCmdFirst, idCmdLast,
       uFlags: UINT): HResult; stdcall;
     function InvokeCommand(var lpici: TCMInvokeCommandInfo): HResult; stdcall;
+    {$IFDEF RTL230_UP}
+    function GetCommandString(idCmd: UINT_PTR; uFlags: UINT; pwReserved: PUINT;
+      pszName: LPSTR; cchMax: UINT): HResult; stdcall;
+    {$ELSE ~RTL230_UP}
     function GetCommandString(idCmd, uType: UINT; pwReserved: PUINT;
       pszName: LPSTR; cchMax: UINT): HResult; stdcall;
+    {$ENDIF ~RTL230_UP}
   end;
 
 const
@@ -171,12 +178,17 @@ begin
   end;
 end;
 
+{$IFDEF RTL230_UP}
+function TDirDropContextMenu.GetCommandString(idCmd: UINT_PTR; uFlags: UINT; pwReserved: PUINT;
+  pszName: LPSTR; cchMax: UINT): HResult; stdcall;
+{$ELSE ~RTL230_UP}
 function TDirDropContextMenu.GetCommandString(idCmd, uType: UINT; pwReserved: PUINT;
   pszName: LPSTR; cchMax: UINT): HRESULT;
+{$ENDIF ~RTL230_UP}
 begin
   if (idCmd = 0) then
   begin
-    if (uType = GCS_HELPTEXT) then
+    if ({$IFDEF RTL230_UP}uFlags{$ELSE}uType{$ENDIF} = GCS_HELPTEXT) then
       // return help string for menu item
       StrCopy(pszName, PAnsiChar(SMenuHelp));
     Result := NOERROR;

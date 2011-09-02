@@ -53,17 +53,28 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNIT_LIBC}
+  Libc,
+  {$ENDIF HAS_UNIT_LIBC}
+  {$IFDEF HAS_UNITSCOPE}
+  {$IFDEF MSWINDOWS}
+  Winapi.Windows, Sevenzip, Winapi.ActiveX,
+  {$ENDIF MSWINDOWS}
+  System.Types,
+  System.SysUtils, System.Classes, System.Contnrs,
+  {$ELSE ~HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
   Windows, Sevenzip, ActiveX,
   {$ENDIF MSWINDOWS}
   Types,
-  {$IFDEF HAS_UNIT_LIBC}
-  Libc,
-  {$ENDIF HAS_UNIT_LIBC}
-  JclWideStrings,
   SysUtils, Classes, Contnrs,
-  zlibh, bzip2,
-  JclBase, JclStreams;
+  {$ENDIF ~HAS_UNITSCOPE}
+  zlibh, bzip2, JclWideStrings, JclBase, JclStreams;
+
+{$IFDEF RTL230_UP}
+{$HPPEMIT '// To avoid ambiguity with System::Zlib::z_stream_s we force using ours'}
+{$HPPEMIT '#define z_stream_s Zlibh::z_stream_s'}
+{$ENDIF RTL230_UP}
 
 {**************************************************************************************************
   Class hierarchy

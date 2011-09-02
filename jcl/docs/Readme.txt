@@ -2,9 +2,9 @@
 
 
 JEDI Code Library
-Release 2.2
-Build 3817
-13-August-2010
+Release 2.3
+Build 4197
+28-August-2011
 
 
 --------------------------------------------------------------------------------
@@ -26,22 +26,24 @@ Getting involved in JCL development
 
 
 About this release
-JCL release 2.2 provides support for RAD Studio XE (including Delphi XE and C++Builder XE) an updated support for all targets.
+JCL release 2.2 provides support for RAD Studio XE2 (including Delphi XE2 and C++Builder XE2) an updated support for all targets.
 
 Multiple bugs have been fixed; for detailed change logs, use the facilities of our Subversion repository at Sourceforge.net  http://sourceforge.net/projects/jcl/ , see below.
 
 Head changes: 
 
-PCRE is updated to 8.02 
-The JEDI PreProcessor is now merged to JCL runtime code, you can embed it in your own application 
-ZLib is updated to 1.2.5 
-7z is updated to 9.15 
-The JCL packages are heavily reorganized: all developer tools (JclBorlandTools has been split for instance, JclParseUses is moved to runtime code) are moved to a separate package 
-The JCLDebug code was heavily reworked to avoid internal exceptions 
-The Unicode Character Database (UCD) is updated to 5.2.0, this resource is now more packed than previously 
-The EDI units are removed from the library because of maintenance lack 
-The MoveArray functions are moved to JclAlgorithms, this move breaks backward compatibility 
-Important: 
+New unit JclMsBuild to query and update MsBuild files;
+New string index, prefix and suffix functions in JclAnsiStrings and JclStrings;
+Speed improvements in string conversion functions and in TJclSimpleXml;
+Improvement of JclSysUtils.Execute to add STD_ERROR callbacks and event to immediatly kill the nested application;
+New code to catch and report exceptions raised in C++ code (donation by Moritz Beutel);
+New wrapper for TortoiseGIT actions (donation by Jens Fudickar);
+Wrappers for new archive formats WIM, TED, UEFIc, UEFIs, SquashFS and CramFS introduced in 7zip 9.22;
+Application instances: new features to limit the number of instances on a per-user, per-session and per-machine scope.
+
+
+--------------------------------------------------------------------------------
+
 
 As of JCL 2.0, the library does not support Delphi 5, C++Builder 5, Kylix 3 and Delphi.net anymore;
 
@@ -53,7 +55,7 @@ The JEDI Code Library packages are required by some 3rd party packages (includin
 
 The installer can generate MAP informations for each package. These informations can be linked into binaries to become JCL debug data or be converted to .jdbg files. Once linked MAP files could be deleted. These options are subnodes of the "Packages" node.
 
-For BDS 2006, RAD Studio 2007, RAD Studio 2009, RAD Studio 2010 and RAD Studio XE the compiler introduced a new option to make the same packages available in C++, by checking the "Dual packages" option of the "Packages" node, you will be able to call functions of the JCL from C++ code.
+For BDS 2006, RAD Studio 2007, RAD Studio 2009, RAD Studio 2010, RAD Studio XE and RAD Studio XE2 the compiler introduced a new option to make the same packages available in C++, by checking the "Dual packages" option of the "Packages" node, you will be able to call functions of the JCL from C++ code.
 
 
 --------------------------------------------------------------------------------
@@ -80,6 +82,7 @@ CodeGear RAD Studio 2007 (Delphi for Win32 and C++Builder for Win32 personalitie
 Delphi 2009 and C++Builder 2009; 
 Delphi 2010 and C++Builder 2010. 
 Delphi XE and C++Builder XE. 
+Delphi XE2 and C++Builder XE2.
 
 --------------------------------------------------------------------------------
 
@@ -99,7 +102,9 @@ Installation on C#Builder 1 and Delphi 8:
 These products cannot be used to build the JCL installer, you need an other supported product to install JCL experts on these products. 
 These products are not able to use the JCL library as a runtime library. You cannot write managed applications and managed packages based on the JCL. 
 These products are not shipped with their native compilers, you have to download it from codecentral (http://cc.codegear.com/). The item (http://codecentral.codegear.com/Download.aspx?id=21333)  contains the native compiler to be installed in Delphi 8. The item (http://codecentral.codegear.com/Download.aspx?id=21334)  contains the native compiler to be installed in C#Builder 1. These zip files have to be extracted in the products directory using the standard pattern: 
-		   Executable files (exe and dll)      - BDS\X.0\bin		   Compiler files (dcp and dcu)        - BDS\X.0\lib		   Toolsapi source files               - BDS\X.0\source\ToolsAPI
+		   Executable files (exe and dll)      - BDS\X.0\bin
+		   Compiler files (dcp and dcu)        - BDS\X.0\lib
+		   Toolsapi source files               - BDS\X.0\source\ToolsAPI
 Default installation
 
 For all others versions of Delphi, C++Builder and BDS, simply launch Install.bat and the installer window will let you configure options and install the library.
@@ -124,6 +129,8 @@ For CodeGear RAD Studio 2007 (Delphi for Win32 and C++Builder): source\include\j
 For Delphi 2009 and C++Builder 2009: source\include\jcld12.inc 
 For Delphi 2010 and C++Builder 2010: source\include\jcld14.inc 
 For Delphi XE and C++Builder XE: source\include\jcld15.inc 
+For Delphi XE2 and C++Builder XE2 Win32: source\include\jcld16win32.inc 
+For Delphi XE2 Win64: source\include\jcld16win64.inc 
 For FreePascal: source\include\jclfpc.inc 
 In the IDE, open and compile package Jcl.dpk (or Jcl.bpk for C++Builder) located in a subdirectory of the "packages" directory matching your version of the IDE. This package doesn't have to be installed since it doesn't provide any components. 
 If you want to install experts, open package JclBaseExpert.dpk and compile it, then you can install all the experts you want (packages are located in the same directory). 

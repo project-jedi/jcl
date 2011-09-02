@@ -41,7 +41,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  System.SysUtils, System.Classes, Winapi.Windows, Winapi.MMSystem,
+  {$ELSE ~HAS_UNITSCOPE}
   SysUtils, Classes, Windows, MMSystem,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclMIDI;
 
 type

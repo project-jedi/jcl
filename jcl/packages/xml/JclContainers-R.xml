@@ -17,6 +17,10 @@
     <Package Name="..\..\..\help\JEDI" Targets="help" Condition=""/>
     <Package Name="Jcl-R" Targets="all" Condition=""/>
   </Requires>
+  <Platforms>
+    <Platform Name="Win32" Condition=""/>
+    <Platform Name="Win64" Condition=""/>
+  </Platforms>
   <Contains>
     <File Name="..\..\source\common\JclAbstractContainers.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclAlgorithms.pas" Targets="all" Formname="" Condition=""/>

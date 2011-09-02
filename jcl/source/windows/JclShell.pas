@@ -54,8 +54,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, SysUtils,
-  ShlObj,
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.Windows, System.SysUtils, Winapi.ShlObj,
+  {$ELSE ~HAS_UNITSCOPE}
+  Windows, SysUtils, ShlObj,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclBase, JclWin32, JclSysUtils;
 
 // Files and Folders
@@ -216,9 +219,11 @@ const
 implementation
 
 uses
-  ActiveX,
-  CommCtrl,
-  Messages, ShellApi,
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.ActiveX, Winapi.CommCtrl, Winapi.Messages, Winapi.ShellAPI,
+  {$ELSE ~HAS_UNITSCOPE}
+  ActiveX, CommCtrl, Messages, ShellAPI,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclFileUtils, JclStrings, JclSysInfo;
 
 type
@@ -602,7 +607,7 @@ begin
   WndClass.lpszClassName := PChar(IcmCallbackWnd);
   WndClass.lpfnWndProc := @MenuCallback;
   WndClass.hInstance := HInstance;
-  Windows.RegisterClass(WndClass);
+  {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.RegisterClass(WndClass);
   Result := CreateWindow(IcmCallbackWnd, IcmCallbackWnd, WS_POPUPWINDOW, 0,
     0, 0, 0, 0, 0, HInstance, Pointer(ContextMenu));
 end;

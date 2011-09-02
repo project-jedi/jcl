@@ -34,7 +34,11 @@ interface
 {$I jcl.inc}
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.Windows, Winapi.Messages, System.Classes, System.SysUtils, Vcl.Controls, Vcl.StdCtrls, Vcl.ExtCtrls,
+  {$ELSE ~HAS_UNITSCOPE}
   Windows, Messages, Classes, SysUtils, Controls, StdCtrls, ExtCtrls,
+  {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
@@ -83,7 +87,11 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.CommDlg, Winapi.Dlgs,
+  {$ELSE ~HAS_UNITSCOPE}
   CommDlg, Dlgs,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclBase, JclFileUtils, JclStrings, JclSysInfo, JclSysUtils, JclVclResources;
 
 function InitializeOpenDialogFavorites: TJclOpenDialogFavoritesHook;

@@ -47,9 +47,15 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  {$IFDEF MSWINDOWS}
+  Winapi.Windows, JclWin32,
+  {$ENDIF MSWINDOWS}
+  {$ELSE ~HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
   Windows, JclWin32,
   {$ENDIF MSWINDOWS}
+  {$ENDIF ~HAS_UNITSCOPE}
   JclBase;
 
 // Locked Integer manipulation
@@ -79,6 +85,9 @@ function LockedExchangeInc(var Target: Int64): Int64; overload;
 function LockedExchangeSub(var Target: Int64; Value: Int64): Int64; overload;
 function LockedInc(var Target: Int64): Int64; overload;
 function LockedSub(var Target: Int64; Value: Int64): Int64; overload;
+
+function LockedDec(var Target: NativeInt): NativeInt; overload;
+function LockedInc(var Target: NativeInt): NativeInt; overload;
 {$ENDIF CPU64}
 
 // TJclDispatcherObject
@@ -346,7 +355,11 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.SysUtils,
+  {$ELSE ~HAS_UNITSCOPE}
   SysUtils,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclLogic, JclRegistry, JclResources,
   JclSysInfo, JclStrings;
 
@@ -716,6 +729,23 @@ asm
         ADD     RAX, RDX
 end;
 
+function LockedDec(var Target: NativeInt): NativeInt;
+asm
+        // --> RCX Target
+        // <-- RAX Result
+        MOV     RAX, -1
+        LOCK XADD [RCX], RAX
+        DEC     RAX
+end;
+
+function LockedInc(var Target: NativeInt): NativeInt;
+asm
+        // --> RCX Target
+        // <-- RAX Result
+        MOV     RAX, 1
+        LOCK XADD [RCX], RAX
+        INC     RAX
+end;
 {$ENDIF CPU64}
 
 //=== { TJclDispatcherObject } ===============================================
@@ -758,17 +788,17 @@ function TJclDispatcherObject.SignalAndWait(const Obj: TJclDispatcherObject;
   TimeOut: Cardinal; Alertable: Boolean): TJclWaitResult;
 begin
   // Note: Do not make this method virtual! It's only available on NT 4 up...
-  Result := MapSignalResult(Cardinal(Windows.SignalObjectAndWait(Obj.Handle, Handle, TimeOut, Alertable)));
+  Result := MapSignalResult(Cardinal({$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.SignalObjectAndWait(Obj.Handle, Handle, TimeOut, Alertable)));
 end;
 
 function TJclDispatcherObject.WaitAlertable(const TimeOut: Cardinal): TJclWaitResult;
 begin
-  Result := MapSignalResult(Windows.WaitForSingleObjectEx(FHandle, TimeOut, True));
+  Result := MapSignalResult({$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.WaitForSingleObjectEx(FHandle, TimeOut, True));
 end;
 
 function TJclDispatcherObject.WaitFor(const TimeOut: Cardinal): TJclWaitResult;
 begin
-  Result := MapSignalResult(Windows.WaitForSingleObject(FHandle, TimeOut));
+  Result := MapSignalResult({$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.WaitForSingleObject(FHandle, TimeOut));
 end;
 
 function TJclDispatcherObject.WaitForever: TJclWaitResult;
@@ -787,7 +817,7 @@ begin
   SetLength(Handles, Count);
   for I := 0 to Count - 1 do
     Handles[I] := Objects[I].Handle;
-  Result := Windows.WaitForMultipleObjects(Count, @Handles[0], WaitAll, TimeOut);
+  Result := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.WaitForMultipleObjects(Count, @Handles[0], WaitAll, TimeOut);
 end;
 
 function WaitAlertableForMultipleObjects(const Objects: array of TJclDispatcherObject;
@@ -800,7 +830,7 @@ begin
   SetLength(Handles, Count);
   for I := 0 to Count - 1 do
     Handles[I] := Objects[I].Handle;
-  Result := Windows.WaitForMultipleObjectsEx(Count, @Handles[0], WaitAll, TimeOut, True);
+  Result := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.WaitForMultipleObjectsEx(Count, @Handles[0], WaitAll, TimeOut, True);
 end;
 
 //=== { TJclCriticalSection } ================================================
@@ -808,12 +838,12 @@ end;
 constructor TJclCriticalSection.Create;
 begin
   inherited Create;
-  Windows.InitializeCriticalSection(FCriticalSection);
+  {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.InitializeCriticalSection(FCriticalSection);
 end;
 
 destructor TJclCriticalSection.Destroy;
 begin
-  Windows.DeleteCriticalSection(FCriticalSection);
+  {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.DeleteCriticalSection(FCriticalSection);
   inherited Destroy;
 end;
 
@@ -832,12 +862,12 @@ end;
 
 procedure TJclCriticalSection.Enter;
 begin
-  Windows.EnterCriticalSection(FCriticalSection);
+  {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.EnterCriticalSection(FCriticalSection);
 end;
 
 procedure TJclCriticalSection.Leave;
 begin
-  Windows.LeaveCriticalSection(FCriticalSection);
+  {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.LeaveCriticalSection(FCriticalSection);
 end;
 
 //== { TJclCriticalSectionEx } ===============================================
@@ -904,7 +934,7 @@ constructor TJclEvent.Create(SecAttr: PSecurityAttributes; Manual, Signaled: Boo
 begin
   inherited Create;
   FName := Name;
-  FHandle := Windows.CreateEvent(SecAttr, Manual, Signaled, PChar(FName));
+  FHandle := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.CreateEvent(SecAttr, Manual, Signaled, PChar(FName));
   if FHandle = 0 then
     raise EJclEventError.CreateRes(@RsSynchCreateEvent);
   FExisted := GetLastError = ERROR_ALREADY_EXISTS;
@@ -915,24 +945,24 @@ constructor TJclEvent.Open(Access: Cardinal; Inheritable: Boolean;
 begin
   FName := Name;
   FExisted := True;
-  FHandle := Windows.OpenEvent(Access, Inheritable, PChar(Name));
+  FHandle := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.OpenEvent(Access, Inheritable, PChar(Name));
   if FHandle = 0 then
     raise EJclEventError.CreateRes(@RsSynchOpenEvent);
 end;
 
 function TJclEvent.Pulse: Boolean;
 begin
-  Result := Windows.PulseEvent(FHandle);
+  Result := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.PulseEvent(FHandle);
 end;
 
 function TJclEvent.ResetEvent: Boolean;
 begin
-  Result := Windows.ResetEvent(FHandle);
+  Result := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.ResetEvent(FHandle);
 end;
 
 function TJclEvent.SetEvent: Boolean;
 begin
-  Result := Windows.SetEvent(FHandle);
+  Result := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.SetEvent(FHandle);
 end;
 
 //=== { TJclWaitableTimer } ==================================================
@@ -1000,7 +1030,7 @@ constructor TJclSemaphore.Create(SecAttr: PSecurityAttributes;
 begin
   Assert((Initial >= 0) and (Maximum > 0));
   FName := Name;
-  FHandle := Windows.CreateSemaphore(SecAttr, Initial, Maximum, PChar(Name));
+  FHandle := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.CreateSemaphore(SecAttr, Initial, Maximum, PChar(Name));
   if FHandle = 0 then
     raise EJclSemaphoreError.CreateRes(@RsSynchCreateSemaphore);
   FExisted := GetLastError = ERROR_ALREADY_EXISTS;
@@ -1011,7 +1041,7 @@ constructor TJclSemaphore.Open(Access: Cardinal; Inheritable: Boolean;
 begin
   FName := Name;
   FExisted := True;
-  FHandle := Windows.OpenSemaphore(Access, Inheritable, PChar(Name));
+  FHandle := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.OpenSemaphore(Access, Inheritable, PChar(Name));
   if FHandle = 0 then
     raise EJclSemaphoreError.CreateRes(@RsSynchOpenSemaphore);
 end;
@@ -1019,12 +1049,12 @@ end;
 function TJclSemaphore.ReleasePrev(ReleaseCount: Longint;
   var PrevCount: Longint): Boolean;
 begin
-  Result := Windows.ReleaseSemaphore(FHandle, ReleaseCount, @PrevCount);
+  Result := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.ReleaseSemaphore(FHandle, ReleaseCount, @PrevCount);
 end;
 
 function TJclSemaphore.Release(ReleaseCount: Integer): Boolean;
 begin
-  Result := Windows.ReleaseSemaphore(FHandle, ReleaseCount, nil);
+  Result := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.ReleaseSemaphore(FHandle, ReleaseCount, nil);
 end;
 
 //=== { TJclMutex } ==========================================================
@@ -1049,14 +1079,14 @@ begin
   inherited Create;
   FName := Name;
   FExisted := True;
-  FHandle := Windows.OpenMutex(Access, Inheritable, PChar(Name));
+  FHandle := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.OpenMutex(Access, Inheritable, PChar(Name));
   if FHandle = 0 then
     raise EJclMutexError.CreateRes(@RsSynchOpenMutex);
 end;
 
 function TJclMutex.Release: Boolean;
 begin
-  Result := Windows.ReleaseMutex(FHandle);
+  Result := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.ReleaseMutex(FHandle);
 end;
 
 //=== { TJclOptex } ==========================================================
@@ -1079,10 +1109,10 @@ begin
     // if another process already created it.
     FEvent := TJclEvent.Create(nil, False, False, 'Optex_Event_' + Name);
     FExisted := FEvent.Existed;
-    FFileMapping := Windows.CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE,
+    FFileMapping := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE,
       0, SizeOf(TOptexSharedInfo), PChar('Optex_MMF_' + Name));
     Assert(FFileMapping <> 0);
-    FSharedInfo := Windows.MapViewOfFile(FFileMapping, FILE_MAP_WRITE, 0, 0, 0);
+    FSharedInfo := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.MapViewOfFile(FFileMapping, FILE_MAP_WRITE, 0, 0, 0);
     Assert(FSharedInfo <> nil);
   end;
   SetSpinCount(SpinCount);
@@ -1095,8 +1125,8 @@ begin
     FreeMem(FSharedInfo)
   else
   begin
-    Windows.UnmapViewOfFile(FSharedInfo);
-    Windows.CloseHandle(FFileMapping);
+    {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.UnmapViewOfFile(FSharedInfo);
+    {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.CloseHandle(FFileMapping);
   end;
   inherited Destroy;
 end;
@@ -1107,8 +1137,8 @@ var
 begin
   if TryEnter then
     Exit;
-  ThreadId := Windows.GetCurrentThreadId;
-  if Windows.InterlockedIncrement(FSharedInfo^.LockCount) = 1 then
+  ThreadId := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.GetCurrentThreadId;
+  if {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.InterlockedIncrement(FSharedInfo^.LockCount) = 1 then
   begin
     // Optex was unowned
     FSharedInfo^.ThreadId := ThreadId;
@@ -1146,11 +1176,11 @@ procedure TJclOptex.Leave;
 begin
   Dec(FSharedInfo^.RecursionCount);
   if FSharedInfo^.RecursionCount > 0 then
-    Windows.InterlockedDecrement(FSharedInfo^.LockCount)
+    {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.InterlockedDecrement(FSharedInfo^.LockCount)
   else
   begin
     FSharedInfo^.ThreadId := 0;
-    if Windows.InterlockedDecrement(FSharedInfo^.LockCount) > 0 then
+    if {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.InterlockedDecrement(FSharedInfo^.LockCount) > 0 then
       FEvent.SetEvent;
   end;
 end;
@@ -1161,7 +1191,7 @@ begin
     Value := DefaultCritSectSpinCount;
   // Spinning only makes sense on multiprocessor systems
   if ProcessorCount > 1 then
-    Windows.InterlockedExchange(Integer(FSharedInfo^.SpinCount), Value);
+    {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.InterlockedExchange(Integer(FSharedInfo^.SpinCount), Value);
 end;
 
 function TJclOptex.TryEnter: Boolean;
@@ -1170,7 +1200,7 @@ var
   ThreadOwnsOptex: Boolean;
   SpinCount: Integer;
 begin
-  ThreadId := Windows.GetCurrentThreadId;
+  ThreadId := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.GetCurrentThreadId;
   SpinCount := FSharedInfo^.SpinCount;
   repeat
     //ThreadOwnsOptex := InterlockedCompareExchange(Pointer(FSharedInfo^.LockCount),
@@ -1187,7 +1217,7 @@ begin
       if FSharedInfo^.ThreadId = ThreadId then
       begin
         // We already owned the Optex
-        Windows.InterlockedIncrement(FSharedInfo^.LockCount);
+        {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.InterlockedIncrement(FSharedInfo^.LockCount);
         Inc(FSharedInfo^.RecursionCount);
         ThreadOwnsOptex := True;
       end;
@@ -1240,7 +1270,7 @@ var
   MustWait: Boolean;
 begin
   MustWait := False;
-  ThreadId := Windows.GetCurrentThreadId;
+  ThreadId := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.GetCurrentThreadId;
   FLock.Enter;
   try
     Index := FindThread(ThreadId);
@@ -1289,7 +1319,7 @@ begin
   MustWait := False;
   FLock.Enter;
   try
-    ThreadId := Windows.GetCurrentThreadId;
+    ThreadId := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.GetCurrentThreadId;
     Index := FindThread(ThreadId);
     if Index < 0 then
     begin
@@ -1503,8 +1533,8 @@ end;
 
 procedure TJclMeteredSection.AcquireLock;
 begin
-  while Windows.InterlockedExchange(FMetSect^.SharedInfo^.SpinLock, 1) <> 0 do
-    Windows.Sleep(0);
+  while {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.InterlockedExchange(FMetSect^.SharedInfo^.SpinLock, 1) <> 0 do
+    {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.Sleep(0);
 end;
 
 procedure TJclMeteredSection.CloseMeteredSection;
@@ -1512,11 +1542,11 @@ begin
   if FMetSect <> nil then
   begin
     if FMetSect^.SharedInfo <> nil then
-      Windows.UnmapViewOfFile(FMetSect^.SharedInfo);
+      {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.UnmapViewOfFile(FMetSect^.SharedInfo);
     if FMetSect^.FileMap <> 0 then
-      Windows.CloseHandle(FMetSect^.FileMap);
+      {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.CloseHandle(FMetSect^.FileMap);
     if FMetSect^.Event <> 0 then
-      Windows.CloseHandle(FMetSect^.Event);
+      {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.CloseHandle(FMetSect^.Event);
     FreeMem(FMetSect);
   end;
 end;
@@ -1526,14 +1556,14 @@ var
   FullName: string;
 begin
   if Name = '' then
-    FMetSect^.Event := Windows.CreateEvent(nil, False, False, nil)
+    FMetSect^.Event := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.CreateEvent(nil, False, False, nil)
   else
   begin
     FullName :=  'JCL_MSECT_EVT_' + Name;
     if OpenOnly then
-      FMetSect^.Event := Windows.OpenEvent(0, False, PChar(FullName))
+      FMetSect^.Event := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.OpenEvent(0, False, PChar(FullName))
     else
-      FMetSect^.Event := Windows.CreateEvent(nil, False, False, PChar(FullName));
+      FMetSect^.Event := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.CreateEvent(nil, False, False, PChar(FullName));
   end;
   Result := FMetSect^.Event <> 0;
 end;
@@ -1546,19 +1576,19 @@ var
 begin
   Result := False;
   if Name = '' then
-    FMetSect^.FileMap := Windows.CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE, 0, SizeOf(TMetSectSharedInfo), nil)
+    FMetSect^.FileMap := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE, 0, SizeOf(TMetSectSharedInfo), nil)
   else
   begin
     FullName := 'JCL_MSECT_MMF_' + Name;
     if OpenOnly then
-      FMetSect^.FileMap := Windows.OpenFileMapping(0, False, PChar(FullName))
+      FMetSect^.FileMap := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.OpenFileMapping(0, False, PChar(FullName))
     else
-      FMetSect^.FileMap := Windows.CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE, 0, SizeOf(TMetSectSharedInfo), PChar(FullName));
+      FMetSect^.FileMap := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE, 0, SizeOf(TMetSectSharedInfo), PChar(FullName));
   end;
   if FMetSect^.FileMap <> 0 then
   begin
     LastError := GetLastError;
-    FMetSect^.SharedInfo := Windows.MapViewOfFile(FMetSect^.FileMap, FILE_MAP_WRITE, 0, 0, 0);
+    FMetSect^.SharedInfo := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.MapViewOfFile(FMetSect^.FileMap, FILE_MAP_WRITE, 0, 0, 0);
     if FMetSect^.SharedInfo <> nil then
     begin
       if LastError = ERROR_ALREADY_EXISTS then
@@ -1569,7 +1599,7 @@ begin
         FMetSect^.SharedInfo^.ThreadsWaiting := 0;
         FMetSect^.SharedInfo^.AvailableCount := InitialCount;
         FMetSect^.SharedInfo^.MaximumCount := MaxCount;
-        Windows.InterlockedExchange(Integer(FMetSect^.SharedInfo^.Initialized), 1);
+        {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.InterlockedExchange(Integer(FMetSect^.SharedInfo^.Initialized), 1);
       end;
       Result := True;
     end;
@@ -1590,11 +1620,11 @@ begin
         Exit;
       end;
       Inc(FMetSect^.SharedInfo^.ThreadsWaiting);
-      Windows.ResetEvent(FMetSect^.Event);
+      {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.ResetEvent(FMetSect^.Event);
     finally
       ReleaseLock;
     end;
-    Result := MapSignalResult(Windows.WaitForSingleObject(FMetSect^.Event, TimeOut));
+    Result := MapSignalResult({$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.WaitForSingleObject(FMetSect^.Event, TimeOut));
   end;
 end;
 
@@ -1617,7 +1647,7 @@ begin
     if (ReleaseCount < 0) or
       (FMetSect^.SharedInfo^.AvailableCount + ReleaseCount > FMetSect^.SharedInfo^.MaximumCount) then
     begin
-      Windows.SetLastError(ERROR_INVALID_PARAMETER);
+      {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.SetLastError(ERROR_INVALID_PARAMETER);
       Exit;
     end;
     Inc(FMetSect^.SharedInfo^.AvailableCount, ReleaseCount);
@@ -1627,7 +1657,7 @@ begin
       for Count := 0 to ReleaseCount - 1 do
       begin
         Dec(FMetSect^.SharedInfo^.ThreadsWaiting);
-        Windows.SetEvent(FMetSect^.Event);
+        {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.SetEvent(FMetSect^.Event);
       end;
     end;
   finally
@@ -1645,7 +1675,7 @@ end;
 
 procedure TJclMeteredSection.ReleaseLock;
 begin
-  Windows.InterlockedExchange(FMetSect^.SharedInfo^.SpinLock, 0);
+  {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.InterlockedExchange(FMetSect^.SharedInfo^.SpinLock, 0);
 end;
 
 //=== Debugging ==============================================================

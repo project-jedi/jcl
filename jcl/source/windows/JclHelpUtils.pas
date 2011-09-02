@@ -42,7 +42,11 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   MSHelpServices_TLB,
+  {$IFDEF HAS_UNITSCOPE}
+  System.Classes, System.SysUtils,
+  {$ELSE ~HAS_UNITSCOPE}
   Classes, SysUtils,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclBase, JclSysUtils;
 
 // Various definitions
@@ -124,7 +128,12 @@ const
 implementation
 
 uses
-  Windows, JclRegistry,
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.Windows,
+  {$ELSE ~HAS_UNITSCOPE}
+  Windows,
+  {$ENDIF ~HAS_UNITSCOPE}
+  JclRegistry,
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
@@ -305,6 +314,9 @@ begin
   FHxPlugin := nil;
   if IDEVersionNumber > 0 then
   begin
+    if (IDEVersionNumber = 9) then
+      FIdeNameSpace := 'embarcadero.rs_xe2'
+    else
     if (IDEVersionNumber = 8) then
       FIdeNameSpace := 'embarcadero.rs_xe'
     else

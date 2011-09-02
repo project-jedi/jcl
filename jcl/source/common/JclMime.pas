@@ -62,7 +62,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  System.SysUtils, System.Classes,
+  {$ELSE ~HAS_UNITSCOPE}
   SysUtils, Classes,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclBase;
 
 function MimeEncodeString(const S: AnsiString): AnsiString;

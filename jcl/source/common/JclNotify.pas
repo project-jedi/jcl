@@ -44,7 +44,11 @@ uses
   {$IFDEF THREADSAFE}
   JclSynch,
   {$ENDIF THREADSAFE}
+  {$IFDEF HAS_UNITSCOPE}
+  System.Classes;
+  {$ELSE ~HAS_UNITSCOPE}
   Classes;
+  {$ENDIF ~HAS_UNITSCOPE}
 
   { The following interfaces provide a basic notifier/listener setup. Whenever code issues a notification through the
     IJclNotifier.Notify method, all listeners registered with the notifier will receive the message (through the
@@ -182,7 +186,11 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.SysUtils;
+  {$ELSE ~HAS_UNITSCOPE}
   SysUtils;
+  {$ENDIF ~HAS_UNITSCOPE}
 
 //=== { TJclBaseNotifier } ===================================================
 

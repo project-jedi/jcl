@@ -79,8 +79,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.Windows;
+  {$ELSE ~HAS_UNITSCOPE}
   Windows;
-
+  {$ENDIF ~HAS_UNITSCOPE}
 
 {$EXTERNALSYM CreateHardLinkW}
 {$EXTERNALSYM CreateHardLinkA}
