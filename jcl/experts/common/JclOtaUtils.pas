@@ -1308,7 +1308,11 @@ begin
     if Supports(Project.ProjectOptions, IOTAProjectOptionsConfigurations, Configurations) then
     begin
       EnvVariables.Values['Config'] := Configurations.ActiveConfigurationName;
+      {$IFDEF BDS9_UP}
       EnvVariables.Values['Platform'] := Configurations.ActivePlatformName;
+      {$ELSE}
+      EnvVariables.Values['Platform'] := 'Win32';
+      {$ENDIF BDS9_UP}
     end;
     {$ENDIF BDS8_UP}
     while Pos('$(', Result) > 0 do
