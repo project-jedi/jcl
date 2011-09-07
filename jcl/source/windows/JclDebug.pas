@@ -1096,7 +1096,12 @@ asm
         MOV     EAX, FS:[0].NT_TIB32.StackBase
         {$ENDIF CPU32}
         {$IFDEF CPU64}
+        {$IFDEF DELPHI64_TEMPORARY}
+        //TODO: check if the FS version doesn't work in general in 64-bit mode
+        MOV     RAX, GS:[ABS 8]
+        {$ELSE ~DELPHI64_TEMPORARY}
         MOV     RAX, FS:[0].NT_TIB64.StackBase
+        {$ENDIF ~DELPHI64_TEMPORARY}
         {$ENDIF CPU64}
 end;
 
