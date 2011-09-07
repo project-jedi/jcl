@@ -862,6 +862,10 @@ type
   PTokenUser = PTOKEN_USER;
 {$ENDIF ~FPC}
 
+function CaptureStackBackTrace(FramesToSkip, FramesToCapture: DWORD;
+  BackTrace: Pointer; out BackTraceHash: DWORD): Word; stdcall;
+{$EXTERNALSYM CaptureStackBackTrace}
+
 // line 3858
 
 //
@@ -8710,6 +8714,20 @@ end;
 function SORTVERSIONFROMLCID(LocaleId: LCID): WORD;
 begin
   Result := WORD((DWORD(LocaleId) shr 20) and $000F);
+end;
+
+type
+  TCaptureStackBackTrace = function(FramesToSkip, FramesToCapture: DWORD;
+    BackTrace: Pointer; out BackTraceHash: DWORD): Word; stdcall;
+
+var
+  _CaptureStackBackTrace: TCaptureStackBackTrace = nil;
+
+function CaptureStackBackTrace(FramesToSkip, FramesToCapture: DWORD;
+  BackTrace: Pointer; out BackTraceHash: DWORD): Word; stdcall;
+begin
+  GetProcedureAddress(Pointer(@_CaptureStackBackTrace), kernel32, 'RtlCaptureStackBackTrace');
+  Result := _CaptureStackBackTrace(FramesToSkip, FramesToCapture, BackTrace, BackTraceHash);
 end;
 
 // line 9149

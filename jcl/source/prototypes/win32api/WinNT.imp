@@ -40,6 +40,20 @@ begin
   Result := WORD((DWORD(LocaleId) shr 20) and $000F);
 end;
 
+type
+  TCaptureStackBackTrace = function(FramesToSkip, FramesToCapture: DWORD;
+    BackTrace: Pointer; out BackTraceHash: DWORD): Word; stdcall;
+
+var
+  _CaptureStackBackTrace: TCaptureStackBackTrace = nil;
+
+function CaptureStackBackTrace(FramesToSkip, FramesToCapture: DWORD;
+  BackTrace: Pointer; out BackTraceHash: DWORD): Word; stdcall;
+begin
+  GetProcedureAddress(Pointer(@_CaptureStackBackTrace), kernel32, 'RtlCaptureStackBackTrace');
+  Result := _CaptureStackBackTrace(FramesToSkip, FramesToCapture, BackTrace, BackTraceHash);
+end;
+
 // line 9149
 
 function IsReparseTagMicrosoft(Tag: ULONG): Boolean;
