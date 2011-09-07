@@ -366,8 +366,13 @@ const
 begin
   if ((ExceptionFlags = cNonContinuable) or (ExceptionFlags = cNonContinuableException)) and
     (ExceptionCode = cDelphiException) and
-    (NumberOfArguments in [DelphiNumberOfArguments,CBuilderNumberOfArguments]) and
-    (TJclAddr(Arguments) = TJclAddr(@Arguments) + SizeOf(Pointer)) then
+    (NumberOfArguments in [DelphiNumberOfArguments,CBuilderNumberOfArguments])
+    //TODO: The difference for Win64 is bigger than 100 Byte and the comment of JVCS revision 0.3 of
+    //  JclDebug.pas, where HookedRaiseException has been added by Petr, isn't very informative
+    {$IFDEF CPU32}
+    and (TJclAddr(Arguments) = TJclAddr(@Arguments) + SizeOf(Pointer))
+    {$ENDIF CPU32}
+    then
   begin
     DoExceptNotify(Arguments.ExceptObj, Arguments.ExceptAddr, False, GetFramePointer);
   end;
