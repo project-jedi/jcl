@@ -653,6 +653,7 @@ type
     FInStackTracing: Boolean;
     FRaw: Boolean;
     FStackOffset: Int64;
+    procedure CaptureBackTrace;
     function GetItems(Index: Integer): TJclStackInfoItem;
     function NextStackFrame(var StackFrame: PStackFrame; var StackInfo: TStackInfo): Boolean;
     procedure StoreToList(const StackInfo: TStackInfo);
@@ -3159,7 +3160,7 @@ begin
       Result := OffsetStr + Result;
     end;
     if IncludeModuleName then
-      Insert(Format('{%-12s}', [ModuleName]), Result, 11);
+      Insert(Format('{%-12s}', [ModuleName]), Result, 11 {$IFDEF CPUX64}+ 8{$ENDIF});
   end;
 end;
 
@@ -4090,7 +4091,7 @@ function GetLocationInfoStr(const Addr: Pointer; IncludeModuleName, IncludeAddre
   IncludeStartProcLineOffset: Boolean; IncludeVAddress: Boolean): string;
 var
   Info, StartProcInfo: TJclLocationInfo;
-  OffsetStr, StartProcOffsetStr, FixedProcedureName: string;
+  OffsetStr, StartProcOffsetStr, FixedProcedureName, UnitNameWithoutUnitscope: string;
   Module : HMODULE;
 begin
   OffsetStr := '';
@@ -4099,7 +4100,15 @@ begin
   begin
     FixedProcedureName := ProcedureName;
     if Pos(UnitName + '.', FixedProcedureName) = 1 then
-      FixedProcedureName := Copy(FixedProcedureName, Length(UnitName) + 2, Length(FixedProcedureName) - Length(UnitName) - 1);
+      FixedProcedureName := Copy(FixedProcedureName, Length(UnitName) + 2, Length(FixedProcedureName) - Length(UnitName) - 1)
+    else
+    if Pos('.', UnitName) > 1 then
+    begin
+      UnitNameWithoutUnitscope := UnitName;
+      Delete(UnitNameWithoutUnitscope, 1, Pos('.', UnitNameWithoutUnitscope));
+      if Pos(UnitNameWithoutUnitscope + '.', FixedProcedureName) = 1 then
+        FixedProcedureName := Copy(FixedProcedureName, Length(UnitNameWithoutUnitscope) + 2, Length(FixedProcedureName) - Length(UnitNameWithoutUnitscope) - 1);
+    end;
 
     if LineNumber > 0 then
     begin
@@ -4142,7 +4151,7 @@ begin
       Result := OffsetStr + Result;
     end;
     if IncludeModuleName then
-      Insert(Format('{%-12s}', [ExtractFileName(GetModulePath(Module))]), Result, 11);
+      Insert(Format('{%-12s}', [ExtractFileName(GetModulePath(Module))]), Result, 11 {$IFDEF CPU64}+8{$ENDIF});
   end;
 end;
 
@@ -4853,6 +4862,7 @@ begin
     Item.FStackInfo.CallerAddr := TJclAddr(AFirstCaller);
     Add(Item);
   end;
+  {$IFDEF CPU32}
   if DelayedTrace then
     DelayStoreStack
   else
@@ -4860,6 +4870,10 @@ begin
     TraceStackRaw
   else
     TraceStackFrames;
+  {$ENDIF CPU32}
+  {$IFDEF CPU64}
+  CaptureBackTrace;
+  {$ENDIF CPU64}
 end;
 
 destructor TJclStackInfoList.Destroy;
@@ -4868,6 +4882,27 @@ begin
     FreeMem(FStackData);
   GlobalModulesList.FreeModulesList(FModuleInfoList);
   inherited Destroy;
+end;
+
+procedure TJclStackInfoList.CaptureBackTrace;
+var
+  CapturedFramesCount: Word;
+  BackTrace: array [0..62] of Pointer;
+  Hash: DWORD;
+  I: Integer;
+  StackInfo: TStackInfo;
+begin
+  ResetMemory(BackTrace, SizeOf(BackTrace));
+  //TODO: For XP and 2003 sum of FramesToSkip and FramesToCapture must be lower
+  // than 63, but we could use higher values for newer OS versions
+  CapturedFramesCount := CaptureStackBackTrace(10, 52, @BackTrace, Hash);
+  for I := 0 to CapturedFramesCount - 1 do
+  begin
+    ResetMemory(StackInfo, SizeOf(StackInfo));
+    StackInfo.CallerAddr := TJclAddr(BackTrace[I]);
+    StackInfo.Level := I;
+    StoreToList(StackInfo);
+  end;
 end;
 
 procedure TJclStackInfoList.ForceStackTracing;
