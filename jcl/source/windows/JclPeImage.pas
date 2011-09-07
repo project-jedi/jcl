@@ -6386,22 +6386,30 @@ end;
 
 class function TJclPeMapImgHooks.ReplaceImport(Base: Pointer; const ModuleName: string;
   FromProc, ToProc: Pointer): Boolean;
-// TODO: 64 bit version
 var
+  {$IFDEF CPU32}
   FromProcDebugThunk32, ImportThunk32: PWin9xDebugThunk32;
   IsThunked: Boolean;
+  {$ENDIF CPU32}
   NtHeader32: PImageNtHeaders32;
   ImportDir: TImageDataDirectory;
   ImportDesc: PImageImportDescriptor;
   CurrName, RefName: PAnsiChar;
+  {$IFDEF CPU32}
   ImportEntry32: PImageThunkData32;
+  {$ENDIF CPU32}
+  {$IFDEF CPU64}
+  ImportEntry64: PImageThunkData64;
+  {$ENDIF CPU64}
   FoundProc: Boolean;
   WrittenBytes: Cardinal;
   UTF8Name: TUTF8String;
 begin
   Result := False;
+  {$IFDEF CPU32}
   FromProcDebugThunk32 := PWin9xDebugThunk32(FromProc);
   IsThunked := not IsWinNT and IsWin9xDebugThunk(FromProcDebugThunk32);
+  {$ENDIF CPU32}
   NtHeader32 := PeMapImgNtHeaders32(Base);
   if NtHeader32 = nil then
     Exit;
@@ -6417,6 +6425,7 @@ begin
     CurrName := PAnsiChar(Base) + ImportDesc^.Name;
     if StrIComp(CurrName, RefName) = 0 then
     begin
+      {$IFDEF CPU32}
       ImportEntry32 := PImageThunkData32(TJclAddr(Base) + ImportDesc^.FirstThunk);
       while ImportEntry32^.Function_ <> 0 do
       begin
@@ -6431,6 +6440,17 @@ begin
           Result := WriteProtectedMemory(@ImportEntry32^.Function_, @ToProc, SizeOf(ToProc), WrittenBytes);
         Inc(ImportEntry32);
       end;
+      {$ENDIF CPU32}
+      {$IFDEF CPU64}
+      ImportEntry64 := PImageThunkData64(TJclAddr(Base) + ImportDesc^.FirstThunk);
+      while ImportEntry64^.Function_ <> 0 do
+      begin
+        FoundProc := Pointer(ImportEntry64^.Function_) = FromProc;
+        if FoundProc then
+          Result := WriteProtectedMemory(@ImportEntry64^.Function_, @ToProc, SizeOf(ToProc), WrittenBytes);
+        Inc(ImportEntry64);
+      end;
+      {$ENDIF CPU64}
     end;
     Inc(ImportDesc);
   end;
