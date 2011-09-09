@@ -64,11 +64,16 @@ type
   private
     FTypeName: AnsiString;
     FExcDesc: Pointer;
+    FAcquired: Boolean;
 
     constructor CreateTypeNamed(ATypeName: PAnsiChar; ExcDesc: Pointer); overload;
     function GetCppExceptionObject: Pointer;
     function GetThrowLine: Integer;
     function GetThrowFile: AnsiString;
+  protected
+    {$IFDEF COMPILER12_UP} // TODO: this may be supported for earlier versions of Delphi/C++Builder
+    procedure RaisingException(P: PExceptionRecord); override;
+    {$ENDIF COMPILER12_UP}
   public
     property CppExceptionObject: Pointer read GetCppExceptionObject;
     property ThrowLine: Integer read GetThrowLine;
@@ -296,11 +301,11 @@ function CppGetBase(var Obj: Pointer; TypeDesc: PCppTypeId;
 {$IFDEF COMPILER15_UP}
 function EJclCppException.AsCppClass<TCppClass>: TPointerType<TCppClass>.TPointer;
 begin
-  Assert (False);
+  Assert(False);
 end;
 function EJclCppException.IsCppClass<TCppClass>: Boolean;
 begin
-  Assert (False);
+  Assert(False);
 end;
 {$ENDIF COMPILER15_UP}
 
@@ -330,6 +335,14 @@ begin
   ExcDesc := PCppExceptDesc(FExcDesc);
   Result := (ExcDesc.xdTypeID.tpMask and TM_IS_CLASS) <> 0;
 end;
+
+{$IFDEF COMPILER12_UP} // TODO: this may be supported for earlier versions of Delphi/C++Builder
+procedure EJclCppException.RaisingException(P: PExceptionRecord);
+begin
+  FAcquired := False; { if an acquired exception is re-raised, it is handed back to the RTL }
+  inherited;
+end;
+{$ENDIF COMPILER12_UP}
 
 function EJclCppException.GetCppExceptionObject: Pointer;
 var
@@ -365,17 +378,19 @@ var
 begin
   ExcDesc := PCppExceptDesc(FExcDesc);
   Obj := @ExcDesc.xdValue;
-  if CppGetBase(Obj, ExcDesc.xdTypeID, PAnsiChar (CppClassName)) then
+  if CppGetBase(Obj, ExcDesc.xdTypeID, PAnsiChar(CppClassName)) then
     Result := Obj
   else
     Result := nil;
 end;
 
-destructor EJclCppException.Destroy;
-var
-  ExcDesc: PCppExceptDesc;
+threadvar
+  LastCppExcDesc: PCppExceptDesc;
+
+procedure FreeExcDesc(ExcDesc: PCppExceptDesc);
 begin
-  ExcDesc := PCppExceptDesc(FExcDesc);
+  if ExcDesc = nil then
+    Exit;
 
   { call the exception object's destructor and free the memory as it
     is done in _CatchCleanup() in xx.cpp. }
@@ -385,6 +400,72 @@ begin
   ExcDesc.xdFreeFunc(ExcDesc);
 end;
 
+destructor EJclCppException.Destroy;
+var
+  ExcDesc: PCppExceptDesc;
+begin
+  ExcDesc := PCppExceptDesc(FExcDesc);
+  if FAcquired then
+    FreeExcDesc(ExcDesc)
+  else
+    { when exceptions are being re-raised, the RTL first destroys the wrapper objects created for
+      non-Delphi exceptions and then notifies the exception hook (by raising a cDelphiReRaise
+      exception). Because of this, we cannot destroy the original exception info if we cannot be
+      sure it won't be used again. }
+    LastCppExcDesc := ExcDesc;
+  inherited;
+end;
+
+{ from System.pas }
+const
+  cDelphiReRaise      = $0EEDFADF;
+  cDelphiExcept       = $0EEDFAE0;
+  cDelphiFinally      = $0EEDFAE1;
+  cDelphiTerminate    = $0EEDFAE2;
+
+type
+  PExceptionArguments = ^TExceptionArguments;
+  TExceptionArguments = record
+    ExceptAddr: Pointer;
+    ExceptObj: Exception;
+  end;
+
+  TAcquireExceptionProc = procedure(Obj: Pointer);
+  TRaiseExceptionProc = procedure(ExceptionCode, ExceptionFlags: LongWord;
+    NumberOfArguments: LongWord; Args: PExceptionArguments); stdcall;
+
+var
+  OldAcquireExceptionProc: Pointer;
+  OldRaiseExceptionProc: Pointer;
+
+procedure ExceptionAcquiredProc(Obj: Pointer);
+begin
+  { After our exception object has been acquired, we have to take the responsibility of
+    cleaning up the C++ exception when the user decides to destroy our object. }
+  if TObject(Obj) is EJclCppException then
+    EJclCppException(Obj).FAcquired := True;
+  if Assigned(OldAcquireExceptionProc) then
+    TAcquireExceptionProc(OldAcquireExceptionProc)(Obj);
+end;
+
+procedure RaiseExceptionProc(ExceptionCode, ExceptionFlags: LongWord;
+    NumberOfArguments: LongWord; Args: PExceptionArguments); stdcall;
+begin
+  { We make use of the fact that the RTL calls the following notifiers immediately after destroying
+    the exception object. We should find the exception info in the thread-local variable defined
+    above. }
+  case ExceptionCode of
+    cDelphiReRaise:
+        ; { re-raising means that the C++ exception info will be reused; don't do anything }
+    cDelphiTerminate:
+        { the exception has been handled; now is the time to destroy the C++ exception object }
+        FreeExcDesc(LastCppExcDesc);
+  end;
+  LastCppExcDesc := nil;
+
+  if Assigned(OldRaiseExceptionProc) then
+    TRaiseExceptionProc(OldRaiseExceptionProc)(ExceptionCode, ExceptionFlags, NumberOfArguments, Args);
+end;
 
 function EJclCppStdException.GetStdException: PJclCppStdException;
 begin
@@ -393,7 +474,7 @@ end;
 
 { This function should basically work like destThrownValue()/callDestructor()
   in xx.cpp }
-procedure DestroyThrownValue (Obj: Pointer; ObjType: PCppTypeId);
+procedure DestroyThrownValue(Obj: Pointer; ObjType: PCppTypeId);
 type
   TCdeclDestructor    = procedure(Obj: Pointer; Flags: Integer); cdecl;
   TPascalDestructor   = procedure(Flags: Integer; Obj: Pointer); pascal;
@@ -456,7 +537,7 @@ begin
       { All delphi class objects are thrown by pointer, sort of.
         However, we should not meet a Delphi class here! }
       if (TypeDesc.tpcFlags and CF_DELPHICLASS) <> 0 then
-        Obj := Pointer((PCardinal (Obj))^); { dereference }
+        Obj := Pointer((PCardinal(Obj))^); { dereference }
 
       { We can't do anything about the _DestructorCount variable here, but
         this is a legacy feature anyway. }
@@ -472,7 +553,7 @@ begin
   end;
 
   { Did we make a copy of the argument? }
-  if Ord (ExcDesc.xdArgCopy) <> 0 then
+  if Ord(ExcDesc.xdArgCopy) <> 0 then
   begin
     TypeDesc := ExcDesc.xdArgType;
 
@@ -523,7 +604,7 @@ begin
       Continue;
 
     { Get the list of non-virtual bases for this base class }
-    BaseBaseList := PCppBaseList(PByte (BaseType) + BaseType.tpcBaseList);
+    BaseBaseList := PCppBaseList(PByte(BaseType) + BaseType.tpcBaseList);
 
     { Give up on this base if it has no non-virtual bases (Ann.: why?) }
     if BaseBaseList = nil then
@@ -592,16 +673,16 @@ begin
       begin
         { The exception object is a std::exception subclass and implements
           the virtual member function what(). }
-        ExcObjectVTbl := Pointer(PCardinal (ExcObject)^);
-        WhatMethod := TCppTypeInfoWhatMethod(PCardinal (
-          Cardinal (ExcObjectVTbl) + SizeOf (Pointer))^);
+        ExcObjectVTbl := Pointer(PCardinal(ExcObject)^);
+        WhatMethod := TCppTypeInfoWhatMethod(PCardinal(
+          Cardinal(ExcObjectVTbl) + SizeOf(Pointer))^);
         Result := EJclCppStdException.Create(ExcObject, String(WhatMethod(ExcObject)),
           PAnsiChar(ExcTypeName), Pointer(ExcDesc));
       end
       else
         { The exception object has some other type. We cannot extract an
           exception message with reasonable efforts. }
-        Result := EJclCppException.CreateTypeNamed(PAnsiChar(ExcTypeName), Pointer (ExcDesc));
+        Result := EJclCppException.CreateTypeNamed(PAnsiChar(ExcTypeName), Pointer(ExcDesc));
     end;
   end;
 end;
@@ -616,12 +697,26 @@ begin
   if HookInstalled then
     Exit;
   HookInstalled := JclHookExcept.JclAddExceptFilter(@CppExceptObjProc, npFirstChain);
+  if HookInstalled then
+  begin
+    {$IFDEF COMPILER12_UP} // TODO: this may be supported for earlier versions of Delphi/C++Builder
+    OldAcquireExceptionProc := System.ExceptionAcquired;
+    System.ExceptionAcquired := @ExceptionAcquiredProc;
+    {$ENDIF COMPILER12_UP}
+
+    OldRaiseExceptionProc := System.RaiseExceptionProc;
+    System.RaiseExceptionProc := @RaiseExceptionProc;
+  end;
 end;
 
 procedure JclUninstallCppExceptionFilter;
 begin
   if not HookInstalled then
     Exit;
+  {$IFDEF COMPILER12_UP} // TODO: this may be supported for earlier versions of Delphi/C++Builder
+  System.ExceptionAcquired := OldAcquireExceptionProc;
+  {$ENDIF COMPILER12_UP}
+  System.RaiseExceptionProc := OldRaiseExceptionProc;
   JclHookExcept.JclRemoveExceptFilter(@CppExceptObjProc);
   HookInstalled := False;
 end;
