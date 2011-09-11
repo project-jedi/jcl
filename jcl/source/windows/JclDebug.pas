@@ -653,7 +653,9 @@ type
     FInStackTracing: Boolean;
     FRaw: Boolean;
     FStackOffset: Int64;
+    {$IFDEF CPU64}
     procedure CaptureBackTrace;
+    {$ENDIF CPU64}
     function GetItems(Index: Integer): TJclStackInfoItem;
     function NextStackFrame(var StackFrame: PStackFrame; var StackInfo: TStackInfo): Boolean;
     procedure StoreToList(const StackInfo: TStackInfo);
@@ -4884,6 +4886,7 @@ begin
   inherited Destroy;
 end;
 
+{$IFDEF CPU64}
 procedure TJclStackInfoList.CaptureBackTrace;
 var
   CapturedFramesCount: Word;
@@ -4904,6 +4907,7 @@ begin
     StoreToList(StackInfo);
   end;
 end;
+{$ENDIF CPU64}
 
 procedure TJclStackInfoList.ForceStackTracing;
 begin
