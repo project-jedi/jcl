@@ -1092,11 +1092,20 @@ begin
   IDEImageList := NTAServices.ImageList;
   AIcon := TIcon.Create;
   try
-    for ControlAction := Low(TJclVersionControlActionType) to High(TJclVersionControlActionType) do
-    begin
-      AIcon.Handle := LoadIcon(HInstance, IconNames[ControlAction]);
-      FIconIndexes[ControlAction] := IDEImageList.AddIcon(AIcon);
+    {$IFDEF COMPILER14_UP}
+    IDEImageList.BeginUpdate;
+    try
+    {$ENDIF COMPILER14_UP}
+      for ControlAction := Low(TJclVersionControlActionType) to High(TJclVersionControlActionType) do
+      begin
+        AIcon.Handle := LoadIcon(HInstance, IconNames[ControlAction]);
+        FIconIndexes[ControlAction] := IDEImageList.AddIcon(AIcon);
+      end;
+    {$IFDEF COMPILER14_UP}
+    finally
+      IDEImageList.EndUpdate;
     end;
+    {$ENDIF COMPILER14_UP}
   finally
     AIcon.Free;
   end;
@@ -1105,10 +1114,10 @@ begin
   IDEToolsItem := nil;
   for I := 0 to IDEMainMenu.Items.Count - 1 do
     if IDEMainMenu.Items[I].Name = 'ToolsMenu' then
-  begin
-    IDEToolsItem := IDEMainMenu.Items[I];
-    Break;
-  end;
+    begin
+      IDEToolsItem := IDEMainMenu.Items[I];
+      Break;
+    end;
   if not Assigned(IDEToolsItem) then
     raise EJclExpertException.CreateRes(@RsENoToolsMenuItem);
 

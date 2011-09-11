@@ -1299,22 +1299,31 @@ begin
   ImageBmp := TBitmap.Create;
   try
     // load images
-    ImageBmp.LoadFromResourceName(FindResourceHInstance(ModuleHInstance), 'JCLDEBUG');
-    FDebugImageIndex := NTAServices.AddMasked(ImageBmp, clPurple);
-    ImageBmp.LoadFromResourceName(FindResourceHInstance(ModuleHInstance), 'JCLNODEBUG');
-    FNoDebugImageIndex := NTAServices.AddMasked(ImageBmp, clPurple);
-    ImageBmp.LoadFromResourceName(FindResourceHInstance(ModuleHInstance), 'JCLGENERATEJDBG');
-    FGenerateJdbgImageIndex := NTAServices.AddMasked(ImageBmp, clPurple);
-    ImageBmp.LoadFromResourceName(FindResourceHInstance(ModuleHInstance), 'JCLNOGENERATEJDBG');
-    FNoGenerateJdbgImageIndex := NTAServices.AddMasked(ImageBmp, clPurple);
-    ImageBmp.LoadFromResourceName(FindResourceHInstance(ModuleHInstance), 'JCLINSERTJDBG');
-    FInsertJdbgImageIndex := NTAServices.AddMasked(ImageBmp, clPurple);
-    ImageBmp.LoadFromResourceName(FindResourceHInstance(ModuleHInstance), 'JCLNOINSERTJDBG');
-    FNoInsertJdbgImageIndex := NTAServices.AddMasked(ImageBmp, clPurple);
-    ImageBmp.LoadFromResourceName(FindResourceHInstance(ModuleHInstance), 'JCLDELETEMAP');
-    FDeleteMapFileImageIndex := NTAServices.AddMasked(ImageBmp, clPurple);
-    ImageBmp.LoadFromResourceName(FindResourceHInstance(ModuleHInstance), 'JCLNODELETEMAP');
-    FNoDeleteMapFileImageIndex := NTAServices.AddMasked(ImageBmp, clPurple);
+    {$IFDEF COMPILER14_UP}
+    NTAServices.ImageList.BeginUpdate;
+    try
+    {$ENDIF COMPILER14_UP}
+      ImageBmp.LoadFromResourceName(FindResourceHInstance(ModuleHInstance), 'JCLDEBUG');
+      FDebugImageIndex := NTAServices.AddMasked(ImageBmp, clPurple);
+      ImageBmp.LoadFromResourceName(FindResourceHInstance(ModuleHInstance), 'JCLNODEBUG');
+      FNoDebugImageIndex := NTAServices.AddMasked(ImageBmp, clPurple);
+      ImageBmp.LoadFromResourceName(FindResourceHInstance(ModuleHInstance), 'JCLGENERATEJDBG');
+      FGenerateJdbgImageIndex := NTAServices.AddMasked(ImageBmp, clPurple);
+      ImageBmp.LoadFromResourceName(FindResourceHInstance(ModuleHInstance), 'JCLNOGENERATEJDBG');
+      FNoGenerateJdbgImageIndex := NTAServices.AddMasked(ImageBmp, clPurple);
+      ImageBmp.LoadFromResourceName(FindResourceHInstance(ModuleHInstance), 'JCLINSERTJDBG');
+      FInsertJdbgImageIndex := NTAServices.AddMasked(ImageBmp, clPurple);
+      ImageBmp.LoadFromResourceName(FindResourceHInstance(ModuleHInstance), 'JCLNOINSERTJDBG');
+      FNoInsertJdbgImageIndex := NTAServices.AddMasked(ImageBmp, clPurple);
+      ImageBmp.LoadFromResourceName(FindResourceHInstance(ModuleHInstance), 'JCLDELETEMAP');
+      FDeleteMapFileImageIndex := NTAServices.AddMasked(ImageBmp, clPurple);
+      ImageBmp.LoadFromResourceName(FindResourceHInstance(ModuleHInstance), 'JCLNODELETEMAP');
+      FNoDeleteMapFileImageIndex := NTAServices.AddMasked(ImageBmp, clPurple);
+    {$IFDEF COMPILER14_UP}
+    finally
+      NTAServices.ImageList.EndUpdate;
+    end;
+    {$ENDIF COMPILER14_UP}
 
     // create actions
     FDebugExpertAction := TDropDownAction.Create(nil);
