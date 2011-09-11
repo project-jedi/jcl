@@ -431,12 +431,14 @@ type
   end;
 
   TAcquireExceptionProc = procedure(Obj: Pointer);
+  {$IFDEF CPU32}
   TRaiseExceptionProc = procedure(ExceptionCode, ExceptionFlags: LongWord;
-    NumberOfArguments: LongWord; Args: PExceptionArguments); stdcall;
+    NumberOfArguments: LongWord; Args: Pointer); stdcall;
+  {$ENDIF CPU32}
 
 var
   OldAcquireExceptionProc: Pointer;
-  OldRaiseExceptionProc: Pointer;
+  OldRaiseExceptionProc: TRaiseExceptionProc;
 
 procedure ExceptionAcquiredProc(Obj: Pointer);
 begin
@@ -449,22 +451,22 @@ begin
 end;
 
 procedure RaiseExceptionProc(ExceptionCode, ExceptionFlags: LongWord;
-    NumberOfArguments: LongWord; Args: PExceptionArguments); stdcall;
+    NumberOfArguments: LongWord; Args: Pointer); stdcall;
 begin
   { We make use of the fact that the RTL calls the following notifiers immediately after destroying
     the exception object. We should find the exception info in the thread-local variable defined
     above. }
   case ExceptionCode of
     cDelphiReRaise:
-        ; { re-raising means that the C++ exception info will be reused; don't do anything }
+      ; { re-raising means that the C++ exception info will be reused; don't do anything }
     cDelphiTerminate:
-        { the exception has been handled; now is the time to destroy the C++ exception object }
-        FreeExcDesc(LastCppExcDesc);
+      { the exception has been handled; now is the time to destroy the C++ exception object }
+      FreeExcDesc(LastCppExcDesc);
   end;
   LastCppExcDesc := nil;
 
   if Assigned(OldRaiseExceptionProc) then
-    TRaiseExceptionProc(OldRaiseExceptionProc)(ExceptionCode, ExceptionFlags, NumberOfArguments, Args);
+    OldRaiseExceptionProc(ExceptionCode, ExceptionFlags, NumberOfArguments, Args);
 end;
 
 function EJclCppStdException.GetStdException: PJclCppStdException;
@@ -705,7 +707,11 @@ begin
     {$ENDIF COMPILER12_UP}
 
     OldRaiseExceptionProc := System.RaiseExceptionProc;
+    {$IFDEF CPU32}
     System.RaiseExceptionProc := @RaiseExceptionProc;
+    {$ELSE}
+    System.RaiseExceptionProc := RaiseExceptionProc;
+    {$ENDIF CPU32}
   end;
 end;
 
@@ -716,7 +722,11 @@ begin
   {$IFDEF COMPILER12_UP} // TODO: this may be supported for earlier versions of Delphi/C++Builder
   System.ExceptionAcquired := OldAcquireExceptionProc;
   {$ENDIF COMPILER12_UP}
+  {$IFDEF CPU32}
+  System.RaiseExceptionProc := @OldRaiseExceptionProc;
+  {$ELSE}
   System.RaiseExceptionProc := OldRaiseExceptionProc;
+  {$ENDIF CPU32}
   JclHookExcept.JclRemoveExceptFilter(@CppExceptObjProc);
   HookInstalled := False;
 end;
