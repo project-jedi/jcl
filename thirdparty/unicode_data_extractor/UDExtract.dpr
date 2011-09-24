@@ -1421,7 +1421,7 @@ begin
     WriteTextLine;
 
     // 2) category data
-    WriteTextLine('CATEGORIES UNICODEDATA LOADONCALL MOVEABLE DISCARDABLE');
+    WriteTextLine('LANGUAGE 0,0 CATEGORIES UNICODEDATA LOADONCALL MOVEABLE DISCARDABLE');
     WriteTextLine('{');
     CreateResource;
     // write out only used categories
@@ -1450,7 +1450,7 @@ begin
     WriteTextLine;
 
     // 3) case mapping data
-    WriteTextLine('CASE UNICODEDATA LOADONCALL MOVEABLE DISCARDABLE');
+    WriteTextLine('LANGUAGE 0,0 CASE UNICODEDATA LOADONCALL MOVEABLE DISCARDABLE');
     WriteTextLine('{');
     CreateResource;
     // record how many case mapping entries we have
@@ -1482,7 +1482,7 @@ begin
     // 4) decomposition data
     // fully expand all decompositions before generating the output
     ExpandDecompositions;
-    WriteTextLine('DECOMPOSITION UNICODEDATA LOADONCALL MOVEABLE DISCARDABLE');
+    WriteTextLine('LANGUAGE 0,0 DECOMPOSITION UNICODEDATA LOADONCALL MOVEABLE DISCARDABLE');
     WriteTextLine('{');
     CreateResource;
     // record how many decomposition entries we have
@@ -1501,7 +1501,7 @@ begin
     WriteTextLine;
 
     // 5) canonical combining class data
-    WriteTextLine('COMBINING UNICODEDATA LOADONCALL MOVEABLE DISCARDABLE');
+    WriteTextLine('LANGUAGE 0,0 COMBINING UNICODEDATA LOADONCALL MOVEABLE DISCARDABLE');
     WriteTextLine('{');
     CreateResource;
     for I := 0 to 255 do
@@ -1529,7 +1529,7 @@ begin
 
     // 6) number data, this is actually two arrays, one which contains the numbers
     //    and the second containing the mapping between a code and a number
-    WriteTextLine('NUMBERS UNICODEDATA LOADONCALL MOVEABLE DISCARDABLE');
+    WriteTextLine('LANGUAGE 0,0 NUMBERS UNICODEDATA LOADONCALL MOVEABLE DISCARDABLE');
     WriteTextLine('{');
     CreateResource;
     // first, write the number definitions (size, values)
@@ -1554,7 +1554,7 @@ begin
     // 7 ) composition data
     // create composition data from decomposition data and exclusion list before generating the output
     CreateCompositions;
-    WriteTextLine('COMPOSITION UNICODEDATA LOADONCALL MOVEABLE DISCARDABLE');
+    WriteTextLine('LANGUAGE 0,0 COMPOSITION UNICODEDATA LOADONCALL MOVEABLE DISCARDABLE');
     WriteTextLine('{');
     CreateResource;
     // first, write the number of compositions
