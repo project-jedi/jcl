@@ -1820,8 +1820,13 @@ begin
       that starts at VA 0. }
     if VA = 0 then
       Continue;
-    if FLineNumbersCnt mod 256 = 0 then
-      SetLength(FLineNumbers, FLineNumbersCnt + 256);
+    if FLineNumbersCnt = Length(FLineNumbers)  then
+    begin
+      if FLineNumbersCnt < 512 then
+        SetLength(FLineNumbers, FLineNumbersCnt + 512)
+      else
+        SetLength(FLineNumbers, FLineNumbersCnt * 2);
+    end;
     FLineNumbers[FLineNumbersCnt].Segment := FSegmentClasses[SegIndex].Segment;
     FLineNumbers[FLineNumbersCnt].VA := VA;
     FLineNumbers[FLineNumbersCnt].LineNumber := LineNumber;
@@ -1914,8 +1919,13 @@ begin
     if (FSegmentClasses[SegIndex].Segment = Address.Segment)
       and (DWORD(Address.Offset) < FSegmentClasses[SegIndex].Len) then
   begin
-    if FProcNamesCnt mod 256 = 0 then
-      SetLength(FProcNames, FProcNamesCnt + 256);
+    if FProcNamesCnt = Length(FProcNames)  then
+    begin
+      if FProcNamesCnt < 512 then
+        SetLength(FProcNames, FProcNamesCnt + 512)
+      else
+        SetLength(FProcNames, FProcNamesCnt * 2);
+    end;
     FProcNames[FProcNamesCnt].Segment := FSegmentClasses[SegIndex].Segment;
     if StrLIComp(FSegmentClasses[SegIndex].GroupName.RawValue, 'TLS', 3) = 0 then
       FProcNames[FProcNamesCnt].VA := Address.Offset
