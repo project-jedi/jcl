@@ -1,3 +1,6 @@
+SETLOCAL
+pushd "%~dp0"
+
 echo Launching JCL installer...
 
 start .\bin\JediInstaller.exe %2 %3 %4 %5 %6 %7 %8 %9
@@ -16,3 +19,6 @@ echo.
 pause
 
 :FINI
+
+popd
+ENDLOCAL

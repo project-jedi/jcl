@@ -1,3 +1,6 @@
+SETLOCAL
+pushd "%~dp0"
+
 SET DELPHIVERSION=%1
 
 cd install
@@ -28,3 +31,6 @@ pause
 :FINI
 cd ..
 SET DELPHIVERSION=
+
+popd
+ENDLOCAL

@@ -1,3 +1,6 @@
+@SETLOCAL
+@pushd "%~dp0"
+
 @echo cleaning...
 @REM do not delete precompiled installer
 @for %%f in (bin\*.exe) do @if not %%f==bin\JediInstaller.exe (del %%f)
@@ -15,3 +18,6 @@
 @cd packages
 @del /f /s *.cfg *.local *.identcache *.rsp
 @cd..
+
+@popd
+@ENDLOCAL
