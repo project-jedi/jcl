@@ -1574,7 +1574,16 @@ begin
                   SetLength(Categories[First], 256);
                 if Categories[First, Second] = nil then
                   SetLength(Categories[First, Second], 256);
+                {$IF SizeOf(TCharacterCategories) mod 4 <> 0}
+                // The array is allocated on the exact size, but the compiler generates
+                // a 32 bit "BTS" instruction that accesses memory beyond the allocated block.
+                if Third < 255 then
+                  Include(Categories[First, Second, Third], Category)
+                else
+                  Categories[First, Second, Third] := Categories[First, Second, Third] + [Category];
+                {$ELSE}
                 Include(Categories[First, Second, Third], Category);
+                {$IFEND}
               end;
           end;
         end;
