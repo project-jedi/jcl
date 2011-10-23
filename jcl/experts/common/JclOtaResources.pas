@@ -40,19 +40,18 @@ uses
   JclBase;
 
 //=== JclOtaUtils.pas ========================================================
-{ TODO : consider replacing "Borland X Services" by "IDE X Services"}
 resourcestring
-  RsENoOTAServices = 'Unable to get Borland IDE Services';
-  RsENoNTAServices = 'Unable to get Borland NTA Services';
-  RsENoDebuggerServices = 'Unable to get Borland Debugger Services';
-  RsENoOTAAboutServices = 'Unable to get Borland About Services';
-  RsENoOTAModuleServices = 'Unable to get Borland Module Services';
-  RsENoOTAWizardServices = 'Unable to get Borland Wizard Services';
-  RsENoOTAPackageServices = 'Unable to get Borland Package Services';
-  RsENoOTAPersonalityServices = 'Unable to get Borland Personality Services';
+  RsENoOTAServices = 'Unable to get IDE Services';
+  RsENoNTAServices = 'Unable to get IDE NTA Services';
+  RsENoDebuggerServices = 'Unable to get IDE Debugger Services';
+  RsENoOTAAboutServices = 'Unable to get IDE About Services';
+  RsENoOTAModuleServices = 'Unable to get IDE Module Services';
+  RsENoOTAWizardServices = 'Unable to get IDE Wizard Services';
+  RsENoOTAPackageServices = 'Unable to get IDE Package Services';
+  RsENoOTAPersonalityServices = 'Unable to get IDE Personality Services';
   RsENoOTAProjectManager = 'Unable to get project manager';
-  RsENoOTAMessageServices = 'Unable to get Borland Message Services';
-  RsENoOTAGalleryCategoryManager = 'Unable to get Borland Gallery Category Manager';
+  RsENoOTAMessageServices = 'Unable to get IDE Message Services';
+  RsENoOTAGalleryCategoryManager = 'Unable to get IDE Gallery Category Manager';
   RsENoModule = 'Unable to get Module';
   RsBadModuleHInstance = 'Unable to get module HInstance';
   RsENoRootDir = 'RootDir is empty';
