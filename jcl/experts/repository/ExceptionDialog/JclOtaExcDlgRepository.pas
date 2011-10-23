@@ -122,6 +122,33 @@ procedure TJclExcDlgExpert.CreateExceptionDialog(
     end;
     Result := string(AnsiResult);
   end;
+
+  function PathGetAbsolutePath(const P: string): string;
+  var
+    ActiveEditBuffer: IOTAEditBuffer;
+    ActiveProject: IOTAProject;
+    CurrentDirectory: string;
+  begin
+    if not PathIsAbsolute(P) then
+    begin
+      CurrentDirectory := '';
+      ActiveEditBuffer := GetActiveEditBuffer;
+      if Assigned(ActiveEditBuffer) then
+        CurrentDirectory := ExtractFileDir(ActiveEditBuffer.FileName);
+      if CurrentDirectory = '' then
+      begin
+        ActiveProject := GetActiveProject;
+        if Assigned(ActiveProject) then
+          CurrentDirectory := ExtractFileDir(ActiveProject.FileName);
+      end;
+      if CurrentDirectory <> '' then
+        Result := PathGetRelativePath(PathAddSeparator(CurrentDirectory), P)
+      else
+        Result := P;
+    end
+    else
+      Result := P;
+  end;
 const
   TemplateSubDir = 'experts\repository\ExceptionDialog\Templates\';
   DelphiTemplate = 'ExceptDlg.Delphi32';
@@ -173,9 +200,9 @@ begin
 
   if Params.FileName <> '' then
   begin
-    FormFileName := ChangeFileExt(Params.FileName, FormExtension);
-    HeaderFileName := ChangeFileExt(Params.FileName, HeaderExtension);
-    SourceFileName := ChangeFileExt(Params.FileName, SourceExtension);
+    FormFileName := PathGetAbsolutePath(ChangeFileExt(Params.FileName, FormExtension));
+    HeaderFileName := PathGetAbsolutePath(ChangeFileExt(Params.FileName, HeaderExtension));
+    SourceFileName := PathGetAbsolutePath(ChangeFileExt(Params.FileName, SourceExtension));
   end
   else
   begin

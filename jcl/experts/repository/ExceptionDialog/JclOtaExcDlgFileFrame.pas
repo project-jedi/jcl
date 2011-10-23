@@ -163,7 +163,7 @@ begin
   
   Caption := LoadResString(@RsExcDlgFileOptions);
   LabelLanguage.Caption := LoadResString(@RsLanguage);
-  LabelFileName.Caption := LoadResString(@RsFileName);
+  LabelFileName.Caption := LoadResString(@RsUnitFileName);
   LabelFormName.Caption := LoadResString(@RsFormName);
   LabelFormAncestor.Caption := LoadResString(@RsFormAncestor);
 end;

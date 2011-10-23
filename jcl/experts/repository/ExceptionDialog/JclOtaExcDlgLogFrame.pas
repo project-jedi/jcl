@@ -98,7 +98,7 @@ begin
 
   Caption := LoadResString(@RsExcDlgLogOptions);
   CheckBoxLogFile.Caption := LoadResString(@RsLogTrace);
-  LabelLogFileName.Caption := LoadResString(@RsFileName);
+  LabelLogFileName.Caption := LoadResString(@RsLogFileName);
   CheckBoxLogInWorkingDirectory.Caption := LoadResString(@RsLogInWorkingDirectory);
   CheckBoxLogInApplicationDirectory.Caption := LoadResString(@RsLogInApplicationDirectory);
   CheckBoxLogInDesktopDirectory.Caption := LoadResString(@RsLogInDesktopDirectory);

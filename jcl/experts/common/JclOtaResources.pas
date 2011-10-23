@@ -44,6 +44,7 @@ resourcestring
   RsENoOTAServices = 'Unable to get IDE Services';
   RsENoNTAServices = 'Unable to get IDE NTA Services';
   RsENoDebuggerServices = 'Unable to get IDE Debugger Services';
+  RsENoEditorServices = 'Unable to get IDE Editor Services';
   RsENoOTAAboutServices = 'Unable to get IDE About Services';
   RsENoOTAModuleServices = 'Unable to get IDE Module Services';
   RsENoOTAWizardServices = 'Unable to get IDE Wizard Services';
@@ -131,7 +132,7 @@ resourcestring
 resourcestring
   RsExcDlgFileOptions = 'file options';
   RsLanguage = '&Language:';
-  RsFileName = '&File name:';
+  RsUnitFileName = '&Unit file name:';
   RsFormName = 'Form &name:';
   RsFormAncestor = 'Form &ancestor:';
   RsFileNameDialog = '&Save new file as...';
@@ -161,9 +162,10 @@ resourcestring
 //=== JclOtaExcDlgLogFrame.pas ===============================================
 resourcestring
   RsExcDlgLogOptions = 'log options';
+  RsLogFileName = '&Log file name:';
   RsLogTrace = '&Add crash data to log file';
   RsLogInWorkingDirectory = 'Autosave in &working directory';
-  RsLogInApplicationDirectory = 'Autosave in &application directory (not recommended)';
+  RsLogInApplicationDirectory = 'Autosave in a&pplication directory (not recommended)';
   RsLogInDesktopDirectory = 'Autosave in &desktop directory';
   RsLogSaveDialog = 'Add a save &button on dialog';
 

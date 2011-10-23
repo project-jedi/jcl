@@ -145,6 +145,7 @@ type
     class function GetNTAServices: INTAServices;
     class function GetOTAServices: IOTAServices;
     class function GetOTADebuggerServices: IOTADebuggerServices;
+    class function GetOTAEditorServices: IOTAEditorServices;
     class function GetOTAModuleServices: IOTAModuleServices;
     class function GetOTAPackageServices: IOTAPackageServices;
     {$IFDEF BDS}
@@ -158,6 +159,7 @@ type
     class function GetOTAWizardServices: IOTAWizardServices;
     class function GetActiveProject: IOTAProject;
     class function GetProjectGroup: IOTAProjectGroup;
+    class function GetActiveEditBuffer: IOTAEditBuffer;
     class function IsPersonalityLoaded(const PersonalityName: string): Boolean;
     class procedure AddExpert(AExpert: TJclOTAExpertBase);
     class procedure RemoveExpert(AExpert: TJclOTAExpertBase);
@@ -1093,6 +1095,14 @@ begin
   Result := (ExecutableFileName <> '');
 end;
 
+class function TJclOTAExpertBase.GetActiveEditBuffer: IOTAEditBuffer;
+var
+  OTAEditorServices: IOTAEditorServices;
+begin
+  OTAEditorServices := GetOTAEditorServices;
+  Result := OTAEditorServices.TopBuffer;
+end;
+
 class function TJclOTAExpertBase.GetActiveProject: IOTAProject;
 var
   ProjectGroup: IOTAProjectGroup;
@@ -1178,6 +1188,13 @@ begin
   Supports(BorlandIDEServices, IOTADebuggerServices, Result);
   if not Assigned(Result) then
     raise EJclExpertException.CreateRes(@RsENoDebuggerServices);
+end;
+
+class function TJclOTAExpertBase.GetOTAEditorServices: IOTAEditorServices;
+begin
+  Supports(BorlandIDEServices, IOTAEditorServices, Result);
+  if not Assigned(Result) then
+    raise EJclExpertException.CreateRes(@RsENoEditorServices);
 end;
 
 class function TJclOTAExpertBase.GetOTAMessageServices: IOTAMessageServices;

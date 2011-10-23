@@ -5,6 +5,7 @@ inherited JclOtaExcDlgLogPage: TJclOtaExcDlgLogPage
     Width = 55
     Height = 13
     Caption = 'RsFileName'
+    FocusControl = EditLogFileName
   end
   object CheckBoxLogFile: TCheckBox
     Left = 120
