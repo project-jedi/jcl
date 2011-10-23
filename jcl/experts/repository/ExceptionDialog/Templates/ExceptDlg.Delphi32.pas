@@ -348,8 +348,8 @@ var
   UnitVersion: TUnitVersion;
   ModuleIndex, UnitIndex: Integer;{$ENDIF}
 begin
-  DetailsMemo.Lines.Add(Format(LoadResString(@RsMainThreadID), [MainThreadID]));
-  DetailsMemo.Lines.Add(Format(LoadResString(@RsExceptionThreadID), [MainThreadID]));
+  DetailsMemo.Lines.Add(Format(LoadResString(PResStringRec(@RsMainThreadID)), [MainThreadID]));
+  DetailsMemo.Lines.Add(Format(LoadResString(PResStringRec(@RsExceptionThreadID)), [MainThreadID]));
   NextDetailBlock;
 
   SL := TStringList.Create;
@@ -359,7 +359,7 @@ begin
     if Assigned(StackList) then
     begin
       DetailsMemo.Lines.Add(RsExceptionStack);
-      DetailsMemo.Lines.Add(Format(LoadResString(@RsStackList), [DateTimeToStr(StackList.TimeStamp)]));
+      DetailsMemo.Lines.Add(Format(LoadResString(PResStringRec(@RsStackList)), [DateTimeToStr(StackList.TimeStamp)]));
       StackList.AddToStrings(DetailsMemo.Lines, {$JPPBOOLVALUE ModuleName}, {$JPPBOOLVALUE ModuleOffset}, {$JPPBOOLVALUE CodeDetails}, {$JPPBOOLVALUE VirtualAddress});
       NextDetailBlock;
     end;
@@ -368,8 +368,8 @@ begin
     StackList := JclCreateThreadStackTraceFromID({$JPPBOOLVALUE RawData}, MainThreadID);
     if Assigned(StackList) then
     begin
-      DetailsMemo.Lines.Add(LoadResString(@RsMainThreadCallStack));
-      DetailsMemo.Lines.Add(Format(LoadResString(@RsStackList), [DateTimeToStr(StackList.TimeStamp)]));
+      DetailsMemo.Lines.Add(LoadResString(PResStringRec(@RsMainThreadCallStack)));
+      DetailsMemo.Lines.Add(Format(LoadResString(PResStringRec(@RsStackList)), [DateTimeToStr(StackList.TimeStamp)]));
       StackList.AddToStrings(DetailsMemo.Lines, {$JPPBOOLVALUE ModuleName}, {$JPPBOOLVALUE ModuleOffset}, {$JPPBOOLVALUE CodeDetails}, {$JPPBOOLVALUE VirtualAddress});
       NextDetailBlock;
     end;{$ENDIF}
@@ -379,8 +379,8 @@ begin
       StackList := JclCreateThreadStackTraceFromID({$JPPBOOLVALUE RawData}, FThreadID);
       if Assigned(StackList) then
       begin
-        DetailsMemo.Lines.Add(Format(LoadResString(@RsExceptionThreadCallStack), [FThreadID]));
-        DetailsMemo.Lines.Add(Format(LoadResString(@RsStackList), [DateTimeToStr(StackList.TimeStamp)]));
+        DetailsMemo.Lines.Add(Format(LoadResString(PResStringRec(@RsExceptionThreadCallStack)), [FThreadID]));
+        DetailsMemo.Lines.Add(Format(LoadResString(PResStringRec(@RsStackList)), [DateTimeToStr(StackList.TimeStamp)]));
         StackList.AddToStrings(DetailsMemo.Lines, {$JPPBOOLVALUE ModuleName}, {$JPPBOOLVALUE ModuleOffset}, {$JPPBOOLVALUE CodeDetails}, {$JPPBOOLVALUE VirtualAddress});
         NextDetailBlock;
       end;
@@ -398,7 +398,7 @@ begin
           if Assigned(StackList) then
           begin
             DetailsMemo.Lines.Add(Format(RsThreadCallStack, [AThreadID, ThreadList.ThreadInfos[AThreadID], ThreadList.ThreadNames[AThreadID]]));
-            DetailsMemo.Lines.Add(Format(LoadResString(@RsStackList), [DateTimeToStr(StackList.TimeStamp)]));
+            DetailsMemo.Lines.Add(Format(LoadResString(PResStringRec(@RsStackList)), [DateTimeToStr(StackList.TimeStamp)]));
             StackList.AddToStrings(DetailsMemo.Lines, {$JPPBOOLVALUE ModuleName}, {$JPPBOOLVALUE ModuleOffset}, {$JPPBOOLVALUE CodeDetails}, {$JPPBOOLVALUE VirtualAddress});
             NextDetailBlock;
           end;
@@ -496,7 +496,7 @@ begin
           if UnitVersioningModule.Instance = ModuleBase then
           begin
             if UnitVersioningModule.Count > 0 then
-              DetailsMemo.Lines.Add(StrRepeat(' ', 11) + LoadResString(@RsUnitVersioningIntro));
+              DetailsMemo.Lines.Add(StrRepeat(' ', 11) + LoadResString(PResStringRec(@RsUnitVersioningIntro)));
             for UnitIndex := 0 to UnitVersioningModule.Count - 1 do
             begin
               UnitVersion := UnitVersioningModule.Items[UnitIndex];
