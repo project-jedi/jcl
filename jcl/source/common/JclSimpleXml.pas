@@ -545,7 +545,8 @@ type
     procedure SaveToFile(const FileName: TFileName; Encoding: TJclStringEncoding = seAuto; CodePage: Word = CP_ACP);
     procedure SaveToStream(Stream: TStream; Encoding: TJclStringEncoding = seAuto; CodePage: Word = CP_ACP);
     procedure SaveToStringStream(StringStream: TJclStringStream);
-    function SaveToString: string;
+    function SaveToString: string; overload;
+    function SaveToString(Encoding: TJclStringEncoding; CodePage: Word = CP_ACP): string; overload;
     property Prolog: TJclSimpleXMLElemsProlog read FProlog write FProlog;
     property Root: TJclSimpleXMLElemClassic read FRoot write SetRoot;
     property XMLData: string read SaveToString write LoadFromString;
@@ -1341,12 +1342,29 @@ begin
 end;
 
 function TJclSimpleXML.SaveToString: string;
+begin
+  Result := SaveToString(seAuto, CP_ACP);
+end;
+
+function TJclSimpleXML.SaveToString(Encoding: TJclStringEncoding; CodePage: Word): string;
 var
   Stream: TStringStream;
 begin
-  Stream := TStringStream.Create('' {$IFDEF SUPPORTS_UNICODE}, TEncoding.Unicode{$ENDIF});
+  {$IFDEF SUPPORTS_UNICODE}
+  case Encoding of
+    seAnsi:
+      Stream := TStringStream.Create('', TEncoding.ANSI);
+    seUTF8:
+      Stream := TStringStream.Create('', TEncoding.UTF8);
+  else
+    //seUTF16, seAuto:
+    Stream := TStringStream.Create('', TEncoding.Unicode);
+  end;
+  {$ELSE ~SUPPORTS_UNICODE}
+  Stream := TStringStream.Create('');
+  {$ENDIF ~SUPPORTS_UNICODE}
   try
-    SaveToStream(Stream);
+    SaveToStream(Stream, Encoding, CodePage);
     Result := Stream.DataString;
   finally
     Stream.Free;
