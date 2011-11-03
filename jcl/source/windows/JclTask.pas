@@ -176,6 +176,7 @@ type
     procedure Refresh;
     procedure Run;
     procedure Terminate;
+    function AddTrigger: TJclTaskTrigger;
     procedure SetAccountInformation(const Name, Password: WideString);
     function GetRunTimes(const BeginTime: TDateTime; const EndTime: TDateTime = InfiniteTime): TDateTimeArray;
     property ScheduledWorkItem: IScheduledWorkItem read FScheduledWorkItem;
@@ -586,6 +587,16 @@ begin
   FreeAndNil(FTriggers);
   FreeAndNil(FData);
   inherited Destroy;
+end;
+
+function TJclScheduledWorkItem.AddTrigger: TJclTaskTrigger;
+var
+  TaskTrigger: ITaskTrigger;
+  Dummy: Word;
+begin
+  Result := FTriggers.Add;
+  OleCheck(ScheduledWorkItem.CreateTrigger(Dummy, TaskTrigger));
+  Result.SetTaskTrigger(TaskTrigger);
 end;
 
 procedure TJclScheduledWorkItem.Save;
