@@ -555,6 +555,7 @@ type
   private
     FCodePage: Word;
     FEncoding: TJclStringEncoding;
+    procedure SetCodePage(Value: Word);
   protected
     function InternalGetNextChar(S: TStream; out Ch: UCS4): Boolean; override;
     function InternalGetNextBuffer(S: TStream; var Buffer: TUCS4Array; Start, Count: SizeInt): Longint; override;
@@ -563,7 +564,7 @@ type
   public
     constructor Create(AStream: TStream; AOwnsStream: Boolean = False); override;
     function SkipBOM: LongInt; override;
-    property CodePage: Word read FCodePage write FCodePage;
+    property CodePage: Word read FCodePage write SetCodePage;
     property Encoding: TJclStringEncoding read FEncoding;
   end;
 
@@ -3084,6 +3085,21 @@ begin
   else
     Result := AnsiSetNextCharToStream(S, CodePage, Ch);
   end;
+end;
+
+procedure TJclAutoStream.SetCodePage(Value: Word);
+begin
+  if Value = CP_UTF8 then
+    FEncoding := seUTF8
+  else
+  if Value = CP_UTF16LE then
+    FEncoding := seUTF16
+  else
+  if Value = CP_ACP then
+    FEncoding := seAnsi
+  else
+    FEncoding := seAuto;
+  FCodePage := Value;
 end;
 
 function TJclAutoStream.SkipBOM: LongInt;

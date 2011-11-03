@@ -1196,12 +1196,20 @@ begin
 end;
 
 procedure TJclSimpleXML.LoadFromStringStream(StringStream: TJclStringStream);
+var
+  BufferSize: Integer;
 begin
   if Assigned(FOnLoadProg) then
     FOnLoadProg(Self, StringStream.Stream.Position, StringStream.Stream.Size);
 
+  BufferSize := StringStream.BufferSize;
+  StringStream.BufferSize := 1;
+
   // Read doctype and so on
   FProlog.LoadFromStringStream(StringStream, Self);
+
+  StringStream.BufferSize := BufferSize;
+
   // Read elements
   FRoot.LoadFromStringStream(StringStream, Self);
 
