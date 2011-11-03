@@ -1837,7 +1837,7 @@ begin
         begin
           Code := StreamReadChar(Stream);
 
-          Assert((Code and not $40000000) < $1000000, LoadResString(@RsDecomposedUnicodeChar));
+          Assert(Code < $1000000, LoadResString(@RsDecomposedUnicodeChar));
 
           First := (Code shr 16) and $FF;
           Second := (Code shr 8) and $FF;
@@ -1889,7 +1889,7 @@ function UnicodeDecompose(Code: UCS4; Compatible: Boolean): TUCS4Array;
 var
   First, Second, Third: Byte;
 begin
-  Assert((Code and not $40000000) < $1000000, LoadResString(@RsDecomposedUnicodeChar));
+  Assert(Code < $1000000, LoadResString(@RsDecomposedUnicodeChar));
 
   // load decomposition data if not already done
   if not DecompositionsLoaded then
@@ -1919,7 +1919,7 @@ function UnicodeDecompose(Code: UCS4; Tags: TCompatibilityFormattingTags): TUCS4
 var
   First, Second, Third: Byte;
 begin
-  Assert((Code and not $40000000) < $1000000, LoadResString(@RsDecomposedUnicodeChar));
+  Assert(Code < $1000000, LoadResString(@RsDecomposedUnicodeChar));
 
   // load decomposition data if not already done
   if not DecompositionsLoaded then
@@ -6416,46 +6416,6 @@ begin
   end;
 end;
 
-procedure GetDecompositions(Compatible: Boolean; Code: UCS4; var Buffer: TUCS4Array); overload;
-// helper function to recursively decompose a code point
-var
-  Decomp: TUCS4Array;
-  I: SizeInt;
-begin
-  Decomp := UnicodeDecompose(Code, Compatible);
-  if Assigned(Decomp) then
-  begin
-    for I := 0 to High(Decomp) do
-      GetDecompositions(Compatible, Decomp[I], Buffer);
-  end
-  else // if no decomp, append
-  begin
-    I := Length(Buffer);
-    SetLength(Buffer, I + 1);
-    Buffer[I] := Code;
-  end;
-end;
-
-procedure GetDecompositions(Tags: TCompatibilityFormattingTags; Code: UCS4; var Buffer: TUCS4Array); overload;
-// helper function to recursively decompose a code point
-var
-  Decomp: TUCS4Array;
-  I: SizeInt;
-begin
-  Decomp := UnicodeDecompose(Code, Tags);
-  if Assigned(Decomp) then
-  begin
-    for I := 0 to High(Decomp) do
-      GetDecompositions(Tags, Decomp[I], Buffer);
-  end
-  else // if no decomp, append
-  begin
-    I := Length(Buffer);
-    SetLength(Buffer, I + 1);
-    Buffer[I] := Code;
-  end;
-end;
-
 function WideDecompose(const S: WideString; Compatible: Boolean): WideString;
 // returns a string with all characters of S but decomposed, e.g.  is returned as E^ etc.
 var
@@ -6468,8 +6428,7 @@ begin
   // iterate through each source code point
   for I := 1 to Length(S) do
   begin
-    Decomp := nil;
-    GetDecompositions(Compatible, UCS4(S[I]), Decomp);
+    Decomp := UnicodeDecompose(UCS4(S[I]), Compatible);
     if Decomp = nil then
       Result := Result + S[I]
     else
@@ -6493,8 +6452,7 @@ begin
   // iterate through each source code point
   for I := 1 to Length(S) do
   begin
-    Decomp := nil;
-    GetDecompositions(Tags, UCS4(S[I]), Decomp);
+    Decomp := UnicodeDecompose(UCS4(S[I]), Tags);
     if Decomp = nil then
       Result := Result + S[I]
     else
