@@ -2393,6 +2393,8 @@ begin
     raise EJclMsBuildError.CreateRes(@RsEMissingTargetName);
 
   Target := TJclMsBuildTarget.Create;
+  FTargets.Add(Target);
+
   Target.FTargetName := TargetName;
   StrToStrings(Depends, ';', Target.FDepends, False);
   StrToStrings(Returns, ';', Target.FReturns, False);
@@ -2401,7 +2403,7 @@ begin
   StrToStrings(BeforeTargets, ';', Target.FBeforeTargets, False);
   StrToStrings(AfterTargets, ';', Target.FAfterTargets, False);
   Target.FKeepDuplicateOutputs := KeepDuplicateOutput;
-  
+
   if Condition then
     for Index := 0 to XmlElem.ItemCount - 1 do
   begin
