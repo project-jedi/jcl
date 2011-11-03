@@ -348,6 +348,7 @@ type
     cftFraction,  // Vulgar fraction form
     cftCompat     // Otherwise unspecified compatibility character
   );
+  TCompatibilityFormattingTags = set of TCompatibilityFormattingTag;
 
   // used to hold information about the start and end
   // position of a unicodeblock.
@@ -1180,8 +1181,10 @@ procedure StrSwapByteOrder(Str: PWideChar);
 // functions involving Delphi wide strings
 function WideAdjustLineBreaks(const S: WideString): WideString;
 function WideCharPos(const S: WideString; const Ch: WideChar; const Index: SizeInt): SizeInt;  //az
-function WideCompose(const S: WideString; Compatible: Boolean = True): WideString;
-function WideDecompose(const S: WideString; Compatible: Boolean = True): WideString;
+function WideCompose(const S: WideString; Compatible: Boolean = True): WideString; overload;
+function WideCompose(const S: WideString; Tags: TCompatibilityFormattingTags): WideString; overload;
+function WideDecompose(const S: WideString; Compatible: Boolean = True): WideString; overload;
+function WideDecompose(const S: WideString; Tags: TCompatibilityFormattingTags): WideString; overload;
 function WideExtractQuotedStr(var Src: PWideChar; Quote: WideChar): WideString;
 function WideQuotedStr(const S: WideString; Quote: WideChar): WideString;
 function WideStringOfChar(C: WideChar; Count: SizeInt): WideString;
@@ -1216,9 +1219,11 @@ type
 
 // Low level character routines
 function UnicodeNumberLookup(Code: UCS4; var Number: TUcNumber): Boolean;
-function UnicodeCompose(const Codes: array of UCS4; out Composite: UCS4; Compatible: Boolean = True): Integer;
+function UnicodeCompose(const Codes: array of UCS4; out Composite: UCS4; Compatible: Boolean = True): Integer; overload;
+function UnicodeCompose(const Codes: array of UCS4; out Composite: UCS4; Tags: TCompatibilityFormattingTags): Integer; overload;
 function UnicodeCaseFold(Code: UCS4): TUCS4Array;
-function UnicodeDecompose(Code: UCS4; Compatible: Boolean = True): TUCS4Array;
+function UnicodeDecompose(Code: UCS4; Compatible: Boolean = True): TUCS4Array; overload;
+function UnicodeDecompose(Code: UCS4; Tags: TCompatibilityFormattingTags): TUCS4Array; overload;
 function UnicodeToUpper(Code: UCS4): TUCS4Array;
 function UnicodeToLower(Code: UCS4): TUCS4Array;
 function UnicodeToTitle(Code: UCS4): TUCS4Array;
@@ -1910,6 +1915,36 @@ begin
   end;
 end;
 
+function UnicodeDecompose(Code: UCS4; Tags: TCompatibilityFormattingTags): TUCS4Array;
+var
+  First, Second, Third: Byte;
+begin
+  Assert((Code and not $40000000) < $1000000, LoadResString(@RsDecomposedUnicodeChar));
+
+  // load decomposition data if not already done
+  if not DecompositionsLoaded then
+    LoadDecompositionData;
+
+  Result := nil;
+
+  // if the code is hangul then decomposition is algorithmically
+  if UnicodeIsHangul(Code) then
+    Result := UnicodeDecomposeHangul(Code)
+  else
+  begin
+    First := (Code shr 16) and $FF;
+    Second := (Code shr 8) and $FF;
+    Third := Code and $FF;
+
+    if (Decompositions[First] <> nil) and (Decompositions[First, Second] <> nil)
+      and (Decompositions[First, Second, Third].Leaves <> nil)
+      and (Decompositions[First, Second, Third].Tag in Tags) then
+      Result := Decompositions[First, Second, Third].Leaves
+    else
+      Result := nil;
+  end;
+end;
+
 //----------------- support for combining classes --------------------------------------------------
 
 type
@@ -2194,6 +2229,75 @@ begin
 
         if (HighNext < HighCodes) // enough characters in buffer to be tested
           and (Compatible or (Compositions[M].Tag = cftCanonical)) then
+        begin
+          for I := 0 to HighNext do
+            if Compositions[M].Next[I] = Codes[I + 1] then
+              Result := I + 2 { +1 for first, +1 because of 0-based array }
+            else
+              Break;
+
+          if Result = HighNext + 2 then // all codes matched
+          begin
+            Composite := Compositions[M].Code;
+            Exit;
+          end;
+        end;
+
+        Inc(M);
+      end;
+      Break;
+    end;
+  end;
+  Result := 1;
+  Composite := Codes[0];
+end;
+
+function UnicodeCompose(const Codes: array of UCS4; out Composite: UCS4; Tags: TCompatibilityFormattingTags): Integer;
+// Maps the sequence of Codes (up to MaxCompositionSize codes) to a composite
+// Result is the number of Codes that were composed (at least 1 if Codes is not empty)
+var
+  L, R, M, I, HighCodes, HighNext: Integer;
+begin
+  if Compositions = nil then
+    LoadCompositionData;
+
+  Result := 0;
+  HighCodes := High(Codes);
+
+  if HighCodes = -1 then
+    Exit;
+
+  if HighCodes = 0 then
+  begin
+    Result := 1;
+    Composite := Codes[0];
+    Exit;
+  end;
+
+  L := 0;
+  R := High(Compositions);
+
+  while L <= R do
+  begin
+    M := (L + R) shr 1;
+    if Compositions[M].First > Codes[0] then
+      R := M - 1
+    else
+    if Compositions[M].First < Codes[0] then
+      L := M + 1
+    else
+    begin
+      // back to the first element where Codes[0] = First
+      while (M > 0) and (Compositions[M-1].First = Codes[0]) do
+        Dec(M);
+
+      while (M <= High(Compositions)) and (Compositions[M].First = Codes[0]) do
+      begin
+        HighNext := High(Compositions[M].Next);
+        Result := 0;
+
+        if (HighNext < HighCodes) // enough characters in buffer to be tested
+          and (Compositions[M].Tag in Tags) then
         begin
           for I := 0 to HighNext do
             if Compositions[M].Next[I] = Codes[I + 1] then
@@ -6216,6 +6320,66 @@ begin
   SetLength(Result, OutPos);
 end;
 
+function WideCompose(const S: WideString; Tags: TCompatibilityFormattingTags): WideString;
+var
+  Buffer: array of UCS4;
+  LastInPos, InPos, OutPos, BufferSize, NbProcessed: SizeInt;
+  Composite: UCS4;
+begin
+  // Set an arbitrary length for the result. This is automatically done when checking
+  // for hangul composition.
+  Result := WideComposeHangul(S);
+
+  if Result = '' then
+    Exit;
+
+  if Compositions = nil then
+    LoadCompositionData;
+
+  LastInPos := Length(Result);
+  if LastInPos > MaxCompositionSize then
+    SetLength(Buffer, MaxCompositionSize)
+  else
+    SetLength(Buffer, LastInPos);
+
+  BufferSize := 0;
+  InPos := 0;
+  OutPos := 0;
+
+  while (InPos < LastInPos) or (BufferSize > 0) do
+  begin
+    // fill buffer from input
+
+    while BufferSize < Length(Buffer) do
+    begin
+      if InPos < LastInPos then
+      begin
+        Inc(InPos);
+        Buffer[BufferSize] := UCS4(Result[InPos]);
+        Inc(BufferSize);
+      end
+      else
+        SetLength(Buffer, BufferSize);
+    end;
+
+    if Length(Buffer) = 0 then
+      Break;
+
+    NbProcessed := UnicodeCompose(Buffer, Composite, Tags);
+    if NbProcessed = 0 then
+      Break;
+
+    if BufferSize > NbProcessed then
+      Move(Buffer[NbProcessed], Buffer[0], (BufferSize - NbProcessed) * SizeOf(UCS4));
+    Dec(BufferSize, NbProcessed);
+
+    Inc(OutPos);
+    Result[OutPos] := UCS2(Composite);
+  end;
+  // since we have likely shortened the source string we have to set the correct length on exit
+  SetLength(Result, OutPos);
+end;
+
 procedure FixCanonical(var S: WideString);
 // Examines S and reorders all combining marks in the string so that they are in canonical order.
 var
@@ -6252,7 +6416,7 @@ begin
   end;
 end;
 
-procedure GetDecompositions(Compatible: Boolean; Code: UCS4; var Buffer: TUCS4Array);
+procedure GetDecompositions(Compatible: Boolean; Code: UCS4; var Buffer: TUCS4Array); overload;
 // helper function to recursively decompose a code point
 var
   Decomp: TUCS4Array;
@@ -6263,6 +6427,26 @@ begin
   begin
     for I := 0 to High(Decomp) do
       GetDecompositions(Compatible, Decomp[I], Buffer);
+  end
+  else // if no decomp, append
+  begin
+    I := Length(Buffer);
+    SetLength(Buffer, I + 1);
+    Buffer[I] := Code;
+  end;
+end;
+
+procedure GetDecompositions(Tags: TCompatibilityFormattingTags; Code: UCS4; var Buffer: TUCS4Array); overload;
+// helper function to recursively decompose a code point
+var
+  Decomp: TUCS4Array;
+  I: SizeInt;
+begin
+  Decomp := UnicodeDecompose(Code, Tags);
+  if Assigned(Decomp) then
+  begin
+    for I := 0 to High(Decomp) do
+      GetDecompositions(Tags, Decomp[I], Buffer);
   end
   else // if no decomp, append
   begin
@@ -6286,6 +6470,31 @@ begin
   begin
     Decomp := nil;
     GetDecompositions(Compatible, UCS4(S[I]), Decomp);
+    if Decomp = nil then
+      Result := Result + S[I]
+    else
+      for J := 0 to High(Decomp) do
+        Result := Result + WideChar(Decomp[J]);
+  end;
+
+  // combining marks must be sorted according to their canonical combining class
+  FixCanonical(Result);
+end;
+
+function WideDecompose(const S: WideString; Tags: TCompatibilityFormattingTags): WideString;
+// returns a string with all characters of S but decomposed, e.g.  is returned as E^ etc.
+var
+  I, J: SizeInt;
+  Decomp: TUCS4Array;
+begin
+  Result := '';
+  Decomp := nil;
+
+  // iterate through each source code point
+  for I := 1 to Length(S) do
+  begin
+    Decomp := nil;
+    GetDecompositions(Tags, UCS4(S[I]), Decomp);
     if Decomp = nil then
       Result := Result + S[I]
     else
