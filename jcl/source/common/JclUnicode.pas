@@ -1808,8 +1808,7 @@ var
   // Note: there are two tables, one for canonical decompositions and the other one
   //       for compatibility decompositions.
   DecompositionsLoaded: Boolean;
-  CanonicalDecompositions,
-  CompatibleDecompositions: TDecompositionsArray;
+  Decompositions: TDecompositionsArray;
 
 procedure LoadDecompositionData;
 var
@@ -1834,44 +1833,23 @@ begin
 
           Assert((Code and not $40000000) < $1000000, LoadResString(@RsDecomposedUnicodeChar));
 
-          // if there is no high byte entry in the first stage table then create one
           First := (Code shr 16) and $FF;
           Second := (Code shr 8) and $FF;
           Third := Code and $FF;
 
-          // insert into the correct table depending on bit 30
-          // (if set then it is a compatibility decomposition)
-          if Code and $40000000 <> 0 then
-          begin
-            if CompatibleDecompositions[First] = nil then
-              SetLength(CompatibleDecompositions[First], 256);
-            if CompatibleDecompositions[First, Second] = nil then
-              SetLength(CompatibleDecompositions[First, Second], 256);
+          // if there is no high byte entry in the first stage table then create one
+          if Decompositions[First] = nil then
+            SetLength(Decompositions[First], 256);
+          if Decompositions[First, Second] = nil then
+            SetLength(Decompositions[First, Second], 256);
 
-            Size := Stream.ReadByte;
-            if Size > 0 then
-            begin
-              CompatibleDecompositions[First, Second, Third].Tag := TCompatibilityFormattingTag(Stream.ReadByte);
-              SetLength(CompatibleDecompositions[First, Second, Third].Leaves, Size);
-              for J := 0 to Size - 1 do
-                CompatibleDecompositions[First, Second, Third].Leaves[J] := StreamReadChar(Stream);
-            end;
-          end
-          else
+          Size := Stream.ReadByte;
+          if Size > 0 then
           begin
-            if CanonicalDecompositions[First] = nil then
-              SetLength(CanonicalDecompositions[First], 256);
-            if CanonicalDecompositions[First, Second] = nil then
-              SetLength(CanonicalDecompositions[First, Second], 256);
-
-            Size := Stream.ReadByte;
-            if Size > 0 then
-            begin
-              CanonicalDecompositions[First, Second, Third].Tag := TCompatibilityFormattingTag(Stream.ReadByte);
-              SetLength(CanonicalDecompositions[First, Second, Third].Leaves, Size);
-              for J := 0 to Size - 1 do
-                CanonicalDecompositions[First, Second, Third].Leaves[J] := StreamReadChar(Stream);
-            end;
+            Decompositions[First, Second, Third].Tag := TCompatibilityFormattingTag(Stream.ReadByte);
+            SetLength(Decompositions[First, Second, Third].Leaves, Size);
+            for J := 0 to Size - 1 do
+              Decompositions[First, Second, Third].Leaves[J] := StreamReadChar(Stream);
           end;
         end;
         Assert(Stream.Position = Stream.Size);
@@ -1921,31 +1899,13 @@ begin
     First := (Code shr 16) and $FF;
     Second := (Code shr 8) and $FF;
     Third := Code and $FF;
-    if Compatible then
-    begin
-      // Check first stage table whether there is a particular block and
-      // (if so) then whether there is a decomposition or not.
-      if (CompatibleDecompositions[First] = nil) or (CompatibleDecompositions[First, Second] = nil)
-        or (CompatibleDecompositions[First, Second, Third].Leaves = nil) then
-      begin
-        // if there is no compatibility decompositions try canonical
-        if (CanonicalDecompositions[First] = nil) or (CanonicalDecompositions[First, Second] = nil)
-          or (CanonicalDecompositions[First, Second, Third].Leaves = nil) then
-          Result := nil
-        else
-          Result := CanonicalDecompositions[First, Second, Third].Leaves;
-      end
-      else
-        Result := CompatibleDecompositions[First, Second, Third].Leaves;
-    end
+
+    if (Decompositions[First] <> nil) and (Decompositions[First, Second] <> nil)
+      and (Decompositions[First, Second, Third].Leaves <> nil)
+      and (Compatible or (Decompositions[First, Second, Third].Tag = cftCanonical)) then
+      Result := Decompositions[First, Second, Third].Leaves
     else
-    begin
-      if (CanonicalDecompositions[First] = nil) or (CanonicalDecompositions[First, Second] = nil)
-        or (CanonicalDecompositions[First, Second, Third].Leaves = nil) then
-        Result := nil
-      else
-        Result := CanonicalDecompositions[First, Second, Third].Leaves;
-    end;
+      Result := nil;
   end;
 end;
 
