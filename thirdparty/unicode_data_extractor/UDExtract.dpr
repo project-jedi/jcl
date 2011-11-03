@@ -1456,24 +1456,23 @@ begin
     // record how many case mapping entries we have
     WriteResourceCardinal(Length(CaseMapping));
     for I := 0 to High(CaseMapping) do
-      with CaseMapping[I] do
-      begin
-        // store every available case mapping, consider one-to-many mappings
-        // a) write actual code point
-        WriteResourceChar(Code);
-        // b) write lower case
-        WriteResourceByte(Length(Fold));
-        WriteResourceCharArray(Fold);
-        // c) write lower case
-        WriteResourceByte(Length(Lower));
-        WriteResourceCharArray(Lower);
-        // d) write title case
-        WriteResourceByte(Length(Title));
-        WriteResourceCharArray(Title);
-        // e) write upper case
-        WriteResourceByte(Length(Upper));
-        WriteResourceCharArray(Upper);
-      end;
+    begin
+      // store every available case mapping, consider one-to-many mappings
+      // a) write actual code point
+      WriteResourceChar(CaseMapping[I].Code);
+      // b) write lower case
+      WriteResourceByte(Length(CaseMapping[I].Fold));
+      WriteResourceCharArray(CaseMapping[I].Fold);
+      // c) write lower case
+      WriteResourceByte(Length(CaseMapping[I].Lower));
+      WriteResourceCharArray(CaseMapping[I].Lower);
+      // d) write title case
+      WriteResourceByte(Length(CaseMapping[I].Title));
+      WriteResourceCharArray(CaseMapping[I].Title);
+      // e) write upper case
+      WriteResourceByte(Length(CaseMapping[I].Upper));
+      WriteResourceCharArray(CaseMapping[I].Upper);
+    end;
     FlushResource;
     WriteTextLine('}');
     WriteTextLine;
@@ -1488,13 +1487,12 @@ begin
     // record how many decomposition entries we have
     WriteResourceCardinal(Length(Decompositions));
     for I := 0 to High(Decompositions) do
-      with Decompositions[I] do
-      begin
-        WriteResourceChar(Code);
-        WriteResourceByte(Length(Decompositions));
-        WriteResourceByte(Byte(Tag));
-        WriteResourceCharArray(Decompositions);
-      end;
+    begin
+      WriteResourceChar(Decompositions[I].Code);
+      WriteResourceByte(Length(Decompositions[I].Decompositions));
+      WriteResourceByte(Byte(Decompositions[I].Tag));
+      WriteResourceCharArray(Decompositions[I].Decompositions);
+    end;
     FlushResource;
     WriteTextLine('}');
     WriteTextLine;
@@ -1560,11 +1558,10 @@ begin
     // first, write the number of compositions
     WriteResourceCardinal(Length(Compositions));
     for I := 0 to High(Compositions) do
-      with Compositions[I] do
     begin
-      WriteResourceChar(Code);
-      WriteResourceByte(Length(Decompositions));
-      WriteResourceCharArray(Decompositions);
+      WriteResourceChar(Compositions[I].Code);
+      WriteResourceByte(Length(Compositions[I].Decompositions));
+      WriteResourceCharArray(Compositions[I].Decompositions);
     end;
     FlushResource;
     WriteTextLine('}');
