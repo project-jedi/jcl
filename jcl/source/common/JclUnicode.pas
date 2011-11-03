@@ -1180,8 +1180,8 @@ procedure StrSwapByteOrder(Str: PWideChar);
 // functions involving Delphi wide strings
 function WideAdjustLineBreaks(const S: WideString): WideString;
 function WideCharPos(const S: WideString; const Ch: WideChar; const Index: SizeInt): SizeInt;  //az
-function WideCompose(const S: WideString): WideString;
-function WideDecompose(const S: WideString; Compatible: Boolean): WideString;
+function WideCompose(const S: WideString; Compatible: Boolean = True): WideString;
+function WideDecompose(const S: WideString; Compatible: Boolean = True): WideString;
 function WideExtractQuotedStr(var Src: PWideChar; Quote: WideChar): WideString;
 function WideQuotedStr(const S: WideString; Quote: WideChar): WideString;
 function WideStringOfChar(C: WideChar; Count: SizeInt): WideString;
@@ -1216,8 +1216,9 @@ type
 
 // Low level character routines
 function UnicodeNumberLookup(Code: UCS4; var Number: TUcNumber): Boolean;
-function UnicodeCompose(const Codes: array of UCS4; out Composite: UCS4): Integer;
+function UnicodeCompose(const Codes: array of UCS4; out Composite: UCS4; Compatible: Boolean = True): Integer;
 function UnicodeCaseFold(Code: UCS4): TUCS4Array;
+function UnicodeDecompose(Code: UCS4; Compatible: Boolean = True): TUCS4Array;
 function UnicodeToUpper(Code: UCS4): TUCS4Array;
 function UnicodeToLower(Code: UCS4): TUCS4Array;
 function UnicodeToTitle(Code: UCS4): TUCS4Array;
@@ -2098,6 +2099,7 @@ type
   // Note: the source pair is packed into one 4 byte value to speed up search.
   TComposition = record
     Code: Cardinal;
+    Tag: TCompatibilityFormattingTag;
     First: Cardinal;
     Next: array of Cardinal;
   end;
@@ -2131,6 +2133,7 @@ begin
           if Size > MaxCompositionSize then
             MaxCompositionSize := Size;
           SetLength(Compositions[I].Next, Size - 1);
+          Compositions[I].Tag := TCompatibilityFormattingTag(Stream.ReadByte);
           Compositions[I].First := StreamReadChar(Stream);
           for J := 0 to Size - 2 do
             Compositions[I].Next[J] := StreamReadChar(Stream);
@@ -2145,7 +2148,7 @@ begin
   end;
 end;
 
-function UnicodeCompose(const Codes: array of UCS4; out Composite: UCS4): Integer;
+function UnicodeCompose(const Codes: array of UCS4; out Composite: UCS4; Compatible: Boolean): Integer;
 // Maps the sequence of Codes (up to MaxCompositionSize codes) to a composite
 // Result is the number of Codes that were composed (at least 1 if Codes is not empty)
 var
@@ -2189,7 +2192,8 @@ begin
         HighNext := High(Compositions[M].Next);
         Result := 0;
 
-        if HighNext < HighCodes then // enough characters in buffer to be tested
+        if (HighNext < HighCodes) // enough characters in buffer to be tested
+          and (Compatible or (Compositions[M].Tag = cftCanonical)) then
         begin
           for I := 0 to HighNext do
             if Compositions[M].Next[I] = Codes[I + 1] then
@@ -6152,7 +6156,7 @@ end;
 
 // Returns canonical composition of characters in S.
 
-function WideCompose(const S: WideString): WideString;
+function WideCompose(const S: WideString; Compatible: Boolean): WideString;
 var
   Buffer: array of UCS4;
   LastInPos, InPos, OutPos, BufferSize, NbProcessed: SizeInt;
@@ -6197,7 +6201,7 @@ begin
     if Length(Buffer) = 0 then
       Break;
 
-    NbProcessed := UnicodeCompose(Buffer, Composite);
+    NbProcessed := UnicodeCompose(Buffer, Composite, Compatible);
     if NbProcessed = 0 then
       Break;
 
@@ -6309,7 +6313,7 @@ begin
   else
   begin
     Temp := WideDecompose(S, Compatible);
-    Result := WideCompose(Temp);
+    Result := WideCompose(Temp, Compatible);
   end;
 end;
 

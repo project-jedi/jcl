@@ -1561,6 +1561,7 @@ begin
     begin
       WriteResourceChar(Compositions[I].Code);
       WriteResourceByte(Length(Compositions[I].Decompositions));
+      WriteResourceByte(Byte(Compositions[I].Tag));
       WriteResourceCharArray(Compositions[I].Decompositions);
     end;
     FlushResource;
