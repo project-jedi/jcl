@@ -545,8 +545,8 @@ type
     procedure SaveToFile(const FileName: TFileName; Encoding: TJclStringEncoding = seAuto; CodePage: Word = CP_ACP);
     procedure SaveToStream(Stream: TStream; Encoding: TJclStringEncoding = seAuto; CodePage: Word = CP_ACP);
     procedure SaveToStringStream(StringStream: TJclStringStream);
-    function SaveToString: string; overload;
-    function SaveToString(Encoding: TJclStringEncoding; CodePage: Word = CP_ACP): string; overload;
+    function SaveToString: string; 
+    function SaveToStringEncoding(Encoding: TJclStringEncoding; CodePage: Word = CP_ACP): string; 
     property Prolog: TJclSimpleXMLElemsProlog read FProlog write FProlog;
     property Root: TJclSimpleXMLElemClassic read FRoot write SetRoot;
     property XMLData: string read SaveToString write LoadFromString;
@@ -1351,10 +1351,10 @@ end;
 
 function TJclSimpleXML.SaveToString: string;
 begin
-  Result := SaveToString(seAuto, CP_ACP);
+  Result := SaveToStringEncoding(seAuto, CP_ACP);
 end;
 
-function TJclSimpleXML.SaveToString(Encoding: TJclStringEncoding; CodePage: Word): string;
+function TJclSimpleXML.SaveToStringEncoding(Encoding: TJclStringEncoding; CodePage: Word): string;
 var
   Stream: TStringStream;
 begin
