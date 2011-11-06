@@ -34,16 +34,24 @@ md "%JCLBUILTDIR%\bpl" 2>NUL >NUL
 del /Q /S "%JCLBUILTDIR%\*.*" 2>NUL >NUL
 
 :: == Compile the files
+SET JclLib=%JCLBUILTDIR%\lib\win32
+
 cd %JCLROOT%
-msbuild make.proj "/p:HppOutDir=%JCLBUILTDIR%\hpp" "/p:DcuOutDir=%JCLBUILTDIR%\lib" "/p:BplOutDir=%JCLBUILTDIR%\bpl"
+msbuild make.proj "/p:Platform=win32" "/p:HppOutDir=%JCLBUILTDIR%\hpp" "/p:DcuOutDir=%JCLBUILTDIR%\lib\win32" "/p:BplOutDir=%JCLBUILTDIR%\bpl"
 if ERRORLEVEL 1 goto Failed
+if not exist "%BDS%\bin\dcc64.exe" goto NoWin64
+msbuild make.proj "/p:Platform=win64" "/p:HppOutDir=%JCLBUILTDIR%\hpp64" "/p:DcuOutDir=%JCLBUILTDIR%\lib\win64" "/p:BplOutDir=%JCLBUILTDIR%\bpl\Win64"
+if ERRORLEVEL 1 goto Failed
+:: For 64bit we have to install both win32 and lib\win64
+SET JclLib=%JCLBUILTDIR%\lib
+:NoWin64
 cd %SETUPDIR%
 
 :: ==========================================================
 :: Compile Setup
 :: ==========================================================
 :Setup
-"%InnoSetupDir%\ISCC.exe" Install.iss /dCmdLineBuild "/dJclRoot=%JCLROOT%" "/dJclLib=%JCLBUILTDIR%\lib" "/dJclBpl=%JCLBUILTDIR%\bpl" "/dJclHpp="%JCLBUILTDIR%\hpp"
+"%InnoSetupDir%\ISCC.exe" Install.iss /dCmdLineBuild "/dJclRoot=%JCLROOT%" "/dJclLib=%JclLib%" "/dJclBpl=%JCLBUILTDIR%\bpl" "/dJclHpp="%JCLBUILTDIR%\hpp"
 if ERRORLEVEL 1 goto Failed
 
 

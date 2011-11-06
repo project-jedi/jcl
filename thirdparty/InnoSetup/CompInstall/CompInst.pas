@@ -110,16 +110,16 @@ begin
         begin
           VStr := IntToStr(Inst.VersionNumber);
           SetEnvironmentVariable(PChar('DELPHI' + VStr), PChar(Inst.RootDir));
-          SetEnvironmentVariable(PChar('DELPHI' + VStr + 'BPL'), PChar(Inst.BPLOutputPath));
-          SetEnvironmentVariable(PChar('DELPHI' + VStr + 'DCP'), PChar(Inst.DCPOutputPath));
+          SetEnvironmentVariable(PChar('DELPHI' + VStr + 'BPL'), PChar(Inst.BPLOutputPath[bpWin32]));
+          SetEnvironmentVariable(PChar('DELPHI' + VStr + 'DCP'), PChar(Inst.DCPOutputPath[bpWin32]));
           SetEnvironmentVariable(PChar('DELPHI' + VStr + 'RegKey'), PChar(ConfigDataLocation));
         end;
       brCppBuilder:
         begin
           VStr := IntToStr(Inst.VersionNumber);
           SetEnvironmentVariable(PChar('BCB' + VStr), PChar(Inst.RootDir));
-          SetEnvironmentVariable(PChar('BCB' + VStr + 'BPL'), PChar(Inst.BPLOutputPath));
-          SetEnvironmentVariable(PChar('BCB' + VStr + 'DCP'), PChar(Inst.DCPOutputPath));
+          SetEnvironmentVariable(PChar('BCB' + VStr + 'BPL'), PChar(Inst.BPLOutputPath[bpWin32]));
+          SetEnvironmentVariable(PChar('BCB' + VStr + 'DCP'), PChar(Inst.DCPOutputPath[bpWin32]));
           SetEnvironmentVariable(PChar('BCB' + VStr + 'RegKey'), PChar(ConfigDataLocation));
         end;
       brBorlandDevStudio:
@@ -131,15 +131,29 @@ begin
           if bpDelphi32 in Inst.Personalities then
           begin
             SetEnvironmentVariable(PChar('DELPHI' + VStr), PChar(Inst.RootDir));
-            SetEnvironmentVariable(PChar('DELPHI' + VStr + 'BPL'), PChar(Inst.BPLOutputPath));
-            SetEnvironmentVariable(PChar('DELPHI' + VStr + 'DCP'), PChar(Inst.DCPOutputPath));
+            SetEnvironmentVariable(PChar('DELPHI' + VStr + 'BPL'), PChar(Inst.BPLOutputPath[bpWin32]));
+            SetEnvironmentVariable(PChar('DELPHI' + VStr + 'DCP'), PChar(Inst.DCPOutputPath[bpWin32]));
             SetEnvironmentVariable(PChar('DELPHI' + VStr + 'RegKey'), PChar(ConfigDataLocation));
           end;
           if bpBCBuilder32 in Inst.Personalities then
           begin
             SetEnvironmentVariable(PChar('BCB' + VStr), PChar(Inst.RootDir));
-            SetEnvironmentVariable(PChar('BCB' + VStr + 'BPL'), PChar(Inst.BPLOutputPath));
-            SetEnvironmentVariable(PChar('BCB' + VStr + 'DCP'), PChar(Inst.DCPOutputPath));
+            SetEnvironmentVariable(PChar('BCB' + VStr + 'BPL'), PChar(Inst.BPLOutputPath[bpWin32]));
+            SetEnvironmentVariable(PChar('BCB' + VStr + 'DCP'), PChar(Inst.DCPOutputPath[bpWin32]));
+            SetEnvironmentVariable(PChar('BCB' + VStr + 'RegKey'), PChar(ConfigDataLocation));
+          end;
+          if bpDelphi64 in Inst.Personalities then
+          begin
+            SetEnvironmentVariable(PChar('DELPHI' + VStr), PChar(Inst.RootDir));
+            SetEnvironmentVariable(PChar('DELPHI' + VStr + 'BPL_x64'), PChar(Inst.BPLOutputPath[bpWin64]));
+            SetEnvironmentVariable(PChar('DELPHI' + VStr + 'DCP_x64'), PChar(Inst.DCPOutputPath[bpWin64]));
+            SetEnvironmentVariable(PChar('DELPHI' + VStr + 'RegKey'), PChar(ConfigDataLocation));
+          end;
+          if bpBCBuilder64 in Inst.Personalities then
+          begin
+            SetEnvironmentVariable(PChar('BCB' + VStr), PChar(Inst.RootDir));
+            SetEnvironmentVariable(PChar('BCB' + VStr + 'BPL_x64'), PChar(Inst.BPLOutputPath[bpWin64]));
+            SetEnvironmentVariable(PChar('BCB' + VStr + 'DCP_x64'), PChar(Inst.DCPOutputPath[bpWin64]));
             SetEnvironmentVariable(PChar('BCB' + VStr + 'RegKey'), PChar(ConfigDataLocation));
           end;
           SetEnvironmentVariable(PChar('BDSCOMMONDIR' + VStr), PChar(Inst.EnvironmentVariables.Values['BDSCOMMONDIR']));
@@ -254,35 +268,65 @@ end;
 
 { Search Paths }
 
+function ReplacePlatform(const Paths: string; BDSPlatform: TJclBDSPlatform): string;
+begin
+  case BDSPlatform of
+    bpWin32:
+      Result := StringReplace(Paths, '$(Platform)', 'Win32', [rfReplaceAll, rfIgnoreCase]);
+    bpWin64:
+      Result := StringReplace(Paths, '$(Platform)', 'Win64', [rfReplaceAll, rfIgnoreCase]);
+//    bpOSX32:
+//      Result := StringReplace(Paths, '$(Platform)', 'OSX32', [rfReplaceAll, rfIgnoreCase]);
+  else
+    Result := Paths;
+  end;
+end;
+
 function ChangeSearchPaths(Inst: TJclBorRADToolInstallation; Installing: Boolean;
   const SearchPaths, DebugPaths, BrowsePaths, IncludePaths: string): Integer;
+
+  procedure AddPaths(BDSPlatform: TJclBDSPlatform);
+  begin
+    Inst.AddToLibrarySearchPath(ReplacePlatform(SearchPaths, BDSPlatform), BDSPlatform);
+    Inst.AddToDebugDCUPath(ReplacePlatform(DebugPaths, BDSPlatform), BDSPlatform);
+    Inst.AddToLibraryBrowsingPath(ReplacePlatform(BrowsePaths, BDSPlatform), BDSPlatform);
+
+    if (Inst is TJclBDSInstallation) then
+    begin
+      TJclBDSInstallation(Inst).AddToCppLibraryPath(ReplacePlatform(SearchPaths, BDSPlatform), BDSPlatform); // for .lib and .bpi
+      TJclBDSInstallation(Inst).AddToCppIncludePath(ReplacePlatform(IncludePaths, BDSPlatform), BDSPlatform);
+      TJclBDSInstallation(Inst).AddToCppBrowsingPath(ReplacePlatform(BrowsePaths, BDSPlatform), BDSPlatform);
+    end;
+  end;
+
+  procedure RemovePaths(BDSPlatform: TJclBDSPlatform);
+  begin
+    Inst.RemoveFromLibrarySearchPath(ReplacePlatform(SearchPaths, BDSPlatform), BDSPlatform);
+    Inst.RemoveFromDebugDCUPath(ReplacePlatform(DebugPaths, BDSPlatform), BDSPlatform);
+    Inst.RemoveFromLibraryBrowsingPath(ReplacePlatform(BrowsePaths, BDSPlatform), BDSPlatform);
+    if Inst is TJclBDSInstallation then
+    begin
+      TJclBDSInstallation(Inst).RemoveFromCppLibraryPath(ReplacePlatform(SearchPaths, BDSPlatform), BDSPlatform); // for .lib and .bpi
+      TJclBDSInstallation(Inst).RemoveFromCppIncludePath(ReplacePlatform(IncludePaths, BDSPlatform), BDSPlatform);
+      TJclBDSInstallation(Inst).RemoveFromCppBrowsingPath(ReplacePlatform(BrowsePaths, BDSPlatform), BDSPlatform);
+    end;
+  end;
+
 begin
   Result := 0;
   if Inst <> nil then
   begin
     if Installing then
     begin
-      Inst.AddToLibrarySearchPath(SearchPaths);
-      Inst.AddToDebugDCUPath(DebugPaths);
-      Inst.AddToLibraryBrowsingPath(BrowsePaths);
-      if Inst is TJclBDSInstallation then
-      begin
-        TJclBDSInstallation(Inst).AddToCppBrowsingPath(BrowsePaths);
-        TJclBDSInstallation(Inst).AddToCppIncludePath(IncludePaths);
-        TJclBDSInstallation(Inst).AddToCppLibraryPath(SearchPaths); // for .lib and .bpi
-      end;
+      AddPaths(bpWin32);
+      if [bpDelphi64, bpBCBuilder64] * Inst.Personalities <> [] then
+        AddPaths(bpWin64);
     end
     else
     begin
-      Inst.RemoveFromLibrarySearchPath(SearchPaths);
-      Inst.RemoveFromDebugDCUPath(DebugPaths);
-      Inst.RemoveFromLibraryBrowsingPath(BrowsePaths);
-      if Inst is TJclBDSInstallation then
-      begin
-        TJclBDSInstallation(Inst).RemoveFromCppBrowsingPath(BrowsePaths);
-        TJclBDSInstallation(Inst).RemoveFromCppIncludePath(IncludePaths);
-        TJclBDSInstallation(Inst).RemoveFromCppLibraryPath(SearchPaths); // for .lib and .bpi
-      end;
+      RemovePaths(bpWin32);
+      if [bpDelphi64, bpBCBuilder64] * Inst.Personalities <> [] then
+        RemovePaths(bpWin64);
     end;
     Result := 1;
   end;
