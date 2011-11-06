@@ -1,5 +1,5 @@
 [Files]
-Source: CompInstall.dll; DestDir: {app};
+Source: CompInstall.dll; DestDir: {app}; Flags: solidbreak
 
 [Code]
 type
