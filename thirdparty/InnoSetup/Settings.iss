@@ -1,2 +1,2 @@
 #define Include_Delphi16
-#define JclVersionStr "2.3.1.4197"
+#define JclVersionStr "2.4.0.4198"
