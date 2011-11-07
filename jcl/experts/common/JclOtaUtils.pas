@@ -1873,6 +1873,11 @@ end;
 {$ENDIF BDS7_UP}
 
 {$IFDEF BDS}
+function JclTitleVersion: string;
+begin
+  Result := Format(LoadResString(@RsAboutTitle), [JclVersionMajor, JclVersionMinor, JclVersionRelease, JclVersionBuild]);
+end;
+
 var
   AboutBoxServices: IOTAAboutBoxServices = nil;
   AboutBoxIndex: Integer = -1;
@@ -1890,7 +1895,7 @@ begin
     ProductImage := LoadBitmap(FindResourceHInstance(HInstance), 'JCLSPLASH');
     if ProductImage = 0 then
       raise EJclExpertException.CreateRes(@RsENoBitmapResources);
-    AboutBoxIndex := AboutBoxServices.AddPluginInfo(LoadResString(@RsAboutTitle), LoadResString(@RsAboutDescription),
+    AboutBoxIndex := AboutBoxServices.AddPluginInfo(JclTitleVersion, LoadResString(@RsAboutDescription),
       ProductImage, False, LoadResString(@RsAboutLicenceStatus));
   end;
 end;
@@ -1914,7 +1919,7 @@ begin
     ProductImage := LoadBitmap(FindResourceHInstance(HInstance), 'JCLSPLASH');
     if ProductImage = 0 then
       raise EJclExpertException.CreateRes(@RsENoBitmapResources);
-    SplashScreenServices.AddPluginBitmap(LoadResString(@RsAboutDialogTitle), ProductImage,
+    SplashScreenServices.AddPluginBitmap(JclTitleVersion, ProductImage,
       False, LoadResString(@RsAboutLicenceStatus));
     SplashScreenInitialized := True;
   end;

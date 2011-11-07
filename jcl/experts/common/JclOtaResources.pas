@@ -60,7 +60,7 @@ resourcestring
   RsENoToolsMenu = 'Unable to get Tools menu';
 
   RsAboutDialogTitle = 'JEDI Code Library';
-  RsAboutTitle = 'JEDI Code Library';
+  RsAboutTitle = 'JEDI Code Library %d.%d.%d.%d';
   RsAboutDescription = 'JEDI Code Library http://jcl.delphi-jedi.org/' + NativeLineBreak +
                        'The JCL is a member of the JEDI Project http://www.delphi-jedi.org' + NativeLineBreak +
                        'Covered under the Mozilla Public License v1.1 (MPL 1.1)' + NativeLineBreak +
