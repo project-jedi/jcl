@@ -31,6 +31,7 @@ function GetDisplayFileSize($filename)
  http-equiv="content-type">
   <title>Daily packages</title>
   <link rel="STYLESHEET" type="text/css" href="styles/default.css">
+  <link rel="shortcut icon" href="/JEDI.ico" />
 </head>
 <body>
 <h1>JCL Daily packages
