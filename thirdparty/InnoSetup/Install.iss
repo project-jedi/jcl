@@ -194,8 +194,8 @@ Source: {#JclHpp15}\*; DestDir: "{app}\include\d15"; Components: "IDE\Delphi15";
 #ifdef Include_Delphi16
 ; SolidBreak;
 Source: {#JclLib16}\*; DestDir: "{app}\lib\d16"; Excludes: ".svn,__history,*.txt,*.hpp"; Components: "IDE\Delphi16"; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs solidbreak
-Source: {#JclBpl16}\*; DestDir: "{code:GetDelphiBplDir|16}"; Components: "IDE\Delphi16"; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs
-Source: {#JclBpl16}\Win64\*; DestDir: "{code:GetDelphiBplDir|16}\Win64"; Components: "IDE\Delphi16"; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs
+Source: {#JclBpl16}\*; DestDir: "{code:GetDelphiBplDir|16}"; Components: "IDE\Delphi16"; Flags: ignoreversion sortfilesbyextension
+Source: {#JclBpl16}\Win64\*; DestDir: "{code:GetDelphiBplDir|16}\Win64"; Components: "IDE\Delphi16"; Flags: ignoreversion sortfilesbyextension
 Source: {#JclHpp16}\*; DestDir: "{app}\include\d16"; Components: "IDE\Delphi16"; Flags: ignoreversion sortfilesbyextension
 #endif
 
