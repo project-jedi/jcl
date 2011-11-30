@@ -163,6 +163,7 @@ type
     FSilent: Boolean;
     FRuntimeInstallation: Boolean;
     FProfilesTargets: TObjectList;
+    FInstallSuccess: Boolean;
     procedure AddDemo(const Directory: string; const FileInfo: TSearchRec);
     procedure AddDemos(const Directory: string);
     function GetDemoList: TStringList;
@@ -214,6 +215,7 @@ type
     property LogFileName: string read FLogFileName;
     property Silent: Boolean read FSilent write FSilent;
     property RuntimeInstallation: Boolean read FRuntimeInstallation; // false for C#Builder 1 and Delphi 8 targets
+    property InstallSuccess: Boolean read FInstallSuccess; // True if Install has been called and returned True
 
     property IsProfileEnabled[Index: Integer]: Boolean read GetIsProfileEnabled;
     property ProfileTargets[Index: Integer]: TJclBorRADToolInstallation read GetProfilesTarget;
@@ -356,6 +358,7 @@ uses
   JclShell,
   {$ENDIF MSWINDOWS}
   JclFileUtils, JclStrings,
+  JclSimpleXML, JclStreams,
   JclCompilerUtils,
   JclContainerIntf,
   JclPreProcessorParser,
@@ -1982,6 +1985,8 @@ var
   Index: Integer;
   ATarget: TJclBorRADToolInstallation;
 begin
+  Result := False;
+  FInstallSuccess := False;
   FLogLines.OpenLog;
   AProfilesManager := InstallCore.ProfilesManager;
   try
@@ -2030,6 +2035,7 @@ begin
 
     FLogLines.CloseLog;
   finally
+    FInstallSuccess := Result;
     Target.OutputCallback := nil;
     WriteLog('');
     if Assigned(GUIPage) then
@@ -3393,6 +3399,8 @@ var
   I: Integer;
   KeepSettings: Boolean;
   AInstallation: TJclInstallation;
+  XML: TJclSimpleXML;
+  AInstallationElem: TJclSimpleXMLElem;
 begin
   KeepSettings := True;
 
@@ -3450,9 +3458,32 @@ begin
         AInstallation.RemoveSettings;
       AInstallation.Uninstall(False);
       Result := AInstallation.Install;
-      if not Result and not GUI.ContinueOnTargetError then
+      if not Result and (not Assigned(GUI) or not GUI.ContinueOnTargetError) then
         Break;
       Inc(FNbInstalled);
+    end;
+  end;
+
+  if Assigned(GUI) and (GUI.XMLResultFileName <> '') then
+  begin
+    XML := TJclSimpleXML.Create;
+    try
+      XML.Options := [sxoAutoCreate, sxoAutoIndent, sxoAutoEncodeValue, sxoAutoEncodeEntity];
+      XML.Root.Name := 'JclInstall';
+      for I := 0 to TargetInstallCount - 1 do
+      begin
+        AInstallation := TargetInstalls[I];
+        AInstallationElem := XML.Root.Items.Add('Installation');
+
+        AInstallationElem.Properties.Add('TargetName', AInstallation.TargetName);
+        AInstallationElem.Properties.Add('Enabled', AInstallation.Enabled);
+        AInstallationElem.Properties.Add('InstallAttempted', I <= FNbInstalled);
+        AInstallationElem.Properties.Add('InstallSuccess', AInstallation.InstallSuccess);
+        AInstallationElem.Properties.Add('LogFileName', AInstallation.LogFileName);
+      end;
+      XML.SaveToFile(GUI.XMLResultFileName, JclStreams.seUTF8);
+    finally
+      XML.Free;
     end;
   end;
 

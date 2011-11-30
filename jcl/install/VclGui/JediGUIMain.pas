@@ -74,6 +74,7 @@ type
     FAutoInstall: Boolean;
     FAutoUninstall: Boolean;
     FContinueOnTargetError: Boolean;
+    FXMLResultFileName: string;
     procedure HandleException(Sender: TObject; E: Exception);
     procedure SetFrameIcon(Sender: TObject; const FileName: string);
     procedure WMAfterShow(var Message: TMessage); Message WM_AFTERSHOW;
@@ -110,6 +111,8 @@ type
     procedure SetAutoUninstall(Value: Boolean);
     function GetContinueOnTargetError: Boolean;
     procedure SetContinueOnTargetError(Value: Boolean);
+    function GetXMLResultFileName: string;
+    procedure SetXMLResultFileName(const Value: string);
     procedure Execute;
   end;
 
@@ -403,6 +406,11 @@ begin
   Result := StatusLabel.Caption;
 end;
 
+function TMainForm.GetXMLResultFileName: string;
+begin
+  Result := FXMLResultFileName;
+end;
+
 procedure TMainForm.SetStatus(const Value: string);
 begin
   if Value = '' then
@@ -417,6 +425,11 @@ begin
     StatusLabel.Visible := True;
   end;
   Application.ProcessMessages;  //Update;
+end;
+
+procedure TMainForm.SetXMLResultFileName(const Value: string);
+begin
+  FXMLResultFileName := Value;
 end;
 
 function TMainForm.GetAutoAcceptDialogs: TDialogTypes;
