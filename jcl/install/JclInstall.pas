@@ -3404,7 +3404,7 @@ begin
     Exit;
   end;
 
-  if Assigned(LicensePage) and not LicensePage.Options[0] then
+  if Assigned(LicensePage) and not LicensePage.Options[0] and not GUI.AutoAcceptMPL then
   begin
     if Assigned(GUI) then
       GUI.Dialog(LoadResString(@RsMissingLicenseAgreement), dtError, [drCancel]);

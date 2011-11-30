@@ -184,6 +184,8 @@ type
     procedure SetProgress(Value: Integer);
     function GetAutoAcceptDialogs: TDialogTypes;
     procedure SetAutoAcceptDialogs(Value: TDialogTypes);
+    function GetAutoAcceptMPL: Boolean;
+    procedure SetAutoAcceptMPL(Value: Boolean);
     function GetAutoCloseOnFailure: Boolean;
     procedure SetAutoCloseOnFailure(Value: Boolean);
     function GetAutoCloseOnSuccess: Boolean;
@@ -195,6 +197,7 @@ type
     procedure Execute;
 
     property AutoAcceptDialogs: TDialogTypes read GetAutoAcceptDialogs write SetAutoAcceptDialogs;
+    property AutoAcceptMPL: Boolean read GetAutoAcceptMPL write SetAutoAcceptMPL;
     property AutoCloseOnFailure: Boolean read GetAutoCloseOnFailure write SetAutoCloseOnFailure;
     property AutoCloseOnSuccess: Boolean read GetAutoCloseOnSuccess write SetAutoCloseOnSuccess;
     property AutoInstall: Boolean read GetAutoInstall write SetAutoInstall;
@@ -396,6 +399,7 @@ begin
     if ParamPos('AcceptErrors') >= 1 then
       Include(AutoAcceptDialogs, dtError);
     FInstallGUI.AutoAcceptDialogs := AutoAcceptDialogs;
+    FInstallGUI.AutoAcceptMPL := ParamPos('AutoAcceptMPL') >= 1; 
     FInstallGUI.AutoCloseOnFailure := ParamPos('CloseOnFailure') >= 1;
     FInstallGUI.AutoCloseOnSuccess := ParamPos('CloseOnSuccess') >= 1;
     FInstallGUI.AutoInstall := ParamPos('Install') >= 1;

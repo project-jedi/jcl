@@ -68,6 +68,7 @@ type
   protected
     FPages: IJclIntfList;
     FAutoAcceptDialogs: TDialogTypes;
+    FAutoAcceptMPL: Boolean;
     FAutoCloseOnFailure: Boolean;
     FAutoCloseOnSuccess: Boolean;
     FAutoInstall: Boolean;
@@ -96,6 +97,8 @@ type
     procedure SetProgress(Value: Integer);
     function GetAutoAcceptDialogs: TDialogTypes;
     procedure SetAutoAcceptDialogs(Value: TDialogTypes);
+    function GetAutoAcceptMPL: Boolean;
+    procedure SetAutoAcceptMPL(Value: Boolean);
     function GetAutoCloseOnFailure: Boolean;
     procedure SetAutoCloseOnFailure(Value: Boolean);
     function GetAutoCloseOnSuccess: Boolean;
@@ -418,6 +421,11 @@ begin
   Result := FAutoAcceptDialogs;
 end;
 
+function TMainForm.GetAutoAcceptMPL: Boolean;
+begin
+  Result := FAutoAcceptMPL;
+end;
+
 function TMainForm.GetAutoCloseOnFailure: Boolean;
 begin
   Result := FAutoCloseOnFailure;
@@ -446,6 +454,11 @@ end;
 procedure TMainForm.SetAutoAcceptDialogs(Value: TDialogTypes);
 begin
   FAutoAcceptDialogs := Value;
+end;
+
+procedure TMainForm.SetAutoAcceptMPL(Value: Boolean);
+begin
+  FAutoAcceptMPL := Value;
 end;
 
 procedure TMainForm.SetAutoCloseOnFailure(Value: Boolean);
