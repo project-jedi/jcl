@@ -13,12 +13,12 @@ if ERRORLEVEL 1 goto FailedCompile
 echo.
 echo Launching JCL installer...
 
-start ..\bin\JediInstaller.exe %2 %3 %4 %5 %6 %7 %8 %9
+start ..\bin\JediInstaller.exe %*
 if ERRORLEVEL 1 goto FailStart
 goto FINI
 
 :FailStart
-..\bin\JediInstaller.exe %2 %3 %4 %5 %6 %7 %8 %9
+..\bin\JediInstaller.exe %*
 goto FINI
 
 :FailedCompile
