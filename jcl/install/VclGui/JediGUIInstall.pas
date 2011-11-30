@@ -68,6 +68,7 @@ type
     FInstalling: Boolean;
     FOnSetIcon: TSetIconEvent;
     FFormCompile: TFormCompile;
+    FInstallGUI: IJediInstallGUI;
     function GetFormCompile: TFormCompile;
     function GetNodeChecked(Node: TTreeNode): Boolean;
     function IsAutoChecked(Node: TTreeNode): Boolean;
@@ -82,7 +83,7 @@ type
     function GetNode(Id: Integer): TTreeNode;
     procedure UpdateImageIndex(N: TTreeNode);
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(AOwner: TComponent; AInstallGUI: IJediInstallGUI); reintroduce;
     destructor Destroy; override;
     // IJediPage
     function GetCaption: string;
@@ -156,12 +157,13 @@ type
 
   PDirectoryRec = ^TDirectoryRec;
 
-constructor TInstallFrame.Create(AOwner: TComponent);
+constructor TInstallFrame.Create(AOwner: TComponent; AInstallGUI: IJediInstallGUI);
 begin
   inherited Create(AOwner);
 
   FNodeData := TList.Create;
   FDirectories := TList.Create;
+  FInstallGUI := AInstallGUI;
 end;
 
 destructor TInstallFrame.Destroy;
@@ -426,7 +428,7 @@ function TInstallFrame.GetFormCompile: TFormCompile;
 begin
   if not Assigned(FFormCompile) then
   begin
-    FFormCompile := TFormCompile.Create(Self);
+    FFormCompile := TFormCompile.Create(Self, FInstallGUI);
     SetWindowLong(FFormCompile.Handle, GWL_HWNDPARENT, Handle);
     FFormCompile.Init(Caption, True);
     FFormCompile.Show;

@@ -32,6 +32,7 @@ unit FrmCompile;
 interface
 
 uses
+  JediInstall,
   Windows, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls;
 
 type
@@ -86,8 +87,11 @@ type
     FCurFilename: string;
     FCompileMessages: ICompileMessages;
     FAutoClearCompileMessages: Boolean;
+    FInstallGUI: IJediInstallGUI;
     procedure SetCurrentLine(Line: Cardinal);
   public
+    constructor Create(AOwner: TComponent; AInstallGUI: IJediInstallGUI); reintroduce;
+
     procedure Init(const ProjectName: string; Clear: Boolean = True);
     procedure Compiling(const Filename: string);
     procedure Linking(const Filename: string);
@@ -175,6 +179,14 @@ begin
   end;
 end;
 
+constructor TFormCompile.Create(AOwner: TComponent;
+  AInstallGUI: IJediInstallGUI);
+begin
+  inherited Create(AOwner);
+
+  FInstallGUI := AInstallGUI;
+end;
+
 procedure TFormCompile.Linking(const Filename: string);
 begin
   FTotalLines := FTotalLines + FCurrentLine;
@@ -208,7 +220,7 @@ begin
   else
     LblStatus.Caption := LoadResString(@RsGUICompiled);
   BtnOk.Enabled := ErrorReason <> '';
-  if ErrorReason <> '' then
+  if (ErrorReason <> '') and not (dtError in FInstallGUI.AutoAcceptDialogs) then
   begin
     Hide;
     ShowModal;

@@ -362,7 +362,7 @@ begin
   ATabSheet.PageControl := ProductsPageControl;
   ATabSheet.ImageIndex := -1;
 
-  AInstallFrame := TInstallFrame.Create(Self);
+  AInstallFrame := TInstallFrame.Create(Self, Self);
   AInstallFrame.Parent := ATabSheet;
   AInstallFrame.Align := alClient;
   AInstallFrame.TreeView.Images := ImageList;
