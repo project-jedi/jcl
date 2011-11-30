@@ -3450,7 +3450,7 @@ begin
         AInstallation.RemoveSettings;
       AInstallation.Uninstall(False);
       Result := AInstallation.Install;
-      if not Result then
+      if not Result and not GUI.ContinueOnTargetError then
         Break;
       Inc(FNbInstalled);
     end;

@@ -73,6 +73,7 @@ type
     FAutoCloseOnSuccess: Boolean;
     FAutoInstall: Boolean;
     FAutoUninstall: Boolean;
+    FContinueOnTargetError: Boolean;
     procedure HandleException(Sender: TObject; E: Exception);
     procedure SetFrameIcon(Sender: TObject; const FileName: string);
     procedure WMAfterShow(var Message: TMessage); Message WM_AFTERSHOW;
@@ -107,6 +108,8 @@ type
     procedure SetAutoInstall(Value: Boolean);
     function GetAutoUninstall: Boolean;
     procedure SetAutoUninstall(Value: Boolean);
+    function GetContinueOnTargetError: Boolean;
+    procedure SetContinueOnTargetError(Value: Boolean);
     procedure Execute;
   end;
 
@@ -451,6 +454,11 @@ begin
   Result := Caption;
 end;
 
+function TMainForm.GetContinueOnTargetError: Boolean;
+begin
+  Result := FContinueOnTargetError;
+end;
+
 procedure TMainForm.SetAutoAcceptDialogs(Value: TDialogTypes);
 begin
   FAutoAcceptDialogs := Value;
@@ -484,6 +492,11 @@ end;
 procedure TMainForm.SetCaption(const Value: string);
 begin
   Caption := Value;
+end;
+
+procedure TMainForm.SetContinueOnTargetError(Value: Boolean);
+begin
+  FContinueOnTargetError := Value;
 end;
 
 function TMainForm.GetProgress: Integer;

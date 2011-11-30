@@ -194,6 +194,8 @@ type
     procedure SetAutoInstall(Value: Boolean);
     function GetAutoUninstall: Boolean;
     procedure SetAutoUninstall(Value: Boolean);
+    function GetContinueOnTargetError: Boolean;
+    procedure SetContinueOnTargetError(Value: Boolean);
     procedure Execute;
 
     property AutoAcceptDialogs: TDialogTypes read GetAutoAcceptDialogs write SetAutoAcceptDialogs;
@@ -202,6 +204,7 @@ type
     property AutoCloseOnSuccess: Boolean read GetAutoCloseOnSuccess write SetAutoCloseOnSuccess;
     property AutoInstall: Boolean read GetAutoInstall write SetAutoInstall;
     property AutoUninstall: Boolean read GetAutoUninstall write SetAutoUninstall;
+    property ContinueOnTargetError: Boolean read GetContinueOnTargetError write SetContinueOnTargetError; 
     property PageCount: Integer read GetPageCount;
     property Pages[Index: Integer]: IJediPage read GetPage;
     property Status: string read GetStatus write SetStatus;
@@ -404,6 +407,7 @@ begin
     FInstallGUI.AutoCloseOnSuccess := ParamPos('CloseOnSuccess') >= 1;
     FInstallGUI.AutoInstall := ParamPos('Install') >= 1;
     FInstallGUI.AutoUninstall := ParamPos('Uninstall') >= 1;
+    FInstallGUI.ContinueOnTargetError := ParamPos('ContinueOnTargetError') >= 1;
   end;
   Result := FInstallGUI;
 end;
