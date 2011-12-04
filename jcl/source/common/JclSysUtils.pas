@@ -243,7 +243,7 @@ type
 procedure SortDynArray(const ArrayPtr: Pointer; ElementSize: Cardinal; SortFunc: TDynArraySortCompare);
 // Usage: SortDynArray(Array, SizeOf(Array[0]), SortFunction);
 function SearchDynArray(const ArrayPtr: Pointer; ElementSize: Cardinal; SortFunc: TDynArraySortCompare;
-  ValuePtr: Pointer; Nearest: Boolean = False): Integer;
+  ValuePtr: Pointer; Nearest: Boolean = False): SizeInt;
 // Usage: SearchDynArray(Array, SizeOf(Array[0]), SortFunction, @SearchedValue);
 
 { Various compare functions for basic types }
@@ -1433,14 +1433,14 @@ procedure SortDynArray(const ArrayPtr: Pointer; ElementSize: Cardinal; SortFunc:
 var
   TempBuf: TDynByteArray;
 
-  function ArrayItemPointer(Item: Integer): Pointer;
+  function ArrayItemPointer(Item: SizeInt): Pointer;
   begin
-    Result := Pointer(TJclAddr(ArrayPtr) + (Cardinal(Item) * ElementSize));
+    Result := Pointer(TJclAddr(ArrayPtr) + (Item * SizeInt(ElementSize)));
   end;
 
-  procedure QuickSort(L, R: Integer);
+  procedure QuickSort(L, R: SizeInt);
   var
-    I, J, T: Integer;
+    I, J, T: SizeInt;
     P, IPtr, JPtr: Pointer;
   begin
     repeat
@@ -1499,26 +1499,26 @@ begin
   if ArrayPtr <> nil then
   begin
     SetLength(TempBuf, ElementSize);
-    QuickSort(0, PInteger(TJclAddr(ArrayPtr) - 4)^ - 1);
+    QuickSort(0, PSizeInt(TJclAddr(ArrayPtr) - SizeOf(SizeInt))^ - 1);
   end;
 end;
 
 function SearchDynArray(const ArrayPtr: Pointer; ElementSize: Cardinal; SortFunc: TDynArraySortCompare;
-  ValuePtr: Pointer; Nearest: Boolean): Integer;
+  ValuePtr: Pointer; Nearest: Boolean): SizeInt;
 var
-  L, H, I, C: Integer;
+  L, H, I, C: SizeInt;
   B: Boolean;
 begin
   Result := -1;
   if ArrayPtr <> nil then
   begin
     L := 0;
-    H := PInteger(TJclAddr(ArrayPtr) - 4)^ - 1;
+    H := PSizeInt(TJclAddr(ArrayPtr) - SizeOf(SizeInt))^ - 1;
     B := False;
     while L <= H do
     begin
       I := (L + H) shr 1;
-      C := SortFunc(Pointer(TJclAddr(ArrayPtr) + (Cardinal(I) * ElementSize)), ValuePtr);
+      C := SortFunc(Pointer(TJclAddr(ArrayPtr) + (I * SizeInt(ElementSize))), ValuePtr);
       if C < 0 then
         L := I + 1
       else
