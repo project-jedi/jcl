@@ -661,7 +661,9 @@ type
     procedure StoreToList(const StackInfo: TStackInfo);
     procedure TraceStackFrames;
     procedure TraceStackRaw;
+    {$IFDEF CPU32}
     procedure DelayStoreStack;
+    {$ENDIF CPU32}
     function ValidCallSite(CodeAddr: TJclAddr; out CallInstructionSize: Cardinal): Boolean;
     function ValidStackAddr(StackAddr: TJclAddr): Boolean;
     function GetCount: Integer;
@@ -5180,6 +5182,7 @@ begin
   end;
 end;
 
+{$IFDEF CPU32}
 procedure TJclStackInfoList.DelayStoreStack;
 var
   StackPtr: PJclAddr;
@@ -5211,6 +5214,7 @@ begin
   FFramePointer := Pointer(TJclAddr(FFramePointer) + FStackOffset);
   TopOfStack := TopOfStack + FStackOffset;
 end;
+{$ENDIF CPU32}
 
 // Validate that the code address is a valid code site
 //
