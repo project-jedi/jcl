@@ -1435,7 +1435,8 @@ var
 
   function ArrayItemPointer(Item: SizeInt): Pointer;
   begin
-    Result := Pointer(TJclAddr(ArrayPtr) + (Item * SizeInt(ElementSize)));
+    Assert(Item >= 0);
+    Result := Pointer(TJclAddr(ArrayPtr) + TJclAddr(Item * SizeInt(ElementSize)));
   end;
 
   procedure QuickSort(L, R: SizeInt);
@@ -1518,7 +1519,7 @@ begin
     while L <= H do
     begin
       I := (L + H) shr 1;
-      C := SortFunc(Pointer(TJclAddr(ArrayPtr) + (I * SizeInt(ElementSize))), ValuePtr);
+      C := SortFunc(Pointer(TJclAddr(ArrayPtr) + TJclAddr(I * SizeInt(ElementSize))), ValuePtr);
       if C < 0 then
         L := I + 1
       else
