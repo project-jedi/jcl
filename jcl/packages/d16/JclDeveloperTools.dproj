@@ -73,7 +73,7 @@
 			<GenDll>true</GenDll>
 			<GenPackage>true</GenPackage>
 			<DCC_ImageBase>$48380000</DCC_ImageBase>
-			<DCC_UsePackage>rtl;vcl;Jcl;JclContainers</DCC_UsePackage>
+			<DCC_UsePackage>rtl;vcl;Jcl;JclContainers;$(DCC_UsePackage)</DCC_UsePackage>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base_Win64)'!=''">
 			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
@@ -147,7 +147,7 @@
 			<VerInfo_Locale>1031</VerInfo_Locale>
 		</PropertyGroup>
 		<ItemGroup>
-			<DelphiCompile Include="JclDeveloperTools.dpk">
+			<DelphiCompile Include="$(MainSource)">
 				<MainSource>MainSource</MainSource>
 			</DelphiCompile>
 			<DCCReference Include="rtl.dcp"/>
@@ -234,7 +234,7 @@
 				</Delphi.Personality>
 				<Deployment/>
 				<Platforms>
-					<Platform value="Win64">%WIN64ENABLED%</Platform>
+					<Platform value="Win64">True</Platform>
 					<Platform value="OSX32">False</Platform>
 					<Platform value="Win32">True</Platform>
 				</Platforms>

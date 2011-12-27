@@ -84,7 +84,7 @@
 			<GenDll>true</GenDll>
 			<GenPackage>true</GenPackage>
 			<DCC_ImageBase>$%IMAGE_BASE%</DCC_ImageBase>
-			<DCC_UsePackage>%NOLINKPACKAGELIST%</DCC_UsePackage>
+			<DCC_UsePackage>%NOLINKPACKAGELIST%;$(DCC_UsePackage)</DCC_UsePackage>
 		</PropertyGroup>
 <%%% START PLATFORM WIN64 %%%>
 		<PropertyGroup Condition="'$(Base_Win64)'!=''">
@@ -164,7 +164,7 @@
 			<VerInfo_Locale>1031</VerInfo_Locale>
 		</PropertyGroup>
 		<ItemGroup>
-			<DelphiCompile Include="%NAME%%SOURCEEXTENSION%">
+			<DelphiCompile Include="$(MainSource)">
 				<MainSource>MainSource</MainSource>
 			</DelphiCompile>
 <%%% START REQUIRES %%%>
