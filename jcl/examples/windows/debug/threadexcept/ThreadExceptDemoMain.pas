@@ -1,5 +1,7 @@
 unit ThreadExceptDemoMain;
 
+{$I jcl.inc}
+
 interface
 
 uses
@@ -139,7 +141,11 @@ var
 begin
   DemoThread := TDemoThread.Create(True, ThreadNameEdit.Text);
   DemoThread.FreeOnTerminate := True;
+  {$IFDEF RTL230_UP}
+  DemoThread.Start;
+  {$ELSE ~RTL230_UP}
   DemoThread.Resume;
+  {$ENDIF ~RTL230_UP}
   ThreadNameEdit.Text := GetNewThreadName;
 end;
 

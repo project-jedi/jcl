@@ -1,14 +1,14 @@
 unit SHDocVw_TLB;
 
 // ************************************************************************ //
-// WARNING                                                                    
-// -------                                                                    
-// The types declared in this file were generated from data read from a       
-// Type Library. If this type library is explicitly or indirectly (via        
-// another type library referring to this type library) re-imported, or the   
-// 'Refresh' command of the Type Library Editor activated while editing the   
-// Type Library, the contents of this file will be regenerated and all        
-// manual modifications will be lost.                                         
+// WARNING
+// -------
+// The types declared in this file were generated from data read from a
+// Type Library. If this type library is explicitly or indirectly (via
+// another type library referring to this type library) re-imported, or the
+// 'Refresh' command of the Type Library Editor activated while editing the
+// Type Library, the contents of this file will be regenerated and all
+// manual modifications will be lost.
 // ************************************************************************ //
 
 // PASTLWTR : $Revision$
@@ -18,8 +18,8 @@ unit SHDocVw_TLB;
 // Type Lib: C:\WINDOWS\SYSTEM\SHDOCVW.DLL (1)
 // LIBID: {EAB22AC0-30C1-11CF-A7EB-0000C05BAE0B}
 // LCID: 0
-// Helpfile: 
-// DepndLst: 
+// Helpfile:
+// DepndLst:
 //   (1) v2.0 stdole, (C:\WINDOWS\SYSTEM\stdole2.tlb)
 //   (2) v4.0 StdVCL, (C:\WINDOWS\SYSTEM\stdvcl40.dll)
 // Errors:
@@ -1515,6 +1515,15 @@ implementation
 
 uses ComObj;
 
+function CreateEmptyParam: OleVariant;
+begin
+  {$IFDEF RTL230_UP}
+  Result := System.Variants.EmptyParam;
+  {$ELSE ~RTL230_UP}
+  Result := EmptyParam;
+  {$ENDIF ~RTL230_UP}
+end;
+
 procedure TWebBrowser_V1.InitControlData;
 const
   CEventDispIDs: array [0..16] of DWORD = (
@@ -1592,29 +1601,47 @@ begin
 end;
 
 procedure TWebBrowser_V1.Navigate(const URL: WideString);
+var
+  EmptyParam1, EmptyParam2, EmptyParam3, EmptyParam4: OleVariant;
 begin
-  DefaultInterface.Navigate(URL, EmptyParam, EmptyParam, EmptyParam, EmptyParam);
+  EmptyParam1 := CreateEmptyParam;
+  EmptyParam2 := CreateEmptyParam;
+  EmptyParam3 := CreateEmptyParam;
+  EmptyParam4 := CreateEmptyParam;
+  DefaultInterface.Navigate(URL, EmptyParam1, EmptyParam2, EmptyParam3, EmptyParam4);
 end;
 
 procedure TWebBrowser_V1.Navigate(const URL: WideString; var Flags: OleVariant);
+var
+  EmptyParam1, EmptyParam2, EmptyParam3: OleVariant;
 begin
-  DefaultInterface.Navigate(URL, Flags, EmptyParam, EmptyParam, EmptyParam);
+  EmptyParam1 := CreateEmptyParam;
+  EmptyParam2 := CreateEmptyParam;
+  EmptyParam3 := CreateEmptyParam;
+  DefaultInterface.Navigate(URL, Flags, EmptyParam1, EmptyParam2, EmptyParam3);
 end;
 
-procedure TWebBrowser_V1.Navigate(const URL: WideString; var Flags: OleVariant; 
+procedure TWebBrowser_V1.Navigate(const URL: WideString; var Flags: OleVariant;
                                   var TargetFrameName: OleVariant);
+var
+  EmptyParam1, EmptyParam2: OleVariant;
 begin
-  DefaultInterface.Navigate(URL, Flags, TargetFrameName, EmptyParam, EmptyParam);
+  EmptyParam1 := CreateEmptyParam;
+  EmptyParam2 := CreateEmptyParam;
+  DefaultInterface.Navigate(URL, Flags, TargetFrameName, EmptyParam1, EmptyParam2);
 end;
 
-procedure TWebBrowser_V1.Navigate(const URL: WideString; var Flags: OleVariant; 
+procedure TWebBrowser_V1.Navigate(const URL: WideString; var Flags: OleVariant;
                                   var TargetFrameName: OleVariant; var PostData: OleVariant);
+var
+  EmptyParam1: OleVariant;
 begin
-  DefaultInterface.Navigate(URL, Flags, TargetFrameName, PostData, EmptyParam);
+  EmptyParam1 := CreateEmptyParam;
+  DefaultInterface.Navigate(URL, Flags, TargetFrameName, PostData, EmptyParam1);
 end;
 
-procedure TWebBrowser_V1.Navigate(const URL: WideString; var Flags: OleVariant; 
-                                  var TargetFrameName: OleVariant; var PostData: OleVariant; 
+procedure TWebBrowser_V1.Navigate(const URL: WideString; var Flags: OleVariant;
+                                  var TargetFrameName: OleVariant; var PostData: OleVariant;
                                   var Headers: OleVariant);
 begin
   DefaultInterface.Navigate(URL, Flags, TargetFrameName, PostData, Headers);
@@ -1626,8 +1653,11 @@ begin
 end;
 
 procedure TWebBrowser_V1.Refresh2;
+var
+  EmptyParam1: OleVariant;
 begin
-  DefaultInterface.Refresh2(EmptyParam);
+  EmptyParam1 := CreateEmptyParam;
+  DefaultInterface.Refresh2(EmptyParam1);
 end;
 
 procedure TWebBrowser_V1.Refresh2(var Level: OleVariant);
@@ -1719,28 +1749,46 @@ begin
 end;
 
 procedure TWebBrowser.Navigate(const URL: WideString);
+var
+  EmptyParam1, EmptyParam2, EmptyParam3, EmptyParam4: OleVariant;
 begin
-  DefaultInterface.Navigate(URL, EmptyParam, EmptyParam, EmptyParam, EmptyParam);
+  EmptyParam1 := CreateEmptyParam;
+  EmptyParam2 := CreateEmptyParam;
+  EmptyParam3 := CreateEmptyParam;
+  EmptyParam4 := CreateEmptyParam;
+  DefaultInterface.Navigate(URL, EmptyParam1, EmptyParam2, EmptyParam3, EmptyParam4);
 end;
 
 procedure TWebBrowser.Navigate(const URL: WideString; var Flags: OleVariant);
+var
+  EmptyParam1, EmptyParam2, EmptyParam3: OleVariant;
 begin
-  DefaultInterface.Navigate(URL, Flags, EmptyParam, EmptyParam, EmptyParam);
+  EmptyParam1 := CreateEmptyParam;
+  EmptyParam2 := CreateEmptyParam;
+  EmptyParam3 := CreateEmptyParam;
+  DefaultInterface.Navigate(URL, Flags, EmptyParam1, EmptyParam2, EmptyParam3);
 end;
 
-procedure TWebBrowser.Navigate(const URL: WideString; var Flags: OleVariant; 
+procedure TWebBrowser.Navigate(const URL: WideString; var Flags: OleVariant;
                                var TargetFrameName: OleVariant);
+var
+  EmptyParam1, EmptyParam2: OleVariant;
 begin
-  DefaultInterface.Navigate(URL, Flags, TargetFrameName, EmptyParam, EmptyParam);
+  EmptyParam1 := CreateEmptyParam;
+  EmptyParam2 := CreateEmptyParam;
+  DefaultInterface.Navigate(URL, Flags, TargetFrameName, EmptyParam1, EmptyParam2);
 end;
 
-procedure TWebBrowser.Navigate(const URL: WideString; var Flags: OleVariant; 
+procedure TWebBrowser.Navigate(const URL: WideString; var Flags: OleVariant;
                                var TargetFrameName: OleVariant; var PostData: OleVariant);
+var
+  EmptyParam1: OleVariant;
 begin
-  DefaultInterface.Navigate(URL, Flags, TargetFrameName, PostData, EmptyParam);
+  EmptyParam1 := CreateEmptyParam;
+  DefaultInterface.Navigate(URL, Flags, TargetFrameName, PostData, EmptyParam1);
 end;
 
-procedure TWebBrowser.Navigate(const URL: WideString; var Flags: OleVariant; 
+procedure TWebBrowser.Navigate(const URL: WideString; var Flags: OleVariant;
                                var TargetFrameName: OleVariant; var PostData: OleVariant; 
                                var Headers: OleVariant);
 begin
@@ -1753,8 +1801,11 @@ begin
 end;
 
 procedure TWebBrowser.Refresh2;
+var
+  EmptyParam1: OleVariant;
 begin
-  DefaultInterface.Refresh2(EmptyParam);
+  EmptyParam1 := CreateEmptyParam;
+  DefaultInterface.Refresh2(EmptyParam1);
 end;
 
 procedure TWebBrowser.Refresh2(var Level: OleVariant);
@@ -1788,25 +1839,43 @@ begin
 end;
 
 procedure TWebBrowser.Navigate2(var URL: OleVariant);
+var
+  EmptyParam1, EmptyParam2, EmptyParam3, EmptyParam4: OleVariant;
 begin
-  DefaultInterface.Navigate2(URL, EmptyParam, EmptyParam, EmptyParam, EmptyParam);
+  EmptyParam1 := CreateEmptyParam;
+  EmptyParam2 := CreateEmptyParam;
+  EmptyParam3 := CreateEmptyParam;
+  EmptyParam4 := CreateEmptyParam;
+  DefaultInterface.Navigate2(URL, EmptyParam1, EmptyParam2, EmptyParam3, EmptyParam4);
 end;
 
 procedure TWebBrowser.Navigate2(var URL: OleVariant; var Flags: OleVariant);
+var
+  EmptyParam1, EmptyParam2, EmptyParam3: OleVariant;
 begin
-  DefaultInterface.Navigate2(URL, Flags, EmptyParam, EmptyParam, EmptyParam);
+  EmptyParam1 := CreateEmptyParam;
+  EmptyParam2 := CreateEmptyParam;
+  EmptyParam3 := CreateEmptyParam;
+  DefaultInterface.Navigate2(URL, Flags, EmptyParam1, EmptyParam2, EmptyParam3);
 end;
 
-procedure TWebBrowser.Navigate2(var URL: OleVariant; var Flags: OleVariant; 
+procedure TWebBrowser.Navigate2(var URL: OleVariant; var Flags: OleVariant;
                                 var TargetFrameName: OleVariant);
+var
+  EmptyParam1, EmptyParam2: OleVariant;
 begin
-  DefaultInterface.Navigate2(URL, Flags, TargetFrameName, EmptyParam, EmptyParam);
+  EmptyParam1 := CreateEmptyParam;
+  EmptyParam2 := CreateEmptyParam;
+  DefaultInterface.Navigate2(URL, Flags, TargetFrameName, EmptyParam1, EmptyParam2);
 end;
 
-procedure TWebBrowser.Navigate2(var URL: OleVariant; var Flags: OleVariant; 
+procedure TWebBrowser.Navigate2(var URL: OleVariant; var Flags: OleVariant;
                                 var TargetFrameName: OleVariant; var PostData: OleVariant);
+var
+  EmptyParam1: OleVariant;
 begin
-  DefaultInterface.Navigate2(URL, Flags, TargetFrameName, PostData, EmptyParam);
+  EmptyParam1 := CreateEmptyParam;
+  DefaultInterface.Navigate2(URL, Flags, TargetFrameName, PostData, EmptyParam1);
 end;
 
 procedure TWebBrowser.Navigate2(var URL: OleVariant; var Flags: OleVariant; 
@@ -1822,29 +1891,43 @@ begin
 end;
 
 procedure TWebBrowser.ExecWB(cmdID: OLECMDID; cmdexecopt: OLECMDEXECOPT);
+var
+  EmptyParam1, EmptyParam2: OleVariant;
 begin
-  DefaultInterface.ExecWB(cmdID, cmdexecopt, EmptyParam, EmptyParam);
+  EmptyParam1 := CreateEmptyParam;
+  EmptyParam2 := CreateEmptyParam;
+  DefaultInterface.ExecWB(cmdID, cmdexecopt, EmptyParam1, EmptyParam2);
 end;
 
 procedure TWebBrowser.ExecWB(cmdID: OLECMDID; cmdexecopt: OLECMDEXECOPT; var pvaIn: OleVariant);
+var
+  EmptyParam1: OleVariant;
 begin
-  DefaultInterface.ExecWB(cmdID, cmdexecopt, pvaIn, EmptyParam);
+  EmptyParam1 := CreateEmptyParam;
+  DefaultInterface.ExecWB(cmdID, cmdexecopt, pvaIn, EmptyParam1);
 end;
 
-procedure TWebBrowser.ExecWB(cmdID: OLECMDID; cmdexecopt: OLECMDEXECOPT; var pvaIn: OleVariant; 
+procedure TWebBrowser.ExecWB(cmdID: OLECMDID; cmdexecopt: OLECMDEXECOPT; var pvaIn: OleVariant;
                              var pvaOut: OleVariant);
 begin
   DefaultInterface.ExecWB(cmdID, cmdexecopt, pvaIn, pvaOut);
 end;
 
 procedure TWebBrowser.ShowBrowserBar(var pvaClsid: OleVariant);
+var
+  EmptyParam1, EmptyParam2: OleVariant;
 begin
-  DefaultInterface.ShowBrowserBar(pvaClsid, EmptyParam, EmptyParam);
+  EmptyParam1 := CreateEmptyParam;
+  EmptyParam2 := CreateEmptyParam;
+  DefaultInterface.ShowBrowserBar(pvaClsid, EmptyParam1, EmptyParam2);
 end;
 
 procedure TWebBrowser.ShowBrowserBar(var pvaClsid: OleVariant; var pvarShow: OleVariant);
+var
+  EmptyParam1: OleVariant;
 begin
-  DefaultInterface.ShowBrowserBar(pvaClsid, pvarShow, EmptyParam);
+  EmptyParam1 := CreateEmptyParam;
+  DefaultInterface.ShowBrowserBar(pvaClsid, pvarShow, EmptyParam1);
 end;
 
 procedure TWebBrowser.ShowBrowserBar(var pvaClsid: OleVariant; var pvarShow: OleVariant; 

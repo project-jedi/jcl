@@ -506,10 +506,10 @@ uses
 
 function IntfSimpleCompare(const Obj1, Obj2: IInterface): Integer;
 begin
-  if INT_PTR(Obj1) < INT_PTR(Obj2) then
+  if SizeInt(Obj1) < SizeInt(Obj2) then
     Result := -1
   else
-  if INT_PTR(Obj1) > INT_PTR(Obj2) then
+  if SizeInt(Obj1) > SizeInt(Obj2) then
     Result := 1
   else
     Result := 0;
@@ -648,10 +648,10 @@ end;
 
 function PtrSimpleCompare(Obj1, Obj2: Pointer): Integer;
 begin
-  if INT_PTR(Obj1) < INT_PTR(Obj2) then
+  if SizeInt(Obj1) < SizeInt(Obj2) then
     Result := -1
   else
-  if INT_PTR(Obj1) > INT_PTR(Obj2) then
+  if SizeInt(Obj1) > SizeInt(Obj2) then
     Result := 1
   else
     Result := 0;
@@ -659,10 +659,10 @@ end;
 
 function SimpleCompare(Obj1, Obj2: TObject): Integer;
 begin
-  if INT_PTR(Obj1) < INT_PTR(Obj2) then
+  if SizeInt(Obj1) < SizeInt(Obj2) then
     Result := -1
   else
-  if INT_PTR(Obj1) > INT_PTR(Obj2) then
+  if SizeInt(Obj1) > SizeInt(Obj2) then
     Result := 1
   else
     Result := 0;
@@ -670,10 +670,10 @@ end;
 
 function IntegerCompare(Obj1, Obj2: TObject): Integer;
 begin
-  if INT_PTR(Obj1) < INT_PTR(Obj2) then
+  if SizeInt(Obj1) < SizeInt(Obj2) then
     Result := -1
   else
-  if INT_PTR(Obj1) > INT_PTR(Obj2) then
+  if SizeInt(Obj1) > SizeInt(Obj2) then
     Result := 1
   else
     Result := 0;
@@ -681,7 +681,7 @@ end;
 
 function IntfSimpleEqualityCompare(const Obj1, Obj2: IInterface): Boolean;
 begin
-  Result := INT_PTR(Obj1) = INT_PTR(Obj2);
+  Result := SizeInt(Obj1) = SizeInt(Obj2);
 end;
 
 // default is case-sensitive
@@ -771,20 +771,21 @@ end;
 
 function PtrSimpleEqualityCompare(Obj1, Obj2: Pointer): Boolean;
 begin
-  Result := INT_PTR(Obj1) = INT_PTR(Obj2);
+  Result := SizeInt(Obj1) = SizeInt(Obj2);
 end;
 
 function SimpleEqualityCompare(Obj1, Obj2: TObject): Boolean;
 begin
-  Result := INT_PTR(Obj1) = INT_PTR(Obj2);
+  Result := SizeInt(Obj1) = SizeInt(Obj2);
 end;
 
 function IntfSimpleHashConvert(const AInterface: IInterface): Integer;
 begin
-  {$IFDEF DELPHI64_TEMPORARY}
-  {$MESSAGE WARN 'This and related functions high likely needs to be adjusted for 64-bit'}
-  {$ENDIF DELPHI64_TEMPORARY}
-  Result := INT_PTR(AInterface) and MaxInt;
+  {$IFDEF CPU32}
+  Result := SizeInt(AInterface) and MaxInt;
+  {$ELSE ~CPU32}
+  Result := (SizeInt(AInterface) xor (SizeInt(AInterface) shr 32)) and MaxInt;
+  {$ENDIF ~CPU32}
 end;
 
 // from "Fast Hashing of Variable-Length Text Strings", Peter K. Pearson, 1990
@@ -1064,17 +1065,17 @@ end;
 
 function Int64SimpleHashConvert(const AValue: Int64): Integer;
 begin
-  Result := AValue and MaxInt;
+  Result := (AValue xor (AValue shr 32)) and MaxInt;
 end;
 
 function PtrSimpleHashConvert(APtr: Pointer): Integer;
 begin
-  Result := Integer(APtr) and MaxInt;
+  Result := SizeInt(APtr) and MaxInt;
 end;
 
 function SimpleHashConvert(AObject: TObject): Integer;
 begin
-  Result := Integer(AObject) and MaxInt;
+  Result := SizeInt(AObject) and MaxInt;
 end;
 
 procedure FinalizeArrayBeforeMove(var List: TDynIInterfaceArray; FromIndex, ToIndex, Count: SizeInt); overload;

@@ -37,7 +37,7 @@ object MainForm: TMainForm
     Width = 697
     Height = 289
     Anchors = [akLeft, akTop, akRight, akBottom]
-    Font.Charset = EASTEUROPE_CHARSET
+    Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
     Font.Name = 'Courier New'
@@ -54,7 +54,7 @@ object MainForm: TMainForm
     Width = 537
     Height = 249
     Anchors = [akLeft, akTop, akRight]
-    Font.Charset = EASTEUROPE_CHARSET
+    Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
     Font.Name = 'Courier New'

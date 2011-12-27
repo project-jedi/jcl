@@ -115,13 +115,19 @@ end;
 procedure TFileSearchForm.AddFile(const Directory: string; const FileInfo: TSearchRec);
 var
   ListItem: TListItem;
+  FileDateTime: TDateTime;
 begin
   ListItem := FileList.Items.Add;
   with ListItem do
   begin
     Caption := Directory + FileInfo.Name;
     SubItems.Add(IntToStr(GetSizeOfFile(FileInfo)));
-    SubItems.Add(FormatDateTime(' yyyy-mm-dd hh:nn:ss ', FileDateToDateTime(FileInfo.Time)));
+    {$IFDEF RTL230_UP}
+    FileDateTime := FileInfo.TimeStamp;
+    {$ELSE ~RTL230_UP}
+    FileDateTime := FileDateToDateTime(FileInfo.Time);
+    {$ENDIF ~RTL230_UP}
+    SubItems.Add(FormatDateTime(' yyyy-mm-dd hh:nn:ss ', FileDateTime));
     SubItems.Add(FileAttributesStr(FileInfo));
     {$IFDEF UNIX}
     if (FileInfo.Attr and faSymLink) <> 0 then

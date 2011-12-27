@@ -136,7 +136,11 @@ begin
   FSearchThread.OnProcessFile := SearchProcessFile;
   UpdateButtons;
   ClearResults;
+  {$IFDEF RTL230_UP}
+  FSearchThread.Start;
+  {$ELSE ~RTL230_UP}
   FSearchThread.Resume;
+  {$ENDIF ~RTL230_UP}
 end;
 
 procedure TPeSearchChild.StopSearch;
