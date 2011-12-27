@@ -310,7 +310,7 @@ uses
   AnsiStrings,
   {$ENDIF HAS_UNIT_ANSISTRINGS}
   {$ENDIF ~HAS_UNITSCOPE}
-  JclFileUtils, JclLogic, JclRegistry, JclResources, JclSysInfo, JclSysUtils;
+  JclFileUtils, JclLogic, JclPeImage, JclRegistry, JclResources, JclSysInfo, JclSysUtils;
 
 const
   MapiDll = 'mapi32.dll';
@@ -403,29 +403,28 @@ begin
    end;
 end;
 
+function RestoreTaskWnds(Wnd: THandle; List: TJclTaskWindowsList): BOOL; stdcall;
+var
+  I: Integer;
+  EnableIt: Boolean;
+begin
+  if IsWindowVisible(Wnd) then
+  begin
+    EnableIt := False;
+    for I := 1 to Length(List) - 1 do
+      if List[I] = Wnd then
+      begin
+        EnableIt := True;
+        Break;
+      end;
+    EnableWindow(Wnd, EnableIt);
+  end;
+  Result := True;
+end;
+
 procedure RestoreTaskWindowsList(const List: TJclTaskWindowsList);
 var
   I: Integer;
-
-  function RestoreTaskWnds(Wnd: THandle; List: TJclTaskWindowsList): BOOL; stdcall;
-  var
-    I: Integer;
-    EnableIt: Boolean;
-  begin
-    if IsWindowVisible(Wnd) then
-    begin
-      EnableIt := False;
-      for I := 1 to Length(List) - 1 do
-        if List[I] = Wnd then
-        begin
-          EnableIt := True;
-          Break;
-        end;
-      EnableWindow(Wnd, EnableIt);
-    end;
-    Result := True;
-  end;
-
 begin
   if Length(List) > 0 then
   begin
@@ -436,21 +435,20 @@ begin
   end;
 end;
 
-function SaveTaskWindowsList: TJclTaskWindowsList;
-
-  function SaveTaskWnds(Wnd: THandle; var Data: TJclTaskWindowsList): BOOL; stdcall;
-  var
-    C: Integer;
+function SaveTaskWnds(Wnd: THandle; var Data: TJclTaskWindowsList): BOOL; stdcall;
+var
+  C: Integer;
+begin
+  if IsWindowVisible(Wnd) and IsWindowEnabled(Wnd) then
   begin
-    if IsWindowVisible(Wnd) and IsWindowEnabled(Wnd) then
-    begin
-      C := Length(Data);
-      SetLength(Data, C + 1);
-      Data[C] := Wnd;
-    end;
-    Result := True;
+    C := Length(Data);
+    SetLength(Data, C + 1);
+    Data[C] := Wnd;
   end;
+  Result := True;
+end;
 
+function SaveTaskWindowsList: TJclTaskWindowsList;
 begin
   SetLength(Result, 1);
   Result[0] := GetFocus;
@@ -584,6 +582,24 @@ var
   SL: TStringList;
   I: Integer;
 
+  function CheckPeImageTarget(const ClientPath: string): Boolean;
+  var
+    Img: TJclPeImage;
+  begin
+    Img := TJclPeImage.Create(True);
+    try
+      Img.FileName := ClientPath;
+      {$IFDEF CPU32}
+      Result := Img.Target = taWin32;
+      {$ENDIF CPU32}
+      {$IFDEF CPU64}
+      Result := Img.Target = taWin64;
+      {$ENDIF CPU64}
+    finally
+      Img.Free;
+    end;
+  end;
+
   function CheckValid(var Client: TJclMapiClient): Boolean;
   var
     I: Integer;
@@ -636,9 +652,14 @@ begin
           begin
             FClients[I].ClientName := RegReadStringDef(HKEY_LOCAL_MACHINE, ClientKey, '', '');
             FClients[I].ClientPath := RegReadStringDef(HKEY_LOCAL_MACHINE, ClientKey, 'DLLPathEx', '');
-            if FClients[I].ClientPath = '' then
-              FClients[I].ClientPath := RegReadStringDef(HKEY_LOCAL_MACHINE, ClientKey, 'DLLPath', '');
             ExpandEnvironmentVar(FClients[I].ClientPath);
+            if (FClients[I].ClientPath = '') or not CheckPeImageTarget(FClients[I].ClientPath) then
+            begin
+              FClients[I].ClientPath := RegReadStringDef(HKEY_LOCAL_MACHINE, ClientKey, 'DLLPath', '');
+              ExpandEnvironmentVar(FClients[I].ClientPath);
+              if not CheckPeImageTarget(FClients[I].ClientPath) then
+                FClients[I].ClientPath := '';
+            end;
             if CheckValid(FClients[I]) then
               FAnyClientInstalled := True;
           end;
