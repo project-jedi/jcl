@@ -770,8 +770,6 @@ type
 
 const
   {$IFDEF MSWINDOWS}
-  MSHelpSystemKeyName = '\SOFTWARE\Microsoft\Windows\Help';
-
   BCBKeyName          = '\SOFTWARE\Borland\C++Builder';
   BDSKeyName          = '\SOFTWARE\Borland\BDS';
   CDSKeyName          = '\SOFTWARE\CodeGear\BDS';
@@ -889,11 +887,6 @@ const
   {$ELSE BCB}
   BorRADToolRepositoryFileName = 'delphi32.dro';
   {$ENDIF BCB}
-  HelpContentFileName        = '%s\Help\%s%d.ohc';
-  HelpIndexFileName          = '%s\Help\%s%d.ohi';
-  HelpLinkFileName           = '%s\Help\%s%d.ohl';
-  HelpProjectFileName        = '%s\Help\%s%d.ohp';
-  HelpGidFileName            = '%s\Help\%s%d.gid';
   {$ENDIF MSWINDOWS}
 
   // MsBuild options
