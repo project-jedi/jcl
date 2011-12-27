@@ -654,27 +654,25 @@ begin
   FRunTimeInstallation := (Target.RadToolKind <> brBorlandDevStudio)
     or ((Target.VersionNumber >= 3) and (bpDelphi32 in Target.Personalities));
 
-  case TargetPlatform of
-    bpWin32: ;
-    //  begin
-    //    FTargetName := Format('%s %s', [FTargetName, Personality32Bit]);
-    //    LibDirMask := LibDirMask + '.x86';
-    //  end;
-    bpWin64:
-      begin
+  if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 9) then
+  begin
+    case TargetPlatform of
+      bpWin32:
+        FTargetName := Format('%s %s', [FTargetName, Personality32Bit]);
+      bpWin64:
         FTargetName := Format('%s %s', [FTargetName, Personality64Bit]);
-      end;
-    bpOSX32:
-      raise EJclBorRADException.CreateRes(@RsEOSXPlatformNotValid);
-  else
-    raise EJclBorRADException.CreateRes(@RsEPlatformNotValid);
+      bpOSX32:
+        raise EJclBorRADException.CreateRes(@RsEOSXPlatformNotValid);
+    else
+      raise EJclBorRADException.CreateRes(@RsEPlatformNotValid);
+    end;
   end;
 
   FLibReleaseDir := MakePath(Distribution.LibReleaseDirMask);
   FLibDebugDir := MakePath(Distribution.LibDebugDirMask);
   FJclDcpPath := PathAddSeparator(MakePath(Distribution.LibReleaseDirMask)); // packages are release
 
-  FDemoSectionName := Target.Name + ' demos';
+  FDemoSectionName := TargetName + ' demos';
   FLogFileName := Format('%sbin%s%s.log', [Distribution.JclPath, DirDelimiter, TargetName]);
   FLogLines := TJclSimpleLog.Create(FLogFileName);
 
@@ -2050,7 +2048,7 @@ var
 begin
   VersionStr := Target.VersionNumberStr;
   if (Target.RadToolKind = brBorlandDevStudio) and (Target.IDEVersionNumber >= 9) then
-    VersionStr := VersionStr + '\' + AnsiLowerCase(GetPlatformStr);
+    VersionStr := VersionStr + DirDelimiter + AnsiLowerCase(GetPlatformStr);
   Result := Format(FormatStr, [VersionStr]);
   {$IFDEF MSWINDOWS}
   if (Target.RadToolKind <> brBorlandDevStudio) or (Target.VersionNumber < 3) then
@@ -3538,7 +3536,7 @@ begin
     TargetInstall := TargetInstalls[Index];
     if (TargetInstall.Enabled) and (TargetInstall.FTargetPlatform = bpWin32) then
     begin
-      Result := TargetInstall.CompileApplication(JclPath + 'install\RegHelper.dpr');
+      Result := TargetInstall.CompileApplication(JclPath + 'install' + DirDelimiter + 'RegHelper.dpr');
       if not Result then
       begin
         if Assigned(GUI) then
@@ -3551,7 +3549,7 @@ begin
 
   // step 2: create parameters for the RegHelper utility
 
-  LogFileName := JclBinDir + '\RegHelper.log';
+  LogFileName := JclBinDir + DirDelimiter + 'RegHelper.log';
   if FileExists(LogFileName) then
     FileDelete(LogFileName);
   Parameters := Format('-c -o"%s"', [LogFileName]);
@@ -3593,7 +3591,7 @@ begin
   else
     Verb := 'runas';
 
-  Result := JclShell.ShellExecAndWait(JclBinDir + '\RegHelper.exe', Parameters, Verb, SW_HIDE, JclPath + 'help\');
+  Result := JclShell.ShellExecAndWait(JclBinDir + DirDelimiter + 'RegHelper.exe', Parameters, Verb, SW_HIDE, JclPath + 'help' + DirDelimiter);
 
   // step 4: examine output
   if Result then
