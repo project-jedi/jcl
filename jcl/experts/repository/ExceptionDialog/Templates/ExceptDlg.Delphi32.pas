@@ -139,10 +139,10 @@ var
 function SortModulesListByAddressCompare(List: TStringList;
   Index1, Index2: Integer): Integer;
 var
-  Addr1, Addr2: Cardinal;
+  Addr1, Addr2: TJclAddr;
 begin
-  Addr1 := Cardinal(List.Objects[Index1]);
-  Addr2 := Cardinal(List.Objects[Index2]);
+  Addr1 := TJclAddr(List.Objects[Index1]);
+  Addr2 := TJclAddr(List.Objects[Index2]);
   if Addr1 > Addr2 then
     Result := 1
   else if Addr1 < Addr2 then
@@ -191,15 +191,15 @@ var
   function CheckAddressForOffset(Offset: Cardinal): Boolean;
   begin
     try
-      CallAddress := Pointer(Cardinal(TApplicationHandleExceptionAddr) + Offset);
+      CallAddress := Pointer(TJclAddr(TApplicationHandleExceptionAddr) + Offset);
       CALLInstruction.Call := $E8;
       Result := PCALLInstruction(CallAddress)^.Call = CALLInstruction.Call;
       if Result then
       begin
         if IsCompiledWithPackages then
-          Result := PeMapImgResolvePackageThunk(Pointer(Integer(CallAddress) + Integer(PCALLInstruction(CallAddress)^.Address) + SizeOf(CALLInstruction))) = SysUtilsShowExceptionAddr
+          Result := PeMapImgResolvePackageThunk(Pointer(SizeInt(CallAddress) + Integer(PCALLInstruction(CallAddress)^.Address) + SizeOf(CALLInstruction))) = SysUtilsShowExceptionAddr
         else
-          Result := PCALLInstruction(CallAddress)^.Address = Integer(SysUtilsShowExceptionAddr) - Integer(CallAddress) - SizeOf(CALLInstruction);
+          Result := PCALLInstruction(CallAddress)^.Address = SizeInt(SysUtilsShowExceptionAddr) - SizeInt(CallAddress) - SizeOf(CALLInstruction);
       end;
     except
       Result := False;
@@ -214,7 +214,7 @@ begin
     Result := CheckAddressForOffset(CallOffset) or CheckAddressForOffset(CallOffsetDebug);
     if Result then
     begin
-      CALLInstruction.Address := Integer(@HookShowException) - Integer(CallAddress) - SizeOf(CALLInstruction);
+      CALLInstruction.Address := SizeInt(@HookShowException) - SizeInt(CallAddress) - SizeOf(CALLInstruction);
       Result := WriteProtectedMemory(CallAddress, @CallInstruction, SizeOf(CallInstruction), WrittenBytes);
     end;
   end
@@ -462,7 +462,7 @@ begin
       for I := 0 to SL.Count - 1 do
       begin
         ModuleName := SL[I];
-        ModuleBase := Cardinal(SL.Objects[I]);
+        ModuleBase := TJclAddr(SL.Objects[I]);
         DetailsMemo.Lines.Add(Format('[%.8x] %s', [ModuleBase, ModuleName]));
         PETarget := PeMapImgTarget(Pointer(ModuleBase));
         NtHeaders32 := nil;
