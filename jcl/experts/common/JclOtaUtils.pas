@@ -565,29 +565,33 @@ begin
   for FileIndex := 0 to AProject.GetModuleFileCount - 1 do
   begin
     AEditor := AProject.GetModuleFileEditor(FileIndex);
-    FileExtension := ExtractFileExt(AEditor.FileName);
-    if AnsiSameText(FileExtension, '.dpr') or AnsiSameText(FileExtension, '.dpk')
-      or AnsiSameText(FileExtension, '.bpf') or AnsiSameText(FileExtension, '.cpp') then
+    // some modules do not have text editors
+    if Assigned(AEditor) then
     begin
-      AReader := (AEditor as IOTASourceEditor).CreateReader;
-      try
-        PropLocations := InternalLocateProperties(AReader, PropIDs);
-        for PropIndex := 0 to PropCount - 1 do
-          if PropLocations[PropIndex] > 0 then
-        begin
-          SetLength(Result[PropIndex], BufferSize);
-          SetLength(Result[PropIndex], AReader.GetText(PropLocations[PropIndex], PAnsiChar(Result[PropIndex]), BufferSize));
-          for BufferIndex := 1 to Length(Result[PropIndex]) do
-            if CharIsWhiteSpace(Char(Result[PropIndex][BufferIndex])) then
+      FileExtension := ExtractFileExt(AEditor.FileName);
+      if AnsiSameText(FileExtension, '.dpr') or AnsiSameText(FileExtension, '.dpk')
+        or AnsiSameText(FileExtension, '.bpf') or AnsiSameText(FileExtension, '.cpp') then
+      begin
+        AReader := (AEditor as IOTASourceEditor).CreateReader;
+        try
+          PropLocations := InternalLocateProperties(AReader, PropIDs);
+          for PropIndex := 0 to PropCount - 1 do
+            if PropLocations[PropIndex] > 0 then
           begin
-            SetLength(Result[PropIndex], BufferIndex - 1);
-            Break;
+            SetLength(Result[PropIndex], BufferSize);
+            SetLength(Result[PropIndex], AReader.GetText(PropLocations[PropIndex], PAnsiChar(Result[PropIndex]), BufferSize));
+            for BufferIndex := 1 to Length(Result[PropIndex]) do
+              if CharIsWhiteSpace(Char(Result[PropIndex][BufferIndex])) then
+            begin
+              SetLength(Result[PropIndex], BufferIndex - 1);
+              Break;
+            end;
           end;
+        finally
+          AReader := nil;
         end;
-      finally
-        AReader := nil;
+        Break;
       end;
-      Break;
     end;
   end;
 end;
