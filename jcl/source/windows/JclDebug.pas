@@ -3681,6 +3681,7 @@ type
   TSymGetOptionsFunc = function: DWORD; stdcall;
   TSymSetOptionsFunc = function (SymOptions: DWORD): DWORD; stdcall;
   TSymCleanupFunc = function (hProcess: THandle): Bool; stdcall;
+  {$IFDEF CPU32}
   TSymGetSymFromAddrAFunc = function (hProcess: THandle; dwAddr: DWORD;
     pdwDisplacement: PDWORD; var Symbol: JclWin32.TImagehlpSymbolA): Bool; stdcall;
   TSymGetSymFromAddrWFunc = function (hProcess: THandle; dwAddr: DWORD;
@@ -3690,11 +3691,28 @@ type
   TSymGetModuleInfoWFunc = function (hProcess: THandle; dwAddr: DWORD;
     var ModuleInfo: JclWin32.TImagehlpModuleW): Bool; stdcall;
   TSymLoadModuleFunc = function (hProcess: THandle; hFile: THandle; ImageName,
-    ModuleName: LPSTR; BaseOfDll, SizeOfDll: DWORD): DWORD; stdcall;
+    ModuleName: LPSTR; BaseOfDll: DWORD; SizeOfDll: DWORD): DWORD; stdcall;
   TSymGetLineFromAddrAFunc = function (hProcess: THandle; dwAddr: DWORD;
     pdwDisplacement: PDWORD; var Line: JclWin32.TImageHlpLineA): Bool; stdcall;
   TSymGetLineFromAddrWFunc = function (hProcess: THandle; dwAddr: DWORD;
     pdwDisplacement: PDWORD; var Line: JclWin32.TImageHlpLineW): Bool; stdcall;
+  {$ENDIF CPU32}
+  {$IFDEF CPU64}
+  TSymGetSymFromAddrAFunc = function (hProcess: THandle; dwAddr: DWORD64;
+    pdwDisplacement: PDWORD64; var Symbol: JclWin32.TImagehlpSymbolA64): Bool; stdcall;
+  TSymGetSymFromAddrWFunc = function (hProcess: THandle; dwAddr: DWORD64;
+    pdwDisplacement: PDWORD64; var Symbol: JclWin32.TImagehlpSymbolW64): Bool; stdcall;
+  TSymGetModuleInfoAFunc = function (hProcess: THandle; dwAddr: DWORD64;
+    var ModuleInfo: JclWin32.TImagehlpModuleA64): Bool; stdcall;
+  TSymGetModuleInfoWFunc = function (hProcess: THandle; dwAddr: DWORD64;
+    var ModuleInfo: JclWin32.TImagehlpModuleW64): Bool; stdcall;
+  TSymLoadModuleFunc = function (hProcess: THandle; hFile: THandle; ImageName,
+    ModuleName: LPSTR; BaseOfDll: DWORD64; SizeOfDll: DWORD): DWORD; stdcall;
+  TSymGetLineFromAddrAFunc = function (hProcess: THandle; dwAddr: DWORD64;
+    pdwDisplacement: PDWORD; var Line: JclWin32.TImageHlpLineA64): Bool; stdcall;
+  TSymGetLineFromAddrWFunc = function (hProcess: THandle; dwAddr: DWORD64;
+    pdwDisplacement: PDWORD; var Line: JclWin32.TImageHlpLineW64): Bool; stdcall;
+  {$ENDIF CPU64}
 
 var
   DebugSymbolsInitialized: Boolean = False;
@@ -3720,6 +3738,7 @@ const
   SymGetOptionsFuncName = 'SymGetOptions';                   // do not localize
   SymSetOptionsFuncName = 'SymSetOptions';                   // do not localize
   SymCleanupFuncName = 'SymCleanup';                         // do not localize
+  {$IFDEF CPU32}
   SymGetSymFromAddrAFuncName = 'SymGetSymFromAddr';          // do not localize
   SymGetSymFromAddrWFuncName = 'SymGetSymFromAddrW';         // do not localize
   SymGetModuleInfoAFuncName = 'SymGetModuleInfo';            // do not localize
@@ -3727,6 +3746,16 @@ const
   SymLoadModuleFuncName = 'SymLoadModule';                   // do not localize
   SymGetLineFromAddrAFuncName = 'SymGetLineFromAddr';        // do not localize
   SymGetLineFromAddrWFuncName = 'SymGetLineFromAddrW';       // do not localize
+  {$ENDIF CPU32}
+  {$IFDEF CPU64}
+  SymGetSymFromAddrAFuncName = 'SymGetSymFromAddr64';        // do not localize
+  SymGetSymFromAddrWFuncName = 'SymGetSymFromAddrW64';       // do not localize
+  SymGetModuleInfoAFuncName = 'SymGetModuleInfo64';          // do not localize
+  SymGetModuleInfoWFuncName = 'SymGetModuleInfoW64';         // do not localize
+  SymLoadModuleFuncName = 'SymLoadModule64';                 // do not localize
+  SymGetLineFromAddrAFuncName = 'SymGetLineFromAddr64';      // do not localize
+  SymGetLineFromAddrWFuncName = 'SymGetLineFromAddrW64';     // do not localize
+  {$ENDIF CPU64}
 
 function StrRemoveEmptyPaths(const Paths: string): string;
 var
@@ -3822,15 +3851,29 @@ function TJclDebugInfoSymbols.GetLocationInfo(const Addr: Pointer;
   out Info: TJclLocationInfo): Boolean;
 const
   SymbolNameLength = 1000;
+  {$IFDEF CPU32}
   SymbolSizeA = SizeOf(TImagehlpSymbolA) + SymbolNameLength * SizeOf(AnsiChar);
   SymbolSizeW = SizeOf(TImagehlpSymbolW) + SymbolNameLength * SizeOf(WideChar);
+  {$ENDIF CPU32}
+  {$IFDEF CPU64}
+  SymbolSizeA = SizeOf(TImagehlpSymbolA64) + SymbolNameLength * SizeOf(AnsiChar);
+  SymbolSizeW = SizeOf(TImagehlpSymbolW64) + SymbolNameLength * SizeOf(WideChar);
+  {$ENDIF CPU64}
 var
   Displacement: DWORD;
   ProcessHandle: THandle;
+  {$IFDEF CPU32}
   SymbolA: PImagehlpSymbolA;
   SymbolW: PImagehlpSymbolW;
   LineA: TImageHlpLineA;
   LineW: TImageHlpLineW;
+  {$ENDIF CPU32}
+  {$IFDEF CPU64}
+  SymbolA: PImagehlpSymbolA64;
+  SymbolW: PImagehlpSymbolW64;
+  LineA: TImageHlpLineA64;
+  LineW: TImageHlpLineW64;
+  {$ENDIF CPU64}
 begin
   ProcessHandle := GetCurrentProcess;
 
@@ -3839,7 +3882,7 @@ begin
     GetMem(SymbolW, SymbolSizeW);
     try
       ZeroMemory(SymbolW, SymbolSizeW);
-      SymbolW^.SizeOfStruct := SizeOf(TImageHlpSymbolW);
+      SymbolW^.SizeOfStruct := SizeOf(SymbolW^);
       SymbolW^.MaxNameLength := SymbolNameLength;
       Displacement := 0;
 
@@ -3862,7 +3905,7 @@ begin
     GetMem(SymbolA, SymbolSizeA);
     try
       ZeroMemory(SymbolA, SymbolSizeA);
-      SymbolA^.SizeOfStruct := SizeOf(TImageHlpSymbolA);
+      SymbolA^.SizeOfStruct := SizeOf(SymbolA^);
       SymbolA^.MaxNameLength := SymbolNameLength;
       Displacement := 0;
 
@@ -3915,8 +3958,14 @@ end;
 function TJclDebugInfoSymbols.InitializeSource: Boolean;
 var
   ModuleFileName: TFileName;
+  {$IFDEF CPU32}
   ModuleInfoA: TImagehlpModuleA;
   ModuleInfoW: TImagehlpModuleW;
+  {$ENDIF CPU32}
+  {$IFDEF CPU64}
+  ModuleInfoA: TImagehlpModuleA64;
+  ModuleInfoW: TImagehlpModuleW64;
+  {$ENDIF CPU64}
   ProcessHandle: THandle;
 begin
   Result := InitializeDebugSymbols;
@@ -4785,7 +4834,7 @@ begin
   {$ENDIF CPU32}
   {$IFDEF CPU64}
   if GetThreadContext(ThreadHandle, C) then
-    Result := JclCreateStackList(Raw, DWORD(-1), Pointer(C.Rip), False, Pointer(C.Rbp),
+    Result := JclCreateStackList(Raw, -1, Pointer(C.Rip), False, Pointer(C.Rbp),
                 Pointer(GetThreadTopOfStack(ThreadHandle)));
   {$ENDIF CPU64}
 end;
