@@ -34,7 +34,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -616,7 +616,7 @@ type
   PStackInfo = ^TStackInfo;
   TStackInfo = record
     CallerAddr: TJclAddr;
-    Level: DWORD;
+    Level: Integer;
     CallerFrame: TJclAddr;
     DumpSize: DWORD;
     ParamSize: DWORD;
@@ -641,7 +641,7 @@ type
 
   TJclStackInfoList = class(TJclStackBaseList)
   private
-    FIgnoreLevels: DWORD;
+    FIgnoreLevels: Integer;
     TopOfStack: TJclAddr;
     BaseOfStack: TJclAddr;
     FStackData: PPointer;
@@ -669,13 +669,13 @@ type
     function GetCount: Integer;
     procedure CorrectOnAccess(ASkipFirstItem: Boolean);
   public
-    constructor Create(ARaw: Boolean; AIgnoreLevels: DWORD;
+    constructor Create(ARaw: Boolean; AIgnoreLevels: Integer;
       AFirstCaller: Pointer); overload;
-    constructor Create(ARaw: Boolean; AIgnoreLevels: DWORD;
+    constructor Create(ARaw: Boolean; AIgnoreLevels: Integer;
       AFirstCaller: Pointer; ADelayedTrace: Boolean); overload;
-    constructor Create(ARaw: Boolean; AIgnoreLevels: DWORD;
+    constructor Create(ARaw: Boolean; AIgnoreLevels: Integer;
       AFirstCaller: Pointer; ADelayedTrace: Boolean; ABaseOfStack: Pointer); overload;
-    constructor Create(ARaw: Boolean; AIgnoreLevels: DWORD;
+    constructor Create(ARaw: Boolean; AIgnoreLevels: Integer;
       AFirstCaller: Pointer; ADelayedTrace: Boolean; ABaseOfStack, ATopOfStack: Pointer); overload;
     destructor Destroy; override;
     procedure ForceStackTracing;
@@ -684,17 +684,17 @@ type
       IncludeVAddress: Boolean = False);
     property DelayedTrace: Boolean read FDelayedTrace;
     property Items[Index: Integer]: TJclStackInfoItem read GetItems; default;
-    property IgnoreLevels: DWORD read FIgnoreLevels;
+    property IgnoreLevels: Integer read FIgnoreLevels;
     property Count: Integer read GetCount;
     property Raw: Boolean read FRaw;
   end;
 
-function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer): TJclStackInfoList; overload;
-function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer;
+function JclCreateStackList(Raw: Boolean; AIgnoreLevels: Integer; FirstCaller: Pointer): TJclStackInfoList; overload;
+function JclCreateStackList(Raw: Boolean; AIgnoreLevels: Integer; FirstCaller: Pointer;
   DelayedTrace: Boolean): TJclStackInfoList; overload;
-function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer;
+function JclCreateStackList(Raw: Boolean; AIgnoreLevels: Integer; FirstCaller: Pointer;
   DelayedTrace: Boolean; BaseOfStack: Pointer): TJclStackInfoList; overload;
-function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer;
+function JclCreateStackList(Raw: Boolean; AIgnoreLevels: Integer; FirstCaller: Pointer;
   DelayedTrace: Boolean; BaseOfStack, TopOfStack: Pointer): TJclStackInfoList; overload;
 
 function JclCreateThreadStackTrace(Raw: Boolean; const ThreadHandle: THandle): TJclStackInfoList;
@@ -4658,7 +4658,7 @@ end;
 procedure DoExceptionStackTrace(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean;
   BaseOfStack: Pointer);
 var
-  IgnoreLevels: DWORD;
+  IgnoreLevels: Integer;
   FirstCaller: Pointer;
   RawMode: Boolean;
   Delayed: Boolean;
@@ -4671,10 +4671,10 @@ begin
     IgnoreLevels := 1;
   end
   else
-    IgnoreLevels := Cardinal(-1); // because of the "IgnoreLevels + 1" in TJclStackInfoList.StoreToList()
+    IgnoreLevels := -1; // because of the "IgnoreLevels + 1" in TJclStackInfoList.StoreToList()
   if OSException then
   begin
-    if IgnoreLevels = Cardinal(-1) then
+    if IgnoreLevels = -1 then
       IgnoreLevels := 0
     else
       Inc(IgnoreLevels); // => HandleAnyException
@@ -4725,27 +4725,27 @@ begin
   GlobalStackList.Clear;
 end;
 
-function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer): TJclStackInfoList;
+function JclCreateStackList(Raw: Boolean; AIgnoreLevels: Integer; FirstCaller: Pointer): TJclStackInfoList;
 begin
   Result := TJclStackInfoList.Create(Raw, AIgnoreLevels, FirstCaller, False, nil, nil);
   GlobalStackList.AddObject(Result);
 end;
 
-function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer;
+function JclCreateStackList(Raw: Boolean; AIgnoreLevels: Integer; FirstCaller: Pointer;
   DelayedTrace: Boolean): TJclStackInfoList;
 begin
   Result := TJclStackInfoList.Create(Raw, AIgnoreLevels, FirstCaller, DelayedTrace, nil, nil);
   GlobalStackList.AddObject(Result);
 end;
 
-function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer;
+function JclCreateStackList(Raw: Boolean; AIgnoreLevels: Integer; FirstCaller: Pointer;
   DelayedTrace: Boolean; BaseOfStack: Pointer): TJclStackInfoList;
 begin
   Result := TJclStackInfoList.Create(Raw, AIgnoreLevels, FirstCaller, DelayedTrace, BaseOfStack, nil);
   GlobalStackList.AddObject(Result);
 end;
 
-function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer;
+function JclCreateStackList(Raw: Boolean; AIgnoreLevels: Integer; FirstCaller: Pointer;
   DelayedTrace: Boolean; BaseOfStack, TopOfStack: Pointer): TJclStackInfoList;
 begin
   Result := TJclStackInfoList.Create(Raw, AIgnoreLevels, FirstCaller, DelayedTrace, BaseOfStack, TopOfStack);
@@ -4780,7 +4780,7 @@ begin
   C.ContextFlags := CONTEXT_FULL;
   {$IFDEF CPU32}
   if GetThreadContext(ThreadHandle, C) then
-    Result := JclCreateStackList(Raw, DWORD(-1), Pointer(C.Eip), False, Pointer(C.Ebp),
+    Result := JclCreateStackList(Raw, -1, Pointer(C.Eip), False, Pointer(C.Ebp),
                 Pointer(GetThreadTopOfStack(ThreadHandle)));
   {$ENDIF CPU32}
   {$IFDEF CPU64}
@@ -4833,25 +4833,25 @@ end;
 
 //=== { TJclStackInfoList } ==================================================
 
-constructor TJclStackInfoList.Create(ARaw: Boolean; AIgnoreLevels: DWORD;
+constructor TJclStackInfoList.Create(ARaw: Boolean; AIgnoreLevels: Integer;
   AFirstCaller: Pointer);
 begin
   Create(ARaw, AIgnoreLevels, AFirstCaller, False, nil, nil);
 end;
 
-constructor TJclStackInfoList.Create(ARaw: Boolean; AIgnoreLevels: DWORD;
+constructor TJclStackInfoList.Create(ARaw: Boolean; AIgnoreLevels: Integer;
   AFirstCaller: Pointer; ADelayedTrace: Boolean);
 begin
   Create(ARaw, AIgnoreLevels, AFirstCaller, ADelayedTrace, nil, nil);
 end;
 
-constructor TJclStackInfoList.Create(ARaw: Boolean; AIgnoreLevels: DWORD;
+constructor TJclStackInfoList.Create(ARaw: Boolean; AIgnoreLevels: Integer;
   AFirstCaller: Pointer; ADelayedTrace: Boolean; ABaseOfStack: Pointer);
 begin
   Create(ARaw, AIgnoreLevels, AFirstCaller, ADelayedTrace, ABaseOfStack, nil);
 end;
 
-constructor TJclStackInfoList.Create(ARaw: Boolean; AIgnoreLevels: DWORD;
+constructor TJclStackInfoList.Create(ARaw: Boolean; AIgnoreLevels: Integer;
   AFirstCaller: Pointer; ADelayedTrace: Boolean; ABaseOfStack, ATopOfStack: Pointer);
 var
   Item: TJclStackInfoItem;
@@ -5035,7 +5035,7 @@ procedure TJclStackInfoList.StoreToList(const StackInfo: TStackInfo);
 var
   Item: TJclStackInfoItem;
 begin
-  if ((IgnoreLevels = Cardinal(-1)) and (StackInfo.Level > 0)) or
+  if ((IgnoreLevels = -1) and (StackInfo.Level > 0)) or
      (StackInfo.Level > (IgnoreLevels + 1)) then
   begin
     Item := TJclStackInfoItem.Create;
