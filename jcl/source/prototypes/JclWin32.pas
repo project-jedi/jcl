@@ -59,11 +59,17 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.Windows, System.SysUtils,
+  {$IFNDEF FPC}
+  Winapi.AccCtrl, Winapi.ActiveX,
+  {$ENDIF ~FPC}
+  {$ELSE ~HAS_UNITSCOPE}
   Windows, SysUtils,
   {$IFNDEF FPC}
-  AccCtrl,
-  ActiveX,
+  AccCtrl, ActiveX,
   {$ENDIF ~FPC}
+  {$ENDIF ~HAS_UNITSCOPE}
   JclBase;
 
 {$HPPEMIT '#include <WinDef.h>'}
@@ -90,6 +96,14 @@ uses
 {$HPPEMIT '#include <objbase.h>'}
 {$HPPEMIT '#include <ntsecapi.h>'}
 {$HPPEMIT ''}
+{$IFDEF RTL230_UP}
+{$HPPEMIT '// To avoid ambiguity between IMAGE_LOAD_CONFIG_DIRECTORY32 and  Winapi::Windows::IMAGE_LOAD_CONFIG_DIRECTORY32'}
+{$HPPEMIT '#define IMAGE_LOAD_CONFIG_DIRECTORY32 ::IMAGE_LOAD_CONFIG_DIRECTORY32'}
+{$HPPEMIT ''}
+{$HPPEMIT '// To avoid ambiguity between IMAGE_LOAD_CONFIG_DIRECTORY64 and  Winapi::Windows::IMAGE_LOAD_CONFIG_DIRECTORY64'}
+{$HPPEMIT '#define IMAGE_LOAD_CONFIG_DIRECTORY64 ::IMAGE_LOAD_CONFIG_DIRECTORY64'}
+{$HPPEMIT ''}
+{$ENDIF RTL230_UP}
 
 // EJclWin32Error
 {$IFDEF MSWINDOWS}

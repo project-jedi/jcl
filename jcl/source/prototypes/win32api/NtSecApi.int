@@ -4,7 +4,7 @@ type
   _LSA_UNICODE_STRING = record
     Length: USHORT;
     MaximumLength: USHORT;
-    Buffer: Windows.LPWSTR;
+    Buffer: {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.LPWSTR;
   end;
   LSA_UNICODE_STRING = _LSA_UNICODE_STRING;
   TLsaUnicodeString = LSA_UNICODE_STRING;
@@ -23,7 +23,7 @@ type
   PLSA_OBJECT_ATTRIBUTES = ^LSA_OBJECT_ATTRIBUTES;
   _LSA_OBJECT_ATTRIBUTES = record
     Length: ULONG;
-    RootDirectory: Windows.THandle;
+    RootDirectory: {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.THandle;
     ObjectName: PLSA_UNICODE_STRING;
     Attributes: ULONG;
     SecurityDescriptor: Pointer; // Points to type SECURITY_DESCRIPTOR
@@ -145,7 +145,7 @@ type
   PPOLICY_ACCOUNT_DOMAIN_INFO = ^POLICY_ACCOUNT_DOMAIN_INFO;
   _POLICY_ACCOUNT_DOMAIN_INFO = record
     DomainName: LSA_UNICODE_STRING;
-    DomainSid: Windows.PSID;
+    DomainSid: {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.PSID;
   end;
   POLICY_ACCOUNT_DOMAIN_INFO = _POLICY_ACCOUNT_DOMAIN_INFO;
   TPolicyAccountDomainInfo = POLICY_ACCOUNT_DOMAIN_INFO;
