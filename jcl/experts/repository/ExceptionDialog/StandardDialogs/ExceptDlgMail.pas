@@ -173,8 +173,10 @@ end;
 
 function HookTApplicationHandleException: Boolean;
 const
-  CallOffset      = $86;
-  CallOffsetDebug = $94;
+  CallOffset      = $86;   // Until D2007
+  CallOffsetDebug = $94;   // Until D2007
+  CallOffsetWin32 = $7A;   // D2009 and newer
+  CallOffsetWin64 = $95;   // DXE2 for Win64
 type
   PCALLInstruction = ^TCALLInstruction;
   TCALLInstruction = packed record
@@ -210,7 +212,8 @@ begin
   SysUtilsShowExceptionAddr := PeMapImgResolvePackageThunk(@SysUtils.ShowException);
   if Assigned(TApplicationHandleExceptionAddr) and Assigned(SysUtilsShowExceptionAddr) then
   begin
-    Result := CheckAddressForOffset(CallOffset) or CheckAddressForOffset(CallOffsetDebug);
+    Result := CheckAddressForOffset(CallOffset) or CheckAddressForOffset(CallOffsetDebug) or
+      CheckAddressForOffset(CallOffsetWin32) or CheckAddressForOffset(CallOffsetWin64);
     if Result then
     begin
       CALLInstruction.Address := SizeInt(@HookShowException) - SizeInt(CallAddress) - SizeOf(CALLInstruction);
@@ -326,7 +329,7 @@ var
   ModuleName: TFileName;
   NtHeaders32: PImageNtHeaders32;
   NtHeaders64: PImageNtHeaders64;
-  ModuleBase: Cardinal;
+  ModuleBase: TJclAddr;
   ImageBaseStr: string;
   C: TWinControl;
   CpuInfo: TCpuInfo;
