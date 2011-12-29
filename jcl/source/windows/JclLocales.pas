@@ -345,7 +345,7 @@ begin
     Inc(Result, KLF_REORDER);
   if (klUnloadPrevious in ActivateFlags) and IsWinNT then
     Inc(Result, KLF_UNLOADPREVIOUS);
-  if (klSetForProcess in ActivateFlags) and IsWin2K then
+  if (klSetForProcess in ActivateFlags) and (GetWindowsVersion >= wvWin2000) then
     Inc(Result, KLF_SETFORPROCESS);
   if LoadMode then
   begin

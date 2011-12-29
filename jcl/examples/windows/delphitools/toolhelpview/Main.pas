@@ -321,10 +321,10 @@ begin
           with ProcessEntry do if FindItem = nil then
           begin // New Process
             Added := True;
-            if IsWin2k then
+            if GetWindowsVersion >= wvWin2000 then
             begin
               ProcessHandle := OpenProcess(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ, False, th32ProcessID);
-              if Handle <> 0 then
+              if ProcessHandle <> 0 then
               begin
                 if GetModuleFileNameEx(ProcessHandle, 0, szExeFile, SizeOf(szExeFile)) = 0 then
                   StrPCopy(szExeFile, '[Idle]');

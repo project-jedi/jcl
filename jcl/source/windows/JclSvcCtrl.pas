@@ -1329,7 +1329,7 @@ begin
     RaiseLastOsError;
   CloseServiceHandle(Svc);
 
-  if (Description <> '') and (IsWin2K or IsWinXP) then
+  if (Description <> '') and (GetWindowsVersion >= wvWin2000) then
     RegWriteString(HKEY_LOCAL_MACHINE, '\' + REGSTR_PATH_SERVICES + '\' + ServiceName,
       'Description', Description);
 

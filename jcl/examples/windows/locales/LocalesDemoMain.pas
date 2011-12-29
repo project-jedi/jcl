@@ -159,7 +159,7 @@ begin
       Items.Add('');
       Items.Add('Short date formats:');
       Items.AddStrings(DateFormats[ldShort]);
-      if IsWin2k then
+      if GetWindowsVersion >= wvWin2000 then
       begin
         Items.Add('');
         Items.Add('Year month formats:');
