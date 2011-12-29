@@ -30,7 +30,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -734,7 +734,7 @@ begin
 end;
 
 procedure TJclAppInstances.SecurityGetSecurityAttributes(OwnerSID, AccessSID: PSID; out ACL: PACL;
- out SecurityDescriptor: PSecurityDescriptor; out SecurityAttributes: PSecurityAttributes);
+  out SecurityDescriptor: PSecurityDescriptor; out SecurityAttributes: PSecurityAttributes);
 var
   ACLSize: SizeInt;
 begin
@@ -743,7 +743,7 @@ begin
   ACL := AllocMem(ACLSize);
   Win32Check(InitializeAcl(ACL^, ACLSize, ACL_REVISION));
   Win32Check(AddAccessAllowedAce(ACL^, ACL_REVISION, FILE_MAP_ALL_ACCESS, AccessSID));
-  Assert(IsValidAcl(ACL^));
+  Assert(IsValidAcl(ACL{$IFNDEF RTL230_UP}^{$ENDIF})); // QC #102231
 
   // create the security descriptor
   SecurityDescriptor := AllocMem(SECURITY_DESCRIPTOR_MIN_LENGTH);
