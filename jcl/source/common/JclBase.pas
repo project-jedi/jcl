@@ -205,12 +205,23 @@ const
 
   HexPrefixPascal = string('$');
   HexPrefixC      = string('0x');
+  HexDigitFmt32   = string('%.8x');
+  HexDigitFmt64   = string('%.16x');
 
   {$IFDEF BCB}
   HexPrefix = HexPrefixC;
   {$ELSE ~BCB}
   HexPrefix = HexPrefixPascal;
   {$ENDIF ~BCB}
+
+  {$IFDEF CPU32}
+  HexDigitFmt = HexDigitFmt32;
+  {$ENDIF CPU32}
+  {$IFDEF CPU64}
+  HexDigitFmt = HexDigitFmt64;
+  {$ENDIF CPU64}
+
+  HexFmt = HexPrefix + HexDigitFmt;
 
 const
   BOM_UTF16_LSB: array [0..1] of Byte = ($FF,$FE);

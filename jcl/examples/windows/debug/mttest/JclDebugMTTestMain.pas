@@ -26,6 +26,9 @@ var
 
 implementation
 
+uses
+  JclBase;
+
 {$R *.dfm}
 
 procedure LoadedModules(ModuleList: TJclSerializableModuleInfoList);
@@ -36,7 +39,7 @@ var
   S, BinFileVersion, FileVersion, FileDescription: string;
   FileVersionInfo: TJclFileVersionInfo;
   ModuleInfoList: TJclModuleInfoList;
-  ModuleBase: Cardinal;
+  ModuleBase: TJclAddr;
   Module: TJclSerializableModuleInfo;
 begin
   ProcessHandle := GetCurrentProcess;
@@ -44,7 +47,7 @@ begin
   try
     for I := 0 to ModuleInfoList.Count - 1 do
     begin
-      ModuleBase := Cardinal(ModuleInfoList.Items[I].StartAddr);
+      ModuleBase := TJclAddr(ModuleInfoList.Items[I].StartAddr);
       GetModuleFileNameEx(ProcessHandle, ModuleBase, FileName, SizeOf(FileName));
       FileVersion := '';
       if (FileName <> '') and VersionResourceAvailable(FileName) then
@@ -63,8 +66,8 @@ begin
       else
         S := '0';
       Module := ModuleList.Add;
-      Module.StartStr := Format('0x%.8x', [ModuleBase]);
-      Module.EndStr := Format('0x%.8x', [Cardinal(ModuleInfoList.Items[I].EndAddr)]);
+      Module.StartStr := Format(HexFmt, [ModuleBase]);
+      Module.EndStr := Format(HexFmt, [TJclAddr(ModuleInfoList.Items[I].EndAddr)]);
       Module.SystemModuleStr := S;
       Module.ModuleName := FileName;
       Module.BinFileVersion := BinFileVersion;

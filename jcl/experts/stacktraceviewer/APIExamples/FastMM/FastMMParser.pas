@@ -6,6 +6,7 @@ interface
 
 uses
   SysUtils, Classes, Contnrs,
+  JclBase,
   {$IFNDEF NOVIEW}
   JclStackTraceViewerClasses,
   {$ENDIF ~NOVIEW}
@@ -31,26 +32,26 @@ type
 
   TFastMMLeak = class(TObject)
   private
-    FAddress: Integer;
+    FAddress: TJclAddr;
     FAllocationNumber: Integer;
     FBlockClass: string;
     FDateStr: string;
     FMemory: TFastMMMemoryArray;
     FFoundMemory: Boolean;
-    FLeakSize: Integer;
+    FLeakSize: TJclAddr;
     FParent: TFastMMReport;
     FThreadID: Integer;
     FStack: TFastMMLocationInfoList;
   public
     constructor Create(AParent: TFastMMReport);
     destructor Destroy; override;
-    property Address: Integer read FAddress write FAddress;
+    property Address: TJclAddr read FAddress write FAddress;
     property AllocationNumber: Integer read FAllocationNumber write FAllocationNumber;
     property BlockClass: string read FBlockClass write FBlockClass;
     property DateStr: string read FDateStr write FDateStr;
     property Memory: TFastMMMemoryArray read FMemory write FMemory;
     property FoundMemory: Boolean read FFoundMemory write FFoundMemory;
-    property LeakSize: Integer read FLeakSize write FLeakSize;
+    property LeakSize: TJclAddr read FLeakSize write FLeakSize;
     property Parent: TFastMMReport read FParent;
     property Stack: TFastMMLocationInfoList read FStack;
     property ThreadID: Integer read FThreadID write FThreadID;
@@ -59,23 +60,23 @@ type
   TFastMMLeakGroup = class(TObject)
   private
     FItems: TList;
-    FLeakSize: Integer;
+    FLeakSize: TJclAddr;
     FLeakSizeUpdate: Boolean;
     function GetCount: Integer;
     function GetItems(AIndex: Integer): TFastMMLeak;
-    function GetLeakSize: Integer;
+    function GetLeakSize: TJclAddr;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Add(ALeak: TFastMMLeak);
     property Count: Integer read GetCount;
     property Items[AIndex: Integer]: TFastMMLeak read GetItems; default;
-    property LeakSize: Integer read GetLeakSize;
+    property LeakSize: TJclAddr read GetLeakSize;
   end;
 
   TFastMMVMOnFreedObject = class(TObject)
   private
-    FAddress: Integer;
+    FAddress: TJclAddr;
     FAllocationNumber: Integer;
     FObjectClass: string;
     FMemory: TFastMMMemoryArray;
@@ -87,11 +88,11 @@ type
     FStack3: TFastMMLocationInfoList;
     FStack3Thread: Integer;
     FVirtualMethod: string;
-    FVirtualMethodAddress: Integer;
+    FVirtualMethodAddress: TJclAddr;
   public
     constructor Create;
     destructor Destroy; override;
-    property Address: Integer read FAddress write FAddress;
+    property Address: TJclAddr read FAddress write FAddress;
     property AllocationNumber: Integer read FAllocationNumber write FAllocationNumber;
     property ObjectClass: string read FObjectClass write FObjectClass;
     property Memory: TFastMMMemoryArray read FMemory write FMemory;
@@ -103,7 +104,7 @@ type
     property Stack3Thread: Integer read FStack3Thread write FStack3Thread;
     property Stack3: TFastMMLocationInfoList read FStack3;
     property VirtualMethod: string read FVirtualMethod write FVirtualMethod;
-    property VirtualMethodAddress: Integer read FVirtualMethodAddress write FVirtualMethodAddress;
+    property VirtualMethodAddress: TJclAddr read FVirtualMethodAddress write FVirtualMethodAddress;
   end;
 
   TFastMMReport = class(TObject)
@@ -169,13 +170,13 @@ end;
 constructor TFastMMLeak.Create(AParent: TFastMMReport);
 begin
   inherited Create;
-  FAddress := -1;
-  FAllocationNumber := -1;
+  FAddress := 0;
+  FAllocationNumber := 0;
   FBlockClass := '';
   FFoundMemory := False;
-  FLeakSize := -1;
+  FLeakSize := 0;
   FParent := AParent;
-  FThreadID := -1;
+  FThreadID := 0;
   FStack := TFastMMLocationInfoList.Create;
 end;
 
@@ -215,7 +216,7 @@ begin
   Result := TFastMMLeak(FItems[AIndex]);
 end;
 
-function TFastMMLeakGroup.GetLeakSize: Integer;
+function TFastMMLeakGroup.GetLeakSize: TJclAddr;
 var
   I: Integer;
 begin
@@ -234,15 +235,15 @@ end;
 constructor TFastMMVMOnFreedObject.Create;
 begin
   inherited Create;
-  FAddress := -1;
-  FAllocationNumber := -1;
+  FAddress := 0;
+  FAllocationNumber := 0;
   FFoundMemory := False;
   FStack1 := TFastMMLocationInfoList.Create;
-  FStack1Thread := -1;
+  FStack1Thread := 0;
   FStack2 := TFastMMLocationInfoList.Create;
-  FStack2Thread := -1;
+  FStack2Thread := 0;
   FStack3 := TFastMMLocationInfoList.Create;
-  FStack3Thread := -1;
+  FStack3Thread := 0;
 end;
 
 destructor TFastMMVMOnFreedObject.Destroy;
@@ -486,7 +487,7 @@ begin
           if C = ' ' then
           begin
             if S <> '' then
-              ALocationInfo.Address := Pointer(StrToInt('$' + S));
+              ALocationInfo.Address := Pointer(StrToInt64('$' + S));
             Break;
           end
           else
@@ -606,7 +607,7 @@ begin
           LastReportType := ReportType;
           Leak := Report.AddLeak;
           Delete(S, 1, Length(cLeakSize));
-          Leak.LeakSize := StrToIntDef(S, -1);
+          Leak.LeakSize := StrToInt64Def(S, 0);
           if (I > 1) then
           begin
             S := TSL[I - 1];
@@ -640,7 +641,7 @@ begin
             Delete(S, 1, Length(cThread));
             P := Pos(',', S);
             if P > 1 then
-              Leak.ThreadID := StrToIntDef('$' + Copy(S, 1, P - 1), -1);
+              Leak.ThreadID := StrToIntDef('$' + Copy(S, 1, P - 1), 0);
           end;
           if Pos(cStack, S) > 0 then
           begin
@@ -672,7 +673,7 @@ begin
           if Pos(cAllocNo, S) = 1 then
           begin
             Delete(S, 1, Length(cAllocNo));
-            Leak.AllocationNumber := StrToIntDef(S, -1);
+            Leak.AllocationNumber := StrToIntDef(S, 0);
           end;
           if Pos(cMemory, S) = 1 then
           begin
@@ -680,7 +681,7 @@ begin
             P := Pos(':', S);
             if P > 1 then
             begin
-              Leak.Address := StrToIntDef('$' + Copy(S, 1, P - 1), -1);
+              Leak.Address := StrToInt64Def('$' + Copy(S, 1, P - 1), 0);
               Inc(I);
               for J := 0 to 7 do
               begin
@@ -690,7 +691,7 @@ begin
                   for K := 0 to 31 do
                   begin
                     S2 := Copy(S, K * 3 + 1, 2);
-                    MemoryArray[J * 32 + K] := StrToIntDef('$' + S2, -1);
+                    MemoryArray[J * 32 + K] := StrToIntDef('$' + S2, 0);
                   end;
                 end
                 else
@@ -736,13 +737,13 @@ begin
           if Pos(cVMFOVirtualMethodAddress, S) = 1 then
           begin
             Delete(S, 1, Length(cVMFOVirtualMethodAddress));
-            VMOnFreedObject.VirtualMethodAddress := StrToIntDef('$' + S, -1);
+            VMOnFreedObject.VirtualMethodAddress := StrToInt64Def('$' + S, 0);
           end
           else
           if Pos(cVMFOAllocNo, S) = 1 then
           begin
             Delete(S, 1, Length(cVMFOAllocNo));
-            VMOnFreedObject.AllocationNumber := StrToIntDef(S, -1);
+            VMOnFreedObject.AllocationNumber := StrToIntDef(S, 0);
           end
           else
           if Pos(cVMFOStack1Thread, S) = 1 then
@@ -750,7 +751,7 @@ begin
             Delete(S, 1, Length(cVMFOStack1Thread));
             P := Pos(',', S);
             if P > 1 then
-              VMOnFreedObject.Stack1Thread := StrToIntDef('$' + Copy(S, 1, P - 1), -1);
+              VMOnFreedObject.Stack1Thread := StrToIntDef('$' + Copy(S, 1, P - 1), 0);
             if Pos(cVMFOStack1Stack, S) > 0 then
             begin
               Inc(I);
@@ -780,7 +781,7 @@ begin
             Delete(S, 1, Length(cVMFOStack2Thread));
             P := Pos(',', S);
             if P > 1 then
-              VMOnFreedObject.Stack2Thread := StrToIntDef('$' + Copy(S, 1, P - 1), -1);
+              VMOnFreedObject.Stack2Thread := StrToIntDef('$' + Copy(S, 1, P - 1), 0);
             if Pos(cVMFOStack2Stack, S) > 0 then
             begin
               Inc(I);
@@ -810,7 +811,7 @@ begin
             Delete(S, 1, Length(cVMFOStack3Thread));
             P := Pos(',', S);
             if P > 1 then
-              VMOnFreedObject.Stack3Thread := StrToIntDef('$' + Copy(S, 1, P - 1), -1);
+              VMOnFreedObject.Stack3Thread := StrToIntDef('$' + Copy(S, 1, P - 1), 0);
             if Pos(cVMFOStack3Stack, S) > 0 then
             begin
               Inc(I);
@@ -841,7 +842,7 @@ begin
             P := Pos(':', S);
             if P > 1 then
             begin
-              VMOnFreedObject.Address := StrToIntDef('$' + Copy(S, 1, P - 1), -1);
+              VMOnFreedObject.Address := StrToInt64Def('$' + Copy(S, 1, P - 1), 0);
               Inc(I);
               for J := 0 to 7 do
               begin
@@ -853,7 +854,7 @@ begin
                   for K := 0 to 31 do
                   begin
                     S2 := Copy(S, K * 3 + 1, 2);
-                    MemoryArray[J * 32 + K] := StrToIntDef('$' + S2, -1);
+                    MemoryArray[J * 32 + K] := StrToIntDef('$' + S2, 0);
                   end;
                 end
                 else

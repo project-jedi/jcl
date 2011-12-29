@@ -3,8 +3,9 @@ unit FastMMMemoryFrame;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms, 
-  Dialogs, FastMMParser, Grids, StdCtrls, ExtCtrls;
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, FastMMParser, Grids, StdCtrls, ExtCtrls,
+  JclBase;
 
 type
   TfrmMemory = class(TFrame)
@@ -16,10 +17,10 @@ type
     { Private-Deklarationen }
     FMemoryArray: TFastMMMemoryArray;
     procedure SetMemoryArray(const Value: TFastMMMemoryArray);
-    procedure SetAddress(const Value: Integer);
+    procedure SetAddress(const Value: TJclAddr);
   public
     { Public-Deklarationen }
-    property Address: Integer write SetAddress;
+    property Address: TJclAddr write SetAddress;
     property MemoryArray: TFastMMMemoryArray write SetMemoryArray;
   end;
 
@@ -29,9 +30,9 @@ implementation
 
 { TfrmMemory }
 
-procedure TfrmMemory.SetAddress(const Value: Integer);
+procedure TfrmMemory.SetAddress(const Value: TJclAddr);
 begin
-  lbMemoryAddr.Caption := Format('%.8x', [Value]);
+  lbMemoryAddr.Caption := Format(HexDigitFmt, [Value]);
 end;
 
 procedure TfrmMemory.SetMemoryArray(const Value: TFastMMMemoryArray);

@@ -459,12 +459,7 @@ begin
     HKDD : Result := HKDDLongName;
     {$ENDIF ~DELPHI64_TEMPORARY}
   else
-    {$IFDEF DELPHICOMPILER}
-    Result := Format('$%.8x', [RootKey]);
-    {$ENDIF DELPHICOMPILER}
-    {$IFDEF BCB}
-    Result := Format('0x%.8x', [RootKey]);
-    {$ENDIF BCB}
+    Result := Format(HexFmt, [RootKey]);
   end;
 end;
 

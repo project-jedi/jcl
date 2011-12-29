@@ -35,6 +35,9 @@ implementation
 
 {$R *.DFM}
 
+uses
+  JclBase;
+
 const
   MaxAllowedInstances = 3;
 
@@ -55,7 +58,7 @@ begin
       begin
         Caption := IntToStr(I + 1);
         SubItems.Add(Format('%.8x', [ProcessIDs[I]]));
-        SubItems.Add(Format('%.8x', [AppWnds[I]]));
+        SubItems.Add(Format(HexDigitFmt, [AppWnds[I]]));
       end;
     CurrIndex := InstanceIndex[GetCurrentProcessId];
     Selected := Items[CurrIndex];

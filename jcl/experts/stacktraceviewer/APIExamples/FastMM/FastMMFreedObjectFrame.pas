@@ -141,7 +141,7 @@ begin
     lbFreedObjectClass.Caption := FFreedObjectData.ObjectClass;
     lbAllocationNumber.Caption := IntToStr(FFreedObjectData.AllocationNumber);
     lbVM.Caption := FFreedObjectData.VirtualMethod;
-    lbVMAddr.Caption := Format('%.8x', [FFreedObjectData.VirtualMethodAddress]);
+    lbVMAddr.Caption := Format(HexDigitFmt, [FFreedObjectData.VirtualMethodAddress]);
   end;
   tsStack1.TabVisible := Assigned(FStackFrame1) and Assigned(FFreedObjectData) and (FFreedObjectData.Stack1.Count > 0);
   tsStack1.Caption := Format('Stack (allocated by thread %x)', [FFreedObjectData.Stack1Thread]);

@@ -9,6 +9,7 @@ uses
   SysUtils,
   Windows,
   TypInfo,
+  JclBase,
   JclConsole;
 
 {$R ..\..\..\source\windows\JclNoDepAsInvoker.res}
@@ -65,7 +66,7 @@ var
   Attr: IJclScreenTextAttribute;
 begin
   ScrBuf.WriteLn;
-  ScrBuf.WriteLn(Format('Handle: 0x%.8x', [ScrBuf.Handle]));
+  ScrBuf.WriteLn(Format('Handle: ' + HexFmt, [ScrBuf.Handle]));
   ScrBuf.Writeln('Old Mode : ' + ModeToString);
   OldMode := ScrBuf.Mode;
   ScrBuf.Mode := ScrBuf.Mode - [omWrapAtEol];
