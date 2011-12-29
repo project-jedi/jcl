@@ -166,7 +166,7 @@ type
   {$EXTERNALSYM _IMAGEHLP_SYMBOLA64}
   _IMAGEHLP_SYMBOLA64 = packed record
     SizeOfStruct: DWORD;                                { set to sizeof(IMAGEHLP_SYMBOL) }
-    Address: DWORD64;                                   { virtual address including dll base address }
+    Address: TJclAddr64;                                { virtual address including dll base address }
     Size: DWORD;                                        { estimated size of symbol, can be zero }
     Flags: DWORD;                                       { info about the symbols, see the SYMF defines }
     MaxNameLength: DWORD;                               { maximum size of symbol name in 'Name' }
@@ -200,7 +200,7 @@ type
   {$EXTERNALSYM _IMAGEHLP_SYMBOLW64}
   _IMAGEHLP_SYMBOLW64 = packed record
     SizeOfStruct: DWORD;                                { set to sizeof(IMAGEHLP_SYMBOL) }
-    Address: DWORD64;                                   { virtual address including dll base address }
+    Address: TJclAddr64;                                { virtual address including dll base address }
     Size: DWORD;                                        { estimated size of symbol, can be zero }
     Flags: DWORD;                                       { info about the symbols, see the SYMF defines }
     MaxNameLength: DWORD;                               { maximum size of symbol name in 'Name' }
@@ -238,7 +238,7 @@ type
   {$EXTERNALSYM _IMAGEHLP_MODULEA64}
   _IMAGEHLP_MODULEA64 = record
     SizeOfStruct: DWORD;                                { set to sizeof(IMAGEHLP_MODULE) }
-    BaseOfImage: DWORD64;                               { base load address of module }
+    BaseOfImage: TJclAddr64;                            { base load address of module }
     ImageSize: DWORD;                                   { virtual size of the loaded module }
     TimeDateStamp: DWORD;                               { date/time stamp from pe header }
     CheckSum: DWORD;                                    { checksum from the pe header }
@@ -280,7 +280,7 @@ type
   {$EXTERNALSYM _IMAGEHLP_MODULEW64}
   _IMAGEHLP_MODULEW64 = record
     SizeOfStruct: DWORD;                                { set to sizeof(IMAGEHLP_MODULE) }
-    BaseOfImage: DWORD64;                               { base load address of module }
+    BaseOfImage: TJclAddr64;                            { base load address of module }
     ImageSize: DWORD;                                   { virtual size of the loaded module }
     TimeDateStamp: DWORD;                               { date/time stamp from pe header }
     CheckSum: DWORD;                                    { checksum from the pe header }
@@ -312,7 +312,7 @@ type
     Key: Pointer;                  // internal
     LineNumber: DWORD;             // line number in file
     FileName: PAnsiChar;           // full filename
-    Address: DWORD64;              // first instruction of line
+    Address: TJclAddr64;           // first instruction of line
   end;
   IMAGEHLP_LINEA64 = _IMAGEHLP_LINEA64;
   PIMAGEHLP_LINEA64 = ^_IMAGEHLP_LINEA64;
@@ -336,7 +336,7 @@ type
     Key: Pointer;                  // internal
     LineNumber: DWORD;             // line number in file
     FileName: PWideChar;           // full filename
-    Address: DWORD64;              // first instruction of line
+    Address: TJclAddr64;           // first instruction of line
   end;
   IMAGEHLP_LINEW64 = _IMAGEHLP_LINEW64;
   PIMAGEHLP_LINEW64 = ^_IMAGEHLP_LINEW64;
