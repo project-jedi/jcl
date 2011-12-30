@@ -44,9 +44,12 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclAlgorithms,
+  {$IFDEF HAS_UNITSCOPE}
+  System.Classes,
+  {$ELSE ~HAS_UNITSCOPE}
   Classes,
-  JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
+  {$ENDIF ~HAS_UNITSCOPE}
+  JclAlgorithms, JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
 {$I containers\JclContainerCommon.imp}
 {$I containers\JclVectors.imp}
 {$I containers\JclVectors.int}
@@ -128,7 +131,11 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.SysUtils;
+  {$ELSE ~HAS_UNITSCOPE}
   SysUtils;
+  {$ENDIF ~HAS_UNITSCOPE}
 
 (*$JPPLOOP TRUETYPEINDEX TRUETYPECOUNT
 {$JPPEXPANDMACRO JCLVECTORIMP(,,,,,,,,,,,,,)}

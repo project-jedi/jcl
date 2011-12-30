@@ -1222,11 +1222,11 @@ const
 implementation
 
 uses
-  	{$IFDEF SUPPORTNAMESPACES}
+  {$IFDEF SUPPORTNAMESPACES}
   System.SysUtils;
-{$ELSE}
-SysUtils;
-{$ENDIF}
+  {$ELSE}
+  SysUtils;
+  {$ENDIF}
 
 //=== { TJclIntfArrayList } ======================================================
 
