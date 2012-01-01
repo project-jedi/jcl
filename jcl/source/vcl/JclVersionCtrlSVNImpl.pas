@@ -43,6 +43,7 @@ uses
   JclVersionControl;
 
 type
+  TSvnDirVersion = (sdvNone, sdv10, sdv17);
   TJclVersionControlSVN = class (TJclVersionControlPlugin)
   private
     FTortoiseSVNProc: string;
@@ -51,7 +52,9 @@ type
     function GetFileActions(const FileName: TFileName): TJclVersionControlActionTypes; override;
     function GetSandboxActions(const SdBxName: TFileName): TJclVersionControlActionTypes; override;
     function GetEnabled: Boolean; override;
+    function GetSVNBaseDir(const FileName: TFileName): string;
     function GetName: string; override;
+    function SVNSupportedDirVersion(const FileDir: String): TSvnDirVersion;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -103,6 +106,7 @@ const
   JclVersionCtrlSVNDirectory1 = '.svn\';
   JclVersionCtrlSVNDirectory2 = '_svn\';
   JclVersionCtrlSVNEntryFile = 'entries';
+  JclVersionCtrlSVNDbFile = 'wc.db';
 
   JclVersionCtrlSVNDirectories: array [0..1] of string =
    ( JclVersionCtrlSVNDirectory1, JclVersionCtrlSVNDirectory2 );
@@ -241,11 +245,21 @@ var
   EntryFileName, UpperCaseFileName, XmlFileNameValue: TFileName;
   Entries: TJclAnsiMappedTextReader;
   IndexDir: Integer;
+  SupportedDirVersion: TSvnDirVersion;
 begin
   Result := inherited GetFileActions(FileName);
 
   if Enabled then
   begin
+    SupportedDirVersion := SVNSupportedDirVersion(ExtractFilePath(FileName));
+    if SupportedDirVersion = sdv17 then
+    begin
+      Result := GetSupportedActionTypes;
+      Exit;
+    end
+    else if SupportedDirVersion = sdvNone then
+      Exit;
+
     UpperCaseFileName := StrUpper(ExtractFileName(FileName));
     XmlFileNameValue := Format('NAME="%s"', [UpperCaseFileName]);
 
@@ -293,6 +307,27 @@ begin
       end;
     end;
   end;
+end;
+
+function TJclVersionControlSVN.GetSVNBaseDir(const FileName: TFileName): string;
+var
+  DirectoryName: String;
+  IndexFileName: Integer;
+  IndexDir: Integer;
+begin
+  Result := '';
+  if Enabled then
+    for IndexFileName := Length(FileName) downto 1 do
+      if FileName[IndexFileName] = DirDelimiter then
+      begin
+        DirectoryName := Copy(FileName, 1, IndexFileName);
+        for IndexDir := Low(JclVersionCtrlSVNDirectories) to High(JclVersionCtrlSVNDirectories) do
+          if FileExists(DirectoryName + JclVersionCtrlSVNDirectories[IndexDir] + JclVersionCtrlSVNEntryFile) then
+          begin
+            Result := DirectoryName;
+            Exit;
+          end;
+        end;
 end;
 
 function TJclVersionControlSVN.GetSupportedActionTypes: TJclVersionControlActionTypes;
@@ -369,6 +404,31 @@ begin
 
   if SdBxNames.Count = 0 then
     Result := inherited GetSandboxNames(FileName, SdBxNames);
+end;
+
+function TJclVersionControlSVN.SVNSupportedDirVersion(const FileDir: String): TSvnDirVersion;
+var
+  BaseDir: String;
+  IgnoreList: TStringList;
+  IgnoreDir : String;
+  i: Integer;
+  IndexDir: Integer;
+begin
+  Result := sdvNone;
+  if Enabled then
+  begin
+    BaseDir := GetSVNBaseDir(FileDir);
+    if (BaseDir <> '') then
+    begin
+      Result := sdv10;
+      for IndexDir := Low(JclVersionCtrlSVNDirectories) to High(JclVersionCtrlSVNDirectories) do
+        if FileExists(BaseDir + JclVersionCtrlSVNDirectories[IndexDir] + JclVersionCtrlSVNDbFile) then
+        begin
+          Result := sdv17;
+          exit;
+        end
+    end;
+  end;
 end;
 
 initialization
