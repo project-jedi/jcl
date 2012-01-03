@@ -415,13 +415,25 @@ function StrSearch(const Substr, S: AnsiString; const Index: SizeInt = 1): SizeI
 function StrSuffixIndex(const S: AnsiString; const Suffixes: array of AnsiString): SizeInt;
 
 // String Extraction
+// String Extraction
+// Returns the String before SubStr
 function StrAfter(const SubStr, S: AnsiString): AnsiString;
+/// Returns the AnsiString after SubStr
 function StrBefore(const SubStr, S: AnsiString): AnsiString;
+/// Splits a AnsiString at SubStr, returns true when SubStr is found, Left contains the
+/// AnsiString before the SubStr and Rigth the AnsiString behind SubStr
+function StrSplit(const SubStr, S: AnsiString;var Left, Right : AnsiString): boolean;
+/// Returns the AnsiString between Start and Stop
 function StrBetween(const S: AnsiString; const Start, Stop: AnsiChar): AnsiString;
+/// Returns the left N characters of the AnsiString
 function StrChopRight(const S: AnsiString; N: SizeInt): AnsiString;
+/// Returns the left Count characters of the AnsiString
 function StrLeft(const S: AnsiString; Count: SizeInt): AnsiString;
+/// Returns the AnsiString starting from position Start for the Count Characters
 function StrMid(const S: AnsiString; Start, Count: SizeInt): AnsiString;
+/// Returns the AnsiString starting from position N to the end
 function StrRestOf(const S: AnsiString; N: SizeInt): AnsiString;
+/// Returns the right Count characters of the AnsiString
 function StrRight(const S: AnsiString; Count: SizeInt): AnsiString;
 
 // Character Test Routines
@@ -2969,6 +2981,23 @@ begin
     Result := StrLeft(S, P - 1);
 end;
 
+function StrSplit(const SubStr, S: AnsiString;var Left, Right : AnsiString): boolean;
+var
+  P: SizeInt;
+begin
+  P := StrFind(SubStr, S, 1);
+  Result:= p > 0;
+  if Result then
+  begin
+    Left := StrLeft(S, P - 1);
+    Right := StrRestOf(S, P + Length(SubStr));
+  end
+  else
+  begin
+    Left := '';
+    Right := '';
+  end;
+end;
 
 function StrBetween(const S: AnsiString; const Start, Stop: AnsiChar): AnsiString;
 var
