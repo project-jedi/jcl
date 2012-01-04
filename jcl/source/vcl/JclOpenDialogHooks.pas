@@ -244,7 +244,7 @@ procedure TJclOpenDialogHook.DialogShow;
 begin
   // override to customize
   FParentWnd := GetParent(FHandle);
-  if IsWin2k or IsWinXP then
+  if GetWindowsVersion >= wvWin2000 then
     FOldParentWndInstance := Pointer(SetWindowLongPtr(FParentWnd, GWLP_WNDPROC, LONG_PTR(FParentWndInstance)));
   DoShow;
 end;
