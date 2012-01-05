@@ -2903,6 +2903,8 @@ var
   Size: Integer;
 begin
   Size := GetWindowTextLength(Wnd);
+  if Size = 0 then
+    Size := 1;     // always allocate at least one byte, otherwise PChar(Buffer) returns nil
   SetLength(Buffer, Size);
   // strings always have an additional null character
   Size := GetWindowText(Wnd, PChar(Buffer), Size + 1);
