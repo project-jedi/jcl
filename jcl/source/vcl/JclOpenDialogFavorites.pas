@@ -54,6 +54,7 @@ type
     FFavoritePanel: TPanel;
     FTextAdd: string;
     FTextDelete: string;
+    FTextVirtual: string;
     procedure FavoriteComboBoxClick(Sender: TObject);
   protected
     procedure DialogAdjustControlPos; override;
@@ -130,6 +131,7 @@ begin
 
   FTextAdd := LoadResString(@RsOpenDialogAdd);
   FTextDelete := LoadResString(@RsOpenDialogDelete);
+  FTextVirtual := LoadResString(@RsOpenDialogVirtual);
 end;
 
 destructor TJclOpenDialogFavoritesHook.Destroy;
@@ -190,7 +192,10 @@ begin
   FFavoriteComboBox.ItemIndex := FFavoriteComboBox.Items.IndexOf(Path);
   if FFavoriteComboBox.ItemIndex = -1 then
   begin
-    FFavoriteComboBox.Items[0] := FTextAdd;
+    if Path <> '' then
+      FFavoriteComboBox.Items[0] := FTextAdd
+    else
+      FFavoriteComboBox.Items[0] := FTextVirtual;
     FFavoriteComboBox.ItemIndex := 0;
   end
   else
@@ -233,6 +238,7 @@ begin
       end;
     end
     else
+    if Path <> '' then
     begin
       // add current folder
       FFavoriteComboBox.ItemIndex := FFavoriteComboBox.Items.Add(Path);
