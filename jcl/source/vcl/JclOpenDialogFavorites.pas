@@ -48,20 +48,18 @@ uses
 type
   TJclOpenDialogFavoritesHook = class (TJclOpenDialogHook)
   private
-    FAddButton: TButton;
-    FDeleteMode: Boolean;
     FFavoriteComboBox: TComboBox;
     FFavoriteFolders: TStrings;
+    FFavoriteStaticText: TStaticText;
     FFavoritePanel: TPanel;
-    procedure AddButtonClick(Sender: TObject);
+    FTextAdd: string;
+    FTextDelete: string;
     procedure FavoriteComboBoxClick(Sender: TObject);
-    procedure SetDeleteMode(const Value: Boolean);
   protected
     procedure DialogAdjustControlPos; override;
     procedure DialogFolderChange; override;
     procedure DialogShow; override;
     procedure DialogClose; override;
-    property DeleteMode: Boolean read FDeleteMode write SetDeleteMode;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -110,83 +108,43 @@ constructor TJclOpenDialogFavoritesHook.Create;
 begin
   inherited Create;
   FFavoriteFolders := TStringList.Create;
+
   FFavoritePanel := TPanel.Create(nil);
-  with FFavoritePanel do
-  begin
-    Name := 'FavoritePanel';
-    BevelOuter := bvNone;
-    Caption := '';
-    FullRepaint := False;
-    FFavoriteComboBox := TComboBox.Create(FFavoritePanel);
-    with FFavoriteComboBox do
-    begin
-      SetBounds(6, 14, 300, Height);
-      Style := csDropDownList;
-      Sorted := True;
-      OnClick := FavoriteComboBoxClick;
-      Parent := FFavoritePanel;
-    end;
-    with TStaticText.Create(FFavoritePanel) do
-    begin
-      AutoSize := False;
-      SetBounds(6, 0, 100, 14);
-      Caption := LoadResString(@RsOpenDialogFavorites);
-      FocusControl := FFavoriteComboBox;
-      Parent := FFavoritePanel;
-    end;
-    FAddButton := TButton.Create(FFavoritePanel);
-    with FAddButton do
-    begin
-      SetBounds(333, 14, 75, 23);
-      Caption := LoadResString(@RsOpenDialogAdd);
-      OnClick := AddButtonClick;
-      Parent := FFavoritePanel;
-    end;
-  end;
+  FFavoritePanel.Name := 'FavoritePanel';
+  FFavoritePanel.BevelOuter := bvNone;
+  FFavoritePanel.Caption := '';
+  FFavoritePanel.FullRepaint := False;
+
+  FFavoriteComboBox := TComboBox.Create(nil);
+  FFavoriteComboBox.Parent := FFavoritePanel;
+  FFavoriteComboBox.Align := alClient;
+  FFavoriteComboBox.Style := csDropDownList;
+  FFavoriteComboBox.Sorted := True;
+  FFavoriteComboBox.OnClick := FavoriteComboBoxClick;
+
+  FFavoriteStaticText := TStaticText.Create(nil);
+  FFavoriteStaticText.SetBounds(6, 18, FFavoriteStaticText.Width, FFavoriteStaticText.Height);
+  FFavoriteStaticText.Caption := LoadResString(@RsOpenDialogFavorites);
+  FFavoriteStaticText.AutoSize := True;
+  FFavoriteStaticText.FocusControl := FFavoriteComboBox;
+
+  FTextAdd := LoadResString(@RsOpenDialogAdd);
+  FTextDelete := LoadResString(@RsOpenDialogDelete);
 end;
 
 destructor TJclOpenDialogFavoritesHook.Destroy;
 begin
+  FreeAndNil(FFavoriteComboBox);
   FreeAndNil(FFavoritePanel);
+  FreeAndNil(FFavoriteStaticText);
   FreeAndNil(FFavoriteFolders);
   inherited Destroy;
 end;
 
-procedure TJclOpenDialogFavoritesHook.AddButtonClick(Sender: TObject);
-var
-  I: Integer;
-  Path: string;
-begin
-  if DeleteMode then
-  begin
-    I := FFavoriteComboBox.ItemIndex;
-    Path := FFavoriteComboBox.Items[I];
-    if MessageBox(FHandle,
-                  PChar(Format(LoadResString(@RsOpenDialogDelConfirm), [Path])),
-                  PChar(LoadResString(@RsOpenDialogConfirmation)),
-                  MB_YESNO or MB_ICONQUESTION or MB_DEFBUTTON2) = ID_YES then
-    begin
-      FFavoriteComboBox.Items.Delete(I);
-      DeleteMode := False;
-    end;
-  end
-  else
-  begin
-    Path := CurrentFolder;
-    I := FFavoriteComboBox.Items.IndexOf(Path);
-    if I = -1 then
-    begin
-      FFavoriteComboBox.Items.Add(Path);
-      I := FFavoriteComboBox.Items.IndexOf(Path);
-      FFavoriteComboBox.ItemIndex := I;
-      DeleteMode := True;
-    end;
-  end;
-end;
-
 procedure TJclOpenDialogFavoritesHook.DialogAdjustControlPos;
 var
-  ParentRect, FileNameEditRect, OkButtonRect: TRect;
+  FileTypeStaticTextRect, FileTypeEditRect,          // ID = 1136 1089
+  FileNameStaticTextRect, FileNameEditRect: TRect;   // ID = 1148 1090
 
   procedure GetDlgItemRect(ItemID: Integer; var R: TRect);
   begin
@@ -196,31 +154,30 @@ var
 
 begin
   inherited DialogAdjustControlPos;
-  GetWindowRect(FParentWnd, ParentRect);
-  if GetDlgItem(FParentWnd, edt1) <> 0 then
-    GetDlgItemRect(edt1, FileNameEditRect)
-  else
-    GetDlgItemRect(cmb1, FileNameEditRect);
-  GetDlgItemRect(1, OkButtonRect);
 
-// Salvatore Besso: Changes to avoid truncation of Add button. I don't know why, but debugging I
-//   have discovered that ParentRect.Right was equal to 1024, ie Screen.Width. I also can't figure
-//   out why I can't preserve original help button that disappears using this expert.
-//   As visible in the changes, favorite panel width is just left of the original button column.
+  GetDlgItemRect(stc2, FileTypeStaticTextRect);
+  GetDlgItemRect(cmb1, FileTypeEditRect);
+  GetDlgItemRect(stc3, FileNameStaticTextRect);
+  GetDlgItemRect(cmb13, FileNameEditRect);
 
-  if IsWin2k or IsWinXP then
-    FAddButton.Width := 65;
-  FFavoritePanel.Width := OkButtonRect.Left - 1;
-  FFavoriteComboBox.Width := FFavoritePanel.Width - FFavoriteComboBox.Left - FAddButton.Width - 16;
-  FAddButton.Left := FFavoriteComboBox.Width + 14;
+  FFavoriteStaticText.Left := FileTypeStaticTextRect.Left;
+  FFavoriteStaticText.Top := 2 * FileTypeStaticTextRect.Top - FileNameStaticTextRect.Top;
+
+  FFavoritePanel.Left := FileNameEditRect.Left;
+  FFavoritePanel.Top := 2 * FileTypeEditRect.Top - FileNameEditRect.Top;
+  FFavoritePanel.Width := FileTypeEditRect.Right - FileTypeEditRect.Left;
 end;
 
 procedure TJclOpenDialogFavoritesHook.DialogClose;
 begin
   inherited DialogClose;
   if not IsOpenPictureDialog then
+  begin
+    FFavoriteComboBox.Items.Delete(0);
     FavoriteFolders.Assign(FFavoriteComboBox.Items);
+  end;
   FFavoritePanel.ParentWindow := 0;
+  FFavoriteStaticText.ParentWindow := 0;
   FParentWnd := 0;
 end;
 
@@ -230,33 +187,63 @@ var
 begin
   inherited DialogFolderChange;
   Path := CurrentFolder;
-  with FFavoriteComboBox do
+  FFavoriteComboBox.ItemIndex := FFavoriteComboBox.Items.IndexOf(Path);
+  if FFavoriteComboBox.ItemIndex = -1 then
   begin
-    ItemIndex := Items.IndexOf(Path);
-    DeleteMode := (ItemIndex <> -1);
-  end;
+    FFavoriteComboBox.Items[0] := FTextAdd;
+    FFavoriteComboBox.ItemIndex := 0;
+  end
+  else
+    FFavoriteComboBox.Items[0] := FTextDelete;
+  FFavoriteComboBox.Invalidate;
 end;
 
 procedure TJclOpenDialogFavoritesHook.DialogShow;
-var
-  PreviewRect: TRect;
 begin
   inherited DialogShow;
   if not IsOpenPictureDialog then
   begin
-    GetClientRect(FHandle, PreviewRect);
-    PreviewRect.Top := PreviewRect.Bottom - 43;
-    FFavoritePanel.BoundsRect := PreviewRect;
     FFavoritePanel.ParentWindow := FHandle;
+    FFavoriteStaticText.ParentWindow := FHandle;
     FFavoriteComboBox.Items.Assign(FavoriteFolders);
+    FFavoriteComboBox.Items.Insert(0, FTextAdd);
   end;
 end;
 
 procedure TJclOpenDialogFavoritesHook.FavoriteComboBoxClick(Sender: TObject);
+var
+  I: Integer;
+  Path: string;
 begin
-  with FFavoriteComboBox do
-    if ItemIndex <> - 1 then
-      CurrentFolder := FFavoriteComboBox.Items[ItemIndex];
+  if FFavoriteComboBox.ItemIndex = 0 then
+  begin
+    Path := CurrentFolder;
+    I := FFavoriteComboBox.Items.IndexOf(Path);
+    if I > 0 then
+    begin
+      // delete current folder
+      if MessageBox(FHandle,
+                    PChar(Format(LoadResString(@RsOpenDialogDelConfirm), [Path])),
+                    PChar(LoadResString(@RsOpenDialogConfirmation)),
+                    MB_YESNO or MB_ICONQUESTION or MB_DEFBUTTON2) = ID_YES then
+      begin
+        FFavoriteComboBox.Items.Delete(I);
+        FFavoriteComboBox.Items[0] := FTextAdd;
+        FFavoriteComboBox.ItemIndex := 0;
+      end;
+    end
+    else
+    begin
+      // add current folder
+      FFavoriteComboBox.ItemIndex := FFavoriteComboBox.Items.Add(Path);
+      FFavoriteComboBox.Items[0] := FTextDelete;
+    end;
+    FFavoriteComboBox.Invalidate;
+  end
+  else
+  if FFavoriteComboBox.ItemIndex > 0 then
+    // switch to selected folder
+    CurrentFolder := FFavoriteComboBox.Items[FFavoriteComboBox.ItemIndex];
 end;
 
 procedure TJclOpenDialogFavoritesHook.LoadFavorites(const FileName: string);
@@ -265,19 +252,6 @@ begin
     FavoriteFolders.LoadFromFile(FileName)
   else
     FavoriteFolders.Clear;
-end;
-
-procedure TJclOpenDialogFavoritesHook.SetDeleteMode(const Value: Boolean);
-begin
-  if FDeleteMode <> Value then
-  begin
-    FDeleteMode := Value;
-    if FDeleteMode then
-      FAddButton.Caption := LoadResString(@RsOpenDialogDelete)
-    else
-      FAddButton.Caption := LoadResString(@RsOpenDialogAdd);
-    FFavoriteComboBox.Invalidate;
-  end;
 end;
 
 {$IFDEF UNITVERSIONING}
