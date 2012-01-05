@@ -67,6 +67,7 @@ type
     procedure AdjustControlPos; virtual;
     procedure DialogFolderChange; virtual;
     procedure DialogShow; virtual;
+    procedure DialogClose; virtual;
     procedure DoClose;
     procedure DoShow;
     procedure ParentWndProc(var Message: TMessage); virtual;
@@ -235,6 +236,11 @@ begin
   // override to customize
 end;
 
+procedure TJclOpenDialogHook.DialogClose;
+begin
+  // override to customize
+end;
+
 procedure TJclOpenDialogHook.DialogFolderChange;
 begin
   // override to customize
@@ -379,6 +385,11 @@ begin
         begin
           Default;
           FHandle := 0;
+        end;
+      WM_DESTROY:
+        begin
+          DialogClose;
+          DoClose;
         end;
     else
       Default;

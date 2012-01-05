@@ -60,7 +60,7 @@ type
     procedure AdjustControlPos; override;
     procedure DialogFolderChange; override;
     procedure DialogShow; override;
-    procedure WndProc(var Message: TMessage); override;
+    procedure DialogClose; override;
     property DeleteMode: Boolean read FDeleteMode write SetDeleteMode;
   public
     constructor Create; override;
@@ -215,6 +215,15 @@ begin
   FAddButton.Left := FFavoriteComboBox.Width + 14;
 end;
 
+procedure TJclOpenDialogFavoritesHook.DialogClose;
+begin
+  inherited DialogClose;
+  if not IsOpenPictureDialog then
+    FavoriteFolders.Assign(FFavoriteComboBox.Items);
+  FFavoritePanel.ParentWindow := 0;
+  FParentWnd := 0;
+end;
+
 procedure TJclOpenDialogFavoritesHook.DialogFolderChange;
 var
   Path: string;
@@ -269,30 +278,6 @@ begin
     else
       FAddButton.Caption := LoadResString(@RsOpenDialogAdd);
     FFavoriteComboBox.Invalidate;
-  end;
-end;
-
-procedure TJclOpenDialogFavoritesHook.WndProc(var Message: TMessage);
-begin
-  if FHandle <> 0 then
-  begin
-    case Message.Msg of
-      WM_DESTROY:
-        begin
-          if not IsOpenPictureDialog then
-            FavoriteFolders.Assign(FFavoriteComboBox.Items);
-          try
-            DoClose;
-            inherited WndProc(Message);
-          finally
-            if not IsOpenPictureDialog then
-              FFavoritePanel.ParentWindow := 0;
-            FParentWnd := 0;
-          end;
-        end;
-    else
-      inherited WndProc(Message);
-    end;
   end;
 end;
 
