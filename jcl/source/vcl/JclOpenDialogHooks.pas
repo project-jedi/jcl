@@ -64,7 +64,7 @@ type
   protected
     FHandle: HWND;
     FParentWnd: HWND;
-    procedure AdjustControlPos; virtual;
+    procedure DialogAdjustControlPos; virtual;
     procedure DialogFolderChange; virtual;
     procedure DialogShow; virtual;
     procedure DialogClose; virtual;
@@ -231,7 +231,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJclOpenDialogHook.AdjustControlPos;
+procedure TJclOpenDialogHook.DialogAdjustControlPos;
 begin
   // override to customize
 end;
@@ -325,7 +325,7 @@ begin
   begin
     Result := CallWindowProc(FOldParentWndInstance, FParentWnd, Msg, WParam, LParam);
     if Msg = WM_SIZE then
-      AdjustControlPos;
+      DialogAdjustControlPos;
   end;
 end;
 
@@ -371,7 +371,10 @@ begin
         begin
           case (POFNotify(Message.LParam)^.hdr.code) of
             CDN_INITDONE:
-              DialogShow;
+              begin
+                DialogShow;
+                DialogAdjustControlPos;
+              end;
             CDN_FOLDERCHANGE:
               if not IsOpenPictureDialog then
                 DialogFolderChange;

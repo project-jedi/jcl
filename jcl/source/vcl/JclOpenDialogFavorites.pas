@@ -57,7 +57,7 @@ type
     procedure FavoriteComboBoxClick(Sender: TObject);
     procedure SetDeleteMode(const Value: Boolean);
   protected
-    procedure AdjustControlPos; override;
+    procedure DialogAdjustControlPos; override;
     procedure DialogFolderChange; override;
     procedure DialogShow; override;
     procedure DialogClose; override;
@@ -184,7 +184,7 @@ begin
   end;
 end;
 
-procedure TJclOpenDialogFavoritesHook.AdjustControlPos;
+procedure TJclOpenDialogFavoritesHook.DialogAdjustControlPos;
 var
   ParentRect, FileNameEditRect, OkButtonRect: TRect;
 
@@ -195,7 +195,7 @@ var
   end;
 
 begin
-  inherited AdjustControlPos;
+  inherited DialogAdjustControlPos;
   GetWindowRect(FParentWnd, ParentRect);
   if GetDlgItem(FParentWnd, edt1) <> 0 then
     GetDlgItemRect(edt1, FileNameEditRect)
@@ -248,7 +248,6 @@ begin
     PreviewRect.Top := PreviewRect.Bottom - 43;
     FFavoritePanel.BoundsRect := PreviewRect;
     FFavoritePanel.ParentWindow := FHandle;
-    AdjustControlPos;
     FFavoriteComboBox.Items.Assign(FavoriteFolders);
   end;
 end;
