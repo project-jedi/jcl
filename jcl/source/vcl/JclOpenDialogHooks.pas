@@ -35,9 +35,9 @@ interface
 
 uses
   {$IFDEF HAS_UNITSCOPE}
-  Winapi.Windows, Winapi.Messages, System.Classes, System.SysUtils, Vcl.Controls, Vcl.StdCtrls, Vcl.ExtCtrls,
+  Winapi.Windows, Winapi.Messages, Winapi.ShlObj, System.Classes, System.SysUtils, Vcl.Controls, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Dialogs,
   {$ELSE ~HAS_UNITSCOPE}
-  Windows, Messages, Classes, SysUtils, Controls, StdCtrls, ExtCtrls,
+  Windows, Messages, ShlObj, Classes, SysUtils, Controls, StdCtrls, ExtCtrls, Dialogs,
   {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
@@ -45,6 +45,24 @@ uses
   JclBase, JclPeImage, JclWin32;
 
 type
+  EJclOpenDialogHookError = class(EJclError);
+
+  TJclFileOpenDialogHook = class (TFileOpenDialog)
+  strict protected
+    function CreateFileDialog: IFileDialog; override;
+  public
+    class procedure InstallHook(out OldHandler: Pointer);
+    class procedure UninstallHook(OldHandler: Pointer);
+  end;
+
+  TJclFileSaveDialogHook = class (TFileSaveDialog)
+  strict protected
+    function CreateFileDialog: IFileDialog; override;
+  public
+    class procedure InstallHook(out OldHandler: Pointer);
+    class procedure UninstallHook(OldHandler: Pointer);
+  end;
+
   TJclOpenDialogHook = class (TObject)
   private
     FDisableHelpButton: Boolean;
@@ -56,6 +74,8 @@ type
     FPictureDialogLastFolder: string;
     FWndInstance: Pointer;
     FOldWndInstance: Pointer;
+    FOldFileOpenCreateFileDialog: Pointer;
+    FOldFileSaveCreateFileDialog: Pointer;
     FOnClose: TNotifyEvent;
     FOnShow: TNotifyEvent;
     function GetCurrentFolder: string;
@@ -68,6 +88,7 @@ type
     procedure DialogFolderChange; virtual;
     procedure DialogShow; virtual;
     procedure DialogClose; virtual;
+    procedure FileDialogCreate(const AFileDialog: IFileDialog); virtual;
     procedure DoClose;
     procedure DoShow;
     procedure ParentWndProc(var Message: TMessage); virtual;
@@ -88,8 +109,6 @@ type
   end;
 
   TJclOpenDialogHookClass = class of TJclOpenDialogHook;
-
-  EJclOpenDialogHookError = class(EJclError);
 
 function InitializeOpenDialogHook(OpenDialogHookClass: TJclOpenDialogHookClass): TJclOpenDialogHook;
 procedure FinalizeOpenDialogHook;
@@ -212,6 +231,78 @@ begin
   FreeAndNil(GlobalOpenDialogHook);
 end;
 
+//=== { TJclFileOpenDialogHook } =============================================
+
+function TJclFileOpenDialogHook.CreateFileDialog: IFileDialog;
+begin
+  Result := inherited CreateFileDialog;
+  GlobalOpenDialogHook.FileDialogCreate(Result);
+end;
+
+class procedure TJclFileOpenDialogHook.InstallHook(out OldHandler: Pointer);
+var
+  I: Integer;
+begin
+  for I := 0 to GetVirtualMethodCount(TFileOpenDialog) - 1 do
+  begin
+    OldHandler := GetVirtualMethod(TFileOpenDialog, I);
+    if OldHandler = @TFileOpenDialog.CreateFileDialog then
+    begin
+      SetVirtualMethod(TFileOpenDialog, I, @TJclFileOpenDialogHook.CreateFileDialog);
+      Exit;
+    end;
+  end;
+  OldHandler := nil;
+end;
+
+class procedure TJclFileOpenDialogHook.UninstallHook(OldHandler: Pointer);
+var
+  I: Integer;
+begin
+  for I := 0 to GetVirtualMethodCount(TFileOpenDialog) - 1 do
+    if GetVirtualMethod(TFileOpenDialog, I) = @TJclFileOpenDialogHook.CreateFileDialog then
+  begin
+    SetVirtualMethod(TFileOpenDialog, I, OldHandler);
+    Break;
+  end;
+end;
+
+//=== { TJclFileSaveDialogHook } =============================================
+
+function TJclFileSaveDialogHook.CreateFileDialog: IFileDialog;
+begin
+  Result := inherited CreateFileDialog;
+  GlobalOpenDialogHook.FileDialogCreate(Result);
+end;
+
+class procedure TJclFileSaveDialogHook.InstallHook(out OldHandler: Pointer);
+var
+  I: Integer;
+begin
+  for I := 0 to GetVirtualMethodCount(TFileSaveDialog) - 1 do
+  begin
+    OldHandler := GetVirtualMethod(TFileSaveDialog, I);
+    if OldHandler = @TFileSaveDialog.CreateFileDialog then
+    begin
+      SetVirtualMethod(TFileSaveDialog, I, @TJclFileSaveDialogHook.CreateFileDialog);
+      Exit;
+    end;
+  end;
+  OldHandler := nil;
+end;
+
+class procedure TJclFileSaveDialogHook.UninstallHook(OldHandler: Pointer);
+var
+  I: Integer;
+begin
+  for I := 0 to GetVirtualMethodCount(TFileSaveDialog) - 1 do
+    if GetVirtualMethod(TFileSaveDialog, I) = @TJclFileSaveDialogHook.CreateFileDialog then
+  begin
+    SetVirtualMethod(TFileSaveDialog, I, OldHandler);
+    Break;
+  end;
+end;
+
 //=== { TJclOpenDialogHook } =================================================
 
 constructor TJclOpenDialogHook.Create;
@@ -267,6 +358,11 @@ begin
     FOnShow(Self);
 end;
 
+procedure TJclOpenDialogHook.FileDialogCreate(const AFileDialog: IFileDialog);
+begin
+  // override to customize
+end;
+
 function TJclOpenDialogHook.GetCurrentFolder: string;
 var
   Path: array [0..MAX_PATH] of Char;
@@ -317,6 +413,8 @@ begin
   finally
     Pe.Free;
   end;
+  TJclFileOpenDialogHook.InstallHook(FOldFileOpenCreateFileDialog);
+  TJclFileSaveDialogHook.InstallHook(FOldFileSaveCreateFileDialog);
 end;
 
 procedure TJclOpenDialogHook.ParentWndProc(var Message: TMessage);
@@ -353,6 +451,8 @@ begin
   while I < FHooks.Count do
     if not FHooks[I].Unhook then
       Inc(I);
+  TJclFileOpenDialogHook.UninstallHook(FOldFileOpenCreateFileDialog);
+  TJclFileSaveDialogHook.UninstallHook(FOldFileSaveCreateFileDialog);
 end;
 
 procedure TJclOpenDialogHook.WndProc(var Message: TMessage);

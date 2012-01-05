@@ -87,6 +87,7 @@ resourcestring
 
 //=== JclOpenDialogFavorites.pas =============================================
 resourcestring
+  RsOpenDialogList         = ' --> Favorites';
   RsOpenDialogAdd          = ' --> Add to this list';
   RsOpenDialogDelete       = ' --> Delete from this list';
   RsOpenDialogVirtual      = ' --> Virtual directories cannot be added to the favorites';

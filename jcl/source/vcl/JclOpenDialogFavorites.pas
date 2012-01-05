@@ -35,9 +35,9 @@ interface
 
 uses
   {$IFDEF HAS_UNITSCOPE}
-  Winapi.Windows, Winapi.Messages, System.Classes, System.SysUtils, Vcl.Controls, Vcl.StdCtrls, Vcl.ExtCtrls,
+  Winapi.Windows, Winapi.Messages, Winapi.ShlObj, System.Classes, System.SysUtils, Vcl.Controls, Vcl.StdCtrls, Vcl.ExtCtrls,
   {$ELSE ~HAS_UNITSCOPE}
-  Windows, Messages, Classes, SysUtils, Controls, StdCtrls, ExtCtrls,
+  Windows, Messages, ShlObj, Classes, SysUtils, Controls, StdCtrls, ExtCtrls,
   {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
@@ -45,22 +45,73 @@ uses
   JclPeImage, JclWin32,
   JclOpenDialogHooks;
 
+// old-style open dialogs are supported by all versions of Delphi
+{$DEFINE OLDSTYLE}
+
+// new-style file dialogs are supported by Delphi 2007 and newer
+{$IFDEF RTL185_UP}
+{$DEFINE NEWSTYLE}
+{$ENDIF RTL185_UP}
+
 type
-  TJclOpenDialogFavoritesHook = class (TJclOpenDialogHook)
+  TJclOpenDialogFavoritesHook = class (TJclOpenDialogHook{$IFDEF NEWSTYLE}, IFileDialogControlEvents, IFileDialogEvents, IInterface{$ENDIF})
   private
-    FFavoriteComboBox: TComboBox;
     FFavoriteFolders: TStrings;
-    FFavoriteStaticText: TStaticText;
-    FFavoritePanel: TPanel;
     FTextAdd: string;
     FTextDelete: string;
     FTextVirtual: string;
+  {$IFDEF OLDSTYLE}
+  private
+    FFavoriteComboBox: TComboBox;
+    FFavoriteStaticText: TStaticText;
+    FFavoritePanel: TPanel;
     procedure FavoriteComboBoxClick(Sender: TObject);
   protected
     procedure DialogAdjustControlPos; override;
     procedure DialogFolderChange; override;
     procedure DialogShow; override;
     procedure DialogClose; override;
+  {$ENDIF OLDSTYLE}
+  {$IFDEF NEWSTYLE}
+  private
+    FComboboxCount: Integer;
+    FComboboxListItem,
+    FComboboxAddItem,
+    FComboboxDeleteItem,
+    FComboboxVirtualItem: Boolean;
+    FTextList: string;
+    procedure FileDialogCleanCombobox(const AFileDialogCustomize: IFileDialogCustomize);
+    procedure FileDialogFillCombobox(const AFileDialogCustomize: IFileDialogCustomize; ListItem, AddItem, DeleteItem, VirtualItem: Boolean);
+  protected
+    procedure FileDialogCreate(const AFileDialog: IFileDialog); override;
+  public
+    { IInterface }
+    function QueryInterface(const IID: TGUID; out Obj): HResult; stdcall;
+    function _AddRef: Integer; stdcall;
+    function _Release: Integer; stdcall;
+  public
+    { IFileDialogEvents }
+    function OnFileOk(const pfd: IFileDialog): HResult; stdcall;
+    function OnFolderChanging(const pfd: IFileDialog;
+      const psiFolder: IShellItem): HResult; stdcall;
+    function OnFolderChange(const pfd: IFileDialog): HResult; stdcall;
+    function OnSelectionChange(const pfd: IFileDialog): HResult; stdcall;
+    function OnShareViolation(const pfd: IFileDialog; const psi: IShellItem;
+      out pResponse: DWORD): HResult; stdcall;
+    function OnTypeChange(const pfd: IFileDialog): HResult; stdcall;
+    function OnOverwrite(const pfd: IFileDialog; const psi: IShellItem;
+      out pResponse: DWORD): HResult; stdcall;
+  public
+    { IFileDialogControlEvents }
+    function OnItemSelected(const pfdc: IFileDialogCustomize; dwIDCtl: DWORD;
+      dwIDItem: DWORD): HResult; stdcall;
+    function OnButtonClicked(const pfdc: IFileDialogCustomize;
+      dwIDCtl: DWORD): HResult; stdcall;
+    function OnCheckButtonToggled(const pfdc: IFileDialogCustomize;
+      dwIDCtl: DWORD; bChecked: BOOL): HResult; stdcall;
+    function OnControlActivating(const pfdc: IFileDialogCustomize;
+      dwIDCtl: DWORD): HResult; stdcall;
+  {$ENDIF NEWSTYLE}
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -93,6 +144,15 @@ uses
   {$ENDIF ~HAS_UNITSCOPE}
   JclBase, JclFileUtils, JclStrings, JclSysInfo, JclSysUtils, JclVclResources;
 
+{$IFDEF NEWSTYLE}
+const
+  CTRLID_COMBOBOX = $2346;
+  ITEMID_LIST     = $FFFF;
+  ITEMID_ADD      = $FFFE;
+  ITEMID_DELETE   = $FFFD;
+  ITEMID_VIRTUAL  = $FFFC;
+{$ENDIF NEWSTYLE}
+
 function InitializeOpenDialogFavorites: TJclOpenDialogFavoritesHook;
 begin
   Result := InitializeOpenDialogHook(TJclOpenDialogFavoritesHook) as TJclOpenDialogFavoritesHook;
@@ -110,6 +170,7 @@ begin
   inherited Create;
   FFavoriteFolders := TStringList.Create;
 
+  {$IFDEF OLDSTYLE}
   FFavoritePanel := TPanel.Create(nil);
   FFavoritePanel.Name := 'FavoritePanel';
   FFavoritePanel.BevelOuter := bvNone;
@@ -128,21 +189,29 @@ begin
   FFavoriteStaticText.Caption := LoadResString(@RsOpenDialogFavorites);
   FFavoriteStaticText.AutoSize := True;
   FFavoriteStaticText.FocusControl := FFavoriteComboBox;
+  {$ENDIF OLDSTYLE}
 
   FTextAdd := LoadResString(@RsOpenDialogAdd);
   FTextDelete := LoadResString(@RsOpenDialogDelete);
   FTextVirtual := LoadResString(@RsOpenDialogVirtual);
+
+  {$IFDEF NEWSTYLE}
+  FTextList := LoadResString(@RsOpenDialogList);
+  {$ENDIF NEWSTYLE}
 end;
 
 destructor TJclOpenDialogFavoritesHook.Destroy;
 begin
+  {$IFDEF OLDSTYLE}
   FreeAndNil(FFavoriteComboBox);
   FreeAndNil(FFavoritePanel);
   FreeAndNil(FFavoriteStaticText);
+  {$ENDIF OLDSTYLE}
   FreeAndNil(FFavoriteFolders);
   inherited Destroy;
 end;
 
+{$IFDEF OLDSTYLE}
 procedure TJclOpenDialogFavoritesHook.DialogAdjustControlPos;
 var
   FileTypeStaticTextRect, FileTypeEditRect,          // ID = 1136 1089
@@ -251,6 +320,68 @@ begin
     // switch to selected folder
     CurrentFolder := FFavoriteComboBox.Items[FFavoriteComboBox.ItemIndex];
 end;
+{$ENDIF OLDSTYLE}
+
+{$IFDEF NEWSTYLE}
+procedure TJclOpenDialogFavoritesHook.FileDialogCreate(
+  const AFileDialog: IFileDialog);
+var
+  FileDialogCustomize: IFileDialogCustomize;
+  Unused: Cardinal;
+begin
+  inherited FileDialogCreate(AFileDialog);
+  FileDialogCustomize := AFileDialog as IFileDialogCustomize;
+  //CheckOSError(FileDialogCustomize.StartVisualGroup(CTRLID_GROUP, PWideChar(WideString(LoadResString(@RsOpenDialogFavorites)))));
+  CheckOSError(FileDialogCustomize.AddComboBox(CTRLID_COMBOBOX));
+  //CheckOSError(FileDialogCustomize.EndVisualGroup);
+  CheckOSError(FileDialogCustomize.MakeProminent(CTRLID_COMBOBOX));
+  CheckOSError(AFileDialog.Advise(Self, Unused));
+end;
+
+procedure TJclOpenDialogFavoritesHook.FileDialogCleanCombobox(
+  const AFileDialogCustomize: IFileDialogCustomize);
+var
+  I: Integer;
+begin
+  if FComboboxListItem then
+    CheckOSError(AFileDialogCustomize.RemoveControlItem(CTRLID_COMBOBOX, ITEMID_LIST));
+  FComboboxListItem := False;
+  if FComboboxAddItem then
+    CheckOSError(AFileDialogCustomize.RemoveControlItem(CTRLID_COMBOBOX, ITEMID_ADD));
+  FComboboxAddItem := False;
+  if FComboboxDeleteItem then
+    CheckOSError(AFileDialogCustomize.RemoveControlItem(CTRLID_COMBOBOX, ITEMID_DELETE));
+  FComboboxDeleteItem := False;
+  if FComboboxVirtualItem then
+    CheckOSError(AFileDialogCustomize.RemoveControlItem(CTRLID_COMBOBOX, ITEMID_VIRTUAL));
+  FComboboxVirtualItem := False;
+  for I := 0 to FComboboxCount - 1 do
+    CheckOSError(AFileDialogCustomize.RemoveControlItem(CTRLID_COMBOBOX, I));
+  FComboboxCount := 0;
+end;
+
+procedure TJclOpenDialogFavoritesHook.FileDialogFillCombobox(
+  const AFileDialogCustomize: IFileDialogCustomize; ListItem, AddItem, DeleteItem, VirtualItem: Boolean);
+var
+  I: Integer;
+begin
+  if ListItem then
+    CheckOSError(AFileDialogCustomize.AddControlItem(CTRLID_COMBOBOX, ITEMID_LIST, PWideChar(WideString(FTextList))));
+  FComboboxListItem := ListItem;
+  if AddItem then
+    CheckOSError(AFileDialogCustomize.AddControlItem(CTRLID_COMBOBOX, ITEMID_ADD, PWideChar(WideString(FTextAdd))));
+  FComboboxAddItem := AddItem;
+  if DeleteItem then
+    CheckOSError(AFileDialogCustomize.AddControlItem(CTRLID_COMBOBOX, ITEMID_DELETE, PWideChar(WideString(FTextDelete))));
+  FComboboxDeleteItem := DeleteItem;
+  if VirtualItem then
+    CheckOSError(AFileDialogCustomize.AddControlItem(CTRLID_COMBOBOX, ITEMID_VIRTUAL, PWideChar(WideString(FTextVirtual))));
+  FComboboxVirtualItem := VirtualItem;
+  FComboboxCount := FFavoriteFolders.Count;
+  for I := 0 to FComboboxCount - 1 do
+    CheckOSError(AFileDialogCustomize.AddControlItem(CTRLID_COMBOBOX, I, PWideChar(WideString(FFavoriteFolders.Strings[I]))));
+end;
+{$ENDIF NEWSTYLE}
 
 procedure TJclOpenDialogFavoritesHook.LoadFavorites(const FileName: string);
 begin
@@ -259,6 +390,175 @@ begin
   else
     FavoriteFolders.Clear;
 end;
+
+{$IFDEF NEWSTYLE}
+function TJclOpenDialogFavoritesHook.OnButtonClicked(
+  const pfdc: IFileDialogCustomize; dwIDCtl: DWORD): HResult;
+begin
+  Result := S_OK;
+end;
+
+function TJclOpenDialogFavoritesHook.OnCheckButtonToggled(
+  const pfdc: IFileDialogCustomize; dwIDCtl: DWORD; bChecked: BOOL): HResult;
+begin
+  Result := S_OK;
+end;
+
+function TJclOpenDialogFavoritesHook.OnControlActivating(
+  const pfdc: IFileDialogCustomize; dwIDCtl: DWORD): HResult;
+begin
+  Result := S_OK;
+end;
+
+function TJclOpenDialogFavoritesHook.OnFileOk(const pfd: IFileDialog): HResult;
+begin
+  Result := S_OK;
+end;
+
+function TJclOpenDialogFavoritesHook.OnFolderChange(
+  const pfd: IFileDialog): HResult;
+var
+  pfdc: IFileDialogCustomize;
+  ppsi: IShellItem;
+  Path: PWideChar;
+  ItemIndex: Integer;
+begin
+  Result := S_OK;
+  pfdc := pfd as IFileDialogCustomize;
+  CheckOSError(pfd.GetFolder(ppsi));
+  if not Succeeded(ppsi.GetDisplayName(SIGDN_FILESYSPATH, Path)) then
+    Path := nil;
+  ItemIndex := FFavoriteFolders.IndexOf(Path);
+  if ItemIndex = -1 then
+  begin
+    if Path <> '' then
+    begin
+      FileDialogCleanCombobox(pfdc);
+      FileDialogFillCombobox(pfdc, True, True, False, False);
+      CheckOSError(pfdc.SetSelectedControlItem(CTRLID_COMBOBOX, ITEMID_LIST));
+    end
+    else
+    begin
+      FileDialogCleanCombobox(pfdc);
+      FileDialogFillCombobox(pfdc, False, False, False, True);
+      CheckOSError(pfdc.SetSelectedControlItem(CTRLID_COMBOBOX, ITEMID_VIRTUAL));
+    end;
+  end
+  else
+  begin
+    FileDialogCleanCombobox(pfdc);
+    FileDialogFillCombobox(pfdc, False, False, True, False);
+    CheckOSError(pfdc.SetSelectedControlItem(CTRLID_COMBOBOX, ItemIndex));
+  end;
+end;
+
+function TJclOpenDialogFavoritesHook.OnFolderChanging(const pfd: IFileDialog;
+  const psiFolder: IShellItem): HResult;
+begin
+  Result := S_OK;
+end;
+
+function TJclOpenDialogFavoritesHook.OnItemSelected(
+  const pfdc: IFileDialogCustomize; dwIDCtl, dwIDItem: DWORD): HResult;
+var
+  I: Integer;
+  pfd: IFileDialog;
+  ppsi: IShellItem;
+  Path: PWideChar;
+begin
+  Result := S_OK;
+  if dwIDCtl = CTRLID_COMBOBOX then
+  begin
+    pfd := pfdc as IFileDialog;
+    CheckOSError(pfd.GetFolder(ppsi));
+    if not Succeeded(ppsi.GetDisplayName(SIGDN_FILESYSPATH, Path)) then
+      Path := nil;
+    if dwIDItem = ITEMID_DELETE then
+    begin
+      I := FFavoriteFolders.IndexOf(Path);
+      if I >= 0 then
+      begin
+        // delete current folder
+        if MessageBox(FHandle,
+                      PChar(Format(LoadResString(@RsOpenDialogDelConfirm), [Path])),
+                      PChar(LoadResString(@RsOpenDialogConfirmation)),
+                      MB_YESNO or MB_ICONQUESTION or MB_DEFBUTTON2) = ID_YES then
+        begin
+          FFavoriteFolders.Delete(I);
+          FileDialogCleanCombobox(pfdc);
+          FileDialogFillCombobox(pfdc, True, True, False, False);
+          CheckOSError(pfdc.SetSelectedControlItem(CTRLID_COMBOBOX, ITEMID_LIST));
+        end;
+      end;
+    end
+    else
+    if dwIDItem = ITEMID_ADD then
+    begin
+      if Path <> '' then
+      begin
+        // add current folder
+        I := FFavoriteFolders.Add(Path);
+        FileDialogCleanCombobox(pfdc);
+        FileDialogFillCombobox(pfdc, False, False, True, False);
+        CheckOSError(pfdc.SetSelectedControlItem(CTRLID_COMBOBOX, I));
+      end;
+    end
+    else
+    //if dwIDItem >= 0 then
+    begin
+      // switch to selected folder
+      CheckOSError(SHCreateItemFromParsingName(PWideChar(WideString(FFavoriteFolders.Strings[dwIDItem])), nil, IShellItem, ppsi));
+      CheckOSError(pfd.SetFolder(ppsi));
+      FileDialogCleanCombobox(pfdc);
+      FileDialogFillCombobox(pfdc, False, False, True, False);
+      CheckOSError(pfdc.SetSelectedControlItem(CTRLID_COMBOBOX, dwIDItem));
+    end;
+  end;
+end;
+
+function TJclOpenDialogFavoritesHook.OnOverwrite(const pfd: IFileDialog;
+  const psi: IShellItem; out pResponse: DWORD): HResult;
+begin
+  Result := S_OK;
+end;
+
+function TJclOpenDialogFavoritesHook.OnSelectionChange(
+  const pfd: IFileDialog): HResult;
+begin
+  Result := S_OK;
+end;
+
+function TJclOpenDialogFavoritesHook.OnShareViolation(const pfd: IFileDialog;
+  const psi: IShellItem; out pResponse: DWORD): HResult;
+begin
+  Result := S_OK;
+end;
+
+function TJclOpenDialogFavoritesHook.OnTypeChange(
+  const pfd: IFileDialog): HResult;
+begin
+  Result := S_OK;
+end;
+
+function TJclOpenDialogFavoritesHook.QueryInterface(const IID: TGUID;
+  out Obj): HResult;
+begin
+  if GetInterface(IID, Obj) then
+    Result := 0
+  else
+    Result := E_NOINTERFACE;
+end;
+
+function TJclOpenDialogFavoritesHook._AddRef: Integer;
+begin
+  Result := -1;
+end;
+
+function TJclOpenDialogFavoritesHook._Release: Integer;
+begin
+  Result := -1;
+end;
+{$ENDIF NEWSTYLE}
 
 {$IFDEF UNITVERSIONING}
 initialization
