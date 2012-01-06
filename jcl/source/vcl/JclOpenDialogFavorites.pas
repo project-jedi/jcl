@@ -54,6 +54,7 @@ uses
 {$ENDIF RTL185_UP}
 
 type
+  {$NODEFINE TJclOpenDialogFavoritesHook} // IFileDialogCustomize is badly emitted
   TJclOpenDialogFavoritesHook = class (TJclOpenDialogHook{$IFDEF NEWSTYLE}, IFileDialogControlEvents, IFileDialogEvents, IInterface{$ENDIF})
   private
     FFavoriteFolders: TStrings;
@@ -119,7 +120,9 @@ type
     property FavoriteFolders: TStrings read FFavoriteFolders;
   end;
 
+{$NODEFINE InitializeOpenDialogFavorites}
 function InitializeOpenDialogFavorites: TJclOpenDialogFavoritesHook;
+{$NODEFINE FinalizeOpenDialogFavorites}
 procedure FinalizeOpenDialogFavorites;
 
 {$IFDEF UNITVERSIONING}
