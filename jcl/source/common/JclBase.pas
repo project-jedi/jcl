@@ -282,6 +282,10 @@ type
 procedure RaiseLastOSError;
 {$ENDIF ~XPLATFORM_RTL}
 
+{$IFNDEF RTL230_UP}
+procedure CheckOSError(ErrorCode: Cardinal);
+{$ENDIF RTL230_UP}
+
 procedure MoveChar(const Source: string; FromIndex: SizeInt;
   var Dest: string; ToIndex, Count: SizeInt); overload; // Index: 0..n-1
 
@@ -521,6 +525,14 @@ begin
   RaiseLastWin32Error;
 end;
 {$ENDIF ~XPLATFORM_RTL}
+
+{$IFNDEF RTL230_UP}
+procedure CheckOSError(ErrorCode: Cardinal);
+begin
+  if ErrorCode <> ERROR_SUCCESS then
+    RaiseLastOSError(ErrorCode);
+end;
+{$ENDIF RTL230_UP}
 
 {$OVERFLOWCHECKS OFF}
 
