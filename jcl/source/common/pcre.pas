@@ -622,6 +622,7 @@ uses
 // make the linker happy with PCRE 8.00
 procedure _pcre_find_bracket; external;
 
+{$IFDEF CPU32}
 {$LINK ..\windows\obj\pcre\win32\pcre_compile.obj}
 {$LINK ..\windows\obj\pcre\win32\pcre_config.obj}
 {$LINK ..\windows\obj\pcre\win32\pcre_dfa_exec.obj}
@@ -642,6 +643,29 @@ procedure _pcre_find_bracket; external;
 {$LINK ..\windows\obj\pcre\win32\pcre_version.obj}
 {$LINK ..\windows\obj\pcre\win32\pcre_xclass.obj}
 {$LINK ..\windows\obj\pcre\win32\pcre_default_tables.obj}
+{$ENDIF CPU32}
+{$IFDEF CPU64}
+{$LINK ..\windows\obj\pcre\win64\pcre_compile.obj}
+{$LINK ..\windows\obj\pcre\win64\pcre_config.obj}
+{$LINK ..\windows\obj\pcre\win64\pcre_dfa_exec.obj}
+{$LINK ..\windows\obj\pcre\win64\pcre_exec.obj}
+{$LINK ..\windows\obj\pcre\win64\pcre_fullinfo.obj}
+{$LINK ..\windows\obj\pcre\win64\pcre_get.obj}
+{$LINK ..\windows\obj\pcre\win64\pcre_globals.obj}
+{$LINK ..\windows\obj\pcre\win64\pcre_info.obj}
+{$LINK ..\windows\obj\pcre\win64\pcre_maketables.obj}
+{$LINK ..\windows\obj\pcre\win64\pcre_newline.obj}
+{$LINK ..\windows\obj\pcre\win64\pcre_ord2utf8.obj}
+{$LINK ..\windows\obj\pcre\win64\pcre_refcount.obj}
+{$LINK ..\windows\obj\pcre\win64\pcre_study.obj}
+{$LINK ..\windows\obj\pcre\win64\pcre_tables.obj}
+{$LINK ..\windows\obj\pcre\win64\pcre_try_flipped.obj}
+{$LINK ..\windows\obj\pcre\win64\pcre_ucd.obj}
+{$LINK ..\windows\obj\pcre\win64\pcre_valid_utf8.obj}
+{$LINK ..\windows\obj\pcre\win64\pcre_version.obj}
+{$LINK ..\windows\obj\pcre\win64\pcre_xclass.obj}
+{$LINK ..\windows\obj\pcre\win64\pcre_default_tables.obj}
+{$ENDIF CPU64}
 
 // user's defined callbacks
 var
@@ -683,6 +707,7 @@ type
 const
   szMSVCRT = 'MSVCRT.DLL';
 
+{$IFDEF CPU32}
 function _memcpy(dest, src: Pointer; count: size_t): Pointer; cdecl; external szMSVCRT name 'memcpy';
 function _memmove(dest, src: Pointer; count: size_t): Pointer; cdecl; external szMSVCRT name 'memmove';
 function _memset(dest: Pointer; val: Integer; count: size_t): Pointer; cdecl; external szMSVCRT name 'memset';
@@ -703,6 +728,30 @@ function _isspace(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isspac
 function _isupper(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isupper';
 function _isxdigit(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isxdigit';
 function _strchr(__s: PAnsiChar; __c: Integer): PAnsiChar; cdecl; external szMSVCRT name 'strchr';
+{$ENDIF CPU32}
+{$IFDEF CPU64}
+function memcpy(dest, src: Pointer; count: size_t): Pointer; external szMSVCRT name 'memcpy';
+function memmove(dest, src: Pointer; count: size_t): Pointer; external szMSVCRT name 'memmove';
+function memset(dest: Pointer; val: Integer; count: size_t): Pointer; external szMSVCRT name 'memset';
+function strncmp(s1: PAnsiChar; s2: PAnsiChar; n: size_t): Integer; external szMSVCRT name 'strncmp';
+function strcmp(s1: PAnsiChar; s2: PAnsiChar; n: size_t): Integer; external szMSVCRT name 'strcmp';
+function memcmp(s1: Pointer; s2: Pointer; n: size_t): Integer; external szMSVCRT name 'memcmp';
+function strlen(s: PAnsiChar): size_t; external szMSVCRT name 'strlen';
+function tolower(__ch: Integer): Integer; external szMSVCRT name 'tolower';
+function toupper(__ch: Integer): Integer; external szMSVCRT name 'toupper';
+function isalnum(__ch: Integer): Integer; external szMSVCRT name 'isalnum';
+function isalpha(__ch: Integer): Integer; external szMSVCRT name 'isalpha';
+function iscntrl(__ch: Integer): Integer; external szMSVCRT name 'iscntrl';
+function isdigit(__ch: Integer): Integer; external szMSVCRT name 'isdigit';
+function isgraph(__ch: Integer): Integer; external szMSVCRT name 'isgraph';
+function islower(__ch: Integer): Integer; external szMSVCRT name 'islower';
+function isprint(__ch: Integer): Integer; external szMSVCRT name 'isprint';
+function ispunct(__ch: Integer): Integer; external szMSVCRT name 'ispunct';
+function isspace(__ch: Integer): Integer; external szMSVCRT name 'isspace';
+function isupper(__ch: Integer): Integer; external szMSVCRT name 'isupper';
+function isxdigit(__ch: Integer): Integer; external szMSVCRT name 'isxdigit';
+function strchr(__s: PAnsiChar; __c: Integer): PAnsiChar; external szMSVCRT name 'strchr';
+{$ENDIF CPU64}
 
 function malloc(size: size_t): Pointer; cdecl; external szMSVCRT name 'malloc';
 

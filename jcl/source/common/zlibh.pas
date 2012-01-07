@@ -2081,6 +2081,7 @@ end;
 
 {$IFDEF ZLIB_STATICLINK}
 
+{$IFDEF CPU32}
 {$LINK ..\windows\obj\zlib\win32\adler32.obj} // OS: CHECKTHIS - Unix version may need forward slashes?
 {$LINK ..\windows\obj\zlib\win32\compress.obj}
 {$LINK ..\windows\obj\zlib\win32\crc32.obj}
@@ -2092,6 +2093,20 @@ end;
 {$LINK ..\windows\obj\zlib\win32\trees.obj}
 {$LINK ..\windows\obj\zlib\win32\uncompr.obj}
 {$LINK ..\windows\obj\zlib\win32\zutil.obj}
+{$ENDIF CPU32}
+{$IFDEF CPU64}
+{$LINK ..\windows\obj\zlib\win64\adler32.obj}
+{$LINK ..\windows\obj\zlib\win64\compress.obj}
+{$LINK ..\windows\obj\zlib\win64\crc32.obj}
+{$LINK ..\windows\obj\zlib\win64\deflate.obj}
+{$LINK ..\windows\obj\zlib\win64\infback.obj}
+{$LINK ..\windows\obj\zlib\win64\inffast.obj}
+{$LINK ..\windows\obj\zlib\win64\inflate.obj}
+{$LINK ..\windows\obj\zlib\win64\inftrees.obj}
+{$LINK ..\windows\obj\zlib\win64\trees.obj}
+{$LINK ..\windows\obj\zlib\win64\uncompr.obj}
+{$LINK ..\windows\obj\zlib\win64\zutil.obj}
+{$ENDIF CPU64}
 
 // Core functions
 function zlibVersion;          external;
@@ -2191,24 +2206,44 @@ procedure _clearerr(stream: Pointer); cdecl; external szMSVCRT name 'clearerr';
 
 {$ELSE ~LINK_TO_MSVCRT}
 
+{$IFDEF CPU32}
 function _memcpy(dest, src: Pointer; count: size_t): Pointer; cdecl;
+{$ENDIF CPU32}
+{$IFDEF CPU64}
+function memcpy(dest, src: Pointer; count: size_t): Pointer;
+{$ENDIF CPU64}
 begin
   Move(src^, dest^, count);
   Result := dest;
 end;
 
+{$IFDEF CPU32}
 function _memset(dest: Pointer; val: Integer; count: size_t): Pointer; cdecl;
+{$ENDIF CPU32}
+{$IFDEF CPU64}
+function memset(dest: Pointer; val: Integer; count: size_t): Pointer;
+{$ENDIF CPU64}
 begin
   FillChar(dest^, count, val);
   Result := dest;
 end;
 
+{$IFDEF CPU32}
 function _malloc(size: size_t): Pointer; cdecl;
+{$ENDIF CPU32}
+{$IFDEF CPU64}
+function malloc(size: size_t): Pointer;
+{$ENDIF CPU64}
 begin
   GetMem(Result, size);
 end;
 
+{$IFDEF CPU32}
 procedure _free(pBlock: Pointer); cdecl;
+{$ENDIF CPU32}
+{$IFDEF CPU64}
+procedure free(pBlock: Pointer);
+{$ENDIF CPU64}
 begin
   FreeMem(pBlock);
 end;

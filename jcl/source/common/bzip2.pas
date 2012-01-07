@@ -26,7 +26,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -364,10 +364,16 @@ function BZ2_bzlibVersion; external;
 // an external must be declared for this function in order to make the compiler considering
 // the corresponding PUBDEF in bzlib.obj
 // source: CodeGear QA team
+{$IFDEF CPU32}
 function _BZ2_indexIntoF: Pointer;
   {$IFDEF BZIP2_EXPORT_STDCALL}stdcall;{$ENDIF BZIP2_EXPORT_STDCALL}
   {$IFDEF BZIP2_EXPORT_CDECL}cdecl;{$ENDIF BZIP2_EXPORT_CDECL} external;
+{$ENDIF CPU32}
+{$IFDEF CPU64}
+function BZ2_indexIntoF: Pointer; external;
+{$ENDIF CPU64}
 
+{$IFDEF CPU32}
 {$LINK ..\windows\obj\bzip2\win32\bzlib.obj}
 {$LINK ..\windows\obj\bzip2\win32\randtable.obj}
 {$LINK ..\windows\obj\bzip2\win32\crctable.obj}
@@ -375,18 +381,43 @@ function _BZ2_indexIntoF: Pointer;
 {$LINK ..\windows\obj\bzip2\win32\decompress.obj}
 {$LINK ..\windows\obj\bzip2\win32\huffman.obj}
 {$LINK ..\windows\obj\bzip2\win32\blocksort.obj}
+{$ENDIF CPU32}
+{$IFDEF CPU64}
+{$LINK ..\windows\obj\bzip2\win64\bzlib.obj}
+{$LINK ..\windows\obj\bzip2\win64\randtable.obj}
+{$LINK ..\windows\obj\bzip2\win64\crctable.obj}
+{$LINK ..\windows\obj\bzip2\win64\compress.obj}
+{$LINK ..\windows\obj\bzip2\win64\decompress.obj}
+{$LINK ..\windows\obj\bzip2\win64\huffman.obj}
+{$LINK ..\windows\obj\bzip2\win64\blocksort.obj}
+{$ENDIF CPU64}
 
+{$IFDEF CPU32}
 function _malloc(size: Longint): Pointer; cdecl;
+{$ENDIF CPU32}
+{$IFDEF CPU64}
+function malloc(size: SizeInt): Pointer;
+{$ENDIF CPU64}
 begin
   GetMem(Result, Size);
 end;
 
+{$IFDEF CPU32}
 procedure _free(pBlock: Pointer); cdecl;
+{$ENDIF CPU32}
+{$IFDEF CPU64}
+procedure free(pBlock: Pointer);
+{$ENDIF CPU64}
 begin
   FreeMem(pBlock);
 end;
 
+{$IFDEF CPU32}
 procedure _bz_internal_error(errcode: Integer); cdecl;
+{$ENDIF CPU32}
+{$IFDEF CPU64}
+procedure bz_internal_error(errcode: Integer);
+{$ENDIF CPU64}
 begin
   if Assigned(bz2_internal_error_event) then
     bz2_internal_error_event(errcode);
