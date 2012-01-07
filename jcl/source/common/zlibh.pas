@@ -2081,17 +2081,17 @@ end;
 
 {$IFDEF ZLIB_STATICLINK}
 
-{$LINK ..\windows\obj\zlib\adler32.obj} // OS: CHECKTHIS - Unix version may need forward slashes?
-{$LINK ..\windows\obj\zlib\compress.obj}
-{$LINK ..\windows\obj\zlib\crc32.obj}
-{$LINK ..\windows\obj\zlib\deflate.obj}
-{$LINK ..\windows\obj\zlib\infback.obj}
-{$LINK ..\windows\obj\zlib\inffast.obj}
-{$LINK ..\windows\obj\zlib\inflate.obj}
-{$LINK ..\windows\obj\zlib\inftrees.obj}
-{$LINK ..\windows\obj\zlib\trees.obj}
-{$LINK ..\windows\obj\zlib\uncompr.obj}
-{$LINK ..\windows\obj\zlib\zutil.obj}
+{$LINK ..\windows\obj\zlib\win32\adler32.obj} // OS: CHECKTHIS - Unix version may need forward slashes?
+{$LINK ..\windows\obj\zlib\win32\compress.obj}
+{$LINK ..\windows\obj\zlib\win32\crc32.obj}
+{$LINK ..\windows\obj\zlib\win32\deflate.obj}
+{$LINK ..\windows\obj\zlib\win32\infback.obj}
+{$LINK ..\windows\obj\zlib\win32\inffast.obj}
+{$LINK ..\windows\obj\zlib\win32\inflate.obj}
+{$LINK ..\windows\obj\zlib\win32\inftrees.obj}
+{$LINK ..\windows\obj\zlib\win32\trees.obj}
+{$LINK ..\windows\obj\zlib\win32\uncompr.obj}
+{$LINK ..\windows\obj\zlib\win32\zutil.obj}
 
 // Core functions
 function zlibVersion;          external;

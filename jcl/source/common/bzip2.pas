@@ -368,13 +368,13 @@ function _BZ2_indexIntoF: Pointer;
   {$IFDEF BZIP2_EXPORT_STDCALL}stdcall;{$ENDIF BZIP2_EXPORT_STDCALL}
   {$IFDEF BZIP2_EXPORT_CDECL}cdecl;{$ENDIF BZIP2_EXPORT_CDECL} external;
 
-{$LINK ..\windows\obj\bzip2\bzlib.obj}
-{$LINK ..\windows\obj\bzip2\randtable.obj}
-{$LINK ..\windows\obj\bzip2\crctable.obj}
-{$LINK ..\windows\obj\bzip2\compress.obj}
-{$LINK ..\windows\obj\bzip2\decompress.obj}
-{$LINK ..\windows\obj\bzip2\huffman.obj}
-{$LINK ..\windows\obj\bzip2\blocksort.obj}
+{$LINK ..\windows\obj\bzip2\win32\bzlib.obj}
+{$LINK ..\windows\obj\bzip2\win32\randtable.obj}
+{$LINK ..\windows\obj\bzip2\win32\crctable.obj}
+{$LINK ..\windows\obj\bzip2\win32\compress.obj}
+{$LINK ..\windows\obj\bzip2\win32\decompress.obj}
+{$LINK ..\windows\obj\bzip2\win32\huffman.obj}
+{$LINK ..\windows\obj\bzip2\win32\blocksort.obj}
 
 function _malloc(size: Longint): Pointer; cdecl;
 begin

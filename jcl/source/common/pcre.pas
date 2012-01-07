@@ -622,26 +622,26 @@ uses
 // make the linker happy with PCRE 8.00
 procedure _pcre_find_bracket; external;
 
-{$LINK ..\windows\obj\pcre\pcre_compile.obj}
-{$LINK ..\windows\obj\pcre\pcre_config.obj}
-{$LINK ..\windows\obj\pcre\pcre_dfa_exec.obj}
-{$LINK ..\windows\obj\pcre\pcre_exec.obj}
-{$LINK ..\windows\obj\pcre\pcre_fullinfo.obj}
-{$LINK ..\windows\obj\pcre\pcre_get.obj}
-{$LINK ..\windows\obj\pcre\pcre_globals.obj}
-{$LINK ..\windows\obj\pcre\pcre_info.obj}
-{$LINK ..\windows\obj\pcre\pcre_maketables.obj}
-{$LINK ..\windows\obj\pcre\pcre_newline.obj}
-{$LINK ..\windows\obj\pcre\pcre_ord2utf8.obj}
-{$LINK ..\windows\obj\pcre\pcre_refcount.obj}
-{$LINK ..\windows\obj\pcre\pcre_study.obj}
-{$LINK ..\windows\obj\pcre\pcre_tables.obj}
-{$LINK ..\windows\obj\pcre\pcre_try_flipped.obj}
-{$LINK ..\windows\obj\pcre\pcre_ucd.obj}
-{$LINK ..\windows\obj\pcre\pcre_valid_utf8.obj}
-{$LINK ..\windows\obj\pcre\pcre_version.obj}
-{$LINK ..\windows\obj\pcre\pcre_xclass.obj}
-{$LINK ..\windows\obj\pcre\pcre_default_tables.obj}
+{$LINK ..\windows\obj\pcre\win32\pcre_compile.obj}
+{$LINK ..\windows\obj\pcre\win32\pcre_config.obj}
+{$LINK ..\windows\obj\pcre\win32\pcre_dfa_exec.obj}
+{$LINK ..\windows\obj\pcre\win32\pcre_exec.obj}
+{$LINK ..\windows\obj\pcre\win32\pcre_fullinfo.obj}
+{$LINK ..\windows\obj\pcre\win32\pcre_get.obj}
+{$LINK ..\windows\obj\pcre\win32\pcre_globals.obj}
+{$LINK ..\windows\obj\pcre\win32\pcre_info.obj}
+{$LINK ..\windows\obj\pcre\win32\pcre_maketables.obj}
+{$LINK ..\windows\obj\pcre\win32\pcre_newline.obj}
+{$LINK ..\windows\obj\pcre\win32\pcre_ord2utf8.obj}
+{$LINK ..\windows\obj\pcre\win32\pcre_refcount.obj}
+{$LINK ..\windows\obj\pcre\win32\pcre_study.obj}
+{$LINK ..\windows\obj\pcre\win32\pcre_tables.obj}
+{$LINK ..\windows\obj\pcre\win32\pcre_try_flipped.obj}
+{$LINK ..\windows\obj\pcre\win32\pcre_ucd.obj}
+{$LINK ..\windows\obj\pcre\win32\pcre_valid_utf8.obj}
+{$LINK ..\windows\obj\pcre\win32\pcre_version.obj}
+{$LINK ..\windows\obj\pcre\win32\pcre_xclass.obj}
+{$LINK ..\windows\obj\pcre\win32\pcre_default_tables.obj}
 
 // user's defined callbacks
 var
