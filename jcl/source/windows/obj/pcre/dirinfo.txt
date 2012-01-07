@@ -1,1 +1,0 @@
-This is the directory where object files for PCRE (http://www.pcre.org/) reside.
