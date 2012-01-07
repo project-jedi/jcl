@@ -409,9 +409,9 @@ end;
 function TJclVersionControlSVN.SVNSupportedDirVersion(const FileDir: String): TSvnDirVersion;
 var
   BaseDir: String;
-  IgnoreList: TStringList;
-  IgnoreDir : String;
-  i: Integer;
+  //IgnoreList: TStringList;
+  //IgnoreDir : String;
+  //i: Integer;
   IndexDir: Integer;
 begin
   Result := sdvNone;
