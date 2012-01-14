@@ -45,6 +45,7 @@ type
       joJCLDef,
         joJCLDefMath,
         joJCLDefDebug,
+        joJCLDefWrappers,
         joJCLDefPCRE,
         joJCLDefBZip2,
         joJCLDefZLib,
@@ -380,6 +381,7 @@ var
       (Id: -1; Caption: @RsCaptionDef;                     Hint: @RsHintDef), // joDef
       (Id: -1; Caption: @RsCaptionDefMath;                 Hint: @RsHintDefMath), // joDefMath
       (Id: -1; Caption: @RsCaptionDefDebug;                Hint: @RsHintDefDebug), // joDefDebug
+      (Id: -1; Caption: @RsCaptionDefWrappers;             Hint: @RsHintDefWrappers), // joDefWrappers
       (Id: -1; Caption: @RsCaptionDefPCRE;                 Hint: @RsHintDefPCRE), // joDefPCRE
       (Id: -1; Caption: @RsCaptionDefBZip2;                Hint: @RsHintDefBZip2), // joDefBZip2
       (Id: -1; Caption: @RsCaptionDefZLib;                 Hint: @RsHintDefZLib), // joDefZLib
@@ -841,10 +843,7 @@ procedure TJclInstallation.Init;
   end;
 
   procedure AddDefOptions(Parent: TInstallerOption);
-  var
-    LinkOnRequestDefault: Boolean;
   begin
-    LinkOnRequestDefault := (Target is TJclBDSInstallation) and (Target.IDEVersionNumber >= 9) and (FTargetPlatform = bpWin64);
     AddOption(joJCLDefThreadSafe, [goChecked], Parent);
     AddOption(joJCLDefDropObsoleteCode, [goChecked], Parent);
     if (Target.RadToolKind <> brBorlandDevStudio) or (Target.IDEVersionNumber <> 3) then
@@ -882,6 +881,14 @@ procedure TJclInstallation.Init;
     AddOption(joJCLDefDebugNoExports, [goNoAutoCheck], joJCLDefDebug);
     AddOption(joJCLDefDebugNoSymbols, [goNoAutoCheck], joJCLDefDebug);
     {$ENDIF MSWINDOWS}
+  end;
+
+  procedure AddWrapperOptions(Parent: TInstallerOption);
+  var
+    LinkOnRequestDefault: Boolean;
+  begin
+    LinkOnRequestDefault := (Target is TJclBDSInstallation) and (Target.IDEVersionNumber >= 9) and (FTargetPlatform = bpWin64);
+
     // PCRE options
     AddOption(joJCLDefPCRE, [goChecked], Parent);
     if Target.RadToolKind = brBorlandDevStudio then
@@ -1219,6 +1226,10 @@ begin
     // conditional defines
     AddOption(joJCLDef, [goExpandable, goChecked], OptionData[joJediCodeLibrary].Id);
     AddDefOptions(joJCLDef);
+
+    // wrapper options
+    AddOption(joJCLDefWrappers, [goChecked], OptionData[joJCLDef].Id);
+    AddWrapperOptions(joJCLDefWrappers);
 
     AddOption(joJCLEnvironment, [goExpandable, goChecked], OptionData[joJediCodeLibrary].Id);
     AddEnvOptions(joJCLEnvironment);
