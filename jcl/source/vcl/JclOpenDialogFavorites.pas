@@ -49,9 +49,10 @@ uses
 {$DEFINE OLDSTYLE}
 
 // new-style file dialogs are supported by Delphi 2007 and newer
-{$IFDEF RTL185_UP}
+// it is disabled in D2007, because the D2006 RTL does not support it at all
+{$IFDEF RTL200_UP}
 {$DEFINE NEWSTYLE}
-{$ENDIF RTL185_UP}
+{$ENDIF RTL200_UP}
 
 type
   {$NODEFINE TJclOpenDialogFavoritesHook} // IFileDialogCustomize is badly emitted
