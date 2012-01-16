@@ -267,7 +267,10 @@ type
 
       data_type: Integer;     // best guess about the data type: ascii or binary 
       adler:    uLong;       // adler32 value of the uncompressed data 
-      reserved: uLong;       // reserved for future use 
+      reserved: uLong;       // reserved for future use
+      {$IFDEF CPU64}
+      padding: uLong; // Visual C++ compiler adds a 4 byte padding
+      {$ENDIF CPU64}
   end;
   {$IFDEF COMPILER10_UP}
   (*$HPPEMIT 'namespace Zlibh {'*)
