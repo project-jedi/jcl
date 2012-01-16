@@ -45,9 +45,19 @@ uses
   {$ENDIF UNITVERSIONING}
   JclBase, JclPeImage, JclWin32;
 
+// old-style open dialogs are supported by all versions of Delphi
+{$DEFINE OLDSTYLE}
+
+// new-style file dialogs are supported by Delphi 2007 and newer
+// it is disabled in D2007, because the D2006 RTL does not support it at all
+{$IFDEF RTL200_UP}
+{$DEFINE NEWSTYLE}
+{$ENDIF RTL200_UP}
+
 type
   EJclOpenDialogHookError = class(EJclError);
 
+  {$IFDEF NEWSTYLE}
   TJclFileOpenDialogHook = class (TFileOpenDialog)
   strict protected
     function CreateFileDialog: IFileDialog; override;
@@ -63,8 +73,10 @@ type
     class procedure InstallHook(out OldHandler: Pointer);
     class procedure UninstallHook(OldHandler: Pointer);
   end;
+  {$ENDIF NEWSTYLE}
 
   TJclOpenDialogHook = class (TObject)
+  {$IFDEF OLDSTYLE}
   private
     FDisableHelpButton: Boolean;
     FDisablePlacesBar: Boolean;
@@ -75,8 +87,6 @@ type
     FPictureDialogLastFolder: string;
     FWndInstance: Pointer;
     FOldWndInstance: Pointer;
-    FOldFileOpenCreateFileDialog: Pointer;
-    FOldFileSaveCreateFileDialog: Pointer;
     FOnClose: TNotifyEvent;
     FOnShow: TNotifyEvent;
     function GetCurrentFolder: string;
@@ -89,17 +99,12 @@ type
     procedure DialogFolderChange; virtual;
     procedure DialogShow; virtual;
     procedure DialogClose; virtual;
-    procedure FileDialogCreate(const AFileDialog: IFileDialog); virtual;
     procedure DoClose;
     procedure DoShow;
     procedure ParentWndProc(var Message: TMessage); virtual;
     procedure WndProc(var Message: TMessage); virtual;
     property FileNameEditWnd: HWND read GetFileNameEditWnd;
   public
-    constructor Create; virtual;
-    destructor Destroy; override;
-    procedure HookDialogs;
-    procedure UnhookDialogs;
     property CurrentFolder: string read GetCurrentFolder write SetCurrentFolder;
     property DisableHelpButton: Boolean read FDisableHelpButton write FDisableHelpButton;
     property DisablePlacesBar: Boolean read FDisablePlacesBar write FDisablePlacesBar;
@@ -107,6 +112,19 @@ type
     property PictureDialogLastFolder: string read FPictureDialogLastFolder write FPictureDialogLastFolder;
     property OnClose: TNotifyEvent read FOnClose write FOnClose;
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
+  {$ENDIF OLDSTYLE}
+  {$IFDEF NEWSTYLE}
+  private
+    FOldFileOpenCreateFileDialog: Pointer;
+    FOldFileSaveCreateFileDialog: Pointer;
+  protected
+    procedure FileDialogCreate(const AFileDialog: IFileDialog); virtual;
+  {$ENDIF NEWSTYLE}
+  public
+    constructor Create; virtual;
+    destructor Destroy; override;
+    procedure HookDialogs;
+    procedure UnhookDialogs;
   end;
 
   TJclOpenDialogHookClass = class of TJclOpenDialogHook;
@@ -139,10 +157,13 @@ uses
 
 {$R JclOpenDialog.res}
 
+var
+  GlobalOpenDialogHook: TJclOpenDialogHook;
+
+{$IFDEF OLDSTYLE}
 const
   OpenDialogTemplateName        = 'JCLOPENDLGHOOK';
   OpenPictureDialogTemplateName = 'DLGTEMPLATE';
-
 
 type
   TGetOpenFileName = function (var OpenFile: TOpenFilename): Bool; stdcall;
@@ -151,7 +172,6 @@ var
   OldGetOpenFileName: TGetOpenFileName;
   OldGetSaveFileName: TGetOpenFileName;
   OldExplorerHook: function(Wnd: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): {$IFDEF RTL230_UP}UINT_PTR{$ELSE}UINT{$ENDIF RTL230_UP} stdcall;
-  GlobalOpenDialogHook: TJclOpenDialogHook;
 
 function NewExplorerHook(Wnd: HWnd; Msg: UINT; WParam: WPARAM; LParam: LPARAM): {$IFDEF RTL230_UP}UINT_PTR{$ELSE}UINT{$ENDIF RTL230_UP}; stdcall;
 begin
@@ -214,6 +234,7 @@ begin
   InitOpenFileStruct(OpenFile);
   Result := OldGetSaveFileName(OpenFile);
 end;
+{$ENDIF OLDSTYLE}
 
 function InitializeOpenDialogHook(OpenDialogHookClass: TJclOpenDialogHookClass): TJclOpenDialogHook;
 begin
@@ -234,6 +255,7 @@ end;
 
 //=== { TJclFileOpenDialogHook } =============================================
 
+{$IFDEF NEWSTYLE}
 function TJclFileOpenDialogHook.CreateFileDialog: IFileDialog;
 begin
   Result := inherited CreateFileDialog;
@@ -267,9 +289,11 @@ begin
     Break;
   end;
 end;
+{$ENDIF NEWSTYLE}
 
 //=== { TJclFileSaveDialogHook } =============================================
 
+{$IFDEF NEWSTYLE}
 function TJclFileSaveDialogHook.CreateFileDialog: IFileDialog;
 begin
   Result := inherited CreateFileDialog;
@@ -303,26 +327,32 @@ begin
     Break;
   end;
 end;
+{$ENDIF NEWSTYLE}
 
 //=== { TJclOpenDialogHook } =================================================
 
 constructor TJclOpenDialogHook.Create;
 begin
   inherited Create;
+  {$IFDEF OLDSTYLE}
   FHooks := TJclPeMapImgHooks.Create;
   FParentWndInstance := MakeObjectInstance(ParentWndProc);
   FWndInstance := MakeObjectInstance(WndProc);
+  {$ENDIF OLDSTYLE}
 end;
 
 destructor TJclOpenDialogHook.Destroy;
 begin
   UnhookDialogs;
+  {$IFDEF OLDSTYLE}
   FreeObjectInstance(FParentWndInstance);
   FreeObjectInstance(FWndInstance);
   FreeAndNil(FHooks);
+  {$ENDIF OLDSTYLE}
   inherited Destroy;
 end;
 
+{$IFDEF OLDSTYLE}
 procedure TJclOpenDialogHook.DialogAdjustControlPos;
 begin
   // override to customize
@@ -358,12 +388,16 @@ begin
   if Assigned(FOnShow) then
     FOnShow(Self);
 end;
+{$ENDIF OLDSTYLE}
 
+{$IFDEF NEWSTYLE}
 procedure TJclOpenDialogHook.FileDialogCreate(const AFileDialog: IFileDialog);
 begin
   // override to customize
 end;
+{$ENDIF NEWSTYLE}
 
+{$IFDEF OLDSTYLE}
 function TJclOpenDialogHook.GetCurrentFolder: string;
 var
   Path: array [0..MAX_PATH] of Char;
@@ -378,8 +412,10 @@ begin
   if Result = 0 then
     Result := GetDlgItem(FParentWnd, cmb13);
 end;
+{$ENDIF OLDSTYLE}
 
 procedure TJclOpenDialogHook.HookDialogs;
+{$IFDEF OLDSTYLE}
   procedure HookImportsForModule(ModuleBase: Pointer);
   const
     comdlg32 = 'comdlg32.dll';
@@ -399,7 +435,9 @@ var
   Pe: TJclPeImage;
   I: Integer;
   HookedModule: LongWord;
+{$ENDIF OLDSTYLE}
 begin
+  {$IFDEF OLDSTYLE}
   { TODO : Hook all loaded modules }
   Pe := TJclPeImage.Create(True);
   try
@@ -414,10 +452,14 @@ begin
   finally
     Pe.Free;
   end;
+  {$ENDIF OLDSTYLE}
+  {$IFDEF NEWSTYLE}
   TJclFileOpenDialogHook.InstallHook(FOldFileOpenCreateFileDialog);
   TJclFileSaveDialogHook.InstallHook(FOldFileSaveCreateFileDialog);
+  {$ENDIF NEWSTYLE}
 end;
 
+{$IFDEF OLDSTYLE}
 procedure TJclOpenDialogHook.ParentWndProc(var Message: TMessage);
 begin
   with Message do
@@ -443,19 +485,27 @@ begin
     SetFocus(LastFocus);
   end;
 end;
+{$ENDIF OLDSTYLE}
 
 procedure TJclOpenDialogHook.UnhookDialogs;
+{$IFDEF OLDSTYLE}
 var
   I: Integer;
+{$ENDIF OLDSTYLE}
 begin
+  {$IFDEF OLDSTYLE}
   I := 0;
   while I < FHooks.Count do
     if not FHooks[I].Unhook then
       Inc(I);
+  {$ENDIF OLDSTYLE}
+  {$IFDEF NEWSTYLE}
   TJclFileOpenDialogHook.UninstallHook(FOldFileOpenCreateFileDialog);
   TJclFileSaveDialogHook.UninstallHook(FOldFileSaveCreateFileDialog);
+  {$ENDIF NEWSTYLE}
 end;
 
+{$IFDEF OLDSTYLE}
 procedure TJclOpenDialogHook.WndProc(var Message: TMessage);
 
   procedure Default;
@@ -500,6 +550,7 @@ begin
     end;
   end;
 end;
+{$ENDIF OLDSTYLE}
 
 {$IFDEF UNITVERSIONING}
 initialization

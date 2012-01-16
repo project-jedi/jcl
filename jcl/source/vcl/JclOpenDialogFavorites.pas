@@ -483,7 +483,7 @@ begin
       if I >= 0 then
       begin
         // delete current folder
-        if MessageBox(FHandle,
+        if MessageBox(0,
                       PChar(Format(LoadResString(@RsOpenDialogDelConfirm), [Path])),
                       PChar(LoadResString(@RsOpenDialogConfirmation)),
                       MB_YESNO or MB_ICONQUESTION or MB_DEFBUTTON2) = ID_YES then
