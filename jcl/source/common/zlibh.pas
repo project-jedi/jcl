@@ -249,28 +249,25 @@ type
 
 type
   {$EXTERNALSYM z_stream_s}
-  z_stream_s = packed record
+  z_stream_s = record
       next_in: PBytef;       // next input byte
-      avail_in: uInt;        // number of bytes available at next_in 
-      total_in: uLong;       // total nb of input bytes read so far 
+      avail_in: uInt;        // number of bytes available at next_in
+      total_in: uLong;       // total nb of input bytes read so far
 
-      next_out: PBytef;      // next output byte should be put there 
+      next_out: PBytef;      // next output byte should be put there
       avail_out:uInt;        // remaining free space at next_out
       total_out:uLong;       // total nb of bytes output so far
 
       msg:     PAnsiChar;    // last error message, NULL if no error
-      state:PInternalState;  // not visible by applications 
+      state:PInternalState;  // not visible by applications
 
-      zalloc:   TFNAllocFunc;// used to allocate the internal state 
-      zfree:    TFNFreeFunc; // used to free the internal state 
-      opaque:   voidpf;      // private data object passed to zalloc and zfree 
+      zalloc:   TFNAllocFunc;// used to allocate the internal state
+      zfree:    TFNFreeFunc; // used to free the internal state
+      opaque:   voidpf;      // private data object passed to zalloc and zfree
 
-      data_type: Integer;     // best guess about the data type: ascii or binary 
-      adler:    uLong;       // adler32 value of the uncompressed data 
+      data_type: Integer;     // best guess about the data type: ascii or binary
+      adler:    uLong;       // adler32 value of the uncompressed data
       reserved: uLong;       // reserved for future use
-      {$IFDEF CPU64}
-      padding: uLong; // Visual C++ compiler adds a 4 byte padding
-      {$ENDIF CPU64}
   end;
   {$IFDEF COMPILER10_UP}
   (*$HPPEMIT 'namespace Zlibh {'*)
