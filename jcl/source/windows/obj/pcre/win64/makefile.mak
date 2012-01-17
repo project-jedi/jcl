@@ -31,7 +31,7 @@ pcresrc = ..\..\..\..\..\..\thirdparty\pcre\pcre-8.02
 
 # ---------------------------------------------------------------------------
 OBJFILES = .\pcre_compile.obj .\pcre_config.obj .\pcre_dfa_exec.obj \
-  .\pcre_exec.obj .\pcre_fullinfo.obj .\pcre_get.obj .\pcre_globals.obj \
+  .\pcre_exec.obj .\pcre_fullinfo.obj .\pcre_get.obj \
   .\pcre_info.obj .\pcre_maketables.obj .\pcre_newline.obj \
   .\pcre_ord2utf8.obj .\pcre_refcount.obj .\pcre_study.obj .\pcre_tables.obj \
   .\pcre_try_flipped.obj .\pcre_ucd.obj .\pcre_valid_utf8.obj \

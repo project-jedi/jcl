@@ -629,7 +629,6 @@ procedure _pcre_find_bracket; external;
 {$LINK ..\windows\obj\pcre\win32\pcre_exec.obj}
 {$LINK ..\windows\obj\pcre\win32\pcre_fullinfo.obj}
 {$LINK ..\windows\obj\pcre\win32\pcre_get.obj}
-{$LINK ..\windows\obj\pcre\win32\pcre_globals.obj}
 {$LINK ..\windows\obj\pcre\win32\pcre_info.obj}
 {$LINK ..\windows\obj\pcre\win32\pcre_maketables.obj}
 {$LINK ..\windows\obj\pcre\win32\pcre_newline.obj}
@@ -651,7 +650,6 @@ procedure _pcre_find_bracket; external;
 {$LINK ..\windows\obj\pcre\win64\pcre_exec.obj}
 {$LINK ..\windows\obj\pcre\win64\pcre_fullinfo.obj}
 {$LINK ..\windows\obj\pcre\win64\pcre_get.obj}
-{$LINK ..\windows\obj\pcre\win64\pcre_globals.obj}
 {$LINK ..\windows\obj\pcre\win64\pcre_info.obj}
 {$LINK ..\windows\obj\pcre\win64\pcre_maketables.obj}
 {$LINK ..\windows\obj\pcre\win64\pcre_newline.obj}
@@ -755,7 +753,7 @@ function strchr(__s: PAnsiChar; __c: Integer): PAnsiChar; external szMSVCRT name
 
 function malloc(size: size_t): Pointer; cdecl; external szMSVCRT name 'malloc';
 
-function pcre_malloc(Size: SizeInt): Pointer;
+function pcre_malloc_jcl(Size: SizeInt): Pointer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 begin
   if Assigned(pcre_malloc_user) then
     Result := pcre_malloc_user(Size)
@@ -763,7 +761,7 @@ begin
     Result := malloc(Size);
 end;
 
-function pcre_stack_malloc(Size: SizeInt): Pointer;
+function pcre_stack_malloc_jcl(Size: SizeInt): Pointer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 begin
   if Assigned(pcre_stack_malloc_user) then
     Result := pcre_stack_malloc_user(Size)
@@ -773,12 +771,12 @@ end;
 
 function _malloc(size: size_t): Pointer;
 begin
-  Result := pcre_malloc(size);
+  Result := pcre_malloc_jcl(size);
 end;
 
 procedure free(pBlock: Pointer); cdecl; external szMSVCRT name 'free';
 
-procedure pcre_free(P: Pointer);
+procedure pcre_free_jcl(P: Pointer); {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 begin
   if Assigned(pcre_free_user) then
     pcre_free_user(P)
@@ -786,7 +784,7 @@ begin
     free(P);
 end;
 
-procedure pcre_stack_free(P: Pointer);
+procedure pcre_stack_free_jcl(P: Pointer); {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 begin
   if Assigned(pcre_stack_free_user) then
     pcre_stack_free_user(P)
@@ -796,16 +794,33 @@ end;
 
 procedure _free(pBlock: Pointer);
 begin
-  pcre_free(pBlock);
+  pcre_free_jcl(pBlock);
 end;
 
-function pcre_callout(var callout_block: pcre_callout_block): Integer; cdecl;
+function pcre_callout_jcl(var callout_block: pcre_callout_block): Integer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 begin
   if Assigned(pcre_callout_user) then
     Result := pcre_callout_user(callout_block)
   else
     Result := 0;
 end;
+
+{$IFDEF CPU32}
+const
+  _pcre_malloc: pcre_malloc_callback = pcre_malloc_jcl;
+  _pcre_free: pcre_free_callback = pcre_free_jcl;
+  _pcre_stack_malloc: pcre_stack_malloc_callback = pcre_stack_malloc_jcl;
+  _pcre_stack_free: pcre_stack_free_callback = pcre_stack_free_jcl;
+  _pcre_callout: pcre_callout_callback = pcre_callout_jcl;
+{$ENDIF CPU32}
+{$IFDEF CPU64}
+const
+  pcre_malloc: pcre_malloc_callback = pcre_malloc_jcl;
+  pcre_free: pcre_free_callback = pcre_free_jcl;
+  pcre_stack_malloc: pcre_stack_malloc_callback = pcre_stack_malloc_jcl;
+  pcre_stack_free: pcre_stack_free_callback = pcre_stack_free_jcl;
+  pcre_callout: pcre_callout_callback = pcre_callout_jcl;
+{$ENDIF CPU64}
 
 {$ELSE ~PCRE_STATICLINK}
 
@@ -892,7 +907,7 @@ end;
 function CallPCREMalloc(Size: SizeInt): Pointer;
 begin
   {$IFDEF PCRE_STATICLINK}
-  Result := pcre_malloc(Size);
+  Result := pcre_malloc_jcl(Size);
   {$ELSE ~PCRE_STATICLINK}
   Result := pcre_malloc_func^(Size);
   {$ENDIF ~PCRE_STATICLINK}
@@ -935,7 +950,7 @@ end;
 procedure CallPCREFree(P: Pointer);
 begin
   {$IFDEF PCRE_STATICLINK}
-  pcre_free(P);
+  pcre_free_jcl(P);
   {$ELSE ~PCRE_STATICLINK}
   pcre_free_func^(P);
   {$ENDIF ~PCRE_STATICLINK}
@@ -978,7 +993,7 @@ end;
 function CallPCREStackMalloc(Size: SizeInt): Pointer;
 begin
   {$IFDEF PCRE_STATICLINK}
-  Result := pcre_stack_malloc(Size);
+  Result := pcre_stack_malloc_jcl(Size);
   {$ELSE ~PCRE_STATICLINK}
   Result := pcre_stack_malloc_func^(Size);
   {$ENDIF ~PCRE_STATICLINK}
@@ -1021,7 +1036,7 @@ end;
 procedure CallPCREStackFree(P: Pointer);
 begin
   {$IFDEF PCRE_STATICLINK}
-  pcre_stack_free(P);
+  pcre_stack_free_jcl(P);
   {$ELSE ~PCRE_STATICLINK}
   pcre_stack_free_func^(P);
   {$ENDIF ~PCRE_STATICLINK}
@@ -1064,7 +1079,7 @@ end;
 function CallPCRECallout(var callout_block: pcre_callout_block): Integer;
 begin
   {$IFDEF PCRE_STATICLINK}
-  Result := pcre_callout(callout_block);
+  Result := pcre_callout_jcl(callout_block);
   {$ELSE ~PCRE_STATICLINK}
   Result := pcre_callout_func^(callout_block);
   {$ENDIF ~PCRE_STATICLINK}
