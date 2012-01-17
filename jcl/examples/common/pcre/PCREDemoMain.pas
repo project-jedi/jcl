@@ -20,6 +20,8 @@ type
     acFindNext: TAction;
     acOpen: TAction;
     odOpen: TOpenDialog;
+    sbMain: TStatusBar;
+    GroupBoxMatchOptions: TGroupBox;
     chkIgnoreCase: TCheckBox;
     chkMultiLine: TCheckBox;
     chkDotAll: TCheckBox;
@@ -32,7 +34,10 @@ type
     chkUnGreedy: TCheckBox;
     chkNotEmpty: TCheckBox;
     chkUTF8: TCheckBox;
-    sbMain: TStatusBar;
+    GroupBoxCompileOptions: TGroupBox;
+    chkStudy: TCheckBox;
+    chkUserLocale: TCheckBox;
+    chkJITCompile: TCheckBox;
     procedure acOpenExecute(Sender: TObject);
     procedure acFindExecute(Sender: TObject);
     procedure acFindNextExecute(Sender: TObject);
@@ -75,7 +80,7 @@ begin
   FreeAndNil(RE);
   RE := TJclAnsiRegEx.Create;
   RE.Options := GetUIOptions;
-  RE.Compile(edRegExpr.Text, false, false);
+  RE.Compile(edRegExpr.Text, chkStudy.Checked, chkUserLocale.Checked, chkJITCompile.Checked);
   FMatchIndex := 1;
   Match;
 end;

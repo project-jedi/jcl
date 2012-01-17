@@ -1464,12 +1464,17 @@ resourcestring
   RsErrRecursionLimit = 'Recursion limit';
   RsErrNullWsLimit   = 'Null WS limit';
   RsErrBadNewLine    = 'Bad new line';
+  RsErrBadOffset     = 'Bad offset';
+  RsErrShortUTF8     = 'Short UTF8';
+  RsErrRecurseLoop   = 'Recurse loop';
+  RsErrJITStackLimit = 'JIT stack limit';
   RsErrLibNotLoaded  = 'PCRE library not loaded';
   RsErrMemFuncNotSet = 'PCRE memory management functions not set';
-  RsErrStudyFailed   = 'Study failed'; 
+  RsErrStudyFailed   = 'Study failed';
   RsErrCalloutError  = 'Unhandled exception in callout';
   RsErrUnknownError  = 'Unknown error';
   RsErrNoUTF8Support = 'No UTF8 support in this version of PCRE';
+  RsErrNoJITSupport  = 'No JIT support in this version of PCRE';
 
 //=== JclPeImage =============================================================
 resourcestring

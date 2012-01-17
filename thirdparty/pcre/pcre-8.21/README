@@ -159,12 +159,29 @@ possible to build it as a C++ library, though the provided building apparatus
 does not have any features to support this.
 
 There are some optional features that can be included or omitted from the PCRE
-library. You can read more about them in the pcrebuild man page.
+library. They are also documented in the pcrebuild man page.
+
+. By default, both shared and static libraries are built. You can change this
+  by adding one of these options to the "configure" command:
+
+  --disable-shared
+  --disable-static
+
+  (See also "Shared libraries on Unix-like systems" below.)
 
 . If you want to suppress the building of the C++ wrapper library, you can add
   --disable-cpp to the "configure" command. Otherwise, when "configure" is run,
   it will try to find a C++ compiler and C++ header files, and if it succeeds,
   it will try to build the C++ wrapper.
+
+. If you want to include support for just-in-time compiling, which can give
+  large performance improvements on certain platforms, add --enable-jit to the
+  "configure" command. This support is available only for certain hardware
+  architectures. If you try to enable it on an unsupported architecture, there
+  will be a compile time error.
+
+. When JIT support is enabled, pcregrep automatically makes use of it, unless
+  you add --disable-pcregrep-jit to the "configure" command.
 
 . If you want to make use of the support for UTF-8 Unicode character strings in
   PCRE, you must add --enable-utf8 to the "configure" command. Without it, the
@@ -247,9 +264,10 @@ library. You can read more about them in the pcrebuild man page.
 
   on the "configure" command. PCRE runs more slowly in this mode, but it may be
   necessary in environments with limited stack sizes. This applies only to the
-  pcre_exec() function; it does not apply to pcre_dfa_exec(), which does not
-  use deeply nested recursion. There is a discussion about stack sizes in the
-  pcrestack man page.
+  normal execution of the pcre_exec() function; if JIT support is being
+  successfully used, it is not relevant. Equally, it does not apply to
+  pcre_dfa_exec(), which does not use deeply nested recursion. There is a
+  discussion about stack sizes in the pcrestack man page.
 
 . For speed, PCRE uses four tables for manipulating and identifying characters
   whose code point values are less than 256. By default, it uses a set of
@@ -279,6 +297,13 @@ library. You can read more about them in the pcrebuild man page.
 
   Of course, the relevant libraries must be installed on your system.
 
+. The default size of internal buffer used by pcregrep can be set by, for
+  example:
+
+  --with-pcregrep-bufsize=50K
+
+  The default value is 20K.
+
 . It is possible to compile pcretest so that it links with the libreadline
   library, by specifying
 
@@ -302,14 +327,16 @@ library. You can read more about them in the pcrebuild man page.
 
 The "configure" script builds the following files for the basic C library:
 
-. Makefile is the makefile that builds the library
-. config.h contains build-time configuration options for the library
-. pcre.h is the public PCRE header file
-. pcre-config is a script that shows the settings of "configure" options
-. libpcre.pc is data for the pkg-config command
-. libtool is a script that builds shared and/or static libraries
-. RunTest is a script for running tests on the basic C library
-. RunGrepTest is a script for running tests on the pcregrep command
+. Makefile             the makefile that builds the library
+. config.h             build-time configuration options for the library
+. pcre.h               the public PCRE header file
+. pcre-config          script that shows the building settings such as CFLAGS
+                         that were set for "configure"
+. libpcre.pc         ) data for the pkg-config command
+. libpcreposix.pc    )
+. libtool              script that builds shared and/or static libraries
+. RunTest              script for running tests on the basic C library
+. RunGrepTest          script for running tests on the pcregrep command
 
 Versions of config.h and pcre.h are distributed in the PCRE tarballs under the
 names config.h.generic and pcre.h.generic. These are provided for those who
@@ -318,9 +345,9 @@ or CMake, the .generic versions are not used.
 
 If a C++ compiler is found, the following files are also built:
 
-. libpcrecpp.pc is data for the pkg-config command
-. pcrecpparg.h is a header file for programs that call PCRE via the C++ wrapper
-. pcre_stringpiece.h is the header for the C++ "stringpiece" functions
+. libpcrecpp.pc        data for the pkg-config command
+. pcrecpparg.h         header file for calling PCRE via the C++ wrapper
+. pcre_stringpiece.h   header for the C++ "stringpiece" functions
 
 The "configure" script also creates config.status, which is an executable
 script that can be run to recreate the configuration, and config.log, which
@@ -328,11 +355,11 @@ contains compiler output from tests that "configure" runs.
 
 Once "configure" has run, you can run "make". It builds two libraries, called
 libpcre and libpcreposix, a test program called pcretest, and the pcregrep
-command. If a C++ compiler was found on your system, "make" also builds the C++
-wrapper library, which is called libpcrecpp, and some test programs called
-pcrecpp_unittest, pcre_scanner_unittest, and pcre_stringpiece_unittest.
-Building the C++ wrapper can be disabled by adding --disable-cpp to the
-"configure" command.
+command. If a C++ compiler was found on your system, and you did not disable it
+with --disable-cpp, "make" also builds the C++ wrapper library, which is called
+libpcrecpp, and some test programs called pcrecpp_unittest,
+pcre_scanner_unittest, and pcre_stringpiece_unittest. If you enabled JIT
+support with --enable-jit, a test program called pcre_jit_test is also built.
 
 The command "make check" runs all the appropriate tests. Details of the PCRE
 tests are given below in a separate section of this document.
@@ -353,6 +380,7 @@ system. The following are installed (file names are all relative to the
 
   Configuration information (lib/pkgconfig):
     libpcre.pc
+    libpcreposix.pc
     libpcrecpp.pc (if C++ support is enabled)
 
   Header files (include):
@@ -366,6 +394,7 @@ system. The following are installed (file names are all relative to the
   Man pages (share/man/man{1,3}):
     pcregrep.1
     pcretest.1
+    pcre-config.1
     pcre.3
     pcre*.3 (lots more pages, all starting "pcre")
 
@@ -380,9 +409,10 @@ system. The following are installed (file names are all relative to the
     LICENCE
     NEWS
     README
-    pcre.txt       (a concatenation of the man(3) pages)
-    pcretest.txt   the pcretest man page
-    pcregrep.txt   the pcregrep man page
+    pcre.txt         (a concatenation of the man(3) pages)
+    pcretest.txt     the pcretest man page
+    pcregrep.txt     the pcregrep man page
+    pcre-config.txt  the pcre-config man page
 
 If you want to remove PCRE from your system, you can run "make uninstall".
 This removes all the files that "make install" installed. However, it does not
@@ -518,24 +548,34 @@ To test the basic PCRE library on a Unix system, run the RunTest script that is
 created by the configuring process. There is also a script called RunGrepTest
 that tests the options of the pcregrep command. If the C++ wrapper library is
 built, three test programs called pcrecpp_unittest, pcre_scanner_unittest, and
-pcre_stringpiece_unittest are also built.
+pcre_stringpiece_unittest are also built. When JIT support is enabled, another
+test program called pcre_jit_test is built.
 
 Both the scripts and all the program tests are run if you obey "make check" or
 "make test". For other systems, see the instructions in NON-UNIX-USE.
 
 The RunTest script runs the pcretest test program (which is documented in its
-own man page) on each of the testinput files in the testdata directory in
-turn, and compares the output with the contents of the corresponding testoutput
-files. A file called testtry is used to hold the main output from pcretest
+own man page) on each of the relevant testinput files in the testdata
+directory, and compares the output with the contents of the corresponding
+testoutput files. Some tests are relevant only when certain build-time options
+were selected. For example, the tests for UTF-8 support are run only if
+--enable-utf8 was used. RunTest outputs a comment when it skips a test.
+
+Many of the tests that are not skipped are run up to three times. The second
+run forces pcre_study() to be called for all patterns except for a few in some
+tests that are marked "never study" (see the pcretest program for how this is
+done). If JIT support is available, the non-DFA tests are run a third time,
+this time with a forced pcre_study() with the PCRE_STUDY_JIT_COMPILE option.
+
+RunTest uses a file called testtry to hold the main output from pcretest
 (testsavedregex is also used as a working file). To run pcretest on just one of
 the test files, give its number as an argument to RunTest, for example:
 
   RunTest 2
 
-The first test file can also be fed directly into the perltest.pl script to
-check that Perl gives the same results. The only difference you should see is
-in the first few lines, where the Perl version is given instead of the PCRE
-version.
+The first test file can be fed directly into the perltest.pl script to check
+that Perl gives the same results. The only difference you should see is in the
+first few lines, where the Perl version is given instead of the PCRE version.
 
 The second set of tests check pcre_fullinfo(), pcre_info(), pcre_study(),
 pcre_copy_substring(), pcre_get_substring(), pcre_get_substring_list(), error
@@ -572,33 +612,36 @@ RunTest.bat. The version of RunTest.bat included with PCRE 7.4 and above uses
 Windows versions of test 2. More info on using RunTest.bat is included in the
 document entitled NON-UNIX-USE.]
 
-The fourth test checks the UTF-8 support. It is not run automatically unless
-PCRE is built with UTF-8 support. To do this you must set --enable-utf8 when
-running "configure". This file can be also fed directly to the perltest.pl
-script, provided you are running Perl 5.8 or higher.
+The fourth test checks the UTF-8 support. This file can be also fed directly to
+the perltest.pl script, provided you are running Perl 5.8 or higher.
 
 The fifth test checks error handling with UTF-8 encoding, and internal UTF-8
 features of PCRE that are not relevant to Perl.
 
 The sixth test (which is Perl-5.10 compatible) checks the support for Unicode
-character properties. It it not run automatically unless PCRE is built with
-Unicode property support. To to this you must set --enable-unicode-properties
-when running "configure".
+character properties. This file can be also fed directly to the perltest.pl
+script, provided you are running Perl 5.10 or higher.
 
 The seventh, eighth, and ninth tests check the pcre_dfa_exec() alternative
 matching function, in non-UTF-8 mode, UTF-8 mode, and UTF-8 mode with Unicode
-property support, respectively. The eighth and ninth tests are not run
-automatically unless PCRE is build with the relevant support.
+property support, respectively.
 
 The tenth test checks some internal offsets and code size features; it is run
 only when the default "link size" of 2 is set (in other cases the sizes
-change).
+change) and when Unicode property support is enabled.
 
-The eleventh test checks out features that are new in Perl 5.10, and the
-twelfth test checks a number internals and non-Perl features concerned with
-Unicode property support. It it not run automatically unless PCRE is built with
-Unicode property support. To to this you must set --enable-unicode-properties
-when running "configure".
+The eleventh and twelfth tests check out features that are new in Perl 5.10,
+without and with UTF-8 support, respectively. This file can be also fed
+directly to the perltest.pl script, provided you are running Perl 5.10 or
+higher.
+
+The thirteenth test checks a number internals and non-Perl features concerned
+with Unicode property support.
+
+The fourteenth test is run only when JIT support is available, and the
+fifteenth test is run only when JIT support is not available. They test some
+JIT-specific features such as information output from pcretest about JIT
+compilation.
 
 
 Character tables
@@ -678,6 +721,7 @@ The distribution should contain the following files:
   pcre_get.c              ) sources for the functions in the library,
   pcre_globals.c          )   and some internal functions that they use
   pcre_info.c             )
+  pcre_jit_compile.c      )
   pcre_maketables.c       )
   pcre_newline.c          )
   pcre_ord2utf8.c         )
@@ -694,6 +738,7 @@ The distribution should contain the following files:
   pcre.h.in               template for pcre.h when built by "configure"
   pcreposix.h             header for the external POSIX wrapper API
   pcre_internal.h         header for internal use
+  sljit/*                 16 files that make up the JIT compiler
   ucp.h                   header for Unicode property handling
 
   config.h.in             template for config.h, which is built by "configure"
@@ -760,6 +805,7 @@ The distribution should contain the following files:
   mkinstalldirs           script for making install directories
   perltest.pl             Perl test program
   pcre-config.in          source of script which retains PCRE information
+  pcre_jit_test.c         test program for the JIT compiler
   pcrecpp_unittest.cc          )
   pcre_scanner_unittest.cc     ) test programs for the C++ wrapper
   pcre_stringpiece_unittest.cc )
@@ -796,4 +842,4 @@ The distribution should contain the following files:
 Philip Hazel
 Email local part: ph10
 Email domain: cam.ac.uk
-Last updated: 19 January 2010
+Last updated: 06 September 2011

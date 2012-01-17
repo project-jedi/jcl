@@ -1,8 +1,8 @@
 #
 # makefile to make pcre .obj files using Microsoft C++ compiler (cl.exe)
 #
-# if pcre source directory is different from ..\..\..\..\..\..\thirdparty\pcre\pcre-8.02, use
-# "make -Dpcresrc=<path to pcre sources>" to tell make where to find the
+# if pcre source directory is different from ..\..\..\..\..\..\thirdparty\pcre\pcre-8.21, use
+# "make -Dpcresrc=<path to pcre sources>" to tell make where to find the 
 # source files
 #
 # Make.exe needs to reside in the same directory as bcc32.exe.
@@ -26,24 +26,27 @@ BCB = $(MAKEDIR)\..
 BCC = $(BCB)
 
 !if !$d(pcresrc)
-pcresrc = ..\..\..\..\..\..\thirdparty\pcre\pcre-8.02
+pcresrc = ..\..\..\..\..\..\thirdparty\pcre\pcre-8.21
 !endif
 
 # ---------------------------------------------------------------------------
 OBJFILES = .\pcre_compile.obj .\pcre_config.obj .\pcre_dfa_exec.obj \
   .\pcre_exec.obj .\pcre_fullinfo.obj .\pcre_get.obj \
-  .\pcre_info.obj .\pcre_maketables.obj .\pcre_newline.obj \
-  .\pcre_ord2utf8.obj .\pcre_refcount.obj .\pcre_study.obj .\pcre_tables.obj \
-  .\pcre_try_flipped.obj .\pcre_ucd.obj .\pcre_valid_utf8.obj \
-  .\pcre_version.obj .\pcre_xclass.obj .\pcre_default_tables.obj
+  .\pcre_info.obj .\pcre_jit_compile.obj .\pcre_maketables.obj \
+  .\pcre_newline.obj .\pcre_ord2utf8.obj .\pcre_refcount.obj .\pcre_study.obj \
+  .\pcre_tables.obj .\pcre_try_flipped.obj .\pcre_ucd.obj \
+  .\pcre_valid_utf8.obj .\pcre_version.obj .\pcre_xclass.obj \
+  .\pcre_default_tables.obj
 
 # ---------------------------------------------------------------------------
-USERDEFINES = SUPPORT_UTF8;SUPPORT_UCP
+USERDEFINES = SUPPORT_UTF8;SUPPORT_UCP;SUPPORT_JIT
 SYSDEFINES = NO_STRICT;_NO_VCL;_RTLDLL
 INCLUDEPATH = $(pcresrc);$(BCC)\include;$(BCB)\include\vcl
 LIBPATH = $(BCB)\lib\obj;$(BCB)\lib
 PATHC = .;$(pcresrc)
 ALLLIB = import32.lib cw32i.lib
+INCLUDES = $(pcresrc)\pcre.h $(pcresrc)\config.h
+TABLES = pcre_default_tables.c
 # ---------------------------------------------------------------------------
 CFLAG1 = -O2 -Ve -X- -a8 -5 -b -d -k- -vi -tWM- -DHAVE_CONFIG_H
 
@@ -72,22 +75,24 @@ LINKER = ilink32
 !endif
 
 # ---------------------------------------------------------------------------
-pcre: includes tables $(OBJFILES)
+pcre: $(INCLUDES) $(TABLES) $(OBJFILES)
 
 # ---------------------------------------------------------------------------
 .c.obj:
-    cl -c -nologo -D_KERNEL32_ -GS- -Z7 -wd4068 -I$(pcresrc) -D$(SYSDEFINES) -D$(USERDEFINES) -DHAVE_CONFIG_H -Gs999999 -Fo$@ $<
+    cl -c -nologo -D_KERNEL32_ -GS- -Z7 -wd4068 -I$(pcresrc) -D$(SYSDEFINES) -DSUPPORT_UTF8 -DSUPPORT_UCP -DSUPPORT_JIT -DHAVE_CONFIG_H -Gs999999 -Fo$@ $<
 
-includes:
-    copy /Y $(pcresrc)\pcre.h.generic $(pcresrc)\pcre.h
-    copy /Y $(pcresrc)\config.h.generic $(pcresrc)\config.h
+$(pcresrc)\pcre.h: $(pcresrc)\pcre.h.generic
+    copy /Y $? $@
 
-tables:
-    $(BCC)\BIN\$(BCC32) -c -tWC $(CFLAG1) $(WARNINGS) -I$(INCLUDEPATH) -D$(SYSDEFINES) -D$(USERDEFINES) -n.\ $(pcresrc)\dftables.c
+$(pcresrc)\config.h: $(pcresrc)\config.h.generic
+    copy /Y $? $@
+
+pcre_default_tables.c: $(pcresrc)\dftables.c
+    $(BCC)\BIN\$(BCC32) -c -tWC $(CFLAG1) $(WARNINGS) -I$(INCLUDEPATH) -D$(USERDEFINES);$(SYSDEFINES) -n.\ $?
     $(BCC)\BIN\$(LINKER) $(LFLAGS) -L$(LIBPATH) c0x32.obj .\dftables.obj, .\dftables.exe,, $(ALLLIB),,
     del dftables.tds
     del dftables.obj
-    dftables.exe pcre_default_tables.c
+    dftables.exe $@
     del dftables.exe
 # ---------------------------------------------------------------------------
 
