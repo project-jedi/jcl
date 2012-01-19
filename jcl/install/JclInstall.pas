@@ -884,54 +884,26 @@ procedure TJclInstallation.Init;
   end;
 
   procedure AddWrapperOptions(Parent: TInstallerOption);
-  var
-    LinkOnRequestDefault: Boolean;
   begin
-    LinkOnRequestDefault := (Target is TJclBDSInstallation) and (Target.IDEVersionNumber >= 9) and (FTargetPlatform = bpWin64);
-
     // PCRE options
     AddOption(joJCLDefPCRE, [goChecked], Parent);
     if Target.RadToolKind = brBorlandDevStudio then
     begin
-      if LinkOnRequestDefault then
-      begin
-        AddOption(joJCLDefPCREStaticLink, [goRadioButton], joJCLDefPCRE);
-        AddOption(joJCLDefPCRELinkOnRequest, [goRadioButton, goChecked], joJCLDefPCRE);
-      end
-      else
-      begin
-        AddOption(joJCLDefPCREStaticLink, [goRadioButton, goChecked], joJCLDefPCRE);
-        AddOption(joJCLDefPCRELinkOnRequest, [goRadioButton], joJCLDefPCRE);
-      end;
+      AddOption(joJCLDefPCREStaticLink, [goRadioButton, goChecked], joJCLDefPCRE);
+      AddOption(joJCLDefPCRELinkOnRequest, [goRadioButton], joJCLDefPCRE);
     end
     else
       AddOption(joJCLDefPCRELinkOnRequest, [goRadioButton, goChecked], joJCLDefPCRE);
     AddOption(joJCLDefPCRELinkDLL, [goRadioButton], joJCLDefPCRE);
     // BZip2 options
     AddOption(joJCLDefBZip2, [goChecked], Parent);
-    if LinkOnRequestDefault then
-    begin
-      AddOption(joJCLDefBZip2StaticLink, [goRadioButton], joJCLDefBZip2);
-      AddOption(joJCLDefBZip2LinkOnRequest, [goRadioButton, goChecked], joJCLDefBZip2);
-    end
-    else
-    begin
-      AddOption(joJCLDefBZip2StaticLink, [goRadioButton, goChecked], joJCLDefBZip2);
-      AddOption(joJCLDefBZip2LinkOnRequest, [goRadioButton], joJCLDefBZip2);
-    end;
+    AddOption(joJCLDefBZip2StaticLink, [goRadioButton, goChecked], joJCLDefBZip2);
+    AddOption(joJCLDefBZip2LinkOnRequest, [goRadioButton], joJCLDefBZip2);
     AddOption(joJCLDefBZip2LinkDLL, [goRadioButton], joJCLDefBZip2);
     // ZLib options
     AddOption(joJCLDefZLib, [goChecked], Parent);
-    if LinkOnRequestDefault then
-    begin
-      AddOption(joJCLDefZLibStaticLink, [goRadioButton], joJCLDefZLib);
-      AddOption(joJCLDefZLibLinkOnRequest, [goRadioButton, goChecked], joJCLDefZLib);
-    end
-    else
-    begin
-      AddOption(joJCLDefZLibStaticLink, [goRadioButton, goChecked], joJCLDefZLib);
-      AddOption(joJCLDefZLibLinkOnRequest, [goRadioButton], joJCLDefZLib);
-    end;
+    AddOption(joJCLDefZLibStaticLink, [goRadioButton, goChecked], joJCLDefZLib);
+    AddOption(joJCLDefZLibLinkOnRequest, [goRadioButton], joJCLDefZLib);
     AddOption(joJCLDefZLibLinkDLL, [goRadioButton], joJCLDefZLib);
     // Unicode options
     AddOption(joJCLDefUnicode, [goChecked], Parent);
