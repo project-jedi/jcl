@@ -160,5 +160,5 @@ to contact us on our newsgroup here:<br>
 <br>
 Thank you for considering the JCL.<br>
 <br>
-</body>
+<a href="http://sourceforge.net/projects/jcl"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=47514&amp;type=15" width="150" height="40" alt="Get JEDI Code Library at SourceForge.net. Fast, secure and Free Open Source software downloads" /></a></body>
 </html>
