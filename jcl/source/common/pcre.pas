@@ -52,6 +52,8 @@ uses
 
 //DOM-IGNORE-BEGIN
 
+{$IFNDEF PCRE_RTL}
+
 (*************************************************
 *       Perl-Compatible Regular Expressions      *
 *************************************************)
@@ -668,6 +670,7 @@ var
 
 {$ENDIF PCRE_LINKONREQUEST}
 
+{$ENDIF ~PCRE_RTL}
 //DOM-IGNORE-END
 
 function IsPCRELoaded: Boolean;
@@ -704,6 +707,7 @@ uses
   Types, SysUtils;
   {$ENDIF ~HAS_UNITSCOPE}
 
+{$IFNDEF PCRE_RTL}
 {$IFDEF PCRE_STATICLINK}
 
 // make the linker happy with PCRE 8.00
@@ -1231,17 +1235,27 @@ begin
   pcre_callout_func := nil;
 end;
 {$ENDIF ~PCRE_STATICLINK}
+{$ENDIF ~PCRE_RTL}
 
 function IsPCRELoaded: Boolean;
 begin
+  {$IFDEF PCRE_RTL}
+  Result := True;
+  {$ELSE ~PCRE_RTL}
   {$IFDEF PCRE_STATICLINK}
   Result := True;
   {$ELSE ~PCRE_STATICLINK}
   Result := PCRELib <> INVALID_MODULEHANDLE_VALUE;
   {$ENDIF ~PCRE_STATICLINK}
+  {$ENDIF ~PCRE_RTL}
 end;
 
 function LoadPCRE: Boolean;
+{$IFDEF PCRE_RTL}
+begin
+  Result := True;
+end;
+{$ELSE ~PCRE_RTL}
 {$IFDEF PCRE_STATICLINK}
 begin
   Result := True;
@@ -1308,9 +1322,11 @@ begin
     InitPCREFuncPtrs(@LibNotLoadedHandler);
 end;
 {$ENDIF ~PCRE_STATICLINK}
+{$ENDIF ~PCRE_RTL}
 
 procedure UnloadPCRE;
 begin
+  {$IFNDEF PCRE_RTL}
   {$IFNDEF PCRE_STATICLINK}
   if PCRELib <> INVALID_MODULEHANDLE_VALUE then
     {$IFDEF MSWINDOWS}
@@ -1322,6 +1338,7 @@ begin
   PCRELib := INVALID_MODULEHANDLE_VALUE;
   InitPCREFuncPtrs(@LibNotLoadedHandler);
   {$ENDIF ~PCRE_STATICLINK}
+  {$ENDIF ~PCRE_RTL}
 end;
 
 {$IFDEF PCRE_LINKDLL}

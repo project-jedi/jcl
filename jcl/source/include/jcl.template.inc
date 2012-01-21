@@ -81,10 +81,12 @@
 //   static link: PCRE_STATICLINK
 //   static dll import: PCRE_LINKDLL
 //   dynamic dll import: PCRE_LINKONREQUEST
+//   RTL's RegularExpressionsAPI: PCRE_RTL
 
 {.$DEFINE PCRE_STATICLINK}
 {.$DEFINE PCRE_LINKDLL}
 {.$DEFINE PCRE_LINKONREQUEST} // default
+{.$DEFINE PCRE_RTL} // DXE and newer
 
 
 // BZIP2 options, mutually exclusive

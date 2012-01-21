@@ -77,6 +77,7 @@ resourcestring
   RsCaptionDefPCREStaticLink    = 'Static link to PCRE code';
   RsCaptionDefPCRELinkDLL       = 'Static bind to pcre.dll';
   RsCaptionDefPCRELinkOnRequest = 'Late bind to pcre.dll';
+  RsCaptionDefPCRERTL           = 'Use RTL''s RegularExpressionAPI';
   // BZip2 options
   RsCaptionDefBZip2              = 'BZip2 options';
   RsCaptionDefBZip2StaticLink    = 'Static link to BZip2 code';
@@ -190,6 +191,7 @@ resourcestring
   RsHintDefPCREStaticLink    = 'Code from PCRE is linked into JCL binaries';
   RsHintDefPCRELinkDLL       = 'JCL binaries require pcre.dll to be present';
   RsHintDefPCRELinkOnRequest = 'JCL binaries require pcre.dll when calling PCRE functions';
+  RsHintDefPCRERTL           = 'JCL relies on RTL''s RegularExpressionsAPI functions and declarations';
   // BZip2 options
   RsHintDefBZip2              = 'BZip2 specific options (bzip2.pas)';
   RsHintDefBZip2StaticLink    = 'Code from BZip2 is linked into JCL binaries';

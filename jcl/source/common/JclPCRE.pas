@@ -50,8 +50,14 @@ uses
   {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF HAS_UNITSCOPE}
   System.Classes, System.SysUtils,
+  {$IFDEF PCRE_RTL}
+  System.RegularExpressionsAPI,
+  {$ENDIF PCRE_RTL}
   {$ELSE ~HAS_UNITSCOPE}
   Classes, SysUtils,
+  {$IFDEF PCRE_RTL}
+  RegularExpressionsAPI,
+  {$ENDIF PCRE_RTL}
   {$ENDIF ~HAS_UNITSCOPE}
   JclBase, JclStringConversions;
 
@@ -244,7 +250,13 @@ end;
 var
   GTables: PAnsiChar;
 
-function JclPCREGetMem(Size: SizeInt): Pointer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
+{$IFDEF RTL230_UP}
+  {$IFDEF PCRE_RTL}
+    {$DEFINE PCRE_EXPORT_CDECL}
+  {$ENDIF PCRE_RTL}
+{$ENDIF RTL230_UP}
+
+function JclPCREGetMem(Size: {$IFDEF PCRE_RTL}Integer{$ELSE}SizeInt{$ENDIF}): Pointer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 begin
   GetMem(Result, Size);
 end;
@@ -313,6 +325,7 @@ begin
       PErr := @RsErrNullWsLimit;
     PCRE_ERROR_BADNEWLINE:
       PErr := @RsErrBadNewLine;
+    {$IFNDEF PCRE_RTL}
     PCRE_ERROR_BADOFFSET:
       PErr := @RsErrBadOffset;
     PCRE_ERROR_SHORTUTF8:
@@ -321,6 +334,7 @@ begin
       PErr := @RsErrRecurseLoop;
     PCRE_ERROR_JITSTACKLIMIT:
       PErr := @RsErrJITStackLimit;
+    {$ENDIF ~PCRE_RTL}
     JCL_PCRE_ERROR_STUDYFAILED:
       PErr := @RsErrStudyFailed;
     JCL_PCRE_ERROR_CALLOUTERROR:
@@ -339,7 +353,11 @@ begin
   if Assigned(FCode) then
     CallPCREFree(FCode);
   if Assigned(FExtra) then
+    {$IFDEF PCRE_RTL}
+    CallPCREFree(FExtra);
+    {$ELSE ~PCRE_RTL}
     pcre_free_study(FExtra);
+    {$ENDIF ~PCRE_RTL}
   if Assigned(FVector) then
     FreeMem(FVector);
   if Assigned(FChangedCaptures) then
@@ -352,7 +370,10 @@ function TJclRegEx.Compile(const Pattern: string; Study, UserLocale, JITCompile:
 var
   ErrMsgPtr: PAnsiChar;
   Tables: PAnsiChar;
-  StudyOptions, ConfigJIT: Integer;
+  StudyOptions: Integer;
+  {$IFNDEF PCRE_RTL}
+  ConfigJIT: Integer;
+  {$ENDIF ~PCRE_RTL}
 begin
   if UserLocale then
   begin
@@ -380,6 +401,13 @@ begin
   begin
     if Study then
     begin
+      {$IFDEF PCRE_RTL}
+      if Assigned(FExtra) then
+        CallPCREFree(FExtra);
+      if JITCompile then
+        raise EPCREError.CreateRes(@RsErrNoJITSupport, 0);
+      StudyOptions := 0;
+      {$ELSE ~PCRE_RTL}
       if Assigned(FExtra) then
         pcre_free_study(FExtra);
       if JITCompile then
@@ -391,6 +419,7 @@ begin
       end
       else
         StudyOptions := 0;
+      {$ENDIF ~PCRE_RTL}
       FExtra := pcre_study(FCode, StudyOptions, @ErrMsgPtr);
       Result := Assigned(FExtra) or (not Assigned(ErrMsgPtr));
       if not Result then
@@ -413,6 +442,11 @@ end;
 
 function TJclRegEx.GetAPIOptions(RunTime, DFA: Boolean): Integer;
 const
+  {$IFDEF PCRE_RTL}
+  PCRE_PARTIAL_HARD     = $08000000;
+  PCRE_NOTEMPTY_ATSTART = $10000000;
+  PCRE_UCP              = $20000000;
+  {$ENDIF PCRE_RTL}
   { roIgnoreCase, roMultiLine, roDotAll, roExtended,
     roAnchored, roDollarEndOnly, roExtra, roNotBOL, roNotEOL, roUnGreedy,
     roNotEmpty, roUTF8, roNoAutoCapture, roNoUTF8Check, roAutoCallout,
@@ -776,7 +810,9 @@ begin
 end;
 
 initialization
+  {$IFNDEF PCRE_RTL}
   pcre.LibNotLoadedHandler := LibNotLoadedHandler;
+  {$ENDIF ~PCRE_RTL}
   if LoadPCRE then
   begin
     SetPCREMallocCallback(JclPCREGetMem);

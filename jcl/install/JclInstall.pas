@@ -68,6 +68,7 @@ type
         joJCLDefPCREStaticLink,
         joJCLDefPCRELinkDLL,
         joJCLDefPCRELinkOnRequest,
+        joJCLDefPCRERTL,
         joJCLDefBZip2StaticLink,
         joJCLDefBZip2LinkDLL,
         joJCLDefBZip2LinkOnRequest,
@@ -132,7 +133,7 @@ const
       'MATH_EXT_EXTREMEVALUES',  'HOOK_DLL_EXCEPTIONS',
       'DEBUG_NO_BINARY', 'DEBUG_NO_TD32', 'DEBUG_NO_MAP', 'DEBUG_NO_EXPORTS',
       'DEBUG_NO_SYMBOLS', 'PCRE_STATICLINK',
-      'PCRE_LINKDLL', 'PCRE_LINKONREQUEST', 'BZIP2_STATICLINK',
+      'PCRE_LINKDLL', 'PCRE_LINKONREQUEST', 'PCRE_RTL', 'BZIP2_STATICLINK',
       'BZIP2_LINKDLL', 'BZIP2_LINKONREQUEST', 'ZLIB_STATICLINK',
       'ZLIB_LINKDLL', 'ZLIB_LINKONREQUEST', 'ZLIB_RTL', 'UNICODE_RTL_DATABASE',
       'UNICODE_SILENT_FAILURE', 'UNICODE_RAW_DATA', 'UNICODE_ZLIB_DATA',
@@ -405,6 +406,7 @@ var
       (Id: -1; Caption: @RsCaptionDefPCREStaticLink;       Hint: @RsHintDefPCREStaticLink), // joDefPCREStaticLink
       (Id: -1; Caption: @RsCaptionDefPCRELinkDLL;          Hint: @RsHintDefPCRELinkDLL), // joDefPCRELinkDLL
       (Id: -1; Caption: @RsCaptionDefPCRELinkOnRequest;    Hint: @RsHintDefPCRELinkOnRequest), // joDefPCRELinkOnRequest
+      (Id: -1; Caption: @RsCaptionDefPCRERTL;              Hint: @RsHintDefPCRERTL), // joDefPCRERTL
       (Id: -1; Caption: @RsCaptionDefBZip2StaticLink;      Hint: @RsHintDefBZip2StaticLink), // joDefBZip2StaticLink
       (Id: -1; Caption: @RsCaptionDefBZip2LinkDLL;         Hint: @RsHintDefBZip2LinkDLL), // joDefBZip2LinkDLL
       (Id: -1; Caption: @RsCaptionDefBZip2LinkOnRequest;   Hint: @RsHintDefBZip2LinkOnRequest), // joDefBZip2LinkOnRequest
@@ -897,6 +899,9 @@ procedure TJclInstallation.Init;
     else
       AddOption(joJCLDefPCRELinkOnRequest, [goRadioButton, goChecked], joJCLDefPCRE);
     AddOption(joJCLDefPCRELinkDLL, [goRadioButton], joJCLDefPCRE);
+    if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 8) then
+      // Delphi XE and newer have a licensed version of JCL's pcre.pas named RegularExpressionsAPI
+      AddOption(joJCLDefPCRERTL, [goRadioButton], joJCLDefPCRE);
     // BZip2 options
     AddOption(joJCLDefBZip2, [goChecked], Parent);
     AddOption(joJCLDefBZip2StaticLink, [goRadioButton, goChecked], joJCLDefBZip2);
