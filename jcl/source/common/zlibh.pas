@@ -74,6 +74,8 @@ uses
 
 //DOM-IGNORE-BEGIN
 
+{$IFNDEF ZLIB_RTL}
+
 {$IFNDEF FPC}
 type
   {$IFDEF UNIX}
@@ -2021,6 +2023,7 @@ const
   {$EXTERNALSYM DEF_MEM_LEVEL}
 
 //DOM-IGNORE-END
+{$ENDIF ~ZLIB_RTL}
 
 function IsZLibLoaded: Boolean;
 function LoadZLib: Boolean;
@@ -2039,6 +2042,8 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
+
+{$IFNDEF ZLIB_RTL}
 
 uses
   {$IFDEF HAS_UNITSCOPE}
@@ -2305,6 +2310,7 @@ const
 var
   ZLibModuleHandle: TModuleHandle = INVALID_MODULEHANDLE_VALUE;
 {$ENDIF ~ZLIB_STATICLINK}
+{$ENDIF ~ZLIB_RTL}
 
 function IsZLibLoaded: Boolean;
 begin
@@ -2395,6 +2401,7 @@ begin
   {$ENDIF ZLIB_LINKONREQUEST}
 end;
 
+{$IFNDEF ZLIB_RTL}
 {$IFDEF ZLIB_LINKDLL}
 // Core functions
 function zlibVersion;          external szZLIB name ZLIBzlibVersionExportName;
@@ -2434,6 +2441,8 @@ function zError;               external szZLIB name ZLIBzErrorExportName;
 function inflateSyncPoint;     external szZLIB name ZLIBinflateSyncPointExportName;
 function get_crc_table;        external szZLIB name ZLIBget_crc_tableExportName;
 {$ENDIF ZLIB_LINKDLL}
+
+{$ENDIF ~ZLIB_RTL}
 
 {$IFDEF UNITVERSIONING}
 initialization

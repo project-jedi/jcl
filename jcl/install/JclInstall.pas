@@ -74,6 +74,7 @@ type
         joJCLDefZLibStaticLink,
         joJCLDefZLibLinkDLL,
         joJCLDefZLibLinkOnRequest,
+        joJCLDefZLibRTL,
         joJCLDefUnicodeRTLDatabase,
         joJCLDefUnicodeSilentFailure,
         joJCLDefUnicodeRawData,
@@ -133,11 +134,11 @@ const
       'DEBUG_NO_SYMBOLS', 'PCRE_STATICLINK',
       'PCRE_LINKDLL', 'PCRE_LINKONREQUEST', 'BZIP2_STATICLINK',
       'BZIP2_LINKDLL', 'BZIP2_LINKONREQUEST', 'ZLIB_STATICLINK',
-      'ZLIB_LINKDLL', 'ZLIB_LINKONREQUEST', 'UNICODE_RTL_DATABASE', 'UNICODE_SILENT_FAILURE',
-      'UNICODE_RAW_DATA', 'UNICODE_ZLIB_DATA', 'UNICODE_BZIP2_DATA',
-      'CONTAINER_ANSISTR', 'CONTAINER_WIDESTR', 'CONTAINER_UNICODESTR',
-      'CONTAINER_NOSTR', {'7ZIP_STATICLINK',} '7ZIP_LINKDLL',
-      '7ZIP_LINKONREQUEST' );
+      'ZLIB_LINKDLL', 'ZLIB_LINKONREQUEST', 'ZLIB_RTL', 'UNICODE_RTL_DATABASE',
+      'UNICODE_SILENT_FAILURE', 'UNICODE_RAW_DATA', 'UNICODE_ZLIB_DATA',
+      'UNICODE_BZIP2_DATA', 'CONTAINER_ANSISTR', 'CONTAINER_WIDESTR',
+      'CONTAINER_UNICODESTR', 'CONTAINER_NOSTR', {'7ZIP_STATICLINK',}
+      '7ZIP_LINKDLL', '7ZIP_LINKONREQUEST' );
 
 type
   TJclDistribution = class;
@@ -410,6 +411,7 @@ var
       (Id: -1; Caption: @RsCaptionDefZLibStaticLink;       Hint: @RsHintDefZLibStaticLink), // joDefZLibStaticLink
       (Id: -1; Caption: @RsCaptionDefZLibLinkDLL;          Hint: @RsHintDefZLibLinkDLL), // joDefZLibLinkDLL
       (Id: -1; Caption: @RsCaptionDefZLibLinkOnRequest;    Hint: @RsHintDefZLibLinkOnRequest), // joDefZLibLinkOnRequest
+      (Id: -1; Caption: @RsCaptionDefZLibRTL;              Hint: @RsHintDefZLibRTL), // joDefZLibRTL
       (Id: -1; Caption: @RsCaptionDefUnicodeRTLDatabase;   Hint: @RsHintDefUnicodeRTLDatabase), // joDefUnicodeSilentFailure
       (Id: -1; Caption: @RsCaptionDefUnicodeSilentFailure; Hint: @RsHintDefUnicodeSilentFailure), // joDefUnicodeSilentFailure
       (Id: -1; Caption: @RsCaptionDefUnicodeRawData;       Hint: @RsHintDefUnicodeRawData), // joDefUnicodeRawData
@@ -905,6 +907,9 @@ procedure TJclInstallation.Init;
     AddOption(joJCLDefZLibStaticLink, [goRadioButton, goChecked], joJCLDefZLib);
     AddOption(joJCLDefZLibLinkOnRequest, [goRadioButton], joJCLDefZLib);
     AddOption(joJCLDefZLibLinkDLL, [goRadioButton], joJCLDefZLib);
+    if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 9) then
+      // Delphi XE2 ZLib is up-to-date and can directly be used by the JCL
+      AddOption(joJCLDefZLibRTL, [goRadioButton], joJCLDefZLib);
     // Unicode options
     AddOption(joJCLDefUnicode, [goChecked], Parent);
     if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 6) then

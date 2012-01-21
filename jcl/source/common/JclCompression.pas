@@ -62,12 +62,18 @@ uses
   {$ENDIF MSWINDOWS}
   System.Types,
   System.SysUtils, System.Classes, System.Contnrs,
+  {$IFDEF ZLIB_RTL}
+  System.ZLib,
+  {$ENDIF ZLIB_RTL}
   {$ELSE ~HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
   Windows, Sevenzip, ActiveX,
   {$ENDIF MSWINDOWS}
   Types,
   SysUtils, Classes, Contnrs,
+  {$IFDEF ZLIB_RTL}
+  ZLib,
+  {$ENDIF ZLIB_RTL}
   {$ENDIF ~HAS_UNITSCOPE}
   zlibh, bzip2, JclWideStrings, JclBase, JclStreams;
 
@@ -286,6 +292,19 @@ type
     property CompressionLevel: Integer read FCompressionLevel write SetCompressionLevel;
   end;
 
+{$IFDEF ZLIB_RTL}
+const
+  DEF_WBITS = 15;
+  {$EXTERNALSYM DEF_WBITS}
+  DEF_MEM_LEVEL = 8;
+  {$EXTERNALSYM DEF_MEM_LEVEL}
+
+type
+  PBytef = PByte;
+  {$EXTERNALSYM PBytef}
+{$ENDIF ZLIB_RTL}
+
+type
   TJclZLibDecompressStream = class(TJclDecompressStream)
   private
     FWindowBits: Integer;

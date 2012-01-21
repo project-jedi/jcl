@@ -87,6 +87,7 @@ resourcestring
   RsCaptionDefZLibStaticLink    = 'Static link to ZLib code';
   RsCaptionDefZLibLinkDLL       = 'Static bind to zlib1.dll';
   RsCaptionDefZLibLinkOnRequest = 'Late bind to zlib1.dll';
+  RsCaptionDefZLibRTL           = 'Use RTL''s ZLib';
   // Unicode options
   RsCaptionDefUnicode              = 'Unicode options';
   RsCaptionDefUnicodeRTLDatabase   = 'Prefer RTL database';
@@ -199,6 +200,7 @@ resourcestring
   RsHintDefZLibStaticLink    = 'Code from ZLib is linked into JCL binaries';
   RsHintDefZLibLinkDLL       = 'JCL binaries require zlib1.dll to be present';
   RsHintDefZLibLinkOnRequest = 'JCL binaries require zlib1.dll when calling ZLib functions';
+  RsHintDefZLibRTL           = 'JCL relies on RTL''s ZLib functions and declarations';
   // Unicode options
   RsHintDefUnicode              = 'Unicode specific option (JclUnicode.pas)';
   RsHintDefUnicodeRTLDatabase   = 'Prefer RTL Character Database over JCL one, less accurate but reduce executable sizes';

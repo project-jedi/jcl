@@ -99,6 +99,7 @@
 {.$DEFINE ZLIB_STATICLINK} // default
 {.$DEFINE ZLIB_LINKDLL}
 {.$DEFINE ZLIB_LINKONREQUEST}
+{.$DEFINE ZLIB_RTL} // DXE2 and newer only
 
 
 // Unicode options
