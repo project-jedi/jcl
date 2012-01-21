@@ -160,115 +160,120 @@ See also:
   Options
   JclPCRE_Using
 --------------------------------------------------------------------------------
-@@TJclRegEx.Compile@string@Boolean@Boolean
-Summary:
-  Converts a regular expression into the form required for the PCRE.DLL library.
-Description:
-  Compile is a method used to convert a regular expression into the form
-  required for the PCRE.DLL library, and to optionally perform
-  optimization and localization for the regular expression.
+@@TJclRegEx.Compile@string@Boolean@Boolean@Boolean
+Summary
+Converts a regular expression into the form required for the
+PCRE.DLL library.
+Description
+Compile is a method used to convert a regular expression into
+the form required for the PCRE.DLL library, and to optionally
+perform optimization and localization for the regular
+expression.
 
-  Pattern indicates the regular expression to be compiled. Pattern must
-  contain a string that meets the syntax and semantics of the regular
-  expressions supported by PCRE.  The power of regular expressions comes
-  from the ability to include alternatives and repetitions in the
-  pattern. These are encoded in the pattern by the use of metacharacters,
-  which do not stand for themselves but instead are interpreted in some
-  special way.
+Pattern indicates the regular expression to be compiled.
+Pattern must contain a string that meets the syntax and
+semantics of the regular expressions supported by PCRE. The
+power of regular expressions comes from the ability to
+include alternatives and repetitions in the pattern. These
+are encoded in the pattern by the use of metacharacters,
+which do not stand for themselves but instead are interpreted
+in some special way.
 
-  There are two different sets of metacharacters: those that are
-  recognized anywhere in the pattern except within square brackets, and
-  those that are recognized in square brackets. Outside square brackets,
-  the metacharacters are as follows:
+There are two different sets of metacharacters: those that
+are recognized anywhere in the pattern except within square
+brackets, and those that are recognized in square brackets.
+Outside square brackets, the metacharacters are as follows:
 
 <table>
-Metacharacter   Description
---------------  ------------------------------------------------------
+Metacharacter   \Description
+--------------  -----------------------------------------------------
 \\              general escape character with several uses
-\^              assert start of string (or line, in multiline mode)
-\$              assert end of string (or line, in multiline mode)
-\.              match any character except newline (by default)
-\[              start character class definition
-\|              start of alternative branch
-\(              start subpattern
-\)              end subpattern
-\?              extends the meaning of ( also 0 or 1 quantifier
-                  also quantifier minimizer
+^               assert start of string (or line, in multiline mode)
+$               assert end of string (or line, in multiline mode)
+.               match any character except newline (by default)
+[               start character class definition
+|               start of alternative branch
+(               start subpattern
+)               end subpattern
+?               extends the meaning of ( also 0 or 1 quantifier also
+                 quantifier minimizer
 \*              0 or more quantifier
-\+              1 or more quantifier
-                  also "possessive quantifier"
-\{              start min/max quantifier
+\+              1 or more quantifier also "possessive quantifier"
+{               start min/max quantifier
 </table>
 
-  Part of a pattern that is in square brackets is called a "character
-  class". In a character class the only metacharacters are:
+Part of a pattern that is in square brackets is called a
+"character class". In a character class the only
+metacharacters are:
 
 <table>
-Metacharacter   Description
---------------  ------------------------------------------------------
+Metacharacter   \Description
+--------------  --------------------------------------------------
 \\              general escape character
-\^              negate the class, but only if the first character
+^               negate the class, but only if the first character
 \-              indicates character range
-\[              POSIX character class (followed by POSIX syntax)
-\]              terminates the character class
+[               POSIX character class (followed by POSIX syntax)
+]               terminates the character class
 </table>
 
-  Please refer to the documentation in PCRE Patterns for a more
-  detailed description of regular expressions and metacharacters.
+Please refer to the documentation in PCRE Patterns for a more
+detailed description of regular expressions and
+metacharacters.
 
-  Study indicates if the regular expression should be inspected for
-  additional information that can be extracted to speed up matching
-  performance. Set Study to True if the same compiled regular expression
-  will be used in multiple calls to the Match method.
+Study indicates if the regular expression should be inspected
+for additional information that can be extracted to speed up
+matching performance. Set Study to True if the same compiled
+regular expression will be used in multiple calls to the
+Match method.
 
-  UserLocale indicates that a non-standard locale is in use on the local
-  machine, and show be used to override the character tables built into
-  the PCRE library. Set UserLocale to True to force the users' locale to
-  be used instead of the default encodings in the PCRE library.
+UserLocale indicates that a non-standard locale is in use on
+the local machine, and show be used to override the character
+tables built into the PCRE library. Set UserLocale to True to
+force the users' locale to be used instead of the default
+encodings in the PCRE library.
 
-  Values in the Options property are used to configure the regular
-  expression engine in the PCRE library, and to alter the run-time
-  behavior of pattern matching. Set values in the Options property prior
-  to calling Compile or Match to control the configuration and behavior
-  of the PCRE library.
+Values in the Options property are used to configure the
+regular expression engine in the PCRE library, and to alter
+the run-time behavior of pattern matching. Set values in the
+Options property prior to calling Compile or Match to control
+the configuration and behavior of the PCRE library.
 
-  Refer to the documentation for TJclRegExOption for a description of
-  the values used in the Options property.
+Refer to the documentation for TJclRegExOption for a
+\description of the values used in the Options property.
 
-  The compiled regular expression representing Pattern is stored
-  internally in TJclRegEx for subsequent use in the Match method. An
-  EPCREError exception is raised if Pattern contains an empty string ('').
+The compiled regular expression representing Pattern is
+stored internally in TJclRegEx for subsequent use in the
+Match method. An EPCREError exception is raised if Pattern
+contains an empty string ('').
 
-  Compile returns a Boolean value that indicates if the regular
-  expression in Pattern is successfully compiled (and optionally
-  optimized).
+Compile returns a Boolean value that indicates if the regular
+expression in Pattern is successfully compiled (and
+\optionally optimized).
 
-  Use the ErrorMessage and ErrorOffset properties to determine the type
-  and location of a syntax error detected in the Pattern argument.
+Use the ErrorMessage and ErrorOffset properties to determine
+the type and location of a syntax error detected in the
+Pattern argument.
 
-  Use the Match method to comapre a text subject using the compiled
-  regular expression.
-Parameters:
-  Pattern    - Regular expression to use when comparing a text subject using
-               the regular expression engine.
-  Study      - Indicates if optimization is required for the regular
-               expression.
-  UserLocale - Indicates if non-standard localization is required for the
-               regular expression.
-Result:
-  Boolean - True indicates successful completion of the method.
-Exceptions:
-  EPCREError - Exception raised when the regular expression in Pattern
-               contains an empty string ('').
-See also:
-  Options
-  Match
-  ErrorMessage
-  ErrorOffset
-  TJclRegExOption
-  TJclRegExOptions
-  EPCREError
---------------------------------------------------------------------------------
+Use the Match method to comapre a text subject using the
+compiled regular expression.
+Parameters
+Pattern :     Regular expression to use when comparing a text
+              subject using the regular expression engine.
+Study :       Indicates if optimization is required for the
+              regular expression.
+UserLocale :  Indicates if non\-standard localization is
+              required for the regular expression.
+JITCompile :  Enable the Just-In-Time compilation of this
+              regular expression.
+Returns
+Boolean - True indicates successful completion of the method.
+Exceptions
+EPCREError - Exception raised when the regular expression in
+Pattern contains an empty string ('').
+See Also
+Options Match ErrorMessage ErrorOffset TJclRegExOption
+TJclRegExOptions EPCREError
+
 @@TJclRegEx.Destroy
 Summary:
   Destructor for object instance.
