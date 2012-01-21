@@ -371,9 +371,7 @@ uses
   {$ENDIF MSWINDOWS}
   Math,
   {$ENDIF ~HAS_UNITSCOPE}
-  {$IFNDEF UNICODE_RTL_DATABASE}
   JclUnicode,
-  {$ENDIF ~UNICODE_RTL_DATABASE}
   JclResources;
 
 procedure SwapWordByteOrder(P: PWideChar; Len: SizeInt);

@@ -2185,9 +2185,7 @@ const
 implementation
 
 uses
-  {$IFNDEF UNICODE_RTL_DATABASE}
   JclUnicode, // WideSameText
-  {$ENDIF ~UNICODE_RTL_DATABASE}
   JclDateTime, JclFileUtils, JclResources, JclStrings, JclSysUtils;
 
 const

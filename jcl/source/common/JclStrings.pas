@@ -1214,7 +1214,7 @@ begin
     P := PChar(S);
     for I := 1 to L do
     begin
-      P^ := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}Character.ToLower(P^);
+      P^ := TCharacter.ToLower(P^);
       Inc(P);
     end;
   end;
@@ -1231,7 +1231,7 @@ begin
   if S <> nil then
   begin
     repeat
-      S^ := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}Character.ToLower(S^);
+      S^ := TCharacter.ToLower(S^);
       Inc(S);
     until S^ = #0;
   end;
@@ -1970,7 +1970,7 @@ begin
     P := PChar(S);
     for I := 1 to L do
     begin
-      P^ := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}Character.ToUpper(P^);
+      P^ := TCharacter.ToUpper(P^);
       Inc(P);
     end;
   end;
@@ -1987,7 +1987,7 @@ begin
   if S <> nil then
   begin
     repeat
-      S^ := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}Character.ToUpper(S^);
+      S^ := TCharacter.ToUpper(S^);
       Inc(S);
     until S^ = #0;
   end;
@@ -2799,7 +2799,7 @@ end;
 function CharIsAlpha(const C: Char): Boolean;
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}Character.IsLetter(C);
+  Result := TCharacter.IsLetter(C);
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := (StrCharTypes[C] and C1_ALPHA) <> 0;
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -2808,7 +2808,7 @@ end;
 function CharIsAlphaNum(const C: Char): Boolean;
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}Character.IsLetterOrDigit(C);
+  Result := TCharacter.IsLetterOrDigit(C);
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := ((StrCharTypes[C] and C1_ALPHA) <> 0) or ((StrCharTypes[C] and C1_DIGIT) <> 0);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -2827,7 +2827,7 @@ end;
 function CharIsControl(const C: Char): Boolean;
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}Character.IsControl(C);
+  Result := TCharacter.IsControl(C);
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := (StrCharTypes[C] and C1_CNTRL) <> 0;
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -2841,7 +2841,7 @@ end;
 function CharIsDigit(const C: Char): Boolean;
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}Character.IsDigit(C);
+  Result := TCharacter.IsDigit(C);
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := (StrCharTypes[C] and C1_DIGIT) <> 0;
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -2866,7 +2866,7 @@ end;
 function CharIsLower(const C: Char): Boolean;
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}Character.IsLower(C);
+  Result := TCharacter.IsLower(C);
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := (StrCharTypes[C] and C1_LOWER) <> 0;
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -2890,7 +2890,7 @@ end;
 function CharIsPunctuation(const C: Char): Boolean;
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}Character.IsPunctuation(C);
+  Result := TCharacter.IsPunctuation(C);
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := ((StrCharTypes[C] and C1_PUNCT) <> 0);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -2904,7 +2904,7 @@ end;
 function CharIsSpace(const C: Char): Boolean;
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}Character.IsWhiteSpace(C);
+  Result := TCharacter.IsWhiteSpace(C);
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := (StrCharTypes[C] and C1_SPACE) <> 0;
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -2913,7 +2913,7 @@ end;
 function CharIsUpper(const C: Char): Boolean;
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}Character.IsUpper(C);
+  Result := TCharacter.IsUpper(C);
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := (StrCharTypes[C] and C1_UPPER) <> 0;
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -3063,7 +3063,7 @@ end;
 function CharLower(const C: Char): Char;
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}Character.ToLower(C);
+  Result := TCharacter.ToLower(C);
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := StrCaseMap[Ord(C) + StrLoOffset];
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -3086,7 +3086,7 @@ end;
 function CharUpper(const C: Char): Char;
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}Character.ToUpper(C);
+  Result := TCharacter.ToUpper(C);
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := StrCaseMap[Ord(C) + StrUpOffset];
   {$ENDIF ~UNICODE_RTL_DATABASE}

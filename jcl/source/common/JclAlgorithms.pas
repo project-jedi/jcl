@@ -492,6 +492,9 @@ uses
   {$IFDEF HAS_UNIT_ANSISTRINGS}
   System.AnsiStrings,
   {$ENDIF HAS_UNIT_ANSISTRINGS}
+  {$IFDEF UNICODE_RTL_DATABASE}
+  System.Character,
+  {$ENDIF UNICODE_RTL_DATABASE}
   System.SysUtils,
   {$ELSE ~HAS_UNITSCOPE}
   {$IFDEF COMPILER11_UP}
@@ -500,6 +503,9 @@ uses
   {$IFDEF HAS_UNIT_ANSISTRINGS}
   AnsiStrings,
   {$ENDIF HAS_UNIT_ANSISTRINGS}
+  {$IFDEF UNICODE_RTL_DATABASE}
+  Character,
+  {$ENDIF UNICODE_RTL_DATABASE}
   SysUtils,
   {$ENDIF ~HAS_UNITSCOPE}
   JclAnsiStrings, JclStringConversions, JclUnicode;
@@ -879,11 +885,19 @@ begin
   IntegerHash.H3 := 2;
   IntegerHash.H4 := 3;
   I := 1;
+  {$IFDEF UNICODE_RTL_DATABASE}
+  SetLength(CA, 1);
+  {$ELSE ~UNICODE_RTL_DATABASE}
   SetLength(CA, 0);
+  {$ENDIF ~UNICODE_RTL_DATABASE}
   while I < Length(AString) do
   begin
     C.C := UTF8GetNextChar(AString, I);
+    {$IFDEF UNICODE_RTL_DATABASE}
+    CA[0] := Ord(TCharacter.ToLower(Chr(C.C)));
+    {$ELSE ~UNICODE_RTL_DATABASE}
     CA := UnicodeCaseFold(C.C);
+    {$ENDIF ~UNICODE_RTL_DATABASE}
     for J := Low(CA) to High(CA) do
     begin
       C.C := CA[J];
@@ -934,12 +948,20 @@ begin
   IntegerHash.H2 := 1;
   IntegerHash.H3 := 2;
   IntegerHash.H4 := 3;
+  {$IFDEF UNICODE_RTL_DATABASE}
+  SetLength(CA, 1);
+  {$ELSE ~UNICODE_RTL_DATABASE}
   SetLength(CA, 0);
+  {$ENDIF ~UNICODE_RTL_DATABASE}
   I := 1;
   while I < Length(AString) do
   begin
     C.C := UTF16GetNextChar(AString, I);
+    {$IFDEF UNICODE_RTL_DATABASE}
+    CA[0] := Ord(TCharacter.ToLower(Chr(C.C)));
+    {$ELSE ~UNICODE_RTL_DATABASE}
     CA := UnicodeCaseFold(C.C);
+    {$ENDIF ~UNICODE_RTL_DATABASE}
     for J := Low(CA) to High(CA) do
     begin
       C.C := CA[J];
@@ -991,12 +1013,20 @@ begin
   IntegerHash.H2 := 1;
   IntegerHash.H3 := 2;
   IntegerHash.H4 := 3;
+  {$IFDEF UNICODE_RTL_DATABASE}
+  SetLength(CA, 1);
+  {$ELSE ~UNICODE_RTL_DATABASE}
   SetLength(CA, 0);
+  {$ENDIF ~UNICODE_RTL_DATABASE}
   I := 1;
   while I < Length(AString) do
   begin
     C.C := UTF16GetNextChar(AString, I);
+    {$IFDEF UNICODE_RTL_DATABASE}
+    CA[0] := Ord(TCharacter.ToLower(Chr(C.C)));
+    {$ELSE ~UNICODE_RTL_DATABASE}
     CA := UnicodeCaseFold(C.C);
+    {$ENDIF ~UNICODE_RTL_DATABASE}
     for J := Low(CA) to High(CA) do
     begin
       C.C := CA[J];
