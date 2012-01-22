@@ -3069,13 +3069,13 @@ That is, for RawOutput = False, lines not terminated by a line feed (#10) are de
 function Execute(const CommandLine: string; var Output, Error: string; RawOutput, RawError: Boolean;
   AbortPtr: PBoolean): Cardinal;
 begin
-  Result := InternalExecute(CommandLine, AbortPtr, nil, Output, nil, RawOutput, True, Error, nil, RawError);
+  Result := InternalExecute(CommandLine, AbortPtr, nil, Output, nil, RawOutput, False, Error, nil, RawError);
 end;
 
 function Execute(const CommandLine: string; AbortEvent: TJclEvent; var Output, Error: string;
   RawOutput, RawError: Boolean): Cardinal;
 begin
-  Result := InternalExecute(CommandLine, nil, AbortEvent, Output, nil, RawOutput, True, Error, nil, RawError);
+  Result := InternalExecute(CommandLine, nil, AbortEvent, Output, nil, RawOutput, False, Error, nil, RawError);
 end;
 
 { TODO -cHelp :
@@ -3089,7 +3089,7 @@ var
 begin
   Output := '';
   Error := '';
-  Result := InternalExecute(CommandLine, AbortPtr, nil, Output, OutputLineCallback, RawOutput, True, Error, ErrorLineCallback, RawError);
+  Result := InternalExecute(CommandLine, AbortPtr, nil, Output, OutputLineCallback, RawOutput, False, Error, ErrorLineCallback, RawError);
 end;
 
 function Execute(const CommandLine: string; AbortEvent: TJclEvent; OutputLineCallback, ErrorLineCallback: TTextHandler;
@@ -3099,7 +3099,7 @@ var
 begin
   Output := '';
   Error := '';
-  Result := InternalExecute(CommandLine, nil, AbortEvent, Output, OutputLineCallback, RawOutput, True, Error, ErrorLineCallback, RawError);
+  Result := InternalExecute(CommandLine, nil, AbortEvent, Output, OutputLineCallback, RawOutput, False, Error, ErrorLineCallback, RawError);
 end;
 
 //=== { TJclCommandLineTool } ================================================
