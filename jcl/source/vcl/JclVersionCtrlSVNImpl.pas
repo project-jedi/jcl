@@ -46,6 +46,7 @@ type
   TSvnDirVersion = (sdvNone, sdv10, sdv17);
   TJclVersionControlSVN = class (TJclVersionControlPlugin)
   private
+    FSVNStatusCmd: string;
     FTortoiseSVNProc: string;
   protected
     function GetSupportedActionTypes: TJclVersionControlActionTypes; override;
@@ -79,11 +80,13 @@ implementation
 
 uses
   JclVclResources,
-  JclFileUtils, JclSysInfo, JclSysUtils, JclRegistry, JclStrings;
+  JclFileUtils, JclSysInfo, JclSysUtils, JclRegistry, JclStrings, JclSimpleXml;
 
 const
   JclVersionCtrlRegKeyName = 'SOFTWARE\TortoiseSVN';
   JclVersionCtrlRegValueName = 'ProcPath';
+  JclVersionCtrlSVNExeName = 'svn.exe';
+  
   JclVersionCtrlSVNAddVerb = 'add';
   JclVersionCtrlSVNBlameVerb = 'blame';
   JclVersionCtrlSVNBranchVerb = 'copy';
@@ -102,11 +105,21 @@ const
   JclVersionCtrlSVNUpdateVerb = 'update';
   JclVersionCtrlSVNUpdateToParam = '/rev';
   JclVersionCtrlSVNUnlockVerb = 'unlock';
+
 //  JclVersionCtrlSVNTortoiseDLL = 'TortoiseSVN.dll';
   JclVersionCtrlSVNDirectory1 = '.svn\';
   JclVersionCtrlSVNDirectory2 = '_svn\';
   JclVersionCtrlSVNEntryFile = 'entries';
   JclVersionCtrlSVNDbFile = 'wc.db';
+
+  JclVersionCtrlSVNStatusElementName = 'status';
+  JclVersionCtrlSVNTargetElementName = 'target';
+  JclVersionCtrlSVNEntryElementName = 'entry';
+  JclVersionCtrlSVNWCStatusElementName = 'wc-status';
+  //JclVersionCtrlSVNPropsPropertyName = 'props';
+  JclVersionCtrlSVNItemPropertyName = 'item';
+  JclVersionCtrlSVNPathPropertyName = 'path';
+  JclVersionCtrlSVNUnversionedPropertyValue = 'unversioned';
 
   JclVersionCtrlSVNDirectories: array [0..1] of string =
    ( JclVersionCtrlSVNDirectory1, JclVersionCtrlSVNDirectory2 );
@@ -134,6 +147,12 @@ begin
   end
   else
     FTortoiseSVNProc := RegReadStringDef(HKLM, JclVersionCtrlRegKeyName, JclVersionCtrlRegValueName, '');
+
+  FSVNStatusCmd := PathAddSeparator(ExtractFilePath(FTortoiseSVNProc)) + JclVersionCtrlSVNExeName;
+  if FileExists(FSVNStatusCmd) then
+    FSVNStatusCmd := FSVNStatusCmd + ' status --xml --non-interactive --depth=empty --verbose '
+  else
+    FSVNStatusCmd := '';
 end;
 
 destructor TJclVersionControlSVN.Destroy;
@@ -238,33 +257,23 @@ begin
   Result := FTortoiseSVNProc <> '';
 end;
 
-function TJclVersionControlSVN.GetFileActions(
-  const FileName: TFileName): TJclVersionControlActionTypes;
-var
-  EntryLine: string;
-  EntryFileName, UpperCaseFileName, XmlFileNameValue: TFileName;
-  Entries: TJclAnsiMappedTextReader;
-  IndexDir: Integer;
-  SupportedDirVersion: TSvnDirVersion;
-begin
-  Result := inherited GetFileActions(FileName);
+function TJclVersionControlSVN.GetFileActions(const FileName: TFileName): TJclVersionControlActionTypes;
 
-  if Enabled then
+  // internal method to get file actions (not complete and not compatible with SVN 1.7 wc
+  function GetSVNInternalFileActions(const FileName: TFileName; var Actions: TJclVersionControlActionTypes): Boolean;
+  var
+    EntryLine: string;
+    EntryFileName, UpperCaseFileName, XmlFileNameValue: TFileName;
+    Entries: TJclAnsiMappedTextReader;
+    IndexDir: Integer;
   begin
-    SupportedDirVersion := SVNSupportedDirVersion(ExtractFilePath(FileName));
-    if SupportedDirVersion = sdv17 then
-    begin
-      Result := GetSupportedActionTypes;
-      Exit;
-    end
-    else if SupportedDirVersion = sdvNone then
-      Exit;
-
     UpperCaseFileName := StrUpper(ExtractFileName(FileName));
     XmlFileNameValue := Format('NAME="%s"', [UpperCaseFileName]);
 
     for IndexDir := Low(JclVersionCtrlSVNDirectories) to High(JclVersionCtrlSVNDirectories) do
     begin
+      Result := False;
+
       EntryFileName := PathAddSeparator(ExtractFilePath(FileName))
         + JclVersionCtrlSVNDirectories[IndexDir] + JclVersionCtrlSVNEntryFile;
 
@@ -278,8 +287,9 @@ begin
             // old SVN entries file (xml-like)
             if Pos(XmlFileNameValue, StrUpper(EntryLine)) > 0 then
             begin
+              Result := True;
               // TODO: check modifications
-              Result := Result + [vcaBlame, vcaBranch, vcaCommit, vcaDiff, vcaGraph,
+              Actions := Actions + [vcaBlame, vcaBranch, vcaCommit, vcaDiff, vcaGraph,
                 vcaLog, vcaLock, vcaMerge, vcaRename, vcaRevert, vcaRepoBrowser,
                 vcaStatus, vcaTag, vcaUpdate, vcaUpdateTo, vcaUnlock];
               FreeAndNil(Entries);
@@ -291,8 +301,9 @@ begin
               EntryLine := string(Entries.ReadLn);
               if StrSame(UpperCaseFileName, StrUpper(EntryLine)) then
               begin
+                Result := True;
                 // TODO: check modifications
-                Result := Result + [vcaBlame, vcaBranch, vcaCommit, vcaDiff, vcaGraph,
+                Actions := Actions + [vcaBlame, vcaBranch, vcaCommit, vcaDiff, vcaGraph,
                   vcaLog, vcaLock, vcaMerge, vcaRename, vcaRevert, vcaRepoBrowser,
                   vcaStatus, vcaTag, vcaUpdate, vcaUpdateTo, vcaUnlock];
                 FreeAndNil(Entries);
@@ -303,9 +314,86 @@ begin
         finally
           Entries.Free;
         end;
-        Result := Result + [vcaAdd];
+        Actions := Actions + [vcaAdd];
       end;
     end;
+  end;
+
+  // external method: rely on svn.exe to get file actions
+  function GetSVNExecutableFileActions(const FileName: TFileName; var Actions: TJclVersionControlActionTypes): Boolean;
+  var
+    SVNOutput, SVNError: string;
+    XML: TJclSimpleXML;
+    TargetElement, EntryElement, WcStatusElement: TJclSimpleXMLElem;
+    ItemProp: TJclSimpleXMLProp;
+  begin
+    Result := False;
+    if Execute(FSVNStatusCmd + FileName, SVNOutput, SVNError) <> 0 then
+      Exit;
+
+    XML := TJclSimpleXML.Create;
+    try
+      XML.LoadFromString(SVNOutput);
+      XML.Options := XML.Options - [sxoAutoCreate];
+      if XML.Root.Name <> JclVersionCtrlSVNStatusElementName then
+        Exit;
+
+      TargetElement := XML.Root.Items.ItemNamed[JclVersionCtrlSVNTargetElementName];
+      if not Assigned(TargetElement) then
+        Exit;
+
+      EntryElement := TargetElement.Items.ItemNamed[JclVersionCtrlSVNEntryElementName];
+      if not Assigned(EntryElement) then
+        Exit;
+
+      WcStatusElement := EntryElement.Items.ItemNamed[JclVersionCtrlSVNWcStatusElementName];
+      if not Assigned(WcStatusElement) then
+        Exit;
+
+      ItemProp := WcStatusElement.Properties.ItemNamed[JclVersionCtrlSVNItemPropertyName];
+      if not Assigned(ItemProp) then
+        Exit;
+
+      Result := True;
+
+      if ItemProp.Value = JclVersionCtrlSVNUnversionedPropertyValue then
+        Actions := Actions + [vcaAdd, vcaRepoBrowser, vcaStatus]
+      else
+        // TODO: check modifications
+        Actions := Actions + [vcaBlame, vcaBranch, vcaCommit, vcaDiff, vcaGraph,
+          vcaLog, vcaLock, vcaMerge, vcaRename, vcaRevert, vcaRepoBrowser,
+          vcaStatus, vcaTag, vcaUpdate, vcaUpdateTo, vcaUnlock];
+    finally
+      XML.Free;
+    end;
+  end;
+
+var
+  Found: Boolean;
+  SupportedDirVersion: TSvnDirVersion;
+begin
+  Result := inherited GetFileActions(FileName);
+
+  Found := not Enabled;
+
+  // SVN 1.7 repos: invoke SVN to query the working copy
+  if (not Found) and (FSVNStatusCmd <> '') then
+    Found := GetSVNExecutableFileActions(FileName, Result);
+
+  // SVN 1.6 repos: direct queries on the working copy
+  if not Found then
+  begin
+    SupportedDirVersion := SVNSupportedDirVersion(ExtractFilePath(FileName));
+    if SupportedDirVersion = sdv17 then
+    begin
+      Result := GetSupportedActionTypes;
+      Exit;
+    end
+    else if SupportedDirVersion = sdvNone then
+      Exit;
+
+    //Found := GetSVNInternalFileActions(FileName, Result);
+    GetSVNInternalFileActions(FileName, Result);
   end;
 end;
 
@@ -349,58 +437,205 @@ end;
 
 function TJclVersionControlSVN.GetSandboxActions(
   const SdBxName: TFileName): TJclVersionControlActionTypes;
-var
-  SvnDirectory: string;
-  IndexDir: Integer;
-begin
-  Result := inherited GetSandboxActions(SdBxName);
 
-  if Enabled then
+  function GetSVNInternalSandboxActions(const SdBxName: TFileName; out Actions: TJclVersionControlActionTypes): Boolean;
+  var
+    SvnDirectory: string;
+    IndexDir: Integer;
   begin
+    Result := False;
+    // not in a sandbox
+    Actions := Actions + [vcaCheckOutSandbox];
+
     for IndexDir := Low(JclVersionCtrlSVNDirectories) to High(JclVersionCtrlSVNDirectories) do
     begin
       SvnDirectory := sdBxName + JclVersionCtrlSVNDirectories[IndexDir];
 
       if DirectoryExists(SvnDirectory) then
       begin
-        Result := Result + [vcaAddSandbox, vcaBranchSandbox, vcaCommitSandbox,
+        Result := True;
+        Actions := Actions + [vcaAddSandbox, vcaBranchSandbox, vcaCommitSandbox,
           vcaLogSandbox, vcaLockSandbox, vcaMergeSandbox, vcaRevertSandbox,
           vcaStatusSandbox, vcaTagSandBox, vcaUpdateSandbox, vcaUpdateSandboxTo,
-          vcaUnlockSandbox];
+          vcaUnlockSandbox] - [vcaCheckOutSandbox];
         Exit;
       end;
     end;
-    // not in a sandbox
-    Result := Result + [vcaCheckOutSandbox];
   end;
+
+  function GetSVNExecutableSandboxActions(const SdBxName: TFileName; out Actions: TJclVersionControlActionTypes): Boolean;
+  var
+    SVNOutput, SVNError: string;
+    XML: TJclSimpleXML;
+    TargetElement, EntryElement, WcStatusElement: TJclSimpleXMLElem;
+    ItemProp: TJclSimpleXMLProp;
+  begin
+    Result := False;
+    // not in a sandbox
+    Actions := Actions + [vcaCheckOutSandbox];
+
+    if Execute(FSVNStatusCmd + SdBxName, SVNOutput, SVNError) <> 0 then
+      Exit;
+
+    XML := TJclSimpleXML.Create;
+    try
+      XML.LoadFromString(SVNOutput);
+      XML.Options := XML.Options - [sxoAutoCreate];
+      if XML.Root.Name <> JclVersionCtrlSVNStatusElementName then
+        Exit;
+
+      TargetElement := XML.Root.Items.ItemNamed[JclVersionCtrlSVNTargetElementName];
+      if not Assigned(TargetElement) then
+        Exit;
+
+      EntryElement := TargetElement.Items.ItemNamed[JclVersionCtrlSVNEntryElementName];
+      if not Assigned(EntryElement) then
+        Exit;
+
+      WcStatusElement := EntryElement.Items.ItemNamed[JclVersionCtrlSVNWcStatusElementName];
+      if not Assigned(WcStatusElement) then
+        Exit;
+
+      ItemProp := WcStatusElement.Properties.ItemNamed[JclVersionCtrlSVNItemPropertyName];
+      if not Assigned(ItemProp) then
+        Exit;
+
+      if ItemProp.Value <> JclVersionCtrlSVNUnversionedPropertyValue then
+      begin
+        Result := True;
+        Actions := Actions + [vcaAddSandbox, vcaBranchSandbox, vcaCommitSandbox,
+          vcaLogSandbox, vcaLockSandbox, vcaMergeSandbox, vcaRevertSandbox,
+          vcaStatusSandbox, vcaTagSandBox, vcaUpdateSandbox, vcaUpdateSandboxTo,
+          vcaUnlockSandbox] - [vcaCheckOutSandbox];
+      end;
+    finally
+      XML.Free;
+    end;
+  end;
+
+var
+  Found: Boolean;
+begin
+  Result := inherited GetSandboxActions(SdBxName);
+
+  Found := not Enabled;
+  if (not Found) and (FSVNStatusCmd <> '') then
+    Found := GetSVNExecutableSandboxActions(SdBxName, Result);
+  if not Found then
+    // Found := GetSVNInternalSandboxActions(SdBxName, Result);
+    GetSVNInternalSandboxActions(SdBxName, Result);
 end;
 
 function TJclVersionControlSVN.GetSandboxNames(const FileName: TFileName;
   SdBxNames: TStrings): Boolean;
-var
-  DirectoryName: string;
-  IndexDir, IndexFileName: Integer;
-begin
-  Result := True;
 
-  SdBxNames.BeginUpdate;
-  try
-    SdBxNames.Clear;
+  // internal method, not complete, not compatible with SVN 1.7
+  function GetSVNInternalSandboxNames(const FileName: TFileName; SdBxNames: TStrings): Boolean;
+  var
+    DirectoryName: string;
+    IndexDir, IndexFileName: Integer;
+  begin
+    SdBxNames.BeginUpdate;
+    try
+      SdBxNames.Clear;
 
-    if Enabled then
       for IndexFileName := Length(FileName) downto 1 do
         if FileName[IndexFileName] = DirDelimiter then
-    begin
-      DirectoryName := Copy(FileName, 1, IndexFileName);
-      for IndexDir := Low(JclVersionCtrlSVNDirectories) to High(JclVersionCtrlSVNDirectories) do
       begin
-        if DirectoryExists(DirectoryName + JclVersionCtrlSVNDirectories[IndexDir]) then
-          SdBxNames.Add(DirectoryName);
+        DirectoryName := Copy(FileName, 1, IndexFileName);
+        for IndexDir := Low(JclVersionCtrlSVNDirectories) to High(JclVersionCtrlSVNDirectories) do
+        begin
+          if DirectoryExists(DirectoryName + JclVersionCtrlSVNDirectories[IndexDir]) then
+            SdBxNames.Add(DirectoryName);
+        end;
       end;
+    finally
+      SdBxNames.EndUpdate;
     end;
-  finally
-    SdBxNames.EndUpdate;
+
+    Result := SdBxNames.Count > 0;
   end;
+
+  function GetSVNExecutableSandboxNames(const FileName: TFileName; SdBxNames: TStrings): Boolean;
+  var
+    ParentDirectories: TStrings;
+    Index: Integer;
+    SVNOutput, SVNError: string;
+    XML: TJclSimpleXML;
+    TargetElements: TJclSimpleXMLNamedElems;
+    TargetElement, EntryElement, WcStatusElement: TJclSimpleXMLElem;
+    PathProp, ItemProp: TJclSimpleXMLProp;
+  begin
+    Result := False;
+
+    ParentDirectories := TStringList.Create;
+    try
+      for Index := Length(FileName) downto 1 do
+        if FileName[Index] = DirDelimiter then
+          ParentDirectories.Add(Copy('"' + FileName, 1, Index) + '"');
+
+      if Execute(FSVNStatusCmd + StringsToStr(ParentDirectories, NativeSpace, False), SVNOutput, SVNError) <> 0 then
+        Exit;
+    finally
+      ParentDirectories.Free;
+    end;
+
+    XML := TJclSimpleXML.Create;
+    try
+      XML.LoadFromString(SVNOutput);
+      XML.Options := XML.Options - [sxoAutoCreate];
+      if XML.Root.Name <> JclVersionCtrlSVNStatusElementName then
+        Exit;
+
+      TargetElements := XML.Root.Items.NamedElems[JclVersionCtrlSVNTargetElementName];
+
+      SdBxNames.BeginUpdate;
+      try
+        SdBxNames.Clear;
+
+        for Index := 0 to TargetElements.Count - 1 do
+        begin
+          TargetElement := TargetElements.Item[Index];
+          if not Assigned(TargetElement) then
+            Continue;
+
+          EntryElement := TargetElement.Items.ItemNamed[JclVersionCtrlSVNEntryElementName];
+          if not Assigned(EntryElement) then
+            Continue;
+
+          PathProp := EntryElement.Properties.ItemNamed[JclVersionCtrlSVNPathPropertyName];
+          if not Assigned(PathProp) then
+            Continue;
+
+          WcStatusElement := EntryElement.Items.ItemNamed[JclVersionCtrlSVNWcStatusElementName];
+          if not Assigned(WcStatusElement) then
+            Continue;
+
+          ItemProp := WcStatusElement.Properties.ItemNamed[JclVersionCtrlSVNItemPropertyName];
+          if not Assigned(ItemProp) then
+            Continue;
+
+          if ItemProp.Value <> JclVersionCtrlSVNUnversionedPropertyValue then
+            SdBxNames.Add(PathProp.Value);
+        end;
+      finally
+        SdBxNames.EndUpdate;
+      end;
+    finally
+      XML.Free;
+    end;
+
+    Result := SdBxNames.Count > 0;
+  end;
+
+begin
+  Result := not Enabled;
+
+  if (not Result) and (FSVNStatusCmd <> '') then
+    Result := GetSVNExecutableSandboxNames(FileName, SdBxNames);
+
+  if not Result then
+    Result := GetSVNInternalSandboxNames(FileName, SdBxNames);
 
   if SdBxNames.Count = 0 then
     Result := inherited GetSandboxNames(FileName, SdBxNames);
