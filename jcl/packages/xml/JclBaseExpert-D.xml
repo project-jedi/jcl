@@ -22,6 +22,7 @@
     <File Name="..\..\experts\common\JclOtaExceptionForm.pas" Targets="designtimeIDE" Formname="JclExpertExceptionForm" Condition=""/>
     <File Name="..\..\experts\common\JclOtaConfigurationForm.pas" Targets="designtimeIDE" Formname="JclOtaOptionsForm" Condition=""/>
     <File Name="..\..\experts\common\JclOtaActionConfigureSheet.pas" Targets="designtimeIDE" Formname="JclOtaActionConfigureFrame: TFrame" Condition=""/>
+    <File Name="..\..\experts\common\JclOtaActions.pas" Targets="designtimeIDE" Formname="" Condition=""/>
     <File Name="..\..\experts\common\JclOtaUnitVersioningSheet.pas" Targets="designtimeIDE" Formname="JclOtaUnitVersioningFrame: TFrame" Condition=""/>
     <File Name="..\..\experts\common\JclOtaUnitVersioning.pas" Targets="designtimeIDE" Formname="" Condition=""/>
     <File Name="..\..\experts\common\JclOtaWizardForm.pas" Targets="designtimeIDE" Formname="JclWizardForm" Condition=""/>

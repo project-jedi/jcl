@@ -41,7 +41,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   JclSysInfo,
-  JclOtaUtils, JclSIMDViewForm;
+  JclOtaUtils, JclOtaActions, JclSIMDViewForm;
 
 {$R 'JclSIMDIcon.dcr'}
 
@@ -342,7 +342,7 @@ begin
 
   FViewDebugMenu.Add(FSIMDMenuItem);
 
-  RegisterAction(FSIMDAction);
+  TJclOTAActionExpert.RegisterAction(FSIMDAction);
 
   FDebuggerNotifier := TJclDebuggerNotifier.Create(Self);
   FIndex := DebuggerServices.AddNotifier(FDebuggerNotifier);
@@ -352,7 +352,7 @@ procedure TJclSIMDWizard.UnregisterCommands;
 begin
   inherited UnregisterCommands;
 
-  UnregisterAction(FSIMDAction);
+  TJclOTAActionExpert.UnregisterAction(FSIMDAction);
   FreeAndNil(FIcon);
   FreeAndNil(FSIMDMenuItem);
   FreeAndNil(FSIMDAction);

@@ -47,7 +47,8 @@ uses
   {$ELSE ~BDS}
   JclStackTraceViewerMainFormDelphi,
   {$ENDIF ~BDS}
-  JclOtaUtils, JclStackTraceViewerConfigFrame, JclStackTraceViewerOptions;
+  JclOtaUtils, JclOtaActions,
+  JclStackTraceViewerConfigFrame, JclStackTraceViewerOptions;
 
 type
   {$IFDEF BDS8_UP}
@@ -367,7 +368,7 @@ begin
 
   ViewMenu.Insert(ViewDebugMenuIdx + 1, FStackTraceViewMenuItem);
 
-  RegisterAction(FStackTraceViewAction);
+  TJclOTAActionExpert.RegisterAction(FStackTraceViewAction);
 end;
 
 procedure TJclStackTraceViewerExpert.SaveExpertValues;
@@ -380,7 +381,7 @@ procedure TJclStackTraceViewerExpert.UnregisterCommands;
 begin
   inherited UnregisterCommands;
   SaveExpertValues;
-  UnregisterAction(FStackTraceViewAction);
+  TJclOTAActionExpert.UnregisterAction(FStackTraceViewAction);
   FreeAndNil(FIcon);
   FreeAndNil(FStackTraceViewMenuItem);
   FreeAndNil(FStackTraceViewAction);

@@ -82,6 +82,7 @@
 			<DCCReference Include="..\..\experts\common\JclOtaExceptionForm.pas"/>
 			<DCCReference Include="..\..\experts\common\JclOtaConfigurationForm.pas"/>
 			<DCCReference Include="..\..\experts\common\JclOtaActionConfigureSheet.pas"/>
+			<DCCReference Include="..\..\experts\common\JclOtaActions.pas"/>
 			<DCCReference Include="..\..\experts\common\JclOtaUnitVersioningSheet.pas"/>
 			<DCCReference Include="..\..\experts\common\JclOtaUnitVersioning.pas"/>
 			<DCCReference Include="..\..\experts\common\JclOtaWizardForm.pas"/>

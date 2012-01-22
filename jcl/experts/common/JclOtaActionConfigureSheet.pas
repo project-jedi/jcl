@@ -75,7 +75,7 @@ implementation
 uses
   ActnList, Menus,
   ToolsApi,
-  JclOtaConsts, JclOtaResources, JclOtaUtils;
+  JclOtaConsts, JclOtaResources, JclOtaUtils, JclOtaActions;
 
 { TFrameActions }
 
@@ -87,7 +87,7 @@ begin
   AListItem := ListViewActions.Selected;
   if Assigned(AListItem) then
   begin
-    AAction := TJclOTAExpertBase.GetAction(AListItem.Index);
+    AAction := TJclOTAActionExpert.GetAction(AListItem.Index);
     AListItem.SubItems.Strings[0] := ShortcutToText(TShortcut(AAction.Tag));
     HotKeyShortcut.HotKey := TShortcut(AAction.Tag);
   end;
@@ -114,10 +114,10 @@ begin
 
   ListViewActions.SmallImages := ANTAServices.ImageList;
 
-  for Index := 0 to TJclOTAExpertBase.GetActionCount - 1 do
+  for Index := 0 to TJclOTAActionExpert.GetActionCount - 1 do
   begin
     AListItem := ListViewActions.Items.Add;
-    AAction := TJclOTAExpertBase.GetAction(Index);
+    AAction := TJclOTAActionExpert.GetAction(Index);
     AListItem.ImageIndex := AAction.ImageIndex;
     AListItem.Caption := AAction.Caption;
     AListItem.Data := Pointer(AAction.ShortCut);
@@ -152,10 +152,10 @@ var
 begin
   { (ahuser) In Delphi 7 the ListViewActions.Items.Count is 0 if the page was
     not shown. Something must delete the items that were filled in the constructor. }
-  if ListViewActions.Items.Count = TJclOTAExpertBase.GetActionCount then
+  if ListViewActions.Items.Count = TJclOTAActionExpert.GetActionCount then
   begin
-    for Index := 0 to TJclOTAExpertBase.GetActionCount - 1 do
-      TJclOTAExpertBase.GetAction(Index).ShortCut :=
+    for Index := 0 to TJclOTAActionExpert.GetActionCount - 1 do
+      TJclOTAActionExpert.GetAction(Index).ShortCut :=
         TShortcut(ListViewActions.Items.Item[Index].Data);
   end;
 end;

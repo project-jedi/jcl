@@ -40,7 +40,8 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   JclVersionControl,
-  JclOtaUtils, JclVersionCtrlCommonOptions;
+  JclOtaUtils, JclOtaActions,
+  JclVersionCtrlCommonOptions;
 
 type
   TJclVersionControlStandardAction = class(TCustomAction)
@@ -1160,7 +1161,7 @@ begin
     AAction.OnExecute := ActionExecute;
     AAction.OnUpdate := ActionUpdate;
     AAction.Category := LoadResString(@RsActionCategory);
-    RegisterAction(AAction);
+    TJclOTAActionExpert.RegisterAction(AAction);
     FActions[ControlAction] := AAction;
   end;
 
@@ -1289,7 +1290,7 @@ begin
 
   for ControlAction := Low(TJclVersionControlActionType) to High(TJclVersionControlActionType) do
   begin
-    UnregisterAction(FActions[ControlAction]);
+    TJclOTAActionExpert.UnregisterAction(FActions[ControlAction]);
     if FActions[ControlAction] is TDropDownAction then
     begin
       ADropDownAction := TDropDownAction(FActions[ControlAction]);

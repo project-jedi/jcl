@@ -35,7 +35,8 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   JclOtaUtils, JclOtaConsts,
-  JclDebugIdeConfigFrame;
+  JclDebugIdeConfigFrame,
+  JclOtaActions;
 
 type
   TJclDebugDataInfo = record
@@ -1338,7 +1339,7 @@ begin
     FDebugExpertAction.DropdownMenu.OnPopup := DebugExpertMenuDropDown;
     FDebugExpertAction.DropdownMenu.AutoPopup := True;
     FillMenu(FDebugExpertAction.DropDownMenu.Items, DebugExpertSubMenuClick);
-    RegisterAction(FDebugExpertAction);
+    TJclOTAActionExpert.RegisterAction(FDebugExpertAction);
 
     FGenerateJdbgAction := TDropDownAction.Create(nil);
     FGenerateJdbgAction.Caption := LoadResString(@RsDebugGenerateJdbg);
@@ -1352,7 +1353,7 @@ begin
     FGenerateJdbgAction.DropdownMenu.OnPopup := GenerateJdbgMenuDropDown;
     FGenerateJdbgAction.DropdownMenu.AutoPopup := True;
     FillMenu(FGenerateJdbgAction.DropDownMenu.Items, GenerateJdbgSubMenuClick);
-    RegisterAction(FGenerateJdbgAction);
+    TJclOTAActionExpert.RegisterAction(FGenerateJdbgAction);
 
     FInsertJdbgAction := TDropDownAction.Create(nil);
     FInsertJdbgAction.Caption := LoadResString(@RsDebugInsertJdbg);
@@ -1366,7 +1367,7 @@ begin
     FInsertJdbgAction.DropdownMenu.OnPopup := InsertJdbgMenuDropDown;
     FInsertJdbgAction.DropdownMenu.AutoPopup := True;
     FillMenu(FInsertJdbgAction.DropDownMenu.Items, InsertJdbgSubMenuClick);
-    RegisterAction(FInsertJdbgAction);
+    TJclOTAActionExpert.RegisterAction(FInsertJdbgAction);
 
     FDeleteMapFileAction := TDropDownAction.Create(nil);
     FDeleteMapFileAction.Caption := LoadResString(@RsDeleteMapFile);
@@ -1380,7 +1381,7 @@ begin
     FDeleteMapFileAction.DropdownMenu.OnPopup := DeleteMapFileMenuDropDown;
     FDeleteMapFileAction.DropdownMenu.AutoPopup := True;
     FillMenu(FDeleteMapFileAction.DropDownMenu.Items, DeleteMapFileSubMenuClick);
-    RegisterAction(FDeleteMapFileAction);
+    TJclOTAActionExpert.RegisterAction(FDeleteMapFileAction);
 
     // create menu items
     FDebugExpertItem := TMenuItem.Create(nil);
@@ -1524,10 +1525,10 @@ begin
   FDebugExpertItem.Free;
 
   // remove actions
-  UnregisterAction(FDeleteMapFileAction);
-  UnregisterAction(FInsertJdbgAction);
-  UnregisterAction(FGenerateJdbgAction);
-  UnregisterAction(FDebugExpertAction);
+  TJclOTAActionExpert.UnregisterAction(FDeleteMapFileAction);
+  TJclOTAActionExpert.UnregisterAction(FInsertJdbgAction);
+  TJclOTAActionExpert.UnregisterAction(FGenerateJdbgAction);
+  TJclOTAActionExpert.UnregisterAction(FDebugExpertAction);
   FDeleteMapFileAction.Free;
   FInsertJdbgAction.Free;
   FGenerateJdbgAction.Free;
