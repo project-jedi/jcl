@@ -300,6 +300,14 @@ function SetProjectProperties(const AProject: IOTAProject; const PropIDs, PropVa
 var
   JclDisablePostCompilationProcess: Boolean = False;
 
+// design package entry point
+procedure Register;
+
+// expert DLL entry point
+function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
+  RegisterProc: TWizardRegisterProc;
+  var TerminateProc: TWizardTerminateProc): Boolean; stdcall;
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -326,10 +334,53 @@ uses
   {$ENDIF BDS8_UP}
   JclFileUtils, JclStrings, JclSysInfo, JclSimpleXml, JclCompilerUtils,
   JclOtaConsts, JclOtaResources, JclOtaExceptionForm, JclOtaConfigurationForm,
-  JclOtaActionConfigureSheet, JclOtaUnitVersioningSheet,
-  JclOtaWizardForm, JclOtaWizardFrame;
+  JclOtaActionConfigureSheet,
+  JclOtaWizardForm, JclOtaWizardFrame,
+  JclOTAUnitVersioning;
 
 {$R 'JclImages.res'}
+
+var
+  JCLUnitVersioningWizardIndex: Integer = -1;
+
+procedure Register;
+begin
+  try
+    RegisterPackageWizard(TJclOTAUnitVersioningExpert.Create);
+  except
+    on ExceptionObj: TObject do
+      JclExpertShowExceptionDialog(ExceptionObj);
+  end;
+end;
+
+procedure JclWizardTerminate;
+begin
+  try
+    if JCLUnitVersioningWizardIndex <> -1 then
+      TJclOTAExpertBase.GetOTAWizardServices.RemoveWizard(JCLUnitVersioningWizardIndex);
+  except
+    on ExceptionObj: TObject do
+      JclExpertShowExceptionDialog(ExceptionObj);
+  end;
+end;
+
+function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
+  RegisterProc: TWizardRegisterProc; var TerminateProc: TWizardTerminateProc): Boolean stdcall;
+begin
+  try
+    TerminateProc := JclWizardTerminate;
+
+    JCLUnitVersioningWizardIndex := TJclOTAExpertBase.GetOTAWizardServices.AddWizard(TJclOTAUnitVersioningExpert.Create);
+
+    Result := True;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      Result := False;
+    end;
+  end;
+end;
 
 var
   GlobalActionList: TList = nil;
@@ -338,7 +389,6 @@ var
   ConfigurationAction: TAction = nil;
   ConfigurationMenuItem: TMenuItem = nil;
   ActionConfigureSheet: TJclOtaActionConfigureFrame = nil;
-  UnitVersioningSheet: TJclOtaUnitVersioningFrame = nil;
 
 function FindActions(const Name: string): TComponent;
 var
@@ -992,11 +1042,6 @@ begin
     ActionConfigureSheet := TJclOtaActionConfigureFrame.Create(Application);
     AddPageFunc(ActionConfigureSheet, LoadResString(@RsActionSheet), Self);
   end;
-  if not Assigned(UnitVersioningSheet) then
-  begin
-    UnitVersioningSheet := TJclOtaUnitVersioningFrame.Create(Application);
-    AddPageFunc(UnitVersioningSheet, LoadResString(@RsUnitVersioningSheet), Self);
-  end;
   // override to customize
 end;
 
@@ -1009,9 +1054,6 @@ begin
       ActionConfigureSheet.SaveChanges;
     FreeAndNil(ActionConfigureSheet);
   end
-  else
-  if Assigned(AControl) and (AControl = UnitVersioningSheet) then
-    FreeAndNil(UnitVersioningSheet)
   else
     AControl.Free;
   // override to customize

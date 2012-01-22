@@ -69,6 +69,9 @@ const
   JclConfigureActionName = 'JCLConfigureCommand';
   JclConfigureMenuName   = 'JCLConfigureMenu';
 
+  //=== Unit Versioning Expert ===============================================
+  JclUnitVersioningExpertName   = 'JclUnitVersioningExpert';
+
   //=== Debug Expert =========================================================
   JclDebugExpertRegKey          = 'JclDebugExpert';
   JclDebugEnabledRegValue       = 'JclDebugEnabled';

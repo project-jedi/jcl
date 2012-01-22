@@ -117,6 +117,7 @@
 			<DCCReference Include="..\..\experts\common\JclOtaConfigurationForm.pas"/>
 			<DCCReference Include="..\..\experts\common\JclOtaActionConfigureSheet.pas"/>
 			<DCCReference Include="..\..\experts\common\JclOtaUnitVersioningSheet.pas"/>
+			<DCCReference Include="..\..\experts\common\JclOtaUnitVersioning.pas"/>
 			<DCCReference Include="..\..\experts\common\JclOtaWizardForm.pas"/>
 			<DCCReference Include="..\..\experts\common\JclOtaWizardFrame.pas"/>
 			<DCCReference Include="..\..\experts\common\JclOtaAddinOptions.pas"/>
