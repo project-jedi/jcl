@@ -530,7 +530,11 @@ end;
 procedure CheckOSError(ErrorCode: Cardinal);
 begin
   if ErrorCode <> ERROR_SUCCESS then
+    {$IFDEF RTL170_UP}
     RaiseLastOSError(ErrorCode);
+    {$ELSE ~RTL170_UP}
+    RaiseLastOSError;
+    {$ENDIF ~RTL170_UP}
 end;
 {$ENDIF RTL230_UP}
 
