@@ -56,6 +56,8 @@ type
     procedure TreeViewCategoriesChange(Sender: TObject; Node: TTreeNode);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure TreeViewCategoriesChanging(Sender: TObject; Node: TTreeNode;
+      var AllowChange: Boolean);
   private
     FSettings: TJclOTASettings;
   protected
@@ -63,8 +65,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure AddPage(AControl: TControl; PageName: string;
-      Expert: IJclOTAOptionsCallback);
+    procedure AddPage(Expert: TJclOTAExpertBase);
     function Execute(PageName: string): Boolean;
     property Settings: TJclOTASettings read FSettings;
   end;
@@ -92,22 +93,22 @@ uses
 type
   TItemDataRec = class
   public
-    AControl: TControl;
-    Expert: IJclOTAOptionsCallback;
+    Frame: TCustomFrame;
+    Expert: TJclOTAExpertBase;
   end;
 
 //=== TJclOtaOptionsForm =====================================================
 
-procedure TJclOtaOptionsForm.AddPage(AControl: TControl; PageName: string;
-  Expert: IJclOTAOptionsCallback);
+procedure TJclOtaOptionsForm.AddPage(Expert: TJclOTAExpertBase);
 var
   ParentNode, ChildNode: TTreeNode;
-  NodeName: string;
+  PageName, NodeName: string;
   PosSeparator, Index: Integer;
   AItemDataRec: TItemDataRec;
 begin
   ParentNode := TreeViewCategories.Items.GetFirstNode;
   ChildNode := ParentNode;
+  PageName := Expert.GetPageName;
 
   repeat
     PosSeparator := Pos('\', PageName);
@@ -145,12 +146,8 @@ begin
       ParentNode.Expand(False);
   end;
 
-  AControl.Parent := PanelOptions;
-  AControl.SetBounds(8, 8, PanelOptions.ClientWidth - 16, PanelOptions.ClientHeight - 16);
-  AControl.Visible := False;
-
   AItemDataRec := TItemDataRec.Create;
-  AItemDataRec.AControl := AControl;
+  AItemDataRec.Frame := nil;
   AItemDataRec.Expert := Expert;
   ChildNode.Data := Pointer(AItemDataRec);
 end;
@@ -221,7 +218,8 @@ begin
     AItemDataRec := TItemDataRec(ATreeNode.Data);
     if Assigned(AItemDataRec) then
     begin
-      AItemDataRec.Expert.ConfigurationClosed(AItemDataRec.AControl, Result);
+      AItemDataRec.Expert.DialogClosed(Result);
+      AItemDataRec.Frame.Free;
       AItemDataRec.Free;
     end;
     ATreeNode := ATreeNode.GetNext;
@@ -260,15 +258,42 @@ end;
 procedure TJclOtaOptionsForm.TreeViewCategoriesChange(Sender: TObject;
   Node: TTreeNode);
 var
-  Index: Integer;
+  AItemDataRec: TItemDataRec;
+  AFrame: TCustomFrame;
   AControl: TControl;
+  Index: Integer;
 begin
-  if Assigned(Node.Data) then
-    AControl := TItemDataRec(Node.Data).AControl
+  AItemDataRec := TItemDataRec(Node.Data);
+  if Assigned(AItemDataRec) then
+  begin
+    AFrame := AItemDataRec.Frame;
+    if not Assigned(AFrame) then
+    begin
+      AFrame := AItemDataRec.Expert.GetFrameClass.Create(Self);
+      AFrame.Parent := PanelOptions;
+      AFrame.SetBounds(8, 8, PanelOptions.ClientWidth - 16, PanelOptions.ClientHeight - 16);
+      AFrame.Visible := False;
+      AItemDataRec.Expert.FrameCreated(AFrame);
+      AItemDataRec.Frame := AFrame;
+    end;
+    AControl := AFrame;
+  end
   else
     AControl := LabelSelectPage;
   for Index := 0 to PanelOptions.ControlCount - 1 do
     PanelOptions.Controls[Index].Visible := PanelOptions.Controls[Index] = AControl;
+end;
+
+procedure TJclOtaOptionsForm.TreeViewCategoriesChanging(Sender: TObject;
+  Node: TTreeNode; var AllowChange: Boolean);
+var
+  AItemDataRec: TItemDataRec;
+begin
+  AItemDataRec := TItemDataRec(Node.Data);
+  if Assigned(AItemDataRec) then
+    AllowChange := AItemDataRec.Expert.ValidateContents
+  else
+    AllowChange := True;
 end;
 
 {$IFDEF UNITVERSIONING}

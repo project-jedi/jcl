@@ -34,7 +34,7 @@ interface
 
 uses
   SysUtils, Classes, Windows,
-  Controls,
+  Controls, Forms,
   JclBase,
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
@@ -98,22 +98,7 @@ type
     property BaseKeyName: string read FBaseKeyName;
   end;
 
-  // Note: we MUST use an interface as the type of the Expert parameter
-  // and not an object to avoid a bug in C++ Builder 5 compiler. If we 
-  // used an object, the compiler would crash or give internal error GH4148
-  // being obviously lost trying to resolve almost circular references 
-  // between this unit and the JclOtaConfigurationForm unit.
-  IJclOTAOptionsCallback = interface;
-
-  TJclOTAAddPageFunc = procedure (AControl: TControl; PageName: string;
-    Expert: IJclOTAOptionsCallback) of object;
-
-  IJclOTAOptionsCallback = interface
-    procedure AddConfigurationPages(AddPageFunc: TJclOTAAddPageFunc);
-    procedure ConfigurationClosed(AControl: TControl; SaveChanges: Boolean);
-  end;
-
-  TJclOTAExpertBase = class(TInterfacedObject, IJclOTAOptionsCallback)
+  TJclOTAExpertBase = class(TInterfacedObject{$IFDEF BDS8_UP}, INTAAddinOptions{$ENDIF})
   private
     FRootDir: string;
     FJCLRootDir: string;
@@ -142,6 +127,9 @@ type
     {$ENDIF BDS4_UP}
     class function GetOTAMessageServices: IOTAMessageServices;
     class function GetOTAWizardServices: IOTAWizardServices;
+    {$IFDEF BDS8_UP}
+    class function GetNTAEnvironmentOptionsServices: INTAEnvironmentOptionsServices;
+    {$ENDIF BDS8_UP}
     class function GetActiveProject: IOTAProject;
     class function GetProjectGroup: IOTAProjectGroup;
     class function GetActiveEditBuffer: IOTAEditBuffer;
@@ -151,6 +139,17 @@ type
     class function GetExpertCount: Integer;
     class function GetExpert(Index: Integer): TJclOTAExpertBase;
     class function ConfigurationDialog(StartName: string = ''): Boolean;
+  public
+    function GetPageName: string; virtual;
+    { INTAAddinOptions }
+    function GetArea: string; virtual;
+    function GetCaption: string; virtual;
+    function GetFrameClass: TCustomFrameClass; virtual;
+    procedure FrameCreated(AFrame: TCustomFrame); virtual;
+    procedure DialogClosed(Accepted: Boolean); virtual;
+    function ValidateContents: Boolean; virtual;
+    function GetHelpContext: Integer; virtual;
+    function IncludeInIDEInsight: Boolean; virtual;
   public
     constructor Create(AName: string); virtual;
     destructor Destroy; override;
@@ -164,10 +163,6 @@ type
     function GetOutputDirectory(const Project: IOTAProject): string;
     function IsInstalledPackage(const Project: IOTAProject): Boolean;
     function IsPackage(const Project: IOTAProject): Boolean;
-
-    { IJclOTAOptionsCallback }
-    procedure AddConfigurationPages(AddPageFunc: TJclOTAAddPageFunc); virtual;
-    procedure ConfigurationClosed(AControl: TControl; SaveChanges: Boolean); virtual;
 
     procedure RegisterCommands; virtual;
     procedure UnregisterCommands; virtual;
@@ -303,7 +298,7 @@ implementation
 
 uses
   Variants,
-  Forms, Graphics, Dialogs, ActiveX, FileCtrl, IniFiles,
+  Graphics, Dialogs, ActiveX, FileCtrl, IniFiles,
   JediRegInfo,
   {$IFDEF MSWINDOWS}
   ImageHlp, JclRegistry,
@@ -784,6 +779,8 @@ class function TJclOTAExpertBase.ConfigurationDialog(
 var
   OptionsForm: TJclOtaOptionsForm;
   Index: Integer;
+  Expert: TJclOTAExpertBase;
+  FrameClass: TCustomFrameClass;
 begin
   {$IFDEF BDS8_UP}
   //no resourcestring here, because this message will be removed
@@ -802,7 +799,12 @@ begin
   OptionsForm := TJclOtaOptionsForm.Create(nil);
   try
     for Index := 0 to GetExpertCount - 1 do
-      GetExpert(Index).AddConfigurationPages(OptionsForm.AddPage);
+    begin
+      Expert := GetExpert(Index);
+      FrameClass := Expert.GetFrameClass;
+      if Assigned(FrameClass) then
+        OptionsForm.AddPage(Expert);
+    end;
     Result := OptionsForm.Execute(StartName);
   finally
     OptionsForm.Free;
@@ -826,6 +828,18 @@ begin
     Result := GlobalExpertList.Count
   else
     Result := 0;
+end;
+
+function TJclOTAExpertBase.GetFrameClass: TCustomFrameClass;
+begin
+  // override to customize
+  Result := nil;
+end;
+
+function TJclOTAExpertBase.GetHelpContext: Integer;
+begin
+  // override to customize
+  Result := 0;
 end;
 
 function TJclOTAExpertBase.GetJCLRootDir: string;
@@ -906,10 +920,18 @@ begin
 
   RegisterCommands;
   AddExpert(Self);
+  {$IFDEF BDS8_UP}
+  if GetFrameClass <> nil then
+    GetNTAEnvironmentOptionsServices.RegisterAddInOptions(Self);
+  {$ENDIF BDS8_UP}
 end;
 
 procedure TJclOTAExpertBase.BeforeDestruction;
 begin
+  {$IFDEF BDS8_UP}
+  if GetFrameClass <> nil then
+    GetNTAEnvironmentOptionsServices.UnregisterAddInOptions(Self);
+  {$ENDIF BDS8_UP}
   RemoveExpert(Self);
   UnregisterCommands;
 
@@ -922,20 +944,6 @@ begin
     GlobalExpertList.Remove(AExpert);
 end;
 
-procedure TJclOTAExpertBase.AddConfigurationPages(
-  AddPageFunc: TJclOTAAddPageFunc);
-begin
-  // AddPageFunc uses '\' as a separator in PageName to build a tree
-  // override to customize
-end;
-
-procedure TJclOTAExpertBase.ConfigurationClosed(AControl: TControl;
-  SaveChanges: Boolean);
-begin
-  AControl.Free;
-  // override to customize
-end;
-
 constructor TJclOTAExpertBase.Create(AName: string);
 begin
   inherited Create;
@@ -946,22 +954,18 @@ begin
   {$ENDIF BDS}
 
   FSettings := TJclOTASettings.Create(AName);
-  {$IFDEF BDS8_UP}
-  JclRegisterCommonAddinOptions;
-  {$ENDIF BDS8_UP}
 end;
 
 destructor TJclOTAExpertBase.Destroy;
 begin
-  { TODO -cFulcrum: Check why the class destructor isn't executed. When it gets
-    executed then use class constructor/destructor for JclRegisterCommonAddinOptions
-    and JclUnregisterCommonAddinOptions }
-  {$IFDEF BDS8_UP}
-  JclUnregisterCommonAddinOptions;
-  {$ENDIF BDS8_UP}
   FreeAndNil(FSettings);
   FreeAndNil(FJCLSettings);
   inherited Destroy;
+end;
+
+procedure TJclOTAExpertBase.DialogClosed(Accepted: Boolean);
+begin
+  // override to customize
 end;
 
 function TJclOTAExpertBase.FindExecutableName(const MapFileName: TFileName;
@@ -1018,6 +1022,11 @@ begin
   Result := (ExecutableFileName <> '');
 end;
 
+procedure TJclOTAExpertBase.FrameCreated(AFrame: TCustomFrame);
+begin
+  // override to customize
+end;
+
 class function TJclOTAExpertBase.GetActiveEditBuffer: IOTAEditBuffer;
 var
   OTAEditorServices: IOTAEditorServices;
@@ -1044,6 +1053,18 @@ begin
         Exit;
 end;
 
+function TJclOTAExpertBase.GetArea: string;
+begin
+  // override to customize
+  Result := '';
+end;
+
+function TJclOTAExpertBase.GetCaption: string;
+begin
+  // override to customize
+  Result := LoadResString(@RsProjectJEDIAddinOptionsCaptionPrefix) + StrReplaceChar(GetPageName, '\', '.');
+end;
+
 function TJclOTAExpertBase.GetDesigner: string;
 begin
   Result := GetOTAServices.GetActiveDesignerType;
@@ -1053,7 +1074,7 @@ function TJclOTAExpertBase.GetDrcFileName(const Project: IOTAProject): TFileName
 begin
   if not Assigned(Project) then
     raise EJclExpertException.CreateRes(@RsENoActiveProject);
-    
+
   Result := ChangeFileExt(Project.FileName, CompilerExtensionDRC);
 end;
 
@@ -1089,6 +1110,15 @@ begin
   if Result = 0 then
     raise EJclExpertException.CreateRes(@RsBadModuleHInstance);
 end;
+
+{$IFDEF BDS8_UP}
+class function TJclOTAExpertBase.GetNTAEnvironmentOptionsServices: INTAEnvironmentOptionsServices;
+begin
+  Supports(BorlandIDEServices, INTAEnvironmentOptionsServices, Result);
+  if not Assigned(Result) then
+    raise EJclExpertException.CreateRes(@RsENoNTAEnvironmentOptionsServices);
+end;
+{$ENDIF BDS8_UP}
 
 class function TJclOTAExpertBase.GetNTAServices: INTAServices;
 begin
@@ -1308,6 +1338,12 @@ begin
 end;
 {$ENDIF BDS}
 
+function TJclOTAExpertBase.GetPageName: string;
+begin
+  // override to customize
+  Result := '';
+end;
+
 class function TJclOTAExpertBase.GetProjectGroup: IOTAProjectGroup;
 var
   OTAModuleServices: IOTAModuleServices;
@@ -1341,6 +1377,12 @@ begin
       raise EJclExpertException.CreateRes(@RsENoRootDir);
   end;
   Result := FRootDir;
+end;
+
+function TJclOTAExpertBase.IncludeInIDEInsight: Boolean;
+begin
+  // override to customize
+  Result := True;
 end;
 
 function TJclOTAExpertBase.IsInstalledPackage(const Project: IOTAProject): Boolean;
@@ -1512,6 +1554,12 @@ end;
 procedure TJclOTAExpertBase.UnregisterCommands;
 begin
   // override to remove actions and menu items
+end;
+
+function TJclOTAExpertBase.ValidateContents: Boolean;
+begin
+  // override to customize
+  Result := True;
 end;
 
 //=== { TJclOTAExpert } ======================================================

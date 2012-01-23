@@ -667,7 +667,7 @@ procedure TfrmMain.acOptionsExecute(Sender: TObject);
 begin
   inherited;
   {$IFDEF BDS8_UP}
-  (BorlandIDEServices as IOTAServices).GetEnvironmentOptions.EditOptions('', JclGetAddinOptionsCaption(RsStackTraceViewerOptionsPageName));
+  (BorlandIDEServices as IOTAServices).GetEnvironmentOptions.EditOptions('', StackTraceViewerExpert.GetCaption);
   {$ELSE ~BDS8_UP}
   TJclOTAExpertBase.ConfigurationDialog(LoadResString(@RsStackTraceViewerOptionsPageName));
   {$ENDIF ~BDS8_UP}

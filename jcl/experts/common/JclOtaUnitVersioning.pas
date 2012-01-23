@@ -35,7 +35,7 @@ interface
 
 uses
   SysUtils, Classes, Windows,
-  Controls,
+  Controls, Forms,
   JclBase,
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
@@ -44,13 +44,11 @@ uses
 
 type
   TJclOTAUnitVersioningExpert = class(TJclOTAExpert)
-  private
-    FUnitVersioningSheet: TControl;
   public
     constructor Create; reintroduce;
-    { IJclOTAOptionsCallback }
-    procedure AddConfigurationPages(AddPageFunc: TJclOTAAddPageFunc); override;
-    procedure ConfigurationClosed(AControl: TControl; SaveChanges: Boolean); override;
+
+    function GetPageName: string; override;
+    function GetFrameClass: TCustomFrameClass; override;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -68,7 +66,6 @@ const
 implementation
 
 uses
-  Forms,
   JclOtaConsts, JclOtaResources,
   JclOtaUnitVersioningSheet;
 
@@ -79,26 +76,14 @@ begin
   inherited Create(JclUnitVersioningExpertName);
 end;
 
-procedure TJclOTAUnitVersioningExpert.AddConfigurationPages(
-  AddPageFunc: TJclOTAAddPageFunc);
+function TJclOTAUnitVersioningExpert.GetFrameClass: TCustomFrameClass;
 begin
-  // AddPageFunc uses '\' as a separator in PageName to build a tree
-  if not Assigned(FUnitVersioningSheet) then
-  begin
-    FUnitVersioningSheet := TJclOtaUnitVersioningFrame.Create(Application);
-    AddPageFunc(FUnitVersioningSheet, LoadResString(@RsUnitVersioningSheet), Self);
-  end;
-  // override to customize
+  Result := TJclOtaUnitVersioningFrame;
 end;
 
-procedure TJclOTAUnitVersioningExpert.ConfigurationClosed(AControl: TControl;
-  SaveChanges: Boolean);
+function TJclOTAUnitVersioningExpert.GetPageName: string;
 begin
-  if Assigned(AControl) and (AControl = FUnitVersioningSheet) then
-    FreeAndNil(FUnitVersioningSheet)
-  else
-    inherited ConfigurationClosed(AControl, SaveChanges);
-  // override to customize
+  Result := LoadResString(@RsUnitVersioningSheet);
 end;
 
 {$IFDEF UNITVERSIONING}

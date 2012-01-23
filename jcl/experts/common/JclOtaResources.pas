@@ -74,6 +74,7 @@ resourcestring
   RsELineTooLong = 'Line too long in project file';
   RsEUnterminatedComment = 'Unterminated comment in project file';
   RsBrowseToJCLRootDir = 'Browse to JCL root directory';
+  RsENoNTAEnvironmentOptionsServices = 'Unable to get IDE Environment Options Services';
 
 //=== JclExceptionForm.pas ===================================================
 resourcestring

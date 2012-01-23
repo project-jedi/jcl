@@ -78,11 +78,14 @@ type
     procedure UnregisterCommands; override;
     procedure LoadSettings;
     procedure SaveSettings;
-    procedure AddConfigurationPages(AddPageFunc: TJclOTAAddPageFunc); override;
-    procedure ConfigurationClosed(AControl: TControl; SaveChanges: Boolean); override;
     property Active: Boolean read FActive write SetActive;
     property ConfirmChanges: Boolean read FConfirmChanges write FConfirmChanges;
     property IniFile: string read FIniFile write FIniFile;
+  public
+    function GetPageName: string; override;
+    function GetFrameClass: TCustomFrameClass; override;
+    procedure FrameCreated(AFrame: TCustomFrame); override;
+    procedure DialogClosed(Accepted: Boolean); override;
   end;
 
   TJCLUsesWizardNotifier = class(TNotifierObject, IOTANotifier, IOTAIDENotifier, IOTAIDENotifier50)
@@ -374,33 +377,6 @@ end;
 
 //=== { TJCLUsesWizard } =====================================================
 
-procedure TJCLUsesWizard.AddConfigurationPages(AddPageFunc: TJclOTAAddPageFunc);
-begin
-  inherited AddConfigurationPages(AddPageFunc);
-  FFrameJclOptions := TFrameJclOptions.Create(nil);
-  FFrameJclOptions.Active := Active;
-  FFrameJclOptions.ConfirmChanges := ConfirmChanges;
-  FFrameJclOptions.ConfigFileName := IniFile;
-  AddPageFunc(FFrameJclOptions, LoadResString(@RsUsesSheet), Self);
-end;
-
-procedure TJCLUsesWizard.ConfigurationClosed(AControl: TControl;
-  SaveChanges: Boolean);
-begin
-  if Assigned(AControl) and (AControl = FFrameJclOptions) then
-  begin
-    if SaveChanges then
-    begin
-      Active := FFrameJclOptions.Active;
-      ConfirmChanges := FFrameJclOptions.ConfirmChanges;
-      IniFile := FFrameJclOptions.ConfigFileName;
-    end;
-    FreeAndNil(FFrameJclOptions);
-  end
-  else
-    inherited ConfigurationClosed(AControl, SaveChanges);
-end;
-
 procedure TJCLUsesWizard.AppIdle(Sender: TObject; var Done: Boolean);
 begin
   Application.OnIdle := FApplicationIdle;
@@ -428,7 +404,7 @@ end;
 constructor TJCLUsesWizard.Create;
 begin
   inherited Create(JclUsesExpertName);
-  
+
   FIdentifierLists := TStringList.Create;
   FErrors := TList.Create;
   FActive := False;
@@ -442,8 +418,19 @@ begin
   ClearErrors;
   FErrors.Free;
   FIdentifierLists.Free;
-  
+
   inherited Destroy;
+end;
+
+procedure TJCLUsesWizard.DialogClosed(Accepted: Boolean);
+begin
+  if Accepted then
+  begin
+    Active := FFrameJclOptions.Active;
+    ConfirmChanges := FFrameJclOptions.ConfirmChanges;
+    IniFile := FFrameJclOptions.ConfigFileName;
+  end;
+  FFrameJclOptions := nil;
 end;
 
 function TJCLUsesWizard.DoConfirmChanges(ChangeList: TStrings): TModalResult;
@@ -456,6 +443,25 @@ begin
   finally
     Dialog.Free;
   end;
+end;
+
+procedure TJCLUsesWizard.FrameCreated(AFrame: TCustomFrame);
+begin
+  FFrameJclOptions := AFrame as TFrameJclOptions;
+
+  FFrameJclOptions.Active := Active;
+  FFrameJclOptions.ConfirmChanges := ConfirmChanges;
+  FFrameJclOptions.ConfigFileName := IniFile;
+end;
+
+function TJCLUsesWizard.GetFrameClass: TCustomFrameClass;
+begin
+  Result := TFrameJclOptions;
+end;
+
+function TJCLUsesWizard.GetPageName: string;
+begin
+  Result := LoadResString(@RsUsesSheet);
 end;
 
 // load identifier lists

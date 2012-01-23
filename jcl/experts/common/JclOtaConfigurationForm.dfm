@@ -87,6 +87,7 @@ object JclOtaOptionsForm: TJclOtaOptionsForm
       RightClickSelect = True
       TabOrder = 0
       OnChange = TreeViewCategoriesChange
+      OnChanging = TreeViewCategoriesChanging
     end
   end
   object PanelOptions: TPanel

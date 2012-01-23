@@ -37,11 +37,25 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclOtaActionConfigureSheet, JclOtaUnitVersioningSheet, JclOtaEmptyAddinOptionsFrame;
+  JclOtaUtils;
 
-function JclGetAddinOptionsCaption(const ACaption: string): string;
-procedure JclRegisterCommonAddinOptions;
-procedure JclUnregisterCommonAddinOptions;
+type
+  TJclEmptyPageAddinOptions = class(TInterfacedObject, INTAAddinOptions)
+  private
+    FCaption: string;
+    FTitle: string;
+  public
+    constructor Create(const ACaption, ATitle: string);
+    { INTAAddinOptions }
+    procedure DialogClosed(Accepted: Boolean);
+    procedure FrameCreated(AFrame: TCustomFrame);
+    function GetArea: string;
+    function GetCaption: string;
+    function GetFrameClass: TCustomFrameClass;
+    function ValidateContents: Boolean;
+    function GetHelpContext: Integer;
+    function IncludeInIDEInsight: Boolean;
+  end;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -58,140 +72,7 @@ const
 implementation
 
 uses
-  JclStrings, JclOtaResources;
-
-function JclGetAddinOptionsCaption(const ACaption: string): string;
-begin
-  Result := RsProjectJEDIAddinOptionsCaptionPrefix + StrReplaceChar(ACaption, '\', '.');
-end;
-
-type
-  TJclActionAddinOptions = class(TInterfacedObject, INTAAddinOptions)
-  private
-    FFrame: TJclOtaActionConfigureFrame;
-  public
-    procedure DialogClosed(Accepted: Boolean);
-    procedure FrameCreated(AFrame: TCustomFrame);
-    function GetArea: string;
-    function GetCaption: string;
-    function GetFrameClass: TCustomFrameClass;
-    function ValidateContents: Boolean;
-    function GetHelpContext: Integer;
-    function IncludeInIDEInsight: Boolean;
-  end;
-
-  TJclUnitVersioningAddinOptions = class(TInterfacedObject, INTAAddinOptions)
-  public
-    procedure DialogClosed(Accepted: Boolean);
-    procedure FrameCreated(AFrame: TCustomFrame);
-    function GetArea: string;
-    function GetCaption: string;
-    function GetFrameClass: TCustomFrameClass;
-    function ValidateContents: Boolean;
-    function GetHelpContext: Integer;
-    function IncludeInIDEInsight: Boolean;
-  end;
-
-  TJclEmptyPageAddinOptions = class(TInterfacedObject, INTAAddinOptions)
-  private
-    FCaption: string;
-    FTitle: string;
-  public
-    constructor Create(const ACaption, ATitle: string);
-    procedure DialogClosed(Accepted: Boolean);
-    procedure FrameCreated(AFrame: TCustomFrame);
-    function GetArea: string;
-    function GetCaption: string;
-    function GetFrameClass: TCustomFrameClass;
-    function ValidateContents: Boolean;
-    function GetHelpContext: Integer;
-    function IncludeInIDEInsight: Boolean;
-  end;
-
-//=== { TJclActionAddinOptions } =============================================
-
-procedure TJclActionAddinOptions.DialogClosed(Accepted: Boolean);
-begin
-  if Accepted then
-    FFrame.SaveChanges;
-end;
-
-procedure TJclActionAddinOptions.FrameCreated(AFrame: TCustomFrame);
-begin
-  FFrame := TJclOtaActionConfigureFrame(AFrame);
-end;
-
-function TJclActionAddinOptions.GetArea: string;
-begin
-  Result := '';
-end;
-
-function TJclActionAddinOptions.GetCaption: string;
-begin
-  Result := JclGetAddinOptionsCaption(RsActionSheet);
-end;
-
-function TJclActionAddinOptions.GetFrameClass: TCustomFrameClass;
-begin
-  Result := TJclOtaActionConfigureFrame;
-end;
-
-function TJclActionAddinOptions.GetHelpContext: Integer;
-begin
-  Result := 0;
-end;
-
-function TJclActionAddinOptions.IncludeInIDEInsight: Boolean;
-begin
-  Result := True;
-end;
-
-function TJclActionAddinOptions.ValidateContents: Boolean;
-begin
-  Result := True;
-end;
-
-//=== { TJclUnitVersioningAddinOptions } =====================================
-
-procedure TJclUnitVersioningAddinOptions.DialogClosed(Accepted: Boolean);
-begin
-  //
-end;
-
-procedure TJclUnitVersioningAddinOptions.FrameCreated(AFrame: TCustomFrame);
-begin
-  //
-end;
-
-function TJclUnitVersioningAddinOptions.GetArea: string;
-begin
-  Result := '';
-end;
-
-function TJclUnitVersioningAddinOptions.GetCaption: string;
-begin
-  Result := JclGetAddinOptionsCaption(RsUnitVersioningSheet);
-end;
-
-function TJclUnitVersioningAddinOptions.GetFrameClass: TCustomFrameClass;
-begin
-  Result := TJclOtaUnitVersioningFrame;
-end;
-
-function TJclUnitVersioningAddinOptions.GetHelpContext: Integer;
-begin
-  Result := 0;
-end;
-
-function TJclUnitVersioningAddinOptions.IncludeInIDEInsight: Boolean;
-begin
-  Result := True;
-end;
-
-function TJclUnitVersioningAddinOptions.ValidateContents: Boolean;
-begin
-  Result := True;
-end;
+  JclOtaResources, JclOtaEmptyAddinOptionsFrame;
 
 //=== { TJclEmptyPageAddinOptions } ==========================================
 
@@ -243,24 +124,12 @@ begin
 end;
 
 var
-  ActionAddinOptions: TJclActionAddinOptions = nil;
-  UnitVersioningAddinOptions: TJclUnitVersioningAddinOptions = nil;
-  ProjectJEDIEmptyAddinOptions: TJclEmptyPageAddinOptions = nil;
-  ProjectJEDIJclEmptyAddinOptions: TJclEmptyPageAddinOptions = nil;
-  ProjectJEDIJclCommonEmptyAddinOptions: TJclEmptyPageAddinOptions = nil;
+  ProjectJEDIEmptyAddinOptions: INTAAddinOptions = nil;
+  ProjectJEDIJclEmptyAddinOptions: INTAAddinOptions = nil;
+  ProjectJEDIJclCommonEmptyAddinOptions: INTAAddinOptions = nil;
 
 procedure JclRegisterCommonAddinOptions;
 begin
-  if not Assigned(ActionAddinOptions) then
-  begin
-    ActionAddinOptions := TJclActionAddinOptions.Create;
-    (BorlandIDEServices as INTAEnvironmentOptionsServices).RegisterAddInOptions(ActionAddinOptions);
-  end;
-  if not Assigned(UnitVersioningAddinOptions) then
-  begin
-    UnitVersioningAddinOptions := TJclUnitVersioningAddinOptions.Create;
-    (BorlandIDEServices as INTAEnvironmentOptionsServices).RegisterAddInOptions(UnitVersioningAddinOptions);
-  end;
   if not Assigned(ProjectJEDIEmptyAddinOptions) then
   begin
     ProjectJEDIEmptyAddinOptions := TJclEmptyPageAddinOptions.Create(RsProjectJEDIAddinOptionsCaption,
@@ -283,16 +152,6 @@ end;
 
 procedure JclUnregisterCommonAddinOptions;
 begin
-  if Assigned(ActionAddinOptions) then
-  begin
-    (BorlandIDEServices as INTAEnvironmentOptionsServices).UnregisterAddInOptions(ActionAddinOptions);
-    ActionAddinOptions := nil;
-  end;
-  if Assigned(UnitVersioningAddinOptions) then
-  begin
-    (BorlandIDEServices as INTAEnvironmentOptionsServices).UnregisterAddInOptions(UnitVersioningAddinOptions);
-    UnitVersioningAddinOptions := nil;
-  end;
   if Assigned(ProjectJEDIEmptyAddinOptions) then
   begin
     (BorlandIDEServices as INTAEnvironmentOptionsServices).UnregisterAddInOptions(ProjectJEDIEmptyAddinOptions);
@@ -309,5 +168,34 @@ begin
     ProjectJEDIJclCommonEmptyAddinOptions := nil;
   end;
 end;
+
+initialization
+
+try
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+  JclRegisterCommonAddinOptions;
+except
+  on ExceptionObj: TObject do
+  begin
+    JclExpertShowExceptionDialog(ExceptionObj);
+  end;
+end;
+
+finalization
+
+try
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
+  JclUnregisterCommonAddinOptions;
+except
+  on ExceptionObj: TObject do
+  begin
+    JclExpertShowExceptionDialog(ExceptionObj);
+  end;
+end;
+
 
 end.

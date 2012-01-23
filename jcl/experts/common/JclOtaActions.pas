@@ -35,7 +35,7 @@ interface
 
 uses
   SysUtils, Classes, Windows,
-  Controls, ComCtrls, ActnList, Menus,
+  Controls, ComCtrls, ActnList, Menus, Forms, Graphics,
   {$IFNDEF COMPILER8_UP}
   Idemenuaction, // dependency walker reports a class TPopupAction in
   // unit Idemenuaction in designide.bpl used by the IDE to display tool buttons
@@ -74,12 +74,13 @@ type
     constructor Create; reintroduce;
     destructor Destroy; override;
 
-    { IJclOTAOptionsCallback }
-    procedure AddConfigurationPages(AddPageFunc: TJclOTAAddPageFunc); override;
-    procedure ConfigurationClosed(AControl: TControl; SaveChanges: Boolean); override;
-
     procedure RegisterCommands; override;
     procedure UnregisterCommands; override;
+  public
+    function GetPageName: string; override;
+    function GetFrameClass: TCustomFrameClass; override;
+    procedure FrameCreated(AFrame: TCustomFrame); override;
+    procedure DialogClosed(Accepted: Boolean); override;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -97,7 +98,6 @@ const
 implementation
 
 uses
-  Forms, Graphics,
   JclOtaConsts, JclOtaResources,
   JclOtaActionConfigureSheet;
 
@@ -143,6 +143,18 @@ begin
   inherited Destroy;
 end;
 
+procedure TJclOTAActionExpert.DialogClosed(Accepted: Boolean);
+begin
+  if Accepted then
+    TJclOtaActionConfigureFrame(FActionConfigureSheet).SaveChanges;
+  FActionConfigureSheet := nil;
+end;
+
+procedure TJclOTAActionExpert.FrameCreated(AFrame: TCustomFrame);
+begin
+  FActionConfigureSheet := AFrame as TJclOtaActionConfigureFrame;
+end;
+
 class function TJclOTAActionExpert.GetAction(Index: Integer): TAction;
 begin
   if Assigned(GlobalActionList) then
@@ -157,6 +169,16 @@ begin
     Result := GlobalActionList.Count
   else
     Result := 0;
+end;
+
+function TJclOTAActionExpert.GetFrameClass: TCustomFrameClass;
+begin
+  Result := TJclOtaActionConfigureFrame;
+end;
+
+function TJclOTAActionExpert.GetPageName: string;
+begin
+  Result := LoadResString(@RsActionSheet);
 end;
 
 type
@@ -201,30 +223,6 @@ begin
       JclExpertShowExceptionDialog(ExceptionObj);
     end;
   end;
-end;
-
-procedure TJclOTAActionExpert.AddConfigurationPages(
-  AddPageFunc: TJclOTAAddPageFunc);
-begin
-  if not Assigned(FActionConfigureSheet) then
-  begin
-    FActionConfigureSheet := TJclOtaActionConfigureFrame.Create(Application);
-    AddPageFunc(FActionConfigureSheet, LoadResString(@RsActionSheet), Self);
-  end;
-end;
-
-procedure TJclOTAActionExpert.ConfigurationClosed(AControl: TControl;
-  SaveChanges: Boolean);
-begin
-  if Assigned(AControl) and (AControl = FActionConfigureSheet) then
-  begin
-    if SaveChanges then
-      TJclOtaActionConfigureFrame(FActionConfigureSheet).SaveChanges;
-    FreeAndNil(FActionConfigureSheet);
-  end
-  else
-    inherited ConfigurationClosed(AControl, SaveChanges);
-  // override to customize
 end;
 
 class procedure TJclOTAActionExpert.RegisterAction(Action: TCustomAction);
