@@ -320,6 +320,10 @@ var
 procedure Register;
 begin
   try
+    {$IFDEF BDS}
+    RegisterSplashScreen;
+    RegisterAboutBox;
+    {$ENDIF BDS}
     RegisterPackageWizard(TJclOTAUnitVersioningExpert.Create);
     RegisterPackageWizard(TJclOTAActionExpert.Create);
   except
@@ -347,6 +351,10 @@ begin
   try
     TerminateProc := JclWizardTerminate;
 
+    {$IFDEF BDS}
+    RegisterSplashScreen;
+    RegisterAboutBox;
+    {$ENDIF BDS}
     JCLUnitVersioningWizardIndex := TJclOTAExpertBase.GetOTAWizardServices.AddWizard(TJclOTAUnitVersioningExpert.Create);
     JCLActionsWizardIndex := TJclOTAExpertBase.GetOTAWizardServices.AddWizard(TJclOTAActionExpert.Create);
 
@@ -947,12 +955,6 @@ end;
 constructor TJclOTAExpertBase.Create(AName: string);
 begin
   inherited Create;
-
-  {$IFDEF BDS}
-  RegisterSplashScreen;
-  RegisterAboutBox;
-  {$ENDIF BDS}
-
   FSettings := TJclOTASettings.Create(AName);
 end;
 
