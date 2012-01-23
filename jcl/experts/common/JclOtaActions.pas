@@ -235,10 +235,7 @@ begin
   end;
 
   if not Assigned(GlobalActionList) then
-  begin
     GlobalActionList := TList.Create;
-    RegisterFindGlobalComponentProc(FindActions);
-  end;
 
   GlobalActionList.Add(Action);
 end;
@@ -254,10 +251,7 @@ begin
   begin
     GlobalActionList.Remove(Action);
     if (GlobalActionList.Count = 0) then
-    begin
-      UnRegisterFindGlobalComponentProc(FindActions);
       FreeAndNil(GlobalActionList);
-    end;
   end;
 
   NTAServices := GetNTAServices;
@@ -336,7 +330,9 @@ initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
+  RegisterFindGlobalComponentProc(FindActions);
 finalization
+  UnRegisterFindGlobalComponentProc(FindActions);
   FreeAndNil(GlobalActionList);
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);

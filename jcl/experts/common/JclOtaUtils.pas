@@ -98,12 +98,35 @@ type
     property BaseKeyName: string read FBaseKeyName;
   end;
 
-  TJclOTAExpertBase = class(TInterfacedObject{$IFDEF BDS8_UP}, INTAAddinOptions{$ENDIF})
+  {$IFDEF BDS8_UP}
+  TJclOTAExpertBase = class;
+
+  TJclOTAExpertOptions = class(TInterfacedObject, INTAAddinOptions)
+  private
+    FExpert: TJclOTAExpertBase;
+  public
+    constructor Create(AExpert: TJclOTAExpertBase);
+    { INTAAddinOptions }
+    function GetArea: string;
+    function GetCaption: string;
+    function GetFrameClass: TCustomFrameClass;
+    procedure FrameCreated(AFrame: TCustomFrame);
+    procedure DialogClosed(Accepted: Boolean);
+    function ValidateContents: Boolean;
+    function GetHelpContext: Integer;
+    function IncludeInIDEInsight: Boolean;
+  end;
+  {$ENDIF BDS8_UP}
+
+  TJclOTAExpertBase = class(TInterfacedObject)
   private
     FRootDir: string;
     FJCLRootDir: string;
     FSettings: TJclOTASettings;
     FJCLSettings: TStrings;
+    {$IFDEF BDS8_UP}
+    FOptions: INTAAddinOptions;
+    {$ENDIF BDS8_UP}
     function GetModuleHInstance: Cardinal;
     function GetRootDir: string;
     function GetJCLRootDir: string;
@@ -780,6 +803,56 @@ begin
   {$ENDIF MSWINDOWS}
 end;
 
+//=== { TJclOTAExpertOptions } ===============================================
+
+{$IFDEF BDS8_UP}
+constructor TJclOTAExpertOptions.Create(AExpert: TJclOTAExpertBase);
+begin
+  inherited Create;
+  FExpert := AExpert;
+end;
+
+function TJclOTAExpertOptions.GetArea: string;
+begin
+  Result := FExpert.GetArea;
+end;
+
+function TJclOTAExpertOptions.GetCaption: string;
+begin
+  Result := FExpert.GetCaption;
+end;
+
+function TJclOTAExpertOptions.GetFrameClass: TCustomFrameClass;
+begin
+  Result := FExpert.GetFrameClass;
+end;
+
+procedure TJclOTAExpertOptions.FrameCreated(AFrame: TCustomFrame);
+begin
+  FExpert.FrameCreated(AFrame);
+end;
+
+procedure TJclOTAExpertOptions.DialogClosed(Accepted: Boolean);
+begin
+  FExpert.DialogClosed(Accepted);
+end;
+
+function TJclOTAExpertOptions.ValidateContents: Boolean;
+begin
+  Result := FExpert.ValidateContents;
+end;
+
+function TJclOTAExpertOptions.GetHelpContext: Integer;
+begin
+  Result := FExpert.GetHelpContext;
+end;
+
+function TJclOTAExpertOptions.IncludeInIDEInsight: Boolean;
+begin
+  Result := FExpert.IncludeInIDEInsight;
+end;
+{$ENDIF BDS8_UP}
+
 //=== { TJclOTAExpertBase } ==================================================
 
 class function TJclOTAExpertBase.ConfigurationDialog(
@@ -930,7 +1003,10 @@ begin
   AddExpert(Self);
   {$IFDEF BDS8_UP}
   if GetFrameClass <> nil then
-    GetNTAEnvironmentOptionsServices.RegisterAddInOptions(Self);
+  begin
+    FOptions := TJclOTAExpertOptions.Create(Self);
+    GetNTAEnvironmentOptionsServices.RegisterAddInOptions(FOptions);
+  end;
   {$ENDIF BDS8_UP}
 end;
 
@@ -938,7 +1014,10 @@ procedure TJclOTAExpertBase.BeforeDestruction;
 begin
   {$IFDEF BDS8_UP}
   if GetFrameClass <> nil then
-    GetNTAEnvironmentOptionsServices.UnregisterAddInOptions(Self);
+  begin
+    GetNTAEnvironmentOptionsServices.UnregisterAddInOptions(FOptions);
+    FOptions := nil;
+  end;
   {$ENDIF BDS8_UP}
   RemoveExpert(Self);
   UnregisterCommands;
