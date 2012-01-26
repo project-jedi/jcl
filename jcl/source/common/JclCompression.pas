@@ -805,7 +805,7 @@ type
   public
     class function MultipleItemContainer: Boolean; virtual;
     class function VolumeAccess: TJclStreamAccess; virtual;
-    class function ItemAccess: TJclStreamAccess; virtual;
+    function ItemAccess: TJclStreamAccess; virtual;
     class function ArchiveExtensions: string; virtual;
     class function ArchiveName: string; virtual;
     class function ArchiveSubExtensions: string; virtual;
@@ -1003,7 +1003,7 @@ type
     function AddFileCheckDuplicate(NewItem: TJclCompressionItem): Integer;
   public
     class function VolumeAccess: TJclStreamAccess; override;
-    class function ItemAccess: TJclStreamAccess; override;
+    function ItemAccess: TJclStreamAccess; override;
 
     destructor Destroy; override;
     
@@ -1052,7 +1052,7 @@ type
       var AOwnsStream: Boolean): Boolean; virtual;
   public
     class function VolumeAccess: TJclStreamAccess; override;
-    class function ItemAccess: TJclStreamAccess; override;
+    function ItemAccess: TJclStreamAccess; override;
 
     procedure ListFiles; virtual; abstract;
     procedure ExtractSelected(const ADestinationDir: string = '';
@@ -1094,7 +1094,7 @@ type
       var AOwnsStream: Boolean): Boolean; virtual;
   public
     class function VolumeAccess: TJclStreamAccess; override;
-    class function ItemAccess: TJclStreamAccess; override;
+    function ItemAccess: TJclStreamAccess; override;
 
     procedure ListFiles; virtual; abstract;
     procedure ExtractSelected(const ADestinationDir: string = '';
@@ -4886,7 +4886,7 @@ begin
   Result := OpenFileStream(FileName, VolumeAccess);
 end;
 
-class function TJclCompressionArchive.ItemAccess: TJclStreamAccess;
+function TJclCompressionArchive.ItemAccess: TJclStreamAccess;
 begin
   Result := saReadOnly;
 end;
@@ -5267,7 +5267,7 @@ begin
   AddFileCheckDuplicate(AItem);
 end;
 
-class function TJclCompressArchive.ItemAccess: TJclStreamAccess;
+function TJclCompressArchive.ItemAccess: TJclStreamAccess;
 begin
   Result := saReadOnly;
 end;
@@ -5325,7 +5325,7 @@ begin
 //  ReleaseVolumes;
 end;
 
-class function TJclDecompressArchive.ItemAccess: TJclStreamAccess;
+function TJclDecompressArchive.ItemAccess: TJclStreamAccess;
 begin
   Result := saCreate;
 end;
@@ -5424,9 +5424,10 @@ begin
   FDuplicateCheck := dcExisting;
 end;
 
-class function TJclUpdateArchive.ItemAccess: TJclStreamAccess;
+function TJclUpdateArchive.ItemAccess: TJclStreamAccess;
 begin
-  Result := saReadWrite;
+  if FDecompressing then Result := saCreate
+    else Result := saReadOnly;
 end;
 
 function TJclUpdateArchive.ValidateExtraction(Index: Integer;
