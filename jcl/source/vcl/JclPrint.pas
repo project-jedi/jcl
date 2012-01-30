@@ -49,9 +49,9 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF HAS_UNITSCOPE}
-  Winapi.Windows, System.Classes, Vcl.StdCtrls, System.SysUtils,
+  Winapi.Windows, System.Classes, Vcl.StdCtrls, System.SysUtils, System.IniFiles,
   {$ELSE ~HAS_UNITSCOPE}
-  Windows, Classes, StdCtrls, SysUtils,
+  Windows, Classes, StdCtrls, SysUtils, IniFiles,
   {$ENDIF ~HAS_UNITSCOPE}
   JclBase;
 
@@ -74,18 +74,25 @@ type
     FDriver: PChar;
     FPort: PChar;
     FHandle: THandle;
-    FDeviceMode: PDeviceMode;
+    //FDeviceMode: PDeviceMode;
     FPrinter: Integer;
     FBinArray: PWordArray;
-    FNumBins: Byte;
+    FNumBins: DWord;
     FPaperArray: PWordArray;
-    FNumPapers: Byte;
+    FNumPapers: DWord;
     FDpiX: Integer;
     FiDpiY: Integer;
     procedure CheckPrinter;
     procedure SetBinArray;
     procedure SetPaperArray;
     function DefaultPaperName(const PaperID: Word): string;
+    function GetDevModePrinterDriverVersion: Word;
+    function GetDevModePrinterDriver: string;
+    function GetDevModePrinterDriverExtra: TDynByteArray;
+    function LockDeviceMode: PDeviceMode;
+    procedure SetDeviceMode(Creating: Boolean);
+    procedure SetPrinterName(const Value: string);
+    procedure UnlockDeviceMode;
   protected
     procedure SetOrientation(Orientation: Integer);
     function GetOrientation: Integer;
@@ -114,11 +121,15 @@ type
     function GetPrinterName: string;
     function GetPrinterPort: string;
     function GetPrinterDriver: string;
-    procedure SetBinFromList(BinNum: Byte);
-    function GetBinIndex: Byte;
-    procedure SetPaperFromList(PaperNum: Byte);
-    function GetPaperIndex: Byte;
+    procedure SetBinFromList(BinNum: Word);
+    function GetBinIndex: Word;
+    procedure SetPaperFromList(PaperNum: Word);
+    function GetPaperIndex: Word;
+    function ReadFromCustomIni(const PrIniFile: TCustomIniFile; const Section: string): Boolean;
+    procedure SaveToCustomIni(const PrIniFile: TCustomIniFile; const Section: string);
     procedure SetPort(Port: string);
+    procedure DevModePrinterDriverExtraReinstate(const ExtraData: TDynByteArray;
+      const ExtraDataDriverName: string; const ExtraDataDriverVersion: Word);
   public
     constructor Create; virtual;
     destructor Destroy; override;
@@ -127,8 +138,7 @@ type
     //function GetPaperList: TStringList; overload;
     procedure GetBinSourceList(List: TStrings); overload;
     procedure GetPaperList(List: TStrings); overload;
-    procedure SetDeviceMode(Creating: Boolean);
-    procedure UpdateDeviceMode;
+    procedure UpdateDeviceMode(const ADeviceMode: PDeviceMode);
     procedure SaveToDefaults;
     procedure SavePrinterAsDefault;
     procedure ResetPrinterDialogs;
@@ -142,8 +152,9 @@ type
     procedure TextOutCm(const X, Y: Double; const Text: string);
     procedure TextOutCpiLpi(const Cpi, Chars, Lpi, Lines: Double; const Text: string);
     procedure CustomPageSetup(const Width, Height: Double);
-    procedure SaveToIniFile(const IniFileName, Section: string);
-    function ReadFromIniFile(const IniFileName, Section: string): Boolean;
+    procedure DevModePrinterDriverExtraClear;
+    procedure SaveToIniFile(const IniFileName, Section: string); virtual;
+    function ReadFromIniFile(const IniFileName, Section: string): Boolean; virtual;
     property Orientation: Integer read GetOrientation write SetOrientation;
     property PaperSize: Integer read GetPaperSize write SetPaperSize;
     property PaperLength: Integer read GetPaperLength write SetPaperLength;
@@ -156,11 +167,15 @@ type
     property Duplex: Integer read GetDuplex write SetDuplex;
     property YResolution: Integer read GetYResolution write SetYResolution;
     property TrueTypeOption: Integer read GetTrueTypeOption write SetTrueTypeOption;
-    property PrinterName: string read GetPrinterName;
+    property PrinterName: string read GetPrinterName write SetPrinterName;
     property PrinterPort: string read GetPrinterPort write SetPort;
     property PrinterDriver: string read GetPrinterDriver;
-    property BinIndex: Byte read GetBinIndex write SetBinFromList;
-    property PaperIndex: Byte read GetPaperIndex write SetPaperFromList;
+    property BinIndex: Word read GetBinIndex write SetBinFromList;
+    property DevModePrinterDriverVersion: Word read GetDevModePrinterDriverVersion;
+    property DevModePrinterDriver: string read GetDevModePrinterDriver;
+    property DevModePrinterDriverExtra: TDynByteArray read
+        GetDevModePrinterDriverExtra;
+    property PaperIndex: Word read GetPaperIndex write SetPaperFromList;
     property DpiX: Integer read FDpiX write FDpiX;
     property DpiY: Integer read FiDpiY write FiDpiY;
   end;
@@ -195,9 +210,9 @@ implementation
 
 uses
   {$IFDEF HAS_UNITSCOPE}
-  Vcl.Graphics, System.IniFiles, Winapi.Messages, Vcl.Printers, Winapi.WinSpool,
+  Vcl.Graphics, Winapi.Messages, Vcl.Printers, Winapi.WinSpool,
   {$ELSE ~HAS_UNITSCOPE}
-  Graphics, IniFiles, Messages, Printers, WinSpool,
+  Graphics, Messages, Printers, WinSpool,
   {$ENDIF ~HAS_UNITSCOPE}
   JclSysInfo, JclVclResources;
 
@@ -216,6 +231,11 @@ const
   PrintIniDuplex        = 'Duplex';
   PrintIniYResolution   = 'YResolution';
   PrintIniTTOption      = 'TTOption';
+
+  PrintDriverExtraSize = 'DriverExtraSize';
+  PrintDriverExtraData = 'DriverExtraData';
+  PrintDriverVersion = 'DriverVersion';
+  PrintDriverName = 'DriverName';
 
   cWindows: PChar = 'windows';
   cDevice = 'device';
@@ -529,6 +549,7 @@ begin
   GetMem(FDevice, 255);
   GetMem(FDriver, 255);
   GetMem(FPort, 255);
+  FHandle := 0;
 end;
 
 destructor TJclPrintSet.Destroy;
@@ -547,50 +568,72 @@ begin
 end;
 
 procedure TJclPrintSet.CheckPrinter;
+var
+  NewHandle: THandle;
+  PrinterChanged: Boolean;
+  LastDevice, LastDriver, LastPort: string;
 begin
-  if FPrinter <> Printer.PrinterIndex then
-  begin
-    Printer.GetPrinter(FDevice, FDriver, FPort, FHandle);
-    Printer.SetPrinter(FDevice, FDriver, FPort, FHandle);
+  LastDevice := FDevice;
+  LastDriver := FDriver;
+  LastPort := FPort;
+  
+  Printer.GetPrinter(FDevice, FDriver, FPort, NewHandle);
+  PrinterChanged := (FHandle <> NewHandle) or (LastDevice <> FDevice)
+    or (LastDriver <> FDriver) or (LastPort <> FPort) or (FPrinter <> Printer.PrinterIndex);
+  FHandle := NewHandle;
+  FPrinter := Printer.PrinterIndex;
+  Printer.SetPrinter(FDevice, FDriver, FPort, FHandle);
+  if PrinterChanged then
     SetDeviceMode(False);
-  end;
 end;
 
 procedure TJclPrintSet.SetBinArray;
 var
-  NumBinsRec: Integer;
+  NumBinsRec: DWord;
+  ADeviceMode: PDeviceMode;
 begin
   if FBinArray <> nil then
     FreeMem(FBinArray, FNumBins * SizeOf(Word));
   FBinArray := nil;
-  FNumBins := DeviceCapabilities(FDevice, FPort, DC_Bins, nil, FDeviceMode);
-  if FNumBins > 0 then
-  begin
-    GetMem(FBinArray, FNumBins * SizeOf(Word));
-    NumBinsRec := DeviceCapabilities(FDevice, FPort, DC_Bins,
-      PChar(FBinArray), FDeviceMode);
-    if NumBinsRec <> FNumBins then
-      raise EJclPrinterError.CreateRes(@RsRetrievingSource);
+  ADeviceMode := LockDeviceMode;
+  try
+    FNumBins := DeviceCapabilities(FDevice, FPort, DC_Bins, nil, ADeviceMode);
+    if FNumBins > 0 then
+    begin
+      GetMem(FBinArray, FNumBins * SizeOf(Word));
+      NumBinsRec := DeviceCapabilities(FDevice, FPort, DC_Bins,
+        PChar(FBinArray), ADeviceMode);
+      if NumBinsRec <> FNumBins then
+        raise EJclPrinterError.CreateRes(@RsRetrievingSource);
+    end;
+  finally
+    UnlockDeviceMode;
   end;
 end;
 
 procedure TJclPrintSet.SetPaperArray;
 var
-  NumPapersRec: Integer;
+  NumPapersRec: DWord;
+  ADeviceMode: PDeviceMode;
 begin
   if FPaperArray <> nil then
     FreeMem(FPaperArray, FNumPapers * SizeOf(Word));
-  FNumPapers := DeviceCapabilities(FDevice, FPort, DC_Papers, nil, FDeviceMode);
-  if FNumPapers > 0 then
-  begin
-    GetMem(FPaperArray, FNumPapers * SizeOf(Word));
-    NumPapersRec := DeviceCapabilities(FDevice, FPort, DC_Papers,
-      PChar(FPaperArray), FDeviceMode);
-    if NumPapersRec <> FNumPapers then
-      raise EJclPrinterError.CreateRes(@RsRetrievingPaperSource);
-  end
-  else
-    FPaperArray := nil;
+  ADeviceMode := LockDeviceMode;
+  try
+    FNumPapers := DeviceCapabilities(FDevice, FPort, DC_Papers, nil, ADeviceMode);
+    if FNumPapers > 0 then
+    begin
+      GetMem(FPaperArray, FNumPapers * SizeOf(Word));
+      NumPapersRec := DeviceCapabilities(FDevice, FPort, DC_Papers,
+        PChar(FPaperArray), ADeviceMode);
+      if NumPapersRec <> FNumPapers then
+        raise EJclPrinterError.CreateRes(@RsRetrievingPaperSource);
+    end
+    else
+      FPaperArray := nil;
+  finally
+    UnlockDeviceMode;
+  end;
 end;
 
 { TODO : complete this list }
@@ -664,10 +707,11 @@ type
   TBinArray = array [1..cBinMax] of TBinName;
   PBinArray = ^TBinArray;
 var
-  NumBinsRec: Integer;
+  NumBinsRec: DWord;
   BinArray: PBinArray;
   BinStr: string;
   Idx: Integer;
+  ADeviceMode: PDeviceMode;
 begin
   CheckPrinter;
   BinArray := nil;
@@ -677,8 +721,13 @@ begin
   try
     GetMem(BinArray, FNumBins * SizeOf(TBinName));
     List.Clear;
-    NumBinsRec := DeviceCapabilities(FDevice, FPort, DC_BinNames,
-      PChar(BinArray), FDeviceMode);
+    ADeviceMode := LockDeviceMode;
+    try
+      NumBinsRec := DeviceCapabilities(FDevice, FPort, DC_BinNames,
+        PChar(BinArray), ADeviceMode);
+    finally
+      UnlockDeviceMode;
+    end;
     if NumBinsRec <> FNumBins then
       raise EJclPrinterError.CreateRes(@RsRetrievingSource);
     for Idx := 1 to NumBinsRec do
@@ -699,10 +748,11 @@ type
   TPaperArray = array [1..cPaperNames] of TPaperName;
   PPaperArray = ^TPaperArray;
 var
-  NumPaperRec: Integer;
+  NumPaperRec: DWord;
   PaperArray: PPaperArray;
   PaperStr: string;
   Idx: Integer;
+  ADeviceMode: PDeviceMode;
 begin
   CheckPrinter;
   PaperArray := nil;
@@ -712,8 +762,13 @@ begin
   List.Clear;
   try
     GetMem(PaperArray, FNumPapers * SizeOf(TPaperName));
-    NumPaperRec := DeviceCapabilities(FDevice, FPort, DC_PaperNames,
-      PChar(PaperArray), FDeviceMode);
+    ADeviceMode := LockDeviceMode;
+    try
+      NumPaperRec := DeviceCapabilities(FDevice, FPort, DC_PaperNames,
+        PChar(PaperArray), ADeviceMode);
+    finally
+      UnlockDeviceMode;
+    end;
     if NumPaperRec <> FNumPapers then
     begin
       for Idx := 1 to FNumPapers do
@@ -740,31 +795,28 @@ end;
 procedure TJclPrintSet.SetDeviceMode(Creating: Boolean);
 var
   Res: TPoint;
+  ADeviceMode: PDeviceMode;
+  NewHandle: THandle;
 begin
-  Printer.GetPrinter(FDevice, FDriver, FPort, FHandle);
-  if FHandle = 0 then
+  Printer.GetPrinter(FDevice, FDriver, FPort, NewHandle);
+  if NewHandle = 0 then
   begin
     Printer.PrinterIndex := Printer.PrinterIndex;
-    Printer.GetPrinter(FDevice, FDriver, FPort, FHandle);
+    Printer.GetPrinter(FDevice, FDriver, FPort, NewHandle);
   end;
+  FHandle := NewHandle;
   if FHandle <> 0 then
   begin
-    FDeviceMode := GlobalLock(FHandle);
+    ADeviceMode := GlobalLock(FHandle);
+
     FPrinter := Printer.PrinterIndex;
-    FDeviceMode^.dmFields := dm_Orientation or dm_PaperSize or
-      dm_PaperLength or dm_PaperWidth or
-      dm_Scale or dm_Copies or
-      dm_DefaultSource or dm_PrintQuality or
-      dm_Color or dm_Duplex or
-      dm_YResolution or dm_TTOption;
-    UpdateDeviceMode;
-    FDeviceMode^.dmFields := 0;
+    UpdateDeviceMode(ADeviceMode);
+    //FDeviceMode^.dmFields := 0;
     SetBinArray;
     SetPaperArray;
   end
   else
   begin
-    FDeviceMode := nil;
     if not Creating then
       raise EJclPrinterError.CreateRes(@RsDeviceMode);
     FPrinter := -99;
@@ -776,22 +828,24 @@ begin
     GlobalUnLock(FHandle);
 end;
 
-procedure TJclPrintSet.UpdateDeviceMode;
+procedure TJclPrintSet.UpdateDeviceMode(const ADeviceMode: PDeviceMode);
 var
   DrvHandle: THandle;
   ExtDevCode: Integer;
 begin
-  CheckPrinter;      
+  // ONLY CALL when ADeviceMode is locked by caller!!!
+
+  //CheckPrinter;
   if OpenPrinter(FDevice, DrvHandle, nil) then
   try
-    FDeviceMode^.dmFields := dm_Orientation or dm_PaperSize or
+    ADeviceMode^.dmFields := dm_Orientation or dm_PaperSize or
       dm_PaperLength or dm_PaperWidth or
       dm_Scale or dm_Copies or
       dm_DefaultSource or dm_PrintQuality or
       dm_Color or dm_Duplex or
       dm_YResolution or dm_TTOption;
     ExtDevCode := DocumentProperties(0, DrvHandle, FDevice,
-      FDeviceMode^, FDeviceMode^,
+      ADeviceMode^, ADeviceMode^,
       DM_IN_BUFFER or DM_OUT_BUFFER);
     if ExtDevCode <> IDOK then
       raise EJclPrinterError.CreateRes(@RsUpdatingPrinter);
@@ -804,11 +858,17 @@ procedure TJclPrintSet.SaveToDefaults;
 var
   DrvHandle: THandle;
   ExtDevCode: Integer;
+  ADeviceMode: PDeviceMode;
 begin
   CheckPrinter;
   OpenPrinter(FDevice, DrvHandle, nil);
-  ExtDevCode := DocumentProperties(0, DrvHandle, FDevice,
-    FDeviceMode^, FDeviceMode^, DM_IN_BUFFER or DM_UPDATE);
+  ADeviceMode := LockDeviceMode;
+  try
+    ExtDevCode := DocumentProperties(0, DrvHandle, FDevice,
+      ADeviceMode^, ADeviceMode^, DM_IN_BUFFER or DM_UPDATE);
+  finally
+    UnlockDeviceMode;
+  end;
   if ExtDevCode <> IDOK then
     raise EJclPrinterError.CreateRes(@RsUpdatingPrinter)
   else
@@ -882,233 +942,429 @@ begin
   PaperWidth := Trunc(254 * Width);
 end;
 
+procedure TJclPrintSet.DevModePrinterDriverExtraClear;
+var
+  ADeviceMode: PDeviceMode;
+begin
+  CheckPrinter;
+  ADeviceMode := LockDeviceMode;
+  try
+    ADeviceMode^.dmDriverExtra := 0;
+  finally
+    UnlockDeviceMode;
+  end;
+end;
+
+procedure TJclPrintSet.DevModePrinterDriverExtraReinstate(const ExtraData: TDynByteArray;
+  const ExtraDataDriverName: string; const ExtraDataDriverVersion: Word);
+var
+  Src, Dest: PDeviceMode;
+  ADeviceModeDriverExtra: PByte;
+  NewHandle: THandle;
+begin
+  CheckPrinter;
+    { http://support.microsoft.com/kb/167345
+      Using a DEVMODE structure to modify printer settings is more difficult than just changing the fields of the structure. Specifically, a valid DEVMODE structure for a device contains private data that can only be modified by the DocumentProperties() function.
+      This article explains how to modify the contents of a DEVMODE structure with the DocumentProperties() function.}
+
+  if FHandle <> 0 then
+  begin
+    Src := GlobalLock(FHandle);
+    try
+      if not ((Src^.dmDeviceName = ExtraDataDriverName) and (Src^.dmDriverVersion = ExtraDataDriverVersion)) then
+        exit;
+        //raise Exception.Create('TJclPrintSet.DevModePrinterDriverExtraReinstate - Driver Private data does not match selected printer');
+
+      NewHandle := GlobalAlloc(GHND, sizeof(DEVMODE) + Length(ExtraData));
+      if NewHandle <> 0 then
+        try
+          Dest := GlobalLock(NewHandle);
+
+          if (Src <> nil) and (Dest <> nil) then
+          begin
+            Move(Src^, Dest^, Src^.dmSize);
+            Dest^.dmDriverExtra := 0;
+
+            Dest^.dmDriverExtra := Length(ExtraData);
+
+
+            ADeviceModeDriverExtra := PByte(Dest);
+            Inc(ADeviceModeDriverExtra, Dest^.dmSize);
+            Move(ExtraData[0], ADeviceModeDriverExtra^, dest^.dmDriverExtra);
+          end
+          else
+            raise Exception.Create('TJclPrintSet.DevModePrinterDriverExtraReinstate - GlobalLock failed');
+        finally
+          GlobalUnlock(NewHandle);
+        end;
+
+      Printer.SetPrinter(FDevice, FDriver, FPort, NewHandle);
+      FHandle := NewHandle;
+      SetDeviceMode(False);
+    finally
+      GlobalUnlock(FHandle);
+    end;
+  end
+  else
+    raise Exception.Create('TJclPrintSet.DevModePrinterDriverExtraReinstate invalid handle');
+end;
+
 procedure TJclPrintSet.SaveToIniFile(const IniFileName, Section: string);
 var
-  PrIniFile: TIniFile;
-  CurrentName: string;
+  PrIniFile: TMemIniFile;
 begin
-  PrIniFile := TIniFile.Create(IniFileName);
-  CurrentName := Printer.Printers[Printer.PrinterIndex];
-  PrIniFile.WriteString(Section, PrintIniPrinterName, CurrentName);
-  PrIniFile.WriteString(Section, PrintIniPrinterPort, PrinterPort);
-  PrIniFile.WriteInteger(Section, PrintIniOrientation, Orientation);
-  PrIniFile.WriteInteger(Section, PrintIniPaperSize, PaperSize);
-  PrIniFile.WriteInteger(Section, PrintIniPaperLength, PaperLength);
-  PrIniFile.WriteInteger(Section, PrintIniPaperWidth, PaperWidth);
-  PrIniFile.WriteInteger(Section, PrintIniScale, Scale);
-  PrIniFile.WriteInteger(Section, PrintIniCopies, Copies);
-  PrIniFile.WriteInteger(Section, PrintIniDefaultSource, DefaultSource);
-  PrIniFile.WriteInteger(Section, PrintIniPrintQuality, PrintQuality);
-  PrIniFile.WriteInteger(Section, PrintIniColor, Color);
-  PrIniFile.WriteInteger(Section, PrintIniDuplex, Duplex);
-  PrIniFile.WriteInteger(Section, PrintIniYResolution, YResolution);
-  PrIniFile.WriteInteger(Section, PrintIniTTOption, TrueTypeOption);
-  PrIniFile.Free;
+  PrIniFile := TMemIniFile.Create(IniFileName);   // use TMemIniFile as TIniFile truncats longs values
+  try
+    SaveToCustomIni(PrIniFile, Section);
+    PrIniFile.UpdateFile;
+  finally
+    PrIniFile.Free;
+  end;
 end;
 
 function TJclPrintSet.ReadFromIniFile(const IniFileName, Section: string): Boolean;
 var
-  PrIniFile: TIniFile;
-  SavedName: string;
-  NewIndex: Integer;
+  PrIniFile: TMemIniFile;
 begin
-  Result := False;
-  PrIniFile := TIniFile.Create(IniFileName);
-  SavedName := PrIniFile.ReadString(Section, PrintIniPrinterName, PrinterName);
-  if PrinterName <> SavedName then
-  begin
-    NewIndex := Printer.Printers.IndexOf(SavedName);
-    if NewIndex <> -1 then
-    begin
-      Result := True;
-      Printer.PrinterIndex := NewIndex;
-      PrinterPort := PrIniFile.ReadString(Section, PrintIniPrinterPort, PrinterPort);
-      Orientation := PrIniFile.ReadInteger(Section, PrintIniOrientation, Orientation);
-      PaperSize := PrIniFile.ReadInteger(Section, PrintIniPaperSize, PaperSize);
-      PaperLength := PrIniFile.ReadInteger(Section, PrintIniPaperLength, PaperLength);
-      PaperWidth := PrIniFile.ReadInteger(Section, PrintIniPaperWidth, PaperWidth);
-      Scale := PrIniFile.ReadInteger(Section, PrintIniScale, Scale);
-      Copies := PrIniFile.ReadInteger(Section, PrintIniCopies, Copies);
-      DefaultSource := PrIniFile.ReadInteger(Section, PrintIniDefaultSource, DefaultSource);
-      PrintQuality := PrIniFile.ReadInteger(Section, PrintIniPrintQuality, PrintQuality);
-      Color := PrIniFile.ReadInteger(Section, PrintIniColor, Color);
-      Duplex := PrIniFile.ReadInteger(Section, PrintIniDuplex, Duplex);
-      YResolution := PrIniFile.ReadInteger(Section, PrintIniYResolution, YResolution);
-      TrueTypeOption := PrIniFile.ReadInteger(Section, PrintIniTTOption, TrueTypeOption);
-    end
-    else
-      Result := False;
+  PrIniFile := TMemIniFile.Create(IniFileName);     // use TMemIniFile as TIniFile truncats longs values
+  try
+    Result := ReadFromCustomIni(PrIniFile, Section);
+  finally
+    PrIniFile.Free;
   end;
-  PrIniFile.Free;
 end;
 
 procedure TJclPrintSet.SetOrientation(Orientation: Integer);
+var
+  ADeviceMode: PDeviceMode;
 begin
   CheckPrinter;
-  FDeviceMode^.dmOrientation := Orientation;
-  Printer.Orientation := TPrinterOrientation(Orientation - 1);
-  FDeviceMode^.dmFields := FDeviceMode^.dmFields or DM_ORIENTATION;
+  ADeviceMode := LockDeviceMode;
+  try
+    ADeviceMode^.dmOrientation := Orientation;
+    Printer.Orientation := TPrinterOrientation(Orientation - 1);
+    ADeviceMode^.dmFields := ADeviceMode^.dmFields or DM_ORIENTATION;
+  finally
+    UnlockDeviceMode;
+  end;
 end;
 
 function TJclPrintSet.GetOrientation: Integer;
+var
+  ADeviceMode: PDeviceMode;
 begin
   CheckPrinter;
-  Result := FDeviceMode^.dmOrientation;
+  ADeviceMode := LockDeviceMode;
+  try
+    Result := ADeviceMode^.dmOrientation;
+  finally
+    UnlockDeviceMode;
+  end;
 end;
 
 procedure TJclPrintSet.SetPaperSize(Size: Integer);
+var
+  ADeviceMode: PDeviceMode;
 begin
   CheckPrinter;
-  FDeviceMode^.dmPaperSize := Size;
-  FDeviceMode^.dmFields := FDeviceMode^.dmFields or DM_PAPERSIZE;
+  ADeviceMode := LockDeviceMode;
+  try
+    ADeviceMode^.dmPaperSize := Size;
+    ADeviceMode^.dmFields := ADeviceMode^.dmFields or DM_PAPERSIZE;
+  finally
+    UnlockDeviceMode;
+  end;
 end;
 
 function TJclPrintSet.GetPaperSize: Integer;
+var
+  ADeviceMode: PDeviceMode;
 begin
   CheckPrinter;
-  Result := FDeviceMode^.dmPaperSize;
+  ADeviceMode := LockDeviceMode;
+  try
+    Result := ADeviceMode^.dmPaperSize;
+  finally
+    UnlockDeviceMode;
+  end;
 end;
 
 procedure TJclPrintSet.SetPaperLength(Length: Integer);
+var
+  ADeviceMode: PDeviceMode;
 begin
   CheckPrinter;
-  FDeviceMode^.dmPaperLength := Length;
-  FDeviceMode^.dmFields := FDeviceMode^.dmFields or DM_PAPERLENGTH;
+  ADeviceMode := LockDeviceMode;
+  try
+    ADeviceMode^.dmPaperLength := Length;
+    ADeviceMode^.dmFields := ADeviceMode^.dmFields or DM_PAPERLENGTH;
+  finally
+    UnlockDeviceMode;
+  end;
 end;
 
 function TJclPrintSet.GetPaperLength: Integer;
+var
+  ADeviceMode: PDeviceMode;
 begin
   CheckPrinter;
-  Result := FDeviceMode^.dmPaperLength;
+  ADeviceMode := LockDeviceMode;
+  try
+    Result := ADeviceMode^.dmPaperLength;
+  finally
+    UnlockDeviceMode;
+  end;
 end;
 
 procedure TJclPrintSet.SetPaperWidth(Width: Integer);
+var
+  ADeviceMode: PDeviceMode;
 begin
   CheckPrinter;
-  FDeviceMode^.dmPaperWidth := Width;
-  FDeviceMode^.dmFields := FDeviceMode^.dmFields or DM_PAPERWIDTH;
+  ADeviceMode := LockDeviceMode;
+  try
+    ADeviceMode^.dmPaperWidth := Width;
+    ADeviceMode^.dmFields := ADeviceMode^.dmFields or DM_PAPERWIDTH;
+  finally
+    UnlockDeviceMode;
+  end;
 end;
 
 function TJclPrintSet.GetPaperWidth: Integer;
+var
+  ADeviceMode: PDeviceMode;
 begin
   CheckPrinter;
-  Result := FDeviceMode^.dmPaperWidth;
+  ADeviceMode := LockDeviceMode;
+  try
+    Result := ADeviceMode^.dmPaperWidth;
+  finally
+    UnlockDeviceMode;
+  end;
 end;
 
 procedure TJclPrintSet.SetScale(Scale: Integer);
+var
+  ADeviceMode: PDeviceMode;
 begin
   CheckPrinter;
-  FDeviceMode^.dmScale := Scale;
-  FDeviceMode^.dmFields := FDeviceMode^.dmFields or DM_SCALE;
+  ADeviceMode := LockDeviceMode;
+  try
+    ADeviceMode^.dmScale := Scale;
+    ADeviceMode^.dmFields := ADeviceMode^.dmFields or DM_SCALE;
+  finally
+    UnlockDeviceMode;
+  end;
 end;
 
 function TJclPrintSet.GetScale: Integer;
+var
+  ADeviceMode: PDeviceMode;
 begin
   CheckPrinter;
-  Result := FDeviceMode^.dmScale;
+  ADeviceMode := LockDeviceMode;
+  try
+    Result := ADeviceMode^.dmScale;
+  finally
+    UnlockDeviceMode;
+  end;
 end;
 
 procedure TJclPrintSet.SetCopies(Copies: Integer);
+var
+  ADeviceMode: PDeviceMode;
 begin
   CheckPrinter;
-  FDeviceMode^.dmCopies := Copies;
-  FDeviceMode^.dmFields := FDeviceMode^.dmFields or DM_COPIES;
+  ADeviceMode := LockDeviceMode;
+  try
+    ADeviceMode^.dmCopies := Copies;
+    ADeviceMode^.dmFields := ADeviceMode^.dmFields or DM_COPIES;
+  finally
+    UnlockDeviceMode;
+  end;
 end;
 
 function TJclPrintSet.GetCopies: Integer;
+var
+  ADeviceMode: PDeviceMode;
 begin
   CheckPrinter;
-  Result := FDeviceMode^.dmCopies;
+  ADeviceMode := LockDeviceMode;
+  try
+    Result := ADeviceMode^.dmCopies;
+  finally
+    UnlockDeviceMode;
+  end;
 end;
 
 procedure TJclPrintSet.SetBin(Bin: Integer);
+var
+  ADeviceMode: PDeviceMode;
 begin
   CheckPrinter;
-  FDeviceMode^.dmDefaultSource := Bin;
-  FDeviceMode^.dmFields := FDeviceMode^.dmFields or DM_DEFAULTSOURCE;
+  ADeviceMode := LockDeviceMode;
+  try
+    ADeviceMode^.dmDefaultSource := Bin;
+    ADeviceMode^.dmFields := ADeviceMode^.dmFields or DM_DEFAULTSOURCE;
+  finally
+    UnlockDeviceMode;
+  end;
 end;
 
 function TJclPrintSet.GetBin: Integer;
+var
+  ADeviceMode: PDeviceMode;
 begin
   CheckPrinter;
-  Result := FDeviceMode^.dmDefaultSource;
+  ADeviceMode := LockDeviceMode;
+  try
+    Result := ADeviceMode^.dmDefaultSource;
+  finally
+    UnlockDeviceMode;
+  end;
 end;
 
 procedure TJclPrintSet.SetPrintQuality(Quality: Integer);
+var
+  ADeviceMode: PDeviceMode;
 begin
   CheckPrinter;
-  FDeviceMode^.dmPrintQuality := Quality;
-  FDeviceMode^.dmFields := FDeviceMode^.dmFields or DM_PRINTQUALITY;
+  ADeviceMode := LockDeviceMode;
+  try
+    ADeviceMode^.dmPrintQuality := Quality;
+    ADeviceMode^.dmFields := ADeviceMode^.dmFields or DM_PRINTQUALITY;
+  finally
+    UnlockDeviceMode;
+  end;
 end;
 
 function TJclPrintSet.GetPrintQuality: Integer;
+var
+  ADeviceMode: PDeviceMode;
 begin
   CheckPrinter;
-  Result := FDeviceMode^.dmPrintQuality;
+  ADeviceMode := LockDeviceMode;
+  try
+    Result := ADeviceMode^.dmPrintQuality;
+  finally
+    UnlockDeviceMode;
+  end;
 end;
 
 procedure TJclPrintSet.SetColor(Color: Integer);
+var
+  ADeviceMode: PDeviceMode;
 begin
   CheckPrinter;
-  FDeviceMode^.dmColor := Color;
-  FDeviceMode^.dmFields := FDeviceMode^.dmFields or DM_ORIENTATION;
+  ADeviceMode := LockDeviceMode;
+  try
+    ADeviceMode^.dmColor := Color;
+    ADeviceMode^.dmFields := ADeviceMode^.dmFields or DM_COLOR;
+  finally
+    UnlockDeviceMode;
+  end;
 end;
 
 function TJclPrintSet.GetColor: Integer;
+var
+  ADeviceMode: PDeviceMode;
 begin
   CheckPrinter;
-  Result := FDeviceMode^.dmColor;
+  ADeviceMode := LockDeviceMode;
+  try
+    Result := ADeviceMode^.dmColor;
+  finally
+    UnlockDeviceMode;
+  end;
 end;
 
 procedure TJclPrintSet.SetDuplex(Duplex: Integer);
+var
+  ADeviceMode: PDeviceMode;
 begin
   CheckPrinter;
-  FDeviceMode^.dmDuplex := Duplex;
-  FDeviceMode^.dmFields := FDeviceMode^.dmFields or DM_DUPLEX;
+  ADeviceMode := LockDeviceMode;
+  try
+    ADeviceMode^.dmDuplex := Duplex;
+    ADeviceMode^.dmFields := ADeviceMode^.dmFields or DM_DUPLEX;
+  finally
+    UnlockDeviceMode;
+  end;
 end;
 
 function TJclPrintSet.GetDuplex: Integer;
+var
+  ADeviceMode: PDeviceMode;
 begin
   CheckPrinter;
-  Result := FDeviceMode^.dmDuplex;
+  ADeviceMode := LockDeviceMode;
+  try
+    Result := ADeviceMode^.dmDuplex;
+  finally
+    UnlockDeviceMode;
+  end;
 end;
 
 procedure TJclPrintSet.SetYResolution(YRes: Integer);
 var
   PrintDevMode: PDeviceModeA;
+  ADeviceMode: PDeviceMode;
 begin
   CheckPrinter;
-  PrintDevMode := @FDeviceMode^;
-  PrintDevMode^.dmYResolution := YRes;
-  FDeviceMode^.dmFields := FDeviceMode^.dmFields or DM_YRESOLUTION;
+  ADeviceMode := LockDeviceMode;
+  try
+    PrintDevMode := @ADeviceMode^;
+    PrintDevMode^.dmYResolution := YRes;
+    ADeviceMode^.dmFields := ADeviceMode^.dmFields or DM_YRESOLUTION;
+  finally
+    UnlockDeviceMode;
+  end;
 end;
 
 function TJclPrintSet.GetYResolution: Integer;
 var
   PrintDevMode: PDeviceModeA;
+  ADeviceMode: PDeviceMode;
 begin
   CheckPrinter;
-  PrintDevMode := @FDeviceMode^;
-  Result := PrintDevMode^.dmYResolution;
+  ADeviceMode := LockDeviceMode;
+  try
+    PrintDevMode := @ADeviceMode^;
+    Result := PrintDevMode^.dmYResolution;
+  finally
+    UnlockDeviceMode;
+  end;
 end;
 
 procedure TJclPrintSet.SetTrueTypeOption(Option: Integer);
 var
   PrintDevMode: PDeviceModeA;
+  ADeviceMode: PDeviceMode;
 begin
   CheckPrinter;
-  PrintDevMode := @FDeviceMode^;
-  PrintDevMode^.dmTTOption := Option;
-  FDeviceMode^.dmFields := FDeviceMode^.dmFields or DM_TTOPTION;
+  ADeviceMode := LockDeviceMode;
+  try
+    PrintDevMode := @ADeviceMode^;
+    PrintDevMode^.dmTTOption := Option;
+    ADeviceMode^.dmFields := ADeviceMode^.dmFields or DM_TTOPTION;
+  finally
+    UnlockDeviceMode;
+  end;
 end;
 
 function TJclPrintSet.GetTrueTypeOption: Integer;
 var
   PrintDevMode: PDeviceModeA;
+  ADeviceMode: PDeviceMode;
 begin
   CheckPrinter;
-  PrintDevMode := @FDeviceMode^;
-  Result := PrintDevMode^.dmTTOption;
+  ADeviceMode := LockDeviceMode;
+  try
+    PrintDevMode := @ADeviceMode^;
+    Result := PrintDevMode^.dmTTOption;
+  finally
+    UnlockDeviceMode;
+  end;
 end;
 
 function TJclPrintSet.GetPrinterName: string;
@@ -1129,7 +1385,7 @@ begin
   Result := StrPas(FDriver);
 end;
 
-procedure TJclPrintSet.SetBinFromList(BinNum: Byte);
+procedure TJclPrintSet.SetBinFromList(BinNum: Word);
 begin
   CheckPrinter;
   if FNumBins = 0 then
@@ -1140,22 +1396,71 @@ begin
     DefaultSource := FBinArray^[BinNum];
 end;
 
-function TJclPrintSet.GetBinIndex: Byte;
+function TJclPrintSet.GetBinIndex: Word;
 var
-  Idx: Byte;
+  Idx: Word;
+  ADeviceMode: PDeviceMode;
 begin
   Result := 0;
-  for Idx := 0 to FNumBins do
-  begin
-    if FBinArray^[Idx] = Word(FDeviceMode^.dmDefaultSource) then
+  ADeviceMode := LockDeviceMode;
+  try
+    for Idx := 0 to FNumBins do
     begin
-      Result := Idx;
-      Break;
+      if FBinArray^[Idx] = Word(ADeviceMode^.dmDefaultSource) then
+      begin
+        Result := Idx;
+        Break;
+      end;
     end;
+  finally
+    UnlockDeviceMode;
   end;
 end;
 
-procedure TJclPrintSet.SetPaperFromList(PaperNum: Byte);
+function TJclPrintSet.GetDevModePrinterDriverVersion: Word;
+var
+  ADeviceMode: PDeviceMode;
+begin
+  CheckPrinter;
+  ADeviceMode := LockDeviceMode;
+  try
+    Result := ADeviceMode^.dmDriverVersion;
+  finally
+    UnlockDeviceMode;
+  end;
+end;
+
+function TJclPrintSet.GetDevModePrinterDriver: string;
+var
+  ADeviceMode: PDeviceMode;
+begin
+  CheckPrinter;
+  ADeviceMode := LockDeviceMode;
+  try
+    Result := ADeviceMode^.dmDeviceName;
+  finally
+    UnlockDeviceMode;
+  end;
+end;
+
+function TJclPrintSet.GetDevModePrinterDriverExtra: TDynByteArray;
+var
+  ADeviceMode: PDeviceMode;
+  ADeviceModeDriverExtra: PByte;
+begin
+  CheckPrinter;
+  ADeviceMode := LockDeviceMode;
+  try
+    ADeviceModeDriverExtra := PByte(ADeviceMode);
+    Inc(ADeviceModeDriverExtra, ADeviceMode^.dmSize);
+    SetLength(Result, ADeviceMode^.dmDriverExtra);
+    Move(ADeviceModeDriverExtra^, Result[0], ADeviceMode^.dmDriverExtra);
+  finally
+    UnlockDeviceMode;
+  end;
+end;
+
+procedure TJclPrintSet.SetPaperFromList(PaperNum: Word);
 begin
   CheckPrinter;
   if FNumPapers = 0 then
@@ -1174,19 +1479,146 @@ begin
   Printer.SetPrinter(FDevice, FDriver, FPort, FHandle);
 end;
 
-function TJclPrintSet.GetPaperIndex: Byte;
+function TJclPrintSet.GetPaperIndex: Word;
 var
-  Idx: Byte;
+  Idx: Word;
+  ADeviceMode: PDeviceMode;
 begin
   Result := 0;
-  for Idx := 0 to FNumPapers do
-  begin
-    if FPaperArray^[Idx] = Word(FDeviceMode^.dmPaperSize) then
+  ADeviceMode := LockDeviceMode;
+  try
+    for Idx := 0 to FNumPapers do
     begin
-      Result := Idx;
-      Break;
+      if FPaperArray^[Idx] = Word(ADeviceMode^.dmPaperSize) then
+      begin
+        Result := Idx;
+        Break;
+      end;
+    end;
+  finally
+    UnlockDeviceMode;
+  end;
+end;
+
+function TJclPrintSet.LockDeviceMode: PDeviceMode;
+begin
+  if FHandle <> 0 then
+  begin
+    Result := GlobalLock(FHandle);
+    if not assigned(Result) then
+      RaiseLastOSError;
+  end
+  else
+    raise Exception.Create('TJclPrintSet.LockDeviceMode invalid FHandle');
+end;
+
+function TJclPrintSet.ReadFromCustomIni(const PrIniFile: TCustomIniFile; const Section: string): Boolean;
+var
+  privData: TMemoryStream;
+  privDataExtra: TDynByteArray;
+  privDataExtraSize: Integer;
+  DevModeDriverName: string;
+  DevModeDriverVersion: Word;
+begin
+  PrinterName := PrIniFile.ReadString(Section, PrintIniPrinterName, PrinterName);
+  PrinterPort := PrIniFile.ReadString(Section, PrintIniPrinterPort, PrinterPort);
+  Orientation := PrIniFile.ReadInteger(Section, PrintIniOrientation, Orientation);
+  PaperSize := PrIniFile.ReadInteger(Section, PrintIniPaperSize, PaperSize);
+  PaperLength := PrIniFile.ReadInteger(Section, PrintIniPaperLength, PaperLength);
+  PaperWidth := PrIniFile.ReadInteger(Section, PrintIniPaperWidth, PaperWidth);
+  Scale := PrIniFile.ReadInteger(Section, PrintIniScale, Scale);
+  Copies := PrIniFile.ReadInteger(Section, PrintIniCopies, Copies);
+  DefaultSource := PrIniFile.ReadInteger(Section, PrintIniDefaultSource, DefaultSource);
+  PrintQuality := PrIniFile.ReadInteger(Section, PrintIniPrintQuality, PrintQuality);
+  Color := PrIniFile.ReadInteger(Section, PrintIniColor, Color);
+  Duplex := PrIniFile.ReadInteger(Section, PrintIniDuplex, Duplex);
+  YResolution := PrIniFile.ReadInteger(Section, PrintIniYResolution, YResolution);
+  TrueTypeOption := PrIniFile.ReadInteger(Section, PrintIniTTOption, TrueTypeOption);
+
+  DevModeDriverName := PrIniFile.ReadString(Section, PrintDriverName, '');
+  DevModeDriverVersion := Word(PrIniFile.ReadInteger(Section, PrintDriverVersion, 0));
+  if (DevModePrinterDriver = DevModeDriverName) and
+     (DevModePrinterDriverVersion = DevModeDriverVersion) then
+  begin
+    privData := TMemoryStream.Create;
+    try
+
+      PrIniFile.ReadBinaryStream(Section, PrintDriverExtraData, privData);
+      privDataExtraSize := PrIniFile.ReadInteger(Section, PrintDriverExtraSize, 0);
+      if (privData.Size = privDataExtraSize) then
+      begin
+        SetLength(privDataExtra, privDataExtraSize);
+        privdata.Read(privDataExtra[0], privDataExtraSize);
+
+        DevModePrinterDriverExtraReinstate(privDataExtra, DevModeDriverName, DevModeDriverVersion);
+      end;
+    finally
+      privData.Free;
     end;
   end;
+  Result := True;
+end;
+
+procedure TJclPrintSet.SaveToCustomIni(const PrIniFile: TCustomIniFile; const Section: string);
+var
+  CurrentName: string;
+  
+  privData: TMemoryStream;
+  privDataExtra: TDynByteArray;
+begin
+    PrIniFile.EraseSection(Section);
+
+    CurrentName := Printer.Printers[Printer.PrinterIndex];
+    PrIniFile.WriteString(Section, PrintIniPrinterName, CurrentName);
+    PrIniFile.WriteString(Section, PrintIniPrinterPort, PrinterPort);
+    PrIniFile.WriteInteger(Section, PrintIniOrientation, Orientation);
+    PrIniFile.WriteInteger(Section, PrintIniPaperSize, PaperSize);
+    PrIniFile.WriteInteger(Section, PrintIniPaperLength, PaperLength);
+    PrIniFile.WriteInteger(Section, PrintIniPaperWidth, PaperWidth);
+    PrIniFile.WriteInteger(Section, PrintIniScale, Scale);
+    PrIniFile.WriteInteger(Section, PrintIniCopies, Copies);
+    PrIniFile.WriteInteger(Section, PrintIniDefaultSource, DefaultSource);
+    PrIniFile.WriteInteger(Section, PrintIniPrintQuality, PrintQuality);
+    PrIniFile.WriteInteger(Section, PrintIniColor, Color);
+    PrIniFile.WriteInteger(Section, PrintIniDuplex, Duplex);
+    PrIniFile.WriteInteger(Section, PrintIniYResolution, YResolution);
+    PrIniFile.WriteInteger(Section, PrintIniTTOption, TrueTypeOption);
+
+    PrIniFile.WriteString(Section, PrintDriverName, DevModePrinterDriver);
+    PrIniFile.WriteInteger(Section, PrintDriverVersion, DevModePrinterDriverVersion);
+    PrIniFile.WriteInteger(Section, PrintDriverExtraSize, Length(DevModePrinterDriverExtra));
+
+    privDataExtra := DevModePrinterDriverExtra;
+
+    privData := TMemoryStream.Create;
+    try
+      privdata.Write(privDataExtra[0], Length(privDataExtra));
+      privData.Position := 0;
+      PrIniFile.WriteBinaryStream(Section, PrintDriverExtraData, privData);
+    finally
+      privData.Free;
+    end;
+end;
+
+procedure TJclPrintSet.SetPrinterName(const Value: string);
+var
+  NewIndex: Integer;
+begin
+  if PrinterName <> Value then
+  begin
+    NewIndex := Printer.Printers.IndexOf(Value);
+    if NewIndex <> -1 then
+    begin
+      Printer.PrinterIndex := NewIndex;
+    end;
+  end;
+  CheckPrinter;
+end;
+
+procedure TJclPrintSet.UnlockDeviceMode;
+begin
+ if FHandle <> 0 then
+   GlobalUnLock(FHandle);
 end;
 
 {$IFDEF UNITVERSIONING}
