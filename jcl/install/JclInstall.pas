@@ -919,11 +919,11 @@ procedure TJclInstallation.Init;
     AddOption(joJCLDefUnicode, [goChecked], Parent);
     if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 6) then
       // Delphi 2009 and newer have unit "Character"
-      AddOption(joJCLDefUnicodeRTLDatabase, [], joJCLDefUnicode);
-    AddOption(joJCLDefUnicodeSilentFailure, [goChecked], joJCLDefUnicode);
+      AddOption(joJCLDefUnicodeRTLDatabase, [goRadioButton], joJCLDefUnicode);
     AddOption(joJCLDefUnicodeRawData, [goRadioButton, goChecked], joJCLDefUnicode);
     AddOption(joJCLDefUnicodeZLibData, [goRadioButton], joJCLDefUnicode);
     AddOption(joJCLDefUnicodeBZip2Data, [goRadioButton], joJCLDefUnicode);
+    AddOption(joJCLDefUnicodeSilentFailure, [goChecked], joJCLDefUnicode);
     {$IFDEF MSWINDOWS}
     // Sevenzip options
     AddOption(joJCLDef7z, [goChecked], Parent);
