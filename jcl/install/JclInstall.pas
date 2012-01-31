@@ -1050,7 +1050,8 @@ procedure TJclInstallation.Init;
     if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber <= 2) then
       // design packages are not loaded by C#Builder 1 and Delphi 8
       AddOption(joJCLExpertsDLL, [goRadioButton, goChecked], joJCLExperts)
-    else if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 3) then
+    else
+    if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 3) then
       // expert DLLs are unstable on Delphi 2005 and BDS 2006
       // (problems while adding menu items in menu not loaded yet)
       AddOption(joJCLExpertsDsgnPackages, [goRadioButton, goChecked], joJCLExperts)
@@ -1705,9 +1706,11 @@ var
         MarkOptionBegin(Option);
         if Option = joJCLExpertsDsgnPackages then
           // nothing, default value
-        else if Option = joJCLExpertsDLL then
+        else
+        if Option = joJCLExpertsDLL then
           DLLExperts := OptionChecked[Option]
-        else if DLLExperts then
+        else
+        if DLLExperts then
           Result := CompileExpert(FullLibraryFileName(Target, SupportedExperts[Option]))
         else
           Result := CompilePackage(FullPackageFileName(Target, SupportedExperts[Option]));
@@ -2938,7 +2941,8 @@ begin
       if Result and (not FirstCompilationOk) then
         // second compilation
         Result := Target.CompileProject(ProjectFileName, GetBplPath, GetDcpPath)
-      else if not Result then
+      else
+      if not Result then
         WriteLog(LoadResString(@RsLogEntryPointNotFound));
     end
     else
