@@ -24,6 +24,7 @@
 {   Matthias Thoma (mthoma)                                                                        }
 {   Karl Ivar Hansen                                                                               }
 {   Martin Cakrt                                                                                   }
+{   Jared Davison                                                                                  }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -74,7 +75,6 @@ type
     FDriver: PChar;
     FPort: PChar;
     FHandle: THandle;
-    //FDeviceMode: PDeviceMode;
     FPrinter: Integer;
     FBinArray: PWordArray;
     FNumBins: DWord;
