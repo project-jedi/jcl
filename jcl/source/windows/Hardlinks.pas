@@ -85,6 +85,7 @@ uses
   Windows;
   {$ENDIF ~HAS_UNITSCOPE}
 
+
 {$EXTERNALSYM CreateHardLinkW}
 {$EXTERNALSYM CreateHardLinkA}
 

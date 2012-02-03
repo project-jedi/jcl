@@ -202,7 +202,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNITSCOPE}
+  Winapi.Windows;
+  {$ELSE ~HAS_UNITSCOPE}
   Windows;
+  {$ENDIF ~HAS_UNITSCOPE}
 
 {$IFDEF PREFERAPI}
   {$DEFINE STDCALL // For the windows API we _require_ STDCALL calling convention }
