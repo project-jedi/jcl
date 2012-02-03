@@ -35,10 +35,8 @@ interface
 uses
   {$IFDEF HAS_UNITSCOPE}
   System.Classes,
-  Vcl.Forms,
   {$ELSE ~HAS_UNITSCOPE}
   Classes,
-  Forms,
   {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
