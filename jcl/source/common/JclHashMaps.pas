@@ -60,15 +60,15 @@ type
   // Result must be in 0..Range-1
   TJclHashFunction = function(Key, Range: Integer): Integer;
 
-  TJclIntfIntfHashEntry = record
+  TJclIntfIntfHashMapEntry = record
     Key: IInterface;
     Value: IInterface;
   end;
 
-  TJclIntfIntfBucket = class
+  TJclIntfIntfHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclIntfIntfHashEntry;
+    Entries: array of TJclIntfIntfHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -82,7 +82,7 @@ type
     function KeysEqual(const A, B: IInterface): Boolean;
     function ValuesEqual(const A, B: IInterface): Boolean;
   private
-    FBuckets: array of TJclIntfIntfBucket;
+    FBuckets: array of TJclIntfIntfHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -111,15 +111,15 @@ type
     function Values: IJclIntfCollection;
   end;
 
-  TJclAnsiStrIntfHashEntry = record
+  TJclAnsiStrIntfHashMapEntry = record
     Key: AnsiString;
     Value: IInterface;
   end;
 
-  TJclAnsiStrIntfBucket = class
+  TJclAnsiStrIntfHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclAnsiStrIntfHashEntry;
+    Entries: array of TJclAnsiStrIntfHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -133,7 +133,7 @@ type
     function KeysEqual(const A, B: AnsiString): Boolean;
     function ValuesEqual(const A, B: IInterface): Boolean;
   private
-    FBuckets: array of TJclAnsiStrIntfBucket;
+    FBuckets: array of TJclAnsiStrIntfHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -162,15 +162,15 @@ type
     function Values: IJclIntfCollection;
   end;
 
-  TJclIntfAnsiStrHashEntry = record
+  TJclIntfAnsiStrHashMapEntry = record
     Key: IInterface;
     Value: AnsiString;
   end;
 
-  TJclIntfAnsiStrBucket = class
+  TJclIntfAnsiStrHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclIntfAnsiStrHashEntry;
+    Entries: array of TJclIntfAnsiStrHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -185,7 +185,7 @@ type
     function KeysEqual(const A, B: IInterface): Boolean;
     function ValuesEqual(const A, B: AnsiString): Boolean;
   private
-    FBuckets: array of TJclIntfAnsiStrBucket;
+    FBuckets: array of TJclIntfAnsiStrHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -214,15 +214,15 @@ type
     function Values: IJclAnsiStrCollection;
   end;
 
-  TJclAnsiStrAnsiStrHashEntry = record
+  TJclAnsiStrAnsiStrHashMapEntry = record
     Key: AnsiString;
     Value: AnsiString;
   end;
 
-  TJclAnsiStrAnsiStrBucket = class
+  TJclAnsiStrAnsiStrHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclAnsiStrAnsiStrHashEntry;
+    Entries: array of TJclAnsiStrAnsiStrHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -236,7 +236,7 @@ type
     function KeysEqual(const A, B: AnsiString): Boolean;
     function ValuesEqual(const A, B: AnsiString): Boolean;
   private
-    FBuckets: array of TJclAnsiStrAnsiStrBucket;
+    FBuckets: array of TJclAnsiStrAnsiStrHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -265,15 +265,15 @@ type
     function Values: IJclAnsiStrCollection;
   end;
 
-  TJclWideStrIntfHashEntry = record
+  TJclWideStrIntfHashMapEntry = record
     Key: WideString;
     Value: IInterface;
   end;
 
-  TJclWideStrIntfBucket = class
+  TJclWideStrIntfHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclWideStrIntfHashEntry;
+    Entries: array of TJclWideStrIntfHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -287,7 +287,7 @@ type
     function KeysEqual(const A, B: WideString): Boolean;
     function ValuesEqual(const A, B: IInterface): Boolean;
   private
-    FBuckets: array of TJclWideStrIntfBucket;
+    FBuckets: array of TJclWideStrIntfHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -316,15 +316,15 @@ type
     function Values: IJclIntfCollection;
   end;
 
-  TJclIntfWideStrHashEntry = record
+  TJclIntfWideStrHashMapEntry = record
     Key: IInterface;
     Value: WideString;
   end;
 
-  TJclIntfWideStrBucket = class
+  TJclIntfWideStrHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclIntfWideStrHashEntry;
+    Entries: array of TJclIntfWideStrHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -339,7 +339,7 @@ type
     function KeysEqual(const A, B: IInterface): Boolean;
     function ValuesEqual(const A, B: WideString): Boolean;
   private
-    FBuckets: array of TJclIntfWideStrBucket;
+    FBuckets: array of TJclIntfWideStrHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -368,15 +368,15 @@ type
     function Values: IJclWideStrCollection;
   end;
 
-  TJclWideStrWideStrHashEntry = record
+  TJclWideStrWideStrHashMapEntry = record
     Key: WideString;
     Value: WideString;
   end;
 
-  TJclWideStrWideStrBucket = class
+  TJclWideStrWideStrHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclWideStrWideStrHashEntry;
+    Entries: array of TJclWideStrWideStrHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -390,7 +390,7 @@ type
     function KeysEqual(const A, B: WideString): Boolean;
     function ValuesEqual(const A, B: WideString): Boolean;
   private
-    FBuckets: array of TJclWideStrWideStrBucket;
+    FBuckets: array of TJclWideStrWideStrHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -420,15 +420,15 @@ type
   end;
 
   {$IFDEF SUPPORTS_UNICODE_STRING}
-  TJclUnicodeStrIntfHashEntry = record
+  TJclUnicodeStrIntfHashMapEntry = record
     Key: UnicodeString;
     Value: IInterface;
   end;
 
-  TJclUnicodeStrIntfBucket = class
+  TJclUnicodeStrIntfHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclUnicodeStrIntfHashEntry;
+    Entries: array of TJclUnicodeStrIntfHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
   {$ENDIF SUPPORTS_UNICODE_STRING}
@@ -444,7 +444,7 @@ type
     function KeysEqual(const A, B: UnicodeString): Boolean;
     function ValuesEqual(const A, B: IInterface): Boolean;
   private
-    FBuckets: array of TJclUnicodeStrIntfBucket;
+    FBuckets: array of TJclUnicodeStrIntfHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -475,15 +475,15 @@ type
   {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF SUPPORTS_UNICODE_STRING}
-  TJclIntfUnicodeStrHashEntry = record
+  TJclIntfUnicodeStrHashMapEntry = record
     Key: IInterface;
     Value: UnicodeString;
   end;
 
-  TJclIntfUnicodeStrBucket = class
+  TJclIntfUnicodeStrHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclIntfUnicodeStrHashEntry;
+    Entries: array of TJclIntfUnicodeStrHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
   {$ENDIF SUPPORTS_UNICODE_STRING}
@@ -500,7 +500,7 @@ type
     function KeysEqual(const A, B: IInterface): Boolean;
     function ValuesEqual(const A, B: UnicodeString): Boolean;
   private
-    FBuckets: array of TJclIntfUnicodeStrBucket;
+    FBuckets: array of TJclIntfUnicodeStrHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -531,15 +531,15 @@ type
   {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF SUPPORTS_UNICODE_STRING}
-  TJclUnicodeStrUnicodeStrHashEntry = record
+  TJclUnicodeStrUnicodeStrHashMapEntry = record
     Key: UnicodeString;
     Value: UnicodeString;
   end;
 
-  TJclUnicodeStrUnicodeStrBucket = class
+  TJclUnicodeStrUnicodeStrHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclUnicodeStrUnicodeStrHashEntry;
+    Entries: array of TJclUnicodeStrUnicodeStrHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
   {$ENDIF SUPPORTS_UNICODE_STRING}
@@ -555,7 +555,7 @@ type
     function KeysEqual(const A, B: UnicodeString): Boolean;
     function ValuesEqual(const A, B: UnicodeString): Boolean;
   private
-    FBuckets: array of TJclUnicodeStrUnicodeStrBucket;
+    FBuckets: array of TJclUnicodeStrUnicodeStrHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -586,16 +586,16 @@ type
   {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
-  TJclStrIntfHashEntry = TJclAnsiStrIntfHashEntry;
-  TJclStrIntfBucket = TJclAnsiStrIntfBucket;
+  TJclStrIntfHashMapEntry = TJclAnsiStrIntfHashMapEntry;
+  TJclStrIntfHashMapBucket = TJclAnsiStrIntfHashMapBucket;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
-  TJclStrIntfHashEntry = TJclWideStrIntfHashEntry;
-  TJclStrIntfBucket = TJclWideStrIntfBucket;
+  TJclStrIntfHashMapEntry = TJclWideStrIntfHashMapEntry;
+  TJclStrIntfHashMapBucket = TJclWideStrIntfHashMapBucket;
   {$ENDIF CONTAINER_WIDESTR}
   {$IFDEF CONTAINER_UNICODESTR}
-  TJclStrIntfHashEntry = TJclUnicodeStrIntfHashEntry;
-  TJclStrIntfBucket = TJclUnicodeStrIntfBucket;
+  TJclStrIntfHashMapEntry = TJclUnicodeStrIntfHashMapEntry;
+  TJclStrIntfHashMapBucket = TJclUnicodeStrIntfHashMapBucket;
   {$ENDIF CONTAINER_UNICODESTR}
 
   {$IFDEF CONTAINER_ANSISTR}
@@ -609,16 +609,16 @@ type
   {$ENDIF CONTAINER_UNICODESTR}
 
   {$IFDEF CONTAINER_ANSISTR}
-  TJclIntfStrHashEntry = TJclIntfAnsiStrHashEntry;
-  TJclIntfStrBucket = TJclIntfAnsiStrBucket;
+  TJclIntfStrHashMapEntry = TJclIntfAnsiStrHashMapEntry;
+  TJclIntfStrHashMapBucket = TJclIntfAnsiStrHashMapBucket;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
-  TJclIntfStrHashEntry = TJclIntfWideStrHashEntry;
-  TJclIntfStrBucket = TJclIntfWideStrBucket;
+  TJclIntfStrHashMapEntry = TJclIntfWideStrHashMapEntry;
+  TJclIntfStrHashMapBucket = TJclIntfWideStrHashMapBucket;
   {$ENDIF CONTAINER_WIDESTR}
   {$IFDEF CONTAINER_UNICODESTR}
-  TJclIntfStrHashEntry = TJclIntfUnicodeStrHashEntry;
-  TJclIntfStrBucket = TJclIntfUnicodeStrBucket;
+  TJclIntfStrHashMapEntry = TJclIntfUnicodeStrHashMapEntry;
+  TJclIntfStrHashMapBucket = TJclIntfUnicodeStrHashMapBucket;
   {$ENDIF CONTAINER_UNICODESTR}
 
   {$IFDEF CONTAINER_ANSISTR}
@@ -632,16 +632,16 @@ type
   {$ENDIF CONTAINER_UNICODESTR}
 
   {$IFDEF CONTAINER_ANSISTR}
-  TJclStrStrHashEntry = TJclAnsiStrAnsiStrHashEntry;
-  TJclStrStrBucket = TJclAnsiStrAnsiStrBucket;
+  TJclStrStrHashMapEntry = TJclAnsiStrAnsiStrHashMapEntry;
+  TJclStrStrHashMapBucket = TJclAnsiStrAnsiStrHashMapBucket;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
-  TJclStrStrHashEntry = TJclWideStrWideStrHashEntry;
-  TJclStrStrBucket = TJclWideStrWideStrBucket;
+  TJclStrStrHashMapEntry = TJclWideStrWideStrHashMapEntry;
+  TJclStrStrHashMapBucket = TJclWideStrWideStrHashMapBucket;
   {$ENDIF CONTAINER_WIDESTR}
   {$IFDEF CONTAINER_UNICODESTR}
-  TJclStrStrHashEntry = TJclUnicodeStrUnicodeStrHashEntry;
-  TJclStrStrBucket = TJclUnicodeStrUnicodeStrBucket;
+  TJclStrStrHashMapEntry = TJclUnicodeStrUnicodeStrHashMapEntry;
+  TJclStrStrHashMapBucket = TJclUnicodeStrUnicodeStrHashMapBucket;
   {$ENDIF CONTAINER_UNICODESTR}
 
   {$IFDEF CONTAINER_ANSISTR}
@@ -654,15 +654,15 @@ type
   TJclStrStrHashMap = TJclUnicodeStrUnicodeStrHashMap;
   {$ENDIF CONTAINER_UNICODESTR}
 
-  TJclSingleIntfHashEntry = record
+  TJclSingleIntfHashMapEntry = record
     Key: Single;
     Value: IInterface;
   end;
 
-  TJclSingleIntfBucket = class
+  TJclSingleIntfHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclSingleIntfHashEntry;
+    Entries: array of TJclSingleIntfHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -676,7 +676,7 @@ type
     function KeysEqual(const A, B: Single): Boolean;
     function ValuesEqual(const A, B: IInterface): Boolean;
   private
-    FBuckets: array of TJclSingleIntfBucket;
+    FBuckets: array of TJclSingleIntfHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -705,15 +705,15 @@ type
     function Values: IJclIntfCollection;
   end;
 
-  TJclIntfSingleHashEntry = record
+  TJclIntfSingleHashMapEntry = record
     Key: IInterface;
     Value: Single;
   end;
 
-  TJclIntfSingleBucket = class
+  TJclIntfSingleHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclIntfSingleHashEntry;
+    Entries: array of TJclIntfSingleHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -728,7 +728,7 @@ type
     function KeysEqual(const A, B: IInterface): Boolean;
     function ValuesEqual(const A, B: Single): Boolean;
   private
-    FBuckets: array of TJclIntfSingleBucket;
+    FBuckets: array of TJclIntfSingleHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -757,15 +757,15 @@ type
     function Values: IJclSingleCollection;
   end;
 
-  TJclSingleSingleHashEntry = record
+  TJclSingleSingleHashMapEntry = record
     Key: Single;
     Value: Single;
   end;
 
-  TJclSingleSingleBucket = class
+  TJclSingleSingleHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclSingleSingleHashEntry;
+    Entries: array of TJclSingleSingleHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -779,7 +779,7 @@ type
     function KeysEqual(const A, B: Single): Boolean;
     function ValuesEqual(const A, B: Single): Boolean;
   private
-    FBuckets: array of TJclSingleSingleBucket;
+    FBuckets: array of TJclSingleSingleHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -808,15 +808,15 @@ type
     function Values: IJclSingleCollection;
   end;
 
-  TJclDoubleIntfHashEntry = record
+  TJclDoubleIntfHashMapEntry = record
     Key: Double;
     Value: IInterface;
   end;
 
-  TJclDoubleIntfBucket = class
+  TJclDoubleIntfHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclDoubleIntfHashEntry;
+    Entries: array of TJclDoubleIntfHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -830,7 +830,7 @@ type
     function KeysEqual(const A, B: Double): Boolean;
     function ValuesEqual(const A, B: IInterface): Boolean;
   private
-    FBuckets: array of TJclDoubleIntfBucket;
+    FBuckets: array of TJclDoubleIntfHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -859,15 +859,15 @@ type
     function Values: IJclIntfCollection;
   end;
 
-  TJclIntfDoubleHashEntry = record
+  TJclIntfDoubleHashMapEntry = record
     Key: IInterface;
     Value: Double;
   end;
 
-  TJclIntfDoubleBucket = class
+  TJclIntfDoubleHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclIntfDoubleHashEntry;
+    Entries: array of TJclIntfDoubleHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -882,7 +882,7 @@ type
     function KeysEqual(const A, B: IInterface): Boolean;
     function ValuesEqual(const A, B: Double): Boolean;
   private
-    FBuckets: array of TJclIntfDoubleBucket;
+    FBuckets: array of TJclIntfDoubleHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -911,15 +911,15 @@ type
     function Values: IJclDoubleCollection;
   end;
 
-  TJclDoubleDoubleHashEntry = record
+  TJclDoubleDoubleHashMapEntry = record
     Key: Double;
     Value: Double;
   end;
 
-  TJclDoubleDoubleBucket = class
+  TJclDoubleDoubleHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclDoubleDoubleHashEntry;
+    Entries: array of TJclDoubleDoubleHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -933,7 +933,7 @@ type
     function KeysEqual(const A, B: Double): Boolean;
     function ValuesEqual(const A, B: Double): Boolean;
   private
-    FBuckets: array of TJclDoubleDoubleBucket;
+    FBuckets: array of TJclDoubleDoubleHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -962,15 +962,15 @@ type
     function Values: IJclDoubleCollection;
   end;
 
-  TJclExtendedIntfHashEntry = record
+  TJclExtendedIntfHashMapEntry = record
     Key: Extended;
     Value: IInterface;
   end;
 
-  TJclExtendedIntfBucket = class
+  TJclExtendedIntfHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclExtendedIntfHashEntry;
+    Entries: array of TJclExtendedIntfHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -984,7 +984,7 @@ type
     function KeysEqual(const A, B: Extended): Boolean;
     function ValuesEqual(const A, B: IInterface): Boolean;
   private
-    FBuckets: array of TJclExtendedIntfBucket;
+    FBuckets: array of TJclExtendedIntfHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1013,15 +1013,15 @@ type
     function Values: IJclIntfCollection;
   end;
 
-  TJclIntfExtendedHashEntry = record
+  TJclIntfExtendedHashMapEntry = record
     Key: IInterface;
     Value: Extended;
   end;
 
-  TJclIntfExtendedBucket = class
+  TJclIntfExtendedHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclIntfExtendedHashEntry;
+    Entries: array of TJclIntfExtendedHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -1036,7 +1036,7 @@ type
     function KeysEqual(const A, B: IInterface): Boolean;
     function ValuesEqual(const A, B: Extended): Boolean;
   private
-    FBuckets: array of TJclIntfExtendedBucket;
+    FBuckets: array of TJclIntfExtendedHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1065,15 +1065,15 @@ type
     function Values: IJclExtendedCollection;
   end;
 
-  TJclExtendedExtendedHashEntry = record
+  TJclExtendedExtendedHashMapEntry = record
     Key: Extended;
     Value: Extended;
   end;
 
-  TJclExtendedExtendedBucket = class
+  TJclExtendedExtendedHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclExtendedExtendedHashEntry;
+    Entries: array of TJclExtendedExtendedHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -1087,7 +1087,7 @@ type
     function KeysEqual(const A, B: Extended): Boolean;
     function ValuesEqual(const A, B: Extended): Boolean;
   private
-    FBuckets: array of TJclExtendedExtendedBucket;
+    FBuckets: array of TJclExtendedExtendedHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1117,16 +1117,16 @@ type
   end;
 
   {$IFDEF MATH_SINGLE_PRECISION}
-  TJclFloatIntfHashEntry = TJclSingleIntfHashEntry;
-  TJclFloatIntfBucket = TJclSingleIntfBucket;
+  TJclFloatIntfHashMapEntry = TJclSingleIntfHashMapEntry;
+  TJclFloatIntfHashMapBucket = TJclSingleIntfHashMapBucket;
   {$ENDIF MATH_SINGLE_PRECISION}
   {$IFDEF MATH_DOUBLE_PRECISION}
-  TJclFloatIntfHashEntry = TJclDoubleIntfHashEntry;
-  TJclFloatIntfBucket = TJclDoubleIntfBucket;
+  TJclFloatIntfHashMapEntry = TJclDoubleIntfHashMapEntry;
+  TJclFloatIntfHashMapBucket = TJclDoubleIntfHashMapBucket;
   {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_EXTENDED_PRECISION}
-  TJclFloatIntfHashEntry = TJclExtendedIntfHashEntry;
-  TJclFloatIntfBucket = TJclExtendedIntfBucket;
+  TJclFloatIntfHashMapEntry = TJclExtendedIntfHashMapEntry;
+  TJclFloatIntfHashMapBucket = TJclExtendedIntfHashMapBucket;
   {$ENDIF MATH_EXTENDED_PRECISION}
 
   {$IFDEF MATH_SINGLE_PRECISION}
@@ -1140,16 +1140,16 @@ type
   {$ENDIF MATH_EXTENDED_PRECISION}
 
   {$IFDEF MATH_SINGLE_PRECISION}
-  TJclIntfFloatHashEntry = TJclIntfSingleHashEntry;
-  TJclIntfFloatBucket = TJclIntfSingleBucket;
+  TJclIntfFloatHashMapEntry = TJclIntfSingleHashMapEntry;
+  TJclIntfFloatHashMapBucket = TJclIntfSingleHashMapBucket;
   {$ENDIF MATH_SINGLE_PRECISION}
   {$IFDEF MATH_DOUBLE_PRECISION}
-  TJclIntfFloatHashEntry = TJclIntfDoubleHashEntry;
-  TJclIntfFloatBucket = TJclIntfDoubleBucket;
+  TJclIntfFloatHashMapEntry = TJclIntfDoubleHashMapEntry;
+  TJclIntfFloatHashMapBucket = TJclIntfDoubleHashMapBucket;
   {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_EXTENDED_PRECISION}
-  TJclIntfFloatHashEntry = TJclIntfExtendedHashEntry;
-  TJclIntfFloatBucket = TJclIntfExtendedBucket;
+  TJclIntfFloatHashMapEntry = TJclIntfExtendedHashMapEntry;
+  TJclIntfFloatHashMapBucket = TJclIntfExtendedHashMapBucket;
   {$ENDIF MATH_EXTENDED_PRECISION}
 
   {$IFDEF MATH_SINGLE_PRECISION}
@@ -1163,16 +1163,16 @@ type
   {$ENDIF MATH_EXTENDED_PRECISION}
 
   {$IFDEF MATH_SINGLE_PRECISION}
-  TJclFloatFloatHashEntry = TJclSingleSingleHashEntry;
-  TJclFloatFloatBucket = TJclSingleSingleBucket;
+  TJclFloatFloatHashMapEntry = TJclSingleSingleHashMapEntry;
+  TJclFloatFloatHashMapBucket = TJclSingleSingleHashMapBucket;
   {$ENDIF MATH_SINGLE_PRECISION}
   {$IFDEF MATH_DOUBLE_PRECISION}
-  TJclFloatFloatHashEntry = TJclDoubleDoubleHashEntry;
-  TJclFloatFloatBucket = TJclDoubleDoubleBucket;
+  TJclFloatFloatHashMapEntry = TJclDoubleDoubleHashMapEntry;
+  TJclFloatFloatHashMapBucket = TJclDoubleDoubleHashMapBucket;
   {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_EXTENDED_PRECISION}
-  TJclFloatFloatHashEntry = TJclExtendedExtendedHashEntry;
-  TJclFloatFloatBucket = TJclExtendedExtendedBucket;
+  TJclFloatFloatHashMapEntry = TJclExtendedExtendedHashMapEntry;
+  TJclFloatFloatHashMapBucket = TJclExtendedExtendedHashMapBucket;
   {$ENDIF MATH_EXTENDED_PRECISION}
 
   {$IFDEF MATH_SINGLE_PRECISION}
@@ -1185,15 +1185,15 @@ type
   TJclFloatFloatHashMap = TJclExtendedExtendedHashMap;
   {$ENDIF MATH_EXTENDED_PRECISION}
 
-  TJclIntegerIntfHashEntry = record
+  TJclIntegerIntfHashMapEntry = record
     Key: Integer;
     Value: IInterface;
   end;
 
-  TJclIntegerIntfBucket = class
+  TJclIntegerIntfHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclIntegerIntfHashEntry;
+    Entries: array of TJclIntegerIntfHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -1207,7 +1207,7 @@ type
     function KeysEqual(A, B: Integer): Boolean;
     function ValuesEqual(const A, B: IInterface): Boolean;
   private
-    FBuckets: array of TJclIntegerIntfBucket;
+    FBuckets: array of TJclIntegerIntfHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1236,15 +1236,15 @@ type
     function Values: IJclIntfCollection;
   end;
 
-  TJclIntfIntegerHashEntry = record
+  TJclIntfIntegerHashMapEntry = record
     Key: IInterface;
     Value: Integer;
   end;
 
-  TJclIntfIntegerBucket = class
+  TJclIntfIntegerHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclIntfIntegerHashEntry;
+    Entries: array of TJclIntfIntegerHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -1259,7 +1259,7 @@ type
     function KeysEqual(const A, B: IInterface): Boolean;
     function ValuesEqual(A, B: Integer): Boolean;
   private
-    FBuckets: array of TJclIntfIntegerBucket;
+    FBuckets: array of TJclIntfIntegerHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1288,15 +1288,15 @@ type
     function Values: IJclIntegerCollection;
   end;
 
-  TJclIntegerIntegerHashEntry = record
+  TJclIntegerIntegerHashMapEntry = record
     Key: Integer;
     Value: Integer;
   end;
 
-  TJclIntegerIntegerBucket = class
+  TJclIntegerIntegerHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclIntegerIntegerHashEntry;
+    Entries: array of TJclIntegerIntegerHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -1310,7 +1310,7 @@ type
     function KeysEqual(A, B: Integer): Boolean;
     function ValuesEqual(A, B: Integer): Boolean;
   private
-    FBuckets: array of TJclIntegerIntegerBucket;
+    FBuckets: array of TJclIntegerIntegerHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1339,15 +1339,15 @@ type
     function Values: IJclIntegerCollection;
   end;
 
-  TJclCardinalIntfHashEntry = record
+  TJclCardinalIntfHashMapEntry = record
     Key: Cardinal;
     Value: IInterface;
   end;
 
-  TJclCardinalIntfBucket = class
+  TJclCardinalIntfHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclCardinalIntfHashEntry;
+    Entries: array of TJclCardinalIntfHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -1361,7 +1361,7 @@ type
     function KeysEqual(A, B: Cardinal): Boolean;
     function ValuesEqual(const A, B: IInterface): Boolean;
   private
-    FBuckets: array of TJclCardinalIntfBucket;
+    FBuckets: array of TJclCardinalIntfHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1390,15 +1390,15 @@ type
     function Values: IJclIntfCollection;
   end;
 
-  TJclIntfCardinalHashEntry = record
+  TJclIntfCardinalHashMapEntry = record
     Key: IInterface;
     Value: Cardinal;
   end;
 
-  TJclIntfCardinalBucket = class
+  TJclIntfCardinalHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclIntfCardinalHashEntry;
+    Entries: array of TJclIntfCardinalHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -1413,7 +1413,7 @@ type
     function KeysEqual(const A, B: IInterface): Boolean;
     function ValuesEqual(A, B: Cardinal): Boolean;
   private
-    FBuckets: array of TJclIntfCardinalBucket;
+    FBuckets: array of TJclIntfCardinalHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1442,15 +1442,15 @@ type
     function Values: IJclCardinalCollection;
   end;
 
-  TJclCardinalCardinalHashEntry = record
+  TJclCardinalCardinalHashMapEntry = record
     Key: Cardinal;
     Value: Cardinal;
   end;
 
-  TJclCardinalCardinalBucket = class
+  TJclCardinalCardinalHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclCardinalCardinalHashEntry;
+    Entries: array of TJclCardinalCardinalHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -1464,7 +1464,7 @@ type
     function KeysEqual(A, B: Cardinal): Boolean;
     function ValuesEqual(A, B: Cardinal): Boolean;
   private
-    FBuckets: array of TJclCardinalCardinalBucket;
+    FBuckets: array of TJclCardinalCardinalHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1493,15 +1493,15 @@ type
     function Values: IJclCardinalCollection;
   end;
 
-  TJclInt64IntfHashEntry = record
+  TJclInt64IntfHashMapEntry = record
     Key: Int64;
     Value: IInterface;
   end;
 
-  TJclInt64IntfBucket = class
+  TJclInt64IntfHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclInt64IntfHashEntry;
+    Entries: array of TJclInt64IntfHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -1515,7 +1515,7 @@ type
     function KeysEqual(const A, B: Int64): Boolean;
     function ValuesEqual(const A, B: IInterface): Boolean;
   private
-    FBuckets: array of TJclInt64IntfBucket;
+    FBuckets: array of TJclInt64IntfHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1544,15 +1544,15 @@ type
     function Values: IJclIntfCollection;
   end;
 
-  TJclIntfInt64HashEntry = record
+  TJclIntfInt64HashMapEntry = record
     Key: IInterface;
     Value: Int64;
   end;
 
-  TJclIntfInt64Bucket = class
+  TJclIntfInt64HashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclIntfInt64HashEntry;
+    Entries: array of TJclIntfInt64HashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -1567,7 +1567,7 @@ type
     function KeysEqual(const A, B: IInterface): Boolean;
     function ValuesEqual(const A, B: Int64): Boolean;
   private
-    FBuckets: array of TJclIntfInt64Bucket;
+    FBuckets: array of TJclIntfInt64HashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1596,15 +1596,15 @@ type
     function Values: IJclInt64Collection;
   end;
 
-  TJclInt64Int64HashEntry = record
+  TJclInt64Int64HashMapEntry = record
     Key: Int64;
     Value: Int64;
   end;
 
-  TJclInt64Int64Bucket = class
+  TJclInt64Int64HashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclInt64Int64HashEntry;
+    Entries: array of TJclInt64Int64HashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -1618,7 +1618,7 @@ type
     function KeysEqual(const A, B: Int64): Boolean;
     function ValuesEqual(const A, B: Int64): Boolean;
   private
-    FBuckets: array of TJclInt64Int64Bucket;
+    FBuckets: array of TJclInt64Int64HashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1647,15 +1647,15 @@ type
     function Values: IJclInt64Collection;
   end;
 
-  TJclPtrIntfHashEntry = record
+  TJclPtrIntfHashMapEntry = record
     Key: Pointer;
     Value: IInterface;
   end;
 
-  TJclPtrIntfBucket = class
+  TJclPtrIntfHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclPtrIntfHashEntry;
+    Entries: array of TJclPtrIntfHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -1669,7 +1669,7 @@ type
     function KeysEqual(A, B: Pointer): Boolean;
     function ValuesEqual(const A, B: IInterface): Boolean;
   private
-    FBuckets: array of TJclPtrIntfBucket;
+    FBuckets: array of TJclPtrIntfHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1698,15 +1698,15 @@ type
     function Values: IJclIntfCollection;
   end;
 
-  TJclIntfPtrHashEntry = record
+  TJclIntfPtrHashMapEntry = record
     Key: IInterface;
     Value: Pointer;
   end;
 
-  TJclIntfPtrBucket = class
+  TJclIntfPtrHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclIntfPtrHashEntry;
+    Entries: array of TJclIntfPtrHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -1721,7 +1721,7 @@ type
     function KeysEqual(const A, B: IInterface): Boolean;
     function ValuesEqual(A, B: Pointer): Boolean;
   private
-    FBuckets: array of TJclIntfPtrBucket;
+    FBuckets: array of TJclIntfPtrHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1750,15 +1750,15 @@ type
     function Values: IJclPtrCollection;
   end;
 
-  TJclPtrPtrHashEntry = record
+  TJclPtrPtrHashMapEntry = record
     Key: Pointer;
     Value: Pointer;
   end;
 
-  TJclPtrPtrBucket = class
+  TJclPtrPtrHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclPtrPtrHashEntry;
+    Entries: array of TJclPtrPtrHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -1772,7 +1772,7 @@ type
     function KeysEqual(A, B: Pointer): Boolean;
     function ValuesEqual(A, B: Pointer): Boolean;
   private
-    FBuckets: array of TJclPtrPtrBucket;
+    FBuckets: array of TJclPtrPtrHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1801,15 +1801,15 @@ type
     function Values: IJclPtrCollection;
   end;
 
-  TJclIntfHashEntry = record
+  TJclIntfHashMapEntry = record
     Key: IInterface;
     Value: TObject;
   end;
 
-  TJclIntfBucket = class
+  TJclIntfHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclIntfHashEntry;
+    Entries: array of TJclIntfHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -1829,7 +1829,7 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FBuckets: array of TJclIntfBucket;
+    FBuckets: array of TJclIntfHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1858,15 +1858,15 @@ type
     function Values: IJclCollection;
   end;
 
-  TJclAnsiStrHashEntry = record
+  TJclAnsiStrHashMapEntry = record
     Key: AnsiString;
     Value: TObject;
   end;
 
-  TJclAnsiStrBucket = class
+  TJclAnsiStrHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclAnsiStrHashEntry;
+    Entries: array of TJclAnsiStrHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -1886,7 +1886,7 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FBuckets: array of TJclAnsiStrBucket;
+    FBuckets: array of TJclAnsiStrHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1915,15 +1915,15 @@ type
     function Values: IJclCollection;
   end;
 
-  TJclWideStrHashEntry = record
+  TJclWideStrHashMapEntry = record
     Key: WideString;
     Value: TObject;
   end;
 
-  TJclWideStrBucket = class
+  TJclWideStrHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclWideStrHashEntry;
+    Entries: array of TJclWideStrHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -1943,7 +1943,7 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FBuckets: array of TJclWideStrBucket;
+    FBuckets: array of TJclWideStrHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1973,15 +1973,15 @@ type
   end;
 
   {$IFDEF SUPPORTS_UNICODE_STRING}
-  TJclUnicodeStrHashEntry = record
+  TJclUnicodeStrHashMapEntry = record
     Key: UnicodeString;
     Value: TObject;
   end;
 
-  TJclUnicodeStrBucket = class
+  TJclUnicodeStrHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclUnicodeStrHashEntry;
+    Entries: array of TJclUnicodeStrHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
   {$ENDIF SUPPORTS_UNICODE_STRING}
@@ -2003,7 +2003,7 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FBuckets: array of TJclUnicodeStrBucket;
+    FBuckets: array of TJclUnicodeStrHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -2034,16 +2034,16 @@ type
   {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
-  TJclStrHashEntry = TJclAnsiStrHashEntry;
-  TJclStrBucket = TJclAnsiStrBucket;
+  TJclStrHashMapEntry = TJclAnsiStrHashMapEntry;
+  TJclStrHashMapBucket = TJclAnsiStrHashMapBucket;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
-  TJclStrHashEntry = TJclWideStrHashEntry;
-  TJclStrBucket = TJclWideStrBucket;
+  TJclStrHashMapEntry = TJclWideStrHashMapEntry;
+  TJclStrHashMapBucket = TJclWideStrHashMapBucket;
   {$ENDIF CONTAINER_WIDESTR}
   {$IFDEF CONTAINER_UNICODESTR}
-  TJclStrHashEntry = TJclUnicodeStrHashEntry;
-  TJclStrBucket = TJclUnicodeStrBucket;
+  TJclStrHashMapEntry = TJclUnicodeStrHashMapEntry;
+  TJclStrHashMapBucket = TJclUnicodeStrHashMapBucket;
   {$ENDIF CONTAINER_UNICODESTR}
 
   {$IFDEF CONTAINER_ANSISTR}
@@ -2056,15 +2056,15 @@ type
   TJclStrHashMap = TJclUnicodeStrHashMap;
   {$ENDIF CONTAINER_UNICODESTR}
 
-  TJclSingleHashEntry = record
+  TJclSingleHashMapEntry = record
     Key: Single;
     Value: TObject;
   end;
 
-  TJclSingleBucket = class
+  TJclSingleHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclSingleHashEntry;
+    Entries: array of TJclSingleHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -2084,7 +2084,7 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FBuckets: array of TJclSingleBucket;
+    FBuckets: array of TJclSingleHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -2113,15 +2113,15 @@ type
     function Values: IJclCollection;
   end;
 
-  TJclDoubleHashEntry = record
+  TJclDoubleHashMapEntry = record
     Key: Double;
     Value: TObject;
   end;
 
-  TJclDoubleBucket = class
+  TJclDoubleHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclDoubleHashEntry;
+    Entries: array of TJclDoubleHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -2141,7 +2141,7 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FBuckets: array of TJclDoubleBucket;
+    FBuckets: array of TJclDoubleHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -2170,15 +2170,15 @@ type
     function Values: IJclCollection;
   end;
 
-  TJclExtendedHashEntry = record
+  TJclExtendedHashMapEntry = record
     Key: Extended;
     Value: TObject;
   end;
 
-  TJclExtendedBucket = class
+  TJclExtendedHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclExtendedHashEntry;
+    Entries: array of TJclExtendedHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -2198,7 +2198,7 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FBuckets: array of TJclExtendedBucket;
+    FBuckets: array of TJclExtendedHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -2228,16 +2228,16 @@ type
   end;
 
   {$IFDEF MATH_SINGLE_PRECISION}
-  TJclFloatHashEntry = TJclSingleHashEntry;
-  TJclFloatBucket = TJclSingleBucket;
+  TJclFloatHashMapEntry = TJclSingleHashMapEntry;
+  TJclFloatHashMapBucket = TJclSingleHashMapBucket;
   {$ENDIF MATH_SINGLE_PRECISION}
   {$IFDEF MATH_DOUBLE_PRECISION}
-  TJclFloatHashEntry = TJclDoubleHashEntry;
-  TJclFloatBucket = TJclDoubleBucket;
+  TJclFloatHashMapEntry = TJclDoubleHashMapEntry;
+  TJclFloatHashMapBucket = TJclDoubleHashMapBucket;
   {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_EXTENDED_PRECISION}
-  TJclFloatHashEntry = TJclExtendedHashEntry;
-  TJclFloatBucket = TJclExtendedBucket;
+  TJclFloatHashMapEntry = TJclExtendedHashMapEntry;
+  TJclFloatHashMapBucket = TJclExtendedHashMapBucket;
   {$ENDIF MATH_EXTENDED_PRECISION}
 
   {$IFDEF MATH_SINGLE_PRECISION}
@@ -2250,15 +2250,15 @@ type
   TJclFloatHashMap = TJclExtendedHashMap;
   {$ENDIF MATH_EXTENDED_PRECISION}
 
-  TJclIntegerHashEntry = record
+  TJclIntegerHashMapEntry = record
     Key: Integer;
     Value: TObject;
   end;
 
-  TJclIntegerBucket = class
+  TJclIntegerHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclIntegerHashEntry;
+    Entries: array of TJclIntegerHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -2278,7 +2278,7 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FBuckets: array of TJclIntegerBucket;
+    FBuckets: array of TJclIntegerHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -2307,15 +2307,15 @@ type
     function Values: IJclCollection;
   end;
 
-  TJclCardinalHashEntry = record
+  TJclCardinalHashMapEntry = record
     Key: Cardinal;
     Value: TObject;
   end;
 
-  TJclCardinalBucket = class
+  TJclCardinalHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclCardinalHashEntry;
+    Entries: array of TJclCardinalHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -2335,7 +2335,7 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FBuckets: array of TJclCardinalBucket;
+    FBuckets: array of TJclCardinalHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -2364,15 +2364,15 @@ type
     function Values: IJclCollection;
   end;
 
-  TJclInt64HashEntry = record
+  TJclInt64HashMapEntry = record
     Key: Int64;
     Value: TObject;
   end;
 
-  TJclInt64Bucket = class
+  TJclInt64HashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclInt64HashEntry;
+    Entries: array of TJclInt64HashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -2392,7 +2392,7 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FBuckets: array of TJclInt64Bucket;
+    FBuckets: array of TJclInt64HashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -2421,15 +2421,15 @@ type
     function Values: IJclCollection;
   end;
 
-  TJclPtrHashEntry = record
+  TJclPtrHashMapEntry = record
     Key: Pointer;
     Value: TObject;
   end;
 
-  TJclPtrBucket = class
+  TJclPtrHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclPtrHashEntry;
+    Entries: array of TJclPtrHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -2449,7 +2449,7 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FBuckets: array of TJclPtrBucket;
+    FBuckets: array of TJclPtrHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -2478,15 +2478,15 @@ type
     function Values: IJclCollection;
   end;
 
-  TJclHashEntry = record
+  TJclHashMapEntry = record
     Key: TObject;
     Value: TObject;
   end;
 
-  TJclBucket = class
+  TJclHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclHashEntry;
+    Entries: array of TJclHashMapEntry;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
 
@@ -2511,7 +2511,7 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FBuckets: array of TJclBucket;
+    FBuckets: array of TJclHashMapBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -2728,9 +2728,9 @@ begin
   Result := Trunc(Range * (Frac(Abs(Key * A))));
 end;
 
-//=== { TJclIntfIntfBucket } ==========================================
+//=== { TJclIntfIntfHashMapBucket } ==========================================
 
-procedure TJclIntfIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfIntfHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -2773,7 +2773,7 @@ end;
 procedure TJclIntfIntfHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclIntfIntfBucket;
+  SelfBucket, NewBucket: TJclIntfIntfHashMapBucket;
   ADest: TJclIntfIntfHashMap;
   AMap: IJclIntfIntfMap;
 begin
@@ -2792,7 +2792,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclIntfIntfBucket.Create;
+          NewBucket := TJclIntfIntfHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -2828,7 +2828,7 @@ end;
 procedure TJclIntfIntfHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclIntfIntfBucket;
+  Bucket: TJclIntfIntfHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -2862,7 +2862,7 @@ end;
 function TJclIntfIntfHashMap.ContainsKey(const Key: IInterface): Boolean;
 var
   I: Integer;
-  Bucket: TJclIntfIntfBucket;
+  Bucket: TJclIntfIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -2889,7 +2889,7 @@ end;
 function TJclIntfIntfHashMap.ContainsValue(const Value: IInterface): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclIntfIntfBucket;
+  Bucket: TJclIntfIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -2918,7 +2918,7 @@ end;
 
 function TJclIntfIntfHashMap.Extract(const Key: IInterface): IInterface;
 var
-  Bucket: TJclIntfIntfBucket;
+  Bucket: TJclIntfIntfHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -2960,7 +2960,7 @@ end;
 function TJclIntfIntfHashMap.GetValue(const Key: IInterface): IInterface;
 var
   I: Integer;
-  Bucket: TJclIntfIntfBucket;
+  Bucket: TJclIntfIntfHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -2997,7 +2997,7 @@ end;
 function TJclIntfIntfHashMap.KeyOfValue(const Value: IInterface): IInterface;
 var
   I, J: Integer;
-  Bucket: TJclIntfIntfBucket;
+  Bucket: TJclIntfIntfHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -3032,7 +3032,7 @@ end;
 function TJclIntfIntfHashMap.KeySet: IJclIntfSet;
 var
   I, J: Integer;
-  Bucket: TJclIntfIntfBucket;
+  Bucket: TJclIntfIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -3058,7 +3058,7 @@ end;
 function TJclIntfIntfHashMap.MapEquals(const AMap: IJclIntfIntfMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclIntfIntfBucket;
+  Bucket: TJclIntfIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -3095,7 +3095,7 @@ end;
 procedure TJclIntfIntfHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclIntfIntfBucket;
+  Bucket: TJclIntfIntfHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -3154,7 +3154,7 @@ end;
 procedure TJclIntfIntfHashMap.PutValue(const Key: IInterface; const Value: IInterface);
 var
   Index: Integer;
-  Bucket: TJclIntfIntfBucket;
+  Bucket: TJclIntfIntfHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -3180,7 +3180,7 @@ begin
       end
       else
       begin
-        Bucket := TJclIntfIntfBucket.Create;
+        Bucket := TJclIntfIntfHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -3255,7 +3255,7 @@ end;
 function TJclIntfIntfHashMap.Values: IJclIntfCollection;
 var
   I, J: Integer;
-  Bucket: TJclIntfIntfBucket;
+  Bucket: TJclIntfIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -3306,9 +3306,9 @@ begin
   Result := ItemsEqual(A, B);
 end;
 
-//=== { TJclAnsiStrIntfBucket } ==========================================
+//=== { TJclAnsiStrIntfHashMapBucket } ==========================================
 
-procedure TJclAnsiStrIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclAnsiStrIntfHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -3351,7 +3351,7 @@ end;
 procedure TJclAnsiStrIntfHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclAnsiStrIntfBucket;
+  SelfBucket, NewBucket: TJclAnsiStrIntfHashMapBucket;
   ADest: TJclAnsiStrIntfHashMap;
   AMap: IJclAnsiStrIntfMap;
 begin
@@ -3370,7 +3370,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclAnsiStrIntfBucket.Create;
+          NewBucket := TJclAnsiStrIntfHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -3406,7 +3406,7 @@ end;
 procedure TJclAnsiStrIntfHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclAnsiStrIntfBucket;
+  Bucket: TJclAnsiStrIntfHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -3440,7 +3440,7 @@ end;
 function TJclAnsiStrIntfHashMap.ContainsKey(const Key: AnsiString): Boolean;
 var
   I: Integer;
-  Bucket: TJclAnsiStrIntfBucket;
+  Bucket: TJclAnsiStrIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -3467,7 +3467,7 @@ end;
 function TJclAnsiStrIntfHashMap.ContainsValue(const Value: IInterface): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclAnsiStrIntfBucket;
+  Bucket: TJclAnsiStrIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -3496,7 +3496,7 @@ end;
 
 function TJclAnsiStrIntfHashMap.Extract(const Key: AnsiString): IInterface;
 var
-  Bucket: TJclAnsiStrIntfBucket;
+  Bucket: TJclAnsiStrIntfHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -3538,7 +3538,7 @@ end;
 function TJclAnsiStrIntfHashMap.GetValue(const Key: AnsiString): IInterface;
 var
   I: Integer;
-  Bucket: TJclAnsiStrIntfBucket;
+  Bucket: TJclAnsiStrIntfHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -3575,7 +3575,7 @@ end;
 function TJclAnsiStrIntfHashMap.KeyOfValue(const Value: IInterface): AnsiString;
 var
   I, J: Integer;
-  Bucket: TJclAnsiStrIntfBucket;
+  Bucket: TJclAnsiStrIntfHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -3610,7 +3610,7 @@ end;
 function TJclAnsiStrIntfHashMap.KeySet: IJclAnsiStrSet;
 var
   I, J: Integer;
-  Bucket: TJclAnsiStrIntfBucket;
+  Bucket: TJclAnsiStrIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -3636,7 +3636,7 @@ end;
 function TJclAnsiStrIntfHashMap.MapEquals(const AMap: IJclAnsiStrIntfMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclAnsiStrIntfBucket;
+  Bucket: TJclAnsiStrIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -3673,7 +3673,7 @@ end;
 procedure TJclAnsiStrIntfHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclAnsiStrIntfBucket;
+  Bucket: TJclAnsiStrIntfHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -3732,7 +3732,7 @@ end;
 procedure TJclAnsiStrIntfHashMap.PutValue(const Key: AnsiString; const Value: IInterface);
 var
   Index: Integer;
-  Bucket: TJclAnsiStrIntfBucket;
+  Bucket: TJclAnsiStrIntfHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -3758,7 +3758,7 @@ begin
       end
       else
       begin
-        Bucket := TJclAnsiStrIntfBucket.Create;
+        Bucket := TJclAnsiStrIntfHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -3833,7 +3833,7 @@ end;
 function TJclAnsiStrIntfHashMap.Values: IJclIntfCollection;
 var
   I, J: Integer;
-  Bucket: TJclAnsiStrIntfBucket;
+  Bucket: TJclAnsiStrIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -3884,9 +3884,9 @@ begin
   Result := IntfSimpleEqualityCompare(A, B);
 end;
 
-//=== { TJclIntfAnsiStrBucket } ==========================================
+//=== { TJclIntfAnsiStrHashMapBucket } ==========================================
 
-procedure TJclIntfAnsiStrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfAnsiStrHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -3929,7 +3929,7 @@ end;
 procedure TJclIntfAnsiStrHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclIntfAnsiStrBucket;
+  SelfBucket, NewBucket: TJclIntfAnsiStrHashMapBucket;
   ADest: TJclIntfAnsiStrHashMap;
   AMap: IJclIntfAnsiStrMap;
 begin
@@ -3948,7 +3948,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclIntfAnsiStrBucket.Create;
+          NewBucket := TJclIntfAnsiStrHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -3984,7 +3984,7 @@ end;
 procedure TJclIntfAnsiStrHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclIntfAnsiStrBucket;
+  Bucket: TJclIntfAnsiStrHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -4018,7 +4018,7 @@ end;
 function TJclIntfAnsiStrHashMap.ContainsKey(const Key: IInterface): Boolean;
 var
   I: Integer;
-  Bucket: TJclIntfAnsiStrBucket;
+  Bucket: TJclIntfAnsiStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -4045,7 +4045,7 @@ end;
 function TJclIntfAnsiStrHashMap.ContainsValue(const Value: AnsiString): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclIntfAnsiStrBucket;
+  Bucket: TJclIntfAnsiStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -4074,7 +4074,7 @@ end;
 
 function TJclIntfAnsiStrHashMap.Extract(const Key: IInterface): AnsiString;
 var
-  Bucket: TJclIntfAnsiStrBucket;
+  Bucket: TJclIntfAnsiStrHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -4116,7 +4116,7 @@ end;
 function TJclIntfAnsiStrHashMap.GetValue(const Key: IInterface): AnsiString;
 var
   I: Integer;
-  Bucket: TJclIntfAnsiStrBucket;
+  Bucket: TJclIntfAnsiStrHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -4153,7 +4153,7 @@ end;
 function TJclIntfAnsiStrHashMap.KeyOfValue(const Value: AnsiString): IInterface;
 var
   I, J: Integer;
-  Bucket: TJclIntfAnsiStrBucket;
+  Bucket: TJclIntfAnsiStrHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -4188,7 +4188,7 @@ end;
 function TJclIntfAnsiStrHashMap.KeySet: IJclIntfSet;
 var
   I, J: Integer;
-  Bucket: TJclIntfAnsiStrBucket;
+  Bucket: TJclIntfAnsiStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -4214,7 +4214,7 @@ end;
 function TJclIntfAnsiStrHashMap.MapEquals(const AMap: IJclIntfAnsiStrMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclIntfAnsiStrBucket;
+  Bucket: TJclIntfAnsiStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -4251,7 +4251,7 @@ end;
 procedure TJclIntfAnsiStrHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclIntfAnsiStrBucket;
+  Bucket: TJclIntfAnsiStrHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -4310,7 +4310,7 @@ end;
 procedure TJclIntfAnsiStrHashMap.PutValue(const Key: IInterface; const Value: AnsiString);
 var
   Index: Integer;
-  Bucket: TJclIntfAnsiStrBucket;
+  Bucket: TJclIntfAnsiStrHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -4336,7 +4336,7 @@ begin
       end
       else
       begin
-        Bucket := TJclIntfAnsiStrBucket.Create;
+        Bucket := TJclIntfAnsiStrHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -4411,7 +4411,7 @@ end;
 function TJclIntfAnsiStrHashMap.Values: IJclAnsiStrCollection;
 var
   I, J: Integer;
-  Bucket: TJclIntfAnsiStrBucket;
+  Bucket: TJclIntfAnsiStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -4467,9 +4467,9 @@ begin
   Result := ItemsEqual(A, B);
 end;
 
-//=== { TJclAnsiStrAnsiStrBucket } ==========================================
+//=== { TJclAnsiStrAnsiStrHashMapBucket } ==========================================
 
-procedure TJclAnsiStrAnsiStrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclAnsiStrAnsiStrHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -4512,7 +4512,7 @@ end;
 procedure TJclAnsiStrAnsiStrHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclAnsiStrAnsiStrBucket;
+  SelfBucket, NewBucket: TJclAnsiStrAnsiStrHashMapBucket;
   ADest: TJclAnsiStrAnsiStrHashMap;
   AMap: IJclAnsiStrAnsiStrMap;
 begin
@@ -4531,7 +4531,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclAnsiStrAnsiStrBucket.Create;
+          NewBucket := TJclAnsiStrAnsiStrHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -4567,7 +4567,7 @@ end;
 procedure TJclAnsiStrAnsiStrHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclAnsiStrAnsiStrBucket;
+  Bucket: TJclAnsiStrAnsiStrHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -4601,7 +4601,7 @@ end;
 function TJclAnsiStrAnsiStrHashMap.ContainsKey(const Key: AnsiString): Boolean;
 var
   I: Integer;
-  Bucket: TJclAnsiStrAnsiStrBucket;
+  Bucket: TJclAnsiStrAnsiStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -4628,7 +4628,7 @@ end;
 function TJclAnsiStrAnsiStrHashMap.ContainsValue(const Value: AnsiString): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclAnsiStrAnsiStrBucket;
+  Bucket: TJclAnsiStrAnsiStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -4657,7 +4657,7 @@ end;
 
 function TJclAnsiStrAnsiStrHashMap.Extract(const Key: AnsiString): AnsiString;
 var
-  Bucket: TJclAnsiStrAnsiStrBucket;
+  Bucket: TJclAnsiStrAnsiStrHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -4699,7 +4699,7 @@ end;
 function TJclAnsiStrAnsiStrHashMap.GetValue(const Key: AnsiString): AnsiString;
 var
   I: Integer;
-  Bucket: TJclAnsiStrAnsiStrBucket;
+  Bucket: TJclAnsiStrAnsiStrHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -4736,7 +4736,7 @@ end;
 function TJclAnsiStrAnsiStrHashMap.KeyOfValue(const Value: AnsiString): AnsiString;
 var
   I, J: Integer;
-  Bucket: TJclAnsiStrAnsiStrBucket;
+  Bucket: TJclAnsiStrAnsiStrHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -4771,7 +4771,7 @@ end;
 function TJclAnsiStrAnsiStrHashMap.KeySet: IJclAnsiStrSet;
 var
   I, J: Integer;
-  Bucket: TJclAnsiStrAnsiStrBucket;
+  Bucket: TJclAnsiStrAnsiStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -4797,7 +4797,7 @@ end;
 function TJclAnsiStrAnsiStrHashMap.MapEquals(const AMap: IJclAnsiStrAnsiStrMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclAnsiStrAnsiStrBucket;
+  Bucket: TJclAnsiStrAnsiStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -4834,7 +4834,7 @@ end;
 procedure TJclAnsiStrAnsiStrHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclAnsiStrAnsiStrBucket;
+  Bucket: TJclAnsiStrAnsiStrHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -4893,7 +4893,7 @@ end;
 procedure TJclAnsiStrAnsiStrHashMap.PutValue(const Key: AnsiString; const Value: AnsiString);
 var
   Index: Integer;
-  Bucket: TJclAnsiStrAnsiStrBucket;
+  Bucket: TJclAnsiStrAnsiStrHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -4919,7 +4919,7 @@ begin
       end
       else
       begin
-        Bucket := TJclAnsiStrAnsiStrBucket.Create;
+        Bucket := TJclAnsiStrAnsiStrHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -4994,7 +4994,7 @@ end;
 function TJclAnsiStrAnsiStrHashMap.Values: IJclAnsiStrCollection;
 var
   I, J: Integer;
-  Bucket: TJclAnsiStrAnsiStrBucket;
+  Bucket: TJclAnsiStrAnsiStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -5045,9 +5045,9 @@ begin
   Result := ItemsEqual(A, B);
 end;
 
-//=== { TJclWideStrIntfBucket } ==========================================
+//=== { TJclWideStrIntfHashMapBucket } ==========================================
 
-procedure TJclWideStrIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclWideStrIntfHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -5090,7 +5090,7 @@ end;
 procedure TJclWideStrIntfHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclWideStrIntfBucket;
+  SelfBucket, NewBucket: TJclWideStrIntfHashMapBucket;
   ADest: TJclWideStrIntfHashMap;
   AMap: IJclWideStrIntfMap;
 begin
@@ -5109,7 +5109,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclWideStrIntfBucket.Create;
+          NewBucket := TJclWideStrIntfHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -5145,7 +5145,7 @@ end;
 procedure TJclWideStrIntfHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclWideStrIntfBucket;
+  Bucket: TJclWideStrIntfHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -5179,7 +5179,7 @@ end;
 function TJclWideStrIntfHashMap.ContainsKey(const Key: WideString): Boolean;
 var
   I: Integer;
-  Bucket: TJclWideStrIntfBucket;
+  Bucket: TJclWideStrIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -5206,7 +5206,7 @@ end;
 function TJclWideStrIntfHashMap.ContainsValue(const Value: IInterface): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclWideStrIntfBucket;
+  Bucket: TJclWideStrIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -5235,7 +5235,7 @@ end;
 
 function TJclWideStrIntfHashMap.Extract(const Key: WideString): IInterface;
 var
-  Bucket: TJclWideStrIntfBucket;
+  Bucket: TJclWideStrIntfHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -5277,7 +5277,7 @@ end;
 function TJclWideStrIntfHashMap.GetValue(const Key: WideString): IInterface;
 var
   I: Integer;
-  Bucket: TJclWideStrIntfBucket;
+  Bucket: TJclWideStrIntfHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -5314,7 +5314,7 @@ end;
 function TJclWideStrIntfHashMap.KeyOfValue(const Value: IInterface): WideString;
 var
   I, J: Integer;
-  Bucket: TJclWideStrIntfBucket;
+  Bucket: TJclWideStrIntfHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -5349,7 +5349,7 @@ end;
 function TJclWideStrIntfHashMap.KeySet: IJclWideStrSet;
 var
   I, J: Integer;
-  Bucket: TJclWideStrIntfBucket;
+  Bucket: TJclWideStrIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -5375,7 +5375,7 @@ end;
 function TJclWideStrIntfHashMap.MapEquals(const AMap: IJclWideStrIntfMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclWideStrIntfBucket;
+  Bucket: TJclWideStrIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -5412,7 +5412,7 @@ end;
 procedure TJclWideStrIntfHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclWideStrIntfBucket;
+  Bucket: TJclWideStrIntfHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -5471,7 +5471,7 @@ end;
 procedure TJclWideStrIntfHashMap.PutValue(const Key: WideString; const Value: IInterface);
 var
   Index: Integer;
-  Bucket: TJclWideStrIntfBucket;
+  Bucket: TJclWideStrIntfHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -5497,7 +5497,7 @@ begin
       end
       else
       begin
-        Bucket := TJclWideStrIntfBucket.Create;
+        Bucket := TJclWideStrIntfHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -5572,7 +5572,7 @@ end;
 function TJclWideStrIntfHashMap.Values: IJclIntfCollection;
 var
   I, J: Integer;
-  Bucket: TJclWideStrIntfBucket;
+  Bucket: TJclWideStrIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -5623,9 +5623,9 @@ begin
   Result := IntfSimpleEqualityCompare(A, B);
 end;
 
-//=== { TJclIntfWideStrBucket } ==========================================
+//=== { TJclIntfWideStrHashMapBucket } ==========================================
 
-procedure TJclIntfWideStrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfWideStrHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -5668,7 +5668,7 @@ end;
 procedure TJclIntfWideStrHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclIntfWideStrBucket;
+  SelfBucket, NewBucket: TJclIntfWideStrHashMapBucket;
   ADest: TJclIntfWideStrHashMap;
   AMap: IJclIntfWideStrMap;
 begin
@@ -5687,7 +5687,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclIntfWideStrBucket.Create;
+          NewBucket := TJclIntfWideStrHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -5723,7 +5723,7 @@ end;
 procedure TJclIntfWideStrHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclIntfWideStrBucket;
+  Bucket: TJclIntfWideStrHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -5757,7 +5757,7 @@ end;
 function TJclIntfWideStrHashMap.ContainsKey(const Key: IInterface): Boolean;
 var
   I: Integer;
-  Bucket: TJclIntfWideStrBucket;
+  Bucket: TJclIntfWideStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -5784,7 +5784,7 @@ end;
 function TJclIntfWideStrHashMap.ContainsValue(const Value: WideString): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclIntfWideStrBucket;
+  Bucket: TJclIntfWideStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -5813,7 +5813,7 @@ end;
 
 function TJclIntfWideStrHashMap.Extract(const Key: IInterface): WideString;
 var
-  Bucket: TJclIntfWideStrBucket;
+  Bucket: TJclIntfWideStrHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -5855,7 +5855,7 @@ end;
 function TJclIntfWideStrHashMap.GetValue(const Key: IInterface): WideString;
 var
   I: Integer;
-  Bucket: TJclIntfWideStrBucket;
+  Bucket: TJclIntfWideStrHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -5892,7 +5892,7 @@ end;
 function TJclIntfWideStrHashMap.KeyOfValue(const Value: WideString): IInterface;
 var
   I, J: Integer;
-  Bucket: TJclIntfWideStrBucket;
+  Bucket: TJclIntfWideStrHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -5927,7 +5927,7 @@ end;
 function TJclIntfWideStrHashMap.KeySet: IJclIntfSet;
 var
   I, J: Integer;
-  Bucket: TJclIntfWideStrBucket;
+  Bucket: TJclIntfWideStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -5953,7 +5953,7 @@ end;
 function TJclIntfWideStrHashMap.MapEquals(const AMap: IJclIntfWideStrMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclIntfWideStrBucket;
+  Bucket: TJclIntfWideStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -5990,7 +5990,7 @@ end;
 procedure TJclIntfWideStrHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclIntfWideStrBucket;
+  Bucket: TJclIntfWideStrHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -6049,7 +6049,7 @@ end;
 procedure TJclIntfWideStrHashMap.PutValue(const Key: IInterface; const Value: WideString);
 var
   Index: Integer;
-  Bucket: TJclIntfWideStrBucket;
+  Bucket: TJclIntfWideStrHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -6075,7 +6075,7 @@ begin
       end
       else
       begin
-        Bucket := TJclIntfWideStrBucket.Create;
+        Bucket := TJclIntfWideStrHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -6150,7 +6150,7 @@ end;
 function TJclIntfWideStrHashMap.Values: IJclWideStrCollection;
 var
   I, J: Integer;
-  Bucket: TJclIntfWideStrBucket;
+  Bucket: TJclIntfWideStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -6206,9 +6206,9 @@ begin
   Result := ItemsEqual(A, B);
 end;
 
-//=== { TJclWideStrWideStrBucket } ==========================================
+//=== { TJclWideStrWideStrHashMapBucket } ==========================================
 
-procedure TJclWideStrWideStrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclWideStrWideStrHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -6251,7 +6251,7 @@ end;
 procedure TJclWideStrWideStrHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclWideStrWideStrBucket;
+  SelfBucket, NewBucket: TJclWideStrWideStrHashMapBucket;
   ADest: TJclWideStrWideStrHashMap;
   AMap: IJclWideStrWideStrMap;
 begin
@@ -6270,7 +6270,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclWideStrWideStrBucket.Create;
+          NewBucket := TJclWideStrWideStrHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -6306,7 +6306,7 @@ end;
 procedure TJclWideStrWideStrHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclWideStrWideStrBucket;
+  Bucket: TJclWideStrWideStrHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -6340,7 +6340,7 @@ end;
 function TJclWideStrWideStrHashMap.ContainsKey(const Key: WideString): Boolean;
 var
   I: Integer;
-  Bucket: TJclWideStrWideStrBucket;
+  Bucket: TJclWideStrWideStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -6367,7 +6367,7 @@ end;
 function TJclWideStrWideStrHashMap.ContainsValue(const Value: WideString): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclWideStrWideStrBucket;
+  Bucket: TJclWideStrWideStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -6396,7 +6396,7 @@ end;
 
 function TJclWideStrWideStrHashMap.Extract(const Key: WideString): WideString;
 var
-  Bucket: TJclWideStrWideStrBucket;
+  Bucket: TJclWideStrWideStrHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -6438,7 +6438,7 @@ end;
 function TJclWideStrWideStrHashMap.GetValue(const Key: WideString): WideString;
 var
   I: Integer;
-  Bucket: TJclWideStrWideStrBucket;
+  Bucket: TJclWideStrWideStrHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -6475,7 +6475,7 @@ end;
 function TJclWideStrWideStrHashMap.KeyOfValue(const Value: WideString): WideString;
 var
   I, J: Integer;
-  Bucket: TJclWideStrWideStrBucket;
+  Bucket: TJclWideStrWideStrHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -6510,7 +6510,7 @@ end;
 function TJclWideStrWideStrHashMap.KeySet: IJclWideStrSet;
 var
   I, J: Integer;
-  Bucket: TJclWideStrWideStrBucket;
+  Bucket: TJclWideStrWideStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -6536,7 +6536,7 @@ end;
 function TJclWideStrWideStrHashMap.MapEquals(const AMap: IJclWideStrWideStrMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclWideStrWideStrBucket;
+  Bucket: TJclWideStrWideStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -6573,7 +6573,7 @@ end;
 procedure TJclWideStrWideStrHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclWideStrWideStrBucket;
+  Bucket: TJclWideStrWideStrHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -6632,7 +6632,7 @@ end;
 procedure TJclWideStrWideStrHashMap.PutValue(const Key: WideString; const Value: WideString);
 var
   Index: Integer;
-  Bucket: TJclWideStrWideStrBucket;
+  Bucket: TJclWideStrWideStrHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -6658,7 +6658,7 @@ begin
       end
       else
       begin
-        Bucket := TJclWideStrWideStrBucket.Create;
+        Bucket := TJclWideStrWideStrHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -6733,7 +6733,7 @@ end;
 function TJclWideStrWideStrHashMap.Values: IJclWideStrCollection;
 var
   I, J: Integer;
-  Bucket: TJclWideStrWideStrBucket;
+  Bucket: TJclWideStrWideStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -6785,9 +6785,9 @@ begin
 end;
 
 {$IFDEF SUPPORTS_UNICODE_STRING}
-//=== { TJclUnicodeStrIntfBucket } ==========================================
+//=== { TJclUnicodeStrIntfHashMapBucket } ==========================================
 
-procedure TJclUnicodeStrIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclUnicodeStrIntfHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -6832,7 +6832,7 @@ end;
 procedure TJclUnicodeStrIntfHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclUnicodeStrIntfBucket;
+  SelfBucket, NewBucket: TJclUnicodeStrIntfHashMapBucket;
   ADest: TJclUnicodeStrIntfHashMap;
   AMap: IJclUnicodeStrIntfMap;
 begin
@@ -6851,7 +6851,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclUnicodeStrIntfBucket.Create;
+          NewBucket := TJclUnicodeStrIntfHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -6887,7 +6887,7 @@ end;
 procedure TJclUnicodeStrIntfHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclUnicodeStrIntfBucket;
+  Bucket: TJclUnicodeStrIntfHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -6921,7 +6921,7 @@ end;
 function TJclUnicodeStrIntfHashMap.ContainsKey(const Key: UnicodeString): Boolean;
 var
   I: Integer;
-  Bucket: TJclUnicodeStrIntfBucket;
+  Bucket: TJclUnicodeStrIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -6948,7 +6948,7 @@ end;
 function TJclUnicodeStrIntfHashMap.ContainsValue(const Value: IInterface): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclUnicodeStrIntfBucket;
+  Bucket: TJclUnicodeStrIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -6977,7 +6977,7 @@ end;
 
 function TJclUnicodeStrIntfHashMap.Extract(const Key: UnicodeString): IInterface;
 var
-  Bucket: TJclUnicodeStrIntfBucket;
+  Bucket: TJclUnicodeStrIntfHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -7019,7 +7019,7 @@ end;
 function TJclUnicodeStrIntfHashMap.GetValue(const Key: UnicodeString): IInterface;
 var
   I: Integer;
-  Bucket: TJclUnicodeStrIntfBucket;
+  Bucket: TJclUnicodeStrIntfHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -7056,7 +7056,7 @@ end;
 function TJclUnicodeStrIntfHashMap.KeyOfValue(const Value: IInterface): UnicodeString;
 var
   I, J: Integer;
-  Bucket: TJclUnicodeStrIntfBucket;
+  Bucket: TJclUnicodeStrIntfHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -7091,7 +7091,7 @@ end;
 function TJclUnicodeStrIntfHashMap.KeySet: IJclUnicodeStrSet;
 var
   I, J: Integer;
-  Bucket: TJclUnicodeStrIntfBucket;
+  Bucket: TJclUnicodeStrIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -7117,7 +7117,7 @@ end;
 function TJclUnicodeStrIntfHashMap.MapEquals(const AMap: IJclUnicodeStrIntfMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclUnicodeStrIntfBucket;
+  Bucket: TJclUnicodeStrIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -7154,7 +7154,7 @@ end;
 procedure TJclUnicodeStrIntfHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclUnicodeStrIntfBucket;
+  Bucket: TJclUnicodeStrIntfHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -7213,7 +7213,7 @@ end;
 procedure TJclUnicodeStrIntfHashMap.PutValue(const Key: UnicodeString; const Value: IInterface);
 var
   Index: Integer;
-  Bucket: TJclUnicodeStrIntfBucket;
+  Bucket: TJclUnicodeStrIntfHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -7239,7 +7239,7 @@ begin
       end
       else
       begin
-        Bucket := TJclUnicodeStrIntfBucket.Create;
+        Bucket := TJclUnicodeStrIntfHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -7314,7 +7314,7 @@ end;
 function TJclUnicodeStrIntfHashMap.Values: IJclIntfCollection;
 var
   I, J: Integer;
-  Bucket: TJclUnicodeStrIntfBucket;
+  Bucket: TJclUnicodeStrIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -7368,9 +7368,9 @@ end;
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
 {$IFDEF SUPPORTS_UNICODE_STRING}
-//=== { TJclIntfUnicodeStrBucket } ==========================================
+//=== { TJclIntfUnicodeStrHashMapBucket } ==========================================
 
-procedure TJclIntfUnicodeStrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfUnicodeStrHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -7415,7 +7415,7 @@ end;
 procedure TJclIntfUnicodeStrHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclIntfUnicodeStrBucket;
+  SelfBucket, NewBucket: TJclIntfUnicodeStrHashMapBucket;
   ADest: TJclIntfUnicodeStrHashMap;
   AMap: IJclIntfUnicodeStrMap;
 begin
@@ -7434,7 +7434,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclIntfUnicodeStrBucket.Create;
+          NewBucket := TJclIntfUnicodeStrHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -7470,7 +7470,7 @@ end;
 procedure TJclIntfUnicodeStrHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclIntfUnicodeStrBucket;
+  Bucket: TJclIntfUnicodeStrHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -7504,7 +7504,7 @@ end;
 function TJclIntfUnicodeStrHashMap.ContainsKey(const Key: IInterface): Boolean;
 var
   I: Integer;
-  Bucket: TJclIntfUnicodeStrBucket;
+  Bucket: TJclIntfUnicodeStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -7531,7 +7531,7 @@ end;
 function TJclIntfUnicodeStrHashMap.ContainsValue(const Value: UnicodeString): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclIntfUnicodeStrBucket;
+  Bucket: TJclIntfUnicodeStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -7560,7 +7560,7 @@ end;
 
 function TJclIntfUnicodeStrHashMap.Extract(const Key: IInterface): UnicodeString;
 var
-  Bucket: TJclIntfUnicodeStrBucket;
+  Bucket: TJclIntfUnicodeStrHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -7602,7 +7602,7 @@ end;
 function TJclIntfUnicodeStrHashMap.GetValue(const Key: IInterface): UnicodeString;
 var
   I: Integer;
-  Bucket: TJclIntfUnicodeStrBucket;
+  Bucket: TJclIntfUnicodeStrHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -7639,7 +7639,7 @@ end;
 function TJclIntfUnicodeStrHashMap.KeyOfValue(const Value: UnicodeString): IInterface;
 var
   I, J: Integer;
-  Bucket: TJclIntfUnicodeStrBucket;
+  Bucket: TJclIntfUnicodeStrHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -7674,7 +7674,7 @@ end;
 function TJclIntfUnicodeStrHashMap.KeySet: IJclIntfSet;
 var
   I, J: Integer;
-  Bucket: TJclIntfUnicodeStrBucket;
+  Bucket: TJclIntfUnicodeStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -7700,7 +7700,7 @@ end;
 function TJclIntfUnicodeStrHashMap.MapEquals(const AMap: IJclIntfUnicodeStrMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclIntfUnicodeStrBucket;
+  Bucket: TJclIntfUnicodeStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -7737,7 +7737,7 @@ end;
 procedure TJclIntfUnicodeStrHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclIntfUnicodeStrBucket;
+  Bucket: TJclIntfUnicodeStrHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -7796,7 +7796,7 @@ end;
 procedure TJclIntfUnicodeStrHashMap.PutValue(const Key: IInterface; const Value: UnicodeString);
 var
   Index: Integer;
-  Bucket: TJclIntfUnicodeStrBucket;
+  Bucket: TJclIntfUnicodeStrHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -7822,7 +7822,7 @@ begin
       end
       else
       begin
-        Bucket := TJclIntfUnicodeStrBucket.Create;
+        Bucket := TJclIntfUnicodeStrHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -7897,7 +7897,7 @@ end;
 function TJclIntfUnicodeStrHashMap.Values: IJclUnicodeStrCollection;
 var
   I, J: Integer;
-  Bucket: TJclIntfUnicodeStrBucket;
+  Bucket: TJclIntfUnicodeStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -7956,9 +7956,9 @@ end;
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
 {$IFDEF SUPPORTS_UNICODE_STRING}
-//=== { TJclUnicodeStrUnicodeStrBucket } ==========================================
+//=== { TJclUnicodeStrUnicodeStrHashMapBucket } ==========================================
 
-procedure TJclUnicodeStrUnicodeStrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclUnicodeStrUnicodeStrHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -8003,7 +8003,7 @@ end;
 procedure TJclUnicodeStrUnicodeStrHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclUnicodeStrUnicodeStrBucket;
+  SelfBucket, NewBucket: TJclUnicodeStrUnicodeStrHashMapBucket;
   ADest: TJclUnicodeStrUnicodeStrHashMap;
   AMap: IJclUnicodeStrUnicodeStrMap;
 begin
@@ -8022,7 +8022,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclUnicodeStrUnicodeStrBucket.Create;
+          NewBucket := TJclUnicodeStrUnicodeStrHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -8058,7 +8058,7 @@ end;
 procedure TJclUnicodeStrUnicodeStrHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclUnicodeStrUnicodeStrBucket;
+  Bucket: TJclUnicodeStrUnicodeStrHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -8092,7 +8092,7 @@ end;
 function TJclUnicodeStrUnicodeStrHashMap.ContainsKey(const Key: UnicodeString): Boolean;
 var
   I: Integer;
-  Bucket: TJclUnicodeStrUnicodeStrBucket;
+  Bucket: TJclUnicodeStrUnicodeStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -8119,7 +8119,7 @@ end;
 function TJclUnicodeStrUnicodeStrHashMap.ContainsValue(const Value: UnicodeString): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclUnicodeStrUnicodeStrBucket;
+  Bucket: TJclUnicodeStrUnicodeStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -8148,7 +8148,7 @@ end;
 
 function TJclUnicodeStrUnicodeStrHashMap.Extract(const Key: UnicodeString): UnicodeString;
 var
-  Bucket: TJclUnicodeStrUnicodeStrBucket;
+  Bucket: TJclUnicodeStrUnicodeStrHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -8190,7 +8190,7 @@ end;
 function TJclUnicodeStrUnicodeStrHashMap.GetValue(const Key: UnicodeString): UnicodeString;
 var
   I: Integer;
-  Bucket: TJclUnicodeStrUnicodeStrBucket;
+  Bucket: TJclUnicodeStrUnicodeStrHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -8227,7 +8227,7 @@ end;
 function TJclUnicodeStrUnicodeStrHashMap.KeyOfValue(const Value: UnicodeString): UnicodeString;
 var
   I, J: Integer;
-  Bucket: TJclUnicodeStrUnicodeStrBucket;
+  Bucket: TJclUnicodeStrUnicodeStrHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -8262,7 +8262,7 @@ end;
 function TJclUnicodeStrUnicodeStrHashMap.KeySet: IJclUnicodeStrSet;
 var
   I, J: Integer;
-  Bucket: TJclUnicodeStrUnicodeStrBucket;
+  Bucket: TJclUnicodeStrUnicodeStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -8288,7 +8288,7 @@ end;
 function TJclUnicodeStrUnicodeStrHashMap.MapEquals(const AMap: IJclUnicodeStrUnicodeStrMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclUnicodeStrUnicodeStrBucket;
+  Bucket: TJclUnicodeStrUnicodeStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -8325,7 +8325,7 @@ end;
 procedure TJclUnicodeStrUnicodeStrHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclUnicodeStrUnicodeStrBucket;
+  Bucket: TJclUnicodeStrUnicodeStrHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -8384,7 +8384,7 @@ end;
 procedure TJclUnicodeStrUnicodeStrHashMap.PutValue(const Key: UnicodeString; const Value: UnicodeString);
 var
   Index: Integer;
-  Bucket: TJclUnicodeStrUnicodeStrBucket;
+  Bucket: TJclUnicodeStrUnicodeStrHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -8410,7 +8410,7 @@ begin
       end
       else
       begin
-        Bucket := TJclUnicodeStrUnicodeStrBucket.Create;
+        Bucket := TJclUnicodeStrUnicodeStrHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -8485,7 +8485,7 @@ end;
 function TJclUnicodeStrUnicodeStrHashMap.Values: IJclUnicodeStrCollection;
 var
   I, J: Integer;
-  Bucket: TJclUnicodeStrUnicodeStrBucket;
+  Bucket: TJclUnicodeStrUnicodeStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -8538,9 +8538,9 @@ end;
 
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
-//=== { TJclSingleIntfBucket } ==========================================
+//=== { TJclSingleIntfHashMapBucket } ==========================================
 
-procedure TJclSingleIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclSingleIntfHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -8583,7 +8583,7 @@ end;
 procedure TJclSingleIntfHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclSingleIntfBucket;
+  SelfBucket, NewBucket: TJclSingleIntfHashMapBucket;
   ADest: TJclSingleIntfHashMap;
   AMap: IJclSingleIntfMap;
 begin
@@ -8602,7 +8602,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclSingleIntfBucket.Create;
+          NewBucket := TJclSingleIntfHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -8638,7 +8638,7 @@ end;
 procedure TJclSingleIntfHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclSingleIntfBucket;
+  Bucket: TJclSingleIntfHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -8672,7 +8672,7 @@ end;
 function TJclSingleIntfHashMap.ContainsKey(const Key: Single): Boolean;
 var
   I: Integer;
-  Bucket: TJclSingleIntfBucket;
+  Bucket: TJclSingleIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -8699,7 +8699,7 @@ end;
 function TJclSingleIntfHashMap.ContainsValue(const Value: IInterface): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclSingleIntfBucket;
+  Bucket: TJclSingleIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -8728,7 +8728,7 @@ end;
 
 function TJclSingleIntfHashMap.Extract(const Key: Single): IInterface;
 var
-  Bucket: TJclSingleIntfBucket;
+  Bucket: TJclSingleIntfHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -8770,7 +8770,7 @@ end;
 function TJclSingleIntfHashMap.GetValue(const Key: Single): IInterface;
 var
   I: Integer;
-  Bucket: TJclSingleIntfBucket;
+  Bucket: TJclSingleIntfHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -8807,7 +8807,7 @@ end;
 function TJclSingleIntfHashMap.KeyOfValue(const Value: IInterface): Single;
 var
   I, J: Integer;
-  Bucket: TJclSingleIntfBucket;
+  Bucket: TJclSingleIntfHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -8842,7 +8842,7 @@ end;
 function TJclSingleIntfHashMap.KeySet: IJclSingleSet;
 var
   I, J: Integer;
-  Bucket: TJclSingleIntfBucket;
+  Bucket: TJclSingleIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -8868,7 +8868,7 @@ end;
 function TJclSingleIntfHashMap.MapEquals(const AMap: IJclSingleIntfMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclSingleIntfBucket;
+  Bucket: TJclSingleIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -8905,7 +8905,7 @@ end;
 procedure TJclSingleIntfHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclSingleIntfBucket;
+  Bucket: TJclSingleIntfHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -8964,7 +8964,7 @@ end;
 procedure TJclSingleIntfHashMap.PutValue(const Key: Single; const Value: IInterface);
 var
   Index: Integer;
-  Bucket: TJclSingleIntfBucket;
+  Bucket: TJclSingleIntfHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -8990,7 +8990,7 @@ begin
       end
       else
       begin
-        Bucket := TJclSingleIntfBucket.Create;
+        Bucket := TJclSingleIntfHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -9065,7 +9065,7 @@ end;
 function TJclSingleIntfHashMap.Values: IJclIntfCollection;
 var
   I, J: Integer;
-  Bucket: TJclSingleIntfBucket;
+  Bucket: TJclSingleIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -9116,9 +9116,9 @@ begin
   Result := IntfSimpleEqualityCompare(A, B);
 end;
 
-//=== { TJclIntfSingleBucket } ==========================================
+//=== { TJclIntfSingleHashMapBucket } ==========================================
 
-procedure TJclIntfSingleBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfSingleHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -9161,7 +9161,7 @@ end;
 procedure TJclIntfSingleHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclIntfSingleBucket;
+  SelfBucket, NewBucket: TJclIntfSingleHashMapBucket;
   ADest: TJclIntfSingleHashMap;
   AMap: IJclIntfSingleMap;
 begin
@@ -9180,7 +9180,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclIntfSingleBucket.Create;
+          NewBucket := TJclIntfSingleHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -9216,7 +9216,7 @@ end;
 procedure TJclIntfSingleHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclIntfSingleBucket;
+  Bucket: TJclIntfSingleHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -9250,7 +9250,7 @@ end;
 function TJclIntfSingleHashMap.ContainsKey(const Key: IInterface): Boolean;
 var
   I: Integer;
-  Bucket: TJclIntfSingleBucket;
+  Bucket: TJclIntfSingleHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -9277,7 +9277,7 @@ end;
 function TJclIntfSingleHashMap.ContainsValue(const Value: Single): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclIntfSingleBucket;
+  Bucket: TJclIntfSingleHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -9306,7 +9306,7 @@ end;
 
 function TJclIntfSingleHashMap.Extract(const Key: IInterface): Single;
 var
-  Bucket: TJclIntfSingleBucket;
+  Bucket: TJclIntfSingleHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -9348,7 +9348,7 @@ end;
 function TJclIntfSingleHashMap.GetValue(const Key: IInterface): Single;
 var
   I: Integer;
-  Bucket: TJclIntfSingleBucket;
+  Bucket: TJclIntfSingleHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -9385,7 +9385,7 @@ end;
 function TJclIntfSingleHashMap.KeyOfValue(const Value: Single): IInterface;
 var
   I, J: Integer;
-  Bucket: TJclIntfSingleBucket;
+  Bucket: TJclIntfSingleHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -9420,7 +9420,7 @@ end;
 function TJclIntfSingleHashMap.KeySet: IJclIntfSet;
 var
   I, J: Integer;
-  Bucket: TJclIntfSingleBucket;
+  Bucket: TJclIntfSingleHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -9446,7 +9446,7 @@ end;
 function TJclIntfSingleHashMap.MapEquals(const AMap: IJclIntfSingleMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclIntfSingleBucket;
+  Bucket: TJclIntfSingleHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -9483,7 +9483,7 @@ end;
 procedure TJclIntfSingleHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclIntfSingleBucket;
+  Bucket: TJclIntfSingleHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -9542,7 +9542,7 @@ end;
 procedure TJclIntfSingleHashMap.PutValue(const Key: IInterface; const Value: Single);
 var
   Index: Integer;
-  Bucket: TJclIntfSingleBucket;
+  Bucket: TJclIntfSingleHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -9568,7 +9568,7 @@ begin
       end
       else
       begin
-        Bucket := TJclIntfSingleBucket.Create;
+        Bucket := TJclIntfSingleHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -9643,7 +9643,7 @@ end;
 function TJclIntfSingleHashMap.Values: IJclSingleCollection;
 var
   I, J: Integer;
-  Bucket: TJclIntfSingleBucket;
+  Bucket: TJclIntfSingleHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -9699,9 +9699,9 @@ begin
   Result := ItemsEqual(A, B);
 end;
 
-//=== { TJclSingleSingleBucket } ==========================================
+//=== { TJclSingleSingleHashMapBucket } ==========================================
 
-procedure TJclSingleSingleBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclSingleSingleHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -9744,7 +9744,7 @@ end;
 procedure TJclSingleSingleHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclSingleSingleBucket;
+  SelfBucket, NewBucket: TJclSingleSingleHashMapBucket;
   ADest: TJclSingleSingleHashMap;
   AMap: IJclSingleSingleMap;
 begin
@@ -9763,7 +9763,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclSingleSingleBucket.Create;
+          NewBucket := TJclSingleSingleHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -9799,7 +9799,7 @@ end;
 procedure TJclSingleSingleHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclSingleSingleBucket;
+  Bucket: TJclSingleSingleHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -9833,7 +9833,7 @@ end;
 function TJclSingleSingleHashMap.ContainsKey(const Key: Single): Boolean;
 var
   I: Integer;
-  Bucket: TJclSingleSingleBucket;
+  Bucket: TJclSingleSingleHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -9860,7 +9860,7 @@ end;
 function TJclSingleSingleHashMap.ContainsValue(const Value: Single): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclSingleSingleBucket;
+  Bucket: TJclSingleSingleHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -9889,7 +9889,7 @@ end;
 
 function TJclSingleSingleHashMap.Extract(const Key: Single): Single;
 var
-  Bucket: TJclSingleSingleBucket;
+  Bucket: TJclSingleSingleHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -9931,7 +9931,7 @@ end;
 function TJclSingleSingleHashMap.GetValue(const Key: Single): Single;
 var
   I: Integer;
-  Bucket: TJclSingleSingleBucket;
+  Bucket: TJclSingleSingleHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -9968,7 +9968,7 @@ end;
 function TJclSingleSingleHashMap.KeyOfValue(const Value: Single): Single;
 var
   I, J: Integer;
-  Bucket: TJclSingleSingleBucket;
+  Bucket: TJclSingleSingleHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -10003,7 +10003,7 @@ end;
 function TJclSingleSingleHashMap.KeySet: IJclSingleSet;
 var
   I, J: Integer;
-  Bucket: TJclSingleSingleBucket;
+  Bucket: TJclSingleSingleHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -10029,7 +10029,7 @@ end;
 function TJclSingleSingleHashMap.MapEquals(const AMap: IJclSingleSingleMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclSingleSingleBucket;
+  Bucket: TJclSingleSingleHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -10066,7 +10066,7 @@ end;
 procedure TJclSingleSingleHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclSingleSingleBucket;
+  Bucket: TJclSingleSingleHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -10125,7 +10125,7 @@ end;
 procedure TJclSingleSingleHashMap.PutValue(const Key: Single; const Value: Single);
 var
   Index: Integer;
-  Bucket: TJclSingleSingleBucket;
+  Bucket: TJclSingleSingleHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -10151,7 +10151,7 @@ begin
       end
       else
       begin
-        Bucket := TJclSingleSingleBucket.Create;
+        Bucket := TJclSingleSingleHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -10226,7 +10226,7 @@ end;
 function TJclSingleSingleHashMap.Values: IJclSingleCollection;
 var
   I, J: Integer;
-  Bucket: TJclSingleSingleBucket;
+  Bucket: TJclSingleSingleHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -10277,9 +10277,9 @@ begin
   Result := ItemsEqual(A, B);
 end;
 
-//=== { TJclDoubleIntfBucket } ==========================================
+//=== { TJclDoubleIntfHashMapBucket } ==========================================
 
-procedure TJclDoubleIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclDoubleIntfHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -10322,7 +10322,7 @@ end;
 procedure TJclDoubleIntfHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclDoubleIntfBucket;
+  SelfBucket, NewBucket: TJclDoubleIntfHashMapBucket;
   ADest: TJclDoubleIntfHashMap;
   AMap: IJclDoubleIntfMap;
 begin
@@ -10341,7 +10341,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclDoubleIntfBucket.Create;
+          NewBucket := TJclDoubleIntfHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -10377,7 +10377,7 @@ end;
 procedure TJclDoubleIntfHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclDoubleIntfBucket;
+  Bucket: TJclDoubleIntfHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -10411,7 +10411,7 @@ end;
 function TJclDoubleIntfHashMap.ContainsKey(const Key: Double): Boolean;
 var
   I: Integer;
-  Bucket: TJclDoubleIntfBucket;
+  Bucket: TJclDoubleIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -10438,7 +10438,7 @@ end;
 function TJclDoubleIntfHashMap.ContainsValue(const Value: IInterface): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclDoubleIntfBucket;
+  Bucket: TJclDoubleIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -10467,7 +10467,7 @@ end;
 
 function TJclDoubleIntfHashMap.Extract(const Key: Double): IInterface;
 var
-  Bucket: TJclDoubleIntfBucket;
+  Bucket: TJclDoubleIntfHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -10509,7 +10509,7 @@ end;
 function TJclDoubleIntfHashMap.GetValue(const Key: Double): IInterface;
 var
   I: Integer;
-  Bucket: TJclDoubleIntfBucket;
+  Bucket: TJclDoubleIntfHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -10546,7 +10546,7 @@ end;
 function TJclDoubleIntfHashMap.KeyOfValue(const Value: IInterface): Double;
 var
   I, J: Integer;
-  Bucket: TJclDoubleIntfBucket;
+  Bucket: TJclDoubleIntfHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -10581,7 +10581,7 @@ end;
 function TJclDoubleIntfHashMap.KeySet: IJclDoubleSet;
 var
   I, J: Integer;
-  Bucket: TJclDoubleIntfBucket;
+  Bucket: TJclDoubleIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -10607,7 +10607,7 @@ end;
 function TJclDoubleIntfHashMap.MapEquals(const AMap: IJclDoubleIntfMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclDoubleIntfBucket;
+  Bucket: TJclDoubleIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -10644,7 +10644,7 @@ end;
 procedure TJclDoubleIntfHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclDoubleIntfBucket;
+  Bucket: TJclDoubleIntfHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -10703,7 +10703,7 @@ end;
 procedure TJclDoubleIntfHashMap.PutValue(const Key: Double; const Value: IInterface);
 var
   Index: Integer;
-  Bucket: TJclDoubleIntfBucket;
+  Bucket: TJclDoubleIntfHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -10729,7 +10729,7 @@ begin
       end
       else
       begin
-        Bucket := TJclDoubleIntfBucket.Create;
+        Bucket := TJclDoubleIntfHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -10804,7 +10804,7 @@ end;
 function TJclDoubleIntfHashMap.Values: IJclIntfCollection;
 var
   I, J: Integer;
-  Bucket: TJclDoubleIntfBucket;
+  Bucket: TJclDoubleIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -10855,9 +10855,9 @@ begin
   Result := IntfSimpleEqualityCompare(A, B);
 end;
 
-//=== { TJclIntfDoubleBucket } ==========================================
+//=== { TJclIntfDoubleHashMapBucket } ==========================================
 
-procedure TJclIntfDoubleBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfDoubleHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -10900,7 +10900,7 @@ end;
 procedure TJclIntfDoubleHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclIntfDoubleBucket;
+  SelfBucket, NewBucket: TJclIntfDoubleHashMapBucket;
   ADest: TJclIntfDoubleHashMap;
   AMap: IJclIntfDoubleMap;
 begin
@@ -10919,7 +10919,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclIntfDoubleBucket.Create;
+          NewBucket := TJclIntfDoubleHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -10955,7 +10955,7 @@ end;
 procedure TJclIntfDoubleHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclIntfDoubleBucket;
+  Bucket: TJclIntfDoubleHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -10989,7 +10989,7 @@ end;
 function TJclIntfDoubleHashMap.ContainsKey(const Key: IInterface): Boolean;
 var
   I: Integer;
-  Bucket: TJclIntfDoubleBucket;
+  Bucket: TJclIntfDoubleHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -11016,7 +11016,7 @@ end;
 function TJclIntfDoubleHashMap.ContainsValue(const Value: Double): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclIntfDoubleBucket;
+  Bucket: TJclIntfDoubleHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -11045,7 +11045,7 @@ end;
 
 function TJclIntfDoubleHashMap.Extract(const Key: IInterface): Double;
 var
-  Bucket: TJclIntfDoubleBucket;
+  Bucket: TJclIntfDoubleHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -11087,7 +11087,7 @@ end;
 function TJclIntfDoubleHashMap.GetValue(const Key: IInterface): Double;
 var
   I: Integer;
-  Bucket: TJclIntfDoubleBucket;
+  Bucket: TJclIntfDoubleHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -11124,7 +11124,7 @@ end;
 function TJclIntfDoubleHashMap.KeyOfValue(const Value: Double): IInterface;
 var
   I, J: Integer;
-  Bucket: TJclIntfDoubleBucket;
+  Bucket: TJclIntfDoubleHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -11159,7 +11159,7 @@ end;
 function TJclIntfDoubleHashMap.KeySet: IJclIntfSet;
 var
   I, J: Integer;
-  Bucket: TJclIntfDoubleBucket;
+  Bucket: TJclIntfDoubleHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -11185,7 +11185,7 @@ end;
 function TJclIntfDoubleHashMap.MapEquals(const AMap: IJclIntfDoubleMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclIntfDoubleBucket;
+  Bucket: TJclIntfDoubleHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -11222,7 +11222,7 @@ end;
 procedure TJclIntfDoubleHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclIntfDoubleBucket;
+  Bucket: TJclIntfDoubleHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -11281,7 +11281,7 @@ end;
 procedure TJclIntfDoubleHashMap.PutValue(const Key: IInterface; const Value: Double);
 var
   Index: Integer;
-  Bucket: TJclIntfDoubleBucket;
+  Bucket: TJclIntfDoubleHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -11307,7 +11307,7 @@ begin
       end
       else
       begin
-        Bucket := TJclIntfDoubleBucket.Create;
+        Bucket := TJclIntfDoubleHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -11382,7 +11382,7 @@ end;
 function TJclIntfDoubleHashMap.Values: IJclDoubleCollection;
 var
   I, J: Integer;
-  Bucket: TJclIntfDoubleBucket;
+  Bucket: TJclIntfDoubleHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -11438,9 +11438,9 @@ begin
   Result := ItemsEqual(A, B);
 end;
 
-//=== { TJclDoubleDoubleBucket } ==========================================
+//=== { TJclDoubleDoubleHashMapBucket } ==========================================
 
-procedure TJclDoubleDoubleBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclDoubleDoubleHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -11483,7 +11483,7 @@ end;
 procedure TJclDoubleDoubleHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclDoubleDoubleBucket;
+  SelfBucket, NewBucket: TJclDoubleDoubleHashMapBucket;
   ADest: TJclDoubleDoubleHashMap;
   AMap: IJclDoubleDoubleMap;
 begin
@@ -11502,7 +11502,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclDoubleDoubleBucket.Create;
+          NewBucket := TJclDoubleDoubleHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -11538,7 +11538,7 @@ end;
 procedure TJclDoubleDoubleHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclDoubleDoubleBucket;
+  Bucket: TJclDoubleDoubleHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -11572,7 +11572,7 @@ end;
 function TJclDoubleDoubleHashMap.ContainsKey(const Key: Double): Boolean;
 var
   I: Integer;
-  Bucket: TJclDoubleDoubleBucket;
+  Bucket: TJclDoubleDoubleHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -11599,7 +11599,7 @@ end;
 function TJclDoubleDoubleHashMap.ContainsValue(const Value: Double): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclDoubleDoubleBucket;
+  Bucket: TJclDoubleDoubleHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -11628,7 +11628,7 @@ end;
 
 function TJclDoubleDoubleHashMap.Extract(const Key: Double): Double;
 var
-  Bucket: TJclDoubleDoubleBucket;
+  Bucket: TJclDoubleDoubleHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -11670,7 +11670,7 @@ end;
 function TJclDoubleDoubleHashMap.GetValue(const Key: Double): Double;
 var
   I: Integer;
-  Bucket: TJclDoubleDoubleBucket;
+  Bucket: TJclDoubleDoubleHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -11707,7 +11707,7 @@ end;
 function TJclDoubleDoubleHashMap.KeyOfValue(const Value: Double): Double;
 var
   I, J: Integer;
-  Bucket: TJclDoubleDoubleBucket;
+  Bucket: TJclDoubleDoubleHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -11742,7 +11742,7 @@ end;
 function TJclDoubleDoubleHashMap.KeySet: IJclDoubleSet;
 var
   I, J: Integer;
-  Bucket: TJclDoubleDoubleBucket;
+  Bucket: TJclDoubleDoubleHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -11768,7 +11768,7 @@ end;
 function TJclDoubleDoubleHashMap.MapEquals(const AMap: IJclDoubleDoubleMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclDoubleDoubleBucket;
+  Bucket: TJclDoubleDoubleHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -11805,7 +11805,7 @@ end;
 procedure TJclDoubleDoubleHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclDoubleDoubleBucket;
+  Bucket: TJclDoubleDoubleHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -11864,7 +11864,7 @@ end;
 procedure TJclDoubleDoubleHashMap.PutValue(const Key: Double; const Value: Double);
 var
   Index: Integer;
-  Bucket: TJclDoubleDoubleBucket;
+  Bucket: TJclDoubleDoubleHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -11890,7 +11890,7 @@ begin
       end
       else
       begin
-        Bucket := TJclDoubleDoubleBucket.Create;
+        Bucket := TJclDoubleDoubleHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -11965,7 +11965,7 @@ end;
 function TJclDoubleDoubleHashMap.Values: IJclDoubleCollection;
 var
   I, J: Integer;
-  Bucket: TJclDoubleDoubleBucket;
+  Bucket: TJclDoubleDoubleHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -12016,9 +12016,9 @@ begin
   Result := ItemsEqual(A, B);
 end;
 
-//=== { TJclExtendedIntfBucket } ==========================================
+//=== { TJclExtendedIntfHashMapBucket } ==========================================
 
-procedure TJclExtendedIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclExtendedIntfHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -12061,7 +12061,7 @@ end;
 procedure TJclExtendedIntfHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclExtendedIntfBucket;
+  SelfBucket, NewBucket: TJclExtendedIntfHashMapBucket;
   ADest: TJclExtendedIntfHashMap;
   AMap: IJclExtendedIntfMap;
 begin
@@ -12080,7 +12080,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclExtendedIntfBucket.Create;
+          NewBucket := TJclExtendedIntfHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -12116,7 +12116,7 @@ end;
 procedure TJclExtendedIntfHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclExtendedIntfBucket;
+  Bucket: TJclExtendedIntfHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -12150,7 +12150,7 @@ end;
 function TJclExtendedIntfHashMap.ContainsKey(const Key: Extended): Boolean;
 var
   I: Integer;
-  Bucket: TJclExtendedIntfBucket;
+  Bucket: TJclExtendedIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -12177,7 +12177,7 @@ end;
 function TJclExtendedIntfHashMap.ContainsValue(const Value: IInterface): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclExtendedIntfBucket;
+  Bucket: TJclExtendedIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -12206,7 +12206,7 @@ end;
 
 function TJclExtendedIntfHashMap.Extract(const Key: Extended): IInterface;
 var
-  Bucket: TJclExtendedIntfBucket;
+  Bucket: TJclExtendedIntfHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -12248,7 +12248,7 @@ end;
 function TJclExtendedIntfHashMap.GetValue(const Key: Extended): IInterface;
 var
   I: Integer;
-  Bucket: TJclExtendedIntfBucket;
+  Bucket: TJclExtendedIntfHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -12285,7 +12285,7 @@ end;
 function TJclExtendedIntfHashMap.KeyOfValue(const Value: IInterface): Extended;
 var
   I, J: Integer;
-  Bucket: TJclExtendedIntfBucket;
+  Bucket: TJclExtendedIntfHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -12320,7 +12320,7 @@ end;
 function TJclExtendedIntfHashMap.KeySet: IJclExtendedSet;
 var
   I, J: Integer;
-  Bucket: TJclExtendedIntfBucket;
+  Bucket: TJclExtendedIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -12346,7 +12346,7 @@ end;
 function TJclExtendedIntfHashMap.MapEquals(const AMap: IJclExtendedIntfMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclExtendedIntfBucket;
+  Bucket: TJclExtendedIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -12383,7 +12383,7 @@ end;
 procedure TJclExtendedIntfHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclExtendedIntfBucket;
+  Bucket: TJclExtendedIntfHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -12442,7 +12442,7 @@ end;
 procedure TJclExtendedIntfHashMap.PutValue(const Key: Extended; const Value: IInterface);
 var
   Index: Integer;
-  Bucket: TJclExtendedIntfBucket;
+  Bucket: TJclExtendedIntfHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -12468,7 +12468,7 @@ begin
       end
       else
       begin
-        Bucket := TJclExtendedIntfBucket.Create;
+        Bucket := TJclExtendedIntfHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -12543,7 +12543,7 @@ end;
 function TJclExtendedIntfHashMap.Values: IJclIntfCollection;
 var
   I, J: Integer;
-  Bucket: TJclExtendedIntfBucket;
+  Bucket: TJclExtendedIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -12594,9 +12594,9 @@ begin
   Result := IntfSimpleEqualityCompare(A, B);
 end;
 
-//=== { TJclIntfExtendedBucket } ==========================================
+//=== { TJclIntfExtendedHashMapBucket } ==========================================
 
-procedure TJclIntfExtendedBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfExtendedHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -12639,7 +12639,7 @@ end;
 procedure TJclIntfExtendedHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclIntfExtendedBucket;
+  SelfBucket, NewBucket: TJclIntfExtendedHashMapBucket;
   ADest: TJclIntfExtendedHashMap;
   AMap: IJclIntfExtendedMap;
 begin
@@ -12658,7 +12658,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclIntfExtendedBucket.Create;
+          NewBucket := TJclIntfExtendedHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -12694,7 +12694,7 @@ end;
 procedure TJclIntfExtendedHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclIntfExtendedBucket;
+  Bucket: TJclIntfExtendedHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -12728,7 +12728,7 @@ end;
 function TJclIntfExtendedHashMap.ContainsKey(const Key: IInterface): Boolean;
 var
   I: Integer;
-  Bucket: TJclIntfExtendedBucket;
+  Bucket: TJclIntfExtendedHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -12755,7 +12755,7 @@ end;
 function TJclIntfExtendedHashMap.ContainsValue(const Value: Extended): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclIntfExtendedBucket;
+  Bucket: TJclIntfExtendedHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -12784,7 +12784,7 @@ end;
 
 function TJclIntfExtendedHashMap.Extract(const Key: IInterface): Extended;
 var
-  Bucket: TJclIntfExtendedBucket;
+  Bucket: TJclIntfExtendedHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -12826,7 +12826,7 @@ end;
 function TJclIntfExtendedHashMap.GetValue(const Key: IInterface): Extended;
 var
   I: Integer;
-  Bucket: TJclIntfExtendedBucket;
+  Bucket: TJclIntfExtendedHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -12863,7 +12863,7 @@ end;
 function TJclIntfExtendedHashMap.KeyOfValue(const Value: Extended): IInterface;
 var
   I, J: Integer;
-  Bucket: TJclIntfExtendedBucket;
+  Bucket: TJclIntfExtendedHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -12898,7 +12898,7 @@ end;
 function TJclIntfExtendedHashMap.KeySet: IJclIntfSet;
 var
   I, J: Integer;
-  Bucket: TJclIntfExtendedBucket;
+  Bucket: TJclIntfExtendedHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -12924,7 +12924,7 @@ end;
 function TJclIntfExtendedHashMap.MapEquals(const AMap: IJclIntfExtendedMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclIntfExtendedBucket;
+  Bucket: TJclIntfExtendedHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -12961,7 +12961,7 @@ end;
 procedure TJclIntfExtendedHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclIntfExtendedBucket;
+  Bucket: TJclIntfExtendedHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -13020,7 +13020,7 @@ end;
 procedure TJclIntfExtendedHashMap.PutValue(const Key: IInterface; const Value: Extended);
 var
   Index: Integer;
-  Bucket: TJclIntfExtendedBucket;
+  Bucket: TJclIntfExtendedHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -13046,7 +13046,7 @@ begin
       end
       else
       begin
-        Bucket := TJclIntfExtendedBucket.Create;
+        Bucket := TJclIntfExtendedHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -13121,7 +13121,7 @@ end;
 function TJclIntfExtendedHashMap.Values: IJclExtendedCollection;
 var
   I, J: Integer;
-  Bucket: TJclIntfExtendedBucket;
+  Bucket: TJclIntfExtendedHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -13177,9 +13177,9 @@ begin
   Result := ItemsEqual(A, B);
 end;
 
-//=== { TJclExtendedExtendedBucket } ==========================================
+//=== { TJclExtendedExtendedHashMapBucket } ==========================================
 
-procedure TJclExtendedExtendedBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclExtendedExtendedHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -13222,7 +13222,7 @@ end;
 procedure TJclExtendedExtendedHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclExtendedExtendedBucket;
+  SelfBucket, NewBucket: TJclExtendedExtendedHashMapBucket;
   ADest: TJclExtendedExtendedHashMap;
   AMap: IJclExtendedExtendedMap;
 begin
@@ -13241,7 +13241,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclExtendedExtendedBucket.Create;
+          NewBucket := TJclExtendedExtendedHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -13277,7 +13277,7 @@ end;
 procedure TJclExtendedExtendedHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclExtendedExtendedBucket;
+  Bucket: TJclExtendedExtendedHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -13311,7 +13311,7 @@ end;
 function TJclExtendedExtendedHashMap.ContainsKey(const Key: Extended): Boolean;
 var
   I: Integer;
-  Bucket: TJclExtendedExtendedBucket;
+  Bucket: TJclExtendedExtendedHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -13338,7 +13338,7 @@ end;
 function TJclExtendedExtendedHashMap.ContainsValue(const Value: Extended): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclExtendedExtendedBucket;
+  Bucket: TJclExtendedExtendedHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -13367,7 +13367,7 @@ end;
 
 function TJclExtendedExtendedHashMap.Extract(const Key: Extended): Extended;
 var
-  Bucket: TJclExtendedExtendedBucket;
+  Bucket: TJclExtendedExtendedHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -13409,7 +13409,7 @@ end;
 function TJclExtendedExtendedHashMap.GetValue(const Key: Extended): Extended;
 var
   I: Integer;
-  Bucket: TJclExtendedExtendedBucket;
+  Bucket: TJclExtendedExtendedHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -13446,7 +13446,7 @@ end;
 function TJclExtendedExtendedHashMap.KeyOfValue(const Value: Extended): Extended;
 var
   I, J: Integer;
-  Bucket: TJclExtendedExtendedBucket;
+  Bucket: TJclExtendedExtendedHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -13481,7 +13481,7 @@ end;
 function TJclExtendedExtendedHashMap.KeySet: IJclExtendedSet;
 var
   I, J: Integer;
-  Bucket: TJclExtendedExtendedBucket;
+  Bucket: TJclExtendedExtendedHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -13507,7 +13507,7 @@ end;
 function TJclExtendedExtendedHashMap.MapEquals(const AMap: IJclExtendedExtendedMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclExtendedExtendedBucket;
+  Bucket: TJclExtendedExtendedHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -13544,7 +13544,7 @@ end;
 procedure TJclExtendedExtendedHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclExtendedExtendedBucket;
+  Bucket: TJclExtendedExtendedHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -13603,7 +13603,7 @@ end;
 procedure TJclExtendedExtendedHashMap.PutValue(const Key: Extended; const Value: Extended);
 var
   Index: Integer;
-  Bucket: TJclExtendedExtendedBucket;
+  Bucket: TJclExtendedExtendedHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -13629,7 +13629,7 @@ begin
       end
       else
       begin
-        Bucket := TJclExtendedExtendedBucket.Create;
+        Bucket := TJclExtendedExtendedHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -13704,7 +13704,7 @@ end;
 function TJclExtendedExtendedHashMap.Values: IJclExtendedCollection;
 var
   I, J: Integer;
-  Bucket: TJclExtendedExtendedBucket;
+  Bucket: TJclExtendedExtendedHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -13755,9 +13755,9 @@ begin
   Result := ItemsEqual(A, B);
 end;
 
-//=== { TJclIntegerIntfBucket } ==========================================
+//=== { TJclIntegerIntfHashMapBucket } ==========================================
 
-procedure TJclIntegerIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclIntegerIntfHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -13800,7 +13800,7 @@ end;
 procedure TJclIntegerIntfHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclIntegerIntfBucket;
+  SelfBucket, NewBucket: TJclIntegerIntfHashMapBucket;
   ADest: TJclIntegerIntfHashMap;
   AMap: IJclIntegerIntfMap;
 begin
@@ -13819,7 +13819,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclIntegerIntfBucket.Create;
+          NewBucket := TJclIntegerIntfHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -13855,7 +13855,7 @@ end;
 procedure TJclIntegerIntfHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclIntegerIntfBucket;
+  Bucket: TJclIntegerIntfHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -13889,7 +13889,7 @@ end;
 function TJclIntegerIntfHashMap.ContainsKey(Key: Integer): Boolean;
 var
   I: Integer;
-  Bucket: TJclIntegerIntfBucket;
+  Bucket: TJclIntegerIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -13916,7 +13916,7 @@ end;
 function TJclIntegerIntfHashMap.ContainsValue(const Value: IInterface): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclIntegerIntfBucket;
+  Bucket: TJclIntegerIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -13945,7 +13945,7 @@ end;
 
 function TJclIntegerIntfHashMap.Extract(Key: Integer): IInterface;
 var
-  Bucket: TJclIntegerIntfBucket;
+  Bucket: TJclIntegerIntfHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -13987,7 +13987,7 @@ end;
 function TJclIntegerIntfHashMap.GetValue(Key: Integer): IInterface;
 var
   I: Integer;
-  Bucket: TJclIntegerIntfBucket;
+  Bucket: TJclIntegerIntfHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -14024,7 +14024,7 @@ end;
 function TJclIntegerIntfHashMap.KeyOfValue(const Value: IInterface): Integer;
 var
   I, J: Integer;
-  Bucket: TJclIntegerIntfBucket;
+  Bucket: TJclIntegerIntfHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -14059,7 +14059,7 @@ end;
 function TJclIntegerIntfHashMap.KeySet: IJclIntegerSet;
 var
   I, J: Integer;
-  Bucket: TJclIntegerIntfBucket;
+  Bucket: TJclIntegerIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -14085,7 +14085,7 @@ end;
 function TJclIntegerIntfHashMap.MapEquals(const AMap: IJclIntegerIntfMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclIntegerIntfBucket;
+  Bucket: TJclIntegerIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -14122,7 +14122,7 @@ end;
 procedure TJclIntegerIntfHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclIntegerIntfBucket;
+  Bucket: TJclIntegerIntfHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -14181,7 +14181,7 @@ end;
 procedure TJclIntegerIntfHashMap.PutValue(Key: Integer; const Value: IInterface);
 var
   Index: Integer;
-  Bucket: TJclIntegerIntfBucket;
+  Bucket: TJclIntegerIntfHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -14207,7 +14207,7 @@ begin
       end
       else
       begin
-        Bucket := TJclIntegerIntfBucket.Create;
+        Bucket := TJclIntegerIntfHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -14282,7 +14282,7 @@ end;
 function TJclIntegerIntfHashMap.Values: IJclIntfCollection;
 var
   I, J: Integer;
-  Bucket: TJclIntegerIntfBucket;
+  Bucket: TJclIntegerIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -14333,9 +14333,9 @@ begin
   Result := IntfSimpleEqualityCompare(A, B);
 end;
 
-//=== { TJclIntfIntegerBucket } ==========================================
+//=== { TJclIntfIntegerHashMapBucket } ==========================================
 
-procedure TJclIntfIntegerBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfIntegerHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -14378,7 +14378,7 @@ end;
 procedure TJclIntfIntegerHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclIntfIntegerBucket;
+  SelfBucket, NewBucket: TJclIntfIntegerHashMapBucket;
   ADest: TJclIntfIntegerHashMap;
   AMap: IJclIntfIntegerMap;
 begin
@@ -14397,7 +14397,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclIntfIntegerBucket.Create;
+          NewBucket := TJclIntfIntegerHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -14433,7 +14433,7 @@ end;
 procedure TJclIntfIntegerHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclIntfIntegerBucket;
+  Bucket: TJclIntfIntegerHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -14467,7 +14467,7 @@ end;
 function TJclIntfIntegerHashMap.ContainsKey(const Key: IInterface): Boolean;
 var
   I: Integer;
-  Bucket: TJclIntfIntegerBucket;
+  Bucket: TJclIntfIntegerHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -14494,7 +14494,7 @@ end;
 function TJclIntfIntegerHashMap.ContainsValue(Value: Integer): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclIntfIntegerBucket;
+  Bucket: TJclIntfIntegerHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -14523,7 +14523,7 @@ end;
 
 function TJclIntfIntegerHashMap.Extract(const Key: IInterface): Integer;
 var
-  Bucket: TJclIntfIntegerBucket;
+  Bucket: TJclIntfIntegerHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -14565,7 +14565,7 @@ end;
 function TJclIntfIntegerHashMap.GetValue(const Key: IInterface): Integer;
 var
   I: Integer;
-  Bucket: TJclIntfIntegerBucket;
+  Bucket: TJclIntfIntegerHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -14602,7 +14602,7 @@ end;
 function TJclIntfIntegerHashMap.KeyOfValue(Value: Integer): IInterface;
 var
   I, J: Integer;
-  Bucket: TJclIntfIntegerBucket;
+  Bucket: TJclIntfIntegerHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -14637,7 +14637,7 @@ end;
 function TJclIntfIntegerHashMap.KeySet: IJclIntfSet;
 var
   I, J: Integer;
-  Bucket: TJclIntfIntegerBucket;
+  Bucket: TJclIntfIntegerHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -14663,7 +14663,7 @@ end;
 function TJclIntfIntegerHashMap.MapEquals(const AMap: IJclIntfIntegerMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclIntfIntegerBucket;
+  Bucket: TJclIntfIntegerHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -14700,7 +14700,7 @@ end;
 procedure TJclIntfIntegerHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclIntfIntegerBucket;
+  Bucket: TJclIntfIntegerHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -14759,7 +14759,7 @@ end;
 procedure TJclIntfIntegerHashMap.PutValue(const Key: IInterface; Value: Integer);
 var
   Index: Integer;
-  Bucket: TJclIntfIntegerBucket;
+  Bucket: TJclIntfIntegerHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -14785,7 +14785,7 @@ begin
       end
       else
       begin
-        Bucket := TJclIntfIntegerBucket.Create;
+        Bucket := TJclIntfIntegerHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -14860,7 +14860,7 @@ end;
 function TJclIntfIntegerHashMap.Values: IJclIntegerCollection;
 var
   I, J: Integer;
-  Bucket: TJclIntfIntegerBucket;
+  Bucket: TJclIntfIntegerHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -14916,9 +14916,9 @@ begin
   Result := ItemsEqual(A, B);
 end;
 
-//=== { TJclIntegerIntegerBucket } ==========================================
+//=== { TJclIntegerIntegerHashMapBucket } ==========================================
 
-procedure TJclIntegerIntegerBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclIntegerIntegerHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -14961,7 +14961,7 @@ end;
 procedure TJclIntegerIntegerHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclIntegerIntegerBucket;
+  SelfBucket, NewBucket: TJclIntegerIntegerHashMapBucket;
   ADest: TJclIntegerIntegerHashMap;
   AMap: IJclIntegerIntegerMap;
 begin
@@ -14980,7 +14980,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclIntegerIntegerBucket.Create;
+          NewBucket := TJclIntegerIntegerHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -15016,7 +15016,7 @@ end;
 procedure TJclIntegerIntegerHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclIntegerIntegerBucket;
+  Bucket: TJclIntegerIntegerHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -15050,7 +15050,7 @@ end;
 function TJclIntegerIntegerHashMap.ContainsKey(Key: Integer): Boolean;
 var
   I: Integer;
-  Bucket: TJclIntegerIntegerBucket;
+  Bucket: TJclIntegerIntegerHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -15077,7 +15077,7 @@ end;
 function TJclIntegerIntegerHashMap.ContainsValue(Value: Integer): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclIntegerIntegerBucket;
+  Bucket: TJclIntegerIntegerHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -15106,7 +15106,7 @@ end;
 
 function TJclIntegerIntegerHashMap.Extract(Key: Integer): Integer;
 var
-  Bucket: TJclIntegerIntegerBucket;
+  Bucket: TJclIntegerIntegerHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -15148,7 +15148,7 @@ end;
 function TJclIntegerIntegerHashMap.GetValue(Key: Integer): Integer;
 var
   I: Integer;
-  Bucket: TJclIntegerIntegerBucket;
+  Bucket: TJclIntegerIntegerHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -15185,7 +15185,7 @@ end;
 function TJclIntegerIntegerHashMap.KeyOfValue(Value: Integer): Integer;
 var
   I, J: Integer;
-  Bucket: TJclIntegerIntegerBucket;
+  Bucket: TJclIntegerIntegerHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -15220,7 +15220,7 @@ end;
 function TJclIntegerIntegerHashMap.KeySet: IJclIntegerSet;
 var
   I, J: Integer;
-  Bucket: TJclIntegerIntegerBucket;
+  Bucket: TJclIntegerIntegerHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -15246,7 +15246,7 @@ end;
 function TJclIntegerIntegerHashMap.MapEquals(const AMap: IJclIntegerIntegerMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclIntegerIntegerBucket;
+  Bucket: TJclIntegerIntegerHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -15283,7 +15283,7 @@ end;
 procedure TJclIntegerIntegerHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclIntegerIntegerBucket;
+  Bucket: TJclIntegerIntegerHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -15342,7 +15342,7 @@ end;
 procedure TJclIntegerIntegerHashMap.PutValue(Key: Integer; Value: Integer);
 var
   Index: Integer;
-  Bucket: TJclIntegerIntegerBucket;
+  Bucket: TJclIntegerIntegerHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -15368,7 +15368,7 @@ begin
       end
       else
       begin
-        Bucket := TJclIntegerIntegerBucket.Create;
+        Bucket := TJclIntegerIntegerHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -15443,7 +15443,7 @@ end;
 function TJclIntegerIntegerHashMap.Values: IJclIntegerCollection;
 var
   I, J: Integer;
-  Bucket: TJclIntegerIntegerBucket;
+  Bucket: TJclIntegerIntegerHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -15494,9 +15494,9 @@ begin
   Result := ItemsEqual(A, B);
 end;
 
-//=== { TJclCardinalIntfBucket } ==========================================
+//=== { TJclCardinalIntfHashMapBucket } ==========================================
 
-procedure TJclCardinalIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclCardinalIntfHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -15539,7 +15539,7 @@ end;
 procedure TJclCardinalIntfHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclCardinalIntfBucket;
+  SelfBucket, NewBucket: TJclCardinalIntfHashMapBucket;
   ADest: TJclCardinalIntfHashMap;
   AMap: IJclCardinalIntfMap;
 begin
@@ -15558,7 +15558,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclCardinalIntfBucket.Create;
+          NewBucket := TJclCardinalIntfHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -15594,7 +15594,7 @@ end;
 procedure TJclCardinalIntfHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclCardinalIntfBucket;
+  Bucket: TJclCardinalIntfHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -15628,7 +15628,7 @@ end;
 function TJclCardinalIntfHashMap.ContainsKey(Key: Cardinal): Boolean;
 var
   I: Integer;
-  Bucket: TJclCardinalIntfBucket;
+  Bucket: TJclCardinalIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -15655,7 +15655,7 @@ end;
 function TJclCardinalIntfHashMap.ContainsValue(const Value: IInterface): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclCardinalIntfBucket;
+  Bucket: TJclCardinalIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -15684,7 +15684,7 @@ end;
 
 function TJclCardinalIntfHashMap.Extract(Key: Cardinal): IInterface;
 var
-  Bucket: TJclCardinalIntfBucket;
+  Bucket: TJclCardinalIntfHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -15726,7 +15726,7 @@ end;
 function TJclCardinalIntfHashMap.GetValue(Key: Cardinal): IInterface;
 var
   I: Integer;
-  Bucket: TJclCardinalIntfBucket;
+  Bucket: TJclCardinalIntfHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -15763,7 +15763,7 @@ end;
 function TJclCardinalIntfHashMap.KeyOfValue(const Value: IInterface): Cardinal;
 var
   I, J: Integer;
-  Bucket: TJclCardinalIntfBucket;
+  Bucket: TJclCardinalIntfHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -15798,7 +15798,7 @@ end;
 function TJclCardinalIntfHashMap.KeySet: IJclCardinalSet;
 var
   I, J: Integer;
-  Bucket: TJclCardinalIntfBucket;
+  Bucket: TJclCardinalIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -15824,7 +15824,7 @@ end;
 function TJclCardinalIntfHashMap.MapEquals(const AMap: IJclCardinalIntfMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclCardinalIntfBucket;
+  Bucket: TJclCardinalIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -15861,7 +15861,7 @@ end;
 procedure TJclCardinalIntfHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclCardinalIntfBucket;
+  Bucket: TJclCardinalIntfHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -15920,7 +15920,7 @@ end;
 procedure TJclCardinalIntfHashMap.PutValue(Key: Cardinal; const Value: IInterface);
 var
   Index: Integer;
-  Bucket: TJclCardinalIntfBucket;
+  Bucket: TJclCardinalIntfHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -15946,7 +15946,7 @@ begin
       end
       else
       begin
-        Bucket := TJclCardinalIntfBucket.Create;
+        Bucket := TJclCardinalIntfHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -16021,7 +16021,7 @@ end;
 function TJclCardinalIntfHashMap.Values: IJclIntfCollection;
 var
   I, J: Integer;
-  Bucket: TJclCardinalIntfBucket;
+  Bucket: TJclCardinalIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -16072,9 +16072,9 @@ begin
   Result := IntfSimpleEqualityCompare(A, B);
 end;
 
-//=== { TJclIntfCardinalBucket } ==========================================
+//=== { TJclIntfCardinalHashMapBucket } ==========================================
 
-procedure TJclIntfCardinalBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfCardinalHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -16117,7 +16117,7 @@ end;
 procedure TJclIntfCardinalHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclIntfCardinalBucket;
+  SelfBucket, NewBucket: TJclIntfCardinalHashMapBucket;
   ADest: TJclIntfCardinalHashMap;
   AMap: IJclIntfCardinalMap;
 begin
@@ -16136,7 +16136,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclIntfCardinalBucket.Create;
+          NewBucket := TJclIntfCardinalHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -16172,7 +16172,7 @@ end;
 procedure TJclIntfCardinalHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclIntfCardinalBucket;
+  Bucket: TJclIntfCardinalHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -16206,7 +16206,7 @@ end;
 function TJclIntfCardinalHashMap.ContainsKey(const Key: IInterface): Boolean;
 var
   I: Integer;
-  Bucket: TJclIntfCardinalBucket;
+  Bucket: TJclIntfCardinalHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -16233,7 +16233,7 @@ end;
 function TJclIntfCardinalHashMap.ContainsValue(Value: Cardinal): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclIntfCardinalBucket;
+  Bucket: TJclIntfCardinalHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -16262,7 +16262,7 @@ end;
 
 function TJclIntfCardinalHashMap.Extract(const Key: IInterface): Cardinal;
 var
-  Bucket: TJclIntfCardinalBucket;
+  Bucket: TJclIntfCardinalHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -16304,7 +16304,7 @@ end;
 function TJclIntfCardinalHashMap.GetValue(const Key: IInterface): Cardinal;
 var
   I: Integer;
-  Bucket: TJclIntfCardinalBucket;
+  Bucket: TJclIntfCardinalHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -16341,7 +16341,7 @@ end;
 function TJclIntfCardinalHashMap.KeyOfValue(Value: Cardinal): IInterface;
 var
   I, J: Integer;
-  Bucket: TJclIntfCardinalBucket;
+  Bucket: TJclIntfCardinalHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -16376,7 +16376,7 @@ end;
 function TJclIntfCardinalHashMap.KeySet: IJclIntfSet;
 var
   I, J: Integer;
-  Bucket: TJclIntfCardinalBucket;
+  Bucket: TJclIntfCardinalHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -16402,7 +16402,7 @@ end;
 function TJclIntfCardinalHashMap.MapEquals(const AMap: IJclIntfCardinalMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclIntfCardinalBucket;
+  Bucket: TJclIntfCardinalHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -16439,7 +16439,7 @@ end;
 procedure TJclIntfCardinalHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclIntfCardinalBucket;
+  Bucket: TJclIntfCardinalHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -16498,7 +16498,7 @@ end;
 procedure TJclIntfCardinalHashMap.PutValue(const Key: IInterface; Value: Cardinal);
 var
   Index: Integer;
-  Bucket: TJclIntfCardinalBucket;
+  Bucket: TJclIntfCardinalHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -16524,7 +16524,7 @@ begin
       end
       else
       begin
-        Bucket := TJclIntfCardinalBucket.Create;
+        Bucket := TJclIntfCardinalHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -16599,7 +16599,7 @@ end;
 function TJclIntfCardinalHashMap.Values: IJclCardinalCollection;
 var
   I, J: Integer;
-  Bucket: TJclIntfCardinalBucket;
+  Bucket: TJclIntfCardinalHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -16655,9 +16655,9 @@ begin
   Result := ItemsEqual(A, B);
 end;
 
-//=== { TJclCardinalCardinalBucket } ==========================================
+//=== { TJclCardinalCardinalHashMapBucket } ==========================================
 
-procedure TJclCardinalCardinalBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclCardinalCardinalHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -16700,7 +16700,7 @@ end;
 procedure TJclCardinalCardinalHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclCardinalCardinalBucket;
+  SelfBucket, NewBucket: TJclCardinalCardinalHashMapBucket;
   ADest: TJclCardinalCardinalHashMap;
   AMap: IJclCardinalCardinalMap;
 begin
@@ -16719,7 +16719,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclCardinalCardinalBucket.Create;
+          NewBucket := TJclCardinalCardinalHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -16755,7 +16755,7 @@ end;
 procedure TJclCardinalCardinalHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclCardinalCardinalBucket;
+  Bucket: TJclCardinalCardinalHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -16789,7 +16789,7 @@ end;
 function TJclCardinalCardinalHashMap.ContainsKey(Key: Cardinal): Boolean;
 var
   I: Integer;
-  Bucket: TJclCardinalCardinalBucket;
+  Bucket: TJclCardinalCardinalHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -16816,7 +16816,7 @@ end;
 function TJclCardinalCardinalHashMap.ContainsValue(Value: Cardinal): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclCardinalCardinalBucket;
+  Bucket: TJclCardinalCardinalHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -16845,7 +16845,7 @@ end;
 
 function TJclCardinalCardinalHashMap.Extract(Key: Cardinal): Cardinal;
 var
-  Bucket: TJclCardinalCardinalBucket;
+  Bucket: TJclCardinalCardinalHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -16887,7 +16887,7 @@ end;
 function TJclCardinalCardinalHashMap.GetValue(Key: Cardinal): Cardinal;
 var
   I: Integer;
-  Bucket: TJclCardinalCardinalBucket;
+  Bucket: TJclCardinalCardinalHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -16924,7 +16924,7 @@ end;
 function TJclCardinalCardinalHashMap.KeyOfValue(Value: Cardinal): Cardinal;
 var
   I, J: Integer;
-  Bucket: TJclCardinalCardinalBucket;
+  Bucket: TJclCardinalCardinalHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -16959,7 +16959,7 @@ end;
 function TJclCardinalCardinalHashMap.KeySet: IJclCardinalSet;
 var
   I, J: Integer;
-  Bucket: TJclCardinalCardinalBucket;
+  Bucket: TJclCardinalCardinalHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -16985,7 +16985,7 @@ end;
 function TJclCardinalCardinalHashMap.MapEquals(const AMap: IJclCardinalCardinalMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclCardinalCardinalBucket;
+  Bucket: TJclCardinalCardinalHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -17022,7 +17022,7 @@ end;
 procedure TJclCardinalCardinalHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclCardinalCardinalBucket;
+  Bucket: TJclCardinalCardinalHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -17081,7 +17081,7 @@ end;
 procedure TJclCardinalCardinalHashMap.PutValue(Key: Cardinal; Value: Cardinal);
 var
   Index: Integer;
-  Bucket: TJclCardinalCardinalBucket;
+  Bucket: TJclCardinalCardinalHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -17107,7 +17107,7 @@ begin
       end
       else
       begin
-        Bucket := TJclCardinalCardinalBucket.Create;
+        Bucket := TJclCardinalCardinalHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -17182,7 +17182,7 @@ end;
 function TJclCardinalCardinalHashMap.Values: IJclCardinalCollection;
 var
   I, J: Integer;
-  Bucket: TJclCardinalCardinalBucket;
+  Bucket: TJclCardinalCardinalHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -17233,9 +17233,9 @@ begin
   Result := ItemsEqual(A, B);
 end;
 
-//=== { TJclInt64IntfBucket } ==========================================
+//=== { TJclInt64IntfHashMapBucket } ==========================================
 
-procedure TJclInt64IntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclInt64IntfHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -17278,7 +17278,7 @@ end;
 procedure TJclInt64IntfHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclInt64IntfBucket;
+  SelfBucket, NewBucket: TJclInt64IntfHashMapBucket;
   ADest: TJclInt64IntfHashMap;
   AMap: IJclInt64IntfMap;
 begin
@@ -17297,7 +17297,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclInt64IntfBucket.Create;
+          NewBucket := TJclInt64IntfHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -17333,7 +17333,7 @@ end;
 procedure TJclInt64IntfHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclInt64IntfBucket;
+  Bucket: TJclInt64IntfHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -17367,7 +17367,7 @@ end;
 function TJclInt64IntfHashMap.ContainsKey(const Key: Int64): Boolean;
 var
   I: Integer;
-  Bucket: TJclInt64IntfBucket;
+  Bucket: TJclInt64IntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -17394,7 +17394,7 @@ end;
 function TJclInt64IntfHashMap.ContainsValue(const Value: IInterface): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclInt64IntfBucket;
+  Bucket: TJclInt64IntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -17423,7 +17423,7 @@ end;
 
 function TJclInt64IntfHashMap.Extract(const Key: Int64): IInterface;
 var
-  Bucket: TJclInt64IntfBucket;
+  Bucket: TJclInt64IntfHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -17465,7 +17465,7 @@ end;
 function TJclInt64IntfHashMap.GetValue(const Key: Int64): IInterface;
 var
   I: Integer;
-  Bucket: TJclInt64IntfBucket;
+  Bucket: TJclInt64IntfHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -17502,7 +17502,7 @@ end;
 function TJclInt64IntfHashMap.KeyOfValue(const Value: IInterface): Int64;
 var
   I, J: Integer;
-  Bucket: TJclInt64IntfBucket;
+  Bucket: TJclInt64IntfHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -17537,7 +17537,7 @@ end;
 function TJclInt64IntfHashMap.KeySet: IJclInt64Set;
 var
   I, J: Integer;
-  Bucket: TJclInt64IntfBucket;
+  Bucket: TJclInt64IntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -17563,7 +17563,7 @@ end;
 function TJclInt64IntfHashMap.MapEquals(const AMap: IJclInt64IntfMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclInt64IntfBucket;
+  Bucket: TJclInt64IntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -17600,7 +17600,7 @@ end;
 procedure TJclInt64IntfHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclInt64IntfBucket;
+  Bucket: TJclInt64IntfHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -17659,7 +17659,7 @@ end;
 procedure TJclInt64IntfHashMap.PutValue(const Key: Int64; const Value: IInterface);
 var
   Index: Integer;
-  Bucket: TJclInt64IntfBucket;
+  Bucket: TJclInt64IntfHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -17685,7 +17685,7 @@ begin
       end
       else
       begin
-        Bucket := TJclInt64IntfBucket.Create;
+        Bucket := TJclInt64IntfHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -17760,7 +17760,7 @@ end;
 function TJclInt64IntfHashMap.Values: IJclIntfCollection;
 var
   I, J: Integer;
-  Bucket: TJclInt64IntfBucket;
+  Bucket: TJclInt64IntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -17811,9 +17811,9 @@ begin
   Result := IntfSimpleEqualityCompare(A, B);
 end;
 
-//=== { TJclIntfInt64Bucket } ==========================================
+//=== { TJclIntfInt64HashMapBucket } ==========================================
 
-procedure TJclIntfInt64Bucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfInt64HashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -17856,7 +17856,7 @@ end;
 procedure TJclIntfInt64HashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclIntfInt64Bucket;
+  SelfBucket, NewBucket: TJclIntfInt64HashMapBucket;
   ADest: TJclIntfInt64HashMap;
   AMap: IJclIntfInt64Map;
 begin
@@ -17875,7 +17875,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclIntfInt64Bucket.Create;
+          NewBucket := TJclIntfInt64HashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -17911,7 +17911,7 @@ end;
 procedure TJclIntfInt64HashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclIntfInt64Bucket;
+  Bucket: TJclIntfInt64HashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -17945,7 +17945,7 @@ end;
 function TJclIntfInt64HashMap.ContainsKey(const Key: IInterface): Boolean;
 var
   I: Integer;
-  Bucket: TJclIntfInt64Bucket;
+  Bucket: TJclIntfInt64HashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -17972,7 +17972,7 @@ end;
 function TJclIntfInt64HashMap.ContainsValue(const Value: Int64): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclIntfInt64Bucket;
+  Bucket: TJclIntfInt64HashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -18001,7 +18001,7 @@ end;
 
 function TJclIntfInt64HashMap.Extract(const Key: IInterface): Int64;
 var
-  Bucket: TJclIntfInt64Bucket;
+  Bucket: TJclIntfInt64HashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -18043,7 +18043,7 @@ end;
 function TJclIntfInt64HashMap.GetValue(const Key: IInterface): Int64;
 var
   I: Integer;
-  Bucket: TJclIntfInt64Bucket;
+  Bucket: TJclIntfInt64HashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -18080,7 +18080,7 @@ end;
 function TJclIntfInt64HashMap.KeyOfValue(const Value: Int64): IInterface;
 var
   I, J: Integer;
-  Bucket: TJclIntfInt64Bucket;
+  Bucket: TJclIntfInt64HashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -18115,7 +18115,7 @@ end;
 function TJclIntfInt64HashMap.KeySet: IJclIntfSet;
 var
   I, J: Integer;
-  Bucket: TJclIntfInt64Bucket;
+  Bucket: TJclIntfInt64HashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -18141,7 +18141,7 @@ end;
 function TJclIntfInt64HashMap.MapEquals(const AMap: IJclIntfInt64Map): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclIntfInt64Bucket;
+  Bucket: TJclIntfInt64HashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -18178,7 +18178,7 @@ end;
 procedure TJclIntfInt64HashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclIntfInt64Bucket;
+  Bucket: TJclIntfInt64HashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -18237,7 +18237,7 @@ end;
 procedure TJclIntfInt64HashMap.PutValue(const Key: IInterface; const Value: Int64);
 var
   Index: Integer;
-  Bucket: TJclIntfInt64Bucket;
+  Bucket: TJclIntfInt64HashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -18263,7 +18263,7 @@ begin
       end
       else
       begin
-        Bucket := TJclIntfInt64Bucket.Create;
+        Bucket := TJclIntfInt64HashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -18338,7 +18338,7 @@ end;
 function TJclIntfInt64HashMap.Values: IJclInt64Collection;
 var
   I, J: Integer;
-  Bucket: TJclIntfInt64Bucket;
+  Bucket: TJclIntfInt64HashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -18394,9 +18394,9 @@ begin
   Result := ItemsEqual(A, B);
 end;
 
-//=== { TJclInt64Int64Bucket } ==========================================
+//=== { TJclInt64Int64HashMapBucket } ==========================================
 
-procedure TJclInt64Int64Bucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclInt64Int64HashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -18439,7 +18439,7 @@ end;
 procedure TJclInt64Int64HashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclInt64Int64Bucket;
+  SelfBucket, NewBucket: TJclInt64Int64HashMapBucket;
   ADest: TJclInt64Int64HashMap;
   AMap: IJclInt64Int64Map;
 begin
@@ -18458,7 +18458,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclInt64Int64Bucket.Create;
+          NewBucket := TJclInt64Int64HashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -18494,7 +18494,7 @@ end;
 procedure TJclInt64Int64HashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclInt64Int64Bucket;
+  Bucket: TJclInt64Int64HashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -18528,7 +18528,7 @@ end;
 function TJclInt64Int64HashMap.ContainsKey(const Key: Int64): Boolean;
 var
   I: Integer;
-  Bucket: TJclInt64Int64Bucket;
+  Bucket: TJclInt64Int64HashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -18555,7 +18555,7 @@ end;
 function TJclInt64Int64HashMap.ContainsValue(const Value: Int64): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclInt64Int64Bucket;
+  Bucket: TJclInt64Int64HashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -18584,7 +18584,7 @@ end;
 
 function TJclInt64Int64HashMap.Extract(const Key: Int64): Int64;
 var
-  Bucket: TJclInt64Int64Bucket;
+  Bucket: TJclInt64Int64HashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -18626,7 +18626,7 @@ end;
 function TJclInt64Int64HashMap.GetValue(const Key: Int64): Int64;
 var
   I: Integer;
-  Bucket: TJclInt64Int64Bucket;
+  Bucket: TJclInt64Int64HashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -18663,7 +18663,7 @@ end;
 function TJclInt64Int64HashMap.KeyOfValue(const Value: Int64): Int64;
 var
   I, J: Integer;
-  Bucket: TJclInt64Int64Bucket;
+  Bucket: TJclInt64Int64HashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -18698,7 +18698,7 @@ end;
 function TJclInt64Int64HashMap.KeySet: IJclInt64Set;
 var
   I, J: Integer;
-  Bucket: TJclInt64Int64Bucket;
+  Bucket: TJclInt64Int64HashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -18724,7 +18724,7 @@ end;
 function TJclInt64Int64HashMap.MapEquals(const AMap: IJclInt64Int64Map): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclInt64Int64Bucket;
+  Bucket: TJclInt64Int64HashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -18761,7 +18761,7 @@ end;
 procedure TJclInt64Int64HashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclInt64Int64Bucket;
+  Bucket: TJclInt64Int64HashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -18820,7 +18820,7 @@ end;
 procedure TJclInt64Int64HashMap.PutValue(const Key: Int64; const Value: Int64);
 var
   Index: Integer;
-  Bucket: TJclInt64Int64Bucket;
+  Bucket: TJclInt64Int64HashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -18846,7 +18846,7 @@ begin
       end
       else
       begin
-        Bucket := TJclInt64Int64Bucket.Create;
+        Bucket := TJclInt64Int64HashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -18921,7 +18921,7 @@ end;
 function TJclInt64Int64HashMap.Values: IJclInt64Collection;
 var
   I, J: Integer;
-  Bucket: TJclInt64Int64Bucket;
+  Bucket: TJclInt64Int64HashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -18972,9 +18972,9 @@ begin
   Result := ItemsEqual(A, B);
 end;
 
-//=== { TJclPtrIntfBucket } ==========================================
+//=== { TJclPtrIntfHashMapBucket } ==========================================
 
-procedure TJclPtrIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclPtrIntfHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -19017,7 +19017,7 @@ end;
 procedure TJclPtrIntfHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclPtrIntfBucket;
+  SelfBucket, NewBucket: TJclPtrIntfHashMapBucket;
   ADest: TJclPtrIntfHashMap;
   AMap: IJclPtrIntfMap;
 begin
@@ -19036,7 +19036,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclPtrIntfBucket.Create;
+          NewBucket := TJclPtrIntfHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -19072,7 +19072,7 @@ end;
 procedure TJclPtrIntfHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclPtrIntfBucket;
+  Bucket: TJclPtrIntfHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -19106,7 +19106,7 @@ end;
 function TJclPtrIntfHashMap.ContainsKey(Key: Pointer): Boolean;
 var
   I: Integer;
-  Bucket: TJclPtrIntfBucket;
+  Bucket: TJclPtrIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -19133,7 +19133,7 @@ end;
 function TJclPtrIntfHashMap.ContainsValue(const Value: IInterface): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclPtrIntfBucket;
+  Bucket: TJclPtrIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -19162,7 +19162,7 @@ end;
 
 function TJclPtrIntfHashMap.Extract(Key: Pointer): IInterface;
 var
-  Bucket: TJclPtrIntfBucket;
+  Bucket: TJclPtrIntfHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -19204,7 +19204,7 @@ end;
 function TJclPtrIntfHashMap.GetValue(Key: Pointer): IInterface;
 var
   I: Integer;
-  Bucket: TJclPtrIntfBucket;
+  Bucket: TJclPtrIntfHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -19241,7 +19241,7 @@ end;
 function TJclPtrIntfHashMap.KeyOfValue(const Value: IInterface): Pointer;
 var
   I, J: Integer;
-  Bucket: TJclPtrIntfBucket;
+  Bucket: TJclPtrIntfHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -19276,7 +19276,7 @@ end;
 function TJclPtrIntfHashMap.KeySet: IJclPtrSet;
 var
   I, J: Integer;
-  Bucket: TJclPtrIntfBucket;
+  Bucket: TJclPtrIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -19302,7 +19302,7 @@ end;
 function TJclPtrIntfHashMap.MapEquals(const AMap: IJclPtrIntfMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclPtrIntfBucket;
+  Bucket: TJclPtrIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -19339,7 +19339,7 @@ end;
 procedure TJclPtrIntfHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclPtrIntfBucket;
+  Bucket: TJclPtrIntfHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -19398,7 +19398,7 @@ end;
 procedure TJclPtrIntfHashMap.PutValue(Key: Pointer; const Value: IInterface);
 var
   Index: Integer;
-  Bucket: TJclPtrIntfBucket;
+  Bucket: TJclPtrIntfHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -19424,7 +19424,7 @@ begin
       end
       else
       begin
-        Bucket := TJclPtrIntfBucket.Create;
+        Bucket := TJclPtrIntfHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -19499,7 +19499,7 @@ end;
 function TJclPtrIntfHashMap.Values: IJclIntfCollection;
 var
   I, J: Integer;
-  Bucket: TJclPtrIntfBucket;
+  Bucket: TJclPtrIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -19550,9 +19550,9 @@ begin
   Result := IntfSimpleEqualityCompare(A, B);
 end;
 
-//=== { TJclIntfPtrBucket } ==========================================
+//=== { TJclIntfPtrHashMapBucket } ==========================================
 
-procedure TJclIntfPtrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfPtrHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -19595,7 +19595,7 @@ end;
 procedure TJclIntfPtrHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclIntfPtrBucket;
+  SelfBucket, NewBucket: TJclIntfPtrHashMapBucket;
   ADest: TJclIntfPtrHashMap;
   AMap: IJclIntfPtrMap;
 begin
@@ -19614,7 +19614,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclIntfPtrBucket.Create;
+          NewBucket := TJclIntfPtrHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -19650,7 +19650,7 @@ end;
 procedure TJclIntfPtrHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclIntfPtrBucket;
+  Bucket: TJclIntfPtrHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -19684,7 +19684,7 @@ end;
 function TJclIntfPtrHashMap.ContainsKey(const Key: IInterface): Boolean;
 var
   I: Integer;
-  Bucket: TJclIntfPtrBucket;
+  Bucket: TJclIntfPtrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -19711,7 +19711,7 @@ end;
 function TJclIntfPtrHashMap.ContainsValue(Value: Pointer): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclIntfPtrBucket;
+  Bucket: TJclIntfPtrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -19740,7 +19740,7 @@ end;
 
 function TJclIntfPtrHashMap.Extract(const Key: IInterface): Pointer;
 var
-  Bucket: TJclIntfPtrBucket;
+  Bucket: TJclIntfPtrHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -19782,7 +19782,7 @@ end;
 function TJclIntfPtrHashMap.GetValue(const Key: IInterface): Pointer;
 var
   I: Integer;
-  Bucket: TJclIntfPtrBucket;
+  Bucket: TJclIntfPtrHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -19819,7 +19819,7 @@ end;
 function TJclIntfPtrHashMap.KeyOfValue(Value: Pointer): IInterface;
 var
   I, J: Integer;
-  Bucket: TJclIntfPtrBucket;
+  Bucket: TJclIntfPtrHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -19854,7 +19854,7 @@ end;
 function TJclIntfPtrHashMap.KeySet: IJclIntfSet;
 var
   I, J: Integer;
-  Bucket: TJclIntfPtrBucket;
+  Bucket: TJclIntfPtrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -19880,7 +19880,7 @@ end;
 function TJclIntfPtrHashMap.MapEquals(const AMap: IJclIntfPtrMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclIntfPtrBucket;
+  Bucket: TJclIntfPtrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -19917,7 +19917,7 @@ end;
 procedure TJclIntfPtrHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclIntfPtrBucket;
+  Bucket: TJclIntfPtrHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -19976,7 +19976,7 @@ end;
 procedure TJclIntfPtrHashMap.PutValue(const Key: IInterface; Value: Pointer);
 var
   Index: Integer;
-  Bucket: TJclIntfPtrBucket;
+  Bucket: TJclIntfPtrHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -20002,7 +20002,7 @@ begin
       end
       else
       begin
-        Bucket := TJclIntfPtrBucket.Create;
+        Bucket := TJclIntfPtrHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -20077,7 +20077,7 @@ end;
 function TJclIntfPtrHashMap.Values: IJclPtrCollection;
 var
   I, J: Integer;
-  Bucket: TJclIntfPtrBucket;
+  Bucket: TJclIntfPtrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -20133,9 +20133,9 @@ begin
   Result := ItemsEqual(A, B);
 end;
 
-//=== { TJclPtrPtrBucket } ==========================================
+//=== { TJclPtrPtrHashMapBucket } ==========================================
 
-procedure TJclPtrPtrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclPtrPtrHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -20178,7 +20178,7 @@ end;
 procedure TJclPtrPtrHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclPtrPtrBucket;
+  SelfBucket, NewBucket: TJclPtrPtrHashMapBucket;
   ADest: TJclPtrPtrHashMap;
   AMap: IJclPtrPtrMap;
 begin
@@ -20197,7 +20197,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclPtrPtrBucket.Create;
+          NewBucket := TJclPtrPtrHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -20233,7 +20233,7 @@ end;
 procedure TJclPtrPtrHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclPtrPtrBucket;
+  Bucket: TJclPtrPtrHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -20267,7 +20267,7 @@ end;
 function TJclPtrPtrHashMap.ContainsKey(Key: Pointer): Boolean;
 var
   I: Integer;
-  Bucket: TJclPtrPtrBucket;
+  Bucket: TJclPtrPtrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -20294,7 +20294,7 @@ end;
 function TJclPtrPtrHashMap.ContainsValue(Value: Pointer): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclPtrPtrBucket;
+  Bucket: TJclPtrPtrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -20323,7 +20323,7 @@ end;
 
 function TJclPtrPtrHashMap.Extract(Key: Pointer): Pointer;
 var
-  Bucket: TJclPtrPtrBucket;
+  Bucket: TJclPtrPtrHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -20365,7 +20365,7 @@ end;
 function TJclPtrPtrHashMap.GetValue(Key: Pointer): Pointer;
 var
   I: Integer;
-  Bucket: TJclPtrPtrBucket;
+  Bucket: TJclPtrPtrHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -20402,7 +20402,7 @@ end;
 function TJclPtrPtrHashMap.KeyOfValue(Value: Pointer): Pointer;
 var
   I, J: Integer;
-  Bucket: TJclPtrPtrBucket;
+  Bucket: TJclPtrPtrHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -20437,7 +20437,7 @@ end;
 function TJclPtrPtrHashMap.KeySet: IJclPtrSet;
 var
   I, J: Integer;
-  Bucket: TJclPtrPtrBucket;
+  Bucket: TJclPtrPtrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -20463,7 +20463,7 @@ end;
 function TJclPtrPtrHashMap.MapEquals(const AMap: IJclPtrPtrMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclPtrPtrBucket;
+  Bucket: TJclPtrPtrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -20500,7 +20500,7 @@ end;
 procedure TJclPtrPtrHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclPtrPtrBucket;
+  Bucket: TJclPtrPtrHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -20559,7 +20559,7 @@ end;
 procedure TJclPtrPtrHashMap.PutValue(Key: Pointer; Value: Pointer);
 var
   Index: Integer;
-  Bucket: TJclPtrPtrBucket;
+  Bucket: TJclPtrPtrHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -20585,7 +20585,7 @@ begin
       end
       else
       begin
-        Bucket := TJclPtrPtrBucket.Create;
+        Bucket := TJclPtrPtrHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -20660,7 +20660,7 @@ end;
 function TJclPtrPtrHashMap.Values: IJclPtrCollection;
 var
   I, J: Integer;
-  Bucket: TJclPtrPtrBucket;
+  Bucket: TJclPtrPtrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -20711,9 +20711,9 @@ begin
   Result := ItemsEqual(A, B);
 end;
 
-//=== { TJclIntfBucket } ==========================================
+//=== { TJclIntfHashMapBucket } ==========================================
 
-procedure TJclIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -20757,7 +20757,7 @@ end;
 procedure TJclIntfHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclIntfBucket;
+  SelfBucket, NewBucket: TJclIntfHashMapBucket;
   ADest: TJclIntfHashMap;
   AMap: IJclIntfMap;
 begin
@@ -20776,7 +20776,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclIntfBucket.Create;
+          NewBucket := TJclIntfHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -20812,7 +20812,7 @@ end;
 procedure TJclIntfHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclIntfBucket;
+  Bucket: TJclIntfHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -20846,7 +20846,7 @@ end;
 function TJclIntfHashMap.ContainsKey(const Key: IInterface): Boolean;
 var
   I: Integer;
-  Bucket: TJclIntfBucket;
+  Bucket: TJclIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -20873,7 +20873,7 @@ end;
 function TJclIntfHashMap.ContainsValue(Value: TObject): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclIntfBucket;
+  Bucket: TJclIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -20902,7 +20902,7 @@ end;
 
 function TJclIntfHashMap.Extract(const Key: IInterface): TObject;
 var
-  Bucket: TJclIntfBucket;
+  Bucket: TJclIntfHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -20944,7 +20944,7 @@ end;
 function TJclIntfHashMap.GetValue(const Key: IInterface): TObject;
 var
   I: Integer;
-  Bucket: TJclIntfBucket;
+  Bucket: TJclIntfHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -20981,7 +20981,7 @@ end;
 function TJclIntfHashMap.KeyOfValue(Value: TObject): IInterface;
 var
   I, J: Integer;
-  Bucket: TJclIntfBucket;
+  Bucket: TJclIntfHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -21016,7 +21016,7 @@ end;
 function TJclIntfHashMap.KeySet: IJclIntfSet;
 var
   I, J: Integer;
-  Bucket: TJclIntfBucket;
+  Bucket: TJclIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -21042,7 +21042,7 @@ end;
 function TJclIntfHashMap.MapEquals(const AMap: IJclIntfMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclIntfBucket;
+  Bucket: TJclIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -21079,7 +21079,7 @@ end;
 procedure TJclIntfHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclIntfBucket;
+  Bucket: TJclIntfHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -21138,7 +21138,7 @@ end;
 procedure TJclIntfHashMap.PutValue(const Key: IInterface; Value: TObject);
 var
   Index: Integer;
-  Bucket: TJclIntfBucket;
+  Bucket: TJclIntfHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -21164,7 +21164,7 @@ begin
       end
       else
       begin
-        Bucket := TJclIntfBucket.Create;
+        Bucket := TJclIntfHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -21239,7 +21239,7 @@ end;
 function TJclIntfHashMap.Values: IJclCollection;
 var
   I, J: Integer;
-  Bucket: TJclIntfBucket;
+  Bucket: TJclIntfHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -21303,9 +21303,9 @@ begin
   Result := SimpleEqualityCompare(A, B);
 end;
 
-//=== { TJclAnsiStrBucket } ==========================================
+//=== { TJclAnsiStrHashMapBucket } ==========================================
 
-procedure TJclAnsiStrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclAnsiStrHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -21349,7 +21349,7 @@ end;
 procedure TJclAnsiStrHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclAnsiStrBucket;
+  SelfBucket, NewBucket: TJclAnsiStrHashMapBucket;
   ADest: TJclAnsiStrHashMap;
   AMap: IJclAnsiStrMap;
 begin
@@ -21368,7 +21368,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclAnsiStrBucket.Create;
+          NewBucket := TJclAnsiStrHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -21404,7 +21404,7 @@ end;
 procedure TJclAnsiStrHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclAnsiStrBucket;
+  Bucket: TJclAnsiStrHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -21438,7 +21438,7 @@ end;
 function TJclAnsiStrHashMap.ContainsKey(const Key: AnsiString): Boolean;
 var
   I: Integer;
-  Bucket: TJclAnsiStrBucket;
+  Bucket: TJclAnsiStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -21465,7 +21465,7 @@ end;
 function TJclAnsiStrHashMap.ContainsValue(Value: TObject): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclAnsiStrBucket;
+  Bucket: TJclAnsiStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -21494,7 +21494,7 @@ end;
 
 function TJclAnsiStrHashMap.Extract(const Key: AnsiString): TObject;
 var
-  Bucket: TJclAnsiStrBucket;
+  Bucket: TJclAnsiStrHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -21536,7 +21536,7 @@ end;
 function TJclAnsiStrHashMap.GetValue(const Key: AnsiString): TObject;
 var
   I: Integer;
-  Bucket: TJclAnsiStrBucket;
+  Bucket: TJclAnsiStrHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -21573,7 +21573,7 @@ end;
 function TJclAnsiStrHashMap.KeyOfValue(Value: TObject): AnsiString;
 var
   I, J: Integer;
-  Bucket: TJclAnsiStrBucket;
+  Bucket: TJclAnsiStrHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -21608,7 +21608,7 @@ end;
 function TJclAnsiStrHashMap.KeySet: IJclAnsiStrSet;
 var
   I, J: Integer;
-  Bucket: TJclAnsiStrBucket;
+  Bucket: TJclAnsiStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -21634,7 +21634,7 @@ end;
 function TJclAnsiStrHashMap.MapEquals(const AMap: IJclAnsiStrMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclAnsiStrBucket;
+  Bucket: TJclAnsiStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -21671,7 +21671,7 @@ end;
 procedure TJclAnsiStrHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclAnsiStrBucket;
+  Bucket: TJclAnsiStrHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -21730,7 +21730,7 @@ end;
 procedure TJclAnsiStrHashMap.PutValue(const Key: AnsiString; Value: TObject);
 var
   Index: Integer;
-  Bucket: TJclAnsiStrBucket;
+  Bucket: TJclAnsiStrHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -21756,7 +21756,7 @@ begin
       end
       else
       begin
-        Bucket := TJclAnsiStrBucket.Create;
+        Bucket := TJclAnsiStrHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -21831,7 +21831,7 @@ end;
 function TJclAnsiStrHashMap.Values: IJclCollection;
 var
   I, J: Integer;
-  Bucket: TJclAnsiStrBucket;
+  Bucket: TJclAnsiStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -21895,9 +21895,9 @@ begin
   Result := SimpleEqualityCompare(A, B);
 end;
 
-//=== { TJclWideStrBucket } ==========================================
+//=== { TJclWideStrHashMapBucket } ==========================================
 
-procedure TJclWideStrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclWideStrHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -21941,7 +21941,7 @@ end;
 procedure TJclWideStrHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclWideStrBucket;
+  SelfBucket, NewBucket: TJclWideStrHashMapBucket;
   ADest: TJclWideStrHashMap;
   AMap: IJclWideStrMap;
 begin
@@ -21960,7 +21960,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclWideStrBucket.Create;
+          NewBucket := TJclWideStrHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -21996,7 +21996,7 @@ end;
 procedure TJclWideStrHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclWideStrBucket;
+  Bucket: TJclWideStrHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -22030,7 +22030,7 @@ end;
 function TJclWideStrHashMap.ContainsKey(const Key: WideString): Boolean;
 var
   I: Integer;
-  Bucket: TJclWideStrBucket;
+  Bucket: TJclWideStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -22057,7 +22057,7 @@ end;
 function TJclWideStrHashMap.ContainsValue(Value: TObject): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclWideStrBucket;
+  Bucket: TJclWideStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -22086,7 +22086,7 @@ end;
 
 function TJclWideStrHashMap.Extract(const Key: WideString): TObject;
 var
-  Bucket: TJclWideStrBucket;
+  Bucket: TJclWideStrHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -22128,7 +22128,7 @@ end;
 function TJclWideStrHashMap.GetValue(const Key: WideString): TObject;
 var
   I: Integer;
-  Bucket: TJclWideStrBucket;
+  Bucket: TJclWideStrHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -22165,7 +22165,7 @@ end;
 function TJclWideStrHashMap.KeyOfValue(Value: TObject): WideString;
 var
   I, J: Integer;
-  Bucket: TJclWideStrBucket;
+  Bucket: TJclWideStrHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -22200,7 +22200,7 @@ end;
 function TJclWideStrHashMap.KeySet: IJclWideStrSet;
 var
   I, J: Integer;
-  Bucket: TJclWideStrBucket;
+  Bucket: TJclWideStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -22226,7 +22226,7 @@ end;
 function TJclWideStrHashMap.MapEquals(const AMap: IJclWideStrMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclWideStrBucket;
+  Bucket: TJclWideStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -22263,7 +22263,7 @@ end;
 procedure TJclWideStrHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclWideStrBucket;
+  Bucket: TJclWideStrHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -22322,7 +22322,7 @@ end;
 procedure TJclWideStrHashMap.PutValue(const Key: WideString; Value: TObject);
 var
   Index: Integer;
-  Bucket: TJclWideStrBucket;
+  Bucket: TJclWideStrHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -22348,7 +22348,7 @@ begin
       end
       else
       begin
-        Bucket := TJclWideStrBucket.Create;
+        Bucket := TJclWideStrHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -22423,7 +22423,7 @@ end;
 function TJclWideStrHashMap.Values: IJclCollection;
 var
   I, J: Integer;
-  Bucket: TJclWideStrBucket;
+  Bucket: TJclWideStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -22488,9 +22488,9 @@ begin
 end;
 
 {$IFDEF SUPPORTS_UNICODE_STRING}
-//=== { TJclUnicodeStrBucket } ==========================================
+//=== { TJclUnicodeStrHashMapBucket } ==========================================
 
-procedure TJclUnicodeStrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclUnicodeStrHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -22536,7 +22536,7 @@ end;
 procedure TJclUnicodeStrHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclUnicodeStrBucket;
+  SelfBucket, NewBucket: TJclUnicodeStrHashMapBucket;
   ADest: TJclUnicodeStrHashMap;
   AMap: IJclUnicodeStrMap;
 begin
@@ -22555,7 +22555,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclUnicodeStrBucket.Create;
+          NewBucket := TJclUnicodeStrHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -22591,7 +22591,7 @@ end;
 procedure TJclUnicodeStrHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclUnicodeStrBucket;
+  Bucket: TJclUnicodeStrHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -22625,7 +22625,7 @@ end;
 function TJclUnicodeStrHashMap.ContainsKey(const Key: UnicodeString): Boolean;
 var
   I: Integer;
-  Bucket: TJclUnicodeStrBucket;
+  Bucket: TJclUnicodeStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -22652,7 +22652,7 @@ end;
 function TJclUnicodeStrHashMap.ContainsValue(Value: TObject): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclUnicodeStrBucket;
+  Bucket: TJclUnicodeStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -22681,7 +22681,7 @@ end;
 
 function TJclUnicodeStrHashMap.Extract(const Key: UnicodeString): TObject;
 var
-  Bucket: TJclUnicodeStrBucket;
+  Bucket: TJclUnicodeStrHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -22723,7 +22723,7 @@ end;
 function TJclUnicodeStrHashMap.GetValue(const Key: UnicodeString): TObject;
 var
   I: Integer;
-  Bucket: TJclUnicodeStrBucket;
+  Bucket: TJclUnicodeStrHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -22760,7 +22760,7 @@ end;
 function TJclUnicodeStrHashMap.KeyOfValue(Value: TObject): UnicodeString;
 var
   I, J: Integer;
-  Bucket: TJclUnicodeStrBucket;
+  Bucket: TJclUnicodeStrHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -22795,7 +22795,7 @@ end;
 function TJclUnicodeStrHashMap.KeySet: IJclUnicodeStrSet;
 var
   I, J: Integer;
-  Bucket: TJclUnicodeStrBucket;
+  Bucket: TJclUnicodeStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -22821,7 +22821,7 @@ end;
 function TJclUnicodeStrHashMap.MapEquals(const AMap: IJclUnicodeStrMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclUnicodeStrBucket;
+  Bucket: TJclUnicodeStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -22858,7 +22858,7 @@ end;
 procedure TJclUnicodeStrHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclUnicodeStrBucket;
+  Bucket: TJclUnicodeStrHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -22917,7 +22917,7 @@ end;
 procedure TJclUnicodeStrHashMap.PutValue(const Key: UnicodeString; Value: TObject);
 var
   Index: Integer;
-  Bucket: TJclUnicodeStrBucket;
+  Bucket: TJclUnicodeStrHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -22943,7 +22943,7 @@ begin
       end
       else
       begin
-        Bucket := TJclUnicodeStrBucket.Create;
+        Bucket := TJclUnicodeStrHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -23018,7 +23018,7 @@ end;
 function TJclUnicodeStrHashMap.Values: IJclCollection;
 var
   I, J: Integer;
-  Bucket: TJclUnicodeStrBucket;
+  Bucket: TJclUnicodeStrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -23084,9 +23084,9 @@ end;
 
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
-//=== { TJclSingleBucket } ==========================================
+//=== { TJclSingleHashMapBucket } ==========================================
 
-procedure TJclSingleBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclSingleHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -23130,7 +23130,7 @@ end;
 procedure TJclSingleHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclSingleBucket;
+  SelfBucket, NewBucket: TJclSingleHashMapBucket;
   ADest: TJclSingleHashMap;
   AMap: IJclSingleMap;
 begin
@@ -23149,7 +23149,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclSingleBucket.Create;
+          NewBucket := TJclSingleHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -23185,7 +23185,7 @@ end;
 procedure TJclSingleHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclSingleBucket;
+  Bucket: TJclSingleHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -23219,7 +23219,7 @@ end;
 function TJclSingleHashMap.ContainsKey(const Key: Single): Boolean;
 var
   I: Integer;
-  Bucket: TJclSingleBucket;
+  Bucket: TJclSingleHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -23246,7 +23246,7 @@ end;
 function TJclSingleHashMap.ContainsValue(Value: TObject): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclSingleBucket;
+  Bucket: TJclSingleHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -23275,7 +23275,7 @@ end;
 
 function TJclSingleHashMap.Extract(const Key: Single): TObject;
 var
-  Bucket: TJclSingleBucket;
+  Bucket: TJclSingleHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -23317,7 +23317,7 @@ end;
 function TJclSingleHashMap.GetValue(const Key: Single): TObject;
 var
   I: Integer;
-  Bucket: TJclSingleBucket;
+  Bucket: TJclSingleHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -23354,7 +23354,7 @@ end;
 function TJclSingleHashMap.KeyOfValue(Value: TObject): Single;
 var
   I, J: Integer;
-  Bucket: TJclSingleBucket;
+  Bucket: TJclSingleHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -23389,7 +23389,7 @@ end;
 function TJclSingleHashMap.KeySet: IJclSingleSet;
 var
   I, J: Integer;
-  Bucket: TJclSingleBucket;
+  Bucket: TJclSingleHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -23415,7 +23415,7 @@ end;
 function TJclSingleHashMap.MapEquals(const AMap: IJclSingleMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclSingleBucket;
+  Bucket: TJclSingleHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -23452,7 +23452,7 @@ end;
 procedure TJclSingleHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclSingleBucket;
+  Bucket: TJclSingleHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -23511,7 +23511,7 @@ end;
 procedure TJclSingleHashMap.PutValue(const Key: Single; Value: TObject);
 var
   Index: Integer;
-  Bucket: TJclSingleBucket;
+  Bucket: TJclSingleHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -23537,7 +23537,7 @@ begin
       end
       else
       begin
-        Bucket := TJclSingleBucket.Create;
+        Bucket := TJclSingleHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -23612,7 +23612,7 @@ end;
 function TJclSingleHashMap.Values: IJclCollection;
 var
   I, J: Integer;
-  Bucket: TJclSingleBucket;
+  Bucket: TJclSingleHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -23676,9 +23676,9 @@ begin
   Result := SimpleEqualityCompare(A, B);
 end;
 
-//=== { TJclDoubleBucket } ==========================================
+//=== { TJclDoubleHashMapBucket } ==========================================
 
-procedure TJclDoubleBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclDoubleHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -23722,7 +23722,7 @@ end;
 procedure TJclDoubleHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclDoubleBucket;
+  SelfBucket, NewBucket: TJclDoubleHashMapBucket;
   ADest: TJclDoubleHashMap;
   AMap: IJclDoubleMap;
 begin
@@ -23741,7 +23741,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclDoubleBucket.Create;
+          NewBucket := TJclDoubleHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -23777,7 +23777,7 @@ end;
 procedure TJclDoubleHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclDoubleBucket;
+  Bucket: TJclDoubleHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -23811,7 +23811,7 @@ end;
 function TJclDoubleHashMap.ContainsKey(const Key: Double): Boolean;
 var
   I: Integer;
-  Bucket: TJclDoubleBucket;
+  Bucket: TJclDoubleHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -23838,7 +23838,7 @@ end;
 function TJclDoubleHashMap.ContainsValue(Value: TObject): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclDoubleBucket;
+  Bucket: TJclDoubleHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -23867,7 +23867,7 @@ end;
 
 function TJclDoubleHashMap.Extract(const Key: Double): TObject;
 var
-  Bucket: TJclDoubleBucket;
+  Bucket: TJclDoubleHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -23909,7 +23909,7 @@ end;
 function TJclDoubleHashMap.GetValue(const Key: Double): TObject;
 var
   I: Integer;
-  Bucket: TJclDoubleBucket;
+  Bucket: TJclDoubleHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -23946,7 +23946,7 @@ end;
 function TJclDoubleHashMap.KeyOfValue(Value: TObject): Double;
 var
   I, J: Integer;
-  Bucket: TJclDoubleBucket;
+  Bucket: TJclDoubleHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -23981,7 +23981,7 @@ end;
 function TJclDoubleHashMap.KeySet: IJclDoubleSet;
 var
   I, J: Integer;
-  Bucket: TJclDoubleBucket;
+  Bucket: TJclDoubleHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -24007,7 +24007,7 @@ end;
 function TJclDoubleHashMap.MapEquals(const AMap: IJclDoubleMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclDoubleBucket;
+  Bucket: TJclDoubleHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -24044,7 +24044,7 @@ end;
 procedure TJclDoubleHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclDoubleBucket;
+  Bucket: TJclDoubleHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -24103,7 +24103,7 @@ end;
 procedure TJclDoubleHashMap.PutValue(const Key: Double; Value: TObject);
 var
   Index: Integer;
-  Bucket: TJclDoubleBucket;
+  Bucket: TJclDoubleHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -24129,7 +24129,7 @@ begin
       end
       else
       begin
-        Bucket := TJclDoubleBucket.Create;
+        Bucket := TJclDoubleHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -24204,7 +24204,7 @@ end;
 function TJclDoubleHashMap.Values: IJclCollection;
 var
   I, J: Integer;
-  Bucket: TJclDoubleBucket;
+  Bucket: TJclDoubleHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -24268,9 +24268,9 @@ begin
   Result := SimpleEqualityCompare(A, B);
 end;
 
-//=== { TJclExtendedBucket } ==========================================
+//=== { TJclExtendedHashMapBucket } ==========================================
 
-procedure TJclExtendedBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclExtendedHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -24314,7 +24314,7 @@ end;
 procedure TJclExtendedHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclExtendedBucket;
+  SelfBucket, NewBucket: TJclExtendedHashMapBucket;
   ADest: TJclExtendedHashMap;
   AMap: IJclExtendedMap;
 begin
@@ -24333,7 +24333,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclExtendedBucket.Create;
+          NewBucket := TJclExtendedHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -24369,7 +24369,7 @@ end;
 procedure TJclExtendedHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclExtendedBucket;
+  Bucket: TJclExtendedHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -24403,7 +24403,7 @@ end;
 function TJclExtendedHashMap.ContainsKey(const Key: Extended): Boolean;
 var
   I: Integer;
-  Bucket: TJclExtendedBucket;
+  Bucket: TJclExtendedHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -24430,7 +24430,7 @@ end;
 function TJclExtendedHashMap.ContainsValue(Value: TObject): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclExtendedBucket;
+  Bucket: TJclExtendedHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -24459,7 +24459,7 @@ end;
 
 function TJclExtendedHashMap.Extract(const Key: Extended): TObject;
 var
-  Bucket: TJclExtendedBucket;
+  Bucket: TJclExtendedHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -24501,7 +24501,7 @@ end;
 function TJclExtendedHashMap.GetValue(const Key: Extended): TObject;
 var
   I: Integer;
-  Bucket: TJclExtendedBucket;
+  Bucket: TJclExtendedHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -24538,7 +24538,7 @@ end;
 function TJclExtendedHashMap.KeyOfValue(Value: TObject): Extended;
 var
   I, J: Integer;
-  Bucket: TJclExtendedBucket;
+  Bucket: TJclExtendedHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -24573,7 +24573,7 @@ end;
 function TJclExtendedHashMap.KeySet: IJclExtendedSet;
 var
   I, J: Integer;
-  Bucket: TJclExtendedBucket;
+  Bucket: TJclExtendedHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -24599,7 +24599,7 @@ end;
 function TJclExtendedHashMap.MapEquals(const AMap: IJclExtendedMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclExtendedBucket;
+  Bucket: TJclExtendedHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -24636,7 +24636,7 @@ end;
 procedure TJclExtendedHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclExtendedBucket;
+  Bucket: TJclExtendedHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -24695,7 +24695,7 @@ end;
 procedure TJclExtendedHashMap.PutValue(const Key: Extended; Value: TObject);
 var
   Index: Integer;
-  Bucket: TJclExtendedBucket;
+  Bucket: TJclExtendedHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -24721,7 +24721,7 @@ begin
       end
       else
       begin
-        Bucket := TJclExtendedBucket.Create;
+        Bucket := TJclExtendedHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -24796,7 +24796,7 @@ end;
 function TJclExtendedHashMap.Values: IJclCollection;
 var
   I, J: Integer;
-  Bucket: TJclExtendedBucket;
+  Bucket: TJclExtendedHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -24860,9 +24860,9 @@ begin
   Result := SimpleEqualityCompare(A, B);
 end;
 
-//=== { TJclIntegerBucket } ==========================================
+//=== { TJclIntegerHashMapBucket } ==========================================
 
-procedure TJclIntegerBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclIntegerHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -24906,7 +24906,7 @@ end;
 procedure TJclIntegerHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclIntegerBucket;
+  SelfBucket, NewBucket: TJclIntegerHashMapBucket;
   ADest: TJclIntegerHashMap;
   AMap: IJclIntegerMap;
 begin
@@ -24925,7 +24925,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclIntegerBucket.Create;
+          NewBucket := TJclIntegerHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -24961,7 +24961,7 @@ end;
 procedure TJclIntegerHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclIntegerBucket;
+  Bucket: TJclIntegerHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -24995,7 +24995,7 @@ end;
 function TJclIntegerHashMap.ContainsKey(Key: Integer): Boolean;
 var
   I: Integer;
-  Bucket: TJclIntegerBucket;
+  Bucket: TJclIntegerHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -25022,7 +25022,7 @@ end;
 function TJclIntegerHashMap.ContainsValue(Value: TObject): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclIntegerBucket;
+  Bucket: TJclIntegerHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -25051,7 +25051,7 @@ end;
 
 function TJclIntegerHashMap.Extract(Key: Integer): TObject;
 var
-  Bucket: TJclIntegerBucket;
+  Bucket: TJclIntegerHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -25093,7 +25093,7 @@ end;
 function TJclIntegerHashMap.GetValue(Key: Integer): TObject;
 var
   I: Integer;
-  Bucket: TJclIntegerBucket;
+  Bucket: TJclIntegerHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -25130,7 +25130,7 @@ end;
 function TJclIntegerHashMap.KeyOfValue(Value: TObject): Integer;
 var
   I, J: Integer;
-  Bucket: TJclIntegerBucket;
+  Bucket: TJclIntegerHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -25165,7 +25165,7 @@ end;
 function TJclIntegerHashMap.KeySet: IJclIntegerSet;
 var
   I, J: Integer;
-  Bucket: TJclIntegerBucket;
+  Bucket: TJclIntegerHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -25191,7 +25191,7 @@ end;
 function TJclIntegerHashMap.MapEquals(const AMap: IJclIntegerMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclIntegerBucket;
+  Bucket: TJclIntegerHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -25228,7 +25228,7 @@ end;
 procedure TJclIntegerHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclIntegerBucket;
+  Bucket: TJclIntegerHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -25287,7 +25287,7 @@ end;
 procedure TJclIntegerHashMap.PutValue(Key: Integer; Value: TObject);
 var
   Index: Integer;
-  Bucket: TJclIntegerBucket;
+  Bucket: TJclIntegerHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -25313,7 +25313,7 @@ begin
       end
       else
       begin
-        Bucket := TJclIntegerBucket.Create;
+        Bucket := TJclIntegerHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -25388,7 +25388,7 @@ end;
 function TJclIntegerHashMap.Values: IJclCollection;
 var
   I, J: Integer;
-  Bucket: TJclIntegerBucket;
+  Bucket: TJclIntegerHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -25452,9 +25452,9 @@ begin
   Result := SimpleEqualityCompare(A, B);
 end;
 
-//=== { TJclCardinalBucket } ==========================================
+//=== { TJclCardinalHashMapBucket } ==========================================
 
-procedure TJclCardinalBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclCardinalHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -25498,7 +25498,7 @@ end;
 procedure TJclCardinalHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclCardinalBucket;
+  SelfBucket, NewBucket: TJclCardinalHashMapBucket;
   ADest: TJclCardinalHashMap;
   AMap: IJclCardinalMap;
 begin
@@ -25517,7 +25517,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclCardinalBucket.Create;
+          NewBucket := TJclCardinalHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -25553,7 +25553,7 @@ end;
 procedure TJclCardinalHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclCardinalBucket;
+  Bucket: TJclCardinalHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -25587,7 +25587,7 @@ end;
 function TJclCardinalHashMap.ContainsKey(Key: Cardinal): Boolean;
 var
   I: Integer;
-  Bucket: TJclCardinalBucket;
+  Bucket: TJclCardinalHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -25614,7 +25614,7 @@ end;
 function TJclCardinalHashMap.ContainsValue(Value: TObject): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclCardinalBucket;
+  Bucket: TJclCardinalHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -25643,7 +25643,7 @@ end;
 
 function TJclCardinalHashMap.Extract(Key: Cardinal): TObject;
 var
-  Bucket: TJclCardinalBucket;
+  Bucket: TJclCardinalHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -25685,7 +25685,7 @@ end;
 function TJclCardinalHashMap.GetValue(Key: Cardinal): TObject;
 var
   I: Integer;
-  Bucket: TJclCardinalBucket;
+  Bucket: TJclCardinalHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -25722,7 +25722,7 @@ end;
 function TJclCardinalHashMap.KeyOfValue(Value: TObject): Cardinal;
 var
   I, J: Integer;
-  Bucket: TJclCardinalBucket;
+  Bucket: TJclCardinalHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -25757,7 +25757,7 @@ end;
 function TJclCardinalHashMap.KeySet: IJclCardinalSet;
 var
   I, J: Integer;
-  Bucket: TJclCardinalBucket;
+  Bucket: TJclCardinalHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -25783,7 +25783,7 @@ end;
 function TJclCardinalHashMap.MapEquals(const AMap: IJclCardinalMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclCardinalBucket;
+  Bucket: TJclCardinalHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -25820,7 +25820,7 @@ end;
 procedure TJclCardinalHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclCardinalBucket;
+  Bucket: TJclCardinalHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -25879,7 +25879,7 @@ end;
 procedure TJclCardinalHashMap.PutValue(Key: Cardinal; Value: TObject);
 var
   Index: Integer;
-  Bucket: TJclCardinalBucket;
+  Bucket: TJclCardinalHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -25905,7 +25905,7 @@ begin
       end
       else
       begin
-        Bucket := TJclCardinalBucket.Create;
+        Bucket := TJclCardinalHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -25980,7 +25980,7 @@ end;
 function TJclCardinalHashMap.Values: IJclCollection;
 var
   I, J: Integer;
-  Bucket: TJclCardinalBucket;
+  Bucket: TJclCardinalHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -26044,9 +26044,9 @@ begin
   Result := SimpleEqualityCompare(A, B);
 end;
 
-//=== { TJclInt64Bucket } ==========================================
+//=== { TJclInt64HashMapBucket } ==========================================
 
-procedure TJclInt64Bucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclInt64HashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -26090,7 +26090,7 @@ end;
 procedure TJclInt64HashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclInt64Bucket;
+  SelfBucket, NewBucket: TJclInt64HashMapBucket;
   ADest: TJclInt64HashMap;
   AMap: IJclInt64Map;
 begin
@@ -26109,7 +26109,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclInt64Bucket.Create;
+          NewBucket := TJclInt64HashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -26145,7 +26145,7 @@ end;
 procedure TJclInt64HashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclInt64Bucket;
+  Bucket: TJclInt64HashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -26179,7 +26179,7 @@ end;
 function TJclInt64HashMap.ContainsKey(const Key: Int64): Boolean;
 var
   I: Integer;
-  Bucket: TJclInt64Bucket;
+  Bucket: TJclInt64HashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -26206,7 +26206,7 @@ end;
 function TJclInt64HashMap.ContainsValue(Value: TObject): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclInt64Bucket;
+  Bucket: TJclInt64HashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -26235,7 +26235,7 @@ end;
 
 function TJclInt64HashMap.Extract(const Key: Int64): TObject;
 var
-  Bucket: TJclInt64Bucket;
+  Bucket: TJclInt64HashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -26277,7 +26277,7 @@ end;
 function TJclInt64HashMap.GetValue(const Key: Int64): TObject;
 var
   I: Integer;
-  Bucket: TJclInt64Bucket;
+  Bucket: TJclInt64HashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -26314,7 +26314,7 @@ end;
 function TJclInt64HashMap.KeyOfValue(Value: TObject): Int64;
 var
   I, J: Integer;
-  Bucket: TJclInt64Bucket;
+  Bucket: TJclInt64HashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -26349,7 +26349,7 @@ end;
 function TJclInt64HashMap.KeySet: IJclInt64Set;
 var
   I, J: Integer;
-  Bucket: TJclInt64Bucket;
+  Bucket: TJclInt64HashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -26375,7 +26375,7 @@ end;
 function TJclInt64HashMap.MapEquals(const AMap: IJclInt64Map): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclInt64Bucket;
+  Bucket: TJclInt64HashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -26412,7 +26412,7 @@ end;
 procedure TJclInt64HashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclInt64Bucket;
+  Bucket: TJclInt64HashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -26471,7 +26471,7 @@ end;
 procedure TJclInt64HashMap.PutValue(const Key: Int64; Value: TObject);
 var
   Index: Integer;
-  Bucket: TJclInt64Bucket;
+  Bucket: TJclInt64HashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -26497,7 +26497,7 @@ begin
       end
       else
       begin
-        Bucket := TJclInt64Bucket.Create;
+        Bucket := TJclInt64HashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -26572,7 +26572,7 @@ end;
 function TJclInt64HashMap.Values: IJclCollection;
 var
   I, J: Integer;
-  Bucket: TJclInt64Bucket;
+  Bucket: TJclInt64HashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -26636,9 +26636,9 @@ begin
   Result := SimpleEqualityCompare(A, B);
 end;
 
-//=== { TJclPtrBucket } ==========================================
+//=== { TJclPtrHashMapBucket } ==========================================
 
-procedure TJclPtrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclPtrHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -26682,7 +26682,7 @@ end;
 procedure TJclPtrHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclPtrBucket;
+  SelfBucket, NewBucket: TJclPtrHashMapBucket;
   ADest: TJclPtrHashMap;
   AMap: IJclPtrMap;
 begin
@@ -26701,7 +26701,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclPtrBucket.Create;
+          NewBucket := TJclPtrHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -26737,7 +26737,7 @@ end;
 procedure TJclPtrHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclPtrBucket;
+  Bucket: TJclPtrHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -26771,7 +26771,7 @@ end;
 function TJclPtrHashMap.ContainsKey(Key: Pointer): Boolean;
 var
   I: Integer;
-  Bucket: TJclPtrBucket;
+  Bucket: TJclPtrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -26798,7 +26798,7 @@ end;
 function TJclPtrHashMap.ContainsValue(Value: TObject): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclPtrBucket;
+  Bucket: TJclPtrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -26827,7 +26827,7 @@ end;
 
 function TJclPtrHashMap.Extract(Key: Pointer): TObject;
 var
-  Bucket: TJclPtrBucket;
+  Bucket: TJclPtrHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -26869,7 +26869,7 @@ end;
 function TJclPtrHashMap.GetValue(Key: Pointer): TObject;
 var
   I: Integer;
-  Bucket: TJclPtrBucket;
+  Bucket: TJclPtrHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -26906,7 +26906,7 @@ end;
 function TJclPtrHashMap.KeyOfValue(Value: TObject): Pointer;
 var
   I, J: Integer;
-  Bucket: TJclPtrBucket;
+  Bucket: TJclPtrHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -26941,7 +26941,7 @@ end;
 function TJclPtrHashMap.KeySet: IJclPtrSet;
 var
   I, J: Integer;
-  Bucket: TJclPtrBucket;
+  Bucket: TJclPtrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -26967,7 +26967,7 @@ end;
 function TJclPtrHashMap.MapEquals(const AMap: IJclPtrMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclPtrBucket;
+  Bucket: TJclPtrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -27004,7 +27004,7 @@ end;
 procedure TJclPtrHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclPtrBucket;
+  Bucket: TJclPtrHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -27063,7 +27063,7 @@ end;
 procedure TJclPtrHashMap.PutValue(Key: Pointer; Value: TObject);
 var
   Index: Integer;
-  Bucket: TJclPtrBucket;
+  Bucket: TJclPtrHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -27089,7 +27089,7 @@ begin
       end
       else
       begin
-        Bucket := TJclPtrBucket.Create;
+        Bucket := TJclPtrHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -27164,7 +27164,7 @@ end;
 function TJclPtrHashMap.Values: IJclCollection;
 var
   I, J: Integer;
-  Bucket: TJclPtrBucket;
+  Bucket: TJclPtrHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -27228,9 +27228,9 @@ begin
   Result := SimpleEqualityCompare(A, B);
 end;
 
-//=== { TJclBucket } ==========================================
+//=== { TJclHashMapBucket } ==========================================
 
-procedure TJclBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
 begin
   if Count > 0 then
   begin
@@ -27275,7 +27275,7 @@ end;
 procedure TJclHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclBucket;
+  SelfBucket, NewBucket: TJclHashMapBucket;
   ADest: TJclHashMap;
   AMap: IJclMap;
 begin
@@ -27294,7 +27294,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclBucket.Create;
+          NewBucket := TJclHashMapBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -27330,7 +27330,7 @@ end;
 procedure TJclHashMap.Clear;
 var
   I, J: Integer;
-  Bucket: TJclBucket;
+  Bucket: TJclHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -27364,7 +27364,7 @@ end;
 function TJclHashMap.ContainsKey(Key: TObject): Boolean;
 var
   I: Integer;
-  Bucket: TJclBucket;
+  Bucket: TJclHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -27391,7 +27391,7 @@ end;
 function TJclHashMap.ContainsValue(Value: TObject): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclBucket;
+  Bucket: TJclHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -27420,7 +27420,7 @@ end;
 
 function TJclHashMap.Extract(Key: TObject): TObject;
 var
-  Bucket: TJclBucket;
+  Bucket: TJclHashMapBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -27462,7 +27462,7 @@ end;
 function TJclHashMap.GetValue(Key: TObject): TObject;
 var
   I: Integer;
-  Bucket: TJclBucket;
+  Bucket: TJclHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -27499,7 +27499,7 @@ end;
 function TJclHashMap.KeyOfValue(Value: TObject): TObject;
 var
   I, J: Integer;
-  Bucket: TJclBucket;
+  Bucket: TJclHashMapBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -27534,7 +27534,7 @@ end;
 function TJclHashMap.KeySet: IJclSet;
 var
   I, J: Integer;
-  Bucket: TJclBucket;
+  Bucket: TJclHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -27560,7 +27560,7 @@ end;
 function TJclHashMap.MapEquals(const AMap: IJclMap): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclBucket;
+  Bucket: TJclHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -27597,7 +27597,7 @@ end;
 procedure TJclHashMap.Pack;
 var
   I: Integer;
-  Bucket: TJclBucket;
+  Bucket: TJclHashMapBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -27656,7 +27656,7 @@ end;
 procedure TJclHashMap.PutValue(Key: TObject; Value: TObject);
 var
   Index: Integer;
-  Bucket: TJclBucket;
+  Bucket: TJclHashMapBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -27682,7 +27682,7 @@ begin
       end
       else
       begin
-        Bucket := TJclBucket.Create;
+        Bucket := TJclHashMapBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -27757,7 +27757,7 @@ end;
 function TJclHashMap.Values: IJclCollection;
 var
   I, J: Integer;
-  Bucket: TJclBucket;
+  Bucket: TJclHashMapBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then

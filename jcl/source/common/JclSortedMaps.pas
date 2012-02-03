@@ -54,7 +54,7 @@ uses
   JclAbstractContainers, JclContainerIntf, JclArrayLists, JclArraySets;
 
 type
-  TJclIntfIntfSortedEntry = record
+  TJclIntfIntfSortedMapEntry = record
     Key: IInterface;
     Value: IInterface;
   end;
@@ -69,7 +69,7 @@ type
     function KeysCompare(const A, B: IInterface): Integer;
     function ValuesCompare(const A, B: IInterface): Integer;
   private
-    FEntries: array of TJclIntfIntfSortedEntry;
+    FEntries: array of TJclIntfIntfSortedMapEntry;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -102,7 +102,7 @@ type
     function TailMap(const FromKey: IInterface): IJclIntfIntfSortedMap;
   end;
 
-  TJclAnsiStrIntfSortedEntry = record
+  TJclAnsiStrIntfSortedMapEntry = record
     Key: AnsiString;
     Value: IInterface;
   end;
@@ -117,7 +117,7 @@ type
     function KeysCompare(const A, B: AnsiString): Integer;
     function ValuesCompare(const A, B: IInterface): Integer;
   private
-    FEntries: array of TJclAnsiStrIntfSortedEntry;
+    FEntries: array of TJclAnsiStrIntfSortedMapEntry;
     function BinarySearch(const Key: AnsiString): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -150,7 +150,7 @@ type
     function TailMap(const FromKey: AnsiString): IJclAnsiStrIntfSortedMap;
   end;
 
-  TJclIntfAnsiStrSortedEntry = record
+  TJclIntfAnsiStrSortedMapEntry = record
     Key: IInterface;
     Value: AnsiString;
   end;
@@ -165,7 +165,7 @@ type
     function KeysCompare(const A, B: IInterface): Integer;
     function ValuesCompare(const A, B: AnsiString): Integer;
   private
-    FEntries: array of TJclIntfAnsiStrSortedEntry;
+    FEntries: array of TJclIntfAnsiStrSortedMapEntry;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -198,7 +198,7 @@ type
     function TailMap(const FromKey: IInterface): IJclIntfAnsiStrSortedMap;
   end;
 
-  TJclAnsiStrAnsiStrSortedEntry = record
+  TJclAnsiStrAnsiStrSortedMapEntry = record
     Key: AnsiString;
     Value: AnsiString;
   end;
@@ -213,7 +213,7 @@ type
     function KeysCompare(const A, B: AnsiString): Integer;
     function ValuesCompare(const A, B: AnsiString): Integer;
   private
-    FEntries: array of TJclAnsiStrAnsiStrSortedEntry;
+    FEntries: array of TJclAnsiStrAnsiStrSortedMapEntry;
     function BinarySearch(const Key: AnsiString): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -246,7 +246,7 @@ type
     function TailMap(const FromKey: AnsiString): IJclAnsiStrAnsiStrSortedMap;
   end;
 
-  TJclWideStrIntfSortedEntry = record
+  TJclWideStrIntfSortedMapEntry = record
     Key: WideString;
     Value: IInterface;
   end;
@@ -261,7 +261,7 @@ type
     function KeysCompare(const A, B: WideString): Integer;
     function ValuesCompare(const A, B: IInterface): Integer;
   private
-    FEntries: array of TJclWideStrIntfSortedEntry;
+    FEntries: array of TJclWideStrIntfSortedMapEntry;
     function BinarySearch(const Key: WideString): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -294,7 +294,7 @@ type
     function TailMap(const FromKey: WideString): IJclWideStrIntfSortedMap;
   end;
 
-  TJclIntfWideStrSortedEntry = record
+  TJclIntfWideStrSortedMapEntry = record
     Key: IInterface;
     Value: WideString;
   end;
@@ -309,7 +309,7 @@ type
     function KeysCompare(const A, B: IInterface): Integer;
     function ValuesCompare(const A, B: WideString): Integer;
   private
-    FEntries: array of TJclIntfWideStrSortedEntry;
+    FEntries: array of TJclIntfWideStrSortedMapEntry;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -342,7 +342,7 @@ type
     function TailMap(const FromKey: IInterface): IJclIntfWideStrSortedMap;
   end;
 
-  TJclWideStrWideStrSortedEntry = record
+  TJclWideStrWideStrSortedMapEntry = record
     Key: WideString;
     Value: WideString;
   end;
@@ -357,7 +357,7 @@ type
     function KeysCompare(const A, B: WideString): Integer;
     function ValuesCompare(const A, B: WideString): Integer;
   private
-    FEntries: array of TJclWideStrWideStrSortedEntry;
+    FEntries: array of TJclWideStrWideStrSortedMapEntry;
     function BinarySearch(const Key: WideString): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -391,7 +391,7 @@ type
   end;
 
   {$IFDEF SUPPORTS_UNICODE_STRING}
-  TJclUnicodeStrIntfSortedEntry = record
+  TJclUnicodeStrIntfSortedMapEntry = record
     Key: UnicodeString;
     Value: IInterface;
   end;
@@ -408,7 +408,7 @@ type
     function KeysCompare(const A, B: UnicodeString): Integer;
     function ValuesCompare(const A, B: IInterface): Integer;
   private
-    FEntries: array of TJclUnicodeStrIntfSortedEntry;
+    FEntries: array of TJclUnicodeStrIntfSortedMapEntry;
     function BinarySearch(const Key: UnicodeString): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -443,7 +443,7 @@ type
   {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF SUPPORTS_UNICODE_STRING}
-  TJclIntfUnicodeStrSortedEntry = record
+  TJclIntfUnicodeStrSortedMapEntry = record
     Key: IInterface;
     Value: UnicodeString;
   end;
@@ -460,7 +460,7 @@ type
     function KeysCompare(const A, B: IInterface): Integer;
     function ValuesCompare(const A, B: UnicodeString): Integer;
   private
-    FEntries: array of TJclIntfUnicodeStrSortedEntry;
+    FEntries: array of TJclIntfUnicodeStrSortedMapEntry;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -495,7 +495,7 @@ type
   {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF SUPPORTS_UNICODE_STRING}
-  TJclUnicodeStrUnicodeStrSortedEntry = record
+  TJclUnicodeStrUnicodeStrSortedMapEntry = record
     Key: UnicodeString;
     Value: UnicodeString;
   end;
@@ -512,7 +512,7 @@ type
     function KeysCompare(const A, B: UnicodeString): Integer;
     function ValuesCompare(const A, B: UnicodeString): Integer;
   private
-    FEntries: array of TJclUnicodeStrUnicodeStrSortedEntry;
+    FEntries: array of TJclUnicodeStrUnicodeStrSortedMapEntry;
     function BinarySearch(const Key: UnicodeString): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -547,13 +547,13 @@ type
   {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
-  TJclStrIntfSortedEntry = TJclAnsiStrIntfSortedEntry;
+  TJclStrIntfSortedMapEntry = TJclAnsiStrIntfSortedMapEntry;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
-  TJclStrIntfSortedEntry = TJclWideStrIntfSortedEntry;
+  TJclStrIntfSortedMapEntry = TJclWideStrIntfSortedMapEntry;
   {$ENDIF CONTAINER_WIDESTR}
   {$IFDEF CONTAINER_UNICODESTR}
-  TJclStrIntfSortedEntry = TJclUnicodeStrIntfSortedEntry;
+  TJclStrIntfSortedMapEntry = TJclUnicodeStrIntfSortedMapEntry;
   {$ENDIF CONTAINER_UNICODESTR}
 
   {$IFDEF CONTAINER_ANSISTR}
@@ -567,13 +567,13 @@ type
   {$ENDIF CONTAINER_UNICODESTR}
 
   {$IFDEF CONTAINER_ANSISTR}
-  TJclIntfStrSortedEntry = TJclIntfAnsiStrSortedEntry;
+  TJclIntfStrSortedMapEntry = TJclIntfAnsiStrSortedMapEntry;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
-  TJclIntfStrSortedEntry = TJclIntfWideStrSortedEntry;
+  TJclIntfStrSortedMapEntry = TJclIntfWideStrSortedMapEntry;
   {$ENDIF CONTAINER_WIDESTR}
   {$IFDEF CONTAINER_UNICODESTR}
-  TJclIntfStrSortedEntry = TJclIntfUnicodeStrSortedEntry;
+  TJclIntfStrSortedMapEntry = TJclIntfUnicodeStrSortedMapEntry;
   {$ENDIF CONTAINER_UNICODESTR}
 
   {$IFDEF CONTAINER_ANSISTR}
@@ -587,13 +587,13 @@ type
   {$ENDIF CONTAINER_UNICODESTR}
 
   {$IFDEF CONTAINER_ANSISTR}
-  TJclStrStrSortedEntry = TJclAnsiStrAnsiStrSortedEntry;
+  TJclStrStrSortedMapEntry = TJclAnsiStrAnsiStrSortedMapEntry;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
-  TJclStrStrSortedEntry = TJclWideStrWideStrSortedEntry;
+  TJclStrStrSortedMapEntry = TJclWideStrWideStrSortedMapEntry;
   {$ENDIF CONTAINER_WIDESTR}
   {$IFDEF CONTAINER_UNICODESTR}
-  TJclStrStrSortedEntry = TJclUnicodeStrUnicodeStrSortedEntry;
+  TJclStrStrSortedMapEntry = TJclUnicodeStrUnicodeStrSortedMapEntry;
   {$ENDIF CONTAINER_UNICODESTR}
 
   {$IFDEF CONTAINER_ANSISTR}
@@ -606,7 +606,7 @@ type
   TJclStrStrSortedMap = TJclUnicodeStrUnicodeStrSortedMap;
   {$ENDIF CONTAINER_UNICODESTR}
 
-  TJclSingleIntfSortedEntry = record
+  TJclSingleIntfSortedMapEntry = record
     Key: Single;
     Value: IInterface;
   end;
@@ -621,7 +621,7 @@ type
     function KeysCompare(const A, B: Single): Integer;
     function ValuesCompare(const A, B: IInterface): Integer;
   private
-    FEntries: array of TJclSingleIntfSortedEntry;
+    FEntries: array of TJclSingleIntfSortedMapEntry;
     function BinarySearch(const Key: Single): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -654,7 +654,7 @@ type
     function TailMap(const FromKey: Single): IJclSingleIntfSortedMap;
   end;
 
-  TJclIntfSingleSortedEntry = record
+  TJclIntfSingleSortedMapEntry = record
     Key: IInterface;
     Value: Single;
   end;
@@ -669,7 +669,7 @@ type
     function KeysCompare(const A, B: IInterface): Integer;
     function ValuesCompare(const A, B: Single): Integer;
   private
-    FEntries: array of TJclIntfSingleSortedEntry;
+    FEntries: array of TJclIntfSingleSortedMapEntry;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -702,7 +702,7 @@ type
     function TailMap(const FromKey: IInterface): IJclIntfSingleSortedMap;
   end;
 
-  TJclSingleSingleSortedEntry = record
+  TJclSingleSingleSortedMapEntry = record
     Key: Single;
     Value: Single;
   end;
@@ -717,7 +717,7 @@ type
     function KeysCompare(const A, B: Single): Integer;
     function ValuesCompare(const A, B: Single): Integer;
   private
-    FEntries: array of TJclSingleSingleSortedEntry;
+    FEntries: array of TJclSingleSingleSortedMapEntry;
     function BinarySearch(const Key: Single): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -750,7 +750,7 @@ type
     function TailMap(const FromKey: Single): IJclSingleSingleSortedMap;
   end;
 
-  TJclDoubleIntfSortedEntry = record
+  TJclDoubleIntfSortedMapEntry = record
     Key: Double;
     Value: IInterface;
   end;
@@ -765,7 +765,7 @@ type
     function KeysCompare(const A, B: Double): Integer;
     function ValuesCompare(const A, B: IInterface): Integer;
   private
-    FEntries: array of TJclDoubleIntfSortedEntry;
+    FEntries: array of TJclDoubleIntfSortedMapEntry;
     function BinarySearch(const Key: Double): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -798,7 +798,7 @@ type
     function TailMap(const FromKey: Double): IJclDoubleIntfSortedMap;
   end;
 
-  TJclIntfDoubleSortedEntry = record
+  TJclIntfDoubleSortedMapEntry = record
     Key: IInterface;
     Value: Double;
   end;
@@ -813,7 +813,7 @@ type
     function KeysCompare(const A, B: IInterface): Integer;
     function ValuesCompare(const A, B: Double): Integer;
   private
-    FEntries: array of TJclIntfDoubleSortedEntry;
+    FEntries: array of TJclIntfDoubleSortedMapEntry;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -846,7 +846,7 @@ type
     function TailMap(const FromKey: IInterface): IJclIntfDoubleSortedMap;
   end;
 
-  TJclDoubleDoubleSortedEntry = record
+  TJclDoubleDoubleSortedMapEntry = record
     Key: Double;
     Value: Double;
   end;
@@ -861,7 +861,7 @@ type
     function KeysCompare(const A, B: Double): Integer;
     function ValuesCompare(const A, B: Double): Integer;
   private
-    FEntries: array of TJclDoubleDoubleSortedEntry;
+    FEntries: array of TJclDoubleDoubleSortedMapEntry;
     function BinarySearch(const Key: Double): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -894,7 +894,7 @@ type
     function TailMap(const FromKey: Double): IJclDoubleDoubleSortedMap;
   end;
 
-  TJclExtendedIntfSortedEntry = record
+  TJclExtendedIntfSortedMapEntry = record
     Key: Extended;
     Value: IInterface;
   end;
@@ -909,7 +909,7 @@ type
     function KeysCompare(const A, B: Extended): Integer;
     function ValuesCompare(const A, B: IInterface): Integer;
   private
-    FEntries: array of TJclExtendedIntfSortedEntry;
+    FEntries: array of TJclExtendedIntfSortedMapEntry;
     function BinarySearch(const Key: Extended): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -942,7 +942,7 @@ type
     function TailMap(const FromKey: Extended): IJclExtendedIntfSortedMap;
   end;
 
-  TJclIntfExtendedSortedEntry = record
+  TJclIntfExtendedSortedMapEntry = record
     Key: IInterface;
     Value: Extended;
   end;
@@ -957,7 +957,7 @@ type
     function KeysCompare(const A, B: IInterface): Integer;
     function ValuesCompare(const A, B: Extended): Integer;
   private
-    FEntries: array of TJclIntfExtendedSortedEntry;
+    FEntries: array of TJclIntfExtendedSortedMapEntry;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -990,7 +990,7 @@ type
     function TailMap(const FromKey: IInterface): IJclIntfExtendedSortedMap;
   end;
 
-  TJclExtendedExtendedSortedEntry = record
+  TJclExtendedExtendedSortedMapEntry = record
     Key: Extended;
     Value: Extended;
   end;
@@ -1005,7 +1005,7 @@ type
     function KeysCompare(const A, B: Extended): Integer;
     function ValuesCompare(const A, B: Extended): Integer;
   private
-    FEntries: array of TJclExtendedExtendedSortedEntry;
+    FEntries: array of TJclExtendedExtendedSortedMapEntry;
     function BinarySearch(const Key: Extended): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1039,13 +1039,13 @@ type
   end;
 
   {$IFDEF MATH_SINGLE_PRECISION}
-  TJclFloatIntfSortedEntry = TJclSingleIntfSortedEntry;
+  TJclFloatIntfSortedMapEntry = TJclSingleIntfSortedMapEntry;
   {$ENDIF MATH_SINGLE_PRECISION}
   {$IFDEF MATH_DOUBLE_PRECISION}
-  TJclFloatIntfSortedEntry = TJclDoubleIntfSortedEntry;
+  TJclFloatIntfSortedMapEntry = TJclDoubleIntfSortedMapEntry;
   {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_EXTENDED_PRECISION}
-  TJclFloatIntfSortedEntry = TJclExtendedIntfSortedEntry;
+  TJclFloatIntfSortedMapEntry = TJclExtendedIntfSortedMapEntry;
   {$ENDIF MATH_EXTENDED_PRECISION}
 
   {$IFDEF MATH_SINGLE_PRECISION}
@@ -1059,13 +1059,13 @@ type
   {$ENDIF MATH_EXTENDED_PRECISION}
 
   {$IFDEF MATH_SINGLE_PRECISION}
-  TJclIntfFloatSortedEntry = TJclIntfSingleSortedEntry;
+  TJclIntfFloatSortedMapEntry = TJclIntfSingleSortedMapEntry;
   {$ENDIF MATH_SINGLE_PRECISION}
   {$IFDEF MATH_DOUBLE_PRECISION}
-  TJclIntfFloatSortedEntry = TJclIntfDoubleSortedEntry;
+  TJclIntfFloatSortedMapEntry = TJclIntfDoubleSortedMapEntry;
   {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_EXTENDED_PRECISION}
-  TJclIntfFloatSortedEntry = TJclIntfExtendedSortedEntry;
+  TJclIntfFloatSortedMapEntry = TJclIntfExtendedSortedMapEntry;
   {$ENDIF MATH_EXTENDED_PRECISION}
 
   {$IFDEF MATH_SINGLE_PRECISION}
@@ -1079,13 +1079,13 @@ type
   {$ENDIF MATH_EXTENDED_PRECISION}
 
   {$IFDEF MATH_SINGLE_PRECISION}
-  TJclFloatFloatSortedEntry = TJclSingleSingleSortedEntry;
+  TJclFloatFloatSortedMapEntry = TJclSingleSingleSortedMapEntry;
   {$ENDIF MATH_SINGLE_PRECISION}
   {$IFDEF MATH_DOUBLE_PRECISION}
-  TJclFloatFloatSortedEntry = TJclDoubleDoubleSortedEntry;
+  TJclFloatFloatSortedMapEntry = TJclDoubleDoubleSortedMapEntry;
   {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_EXTENDED_PRECISION}
-  TJclFloatFloatSortedEntry = TJclExtendedExtendedSortedEntry;
+  TJclFloatFloatSortedMapEntry = TJclExtendedExtendedSortedMapEntry;
   {$ENDIF MATH_EXTENDED_PRECISION}
 
   {$IFDEF MATH_SINGLE_PRECISION}
@@ -1098,7 +1098,7 @@ type
   TJclFloatFloatSortedMap = TJclExtendedExtendedSortedMap;
   {$ENDIF MATH_EXTENDED_PRECISION}
 
-  TJclIntegerIntfSortedEntry = record
+  TJclIntegerIntfSortedMapEntry = record
     Key: Integer;
     Value: IInterface;
   end;
@@ -1113,7 +1113,7 @@ type
     function KeysCompare(A, B: Integer): Integer;
     function ValuesCompare(const A, B: IInterface): Integer;
   private
-    FEntries: array of TJclIntegerIntfSortedEntry;
+    FEntries: array of TJclIntegerIntfSortedMapEntry;
     function BinarySearch(Key: Integer): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1146,7 +1146,7 @@ type
     function TailMap(FromKey: Integer): IJclIntegerIntfSortedMap;
   end;
 
-  TJclIntfIntegerSortedEntry = record
+  TJclIntfIntegerSortedMapEntry = record
     Key: IInterface;
     Value: Integer;
   end;
@@ -1161,7 +1161,7 @@ type
     function KeysCompare(const A, B: IInterface): Integer;
     function ValuesCompare(A, B: Integer): Integer;
   private
-    FEntries: array of TJclIntfIntegerSortedEntry;
+    FEntries: array of TJclIntfIntegerSortedMapEntry;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1194,7 +1194,7 @@ type
     function TailMap(const FromKey: IInterface): IJclIntfIntegerSortedMap;
   end;
 
-  TJclIntegerIntegerSortedEntry = record
+  TJclIntegerIntegerSortedMapEntry = record
     Key: Integer;
     Value: Integer;
   end;
@@ -1209,7 +1209,7 @@ type
     function KeysCompare(A, B: Integer): Integer;
     function ValuesCompare(A, B: Integer): Integer;
   private
-    FEntries: array of TJclIntegerIntegerSortedEntry;
+    FEntries: array of TJclIntegerIntegerSortedMapEntry;
     function BinarySearch(Key: Integer): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1242,7 +1242,7 @@ type
     function TailMap(FromKey: Integer): IJclIntegerIntegerSortedMap;
   end;
 
-  TJclCardinalIntfSortedEntry = record
+  TJclCardinalIntfSortedMapEntry = record
     Key: Cardinal;
     Value: IInterface;
   end;
@@ -1257,7 +1257,7 @@ type
     function KeysCompare(A, B: Cardinal): Integer;
     function ValuesCompare(const A, B: IInterface): Integer;
   private
-    FEntries: array of TJclCardinalIntfSortedEntry;
+    FEntries: array of TJclCardinalIntfSortedMapEntry;
     function BinarySearch(Key: Cardinal): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1290,7 +1290,7 @@ type
     function TailMap(FromKey: Cardinal): IJclCardinalIntfSortedMap;
   end;
 
-  TJclIntfCardinalSortedEntry = record
+  TJclIntfCardinalSortedMapEntry = record
     Key: IInterface;
     Value: Cardinal;
   end;
@@ -1305,7 +1305,7 @@ type
     function KeysCompare(const A, B: IInterface): Integer;
     function ValuesCompare(A, B: Cardinal): Integer;
   private
-    FEntries: array of TJclIntfCardinalSortedEntry;
+    FEntries: array of TJclIntfCardinalSortedMapEntry;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1338,7 +1338,7 @@ type
     function TailMap(const FromKey: IInterface): IJclIntfCardinalSortedMap;
   end;
 
-  TJclCardinalCardinalSortedEntry = record
+  TJclCardinalCardinalSortedMapEntry = record
     Key: Cardinal;
     Value: Cardinal;
   end;
@@ -1353,7 +1353,7 @@ type
     function KeysCompare(A, B: Cardinal): Integer;
     function ValuesCompare(A, B: Cardinal): Integer;
   private
-    FEntries: array of TJclCardinalCardinalSortedEntry;
+    FEntries: array of TJclCardinalCardinalSortedMapEntry;
     function BinarySearch(Key: Cardinal): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1386,7 +1386,7 @@ type
     function TailMap(FromKey: Cardinal): IJclCardinalCardinalSortedMap;
   end;
 
-  TJclInt64IntfSortedEntry = record
+  TJclInt64IntfSortedMapEntry = record
     Key: Int64;
     Value: IInterface;
   end;
@@ -1401,7 +1401,7 @@ type
     function KeysCompare(const A, B: Int64): Integer;
     function ValuesCompare(const A, B: IInterface): Integer;
   private
-    FEntries: array of TJclInt64IntfSortedEntry;
+    FEntries: array of TJclInt64IntfSortedMapEntry;
     function BinarySearch(const Key: Int64): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1434,7 +1434,7 @@ type
     function TailMap(const FromKey: Int64): IJclInt64IntfSortedMap;
   end;
 
-  TJclIntfInt64SortedEntry = record
+  TJclIntfInt64SortedMapEntry = record
     Key: IInterface;
     Value: Int64;
   end;
@@ -1449,7 +1449,7 @@ type
     function KeysCompare(const A, B: IInterface): Integer;
     function ValuesCompare(const A, B: Int64): Integer;
   private
-    FEntries: array of TJclIntfInt64SortedEntry;
+    FEntries: array of TJclIntfInt64SortedMapEntry;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1482,7 +1482,7 @@ type
     function TailMap(const FromKey: IInterface): IJclIntfInt64SortedMap;
   end;
 
-  TJclInt64Int64SortedEntry = record
+  TJclInt64Int64SortedMapEntry = record
     Key: Int64;
     Value: Int64;
   end;
@@ -1497,7 +1497,7 @@ type
     function KeysCompare(const A, B: Int64): Integer;
     function ValuesCompare(const A, B: Int64): Integer;
   private
-    FEntries: array of TJclInt64Int64SortedEntry;
+    FEntries: array of TJclInt64Int64SortedMapEntry;
     function BinarySearch(const Key: Int64): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1530,7 +1530,7 @@ type
     function TailMap(const FromKey: Int64): IJclInt64Int64SortedMap;
   end;
 
-  TJclPtrIntfSortedEntry = record
+  TJclPtrIntfSortedMapEntry = record
     Key: Pointer;
     Value: IInterface;
   end;
@@ -1545,7 +1545,7 @@ type
     function KeysCompare(A, B: Pointer): Integer;
     function ValuesCompare(const A, B: IInterface): Integer;
   private
-    FEntries: array of TJclPtrIntfSortedEntry;
+    FEntries: array of TJclPtrIntfSortedMapEntry;
     function BinarySearch(Key: Pointer): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1578,7 +1578,7 @@ type
     function TailMap(FromKey: Pointer): IJclPtrIntfSortedMap;
   end;
 
-  TJclIntfPtrSortedEntry = record
+  TJclIntfPtrSortedMapEntry = record
     Key: IInterface;
     Value: Pointer;
   end;
@@ -1593,7 +1593,7 @@ type
     function KeysCompare(const A, B: IInterface): Integer;
     function ValuesCompare(A, B: Pointer): Integer;
   private
-    FEntries: array of TJclIntfPtrSortedEntry;
+    FEntries: array of TJclIntfPtrSortedMapEntry;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1626,7 +1626,7 @@ type
     function TailMap(const FromKey: IInterface): IJclIntfPtrSortedMap;
   end;
 
-  TJclPtrPtrSortedEntry = record
+  TJclPtrPtrSortedMapEntry = record
     Key: Pointer;
     Value: Pointer;
   end;
@@ -1641,7 +1641,7 @@ type
     function KeysCompare(A, B: Pointer): Integer;
     function ValuesCompare(A, B: Pointer): Integer;
   private
-    FEntries: array of TJclPtrPtrSortedEntry;
+    FEntries: array of TJclPtrPtrSortedMapEntry;
     function BinarySearch(Key: Pointer): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1674,7 +1674,7 @@ type
     function TailMap(FromKey: Pointer): IJclPtrPtrSortedMap;
   end;
 
-  TJclIntfSortedEntry = record
+  TJclIntfSortedMapEntry = record
     Key: IInterface;
     Value: TObject;
   end;
@@ -1695,7 +1695,7 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FEntries: array of TJclIntfSortedEntry;
+    FEntries: array of TJclIntfSortedMapEntry;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1728,7 +1728,7 @@ type
     function TailMap(const FromKey: IInterface): IJclIntfSortedMap;
   end;
 
-  TJclAnsiStrSortedEntry = record
+  TJclAnsiStrSortedMapEntry = record
     Key: AnsiString;
     Value: TObject;
   end;
@@ -1749,7 +1749,7 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FEntries: array of TJclAnsiStrSortedEntry;
+    FEntries: array of TJclAnsiStrSortedMapEntry;
     function BinarySearch(const Key: AnsiString): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1782,7 +1782,7 @@ type
     function TailMap(const FromKey: AnsiString): IJclAnsiStrSortedMap;
   end;
 
-  TJclWideStrSortedEntry = record
+  TJclWideStrSortedMapEntry = record
     Key: WideString;
     Value: TObject;
   end;
@@ -1803,7 +1803,7 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FEntries: array of TJclWideStrSortedEntry;
+    FEntries: array of TJclWideStrSortedMapEntry;
     function BinarySearch(const Key: WideString): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1837,7 +1837,7 @@ type
   end;
 
   {$IFDEF SUPPORTS_UNICODE_STRING}
-  TJclUnicodeStrSortedEntry = record
+  TJclUnicodeStrSortedMapEntry = record
     Key: UnicodeString;
     Value: TObject;
   end;
@@ -1860,7 +1860,7 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FEntries: array of TJclUnicodeStrSortedEntry;
+    FEntries: array of TJclUnicodeStrSortedMapEntry;
     function BinarySearch(const Key: UnicodeString): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1895,13 +1895,13 @@ type
   {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
-  TJclStrSortedEntry = TJclAnsiStrSortedEntry;
+  TJclStrSortedMapEntry = TJclAnsiStrSortedMapEntry;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
-  TJclStrSortedEntry = TJclWideStrSortedEntry;
+  TJclStrSortedMapEntry = TJclWideStrSortedMapEntry;
   {$ENDIF CONTAINER_WIDESTR}
   {$IFDEF CONTAINER_UNICODESTR}
-  TJclStrSortedEntry = TJclUnicodeStrSortedEntry;
+  TJclStrSortedMapEntry = TJclUnicodeStrSortedMapEntry;
   {$ENDIF CONTAINER_UNICODESTR}
 
   {$IFDEF CONTAINER_ANSISTR}
@@ -1914,7 +1914,7 @@ type
   TJclStrSortedMap = TJclUnicodeStrSortedMap;
   {$ENDIF CONTAINER_UNICODESTR}
 
-  TJclSingleSortedEntry = record
+  TJclSingleSortedMapEntry = record
     Key: Single;
     Value: TObject;
   end;
@@ -1935,7 +1935,7 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FEntries: array of TJclSingleSortedEntry;
+    FEntries: array of TJclSingleSortedMapEntry;
     function BinarySearch(const Key: Single): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1968,7 +1968,7 @@ type
     function TailMap(const FromKey: Single): IJclSingleSortedMap;
   end;
 
-  TJclDoubleSortedEntry = record
+  TJclDoubleSortedMapEntry = record
     Key: Double;
     Value: TObject;
   end;
@@ -1989,7 +1989,7 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FEntries: array of TJclDoubleSortedEntry;
+    FEntries: array of TJclDoubleSortedMapEntry;
     function BinarySearch(const Key: Double): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -2022,7 +2022,7 @@ type
     function TailMap(const FromKey: Double): IJclDoubleSortedMap;
   end;
 
-  TJclExtendedSortedEntry = record
+  TJclExtendedSortedMapEntry = record
     Key: Extended;
     Value: TObject;
   end;
@@ -2043,7 +2043,7 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FEntries: array of TJclExtendedSortedEntry;
+    FEntries: array of TJclExtendedSortedMapEntry;
     function BinarySearch(const Key: Extended): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -2077,13 +2077,13 @@ type
   end;
 
   {$IFDEF MATH_SINGLE_PRECISION}
-  TJclFloatSortedEntry = TJclSingleSortedEntry;
+  TJclFloatSortedMapEntry = TJclSingleSortedMapEntry;
   {$ENDIF MATH_SINGLE_PRECISION}
   {$IFDEF MATH_DOUBLE_PRECISION}
-  TJclFloatSortedEntry = TJclDoubleSortedEntry;
+  TJclFloatSortedMapEntry = TJclDoubleSortedMapEntry;
   {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_EXTENDED_PRECISION}
-  TJclFloatSortedEntry = TJclExtendedSortedEntry;
+  TJclFloatSortedMapEntry = TJclExtendedSortedMapEntry;
   {$ENDIF MATH_EXTENDED_PRECISION}
 
   {$IFDEF MATH_SINGLE_PRECISION}
@@ -2096,7 +2096,7 @@ type
   TJclFloatSortedMap = TJclExtendedSortedMap;
   {$ENDIF MATH_EXTENDED_PRECISION}
 
-  TJclIntegerSortedEntry = record
+  TJclIntegerSortedMapEntry = record
     Key: Integer;
     Value: TObject;
   end;
@@ -2117,7 +2117,7 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FEntries: array of TJclIntegerSortedEntry;
+    FEntries: array of TJclIntegerSortedMapEntry;
     function BinarySearch(Key: Integer): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -2150,7 +2150,7 @@ type
     function TailMap(FromKey: Integer): IJclIntegerSortedMap;
   end;
 
-  TJclCardinalSortedEntry = record
+  TJclCardinalSortedMapEntry = record
     Key: Cardinal;
     Value: TObject;
   end;
@@ -2171,7 +2171,7 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FEntries: array of TJclCardinalSortedEntry;
+    FEntries: array of TJclCardinalSortedMapEntry;
     function BinarySearch(Key: Cardinal): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -2204,7 +2204,7 @@ type
     function TailMap(FromKey: Cardinal): IJclCardinalSortedMap;
   end;
 
-  TJclInt64SortedEntry = record
+  TJclInt64SortedMapEntry = record
     Key: Int64;
     Value: TObject;
   end;
@@ -2225,7 +2225,7 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FEntries: array of TJclInt64SortedEntry;
+    FEntries: array of TJclInt64SortedMapEntry;
     function BinarySearch(const Key: Int64): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -2258,7 +2258,7 @@ type
     function TailMap(const FromKey: Int64): IJclInt64SortedMap;
   end;
 
-  TJclPtrSortedEntry = record
+  TJclPtrSortedMapEntry = record
     Key: Pointer;
     Value: TObject;
   end;
@@ -2279,7 +2279,7 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FEntries: array of TJclPtrSortedEntry;
+    FEntries: array of TJclPtrSortedMapEntry;
     function BinarySearch(Key: Pointer): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -2312,7 +2312,7 @@ type
     function TailMap(FromKey: Pointer): IJclPtrSortedMap;
   end;
 
-  TJclSortedEntry = record
+  TJclSortedMapEntry = record
     Key: TObject;
     Value: TObject;
   end;
@@ -2337,7 +2337,7 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FEntries: array of TJclSortedEntry;
+    FEntries: array of TJclSortedMapEntry;
     function BinarySearch(Key: TObject): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
