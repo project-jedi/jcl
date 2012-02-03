@@ -56,10 +56,6 @@ uses
 
 
 type
-  // Hash Function
-  // Result must be in 0..Range-1
-  TJclHashFunction = function(Key, Range: Integer): Integer;
-
   TJclIntfIntfHashMapEntry = record
     Key: IInterface;
     Value: IInterface;
@@ -83,14 +79,14 @@ type
     function ValuesEqual(const A, B: IInterface): Boolean;
   private
     FBuckets: array of TJclIntfIntfHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -134,14 +130,14 @@ type
     function ValuesEqual(const A, B: IInterface): Boolean;
   private
     FBuckets: array of TJclAnsiStrIntfHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -186,14 +182,14 @@ type
     function ValuesEqual(const A, B: AnsiString): Boolean;
   private
     FBuckets: array of TJclIntfAnsiStrHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -237,14 +233,14 @@ type
     function ValuesEqual(const A, B: AnsiString): Boolean;
   private
     FBuckets: array of TJclAnsiStrAnsiStrHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -288,14 +284,14 @@ type
     function ValuesEqual(const A, B: IInterface): Boolean;
   private
     FBuckets: array of TJclWideStrIntfHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -340,14 +336,14 @@ type
     function ValuesEqual(const A, B: WideString): Boolean;
   private
     FBuckets: array of TJclIntfWideStrHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -391,14 +387,14 @@ type
     function ValuesEqual(const A, B: WideString): Boolean;
   private
     FBuckets: array of TJclWideStrWideStrHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -445,14 +441,14 @@ type
     function ValuesEqual(const A, B: IInterface): Boolean;
   private
     FBuckets: array of TJclUnicodeStrIntfHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -501,14 +497,14 @@ type
     function ValuesEqual(const A, B: UnicodeString): Boolean;
   private
     FBuckets: array of TJclIntfUnicodeStrHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -556,14 +552,14 @@ type
     function ValuesEqual(const A, B: UnicodeString): Boolean;
   private
     FBuckets: array of TJclUnicodeStrUnicodeStrHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -677,14 +673,14 @@ type
     function ValuesEqual(const A, B: IInterface): Boolean;
   private
     FBuckets: array of TJclSingleIntfHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -729,14 +725,14 @@ type
     function ValuesEqual(const A, B: Single): Boolean;
   private
     FBuckets: array of TJclIntfSingleHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -780,14 +776,14 @@ type
     function ValuesEqual(const A, B: Single): Boolean;
   private
     FBuckets: array of TJclSingleSingleHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -831,14 +827,14 @@ type
     function ValuesEqual(const A, B: IInterface): Boolean;
   private
     FBuckets: array of TJclDoubleIntfHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -883,14 +879,14 @@ type
     function ValuesEqual(const A, B: Double): Boolean;
   private
     FBuckets: array of TJclIntfDoubleHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -934,14 +930,14 @@ type
     function ValuesEqual(const A, B: Double): Boolean;
   private
     FBuckets: array of TJclDoubleDoubleHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -985,14 +981,14 @@ type
     function ValuesEqual(const A, B: IInterface): Boolean;
   private
     FBuckets: array of TJclExtendedIntfHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1037,14 +1033,14 @@ type
     function ValuesEqual(const A, B: Extended): Boolean;
   private
     FBuckets: array of TJclIntfExtendedHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1088,14 +1084,14 @@ type
     function ValuesEqual(const A, B: Extended): Boolean;
   private
     FBuckets: array of TJclExtendedExtendedHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1208,14 +1204,14 @@ type
     function ValuesEqual(const A, B: IInterface): Boolean;
   private
     FBuckets: array of TJclIntegerIntfHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1260,14 +1256,14 @@ type
     function ValuesEqual(A, B: Integer): Boolean;
   private
     FBuckets: array of TJclIntfIntegerHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1311,14 +1307,14 @@ type
     function ValuesEqual(A, B: Integer): Boolean;
   private
     FBuckets: array of TJclIntegerIntegerHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1362,14 +1358,14 @@ type
     function ValuesEqual(const A, B: IInterface): Boolean;
   private
     FBuckets: array of TJclCardinalIntfHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1414,14 +1410,14 @@ type
     function ValuesEqual(A, B: Cardinal): Boolean;
   private
     FBuckets: array of TJclIntfCardinalHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1465,14 +1461,14 @@ type
     function ValuesEqual(A, B: Cardinal): Boolean;
   private
     FBuckets: array of TJclCardinalCardinalHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1516,14 +1512,14 @@ type
     function ValuesEqual(const A, B: IInterface): Boolean;
   private
     FBuckets: array of TJclInt64IntfHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1568,14 +1564,14 @@ type
     function ValuesEqual(const A, B: Int64): Boolean;
   private
     FBuckets: array of TJclIntfInt64HashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1619,14 +1615,14 @@ type
     function ValuesEqual(const A, B: Int64): Boolean;
   private
     FBuckets: array of TJclInt64Int64HashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1670,14 +1666,14 @@ type
     function ValuesEqual(const A, B: IInterface): Boolean;
   private
     FBuckets: array of TJclPtrIntfHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1722,14 +1718,14 @@ type
     function ValuesEqual(A, B: Pointer): Boolean;
   private
     FBuckets: array of TJclIntfPtrHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1773,14 +1769,14 @@ type
     function ValuesEqual(A, B: Pointer): Boolean;
   private
     FBuckets: array of TJclPtrPtrHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1830,14 +1826,14 @@ type
     property OwnsValues: Boolean read FOwnsValues;
   private
     FBuckets: array of TJclIntfHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1887,14 +1883,14 @@ type
     property OwnsValues: Boolean read FOwnsValues;
   private
     FBuckets: array of TJclAnsiStrHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1944,14 +1940,14 @@ type
     property OwnsValues: Boolean read FOwnsValues;
   private
     FBuckets: array of TJclWideStrHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2004,14 +2000,14 @@ type
     property OwnsValues: Boolean read FOwnsValues;
   private
     FBuckets: array of TJclUnicodeStrHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2085,14 +2081,14 @@ type
     property OwnsValues: Boolean read FOwnsValues;
   private
     FBuckets: array of TJclSingleHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2142,14 +2138,14 @@ type
     property OwnsValues: Boolean read FOwnsValues;
   private
     FBuckets: array of TJclDoubleHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2199,14 +2195,14 @@ type
     property OwnsValues: Boolean read FOwnsValues;
   private
     FBuckets: array of TJclExtendedHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2279,14 +2275,14 @@ type
     property OwnsValues: Boolean read FOwnsValues;
   private
     FBuckets: array of TJclIntegerHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2336,14 +2332,14 @@ type
     property OwnsValues: Boolean read FOwnsValues;
   private
     FBuckets: array of TJclCardinalHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2393,14 +2389,14 @@ type
     property OwnsValues: Boolean read FOwnsValues;
   private
     FBuckets: array of TJclInt64HashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2450,14 +2446,14 @@ type
     property OwnsValues: Boolean read FOwnsValues;
   private
     FBuckets: array of TJclPtrHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2512,14 +2508,14 @@ type
     property OwnsValues: Boolean read FOwnsValues;
   private
     FBuckets: array of TJclHashMapBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2582,14 +2578,14 @@ type
     property OwnsValues: Boolean read FOwnsValues;
   private
     FBuckets: array of TBucket;
-    FHashFunction: TJclHashFunction;
+    FHashToRangeFunction: TJclHashToRangeFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2696,8 +2692,6 @@ type
   //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
-function HashMul(Key, Range: Integer): Integer;
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -2719,14 +2713,6 @@ uses
   SysUtils,
   {$ENDIF ~HAS_UNITSCOPE}
   JclResources;
-
-function HashMul(Key, Range: Integer): Integer;
-// return a value between 0 and (Range-1) based on integer-hash Key
-const
-  A = 0.6180339887; // (sqrt(5) - 1) / 2
-begin
-  Result := Trunc(Range * (Frac(Abs(Key * A))));
-end;
 
 //=== { TJclIntfIntfHashMapBucket } ==========================================
 
@@ -2760,7 +2746,7 @@ constructor TJclIntfIntfHashMap.Create(ACapacity: Integer);
 begin
   inherited Create;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclIntfIntfHashMap.Destroy;
@@ -2822,7 +2808,7 @@ procedure TJclIntfIntfHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclIntfIntfHashMap then
-    TJclIntfIntfHashMap(Dest).HashFunction := HashFunction;
+    TJclIntfIntfHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclIntfIntfHashMap.Clear;
@@ -2870,7 +2856,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -2929,7 +2915,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -2970,7 +2956,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -3166,7 +3152,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, nil)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -3338,7 +3324,7 @@ constructor TJclAnsiStrIntfHashMap.Create(ACapacity: Integer);
 begin
   inherited Create;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclAnsiStrIntfHashMap.Destroy;
@@ -3400,7 +3386,7 @@ procedure TJclAnsiStrIntfHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerB
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclAnsiStrIntfHashMap then
-    TJclAnsiStrIntfHashMap(Dest).HashFunction := HashFunction;
+    TJclAnsiStrIntfHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclAnsiStrIntfHashMap.Clear;
@@ -3448,7 +3434,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -3507,7 +3493,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -3548,7 +3534,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -3744,7 +3730,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, '') and not ValuesEqual(Value, nil)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -3916,7 +3902,7 @@ constructor TJclIntfAnsiStrHashMap.Create(ACapacity: Integer);
 begin
   inherited Create;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclIntfAnsiStrHashMap.Destroy;
@@ -3978,7 +3964,7 @@ procedure TJclIntfAnsiStrHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerB
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclIntfAnsiStrHashMap then
-    TJclIntfAnsiStrHashMap(Dest).HashFunction := HashFunction;
+    TJclIntfAnsiStrHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclIntfAnsiStrHashMap.Clear;
@@ -4026,7 +4012,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -4085,7 +4071,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := '';
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -4126,7 +4112,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := '';
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -4322,7 +4308,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, '')) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -4499,7 +4485,7 @@ constructor TJclAnsiStrAnsiStrHashMap.Create(ACapacity: Integer);
 begin
   inherited Create;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclAnsiStrAnsiStrHashMap.Destroy;
@@ -4561,7 +4547,7 @@ procedure TJclAnsiStrAnsiStrHashMap.AssignPropertiesTo(Dest: TJclAbstractContain
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclAnsiStrAnsiStrHashMap then
-    TJclAnsiStrAnsiStrHashMap(Dest).HashFunction := HashFunction;
+    TJclAnsiStrAnsiStrHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclAnsiStrAnsiStrHashMap.Clear;
@@ -4609,7 +4595,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -4668,7 +4654,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := '';
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -4709,7 +4695,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := '';
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -4905,7 +4891,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, '') and not ValuesEqual(Value, '')) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -5077,7 +5063,7 @@ constructor TJclWideStrIntfHashMap.Create(ACapacity: Integer);
 begin
   inherited Create;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclWideStrIntfHashMap.Destroy;
@@ -5139,7 +5125,7 @@ procedure TJclWideStrIntfHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerB
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclWideStrIntfHashMap then
-    TJclWideStrIntfHashMap(Dest).HashFunction := HashFunction;
+    TJclWideStrIntfHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclWideStrIntfHashMap.Clear;
@@ -5187,7 +5173,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -5246,7 +5232,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -5287,7 +5273,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -5483,7 +5469,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, '') and not ValuesEqual(Value, nil)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -5655,7 +5641,7 @@ constructor TJclIntfWideStrHashMap.Create(ACapacity: Integer);
 begin
   inherited Create;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclIntfWideStrHashMap.Destroy;
@@ -5717,7 +5703,7 @@ procedure TJclIntfWideStrHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerB
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclIntfWideStrHashMap then
-    TJclIntfWideStrHashMap(Dest).HashFunction := HashFunction;
+    TJclIntfWideStrHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclIntfWideStrHashMap.Clear;
@@ -5765,7 +5751,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -5824,7 +5810,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := '';
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -5865,7 +5851,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := '';
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -6061,7 +6047,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, '')) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -6238,7 +6224,7 @@ constructor TJclWideStrWideStrHashMap.Create(ACapacity: Integer);
 begin
   inherited Create;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclWideStrWideStrHashMap.Destroy;
@@ -6300,7 +6286,7 @@ procedure TJclWideStrWideStrHashMap.AssignPropertiesTo(Dest: TJclAbstractContain
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclWideStrWideStrHashMap then
-    TJclWideStrWideStrHashMap(Dest).HashFunction := HashFunction;
+    TJclWideStrWideStrHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclWideStrWideStrHashMap.Clear;
@@ -6348,7 +6334,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -6407,7 +6393,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := '';
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -6448,7 +6434,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := '';
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -6644,7 +6630,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, '') and not ValuesEqual(Value, '')) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -6819,7 +6805,7 @@ constructor TJclUnicodeStrIntfHashMap.Create(ACapacity: Integer);
 begin
   inherited Create;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclUnicodeStrIntfHashMap.Destroy;
@@ -6881,7 +6867,7 @@ procedure TJclUnicodeStrIntfHashMap.AssignPropertiesTo(Dest: TJclAbstractContain
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclUnicodeStrIntfHashMap then
-    TJclUnicodeStrIntfHashMap(Dest).HashFunction := HashFunction;
+    TJclUnicodeStrIntfHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclUnicodeStrIntfHashMap.Clear;
@@ -6929,7 +6915,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -6988,7 +6974,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -7029,7 +7015,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -7225,7 +7211,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, '') and not ValuesEqual(Value, nil)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -7402,7 +7388,7 @@ constructor TJclIntfUnicodeStrHashMap.Create(ACapacity: Integer);
 begin
   inherited Create;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclIntfUnicodeStrHashMap.Destroy;
@@ -7464,7 +7450,7 @@ procedure TJclIntfUnicodeStrHashMap.AssignPropertiesTo(Dest: TJclAbstractContain
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclIntfUnicodeStrHashMap then
-    TJclIntfUnicodeStrHashMap(Dest).HashFunction := HashFunction;
+    TJclIntfUnicodeStrHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclIntfUnicodeStrHashMap.Clear;
@@ -7512,7 +7498,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -7571,7 +7557,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := '';
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -7612,7 +7598,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := '';
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -7808,7 +7794,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, '')) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -7990,7 +7976,7 @@ constructor TJclUnicodeStrUnicodeStrHashMap.Create(ACapacity: Integer);
 begin
   inherited Create;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclUnicodeStrUnicodeStrHashMap.Destroy;
@@ -8052,7 +8038,7 @@ procedure TJclUnicodeStrUnicodeStrHashMap.AssignPropertiesTo(Dest: TJclAbstractC
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclUnicodeStrUnicodeStrHashMap then
-    TJclUnicodeStrUnicodeStrHashMap(Dest).HashFunction := HashFunction;
+    TJclUnicodeStrUnicodeStrHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclUnicodeStrUnicodeStrHashMap.Clear;
@@ -8100,7 +8086,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -8159,7 +8145,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := '';
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -8200,7 +8186,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := '';
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -8396,7 +8382,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, '') and not ValuesEqual(Value, '')) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -8570,7 +8556,7 @@ constructor TJclSingleIntfHashMap.Create(ACapacity: Integer);
 begin
   inherited Create;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclSingleIntfHashMap.Destroy;
@@ -8632,7 +8618,7 @@ procedure TJclSingleIntfHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBa
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclSingleIntfHashMap then
-    TJclSingleIntfHashMap(Dest).HashFunction := HashFunction;
+    TJclSingleIntfHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclSingleIntfHashMap.Clear;
@@ -8680,7 +8666,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -8739,7 +8725,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -8780,7 +8766,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -8976,7 +8962,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, 0.0) and not ValuesEqual(Value, nil)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -9148,7 +9134,7 @@ constructor TJclIntfSingleHashMap.Create(ACapacity: Integer);
 begin
   inherited Create;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclIntfSingleHashMap.Destroy;
@@ -9210,7 +9196,7 @@ procedure TJclIntfSingleHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBa
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclIntfSingleHashMap then
-    TJclIntfSingleHashMap(Dest).HashFunction := HashFunction;
+    TJclIntfSingleHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclIntfSingleHashMap.Clear;
@@ -9258,7 +9244,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -9317,7 +9303,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := 0.0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -9358,7 +9344,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := 0.0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -9554,7 +9540,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, 0.0)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -9731,7 +9717,7 @@ constructor TJclSingleSingleHashMap.Create(ACapacity: Integer);
 begin
   inherited Create;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclSingleSingleHashMap.Destroy;
@@ -9793,7 +9779,7 @@ procedure TJclSingleSingleHashMap.AssignPropertiesTo(Dest: TJclAbstractContainer
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclSingleSingleHashMap then
-    TJclSingleSingleHashMap(Dest).HashFunction := HashFunction;
+    TJclSingleSingleHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclSingleSingleHashMap.Clear;
@@ -9841,7 +9827,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -9900,7 +9886,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := 0.0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -9941,7 +9927,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := 0.0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -10137,7 +10123,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, 0.0) and not ValuesEqual(Value, 0.0)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -10309,7 +10295,7 @@ constructor TJclDoubleIntfHashMap.Create(ACapacity: Integer);
 begin
   inherited Create;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclDoubleIntfHashMap.Destroy;
@@ -10371,7 +10357,7 @@ procedure TJclDoubleIntfHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBa
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclDoubleIntfHashMap then
-    TJclDoubleIntfHashMap(Dest).HashFunction := HashFunction;
+    TJclDoubleIntfHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclDoubleIntfHashMap.Clear;
@@ -10419,7 +10405,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -10478,7 +10464,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -10519,7 +10505,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -10715,7 +10701,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, 0.0) and not ValuesEqual(Value, nil)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -10887,7 +10873,7 @@ constructor TJclIntfDoubleHashMap.Create(ACapacity: Integer);
 begin
   inherited Create;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclIntfDoubleHashMap.Destroy;
@@ -10949,7 +10935,7 @@ procedure TJclIntfDoubleHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBa
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclIntfDoubleHashMap then
-    TJclIntfDoubleHashMap(Dest).HashFunction := HashFunction;
+    TJclIntfDoubleHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclIntfDoubleHashMap.Clear;
@@ -10997,7 +10983,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -11056,7 +11042,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := 0.0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -11097,7 +11083,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := 0.0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -11293,7 +11279,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, 0.0)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -11470,7 +11456,7 @@ constructor TJclDoubleDoubleHashMap.Create(ACapacity: Integer);
 begin
   inherited Create;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclDoubleDoubleHashMap.Destroy;
@@ -11532,7 +11518,7 @@ procedure TJclDoubleDoubleHashMap.AssignPropertiesTo(Dest: TJclAbstractContainer
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclDoubleDoubleHashMap then
-    TJclDoubleDoubleHashMap(Dest).HashFunction := HashFunction;
+    TJclDoubleDoubleHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclDoubleDoubleHashMap.Clear;
@@ -11580,7 +11566,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -11639,7 +11625,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := 0.0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -11680,7 +11666,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := 0.0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -11876,7 +11862,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, 0.0) and not ValuesEqual(Value, 0.0)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -12048,7 +12034,7 @@ constructor TJclExtendedIntfHashMap.Create(ACapacity: Integer);
 begin
   inherited Create;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclExtendedIntfHashMap.Destroy;
@@ -12110,7 +12096,7 @@ procedure TJclExtendedIntfHashMap.AssignPropertiesTo(Dest: TJclAbstractContainer
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclExtendedIntfHashMap then
-    TJclExtendedIntfHashMap(Dest).HashFunction := HashFunction;
+    TJclExtendedIntfHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclExtendedIntfHashMap.Clear;
@@ -12158,7 +12144,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -12217,7 +12203,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -12258,7 +12244,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -12454,7 +12440,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, 0.0) and not ValuesEqual(Value, nil)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -12626,7 +12612,7 @@ constructor TJclIntfExtendedHashMap.Create(ACapacity: Integer);
 begin
   inherited Create;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclIntfExtendedHashMap.Destroy;
@@ -12688,7 +12674,7 @@ procedure TJclIntfExtendedHashMap.AssignPropertiesTo(Dest: TJclAbstractContainer
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclIntfExtendedHashMap then
-    TJclIntfExtendedHashMap(Dest).HashFunction := HashFunction;
+    TJclIntfExtendedHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclIntfExtendedHashMap.Clear;
@@ -12736,7 +12722,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -12795,7 +12781,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := 0.0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -12836,7 +12822,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := 0.0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -13032,7 +13018,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, 0.0)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -13209,7 +13195,7 @@ constructor TJclExtendedExtendedHashMap.Create(ACapacity: Integer);
 begin
   inherited Create;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclExtendedExtendedHashMap.Destroy;
@@ -13271,7 +13257,7 @@ procedure TJclExtendedExtendedHashMap.AssignPropertiesTo(Dest: TJclAbstractConta
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclExtendedExtendedHashMap then
-    TJclExtendedExtendedHashMap(Dest).HashFunction := HashFunction;
+    TJclExtendedExtendedHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclExtendedExtendedHashMap.Clear;
@@ -13319,7 +13305,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -13378,7 +13364,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := 0.0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -13419,7 +13405,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := 0.0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -13615,7 +13601,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, 0.0) and not ValuesEqual(Value, 0.0)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -13787,7 +13773,7 @@ constructor TJclIntegerIntfHashMap.Create(ACapacity: Integer);
 begin
   inherited Create;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclIntegerIntfHashMap.Destroy;
@@ -13849,7 +13835,7 @@ procedure TJclIntegerIntfHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerB
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclIntegerIntfHashMap then
-    TJclIntegerIntfHashMap(Dest).HashFunction := HashFunction;
+    TJclIntegerIntfHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclIntegerIntfHashMap.Clear;
@@ -13897,7 +13883,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -13956,7 +13942,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -13997,7 +13983,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -14193,7 +14179,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, 0) and not ValuesEqual(Value, nil)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -14365,7 +14351,7 @@ constructor TJclIntfIntegerHashMap.Create(ACapacity: Integer);
 begin
   inherited Create;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclIntfIntegerHashMap.Destroy;
@@ -14427,7 +14413,7 @@ procedure TJclIntfIntegerHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerB
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclIntfIntegerHashMap then
-    TJclIntfIntegerHashMap(Dest).HashFunction := HashFunction;
+    TJclIntfIntegerHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclIntfIntegerHashMap.Clear;
@@ -14475,7 +14461,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -14534,7 +14520,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := 0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -14575,7 +14561,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := 0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -14771,7 +14757,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, 0)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -14948,7 +14934,7 @@ constructor TJclIntegerIntegerHashMap.Create(ACapacity: Integer);
 begin
   inherited Create;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclIntegerIntegerHashMap.Destroy;
@@ -15010,7 +14996,7 @@ procedure TJclIntegerIntegerHashMap.AssignPropertiesTo(Dest: TJclAbstractContain
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclIntegerIntegerHashMap then
-    TJclIntegerIntegerHashMap(Dest).HashFunction := HashFunction;
+    TJclIntegerIntegerHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclIntegerIntegerHashMap.Clear;
@@ -15058,7 +15044,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -15117,7 +15103,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := 0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -15158,7 +15144,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := 0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -15354,7 +15340,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, 0) and not ValuesEqual(Value, 0)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -15526,7 +15512,7 @@ constructor TJclCardinalIntfHashMap.Create(ACapacity: Integer);
 begin
   inherited Create;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclCardinalIntfHashMap.Destroy;
@@ -15588,7 +15574,7 @@ procedure TJclCardinalIntfHashMap.AssignPropertiesTo(Dest: TJclAbstractContainer
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclCardinalIntfHashMap then
-    TJclCardinalIntfHashMap(Dest).HashFunction := HashFunction;
+    TJclCardinalIntfHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclCardinalIntfHashMap.Clear;
@@ -15636,7 +15622,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -15695,7 +15681,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -15736,7 +15722,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -15932,7 +15918,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, 0) and not ValuesEqual(Value, nil)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -16104,7 +16090,7 @@ constructor TJclIntfCardinalHashMap.Create(ACapacity: Integer);
 begin
   inherited Create;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclIntfCardinalHashMap.Destroy;
@@ -16166,7 +16152,7 @@ procedure TJclIntfCardinalHashMap.AssignPropertiesTo(Dest: TJclAbstractContainer
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclIntfCardinalHashMap then
-    TJclIntfCardinalHashMap(Dest).HashFunction := HashFunction;
+    TJclIntfCardinalHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclIntfCardinalHashMap.Clear;
@@ -16214,7 +16200,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -16273,7 +16259,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := 0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -16314,7 +16300,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := 0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -16510,7 +16496,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, 0)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -16687,7 +16673,7 @@ constructor TJclCardinalCardinalHashMap.Create(ACapacity: Integer);
 begin
   inherited Create;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclCardinalCardinalHashMap.Destroy;
@@ -16749,7 +16735,7 @@ procedure TJclCardinalCardinalHashMap.AssignPropertiesTo(Dest: TJclAbstractConta
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclCardinalCardinalHashMap then
-    TJclCardinalCardinalHashMap(Dest).HashFunction := HashFunction;
+    TJclCardinalCardinalHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclCardinalCardinalHashMap.Clear;
@@ -16797,7 +16783,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -16856,7 +16842,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := 0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -16897,7 +16883,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := 0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -17093,7 +17079,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, 0) and not ValuesEqual(Value, 0)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -17265,7 +17251,7 @@ constructor TJclInt64IntfHashMap.Create(ACapacity: Integer);
 begin
   inherited Create;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclInt64IntfHashMap.Destroy;
@@ -17327,7 +17313,7 @@ procedure TJclInt64IntfHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBas
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclInt64IntfHashMap then
-    TJclInt64IntfHashMap(Dest).HashFunction := HashFunction;
+    TJclInt64IntfHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclInt64IntfHashMap.Clear;
@@ -17375,7 +17361,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -17434,7 +17420,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -17475,7 +17461,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -17671,7 +17657,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, 0) and not ValuesEqual(Value, nil)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -17843,7 +17829,7 @@ constructor TJclIntfInt64HashMap.Create(ACapacity: Integer);
 begin
   inherited Create;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclIntfInt64HashMap.Destroy;
@@ -17905,7 +17891,7 @@ procedure TJclIntfInt64HashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBas
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclIntfInt64HashMap then
-    TJclIntfInt64HashMap(Dest).HashFunction := HashFunction;
+    TJclIntfInt64HashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclIntfInt64HashMap.Clear;
@@ -17953,7 +17939,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -18012,7 +17998,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := 0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -18053,7 +18039,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := 0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -18249,7 +18235,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, 0)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -18426,7 +18412,7 @@ constructor TJclInt64Int64HashMap.Create(ACapacity: Integer);
 begin
   inherited Create;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclInt64Int64HashMap.Destroy;
@@ -18488,7 +18474,7 @@ procedure TJclInt64Int64HashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBa
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclInt64Int64HashMap then
-    TJclInt64Int64HashMap(Dest).HashFunction := HashFunction;
+    TJclInt64Int64HashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclInt64Int64HashMap.Clear;
@@ -18536,7 +18522,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -18595,7 +18581,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := 0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -18636,7 +18622,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := 0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -18832,7 +18818,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, 0) and not ValuesEqual(Value, 0)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -19004,7 +18990,7 @@ constructor TJclPtrIntfHashMap.Create(ACapacity: Integer);
 begin
   inherited Create;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclPtrIntfHashMap.Destroy;
@@ -19066,7 +19052,7 @@ procedure TJclPtrIntfHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase)
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclPtrIntfHashMap then
-    TJclPtrIntfHashMap(Dest).HashFunction := HashFunction;
+    TJclPtrIntfHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclPtrIntfHashMap.Clear;
@@ -19114,7 +19100,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -19173,7 +19159,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -19214,7 +19200,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -19410,7 +19396,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, nil)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -19582,7 +19568,7 @@ constructor TJclIntfPtrHashMap.Create(ACapacity: Integer);
 begin
   inherited Create;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclIntfPtrHashMap.Destroy;
@@ -19644,7 +19630,7 @@ procedure TJclIntfPtrHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase)
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclIntfPtrHashMap then
-    TJclIntfPtrHashMap(Dest).HashFunction := HashFunction;
+    TJclIntfPtrHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclIntfPtrHashMap.Clear;
@@ -19692,7 +19678,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -19751,7 +19737,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -19792,7 +19778,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -19988,7 +19974,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, nil)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -20165,7 +20151,7 @@ constructor TJclPtrPtrHashMap.Create(ACapacity: Integer);
 begin
   inherited Create;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclPtrPtrHashMap.Destroy;
@@ -20227,7 +20213,7 @@ procedure TJclPtrPtrHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclPtrPtrHashMap then
-    TJclPtrPtrHashMap(Dest).HashFunction := HashFunction;
+    TJclPtrPtrHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclPtrPtrHashMap.Clear;
@@ -20275,7 +20261,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -20334,7 +20320,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -20375,7 +20361,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -20571,7 +20557,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, nil)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -20744,7 +20730,7 @@ begin
   inherited Create;
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclIntfHashMap.Destroy;
@@ -20806,7 +20792,7 @@ procedure TJclIntfHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclIntfHashMap then
-    TJclIntfHashMap(Dest).HashFunction := HashFunction;
+    TJclIntfHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclIntfHashMap.Clear;
@@ -20854,7 +20840,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -20913,7 +20899,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -20954,7 +20940,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -21150,7 +21136,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, nil)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -21336,7 +21322,7 @@ begin
   inherited Create;
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclAnsiStrHashMap.Destroy;
@@ -21398,7 +21384,7 @@ procedure TJclAnsiStrHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase)
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclAnsiStrHashMap then
-    TJclAnsiStrHashMap(Dest).HashFunction := HashFunction;
+    TJclAnsiStrHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclAnsiStrHashMap.Clear;
@@ -21446,7 +21432,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -21505,7 +21491,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -21546,7 +21532,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -21742,7 +21728,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, '') and not ValuesEqual(Value, nil)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -21928,7 +21914,7 @@ begin
   inherited Create;
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclWideStrHashMap.Destroy;
@@ -21990,7 +21976,7 @@ procedure TJclWideStrHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase)
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclWideStrHashMap then
-    TJclWideStrHashMap(Dest).HashFunction := HashFunction;
+    TJclWideStrHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclWideStrHashMap.Clear;
@@ -22038,7 +22024,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -22097,7 +22083,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -22138,7 +22124,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -22334,7 +22320,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, '') and not ValuesEqual(Value, nil)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -22523,7 +22509,7 @@ begin
   inherited Create;
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclUnicodeStrHashMap.Destroy;
@@ -22585,7 +22571,7 @@ procedure TJclUnicodeStrHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBa
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclUnicodeStrHashMap then
-    TJclUnicodeStrHashMap(Dest).HashFunction := HashFunction;
+    TJclUnicodeStrHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclUnicodeStrHashMap.Clear;
@@ -22633,7 +22619,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -22692,7 +22678,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -22733,7 +22719,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -22929,7 +22915,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, '') and not ValuesEqual(Value, nil)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -23117,7 +23103,7 @@ begin
   inherited Create;
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclSingleHashMap.Destroy;
@@ -23179,7 +23165,7 @@ procedure TJclSingleHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclSingleHashMap then
-    TJclSingleHashMap(Dest).HashFunction := HashFunction;
+    TJclSingleHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclSingleHashMap.Clear;
@@ -23227,7 +23213,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -23286,7 +23272,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -23327,7 +23313,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -23523,7 +23509,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, 0.0) and not ValuesEqual(Value, nil)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -23709,7 +23695,7 @@ begin
   inherited Create;
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclDoubleHashMap.Destroy;
@@ -23771,7 +23757,7 @@ procedure TJclDoubleHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclDoubleHashMap then
-    TJclDoubleHashMap(Dest).HashFunction := HashFunction;
+    TJclDoubleHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclDoubleHashMap.Clear;
@@ -23819,7 +23805,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -23878,7 +23864,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -23919,7 +23905,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -24115,7 +24101,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, 0.0) and not ValuesEqual(Value, nil)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -24301,7 +24287,7 @@ begin
   inherited Create;
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclExtendedHashMap.Destroy;
@@ -24363,7 +24349,7 @@ procedure TJclExtendedHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclExtendedHashMap then
-    TJclExtendedHashMap(Dest).HashFunction := HashFunction;
+    TJclExtendedHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclExtendedHashMap.Clear;
@@ -24411,7 +24397,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -24470,7 +24456,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -24511,7 +24497,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -24707,7 +24693,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, 0.0) and not ValuesEqual(Value, nil)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -24893,7 +24879,7 @@ begin
   inherited Create;
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclIntegerHashMap.Destroy;
@@ -24955,7 +24941,7 @@ procedure TJclIntegerHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase)
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclIntegerHashMap then
-    TJclIntegerHashMap(Dest).HashFunction := HashFunction;
+    TJclIntegerHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclIntegerHashMap.Clear;
@@ -25003,7 +24989,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -25062,7 +25048,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -25103,7 +25089,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -25299,7 +25285,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, 0) and not ValuesEqual(Value, nil)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -25485,7 +25471,7 @@ begin
   inherited Create;
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclCardinalHashMap.Destroy;
@@ -25547,7 +25533,7 @@ procedure TJclCardinalHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclCardinalHashMap then
-    TJclCardinalHashMap(Dest).HashFunction := HashFunction;
+    TJclCardinalHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclCardinalHashMap.Clear;
@@ -25595,7 +25581,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -25654,7 +25640,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -25695,7 +25681,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -25891,7 +25877,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, 0) and not ValuesEqual(Value, nil)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -26077,7 +26063,7 @@ begin
   inherited Create;
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclInt64HashMap.Destroy;
@@ -26139,7 +26125,7 @@ procedure TJclInt64HashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclInt64HashMap then
-    TJclInt64HashMap(Dest).HashFunction := HashFunction;
+    TJclInt64HashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclInt64HashMap.Clear;
@@ -26187,7 +26173,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -26246,7 +26232,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -26287,7 +26273,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -26483,7 +26469,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, 0) and not ValuesEqual(Value, nil)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -26669,7 +26655,7 @@ begin
   inherited Create;
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclPtrHashMap.Destroy;
@@ -26731,7 +26717,7 @@ procedure TJclPtrHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclPtrHashMap then
-    TJclPtrHashMap(Dest).HashFunction := HashFunction;
+    TJclPtrHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclPtrHashMap.Clear;
@@ -26779,7 +26765,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -26838,7 +26824,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -26879,7 +26865,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -27075,7 +27061,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, nil)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -27262,7 +27248,7 @@ begin
   FOwnsKeys := AOwnsKeys;
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclHashMap.Destroy;
@@ -27324,7 +27310,7 @@ procedure TJclHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclHashMap then
-    TJclHashMap(Dest).HashFunction := HashFunction;
+    TJclHashMap(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclHashMap.Clear;
@@ -27372,7 +27358,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -27431,7 +27417,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -27472,7 +27458,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -27668,7 +27654,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, nil)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin
@@ -27878,7 +27864,7 @@ begin
   FOwnsKeys := AOwnsKeys;
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor TJclHashMap<TKey, TValue>.Destroy;
@@ -27940,7 +27926,7 @@ procedure TJclHashMap<TKey, TValue>.AssignPropertiesTo(Dest: TJclAbstractContain
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is TJclHashMap<TKey, TValue> then
-    TJclHashMap<TKey, TValue>(Dest).HashFunction := HashFunction;
+    TJclHashMap<TKey, TValue>(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure TJclHashMap<TKey, TValue>.Clear;
@@ -27988,7 +27974,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -28047,7 +28033,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := Default(TValue);
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -28088,7 +28074,7 @@ begin
   {$ENDIF THREADSAFE}
     Found := False;
     Result := Default(TValue);
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -28284,7 +28270,7 @@ begin
   {$ENDIF THREADSAFE}
     if FAllowDefaultElements or (not KeysEqual(Key, Default(TKey)) and not ValuesEqual(Value, Default(TValue))) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin

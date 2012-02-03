@@ -53,10 +53,6 @@ uses
 {$I containers\JclHashMaps.imp}
 {$I containers\JclHashMaps.int}
 type
-  // Hash Function
-  // Result must be in 0..Range-1
-  TJclHashFunction = function(Key, Range: Integer): Integer;
-
 (*$JPPLOOP ALLMAPINDEX ALLMAPCOUNT
   {$JPPEXPANDMACRO JCLHASHMAPTYPESINT(,,,)}
 
@@ -177,8 +173,6 @@ public
   //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
-function HashMul(Key, Range: Integer): Integer;
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -200,14 +194,6 @@ uses
   SysUtils,
   {$ENDIF ~HAS_UNITSCOPE}
   JclResources;
-
-function HashMul(Key, Range: Integer): Integer;
-// return a value between 0 and (Range-1) based on integer-hash Key
-const
-  A = 0.6180339887; // (sqrt(5) - 1) / 2
-begin
-  Result := Trunc(Range * (Frac(Abs(Key * A))));
-end;
 
 (*$JPPLOOP TRUEMAPINDEX TRUEMAPCOUNT
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(,,)}

@@ -35,7 +35,7 @@ constructor SELFCLASSNAME.Create(ACapacity: IntegerVALUEOWNERSHIPDECLARATIONKEYO
 begin
   inherited Create;OWNERSHIPASSIGNMENTS
   SetCapacity(ACapacity);
-  FHashFunction := HashMul;
+  FHashToRangeFunction := JclSimpleHashToRange;
 end;
 
 destructor SELFCLASSNAME.Destroy;
@@ -88,7 +88,7 @@ procedure SELFCLASSNAME.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is SELFCLASSNAME then
-    SELFCLASSNAME(Dest).HashFunction := HashFunction;
+    SELFCLASSNAME(Dest).FHashToRangeFunction := FHashToRangeFunction;
 end;
 
 procedure SELFCLASSNAME.Clear;
@@ -121,7 +121,7 @@ var
 begin
   {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -160,7 +160,7 @@ var
 begin
   {$JPPDEFINE WRITE}{$JPPEXPANDMACRO LOCK}
     Result := VALUEDEFAULT;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
     begin
       for I := 0 to Bucket.Size - 1 do
@@ -192,7 +192,7 @@ begin
   {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
     Found := False;
     Result := VALUEDEFAULT;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    Bucket := FBuckets[FHashToRangeFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
       for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
@@ -328,7 +328,7 @@ begin
   {$JPPDEFINE WRITE}{$JPPEXPANDMACRO LOCK}
     if FAllowDefaultElements or (not KeysEqual(Key, KEYDEFAULT) and not ValuesEqual(Value, VALUEDEFAULT)) then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
+      Index := FHashToRangeFunction(Hash(Key), FCapacity);
       Bucket := FBuckets[Index];
       if Bucket <> nil then
       begin

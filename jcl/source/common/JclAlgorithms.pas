@@ -123,6 +123,13 @@ function WideStrSimpleHashConvertI(const AString: WideString): Integer;
 function UnicodeStrSimpleHashConvertI(const AString: UnicodeString): Integer;
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
+type
+  // Hash Function
+  // Result must be in 0..Range-1
+  TJclHashToRangeFunction = function(Key, Range: Integer): Integer;
+
+function JclSimpleHashToRange(Key, Range: Integer): Integer;
+
 // move array algorithms
 procedure MoveArray(var List: TDynIInterfaceArray; FromIndex, ToIndex, Count: SizeInt); overload;
 procedure MoveArray(var List: TDynAnsiStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
@@ -1106,6 +1113,14 @@ end;
 function SimpleHashConvert(AObject: TObject): Integer;
 begin
   Result := SizeInt(AObject) and MaxInt;
+end;
+
+function JclSimpleHashToRange(Key, Range: Integer): Integer;
+// return a value between 0 and (Range-1) based on integer-hash Key
+const
+  A = 0.6180339887; // (sqrt(5) - 1) / 2
+begin
+  Result := Trunc(Range * (Frac(Abs(Key * A))));
 end;
 
 procedure FinalizeArrayBeforeMove(var List: TDynIInterfaceArray; FromIndex, ToIndex, Count: SizeInt); overload;

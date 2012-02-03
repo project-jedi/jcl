@@ -18,14 +18,14 @@ SELFCLASSNAME = class(ANCESTORNAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF TH
   MAPINTERFACENAME)SECTIONADDITIONAL
 private
   FBuckets: array of BUCKETTYPENAME;
-  FHashFunction: TJclHashFunction;
+  FHashToRangeFunction: TJclHashToRangeFunction;
 protected
   procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
   procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
 public
   constructor Create(ACapacity: IntegerVALUEOWNERSHIPDECLARATIONKEYOWNERSHIPDECLARATION);
   destructor Destroy; override;
-  property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+  property HashToRangeFunction: TJclHashToRangeFunction read FHashToRangeFunction write FHashToRangeFunction;
   { IJclPackable }
   procedure Pack; override;
   procedure SetCapacity(Value: Integer); override;
