@@ -51,14 +51,12 @@ uses
   {$ENDIF MSWINDOWS}
   System.SysUtils, System.Classes,
   System.Variants,
-  System.IniFiles,
   {$ELSE ~HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
   Windows, // Delphi 2005 inline
   {$ENDIF MSWINDOWS}
   SysUtils, Classes,
   Variants,
-  IniFiles,
   {$ENDIF ~HAS_UNITSCOPE}
   JclBase, JclStreams;
 
@@ -167,7 +165,7 @@ type
 
   TJclSimpleXMLProps = class(TObject)
   private
-    FProperties: THashedStringList;
+    FProperties: TStringList;
     FParent: TJclSimpleXMLElem;
     function GetCount: Integer;
     function GetItemNamedDefault(const Name, Default: string): TJclSimpleXMLProp;
@@ -222,7 +220,7 @@ type
 
   TJclSimpleXMLElemsProlog = class(TObject)
   private
-    FElems: THashedStringList;
+    FElems: TStringList;
     FSimpleXml: TJclSimpleXml;
     function GetCount: Integer;
     function GetItem(const Index: Integer): TJclSimpleXMLElem;
@@ -328,9 +326,9 @@ type
     function GetItemNamed(const Name: string): TJclSimpleXMLElem;
     function GetNamedElems(const Name: string): TJclSimpleXMLNamedElems;
   protected
-    FElems: THashedStringList;
+    FElems: TStringList;
     FCompare: TJclSimpleXMLElemCompare;
-    FNamedElems: THashedStringList;
+    FNamedElems: TStringList;
     function GetItem(const Index: Integer): TJclSimpleXMLElem;
     procedure AddChild(const Value: TJclSimpleXMLElem);
     procedure AddChildFirst(const Value: TJclSimpleXMLElem);
@@ -1231,17 +1229,12 @@ end;
 
 procedure TJclSimpleXML.SaveToFile(const FileName: TFileName; Encoding: TJclStringEncoding; CodePage: Word);
 var
-  Stream: TFileStream;
+  Stream: TMemoryStream;
 begin
-  if {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.FileExists(FileName) then
-  begin
-    Stream := TFileStream.Create(FileName, fmOpenWrite);
-    Stream.Size := 0;
-  end
-  else
-    Stream := TFileStream.Create(FileName, fmCreate);
+  Stream := TMemoryStream.Create;
   try
     SaveToStream(Stream, Encoding, CodePage);
+    Stream.SaveToFile(FileName);
   finally
     Stream.Free;
   end;
@@ -2062,7 +2055,7 @@ end;
 procedure TJclSimpleXMLElems.CreateElems;
 begin
   if FElems = nil then
-    FElems := THashedStringList.Create;
+    FElems := TStringList.Create;
 end;
 
 procedure TJclSimpleXMLElems.Delete(const Index: Integer);
@@ -2183,7 +2176,7 @@ var
   NamedIndex: Integer;
 begin
   if FNamedElems = nil then
-    FNamedElems := THashedStringList.Create;
+    FNamedElems := TStringList.Create;
   NamedIndex := FNamedElems.IndexOf(Name);
   if NamedIndex = -1 then
   begin
@@ -2509,7 +2502,7 @@ var
   Elem: TJclSimpleXMLProp;
 begin
   if FProperties = nil then
-    FProperties := THashedStringList.Create;
+    FProperties := TStringList.Create;
   Elem := TJclSimpleXMLProp.Create(Name);
   FProperties.AddObject(Name, Elem);
   Elem.Value := Value;
@@ -2540,7 +2533,7 @@ var
   Elem: TJclSimpleXMLProp;
 begin
   if FProperties = nil then
-    FProperties := THashedStringList.Create;
+    FProperties := TStringList.Create;
   Elem := TJclSimpleXMLProp.Create(Name);
   FProperties.InsertObject(Index, Name, Elem);
   Elem.Value := Value;
@@ -3682,7 +3675,7 @@ end;
 constructor TJclSimpleXMLElemsProlog.Create;
 begin
   inherited Create;
-  FElems := THashedStringList.Create;
+  FElems := TStringList.Create;
 end;
 
 destructor TJclSimpleXMLElemsProlog.Destroy;
