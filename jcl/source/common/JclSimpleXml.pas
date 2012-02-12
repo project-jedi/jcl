@@ -51,12 +51,14 @@ uses
   {$ENDIF MSWINDOWS}
   System.SysUtils, System.Classes,
   System.Variants,
+  System.IniFiles,
   {$ELSE ~HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
   Windows, // Delphi 2005 inline
   {$ENDIF MSWINDOWS}
   SysUtils, Classes,
   Variants,
+  IniFiles,
   {$ENDIF ~HAS_UNITSCOPE}
   JclBase, JclStreams;
 
@@ -220,7 +222,7 @@ type
 
   TJclSimpleXMLElemsProlog = class(TObject)
   private
-    FElems: TStringList;
+    FElems: THashedStringList;
     FSimpleXml: TJclSimpleXml;
     function GetCount: Integer;
     function GetItem(const Index: Integer): TJclSimpleXMLElem;
@@ -326,9 +328,9 @@ type
     function GetItemNamed(const Name: string): TJclSimpleXMLElem;
     function GetNamedElems(const Name: string): TJclSimpleXMLNamedElems;
   protected
-    FElems: TStringList;
+    FElems: THashedStringList;
     FCompare: TJclSimpleXMLElemCompare;
-    FNamedElems: TStringList;
+    FNamedElems: THashedStringList;
     function GetItem(const Index: Integer): TJclSimpleXMLElem;
     procedure AddChild(const Value: TJclSimpleXMLElem);
     procedure AddChildFirst(const Value: TJclSimpleXMLElem);
@@ -2055,7 +2057,7 @@ end;
 procedure TJclSimpleXMLElems.CreateElems;
 begin
   if FElems = nil then
-    FElems := TStringList.Create;
+    FElems := THashedStringList.Create;
 end;
 
 procedure TJclSimpleXMLElems.Delete(const Index: Integer);
@@ -2176,7 +2178,7 @@ var
   NamedIndex: Integer;
 begin
   if FNamedElems = nil then
-    FNamedElems := TStringList.Create;
+    FNamedElems := THashedStringList.Create;
   NamedIndex := FNamedElems.IndexOf(Name);
   if NamedIndex = -1 then
   begin
@@ -3675,7 +3677,7 @@ end;
 constructor TJclSimpleXMLElemsProlog.Create;
 begin
   inherited Create;
-  FElems := TStringList.Create;
+  FElems := THashedStringList.Create;
 end;
 
 destructor TJclSimpleXMLElemsProlog.Destroy;
