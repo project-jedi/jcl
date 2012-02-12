@@ -1128,7 +1128,7 @@ resourcestring
   RsCompressionCramFSName            = 'CramFS archive';
   RsCompressionCramFSExtensions      = '*.cramfs';
   RsCompressionDuplicate             = 'The file %s already exists in the archive';
-  RsCompressionReplaceError          = 'At least one compression volumes could not be replaced after an archive out-of-place update';
+  RsCompressionReplaceError          = 'At least one compression volume could not be replaced after an archive out-of-place update';
 
 //=== JclConsole =============================================================
 resourcestring

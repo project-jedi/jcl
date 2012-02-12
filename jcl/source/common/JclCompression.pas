@@ -1115,7 +1115,7 @@ type
 
   // called when tmp volumes will replace volumes after out-of-place update
   TJclCompressionReplaceEvent = function (Sender: TObject; const SrcFileName, DestFileName: TFileName;
-    var SrcStream, DestStream: TStream; var OwnsSrcStream, OwnsDestStream: Boolean): Boolean;
+    var SrcStream, DestStream: TStream; var OwnsSrcStream, OwnsDestStream: Boolean): Boolean of object;
 
   // ancestor class for all archives that update files out-of-place (by creating a copy of the volumes)
   TJclOutOfPlaceUpdateArchive = class(TJclUpdateArchive, IInterface)
@@ -5525,6 +5525,7 @@ begin
           CopiedSize := StreamCopy(SrcStream, DestStream);
           // reset size
           DestStream.Size := CopiedSize;
+          Handled := True;
         end;
         // identity
         // else
@@ -5571,14 +5572,15 @@ begin
   begin
     AOwnsStream := VolumeFileNameMask <> '';
     AVolume := nil;
-    AFileName := FindUnusedFileName(Format(VolumeFileNameMask, [Index + VolumeIndexOffset]), '.tmp');
+    if VolumeFileNameMask = '' then AFileName := ''
+      else AFileName := FindUnusedFileName(Format(VolumeFileNameMask, [Index + VolumeIndexOffset]), '.tmp');
     if (Index >= 0) and (Index < FVolumes.Count) then
     begin
       AVolume := TJclCompressionVolume(FVolumes.Items[Index]);
       Result := AVolume.TmpStream;
       AOwnsStream := AVolume.OwnsTmpStream;
       AFileName := AVolume.TmpFileName;
-      if AFileName = '' then
+      if (AFileName = '') and (AVolume.FileName <> '') then
         AFileName := FindUnusedFileName(AVolume.FileName, '.tmp');
     end;
 
