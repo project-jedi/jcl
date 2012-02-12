@@ -4822,21 +4822,31 @@ end;
 
 function JclCreateThreadStackTrace(Raw: Boolean; const ThreadHandle: THandle): TJclStackInfoList;
 var
-  C: CONTEXT;
+  ContextMemory: Pointer;
+  AlignedContext: PContext;
 begin
   Result := nil;
-  ResetMemory(C, SizeOf(C));
-  C.ContextFlags := CONTEXT_FULL;
-  {$IFDEF CPU32}
-  if GetThreadContext(ThreadHandle, C) then
-    Result := JclCreateStackList(Raw, -1, Pointer(C.Eip), False, Pointer(C.Ebp),
-                Pointer(GetThreadTopOfStack(ThreadHandle)));
-  {$ENDIF CPU32}
-  {$IFDEF CPU64}
-  if GetThreadContext(ThreadHandle, C) then
-    Result := JclCreateStackList(Raw, -1, Pointer(C.Rip), False, Pointer(C.Rbp),
-                Pointer(GetThreadTopOfStack(ThreadHandle)));
-  {$ENDIF CPU64}
+  GetMem(ContextMemory, SizeOf(TContext) + 15);
+  try
+    if (Cardinal(ContextMemory) and 15) <> 0 then
+      AlignedContext := PContext((Cardinal(ContextMemory) + 16) and $FFFFFFF0)
+    else
+      AlignedContext := ContextMemory;
+    ResetMemory(AlignedContext^, SizeOf(AlignedContext^));
+    AlignedContext^.ContextFlags := CONTEXT_FULL;
+    {$IFDEF CPU32}
+    if GetThreadContext(ThreadHandle, AlignedContext^) then
+      Result := JclCreateStackList(Raw, -1, Pointer(AlignedContext^.Eip), False, Pointer(AlignedContext^.Ebp),
+                  Pointer(GetThreadTopOfStack(ThreadHandle)));
+    {$ENDIF CPU32}
+    {$IFDEF CPU64}
+    if GetThreadContext(ThreadHandle, AlignedContext^) then
+      Result := JclCreateStackList(Raw, -1, Pointer(AlignedContext^.Rip), False, Pointer(AlignedContext^.Rbp),
+                  Pointer(GetThreadTopOfStack(ThreadHandle)));
+    {$ENDIF CPU64}
+  finally
+    FreeMem(ContextMemory);
+  end;
 end;
 
 function JclCreateThreadStackTraceFromID(Raw: Boolean; ThreadID: DWORD): TJclStackInfoList;
