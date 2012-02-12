@@ -1355,10 +1355,8 @@ var
 begin
   {$IFDEF SUPPORTS_UNICODE}
   case Encoding of
-    {$IFDEF DELPHIXE2_UP}
     seAnsi:
-      Stream := TStringStream.Create('', TEncoding.ANSI);
-    {$ENDIF DELPHIXE2_UP}  
+      Stream := TStringStream.Create('', TEncoding.{$IFDEF COMPILER16_UP}ANSI{$ELSE}Default{$ENDIF});
     seUTF8:
       Stream := TStringStream.Create('', TEncoding.UTF8);
   else
