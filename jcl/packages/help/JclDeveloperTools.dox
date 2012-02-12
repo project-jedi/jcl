@@ -1,4 +1,4 @@
-﻿; This is a Doc-O-Matic version 6.5.1.1382 project file.
+; This is a Doc-O-Matic version 6.5.1.1382 project file.
 ; This file is maintained by Doc-O-Matic, do not edit manually.
 
 [*Control*]
@@ -32,7 +32,7 @@ File2=Jcl.doxdb
 File3=JclContainers.doxdb
 
 [Source Files]
-Count=31
+Count=32
 File0=..\..\source\common\JclCompilerUtils.pas
 File1=..\..\source\common\JclDevToolsResources.pas
 File2=..\..\source\common\JclIDEUtils.pas
@@ -49,21 +49,22 @@ File12=..\..\source\common\JclPreProcessorContainerTemplates.pas
 File13=..\..\source\common\JclPreProcessorContainerTypes.pas
 File14=..\..\source\common\JclPreProcessorExcDlgTemplates.pas
 File15=..\..\source\common\JclPreProcessorHashMapsTemplates.pas
-File16=..\..\source\common\JclPreProcessorLexer.pas
-File17=..\..\source\common\JclPreProcessorLinkedListsTemplates.pas
-File18=..\..\source\common\JclPreProcessorParser.pas
-File19=..\..\source\common\JclPreProcessorQueuesTemplates.pas
-File20=..\..\source\common\JclPreProcessorSortedMapsTemplates.pas
-File21=..\..\source\common\JclPreProcessorStacksTemplates.pas
-File22=..\..\source\common\JclPreProcessorTemplates.pas
-File23=..\..\source\common\JclPreProcessorTreesTemplates.pas
-File24=..\..\source\common\JclPreProcessorVectorsTemplates.pas
-File25=..\..\source\common\JclUsesUtils.pas
-File26=..\..\source\windows\JclHelpUtils.pas
-File27=..\..\source\windows\JclMsBuild.pas
-File28=..\..\source\windows\MSHelpServices_TLB.pas
-File29=..\..\..\help\Common.dtx
-File30=..\..\..\help\JclDeveloperTools.dtx
+File16=..\..\source\common\JclPreProcessorHashSetsTemplates.pas
+File17=..\..\source\common\JclPreProcessorLexer.pas
+File18=..\..\source\common\JclPreProcessorLinkedListsTemplates.pas
+File19=..\..\source\common\JclPreProcessorParser.pas
+File20=..\..\source\common\JclPreProcessorQueuesTemplates.pas
+File21=..\..\source\common\JclPreProcessorSortedMapsTemplates.pas
+File22=..\..\source\common\JclPreProcessorStacksTemplates.pas
+File23=..\..\source\common\JclPreProcessorTemplates.pas
+File24=..\..\source\common\JclPreProcessorTreesTemplates.pas
+File25=..\..\source\common\JclPreProcessorVectorsTemplates.pas
+File26=..\..\source\common\JclUsesUtils.pas
+File27=..\..\source\windows\JclHelpUtils.pas
+File28=..\..\source\windows\JclMsBuild.pas
+File29=..\..\source\windows\MSHelpServices_TLB.pas
+File30=..\..\..\help\Common.dtx
+File31=..\..\..\help\JclDeveloperTools.dtx
 
 [General]
 Copyright=Copyright (C) 1999, 2011 Project JEDI

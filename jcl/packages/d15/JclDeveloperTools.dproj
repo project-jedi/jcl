@@ -89,6 +89,7 @@
 			<DCCReference Include="..\..\source\common\JclPreProcessorContainerTypes.pas"/>
 			<DCCReference Include="..\..\source\common\JclPreProcessorExcDlgTemplates.pas"/>
 			<DCCReference Include="..\..\source\common\JclPreProcessorHashMapsTemplates.pas"/>
+			<DCCReference Include="..\..\source\common\JclPreProcessorHashSetsTemplates.pas"/>
 			<DCCReference Include="..\..\source\common\JclPreProcessorLexer.pas"/>
 			<DCCReference Include="..\..\source\common\JclPreProcessorLinkedListsTemplates.pas"/>
 			<DCCReference Include="..\..\source\common\JclPreProcessorParser.pas"/>

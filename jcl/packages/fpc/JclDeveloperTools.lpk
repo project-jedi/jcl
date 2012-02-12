@@ -39,7 +39,7 @@
     <Description Value="JEDI Code Library Developer Tools package"/>
     <License Value="Copyright (C) 1999, 2011 Project JEDI"/>
     <Version Major="2" Minor="4" Release="0" Build="4198"/>
-    <Files Count="29">
+    <Files Count="30">
       <Item1>
         <Filename Value="..\..\source\common\JclCompilerUtils.pas"/>
         <UnitName Value="JclCompilerUtils"/>
@@ -105,57 +105,61 @@
         <UnitName Value="JclPreProcessorHashMapsTemplates"/>
       </Item16>
       <Item17>
-        <Filename Value="..\..\source\common\JclPreProcessorLexer.pas"/>
-        <UnitName Value="JclPreProcessorLexer"/>
+        <Filename Value="..\..\source\common\JclPreProcessorHashSetsTemplates.pas"/>
+        <UnitName Value="JclPreProcessorHashSetsTemplates"/>
       </Item17>
       <Item18>
-        <Filename Value="..\..\source\common\JclPreProcessorLinkedListsTemplates.pas"/>
-        <UnitName Value="JclPreProcessorLinkedListsTemplates"/>
+        <Filename Value="..\..\source\common\JclPreProcessorLexer.pas"/>
+        <UnitName Value="JclPreProcessorLexer"/>
       </Item18>
       <Item19>
-        <Filename Value="..\..\source\common\JclPreProcessorParser.pas"/>
-        <UnitName Value="JclPreProcessorParser"/>
+        <Filename Value="..\..\source\common\JclPreProcessorLinkedListsTemplates.pas"/>
+        <UnitName Value="JclPreProcessorLinkedListsTemplates"/>
       </Item19>
       <Item20>
-        <Filename Value="..\..\source\common\JclPreProcessorQueuesTemplates.pas"/>
-        <UnitName Value="JclPreProcessorQueuesTemplates"/>
+        <Filename Value="..\..\source\common\JclPreProcessorParser.pas"/>
+        <UnitName Value="JclPreProcessorParser"/>
       </Item20>
       <Item21>
-        <Filename Value="..\..\source\common\JclPreProcessorSortedMapsTemplates.pas"/>
-        <UnitName Value="JclPreProcessorSortedMapsTemplates"/>
+        <Filename Value="..\..\source\common\JclPreProcessorQueuesTemplates.pas"/>
+        <UnitName Value="JclPreProcessorQueuesTemplates"/>
       </Item21>
       <Item22>
-        <Filename Value="..\..\source\common\JclPreProcessorStacksTemplates.pas"/>
-        <UnitName Value="JclPreProcessorStacksTemplates"/>
+        <Filename Value="..\..\source\common\JclPreProcessorSortedMapsTemplates.pas"/>
+        <UnitName Value="JclPreProcessorSortedMapsTemplates"/>
       </Item22>
       <Item23>
-        <Filename Value="..\..\source\common\JclPreProcessorTemplates.pas"/>
-        <UnitName Value="JclPreProcessorTemplates"/>
+        <Filename Value="..\..\source\common\JclPreProcessorStacksTemplates.pas"/>
+        <UnitName Value="JclPreProcessorStacksTemplates"/>
       </Item23>
       <Item24>
-        <Filename Value="..\..\source\common\JclPreProcessorTreesTemplates.pas"/>
-        <UnitName Value="JclPreProcessorTreesTemplates"/>
+        <Filename Value="..\..\source\common\JclPreProcessorTemplates.pas"/>
+        <UnitName Value="JclPreProcessorTemplates"/>
       </Item24>
       <Item25>
-        <Filename Value="..\..\source\common\JclPreProcessorVectorsTemplates.pas"/>
-        <UnitName Value="JclPreProcessorVectorsTemplates"/>
+        <Filename Value="..\..\source\common\JclPreProcessorTreesTemplates.pas"/>
+        <UnitName Value="JclPreProcessorTreesTemplates"/>
       </Item25>
       <Item26>
-        <Filename Value="..\..\source\common\JclUsesUtils.pas"/>
-        <UnitName Value="JclUsesUtils"/>
+        <Filename Value="..\..\source\common\JclPreProcessorVectorsTemplates.pas"/>
+        <UnitName Value="JclPreProcessorVectorsTemplates"/>
       </Item26>
       <Item27>
-        <Filename Value="..\..\source\windows\JclHelpUtils.pas"/>
-        <UnitName Value="JclHelpUtils"/>
+        <Filename Value="..\..\source\common\JclUsesUtils.pas"/>
+        <UnitName Value="JclUsesUtils"/>
       </Item27>
       <Item28>
-        <Filename Value="..\..\source\windows\JclMsBuild.pas"/>
-        <UnitName Value="JclMsBuild"/>
+        <Filename Value="..\..\source\windows\JclHelpUtils.pas"/>
+        <UnitName Value="JclHelpUtils"/>
       </Item28>
       <Item29>
+        <Filename Value="..\..\source\windows\JclMsBuild.pas"/>
+        <UnitName Value="JclMsBuild"/>
+      </Item29>
+      <Item30>
         <Filename Value="..\..\source\windows\MSHelpServices_TLB.pas"/>
         <UnitName Value="MSHelpServices_TLB"/>
-      </Item29>
+      </Item30>
     </Files>
     <RequiredPkgs Count="3">
       <Item1>

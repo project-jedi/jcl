@@ -38,6 +38,7 @@
     <File Name="..\..\source\common\JclPreProcessorContainerTypes.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclPreProcessorExcDlgTemplates.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclPreProcessorHashMapsTemplates.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclPreProcessorHashSetsTemplates.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclPreProcessorLexer.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclPreProcessorLinkedListsTemplates.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclPreProcessorParser.pas" Targets="all" Formname="" Condition=""/>
