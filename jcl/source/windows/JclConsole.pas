@@ -488,6 +488,39 @@ const
 var
   g_DefaultConsole: TJclConsole = nil;
 
+// Due to changes in Vista and onwards Windows will terminate
+// console immidiately after executing CtrlHandler. We need put some wait in it.
+// These subprograms may only work if main application is console and it creates its own message pump.
+// On GUI one these should work always.
+
+function ProcessMessage(var Msg: TMsg): Boolean;
+begin
+  Result := False;
+  if Windows.PeekMessage(Msg, 0, 0, 0, PM_REMOVE) then
+  begin
+    Result := True;
+    Windows.TranslateMessage(Msg);
+    Windows.DispatchMessage(Msg);
+  end;
+end;
+
+procedure ProcessMessages;
+var
+  Msg: Windows.TMsg;
+begin
+  while ProcessMessage(Msg) do;
+end;
+
+procedure Wait(N: LongWord);
+var
+  TickCount: LongWord;
+begin
+  SleepEx(N, False);
+  TickCount := GetTickCount + N;
+  while GetTickCount < TickCount do
+    ProcessMessages;
+end;
+
 function CtrlHandler(CtrlType: DWORD): BOOL; stdcall;
 var
   Console: TJclConsole;
@@ -520,6 +553,7 @@ begin
     // (rom) dubious. An exception implies that an event has been handled.
     Result := False;
   end;
+  Wait(200);
 end;
 
 //=== { TJclConsole } ========================================================
