@@ -42,13 +42,12 @@ uses
 
 type
   (* JCLVECTORINT(SELFCLASSNAME, ANCESTORCLASSNAME, COLLECTIONINTERFACENAME, LISTINTERFACENAME,
-                  ARRAYINTERFACENAME, ITRINTERFACENAME, INTERFACEADDITIONAL, SECTIONADDITIONAL,
-                  COLLECTIONFLAGS, OWNERSHIPDECLARATION, CONSTKEYWORD, PARAMETERNAME, TYPENAME,
-                  DYNARRAYTYPE, GETTERNAME, SETTERNAME) *)
+                  ARRAYINTERFACENAME, ITRINTERFACENAME, EQUALITYCOMPARERINTERFACENAME,
+                  INTERFACEADDITIONAL, SECTIONADDITIONAL, COLLECTIONFLAGS, OWNERSHIPDECLARATION,
+                  CONSTKEYWORD, PARAMETERNAME, TYPENAME, DYNARRAYTYPE, GETTERNAME, SETTERNAME) *)
   TJclVectorIntParams = class(TJclCollectionInterfaceParams)
   protected
     // function CodeUnit: string; override;
-    function GetInterfaceAdditional: string; override;
   public
     function AliasAttributeIDs: TAllTypeAttributeIDs; override;
   published
@@ -167,13 +166,6 @@ end;
 function TJclVectorIntParams.AliasAttributeIDs: TAllTypeAttributeIDs;
 begin
   Result := [taVectorClassName];
-end;
-
-function TJclVectorIntParams.GetInterfaceAdditional: string;
-begin
-  Result := FInterfaceAdditional;
-  if Result = '' then
-    Result := Format('%s %s,', [inherited GetInterfaceAdditional, EqualityComparerInterfaceName]);
 end;
 
 //=== { TJclVectorItrIntParams } =============================================

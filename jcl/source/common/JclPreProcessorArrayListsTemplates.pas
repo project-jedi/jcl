@@ -42,13 +42,12 @@ uses
 
 type
   (* JCLARRAYLISTINT(SELFCLASSNAME, ANCESTORCLASSNAME, COLLECTIONINTERFACENAME, LISTINTERFACENAME,
-                     ARRAYINTERFACENAME, ITRINTERFACENAME, DYNARRAYTYPE, INTERFACEADDITIONAL,
-                     SECTIONADDITIONAL, COLLECTIONFLAGS, OWNERSHIPDECLARATION, CONSTKEYWORD,
-                     PARAMETERNAME, TYPENAME, GETTERNAME, SETTERNAME) *)
+                     ARRAYINTERFACENAME, ITRINTERFACENAME, DYNARRAYTYPE, EQUALITYCOMPARERINTERFACENAME,
+                     INTERFACEADDITIONAL, SECTIONADDITIONAL, COLLECTIONFLAGS, OWNERSHIPDECLARATION,
+                     CONSTKEYWORD, PARAMETERNAME, TYPENAME, GETTERNAME, SETTERNAME) *)
   TJclArrayListIntParams = class(TJclCollectionInterfaceParams)
   protected
     // function CodeUnit: string; override;
-    function GetInterfaceAdditional: string; override;
   public
     function AliasAttributeIDs: TAllTypeAttributeIDs; override;
   published
@@ -167,13 +166,6 @@ end;
 function TJclArrayListIntParams.AliasAttributeIDs: TAllTypeAttributeIDs;
 begin
   Result := [taArrayListClassName];
-end;
-
-function TJclArrayListIntParams.GetInterfaceAdditional: string;
-begin
-  Result := FInterfaceAdditional;
-  if Result = '' then
-    Result := Format('%s %s,', [inherited GetInterfaceAdditional, EqualityComparerInterfaceName]);
 end;
 
 //=== { TJclArrayListItrIntParams } ==========================================

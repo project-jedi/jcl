@@ -51,13 +51,13 @@ type
   end;
 
   (* JCLLINKEDLISTINT(ITEMCLASSNAME, SELFCLASSNAME, ANCESTORCLASSNAME, COLLECTIONINTERFACENAME,
-                      LISTINTERFACENAME, ITRINTERFACENAME, INTERFACEADDITIONAL, SECTIONADDITIONAL,
+                      LISTINTERFACENAME, ITRINTERFACENAME, EQUALITYCOMPARERINTERFACENAME,
+                      INTERFACEADDITIONAL, SECTIONADDITIONAL,
                       COLLECTIONFLAGS, OWNERSHIPDECLARATION, CONSTKEYWORD, PARAMETERNAME,
                       TYPENAME, GETTERNAME, SETTERNAME) *)
   TJclLinkedListIntParams = class(TJclCollectionInterfaceParams)
   protected
     // function CodeUnit: string; override;
-    function GetInterfaceAdditional: string; override;
   public
     function AliasAttributeIDs: TAllTypeAttributeIDs; override;
   published
@@ -199,13 +199,6 @@ end;
 function TJclLinkedListIntParams.AliasAttributeIDs: TAllTypeAttributeIDs;
 begin
   Result := [taLinkedListClassName];
-end;
-
-function TJclLinkedListIntParams.GetInterfaceAdditional: string;
-begin
-  Result := FInterfaceAdditional;
-  if Result = '' then
-    Result := Format('%s %s,', [inherited GetInterfaceAdditional, EqualityComparerInterfaceName]);
 end;
 
 //=== { TJclLinkedListItrIntParams } =========================================

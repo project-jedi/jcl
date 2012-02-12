@@ -42,12 +42,12 @@ uses
 
 type
   (* JCLARRAYSETINT(SELFCLASSNAME, ANCESTORCLASSNAME, COLLECTIONINTERFACENAME, LISTINTERFACENAME,
-                    ARRAYINTERFACENAME, SETINTERFACENAME, INTERFACEADDITIONAL, SECTIONADDITIONAL,
+                    ARRAYINTERFACENAME, SETINTERFACENAME, EQUALITYCOMPARERINTERFACENAME,
+                    COMPARERINTERFACENAME, INTERFACEADDITIONAL, SECTIONADDITIONAL,
                     COLLECTIONFLAGS, CONSTKEYWORD, PARAMETERNAME, TYPENAME) *)
   TJclArraySetIntParams = class(TJclCollectionInterfaceParams)
   protected
     // function CodeUnit: string; override;
-    function GetInterfaceAdditional: string; override;
   public
     function AliasAttributeIDs: TAllTypeAttributeIDs; override;
   published
@@ -120,13 +120,6 @@ end;
 function TJclArraySetIntParams.AliasAttributeIDs: TAllTypeAttributeIDs;
 begin
   Result := [taArraySetClassName];
-end;
-
-function TJclArraySetIntParams.GetInterfaceAdditional: string;
-begin
-  Result := FInterfaceAdditional;
-  if Result = '' then
-    Result := Format('%s %s, %s,', [inherited GetInterfaceAdditional, EqualityComparerInterfaceName, ComparerInterfaceName]);
 end;
 
 //=== { TJclArraySetImpParams } ==============================================

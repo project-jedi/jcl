@@ -55,7 +55,7 @@ type
   TItrStart = (isFirst, isLast);
 
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
-  {$JPPEXPANDMACRO JCLARRAYLISTINT(,,,,,,,,,,,,,,,)}
+  {$JPPEXPANDMACRO JCLARRAYLISTINT(,,,,,,,,,,,,,,,,)}
 
   {$JPPEXPANDMACRO JCLARRAYLISTITRINT(,,,,,,,)}
 
@@ -65,7 +65,7 @@ type
 
   TJclArrayIterator<T> = class;
 
-  {$JPPEXPANDMACRO JCLARRAYLISTINT(TJclArrayList<T>,TJclAbstractContainer<T>,IJclCollection<T>,IJclList<T>,IJclArray<T>,IJclIterator<T>,TDynArray, IJclItemOwner<T>\, IJclEqualityComparer<T>\,,
+  {$JPPEXPANDMACRO JCLARRAYLISTINT(TJclArrayList<T>,TJclAbstractContainer<T>,IJclCollection<T>,IJclList<T>,IJclArray<T>,IJclIterator<T>,TDynArray,IJclEqualityComparer<T>, IJclItemOwner<T>\,,
 
 protected
   type

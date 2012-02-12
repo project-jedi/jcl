@@ -56,7 +56,7 @@ type
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
   {$JPPEXPANDMACRO JCLBINARYTREETYPESINT(,)}
 
-  {$JPPEXPANDMACRO JCLBINARYTREEINT(,,,,,,,,,,,,,,)}
+  {$JPPEXPANDMACRO JCLBINARYTREEINT(,,,,,,,,,,,,,,,,)}
 
   {$JPPEXPANDMACRO JCLBINARYTREEITRINT(,,,,,,,,,,,,,,)}
 
@@ -71,7 +71,7 @@ type
   TJclInOrderBinaryTreeIterator<T> = class;
   TJclPostOrderBinaryTreeIterator<T> = class;
 
-  (*$JPPEXPANDMACRO JCLBINARYTREEINT(TBinaryNode,TJclBinaryTree<T>,TJclAbstractContainer<T>,IJclCollection<T>,IJclTree<T>,IJclIterator<T>,IJclTreeIterator<T>, IJclItemOwner<T>\, IJclEqualityComparer<T>\, IJclComparer<T>\,,
+  (*$JPPEXPANDMACRO JCLBINARYTREEINT(TBinaryNode,TJclBinaryTree<T>,TJclAbstractContainer<T>,IJclCollection<T>,IJclTree<T>,IJclIterator<T>,IJclTreeIterator<T>,IJclEqualityComparer<T>,IJclComparer<T>,IJclItemOwner<T>\,,
 
 protected
   type

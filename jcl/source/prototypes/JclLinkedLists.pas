@@ -59,7 +59,7 @@ type
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
   {$JPPEXPANDMACRO JCLLINKEDLISTTYPESINT(,)}
 
-  {$JPPEXPANDMACRO JCLLINKEDLISTINT(,,,,,,,,,,,,,,)}
+  {$JPPEXPANDMACRO JCLLINKEDLISTINT(,,,,,,,,,,,,,,,)}
 
   {$JPPEXPANDMACRO JCLLINKEDLISTITRINT(,,,,,,,,,,)}
 
@@ -71,7 +71,7 @@ type
 
   TJclLinkedListIterator<T> = class;
 
-  (*$JPPEXPANDMACRO JCLLINKEDLISTINT(TLinkedListItem,TJclLinkedList<T>,TJclAbstractContainer<T>,IJclCollection<T>,IJclList<T>,IJclIterator<T>, IJclItemOwner<T>\, IJclEqualityComparer<T>\,,
+  (*$JPPEXPANDMACRO JCLLINKEDLISTINT(TLinkedListItem,TJclLinkedList<T>,TJclAbstractContainer<T>,IJclCollection<T>,IJclList<T>,IJclIterator<T>,IJclEqualityComparer<T>,IJclItemOwner<T>\,,
 
 protected
   type

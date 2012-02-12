@@ -56,7 +56,7 @@ uses
 type
   TItrStart = (isFirst, isLast);
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
-  {$JPPEXPANDMACRO JCLVECTORINT(,,,,,,,,,,,,,,,)}
+  {$JPPEXPANDMACRO JCLVECTORINT(,,,,,,,,,,,,,,,,)}
 
   {$JPPEXPANDMACRO JCLVECTORITRINT(,,,,,,,)}
 
@@ -66,7 +66,7 @@ type
 
   TJclVectorIterator<T> = class;
 
-  (*$JPPEXPANDMACRO JCLVECTORINT(TJclVector<T>,TJclAbstractContainer<T>,IJclCollection<T>,IJclList<T>,IJclArray<T>,IJclIterator<T>, IJclItemOwner<T>\, IJclEqualityComparer<T>\,,
+  (*$JPPEXPANDMACRO JCLVECTORINT(TJclVector<T>,TJclAbstractContainer<T>,IJclCollection<T>,IJclList<T>,IJclArray<T>,IJclIterator<T>,IJclEqualityComparer<T>, IJclItemOwner<T>\,,
 
 protected
   type

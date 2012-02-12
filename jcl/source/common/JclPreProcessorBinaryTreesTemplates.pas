@@ -51,7 +51,8 @@ type
   end;
 
   (* JCLBINARYTREEINT(NODETYPENAME, SELFCLASSNAME, ANCESTORCLASSNAME, COLLECTIONINTERFACENAME,
-                      TREEINTERFACENAME, STDITRINTERFACENAME, TREEITRINTERFACENAME, INTERFACEADDITIONAL,
+                      TREEINTERFACENAME, STDITRINTERFACENAME, TREEITRINTERFACENAME,
+                      EQUALITYCOMPARERINTERFACENAME, COMPARERINTERFACENAME, INTERFACEADDITIONAL,
                       SECTIONADDITIONAL, CONSTRUCTORPARAMETERS, COLLECTIONFLAGS, CONSTKEYWORD,
                       PARAMETERNAME, TYPENAME) *)
   TJclBinaryTreeIntParams = class(TJclCollectionInterfaceParams)
@@ -60,7 +61,6 @@ type
   protected
     // function CodeUnit: string; override;
     function GetConstructorDeclarations: string;
-    function GetInterfaceAdditional: string; override;
   public
     function AliasAttributeIDs: TAllTypeAttributeIDs; override;
     procedure ResetDefault(Value: Boolean); override;
@@ -226,13 +226,6 @@ begin
   Result := FConstructorDeclarations;
   if (Result = '') and TypeInfo.KnownType then
     Result := 'ACompare: ' + CompareFunctionName;
-end;
-
-function TJclBinaryTreeIntParams.GetInterfaceAdditional: string;
-begin
-  Result := FInterfaceAdditional;
-  if (Result = '') and TypeInfo.KnownType then
-    Result := Format('%s %s, %s,', [inherited GetInterfaceAdditional, EqualityComparerInterfaceName, ComparerInterfaceName]);
 end;
 
 procedure TJclBinaryTreeIntParams.ResetDefault(Value: Boolean);

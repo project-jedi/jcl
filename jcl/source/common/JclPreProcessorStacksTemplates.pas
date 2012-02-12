@@ -42,12 +42,11 @@ uses
 
 type
   (* JCLSTACKINT(SELFCLASSNAME, STACKINTERFACENAME, ANCESTORCLASSNAME, DYNARRAYTYPENAME,
-                 INTERFACEADDITIONAL, SECTIONADDITIONAL, OWNERSHIPDECLARATION,
-                 CONSTKEYWORD, PARAMETERNAME, TYPENAME) *)
+                 EQUALITYCOMPARERINTERFACENAME, INTERFACEADDITIONAL, SECTIONADDITIONAL,
+                 OWNERSHIPDECLARATION, CONSTKEYWORD, PARAMETERNAME, TYPENAME) *)
   TJclStackIntParams = class(TJclClassInterfaceParams)
   protected
     // function CodeUnit: string; override;
-    function GetInterfaceAdditional: string; override;
   public
     function AliasAttributeIDs: TAllTypeAttributeIDs; override;
   published
@@ -117,13 +116,6 @@ end;
 function TJclStackIntParams.AliasAttributeIDs: TAllTypeAttributeIDs;
 begin
   Result := [taStackClassName];
-end;
-
-function TJclStackIntParams.GetInterfaceAdditional: string;
-begin
-  Result := FInterfaceAdditional;
-  if Result = '' then
-    Result := Format('%s %s,', [inherited GetInterfaceAdditional, EqualityComparerInterfaceName]);
 end;
 
 //=== { TJclStackImpParams } =================================================

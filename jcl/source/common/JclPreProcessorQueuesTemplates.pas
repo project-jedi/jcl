@@ -42,12 +42,11 @@ uses
 
 type
   (* JCLQUEUEINT(SELFCLASSNAME, QUEUEINTERFACENAME, ANCESTORCLASSNAME, DYNARRAYTYPENAME,
-                 INTERFACEADDITIONAL, SECTIONADDITIONAL, OWNERSHIPDECLARATION,
-                 CONSTKEYWORD, PARAMETERNAME, TYPENAME) *)
+                 EQUALITYCOMPARERINTERFACENAME, INTERFACEADDITIONAL, SECTIONADDITIONAL,
+                 OWNERSHIPDECLARATION, CONSTKEYWORD, PARAMETERNAME, TYPENAME) *)
   TJclQueueIntParams = class(TJclClassInterfaceParams)
   protected
     // function CodeUnit: string; override;
-    function GetInterfaceAdditional: string; override;
   public
     function AliasAttributeIDs: TAllTypeAttributeIDs; override;
   published
@@ -117,13 +116,6 @@ end;
 function TJclQueueIntParams.AliasAttributeIDs: TAllTypeAttributeIDs;
 begin
   Result := [taQueueClassName];
-end;
-
-function TJclQueueIntParams.GetInterfaceAdditional: string;
-begin
-  Result := FInterfaceAdditional;
-  if Result = '' then
-    Result := Format('%s %s,', [inherited GetInterfaceAdditional, EqualityComparerInterfaceName]);
 end;
 
 //=== { TJclQueueImpParams } =================================================
