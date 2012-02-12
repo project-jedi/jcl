@@ -496,17 +496,17 @@ var
 function ProcessMessage(var Msg: TMsg): Boolean;
 begin
   Result := False;
-  if Windows.PeekMessage(Msg, 0, 0, 0, PM_REMOVE) then
+  if {$IFDEF HAS_UNITSCOPE}WinApi.{$ENDIF}Windows.PeekMessage(Msg, 0, 0, 0, PM_REMOVE) then
   begin
     Result := True;
-    Windows.TranslateMessage(Msg);
-    Windows.DispatchMessage(Msg);
+    {$IFDEF HAS_UNITSCOPE}WinApi.{$ENDIF}Windows.TranslateMessage(Msg);
+    {$IFDEF HAS_UNITSCOPE}WinApi.{$ENDIF}Windows.DispatchMessage(Msg);
   end;
 end;
 
 procedure ProcessMessages;
 var
-  Msg: Windows.TMsg;
+  Msg: {$IFDEF HAS_UNITSCOPE}WinApi.{$ENDIF}Windows.TMsg;
 begin
   while ProcessMessage(Msg) do;
 end;
