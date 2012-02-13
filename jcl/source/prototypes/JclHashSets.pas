@@ -65,18 +65,17 @@ type
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
 
-  {$HPPEMIT 'template<typename T> class DELPHICLASS TJclHashSetBucket__1;'}
+  TJclHashSetBucket<T> = class
+  public
+    type
+      TDynArray = array of T;
+  public
+    Size: Integer;
+    Entries: TDynArray;
+    procedure MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: Integer);
+  end;
 
-  TJclHashSetBucket<T> = class;
-  TJclHashSetIterator<T> = class;
-
-  {$JPPEXPANDMACRO JCLHASHSETINT(TJclHashSet<T>,TJclAbstractContainer<T>,TJclHashSetBucket<T>,IJclCollection<T>,IJclSet<T>,IJclIterator<T>,IJclEqualityComparer<T>,IJclHashConverter<T>, IJclItemOwner<T>\,,
-protected
-  type
-    TDynArray = array of T;
-    procedure MoveArray(var List: TDynArray; FromIndex\, ToIndex\, Count: Integer);,,const ,AItem,T,; AOwnsItems: Boolean)}
-
-  {$JPPEXPANDMACRO JCLHASHSETTYPEINT(TJclHashSetBucket<T>,TJclHashSet<T>.TDynArray)}
+  {$JPPEXPANDMACRO JCLHASHSETINT(TJclHashSet<T>,TJclAbstractContainer<T>,TJclHashSetBucket<T>,IJclCollection<T>,IJclSet<T>,IJclIterator<T>,IJclEqualityComparer<T>,IJclHashConverter<T>, IJclItemOwner<T>\,,,,const ,AItem,T,; AOwnsItems: Boolean)}
 
   {$JPPEXPANDMACRO JCLHASHSETITRINT(TJclHashSetIterator<T>,IJclIterator<T>,TJclHashSet<T>,const ,AItem,T,GetItem,SetItem)}
 
@@ -145,16 +144,16 @@ const
 implementation
 
 (*$JPPLOOP TRUETYPEINDEX TRUETYPECOUNT
-{$JPPEXPANDMACRO JCLHASHSETIMP(,,,,,,,,,,,)}
+{$JPPEXPANDMACRO JCLHASHSETIMP(,,,,,,,,,,,,)}
 
 {$JPPEXPANDMACRO JCLHASHSETITRIMP(,,,,,,,,,)}
 *)
 {$IFDEF SUPPORTS_GENERICS}
 //DOM-IGNORE-BEGIN
 
-{$JPPEXPANDMACRO JCLHASHSETIMP(TJclHashSet<T>,TJclHashSetBucket<T>,; AOwnsItems: Boolean,AOwnsItems,IJclCollection<T>,TJclHashSetIterator<T>,IJclIterator<T>,const ,AItem,T,Default(T),FreeItem)}
+//=== { TJclHashSetBucket<T> } =================================================
 
-procedure TJclHashSet<T>.MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclHashSetBucket<T>.MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: Integer);
 var
   I: Integer;
 begin
@@ -187,6 +186,8 @@ begin
         List[FromIndex + I] := Default(T);
   end; 
 end;
+
+{$JPPEXPANDMACRO JCLHASHSETIMP(TJclHashSet<T>,TJclHashSetBucket<T>,; AOwnsItems: Boolean,AOwnsItems,IJclCollection<T>,TJclHashSetIterator<T>,IJclIterator<T>,Bucket.,const ,AItem,T,Default(T),FreeItem)}
 
 {$JPPEXPANDMACRO JCLHASHSETITRIMP(TJclHashSetIterator<T>,TJclHashSet<T>,TJclHashSetBucket<T>,IJclIterator<T>,const ,AItem,T,Default(T),GetItem,SetItem)}
 

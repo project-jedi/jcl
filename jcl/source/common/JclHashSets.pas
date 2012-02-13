@@ -1088,18 +1088,19 @@ type
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
 
-  {$HPPEMIT 'template<typename T> class DELPHICLASS TJclHashSetBucket__1;'}
-
-  TJclHashSetBucket<T> = class;
-  TJclHashSetIterator<T> = class;
+  TJclHashSetBucket<T> = class
+  public
+    type
+      TDynArray = array of T;
+  public
+    Size: Integer;
+    Entries: TDynArray;
+    procedure MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: Integer);
+  end;
 
   TJclHashSet<T> = class(TJclAbstractContainer<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
     IJclEqualityComparer<T>, IJclHashConverter<T>, IJclCollection<T>, IJclSet<T>)
-  protected
-    type
-      TDynArray = array of T;
-      procedure MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: Integer);
   private
     FBuckets: array of TJclHashSetBucket<T>;
     FHashToRangeFunction: TJclHashToRangeFunction;
@@ -1136,12 +1137,6 @@ type
     procedure Intersect(const ACollection: IJclCollection<T>);
     procedure Subtract(const ACollection: IJclCollection<T>);
     procedure Union(const ACollection: IJclCollection<T>);
-  end;
-
-  TJclHashSetBucket<T> = class
-  public
-    Size: Integer;
-    Entries: TJclHashSet<T>.TDynArray;
   end;
 
   TJclHashSetIterator<T> = class(TJclAbstractIterator, IJclIterator<T>)
@@ -13009,6 +13004,42 @@ end;
 {$IFDEF SUPPORTS_GENERICS}
 //DOM-IGNORE-BEGIN
 
+//=== { TJclHashSetBucket<T> } =================================================
+
+procedure TJclHashSetBucket<T>.MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: Integer);
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      List[ToIndex + I] := List[FromIndex + I];
+
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+        List[FromIndex + I] := Default(T)
+    else
+      // independant
+      for I := 0 to Count - 1 do
+        List[FromIndex + I] := Default(T);
+  end
+  else
+  begin
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I];
+
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+        List[FromIndex + I] := Default(T)
+    else
+      // independant
+      for I := 0 to Count - 1 do
+        List[FromIndex + I] := Default(T);
+  end; 
+end;
+
 //=== { TJclHashSet<T> } ====================================================
 
 constructor TJclHashSet<T>.Create(ACapacity: Integer; AOwnsItems: Boolean);
@@ -13290,7 +13321,7 @@ begin
           Result := True;
           Bucket.Entries[I] := Default(T);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -13523,7 +13554,7 @@ begin
         begin
           Bucket.Entries[J] := FreeItem(Bucket.Entries[J]);
           if J < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, J + 1, J, Bucket.Size - J - 1);
+            Bucket.MoveArray(Bucket.Entries, J + 1, J, Bucket.Size - J - 1);
           Dec(Bucket.Size);
           Dec(FSize);
         end;
@@ -13578,40 +13609,6 @@ end;
 procedure TJclHashSet<T>.Union(const ACollection: IJclCollection<T>);
 begin
   AddAll(ACollection);
-end;
-
-procedure TJclHashSet<T>.MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: Integer);
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-        List[FromIndex + I] := Default(T)
-    else
-      // independant
-      for I := 0 to Count - 1 do
-        List[FromIndex + I] := Default(T);
-  end
-  else
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-        List[FromIndex + I] := Default(T)
-    else
-      // independant
-      for I := 0 to Count - 1 do
-        List[FromIndex + I] := Default(T);
-  end; 
 end;
 
 //=== { TJclHashSetIterator<T> } ============================================
