@@ -2644,7 +2644,7 @@ destructor TJclZLibDecompressStream.Destroy;
 begin
   if FInflateInitialized then
   begin
-    FStream.Seek(-ZLibRecord.avail_in, soFromCurrent);
+    FStream.Seek(-ZLibRecord.avail_in, soCurrent);
     ZLibCheck(inflateEnd(ZLibRecord));
   end;
 
@@ -3091,7 +3091,7 @@ begin
   begin
     StartPos := FStream.Position;
     try
-      FStream.Seek(-SizeOf(AFooter), soFromEnd);
+      FStream.Seek(-SizeOf(AFooter), soEnd);
       AFooter.DataCRC32 := 0;
       AFooter.DataSize := 0;
       FStream.ReadBuffer(AFooter, SizeOf(AFooter));
@@ -3116,7 +3116,7 @@ begin
   begin
     StartPos := FStream.Position;
     try
-      FStream.Seek(-SizeOf(AFooter), soFromEnd);
+      FStream.Seek(-SizeOf(AFooter), soEnd);
       AFooter.DataSize := 0;
       AFooter.DataCRC32 := 0;
       FStream.ReadBuffer(AFooter, SizeOf(AFooter));
@@ -3398,7 +3398,7 @@ destructor TJclBZIP2DecompressionStream.Destroy;
 begin
   if FInflateInitialized then
   begin
-    FStream.Seek(-BZLibRecord.avail_in, soFromCurrent);
+    FStream.Seek(-BZLibRecord.avail_in, soCurrent);
     BZIP2LibCheck(BZ2_bzDecompressEnd(BZLibRecord));
   end;
 
@@ -5696,9 +5696,9 @@ begin
   if Assigned(FStream) then
   begin
     Result := S_OK;
-    // STREAM_SEEK_SET = 0 = soFromBeginning
-    // STREAM_SEEK_CUR = 1 = soFromCurrent
-    // STREAM_SEEK_END = 2 = soFromEnd
+    // STREAM_SEEK_SET = 0 = soBeginning
+    // STREAM_SEEK_CUR = 1 = soCurrent
+    // STREAM_SEEK_END = 2 = soEnd
     NewPos := FStream.Seek(Offset, TSeekOrigin(SeekOrigin));
     if Assigned(NewPosition) then
       NewPosition^ := NewPos;
@@ -5861,9 +5861,9 @@ begin
 
   if Assigned(FStream) then
   begin
-    // STREAM_SEEK_SET = 0 = soFromBeginning
-    // STREAM_SEEK_CUR = 1 = soFromCurrent
-    // STREAM_SEEK_END = 2 = soFromEnd
+    // STREAM_SEEK_SET = 0 = soBeginning
+    // STREAM_SEEK_CUR = 1 = soCurrent
+    // STREAM_SEEK_END = 2 = soEnd
     NewPos := FStream.Seek(Offset, TSeekOrigin(SeekOrigin));
     if Assigned(NewPosition) then
       NewPosition^ := NewPos;
