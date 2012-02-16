@@ -429,7 +429,7 @@ var
   {$ENDIF ~BDS6_UP}
 begin
   EnabledActions := GetProjectActions(Project);
-  if EnabledActions <> [] then
+  if deInsertJdbg in EnabledActions then
   begin
     if IsInstalledPackage(Project) then
     begin
