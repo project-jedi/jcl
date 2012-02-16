@@ -3487,6 +3487,8 @@ var
   CodePage: Word;
   EncodingProp: TJclSimpleXMLProp;
 begin
+  inherited LoadFromStringStream(StringStream);
+
   if Assigned(FProps) then
     EncodingProp := FProps.ItemNamed['encoding']
   else
@@ -3513,6 +3515,8 @@ begin
   SetVersion(GetVersion);
   SetEncoding(GetEncoding);
   SetStandalone(GetStandalone);
+
+  inherited SaveToStringStream(StringStream, Level);
 end;
 
 procedure TJclSimpleXMLElemHeader.SetEncoding(const Value: string);
