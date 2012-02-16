@@ -429,9 +429,9 @@ var
   {$ENDIF ~BDS6_UP}
 begin
   EnabledActions := GetProjectActions(Project);
-  if deInsertJdbg in EnabledActions then
+  if EnabledActions <> [] then
   begin
-    if IsInstalledPackage(Project) then
+    if (deInsertJdbg in EnabledActions) and IsInstalledPackage(Project) then
     begin
       if MessageDlg(Format(LoadResString(@RsCantInsertToInstalledPackage), [Project.FileName]), mtError, [mbYes, mbNo], 0) = mrYes then
       begin
