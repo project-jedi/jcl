@@ -3042,6 +3042,7 @@ procedure TJclSimpleXMLElemClassic.SaveToStringStream(StringStream: TJclStringSt
 var
   St, AName, tmp: string;
   LevelAdd: string;
+  AutoIndent: Boolean;
 begin
   if(NameSpace <> '') then
     AName := NameSpace + ':' + Name
@@ -3059,18 +3060,28 @@ begin
       FProps.SaveToStringStream(StringStream);
   end;
 
+  AutoIndent := (SimpleXML <> nil) and (sxoAutoIndent in SimpleXML.Options);
+
   if (ItemCount = 0) then
   begin
     tmp := Value;
     if (Name <> '') then
     begin
       if Value = '' then
-        St := '/>' + sLineBreak
+      begin
+        if AutoIndent then
+          St := '/>' + sLineBreak
+        else
+          St := '/>';
+      end
       else
       begin
         if SimpleXML <> nil then
           SimpleXML.DoEncodeValue(tmp);
-        St := '>' + tmp + '</' + AName + '>' + sLineBreak;
+        if AutoIndent then
+          St := '>' + tmp + '</' + AName + '>' + sLineBreak
+        else
+          St := '>' + tmp + '</' + AName + '>';
       end;
       StringStream.WriteString(St, 1, Length(St));
     end;
@@ -3079,18 +3090,23 @@ begin
   begin
     if (Name <> '') then
     begin
-      St := '>' + sLineBreak;
+      if AutoIndent then
+        St := '>' + sLineBreak
+      else
+        St := '>';
       StringStream.WriteString(St, 1, Length(St));
     end;
-    if Assigned(SimpleXML) and
-      (sxoAutoIndent in SimpleXML.Options) then
+    if AutoIndent then
     begin
       LevelAdd := SimpleXML.IndentString;
     end;
     FItems.SaveToStringStream(StringStream, Level + LevelAdd);
     if Name <> '' then
     begin
-      St := Level + '</' + AName + '>' + sLineBreak;
+      if AutoIndent then
+        St := Level + '</' + AName + '>' + sLineBreak
+      else
+        St := Level + '</' + AName + '>';
       StringStream.WriteString(St, 1, Length(St));
     end;
   end;
@@ -3170,7 +3186,10 @@ begin
   StringStream.WriteString(St, 1, Length(St));
   if Value <> '' then
     StringStream.WriteString(Value, 1, Length(Value));
-  St := '-->' + sLineBreak;
+  if (SimpleXML <> nil) and (sxoAutoIndent in SimpleXML.Options) then
+    St := '-->' + sLineBreak
+  else
+    St := '-->';
   StringStream.WriteString(St, 1, Length(St));
   if SimpleXML <> nil then
     SimpleXML.DoSaveProgress;
@@ -3257,7 +3276,10 @@ begin
   StringStream.WriteString(St, 1, Length(St));
   if Value <> '' then
     StringStream.WriteString(Value, 1, Length(Value));
-  St := ']]>' + sLineBreak;
+  if (SimpleXML <> nil) and (sxoAutoIndent in SimpleXML.Options) then
+    St := ']]>' + sLineBreak
+  else
+    St := ']]>';
   StringStream.WriteString(St, 1, Length(St));
   if SimpleXML <> nil then
     SimpleXML.DoSaveProgress;
@@ -3323,7 +3345,10 @@ begin
     tmp := Value;
     if SimpleXML <> nil then
       SimpleXML.DoEncodeValue(tmp);
-    St := Level + tmp + sLineBreak;
+    if (SimpleXML <> nil) and (sxoAutoIndent in SimpleXML.Options) then
+      St := Level + tmp + sLineBreak
+    else
+      St := Level + tmp;
     StringStream.WriteString(St, 1, Length(St));
   end;
   if SimpleXML <> nil then
@@ -3436,7 +3461,10 @@ begin
   StringStream.WriteString(St, 1, Length(St));
   if Assigned(FProps) then
     FProps.SaveToStringStream(StringStream);
-  St := '?>' + sLineBreak;
+  if (SimpleXML <> nil) and (sxoAutoIndent in SimpleXML.Options) then
+    St := '?>' + sLineBreak
+  else
+    St := '?>';
   StringStream.WriteString(St, 1, Length(St));
   if SimpleXML <> nil then
     SimpleXML.DoSaveProgress;
@@ -3631,7 +3659,10 @@ procedure TJclSimpleXMLElemDocType.SaveToStringStream(StringStream: TJclStringSt
 var
   St: string;
 begin
-  St := Level + '<!DOCTYPE ' + Value + '>' + sLineBreak;
+  if (SimpleXML <> nil) and (sxoAutoIndent in SimpleXML.Options) then
+    St := Level + '<!DOCTYPE ' + Value + '>' + sLineBreak
+  else
+    St := Level + '<!DOCTYPE ' + Value + '>';
   StringStream.WriteString(St, 1, Length(St));
   if SimpleXML <> nil then
     SimpleXML.DoSaveProgress;
