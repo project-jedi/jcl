@@ -596,6 +596,10 @@ function BooleanToStr(B: Boolean): string;
 function IntToBool(I: Integer): Boolean;
 function BoolToInt(B: Boolean): Integer;
 
+function TryStrToCardinal(const Value: string; out Res: Cardinal): boolean;
+function StrToCardinalDef(const Value: string; const Default: Cardinal): Cardinal;
+function StrToCardinal(const Value: string): Cardinal;
+
 const
   {$IFDEF MSWINDOWS}
   ListSeparator = ';';
@@ -3372,6 +3376,29 @@ end;
 function BoolToInt(B: Boolean): Integer;
 begin
   Result := Ord(B);
+end;
+
+function TryStrToCardinal(const Value: string; out Res: Cardinal): boolean;
+var i6: Int64;
+begin
+  Result := false;
+  if not TryStrToInt64(Value, i6) then exit;
+  if ( i6 < Low(Res)) or ( i6 > High(Res)) then exit;
+
+  Result := true;
+  Res := i6;
+end;
+
+function StrToCardinalDef(const Value: string; const Default: Cardinal): Cardinal;
+begin
+  if not TryStrToCardinal(Value, Result)
+     then Result := Default;
+end;
+
+function StrToCardinal(const Value: string): Cardinal;
+begin
+  if not TryStrToCardinal(Value, Result)
+     then raise EConvertError.Create('"'+Value+'" is not within range of Cardinal data type');
 end;
 
 //=== RTL package information ================================================
