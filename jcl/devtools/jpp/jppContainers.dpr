@@ -63,6 +63,7 @@ uses
   JclPreProcessorContainer2DTemplates,
   JclPreProcessorContainerKnownMaps,
   JclPreProcessorHashMapsTemplates,
+  JclPreProcessorHashSetsTemplates,
   JclPreProcessorSortedMapsTemplates,
   JppMain in 'JppMain.pas';
 
