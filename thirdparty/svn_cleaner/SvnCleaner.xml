@@ -23,7 +23,7 @@
         <value>URL HeadURL Author LastChangedBy Date LastChangedDate Rev Revision LastChangedRevision Id</value>
       </property>
     </setting>
-    <setting path="" mask="*.pas *.cpp *.inc *.h *.c *.dpr *.dpk *.lpk *.bpr *.bpk *.bpf *.bmk *.def *.conf *.sh *.txt *.bat *.xml *.html *.css *.exc *.bpg *.bdsgroup *.bdsproj *.groupproj *.dproj *.cproj *.dof *.rc *.dfm *.xfm *.dtx *.dsf *.dox *.dfg *.ini *.mak *.int *.imp *.pl *.cmd *.manifest *.iss *.cs *.resx *.htaccess *.cfg *.HxC *.HxK *.HxT *.cnt" recurse="yes"  dironly="no">
+    <setting path="" mask="*.pas *.cpp *.inc *.h *.c *.dpr *.dpk *.lpk *.bpr *.bpk *.bpf *.bmk *.def *.conf *.sh *.txt *.bat *.xml *.html *.css *.exc *.bpg *.bdsgroup *.bdsproj *.groupproj *.dproj *.cproj *.dof *.rc *.dfm *.xfm *.dtx *.dsf *.dox *.dfg *.ini *.mak *.int *.imp *.pl *.cmd *.manifest *.iss *.cs *.resx *.htaccess *.cfg *.HxC *.HxK *.HxT *.cnt *.php" recurse="yes"  dironly="no">
       <property name="svn:eol-style">
         <value>native</value>
       </property>
@@ -404,6 +404,8 @@
             <value>jcld12.inc</value>
             <value>jcld14.inc</value>
             <value>jcld15.inc</value>
+            <value>jcld16win32.inc</value>
+            <value>jcld16win64.inc</value>
           </property>
           <property name="svn:externals">
             <value>jedi https://projectjedi.svn.sourceforge.net:443/svnroot/projectjedi/trunk/shared/include</value>
@@ -418,7 +420,7 @@
           </property>
         </setting>
 
-        <setting path="windows/obj/pcre" mask="" recurse="no" dironly="yes">
+        <setting path="windows/obj/pcre" mask="win??" recurse="no" dironly="yes">
           <property name="svn:ignore">
             <value>pcre_default_tables.c</value>
           </property>
@@ -593,6 +595,8 @@
         <value>install-sh</value>
         <value>pcre.h</value>
         <value>config.h</value>
+        <value>pcre_jit_test.c</value>
+        <value>CheckMan</value>
       </property>
     </setting>
 
