@@ -50,7 +50,8 @@ type
     property DynArrayTypeName: string index taDynArrayTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* JCLHASHSETINT(SELFCLASSNAME, ANCESTORCLASSNAME, BUCKETTYPENAME,
+  (* JCLHASHSETINT(SELFCLASSNAME, ANCESTORCLASSNAME, BASECONTAINERINTERFACENAME,
+                   FLATCONTAINERINTERFACENAME, BUCKETTYPENAME,
                    COLLECTIONINTERFACENAME, SETINTERFACENAME, ITRINTERFACENAME,
                    EQUALITYCOMPARERINTERFACENAME, HASHCONVERTERINTERFACENAME, INTERFACEADDITIONAL,
                    SECTIONADDITIONAL, COLLECTIONFLAGS, CONSTKEYWORD, PARAMETERNAME, TYPENAME) *)
@@ -62,6 +63,8 @@ type
   published
     property SelfClassName: string index taHashSetClassName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
     property AncestorClassName;
+    property BaseContainerInterfaceName: string index taContainerInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
+    property FlatContainerInterfaceName: string index taFlatContainerInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property BucketTypeName: string index taHashSetBucketTypeName read GetTypeAttribute write SetTypeAttribute stored False;
     property CollectionInterfaceName: string index taCollectionInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property EqualityComparerInterfaceName: string index taEqualityComparerInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;

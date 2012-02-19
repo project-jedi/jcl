@@ -41,6 +41,7 @@ unit JclContainerIntf;
 
 {$I jcl.inc}
 
+
 interface
 
 uses
@@ -312,7 +313,15 @@ type
     property ThreadSafe: Boolean read GetThreadSafe write SetThreadSafe;
   end;
 
-  IJclStrContainer = interface(IJclBaseContainer)
+  IJclIntfContainer = interface(IJclBaseContainer)
+    ['{44F10075-9702-4DCA-9731-D8990F234A74}']
+  end;
+
+  IJclIntfFlatContainer = interface(IJclIntfContainer)
+    ['{15116007-6BB8-4D9D-8249-C2F49D4AB3EA}']
+  end;
+
+  IJclStrBaseContainer = interface(IJclBaseContainer)
     ['{9753E1D7-F093-4D5C-8B32-40403F6F700E}']
     function GetCaseSensitive: Boolean;
     procedure SetCaseSensitive(Value: Boolean);
@@ -321,7 +330,7 @@ type
 
   TJclAnsiStrEncoding = (seISO, seUTF8);
 
-  IJclAnsiStrContainer = interface(IJclStrContainer)
+  IJclAnsiStrContainer = interface(IJclStrBaseContainer)
     ['{F8239357-B96F-46F1-A48E-B5DF25B5F1FA}']
     function GetEncoding: TJclAnsiStrEncoding;
     procedure SetEncoding(Value: TJclAnsiStrEncoding);
@@ -342,7 +351,7 @@ type
 
   TJclWideStrEncoding = (seUTF16);
 
-  IJclWideStrContainer = interface(IJclStrContainer)
+  IJclWideStrContainer = interface(IJclStrBaseContainer)
     ['{875E1AC4-CA22-46BC-8999-048E5B9BF11D}']
     function GetEncoding: TJclWideStrEncoding;
     procedure SetEncoding(Value: TJclWideStrEncoding);
@@ -362,7 +371,7 @@ type
   end;
 
   {$IFDEF SUPPORTS_UNICODE_STRING}
-  IJclUnicodeStrContainer = interface(IJclStrContainer)
+  IJclUnicodeStrContainer = interface(IJclStrBaseContainer)
     ['{619BA29F-5E05-464D-B472-1C8453DBC707}']
   end;
 
@@ -379,11 +388,28 @@ type
   end;
   {$ENDIF SUPPORTS_UNICODE_STRING}
 
+  {$IFDEF CONTAINER_ANSISTR}
+  IJclStrContainer = IJclAnsiStrContainer;
+  IJclStrFlatContainer = IJclAnsiStrFlatContainer;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  IJclStrContainer = IJclWideStrContainer;
+  IJclStrFlatContainer = IJclWideStrFlatContainer;
+  {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrContainer = IJclUnicodeStrContainer;
+  IJclStrFlatContainer = IJclUnicodeStrFlatContainer;
+  {$ENDIF CONTAINER_UNICODESTR}
+
   IJclSingleContainer = interface(IJclBaseContainer)
     ['{22BE88BD-87D1-4B4D-9FAB-F1B6D555C6A9}']
     function GetPrecision: Single;
     procedure SetPrecision(const Value: Single);
     property Precision: Single read GetPrecision write SetPrecision;
+  end;
+
+  IJclSingleFlatContainer = interface(IJclSingleContainer)
+    ['{F16955E8-94D2-4201-809B-CC2EA39B5FDD}']
   end;
 
   IJclDoubleContainer = interface(IJclBaseContainer)
@@ -393,6 +419,10 @@ type
     property Precision: Double read GetPrecision write SetPrecision;
   end;
 
+  IJclDoubleFlatContainer = interface(IJclDoubleContainer)
+    ['{2F0252CE-7471-45CA-8C8D-FD3925507C00}']
+  end;
+
   IJclExtendedContainer = interface(IJclBaseContainer)
     ['{431A6482-FD5C-45A7-BE53-339A3CF75AC9}']
     function GetPrecision: Extended;
@@ -400,15 +430,75 @@ type
     property Precision: Extended read GetPrecision write SetPrecision;
   end;
 
+  IJclExtendedFlatContainer = interface(IJclExtendedContainer)
+    ['{1D3F48A2-001E-48F7-8A54-B9F4CE837523}']
+  end;
+
   {$IFDEF MATH_EXTENDED_PRECISION}
   IJclFloatContainer = IJclExtendedContainer;
+  IJclFloatFlatContainer = IJclExtendedFlatContainer;
   {$ENDIF MATH_EXTENDED_PRECISION}
   {$IFDEF MATH_DOUBLE_PRECISION}
   IJclFloatContainer = IJclDoubleContainer;
+  IJclFloatFlatContainer = IJclDoubleFlatContainer;
   {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_SINGLE_PRECISION}
   IJclFloatContainer = IJclSingleContainer;
+  IJclFloatFlatContainer = IJclSingleFlatContainer;
   {$ENDIF MATH_SINGLE_PRECISION}
+
+  IJclIntegerContainer = interface(IJclBaseContainer)
+    ['{3BAF5447-9835-43A4-9FF3-E5EA7D43A7D1}']
+  end;
+
+  IJclIntegerFlatContainer = interface(IJclIntegerContainer)
+    ['{EF4EFCD9-60CB-4525-9D20-18E55291F7CF}']
+  end;
+
+  IJclCardinalContainer = interface(IJclBaseContainer)
+    ['{01DF05CF-62E9-46B3-8BC1-2830EEF43644}']
+  end;
+
+  IJclCardinalFlatContainer = interface(IJclCardinalContainer)
+    ['{79E48B80-3215-47D0-A1B5-D74C495AC9D1}']
+  end;
+
+  IJclInt64Container = interface(IJclBaseContainer)
+    ['{B560B2B6-F8C7-45F0-A5E5-920AA61C1540}']
+  end;
+
+  IJclInt64FlatContainer = interface(IJclInt64Container)
+    ['{E740B9EF-7342-4CEF-B7FB-96C5267F5738}']
+  end;
+
+  IJclPtrContainer = interface(IJclBaseContainer)
+    ['{E8DD2A85-1E12-4605-B517-7E3121C5624F}']
+  end;
+
+  IJclPtrFlatContainer = interface(IJclPtrContainer)
+    ['{43C41789-DE71-4DA5-B4AC-3F53EB9459CD}']
+  end;
+
+  IJclContainer = interface(IJclBaseContainer)
+    ['{A9EBED03-4993-426A-8449-30D98DC2AC90}']
+  end;
+
+  IJclFlatContainer = interface(IJclContainer)
+    ['{0A070B6F-54A1-4B3D-A4E4-CFFAE2C7C57B}']
+  end;
+
+  {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
+  IJclContainer<T> = interface(IJclBaseContainer)
+    ['{19599A90-F392-430D-878D-A73E096C04AF}']
+  end;
+
+  IJclFlatContainer<T> = interface(IJclContainer<T>)
+    ['{F562ECFB-98DC-4A82-A806-ED978B9D1667}']
+  end;
+
+  //DOM-IGNORE-END
+  {$ENDIF SUPPORTS_GENERICS}
 
   IJclIntfEqualityComparer = interface
     ['{5CC2DF51-BE56-4D02-A171-31BAAC097632}']
@@ -1778,7 +1868,7 @@ type
   //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
-  IJclIntfCollection = interface(IJclBaseContainer)
+  IJclIntfCollection = interface(IJclIntfFlatContainer)
     ['{8E178463-4575-487A-B4D5-DC2AED3C7ACA}']
     function Add(const AInterface: IInterface): Boolean;
     function AddAll(const ACollection: IJclIntfCollection): Boolean;
@@ -1878,7 +1968,7 @@ type
   IJclStrCollection = IJclUnicodeStrCollection;
   {$ENDIF CONTAINER_UNICODESTR}
 
-  IJclSingleCollection = interface(IJclSingleContainer)
+  IJclSingleCollection = interface(IJclSingleFlatContainer)
     ['{1D34D474-6588-441E-B2B3-8C021A37ED89}']
     function Add(const AValue: Single): Boolean;
     function AddAll(const ACollection: IJclSingleCollection): Boolean;
@@ -1900,7 +1990,7 @@ type
     {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  IJclDoubleCollection = interface(IJclDoubleContainer)
+  IJclDoubleCollection = interface(IJclDoubleFlatContainer)
     ['{E54C7717-C33A-4F1B-860C-4F60F303EAD3}']
     function Add(const AValue: Double): Boolean;
     function AddAll(const ACollection: IJclDoubleCollection): Boolean;
@@ -1922,7 +2012,7 @@ type
     {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  IJclExtendedCollection = interface(IJclExtendedContainer)
+  IJclExtendedCollection = interface(IJclExtendedFlatContainer)
     ['{2A1341CB-B997-4E3B-B1CA-6D60AE853C55}']
     function Add(const AValue: Extended): Boolean;
     function AddAll(const ACollection: IJclExtendedCollection): Boolean;
@@ -1954,7 +2044,7 @@ type
   IJclFloatCollection = IJclExtendedCollection;
   {$ENDIF MATH_EXTENDED_PRECISION}
 
-  IJclIntegerCollection = interface(IJclBaseContainer)
+  IJclIntegerCollection = interface(IJclIntegerFlatContainer)
     ['{AF69890D-22D1-4D89-8FFD-5FAD7E0638BA}']
     function Add(AValue: Integer): Boolean;
     function AddAll(const ACollection: IJclIntegerCollection): Boolean;
@@ -1976,7 +2066,7 @@ type
     {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  IJclCardinalCollection = interface(IJclBaseContainer)
+  IJclCardinalCollection = interface(IJclCardinalFlatContainer)
     ['{CFBD0344-58C8-4FA2-B4D7-D21D77DFBF80}']
     function Add(AValue: Cardinal): Boolean;
     function AddAll(const ACollection: IJclCardinalCollection): Boolean;
@@ -1998,7 +2088,7 @@ type
     {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  IJclInt64Collection = interface(IJclBaseContainer)
+  IJclInt64Collection = interface(IJclInt64FlatContainer)
     ['{93A45BDE-3C4C-48D6-9874-5322914DFDDA}']
     function Add(const AValue: Int64): Boolean;
     function AddAll(const ACollection: IJclInt64Collection): Boolean;
@@ -2020,7 +2110,7 @@ type
     {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  IJclPtrCollection = interface(IJclBaseContainer)
+  IJclPtrCollection = interface(IJclPtrFlatContainer)
     ['{02E909A7-5B1D-40D4-82EA-A0CD97D5C811}']
     function Add(APtr: Pointer): Boolean;
     function AddAll(const ACollection: IJclPtrCollection): Boolean;
@@ -2042,7 +2132,7 @@ type
     {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  IJclCollection = interface(IJclBaseContainer)
+  IJclCollection = interface(IJclFlatContainer)
     ['{58947EF1-CD21-4DD1-AE3D-225C3AAD7EE5}']
     function Add(AObject: TObject): Boolean;
     function AddAll(const ACollection: IJclCollection): Boolean;
@@ -3707,7 +3797,7 @@ type
   //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
-  IJclIntfQueue = interface(IJclBaseContainer)
+  IJclIntfQueue = interface(IJclIntfContainer)
     ['{B88756FE-5553-4106-957E-3E33120BFA99}']
     procedure Clear;
     function Contains(const AInterface: IInterface): Boolean;
@@ -3806,7 +3896,7 @@ type
   IJclFloatQueue = IJclExtendedQueue;
   {$ENDIF MATH_EXTENDED_PRECISION}
 
-  IJclIntegerQueue = interface(IJclBaseContainer)
+  IJclIntegerQueue = interface(IJclIntegerContainer)
     ['{4C4E174E-5D19-44CE-A248-B5589A9B68DF}']
     procedure Clear;
     function Contains(AValue: Integer): Boolean;
@@ -3817,7 +3907,7 @@ type
     function Size: Integer;
   end;
 
-  IJclCardinalQueue = interface(IJclBaseContainer)
+  IJclCardinalQueue = interface(IJclCardinalContainer)
     ['{CC1D4358-E259-4FB0-BA83-5180A0F8A6C0}']
     procedure Clear;
     function Contains(AValue: Cardinal): Boolean;
@@ -3828,7 +3918,7 @@ type
     function Size: Integer;
   end;
 
-  IJclInt64Queue = interface(IJclBaseContainer)
+  IJclInt64Queue = interface(IJclInt64Container)
     ['{96B620BB-9A90-43D5-82A7-2D818A11C8E1}']
     procedure Clear;
     function Contains(const AValue: Int64): Boolean;
@@ -3839,7 +3929,7 @@ type
     function Size: Integer;
   end;
 
-  IJclPtrQueue = interface(IJclBaseContainer)
+  IJclPtrQueue = interface(IJclPtrContainer)
     ['{1052DD37-3035-4C44-A793-54AC4B9C0B29}']
     procedure Clear;
     function Contains(APtr: Pointer): Boolean;
@@ -3850,7 +3940,7 @@ type
     function Size: Integer;
   end;
 
-  IJclQueue = interface(IJclBaseContainer)
+  IJclQueue = interface(IJclContainer)
     ['{7D0F9DE4-71EA-46EF-B879-88BCFD5D9610}']
     procedure Clear;
     function Contains(AObject: TObject): Boolean;
@@ -4485,7 +4575,7 @@ type
   //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
-  IJclIntfStack = interface(IJclBaseContainer)
+  IJclIntfStack = interface(IJclIntfContainer)
     ['{CA1DC7A1-8D8F-4A5D-81D1-0FE32E9A4E84}']
     procedure Clear;
     function Contains(const AInterface: IInterface): Boolean;
@@ -4584,7 +4674,7 @@ type
   IJclFloatStack = IJclExtendedStack;
   {$ENDIF MATH_EXTENDED_PRECISION}
 
-  IJclIntegerStack = interface(IJclBaseContainer)
+  IJclIntegerStack = interface(IJclIntegerContainer)
     ['{9190BF0E-5B0C-4D6C-A107-20A933C9B56A}']
     procedure Clear;
     function Contains(AValue: Integer): Boolean;
@@ -4595,7 +4685,7 @@ type
     function Size: Integer;
   end;
 
-  IJclCardinalStack = interface(IJclBaseContainer)
+  IJclCardinalStack = interface(IJclCardinalContainer)
     ['{94F9EDB3-602B-49CE-9990-0AFDAC556F83}']
     procedure Clear;
     function Contains(AValue: Cardinal): Boolean;
@@ -4606,7 +4696,7 @@ type
     function Size: Integer;
   end;
 
-  IJclInt64Stack = interface(IJclBaseContainer)
+  IJclInt64Stack = interface(IJclInt64Container)
     ['{D689EB8F-2746-40E9-AD1B-7E656475FC64}']
     procedure Clear;
     function Contains(const AValue: Int64): Boolean;
@@ -4617,7 +4707,7 @@ type
     function Size: Integer;
   end;
 
-  IJclPtrStack = interface(IJclBaseContainer)
+  IJclPtrStack = interface(IJclPtrContainer)
     ['{AD11D06C-E0E1-4EDE-AA2F-BC8BDD972B73}']
     procedure Clear;
     function Contains(APtr: Pointer): Boolean;
@@ -4628,7 +4718,7 @@ type
     function Size: Integer;
   end;
 
-  IJclStack = interface(IJclBaseContainer)
+  IJclStack = interface(IJclContainer)
     ['{E07E0BD8-A831-41B9-B9A0-7199BD4873B9}']
     procedure Clear;
     function Contains(AObject: TObject): Boolean;

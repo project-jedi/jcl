@@ -55,13 +55,13 @@ uses
 {$I containers\JclArraySets.imp}
 type
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
-  {$JPPEXPANDMACRO JCLARRAYSETINT(,,,,,,,,,,,,,)}
+  {$JPPEXPANDMACRO JCLARRAYSETINT(,,,,,,,,,,,,,,,)}
 
 *)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
 
-  (*$JPPEXPANDMACRO JCLARRAYSETINT(TJclArraySet<T>,TJclArrayList<T>,IJclCollection<T>,IJclList<T>,IJclArray<T>,IJclSet<T>,IJclEqualityComparer<T>,IJclComparer<T>,IJclItemOwner<T>\,,,,const ,AItem,T)*)
+  (*$JPPEXPANDMACRO JCLARRAYSETINT(TJclArraySet<T>,TJclArrayList<T>,IJclContainer<T>,IJclFlatContainer<T>,IJclCollection<T>,IJclList<T>,IJclArray<T>,IJclSet<T>,IJclEqualityComparer<T>,IJclComparer<T>, IJclItemOwner<T>\,,,,const ,AItem,T)*)
 
   // E = External helper to compare items
   TJclArraySetE<T> = class(TJclArraySet<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}

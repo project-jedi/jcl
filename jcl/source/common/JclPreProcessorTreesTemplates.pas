@@ -53,7 +53,8 @@ type
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* JCLTREEINT(NODETYPENAME, SELFCLASSNAME, ANCESTORCLASSNAME, EQUALITYCOMPARERINTERFACENAME,
+  (* JCLTREEINT(NODETYPENAME, SELFCLASSNAME, ANCESTORCLASSNAME,
+                BASECONTAINERINTERFACENAME, FLATCONTAINERINTERFACENAME, EQUALITYCOMPARERINTERFACENAME,
                 COLLECTIONINTERFACENAME, TREEINTERFACENAME, STDITRINTERFACENAME, TREEITRINTERFACENAME,
                 INTERFACEADDITIONAL, SECTIONADDITIONAL, COLLECTIONFLAGS, OWNERSHIPDECLARATION,
                 CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE) *)
@@ -67,6 +68,8 @@ type
     property NodeTypeName: string index taTreeNodeClassName read GetTypeAttribute write SetTypeAttribute stored False;
     property SelfClassName: string index taTreeClassName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
     property AncestorClassName;
+    property BaseContainerInterfaceName: string index taContainerInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
+    property FlatContainerInterfaceName: string index taFlatContainerInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property EqualityComparerInterfaceName: string index taEqualityComparerInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property CollectionInterfaceName: string index taCollectionInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property TreeInterfaceName: string index taTreeInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;

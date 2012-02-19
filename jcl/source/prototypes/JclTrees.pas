@@ -58,7 +58,7 @@ type
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
   {$JPPEXPANDMACRO JCLTREETYPESINT(,,,,)}
 
-  {$JPPEXPANDMACRO JCLTREEINT(,,,,,,,,,,,,,,,)}
+  {$JPPEXPANDMACRO JCLTREEINT(,,,,,,,,,,,,,,,,,)}
 
   {$JPPEXPANDMACRO JCLTREEITRINT(,,,,,,,,,,,,,)}
 
@@ -71,8 +71,7 @@ type
   TJclPreOrderTreeIterator<T> = class;
   TJclPostOrderTreeIterator<T> = class;
 
-  {$JPPEXPANDMACRO JCLTREEINT(TTreeNode,TJclTree<T>,TJclAbstractContainer<T>,IJclEqualityComparer<T>,IJclCollection<T>,IJclTree<T>,IJclIterator<T>,IJclTreeIterator<T>, IJclItemOwner<T>\,,
-
+  {$JPPEXPANDMACRO JCLTREEINT(TTreeNode,TJclTree<T>,TJclAbstractContainer<T>,IJclBaseContainer<T>,IJclFlatContainer<T>,IJclEqualityComparer<T>,IJclCollection<T>,IJclTree<T>,IJclIterator<T>,IJclTreeIterator<T>, IJclItemOwner<T>\,,
 protected
   type
     TTreeNode = TJclTreeNode<T>;

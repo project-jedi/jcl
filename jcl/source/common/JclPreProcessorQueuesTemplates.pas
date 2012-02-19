@@ -51,6 +51,7 @@ type
     function AliasAttributeIDs: TAllTypeAttributeIDs; override;
   published
     property SelfClassName: string index taQueueClassName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
+    property BaseContainerInterfaceName: string index taContainerInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property QueueInterfaceName: string index taQueueInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property AncestorClassName;
     property DynArrayTypeName: string index taDynArrayTypeName read GetTypeAttribute write SetTypeAttribute stored False;

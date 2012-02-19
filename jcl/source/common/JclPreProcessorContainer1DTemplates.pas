@@ -109,7 +109,6 @@ type
     FCollectionFlags: string;
     function GetAncestorClassName: string; override;
     function GetCollectionFlags: string; virtual;
-    function GetInterfaceAdditional: string; override;
   public
     property CollectionFlags: string read GetCollectionFlags write FCollectionFlags;
   end;
@@ -410,12 +409,10 @@ begin
   if Result = '' then
   begin
     if TypeInfo.StringType then
-      Result := ' IJclStrContainer,'
+      Result := ' IJclStrBaseContainer,'
     else
     if TypeInfo.TObjectType then
       Result := ' IJclObjectOwner,';
-    if TypeInfo.TypeAttributes[taContainerInterfaceName] <> '' then
-      Result := Format('%s %s,', [Result, TypeInfo.TypeAttributes[taContainerInterfaceName]]);
   end;
 end;
 
@@ -445,21 +442,8 @@ end;
 function TJclCollectionInterfaceParams.GetCollectionFlags: string;
 begin
   Result := FCollectionFlags;
-  if (Result = '') and (TypeInfo.TypeAttributes[taFlatContainerInterfaceName] <> '') then
+  if (Result = '') and (TypeInfo.TypeAttributes[taBaseCollection] <> '') then
     Result := ' override;';
-end;
-
-function TJclCollectionInterfaceParams.GetInterfaceAdditional: string;
-begin
-  Result := FInterfaceAdditional;
-  if (Result = '') and TypeInfo.KnownType then
-  begin
-    if TypeInfo.TypeAttributes[taFlatContainerInterfaceName] <> '' then
-      Result := Format('%s %s,', [inherited GetInterfaceAdditional,
-        TypeInfo.TypeAttributes[taFlatContainerInterfaceName]])
-    else
-      Result := inherited GetInterfaceAdditional;
-  end;
 end;
 
 //=== { TJclContainerImplementationParams } =======================================

@@ -58,14 +58,13 @@ uses
 {$I containers\JclStacks.int}
 type
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
-  {$JPPEXPANDMACRO JCLSTACKINT(,,,,,,,,,,)}
+  {$JPPEXPANDMACRO JCLSTACKINT(,,,,,,,,,,,)}
 
 *)
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
 
-  (*$JPPEXPANDMACRO JCLSTACKINT(TJclStack<T>,IJclStack<T>,TJclAbstractContainer<T>,TDynArray,IJclEqualityComparer<T>, IJclItemOwner<T>\,,
-
+  (*$JPPEXPANDMACRO JCLSTACKINT(TJclStack<T>,IJclBaseContainer<T>,IJclStack<T>,TJclAbstractContainer<T>,TDynArray,IJclEqualityComparer<T>, IJclItemOwner<T>\,,
 protected
   type
     TDynArray = array of T;,; AOwnsItems: Boolean,const ,AItem,T)*)

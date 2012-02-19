@@ -50,7 +50,8 @@ type
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* JCLLINKEDLISTINT(ITEMCLASSNAME, SELFCLASSNAME, ANCESTORCLASSNAME, COLLECTIONINTERFACENAME,
+  (* JCLLINKEDLISTINT(ITEMCLASSNAME, SELFCLASSNAME, ANCESTORCLASSNAME,
+                      BASECONTAINTERINTERFACENAME, FLATCONTAINERINTERFACENAME, COLLECTIONINTERFACENAME,
                       LISTINTERFACENAME, ITRINTERFACENAME, EQUALITYCOMPARERINTERFACENAME,
                       INTERFACEADDITIONAL, SECTIONADDITIONAL,
                       COLLECTIONFLAGS, OWNERSHIPDECLARATION, CONSTKEYWORD, PARAMETERNAME,
@@ -64,6 +65,8 @@ type
     property ItemClassName: string index taLinkedListItemClassName read GetTypeAttribute write SetTypeAttribute stored False;
     property SelfClassName: string index taLinkedListClassName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
     property AncestorClassName;
+    property BaseContainerInterfaceName: string index taContainerInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
+    property FlatContainerInterfaceName: string index taFlatContainerInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property CollectionInterfaceName: string index taCollectionInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property ListInterfaceName: string index taListInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property ItrInterfaceName: string index taIteratorInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;

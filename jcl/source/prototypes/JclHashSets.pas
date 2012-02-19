@@ -57,7 +57,7 @@ type
 (*$JPPLOOP ALLTYPEINDEX ALLTYPECOUNT
   {$JPPEXPANDMACRO JCLHASHSETTYPEINT(,)}
 
-  {$JPPEXPANDMACRO JCLHASHSETINT(,,,,,,,,,,,,,,)}
+  {$JPPEXPANDMACRO JCLHASHSETINT(,,,,,,,,,,,,,,,,)}
 
   {$JPPEXPANDMACRO JCLHASHSETITRINT(,,,,,,,)}
 
@@ -75,7 +75,7 @@ type
     procedure MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: Integer);
   end;
 
-  {$JPPEXPANDMACRO JCLHASHSETINT(TJclHashSet<T>,TJclAbstractContainer<T>,TJclHashSetBucket<T>,IJclCollection<T>,IJclSet<T>,IJclIterator<T>,IJclEqualityComparer<T>,IJclHashConverter<T>, IJclItemOwner<T>\,,,,const ,AItem,T,; AOwnsItems: Boolean)}
+  {$JPPEXPANDMACRO JCLHASHSETINT(TJclHashSet<T>,TJclAbstractContainer<T>,IJclBaseContainer<T>,IJclFlatContainer<T>,TJclHashSetBucket<T>,IJclCollection<T>,IJclSet<T>,IJclIterator<T>,IJclEqualityComparer<T>,IJclHashConverter<T>, IJclItemOwner<T>\,,,,const ,AItem,T,; AOwnsItems: Boolean)}
 
   {$JPPEXPANDMACRO JCLHASHSETITRINT(TJclHashSetIterator<T>,IJclIterator<T>,TJclHashSet<T>,const ,AItem,T,GetItem,SetItem)}
 

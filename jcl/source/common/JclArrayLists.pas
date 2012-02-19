@@ -58,8 +58,8 @@ type
   TItrStart = (isFirst, isLast);
 
   TJclIntfArrayList = class(TJclIntfAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclIntfEqualityComparer,
-     IJclIntfCollection, IJclIntfList, IJclIntfArray)
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclIntfEqualityComparer, IJclIntfContainer, IJclIntfFlatContainer,
+    IJclIntfCollection, IJclIntfList, IJclIntfArray)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
@@ -139,8 +139,8 @@ type
   end;
 
   TJclAnsiStrArrayList = class(TJclAnsiStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclAnsiStrEqualityComparer, IJclStrContainer, IJclAnsiStrContainer, IJclAnsiStrFlatContainer,
-     IJclAnsiStrCollection, IJclAnsiStrList, IJclAnsiStrArray)
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclAnsiStrEqualityComparer, IJclAnsiStrContainer, IJclAnsiStrFlatContainer, IJclStrBaseContainer,
+    IJclAnsiStrCollection, IJclAnsiStrList, IJclAnsiStrArray)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
@@ -220,8 +220,8 @@ type
   end;
 
   TJclWideStrArrayList = class(TJclWideStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclWideStrEqualityComparer, IJclStrContainer, IJclWideStrContainer, IJclWideStrFlatContainer,
-     IJclWideStrCollection, IJclWideStrList, IJclWideStrArray)
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclWideStrEqualityComparer, IJclWideStrContainer, IJclWideStrFlatContainer, IJclStrBaseContainer,
+    IJclWideStrCollection, IJclWideStrList, IJclWideStrArray)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
@@ -302,8 +302,8 @@ type
 
   {$IFDEF SUPPORTS_UNICODE_STRING}
   TJclUnicodeStrArrayList = class(TJclUnicodeStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclUnicodeStrEqualityComparer, IJclStrContainer, IJclUnicodeStrContainer, IJclUnicodeStrFlatContainer,
-     IJclUnicodeStrCollection, IJclUnicodeStrList, IJclUnicodeStrArray)
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclUnicodeStrEqualityComparer, IJclUnicodeStrContainer, IJclUnicodeStrFlatContainer, IJclStrBaseContainer,
+    IJclUnicodeStrCollection, IJclUnicodeStrList, IJclUnicodeStrArray)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
@@ -406,8 +406,8 @@ type
   {$ENDIF CONTAINER_UNICODESTR}
 
   TJclSingleArrayList = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclSingleEqualityComparer, IJclSingleContainer,
-     IJclSingleCollection, IJclSingleList, IJclSingleArray)
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclSingleEqualityComparer, IJclSingleContainer, IJclSingleFlatContainer,
+    IJclSingleCollection, IJclSingleList, IJclSingleArray)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
@@ -487,8 +487,8 @@ type
   end;
 
   TJclDoubleArrayList = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclDoubleEqualityComparer, IJclDoubleContainer,
-     IJclDoubleCollection, IJclDoubleList, IJclDoubleArray)
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclDoubleEqualityComparer, IJclDoubleContainer, IJclDoubleFlatContainer,
+    IJclDoubleCollection, IJclDoubleList, IJclDoubleArray)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
@@ -568,8 +568,8 @@ type
   end;
 
   TJclExtendedArrayList = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclExtendedEqualityComparer, IJclExtendedContainer,
-     IJclExtendedCollection, IJclExtendedList, IJclExtendedArray)
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclExtendedEqualityComparer, IJclExtendedContainer, IJclExtendedFlatContainer,
+    IJclExtendedCollection, IJclExtendedList, IJclExtendedArray)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
@@ -669,8 +669,8 @@ type
   {$ENDIF MATH_EXTENDED_PRECISION}
 
   TJclIntegerArrayList = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclIntegerEqualityComparer,
-     IJclIntegerCollection, IJclIntegerList, IJclIntegerArray)
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclIntegerEqualityComparer, IJclIntegerContainer, IJclIntegerFlatContainer,
+    IJclIntegerCollection, IJclIntegerList, IJclIntegerArray)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
@@ -750,8 +750,8 @@ type
   end;
 
   TJclCardinalArrayList = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclCardinalEqualityComparer,
-     IJclCardinalCollection, IJclCardinalList, IJclCardinalArray)
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclCardinalEqualityComparer, IJclCardinalContainer, IJclCardinalFlatContainer,
+    IJclCardinalCollection, IJclCardinalList, IJclCardinalArray)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
@@ -831,8 +831,8 @@ type
   end;
 
   TJclInt64ArrayList = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclInt64EqualityComparer,
-     IJclInt64Collection, IJclInt64List, IJclInt64Array)
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclInt64EqualityComparer, IJclInt64Container, IJclInt64FlatContainer,
+    IJclInt64Collection, IJclInt64List, IJclInt64Array)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
@@ -912,8 +912,8 @@ type
   end;
 
   TJclPtrArrayList = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclPtrEqualityComparer,
-     IJclPtrCollection, IJclPtrList, IJclPtrArray)
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclPtrEqualityComparer, IJclPtrContainer, IJclPtrFlatContainer,
+    IJclPtrCollection, IJclPtrList, IJclPtrArray)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
@@ -993,8 +993,8 @@ type
   end;
 
   TJclArrayList = class(TJclAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclEqualityComparer, IJclObjectOwner,
-     IJclCollection, IJclList, IJclArray)
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclEqualityComparer, IJclContainer, IJclFlatContainer, IJclObjectOwner,
+    IJclCollection, IJclList, IJclArray)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
@@ -1080,9 +1080,8 @@ type
   TJclArrayIterator<T> = class;
 
   TJclArrayList<T> = class(TJclAbstractContainer<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclEqualityComparer<T>, IJclItemOwner<T>,
-     IJclCollection<T>, IJclList<T>, IJclArray<T>)
-
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclEqualityComparer<T>, IJclContainer<T>, IJclFlatContainer<T>, IJclItemOwner<T>,
+    IJclCollection<T>, IJclList<T>, IJclArray<T>)
   protected
     type
       TDynArray = array of T;

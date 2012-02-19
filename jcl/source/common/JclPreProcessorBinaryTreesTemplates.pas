@@ -50,7 +50,8 @@ type
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* JCLBINARYTREEINT(NODETYPENAME, SELFCLASSNAME, ANCESTORCLASSNAME, COLLECTIONINTERFACENAME,
+  (* JCLBINARYTREEINT(NODETYPENAME, SELFCLASSNAME, ANCESTORCLASSNAME, BASECONTAINERINTERFACENAME,
+                      FLATCONTAINERINTERFACENAME, COLLECTIONINTERFACENAME,
                       TREEINTERFACENAME, STDITRINTERFACENAME, TREEITRINTERFACENAME,
                       EQUALITYCOMPARERINTERFACENAME, COMPARERINTERFACENAME, INTERFACEADDITIONAL,
                       SECTIONADDITIONAL, CONSTRUCTORPARAMETERS, COLLECTIONFLAGS, CONSTKEYWORD,
@@ -68,6 +69,8 @@ type
     property NodeTypeName: string index taBinaryTreeNodeTypeName read GetTypeAttribute write SetTypeAttribute stored False;
     property SelfClassName: string index taBinaryTreeClassName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
     property AncestorClassName;
+    property BaseContainerInterfaceName: string index taContainerInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
+    property FlatContainerInterfaceName: string index taFlatContainerInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property CollectionInterfaceName: string index taCollectionInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property CompareFunctionName: string index taCompareFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
     property EqualityComparerInterfaceName: string index taEqualityComparerInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;

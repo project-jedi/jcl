@@ -459,11 +459,10 @@ begin
   if Result = '' then
   begin
     if MapInfo.KeyTypeInfo.StringType or MapInfo.ValueTypeInfo.StringType then
-      Result := ' IJclStrContainer,';
+      Result := ' IJclStrBaseContainer,';
     if MapInfo.KeyTypeInfo.TypeAttributes[taContainerInterfaceName] <> '' then
-      Result := Format('%s %s,', [Result, MapInfo.KeyTypeInfo.TypeAttributes[taContainerInterfaceName]])
-    else
-    if MapInfo.ValueTypeInfo.TypeAttributes[taContainerInterfaceName] <> '' then
+      Result := Format('%s %s,', [Result, MapInfo.KeyTypeInfo.TypeAttributes[taContainerInterfaceName]]);
+    if (MapInfo.KeyTypeInfo.TypeName <> MapInfo.ValueTypeInfo.TypeName) and (MapInfo.ValueTypeInfo.TypeAttributes[taContainerInterfaceName] <> '') then
       Result := Format('%s %s,', [Result, MapInfo.ValueTypeInfo.TypeAttributes[taContainerInterfaceName]]);
     if MapInfo.KeyTypeInfo.TObjectType then
       Result := Result + ' IJclKeyOwner,';

@@ -41,7 +41,7 @@ uses
   JclPreProcessorContainer1DTemplates;
 
 type
-  (* JCLSTACKINT(SELFCLASSNAME, STACKINTERFACENAME, ANCESTORCLASSNAME, DYNARRAYTYPENAME,
+  (* JCLSTACKINT(SELFCLASSNAME, BASECONTAINERINTERFACENAME, STACKINTERFACENAME, ANCESTORCLASSNAME, DYNARRAYTYPENAME,
                  EQUALITYCOMPARERINTERFACENAME, INTERFACEADDITIONAL, SECTIONADDITIONAL,
                  OWNERSHIPDECLARATION, CONSTKEYWORD, PARAMETERNAME, TYPENAME) *)
   TJclStackIntParams = class(TJclClassInterfaceParams)
@@ -51,6 +51,7 @@ type
     function AliasAttributeIDs: TAllTypeAttributeIDs; override;
   published
     property SelfClassName: string index taStackClassName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
+    property BaseContainerInterfaceName: string index taContainerInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property StackInterfaceName: string index taStackInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property EqualityComparerInterfaceName: string index taEqualityComparerInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property AncestorClassName;

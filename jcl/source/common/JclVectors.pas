@@ -59,7 +59,8 @@ uses
 type
   TItrStart = (isFirst, isLast);
   TJclIntfVector = class(TJclIntfAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclIntfEqualityComparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
+    IJclIntfContainer, IJclIntfFlatContainer, IJclIntfEqualityComparer,
     IJclIntfCollection, IJclIntfList, IJclIntfArray)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -141,7 +142,8 @@ type
   end;
 
   TJclAnsiStrVector = class(TJclAnsiStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclAnsiStrEqualityComparer, IJclStrContainer, IJclAnsiStrContainer, IJclAnsiStrFlatContainer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
+    IJclAnsiStrContainer, IJclAnsiStrFlatContainer, IJclAnsiStrEqualityComparer, IJclStrBaseContainer,
     IJclAnsiStrCollection, IJclAnsiStrList, IJclAnsiStrArray)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -223,7 +225,8 @@ type
   end;
 
   TJclWideStrVector = class(TJclWideStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclWideStrEqualityComparer, IJclStrContainer, IJclWideStrContainer, IJclWideStrFlatContainer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
+    IJclWideStrContainer, IJclWideStrFlatContainer, IJclWideStrEqualityComparer, IJclStrBaseContainer,
     IJclWideStrCollection, IJclWideStrList, IJclWideStrArray)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -306,7 +309,8 @@ type
 
   {$IFDEF SUPPORTS_UNICODE_STRING}
   TJclUnicodeStrVector = class(TJclUnicodeStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclUnicodeStrEqualityComparer, IJclStrContainer, IJclUnicodeStrContainer, IJclUnicodeStrFlatContainer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
+    IJclUnicodeStrContainer, IJclUnicodeStrFlatContainer, IJclUnicodeStrEqualityComparer, IJclStrBaseContainer,
     IJclUnicodeStrCollection, IJclUnicodeStrList, IJclUnicodeStrArray)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -411,7 +415,8 @@ type
   {$ENDIF CONTAINER_UNICODESTR}
 
   TJclSingleVector = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclSingleEqualityComparer, IJclSingleContainer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
+    IJclSingleContainer, IJclSingleFlatContainer, IJclSingleEqualityComparer,
     IJclSingleCollection, IJclSingleList, IJclSingleArray)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -493,7 +498,8 @@ type
   end;
 
   TJclDoubleVector = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclDoubleEqualityComparer, IJclDoubleContainer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
+    IJclDoubleContainer, IJclDoubleFlatContainer, IJclDoubleEqualityComparer,
     IJclDoubleCollection, IJclDoubleList, IJclDoubleArray)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -575,7 +581,8 @@ type
   end;
 
   TJclExtendedVector = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclExtendedEqualityComparer, IJclExtendedContainer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
+    IJclExtendedContainer, IJclExtendedFlatContainer, IJclExtendedEqualityComparer,
     IJclExtendedCollection, IJclExtendedList, IJclExtendedArray)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -677,7 +684,8 @@ type
   {$ENDIF MATH_EXTENDED_PRECISION}
 
   TJclIntegerVector = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclIntegerEqualityComparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
+    IJclIntegerContainer, IJclIntegerFlatContainer, IJclIntegerEqualityComparer,
     IJclIntegerCollection, IJclIntegerList, IJclIntegerArray)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -759,7 +767,8 @@ type
   end;
 
   TJclCardinalVector = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclCardinalEqualityComparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
+    IJclCardinalContainer, IJclCardinalFlatContainer, IJclCardinalEqualityComparer,
     IJclCardinalCollection, IJclCardinalList, IJclCardinalArray)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -841,7 +850,8 @@ type
   end;
 
   TJclInt64Vector = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclInt64EqualityComparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
+    IJclInt64Container, IJclInt64FlatContainer, IJclInt64EqualityComparer,
     IJclInt64Collection, IJclInt64List, IJclInt64Array)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -923,7 +933,8 @@ type
   end;
 
   TJclPtrVector = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclPtrEqualityComparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
+    IJclPtrContainer, IJclPtrFlatContainer, IJclPtrEqualityComparer,
     IJclPtrCollection, IJclPtrList, IJclPtrArray)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1005,7 +1016,8 @@ type
   end;
 
   TJclVector = class(TJclAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclEqualityComparer, IJclObjectOwner,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
+    IJclContainer, IJclFlatContainer, IJclEqualityComparer, IJclObjectOwner,
     IJclCollection, IJclList, IJclArray)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1093,9 +1105,9 @@ type
   TJclVectorIterator<T> = class;
 
   TJclVector<T> = class(TJclAbstractContainer<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclEqualityComparer<T>, IJclItemOwner<T>,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
+    IJclBaseContainer<T>, IJclFlatContainer<T>, IJclEqualityComparer<T>, IJclItemOwner<T>,
     IJclCollection<T>, IJclList<T>, IJclArray<T>)
-
   protected
     type
       TDynArray = array of T;

@@ -41,7 +41,8 @@ uses
   JclPreProcessorContainer1DTemplates;
 
 type
-  (* JCLARRAYSETINT(SELFCLASSNAME, ANCESTORCLASSNAME, COLLECTIONINTERFACENAME, LISTINTERFACENAME,
+  (* JCLARRAYSETINT(SELFCLASSNAME, ANCESTORCLASSNAME, BASECONTAINERINTERFACENAME,
+                    FLATCONTAINERINTERFACENAME, COLLECTIONINTERFACENAME, LISTINTERFACENAME,
                     ARRAYINTERFACENAME, SETINTERFACENAME, EQUALITYCOMPARERINTERFACENAME,
                     COMPARERINTERFACENAME, INTERFACEADDITIONAL, SECTIONADDITIONAL,
                     COLLECTIONFLAGS, CONSTKEYWORD, PARAMETERNAME, TYPENAME) *)
@@ -53,6 +54,8 @@ type
   published
     property SelfClassName: string index taArraySetClassName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
     property AncestorClassName: string index taArrayListClassName read GetTypeAttribute write SetTypeAttribute stored False;
+    property BaseContainerInterfaceName: string index taContainerInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
+    property FlatContainerInterfaceName: string index taFlatContainerInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property CollectionInterfaceName: string index taCollectionInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property EqualityComparerInterfaceName: string index taEqualityComparerInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property ComparerInterfaceName: string index taComparerInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;

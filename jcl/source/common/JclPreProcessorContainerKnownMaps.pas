@@ -108,7 +108,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclStrIntfMap',
         {maMapInterfaceGUID} '',
-        {maMapInterfaceAncestorName} 'IJclStrContainer',
+        {maMapInterfaceAncestorName} 'IJclStrBaseContainer',
         {maSortedMapInterfaceName} 'IJclStrIntfSortedMap',
         {maSortedMapInterfaceGUID} '',
         {maMapAncestorClassName} 'TJclStrAbstractContainer',
@@ -172,7 +172,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclIntfStrMap',
         {maMapInterfaceGUID} '',
-        {maMapInterfaceAncestorName} 'IJclStrContainer',
+        {maMapInterfaceAncestorName} 'IJclStrBaseContainer',
         {maSortedMapInterfaceName} 'IJclIntfStrSortedMap',
         {maSortedMapInterfaceGUID} '',
         {maMapAncestorClassName} 'TJclStrAbstractContainer',
@@ -236,7 +236,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclStrStrMap',
         {maMapInterfaceGUID} '',
-        {maMapInterfaceAncestorName} 'IJclStrContainer',
+        {maMapInterfaceAncestorName} 'IJclStrBaseContainer',
         {maSortedMapInterfaceName} 'IJclStrStrSortedMap',
         {maSortedMapInterfaceGUID} '',
         {maMapAncestorClassName} 'TJclStrAbstractContainer',
@@ -700,7 +700,7 @@ const
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclStrMap',
         {maMapInterfaceGUID} '',
-        {maMapInterfaceAncestorName} 'IJclStrContainer',
+        {maMapInterfaceAncestorName} 'IJclStrBaseContainer',
         {maSortedMapInterfaceName} 'IJclStrSortedMap',
         {maSortedMapInterfaceGUID} '',
         {maMapAncestorClassName} 'TJclStrAbstractContainer',
