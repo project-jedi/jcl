@@ -65,7 +65,6 @@ type
   (*$JPPEXPANDMACRO JCLHASHMAPTYPESINT(TJclHashEntry<TKey\,TValue>,TJclBucket<TKey\,TValue>,TKey,TValue)*)
 
   (*$JPPEXPANDMACRO JCLHASHMAPINT(TBucket,TJclHashMap<TKey\,TValue>,TJclAbstractContainerBase,IJclMap<TKey\,TValue>,IJclSet<TKey>,IJclCollection<TValue>, IJclPairOwner<TKey\, TValue>\,,
-
 protected
   type
     TBucket = TJclBucket<TKey\,TValue>;
