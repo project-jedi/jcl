@@ -123,15 +123,15 @@ type
     property AliasCondition: string index taAliasCondition read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
     property DefaultValue: string index taDefaultValue read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
-    property OwnershipParameter: string index taOwnershipParameter read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
-    property ReleaserName: string index taReleaserName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
-    property GetterName: string index taGetterName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
-    property SetterName: string index taSetterName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
+    property OwnershipParameterName: string index taOwnershipParameterName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
+    property ReleaserFunctionName: string index taReleaserFunctionName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
+    property GetterFunctionName: string index taGetterFunctionName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
+    property SetterProcedureName: string index taSetterProcedureName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
     property DynArrayTypeName: string index taDynArrayTypeName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
-    property ArrayName: string index taArrayName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
-    property BaseContainer: string index taBaseContainer read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
-    property BaseCollection: string index taBaseCollection read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
+    property ArrayPropertyName: string index taArrayPropertyName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
+    property BaseContainerClassName: string index taBaseContainerClassName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
+    property BaseCollectionClassName: string index taBaseCollectionClassName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
     property ContainerInterfaceName: string index taContainerInterfaceName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
     property ContainerInterfaceGUID: string index taContainerInterfaceGUID read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
     property FlatContainerInterfaceName: string index taFlatContainerInterfaceName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
@@ -284,7 +284,7 @@ end;
 
 function TJclContainerTypeInfo.GetOwnershipDeclaration: string;
 begin
-  Result := GetTypeAttribute(taOwnershipParameter);
+  Result := GetTypeAttribute(taOwnershipParameterName);
   if Result <> '' then
     Result := Format('%s: Boolean', [Result]);
 end;
@@ -400,7 +400,7 @@ function TJclClassInterfaceParams.GetAncestorClassName: string;
 begin
   Result := FAncestorClassName;
   if Result = '' then
-    Result := TypeInfo.TypeAttributes[taBaseContainer];
+    Result := TypeInfo.TypeAttributes[taBaseContainerClassName];
 end;
 
 function TJclClassInterfaceParams.GetInterfaceAdditional: string;
@@ -432,8 +432,8 @@ begin
   Result := FAncestorClassName;
   if Result = '' then
   begin
-    if TypeInfo.TypeAttributes[taBaseCollection] <> '' then
-      Result := TypeInfo.TypeAttributes[taBaseCollection]
+    if TypeInfo.TypeAttributes[taBaseCollectionClassName] <> '' then
+      Result := TypeInfo.TypeAttributes[taBaseCollectionClassName]
     else
       Result := inherited GetAncestorClassName;
   end;
@@ -442,7 +442,7 @@ end;
 function TJclCollectionInterfaceParams.GetCollectionFlags: string;
 begin
   Result := FCollectionFlags;
-  if (Result = '') and (TypeInfo.TypeAttributes[taBaseCollection] <> '') then
+  if (Result = '') and (TypeInfo.TypeAttributes[taBaseCollectionClassName] <> '') then
     Result := ' override;';
 end;
 
@@ -480,7 +480,7 @@ function TJclClassImplementationParams.GetMacroFooter: string;
 var
   Ownership, SelfClassName, ConstructorParameters: string;
 begin
-  if GetTypeAttribute(taOwnershipParameter) <> '' then
+  if GetTypeAttribute(taOwnershipParameterName) <> '' then
     Ownership := 'False'
   else
     Ownership := '';

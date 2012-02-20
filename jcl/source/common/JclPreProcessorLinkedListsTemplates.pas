@@ -55,7 +55,7 @@ type
                       LISTINTERFACENAME, ITRINTERFACENAME, EQUALITYCOMPARERINTERFACENAME,
                       INTERFACEADDITIONAL, SECTIONADDITIONAL,
                       COLLECTIONFLAGS, OWNERSHIPDECLARATION, CONSTKEYWORD, PARAMETERNAME,
-                      TYPENAME, GETTERNAME, SETTERNAME) *)
+                      TYPENAME, GETTERFUNCTIONNAME, SETTERPROCEDURENAME) *)
   TJclLinkedListIntParams = class(TJclCollectionInterfaceParams)
   protected
     // function CodeUnit: string; override;
@@ -78,13 +78,13 @@ type
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
-    property GetterName: string index taGetterName read GetTypeAttribute write SetTypeAttribute stored False;
-    property SetterName: string index taSetterName read GetTypeAttribute write SetTypeAttribute stored False;
+    property GetterFunctionName: string index taGetterFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
+    property SetterProcedureName: string index taSetterProcedureName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
   (* JCLLINKEDLISTITRINT(SELFCLASSNAME, ITRINTERFACENAME, LISTCLASSNAME, EQUALITYCOMPARERINTERFACENAME,
                          ITEMCLASSNAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE,
-                         GETTERNAME, SETTERNAME) *)
+                         GETTERFUNCTIONNAME, SETTERPROCEDURENAME) *)
   TJclLinkedListItrIntParams = class(TJclContainerInterfaceParams)
   protected
     // function CodeUnit: string; override;
@@ -100,14 +100,14 @@ type
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
     property DefaultValue: string index taDefaultValue read GetTypeAttribute write SetTypeAttribute stored False;
-    property GetterName: string index taGetterName read GetTypeAttribute write SetTypeAttribute stored False;
-    property SetterName: string index taSetterName read GetTypeAttribute write SetTypeAttribute stored False;
+    property GetterFunctionName: string index taGetterFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
+    property SetterProcedureName: string index taSetterProcedureName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
   (* JCLLINKEDLISTIMP(SELFCLASSNAME, ITEMCLASSNAME, COLLECTIONINTERFACENAME, LISTINTERFACENAME,
-                      ITRINTERFACENAME, ITRCLASSNAME, OWNERSHIPDECLARATION, OWNERSHIPPARAMETER,
+                      ITRINTERFACENAME, ITRCLASSNAME, OWNERSHIPDECLARATION, OWNERSHIPPARAMETERNAME,
                       CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE,
-                      GETTERNAME, SETTERNAME, RELEASERNAME) *)
+                      GETTERFUNCTIONNAME, SETTERPROCEDURENAME, RELEASERFUNCTIONNAME) *)
   TJclLinkedListImpParams = class(TJclCollectionImplementationParams)
   protected
     // function CodeUnit: string; override;
@@ -122,20 +122,20 @@ type
     property ItrInterfaceName: string index taIteratorInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property ItrClassName: string index taLinkedListIteratorClassName read GetTypeAttribute write SetTypeAttribute stored False;
     property OwnershipDeclaration;
-    property OwnershipParameter: string index taOwnershipParameter read GetTypeAttribute write SetTypeAttribute stored False;
+    property OwnershipParameterName: string index taOwnershipParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
     property DefaultValue: string index taDefaultValue read GetTypeAttribute write SetTypeAttribute stored False;
-    property GetterName: string index taGetterName read GetTypeAttribute write SetTypeAttribute stored False;
-    property SetterName: string index taSetterName read GetTypeAttribute write SetTypeAttribute stored False;
-    property ReleaserName: string index taReleaserName read GetTypeAttribute write SetTypeAttribute stored False;
+    property GetterFunctionName: string index taGetterFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
+    property SetterProcedureName: string index taSetterProcedureName read GetTypeAttribute write SetTypeAttribute stored False;
+    property ReleaserFunctionName: string index taReleaserFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
     property MacroFooter;
   end;
 
   (* JCLLINKEDLISTITRIMP(SELFCLASSNAME, ITRINTERFACENAME, LISTCLASSNAME, EQUALITYCOMPARERINTERFACENAME,
                          ITEMCLASSNAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE,
-                         GETTERNAME, SETTERNAME, RELEASERCALL) *)
+                         GETTERFUNCTIONNAME, SETTERPROCEDURENAME, RELEASERCALL) *)
   TJclLinkedListItrImpParams = class(TJclContainerImplementationParams)
   private
     FReleaserCall: string;
@@ -154,8 +154,8 @@ type
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
     property DefaultValue: string index taDefaultValue read GetTypeAttribute write SetTypeAttribute stored False;
-    property GetterName: string index taGetterName read GetTypeAttribute write SetTypeAttribute stored False;
-    property SetterName: string index taSetterName read GetTypeAttribute write SetTypeAttribute stored False;
+    property GetterFunctionName: string index taGetterFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
+    property SetterProcedureName: string index taSetterProcedureName read GetTypeAttribute write SetTypeAttribute stored False;
     property ReleaserCall: string read GetReleaserCall write FReleaserCall;
   end;
 

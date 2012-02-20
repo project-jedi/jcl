@@ -45,7 +45,7 @@ type
                   FLATCONTAINERINTERFACENAME, COLLECTIONINTERFACENAME, LISTINTERFACENAME,
                   ARRAYINTERFACENAME, ITRINTERFACENAME, EQUALITYCOMPARERINTERFACENAME,
                   INTERFACEADDITIONAL, SECTIONADDITIONAL, COLLECTIONFLAGS, OWNERSHIPDECLARATION,
-                  CONSTKEYWORD, PARAMETERNAME, TYPENAME, DYNARRAYTYPE, GETTERNAME, SETTERNAME) *)
+                  CONSTKEYWORD, PARAMETERNAME, TYPENAME, DYNARRAYTYPE, GETTERFUNCTIONNAME, SETTERPROCEDURENAME) *)
   TJclVectorIntParams = class(TJclCollectionInterfaceParams)
   protected
     // function CodeUnit: string; override;
@@ -69,12 +69,12 @@ type
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
     property DynArrayType: string index taDynArrayTypeName read GetTypeAttribute write SetTypeAttribute stored False;
-    property GetterName: string index taGetterName read GetTypeAttribute write SetTypeAttribute stored False;
-    property SetterName: string index taSetterName read GetTypeAttribute write SetTypeAttribute stored False;
+    property GetterFunctionName: string index taGetterFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
+    property SetterProcedureName: string index taSetterProcedureName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
   (* JCLVECTORITRINT(SELFCLASSNAME, ITRINTERFACENAME, LISTCLASSNAME,
-                     CONSTKEYWORD, PARAMETERNAME, TYPENAME, GETTERNAME, SETTERNAME) *)
+                     CONSTKEYWORD, PARAMETERNAME, TYPENAME, GETTERFUNCTIONNAME, SETTERPROCEDURENAME) *)
   TJclVectorItrIntParams = class(TJclContainerInterfaceParams)
   protected
     // function CodeUnit: string; override;
@@ -87,13 +87,13 @@ type
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
-    property GetterName: string index taGetterName read GetTypeAttribute write SetTypeAttribute stored False;
-    property SetterName: string index taSetterName read GetTypeAttribute write SetTypeAttribute stored False;
+    property GetterFunctionName: string index taGetterFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
+    property SetterProcedureName: string index taSetterProcedureName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
   (* JCLVECTORIMP(SELFCLASSNAME, COLLECTIONINTERFACENAME, LISTINTERFACENAME, ITRINTERFACENAME,
-                  ITRCLASSNAME, OWNERSHIPDECLARATION, OWNERSHIPPARAMETER, CONSTKEYWORD,
-                  PARAMETERNAME, TYPENAME, DEFAULTVALUE, GETTERNAME, SETTERNAME, RELEASERNAME) *)
+                  ITRCLASSNAME, OWNERSHIPDECLARATION, OWNERSHIPPARAMETERNAME, CONSTKEYWORD,
+                  PARAMETERNAME, TYPENAME, DEFAULTVALUE, GETTERFUNCTIONNAME, SETTERPROCEDURENAME, RELEASERFUNCTIONNAME) *)
   TJclVectorImpParams = class(TJclCollectionImplementationParams)
   protected
     // function CodeUnit: string; override;
@@ -107,19 +107,19 @@ type
     property ItrInterfaceName: string index taIteratorInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property ItrClassName: string index taVectorIteratorClassName read GetTypeAttribute write SetTypeAttribute stored False;
     property OwnershipDeclaration;
-    property OwnershipParameter: string index taOwnershipParameter read GetTypeAttribute write SetTypeAttribute stored False;
+    property OwnershipParameterName: string index taOwnershipParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
     property DefaultValue: string index taDefaultValue read GetTypeAttribute write SetTypeAttribute stored False;
-    property GetterName: string index taGetterName read GetTypeAttribute write SetTypeAttribute stored False;
-    property SetterName: string index taSetterName read GetTypeAttribute write SetTypeAttribute stored False;
-    property ReleaserName: string index taReleaserName read GetTypeAttribute write SetTypeAttribute stored False;
+    property GetterFunctionName: string index taGetterFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
+    property SetterProcedureName: string index taSetterProcedureName read GetTypeAttribute write SetTypeAttribute stored False;
+    property ReleaserFunctionName: string index taReleaserFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
     property MacroFooter;
   end;
 
   (* JCLVECTORITRIMP(SELFCLASSNAME, ITRINTERFACENAME, LISTCLASSNAME,
-                     CONSTKEYWORD, PARAMETERNAME, TYPENAME, GETTERNAME, SETTERNAME) *)
+                     CONSTKEYWORD, PARAMETERNAME, TYPENAME, GETTERFUNCTIONNAME, SETTERPROCEDURENAME) *)
   TJclVectorItrImpParams = class(TJclContainerImplementationParams)
   protected
     // function CodeUnit: string; override;
@@ -130,8 +130,8 @@ type
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
-    property GetterName: string index taGetterName read GetTypeAttribute write SetTypeAttribute stored False;
-    property SetterName: string index taSetterName read GetTypeAttribute write SetTypeAttribute stored False;
+    property GetterFunctionName: string index taGetterFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
+    property SetterProcedureName: string index taSetterProcedureName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
 {$IFDEF UNITVERSIONING}

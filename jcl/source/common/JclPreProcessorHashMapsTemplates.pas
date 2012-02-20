@@ -176,7 +176,7 @@ end;
 function TJclHashMapIntParams.GetComparisonSectionAdditional: string;
 begin
   Result := '';
-  if AncestorName <> MapInfo.KeyTypeInfo.TypeAttributes[taBaseContainer] then
+  if AncestorName <> MapInfo.KeyTypeInfo.TypeAttributes[taBaseContainerClassName] then
   begin
     Result := Format('%s  function Hash(%s%s: %s): Integer;',
                      [Result, MapInfo.KeyTypeInfo.TypeAttributes[taConstKeyword],

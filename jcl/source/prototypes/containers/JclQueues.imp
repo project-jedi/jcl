@@ -1,10 +1,10 @@
 (*$JPPDEFINEMACRO JCLQUEUEIMP(SELFCLASSNAME,
-  OWNERSHIPDECLARATION, OWNERSHIPPARAMETER, CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE, RELEASERNAME)
+  OWNERSHIPDECLARATION, OWNERSHIPPARAMETERNAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE, RELEASERFUNCTIONNAME)
 //=== { SELFCLASSNAME } =======================================================
 
 constructor SELFCLASSNAME.Create(ACapacity: IntegerOWNERSHIPDECLARATION);
 begin
-  inherited Create(OWNERSHIPPARAMETER);
+  inherited Create(OWNERSHIPPARAMETERNAME);
   FHead := 0;
   FTail := 0;
   SetCapacity(ACapacity);
@@ -47,7 +47,7 @@ begin
      I := FHead;
      while I <> FTail do
      begin
-       RELEASERNAME(FElements[I]);
+       RELEASERFUNCTIONNAME(FElements[I]);
        Inc(I);
        if I = FCapacity then
          I := 0;

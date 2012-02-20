@@ -1,4 +1,4 @@
-(*$JPPDEFINEMACRO JCLARRAYSETIMP(SELFCLASSNAME, COLLECTIONINTERFACENAME, ITRINTERFACENAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE, GETTERNAME)
+(*$JPPDEFINEMACRO JCLARRAYSETIMP(SELFCLASSNAME, COLLECTIONINTERFACENAME, ITRINTERFACENAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE, GETTERFUNCTIONNAME)
 //=== { SELFCLASSNAME } ====================================================
 
 function SELFCLASSNAME.Add(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
@@ -11,7 +11,7 @@ begin
     begin
       Idx := BinarySearch(PARAMETERNAME);
       if Idx >= 0 then
-        Result := not ItemsEqual(GETTERNAME(Idx), PARAMETERNAME) or CheckDuplicate
+        Result := not ItemsEqual(GETTERFUNCTIONNAME(Idx), PARAMETERNAME) or CheckDuplicate
       else
         Result := True;
       if Result then
@@ -45,7 +45,7 @@ begin
     CompPos := (HiPos + LoPos) div 2;
     while HiPos >= LoPos do
     begin
-      Comp := ItemsCompare(GETTERNAME(CompPos), PARAMETERNAME);
+      Comp := ItemsCompare(GETTERFUNCTIONNAME(CompPos), PARAMETERNAME);
       if Comp < 0 then
         LoPos := CompPos + 1
       else
@@ -69,7 +69,7 @@ begin
   {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
     Idx := BinarySearch(PARAMETERNAME);
     if Idx >= 0 then
-      Result := ItemsEqual(GETTERNAME(Idx), PARAMETERNAME)
+      Result := ItemsEqual(GETTERFUNCTIONNAME(Idx), PARAMETERNAME)
     else
       Result := False;
   {$JPPEXPANDMACRO UNLOCK}

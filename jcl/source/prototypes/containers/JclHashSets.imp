@@ -1,11 +1,11 @@
-(*$JPPDEFINEMACRO JCLHASHSETIMP(SELFCLASSNAME, BUCKETTYPENAME, OWNERSHIPDECLARATION, OWNERSHIPPARAMETER,
+(*$JPPDEFINEMACRO JCLHASHSETIMP(SELFCLASSNAME, BUCKETTYPENAME, OWNERSHIPDECLARATION, OWNERSHIPPARAMETERNAME,
   COLLECTIONINTERFACENAME, ITRCLASSNAME, ITRINTERFACENAME, MOVEARRAYPREFIX,
-  CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE, RELEASERNAME)
+  CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE, RELEASERFUNCTIONNAME)
 //=== { SELFCLASSNAME } ====================================================
 
 constructor SELFCLASSNAME.Create(ACapacity: IntegerOWNERSHIPDECLARATION);
 begin
-  inherited Create(OWNERSHIPPARAMETER);
+  inherited Create(OWNERSHIPPARAMETERNAME);
   SetCapacity(ACapacity);
   FHashToRangeFunction := JclSimpleHashToRange;
 end;
@@ -126,7 +126,7 @@ begin
       if Bucket <> nil then
       begin
         for J := 0 to Bucket.Size - 1 do
-          RELEASERNAME(Bucket.Entries[J]);
+          RELEASERFUNCTIONNAME(Bucket.Entries[J]);
         FreeAndNil(FBuckets[I]);
       end;
     end;
@@ -327,7 +327,7 @@ begin
     if Result then
     begin
       Extracted := PARAMETERNAME;
-      RELEASERNAME(Extracted);
+      RELEASERFUNCTIONNAME(Extracted);
     end;
   {$JPPEXPANDMACRO UNLOCK}
 end;
@@ -365,7 +365,7 @@ begin
         for J := Bucket.Size - 1 downto 0 do
           if not ACollection.Contains(Bucket.Entries[I]) then
         begin
-          Bucket.Entries[J] := RELEASERNAME(Bucket.Entries[J]);
+          Bucket.Entries[J] := RELEASERFUNCTIONNAME(Bucket.Entries[J]);
           if J < Length(Bucket.Entries) - 1 then
             MOVEARRAYPREFIXMoveArray(Bucket.Entries, J + 1, J, Bucket.Size - J - 1);
           Dec(Bucket.Size);
@@ -409,7 +409,7 @@ begin
 end;
 *)
 (*$JPPDEFINEMACRO JCLHASHSETITRIMP(SELFCLASSNAME, HASHSETCLASSNAME, BUCKETTYPENAME, ITRINTERFACENAME,
-  CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE, GETTERNAME, SETTERNAME)
+  CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE, GETTERFUNCTIONNAME, SETTERPROCEDURENAME)
 //=== { SELFCLASSNAME } ============================================
 
 constructor SELFCLASSNAME.Create(AOwnHashSet: HASHSETCLASSNAME;
@@ -456,7 +456,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     CheckValid;
-    PARAMETERNAME := GETTERNAME;
+    PARAMETERNAME := GETTERFUNCTIONNAME;
     Valid := False;
     FOwnHashSet.Extract(PARAMETERNAME);
   {$IFDEF THREADSAFE}
@@ -466,7 +466,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function SELFCLASSNAME.GETTERNAME: TYPENAME;
+function SELFCLASSNAME.GETTERFUNCTIONNAME: TYPENAME;
 var
   ABucket: BUCKETTYPENAME;
 begin
@@ -808,7 +808,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure SELFCLASSNAME.SETTERNAME(CONSTKEYWORDPARAMETERNAME: TYPENAME);
+procedure SELFCLASSNAME.SETTERPROCEDURENAME(CONSTKEYWORDPARAMETERNAME: TYPENAME);
 begin
   raise EJclOperationNotSupportedError.Create;
 end;

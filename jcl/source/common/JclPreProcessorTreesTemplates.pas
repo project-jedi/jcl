@@ -87,7 +87,7 @@ type
 
   (* JCLTREEITRINT(BASEITRCLASSNAME, PREORDERITRCLASSNAME, POSTORDERITRCLASSNAME, NODETYPENAME,
                    TREECLASSNAME, STDITRINTERFACENAME, TREEITRINTERFACENAME, EQUALITYCOMPARERINTERFACENAME,
-                   CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE, GETTERNAME, SETTERNAME) *)
+                   CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE, GETTERFUNCTIONNAME, SETTERPROCEDURENAME) *)
   TJclTreeItrIntParams = class(TJclContainerInterfaceParams)
   protected
     // function CodeUnit: string; override;
@@ -106,8 +106,8 @@ type
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
     property DefaultValue: string index taDefaultValue read GetTypeAttribute write SetTypeAttribute stored False;
-    property GetterName: string index taGetterName read GetTypeAttribute write SetTypeAttribute stored False;
-    property SetterName: string index taSetterName read GetTypeAttribute write SetTypeAttribute stored False;
+    property GetterFunctionName: string index taGetterFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
+    property SetterProcedureName: string index taSetterProcedureName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
   (* JCLTREETYPESIMP(NODETYPENAME, EQUALITYCOMPARERINTERFACENAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME) *)
@@ -122,8 +122,8 @@ type
 
   (* JCLTREEIMP(NODETYPENAME, SELFCLASSNAME, PREORDERITRCLASSNAME, POSTORDERITRCLASSNAME,
                 COLLECTIONINTERFACENAME, STDITRINTERFACENAME, TREEITRINTERFACENAME,
-                EQUALITYCOMPARERINTERFACENAME, OWNERSHIPDECLARATION, OWNERSHIPPARAMETER,
-                CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE, RELEASERNAME) *)
+                EQUALITYCOMPARERINTERFACENAME, OWNERSHIPDECLARATION, OWNERSHIPPARAMETERNAME,
+                CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE, RELEASERFUNCTIONNAME) *)
   TJclTreeImpParams = class(TJclCollectionImplementationParams)
   protected
     // function CodeUnit: string; override;
@@ -140,18 +140,18 @@ type
     property TreeItrInterfaceName: string index taTreeIteratorInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property EqualityComparerInterfaceName: string index taEqualityComparerInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property OwnershipDeclaration;
-    property OwnershipParameter: string index taOwnershipParameter read GetTypeAttribute write SetTypeAttribute stored False;
+    property OwnershipParameterName: string index taOwnershipParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
     property DefaultValue: string index taDefaultValue read GetTypeAttribute write SetTypeAttribute stored False;
-    property ReleaserName: string index taReleaserName read GetTypeAttribute write SetTypeAttribute stored False;
+    property ReleaserFunctionName: string index taReleaserFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
     property MacroFooter;
   end;
 
   (* JCLTREEITRIMP(BASEITRCLASSNAME, PREORDERITRCLASSNAME, POSTORDERITRCLASSNAME, NODETYPENAME, TREECLASSNAME,
                    STDITRINTERFACENAME, TREEITRINTERFACENAME, EQUALITYCOMPARERINTERFACENAME,
-                   CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE, GETTERNAME, SETTERNAME, RELEASERNAME) *)
+                   CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE, GETTERFUNCTIONNAME, SETTERPROCEDURENAME, RELEASERFUNCTIONNAME) *)
   TJclTreeItrImpParams = class(TJclContainerImplementationParams)
   protected
     // function CodeUnit: string; override;
@@ -168,9 +168,9 @@ type
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
     property DefaultValue: string index taDefaultValue read GetTypeAttribute write SetTypeAttribute stored False;
-    property GetterName: string index taGetterName read GetTypeAttribute write SetTypeAttribute stored False;
-    property SetterName: string index taSetterName read GetTypeAttribute write SetTypeAttribute stored False;
-    property ReleaserName: string index taReleaserName read GetTypeAttribute write SetTypeAttribute stored False;
+    property GetterFunctionName: string index taGetterFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
+    property SetterProcedureName: string index taSetterProcedureName read GetTypeAttribute write SetTypeAttribute stored False;
+    property ReleaserFunctionName: string index taReleaserFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
 {$IFDEF UNITVERSIONING}

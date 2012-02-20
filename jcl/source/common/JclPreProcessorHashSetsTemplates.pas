@@ -83,7 +83,7 @@ type
   end;
 
   (* JCLHASHSETITRINT(SELFCLASSNAME, ITRINTERFACENAME, HASHSETCLASSNAME,
-                      CONSTKEYWORD, PARAMETERNAME, TYPENAME, GETTERNAME, SETTERNAME) *)
+                      CONSTKEYWORD, PARAMETERNAME, TYPENAME, GETTERFUNCTIONNAME, SETTERPROCEDURENAME) *)
   TJclHashSetItrIntParams = class(TJclClassInterfaceParams)
   protected
     // function CodeUnit: string; override;
@@ -96,13 +96,13 @@ type
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
-    property GetterName: string index taGetterName read GetTypeAttribute write SetTypeAttribute stored False;
-    property SetterName: string index taSetterName read GetTypeAttribute write SetTypeAttribute stored False;
+    property GetterFunctionName: string index taGetterFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
+    property SetterProcedureName: string index taSetterProcedureName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* JCLHASHSETIMP(SELFCLASSNAME, BUCKETTYPENAME, OWNERSHIPDECLARATION, OWNERSHIPPARAMETER,
+  (* JCLHASHSETIMP(SELFCLASSNAME, BUCKETTYPENAME, OWNERSHIPDECLARATION, OWNERSHIPPARAMETERNAME,
                    COLLECTIONINTERFACENAME, ITRCLASSNAME, ITRINTERFACENAME,
-                   CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE, RELEASERNAME) *)
+                   CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE, RELEASERFUNCTIONNAME) *)
   TJclHashSetImpParams = class(TJclCollectionImplementationParams)
   protected
     // function CodeUnit: string; override;
@@ -113,7 +113,7 @@ type
     property SelfClassName: string index taHashSetClassName read GetTypeAttribute write SetTypeAttribute stored False;
     property BucketTypeName: string index taHashSetBucketTypeName read GetTypeAttribute write SetTypeAttribute stored False;
     property OwnershipDeclaration;
-    property OwnershipParameter: string index taOwnershipParameter read GetTypeAttribute write SetTypeAttribute stored False;
+    property OwnershipParameterName: string index taOwnershipParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property CollectionInterfaceName: string index taCollectionInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property ItrClassName: string index taHashSetIteratorClassName read GetTypeAttribute write SetTypeAttribute stored False;
     property ItrInterfaceName: string index taIteratorInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
@@ -121,12 +121,12 @@ type
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
     property DefaultValue: string index taDefaultValue read GetTypeAttribute write SetTypeAttribute stored False;
-    property ReleaserName: string index taReleaserName read GetTypeAttribute write SetTypeAttribute stored False;
+    property ReleaserFunctionName: string index taReleaserFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
     property MacroFooter;
   end;
 
   (* JCLHASHSETITRIMP(SELFCLASSNAME, HASHSETCLASSNAME, BUCKETTYPENAME, ITRINTERFACENAME,
-                      CONSTKEYWORD, PARAMETERNAME, TYPENAME, GETTERNAME, SETTERNAME) *)
+                      CONSTKEYWORD, PARAMETERNAME, TYPENAME, GETTERFUNCTIONNAME, SETTERPROCEDURENAME) *)
   TJclHashSetItrImpParams = class(TJclContainerImplementationParams)
   protected
     // function CodeUnit: string; override;
@@ -139,8 +139,8 @@ type
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
     property DefaultValue: string index taDefaultValue read GetTypeAttribute write SetTypeAttribute stored False;
-    property GetterName: string index taGetterName read GetTypeAttribute write SetTypeAttribute stored False;
-    property SetterName: string index taSetterName read GetTypeAttribute write SetTypeAttribute stored False;
+    property GetterFunctionName: string index taGetterFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
+    property SetterProcedureName: string index taSetterProcedureName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
 {$IFDEF UNITVERSIONING}

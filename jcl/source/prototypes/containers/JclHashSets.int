@@ -52,7 +52,7 @@ public
   procedure Union(const ACollection: COLLECTIONINTERFACENAME);
 end;*)
 (*$JPPDEFINEMACRO JCLHASHSETITRINT(SELFCLASSNAME, ITRINTERFACENAME, HASHSETCLASSNAME,
-  CONSTKEYWORD, PARAMETERNAME, TYPENAME, GETTERNAME, SETTERNAME)
+  CONSTKEYWORD, PARAMETERNAME, TYPENAME, GETTERFUNCTIONNAME, SETTERPROCEDURENAME)
 SELFCLASSNAME = class(TJclAbstractIterator, ITRINTERFACENAME)
 protected
   FBucketIndex: Integer;
@@ -66,7 +66,7 @@ public
   { ITRINTERFACENAME }
   function Add(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
   procedure Extract;
-  function GETTERNAME: TYPENAME;
+  function GETTERFUNCTIONNAME: TYPENAME;
   function HasNext: Boolean;
   function HasPrevious: Boolean;
   function Insert(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
@@ -77,9 +77,9 @@ public
   function PreviousIndex: Integer;
   procedure Remove;
   procedure Reset;
-  procedure SETTERNAME(CONSTKEYWORDPARAMETERNAME: TYPENAME);
+  procedure SETTERPROCEDURENAME(CONSTKEYWORDPARAMETERNAME: TYPENAME);
   {$IFDEF SUPPORTS_FOR_IN}
   function MoveNext: Boolean;
-  property Current: TYPENAME read GETTERNAME;
+  property Current: TYPENAME read GETTERFUNCTIONNAME;
   {$ENDIF SUPPORTS_FOR_IN}
 end;*)

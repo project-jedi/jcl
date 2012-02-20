@@ -64,8 +64,8 @@ type
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* JCLQUEUEIMP(SELFCLASSNAME, OWNERSHIPDECLARATION, OWNERSHIPPARAMETER,
-                 CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE, RELEASERNAME) *)
+  (* JCLQUEUEIMP(SELFCLASSNAME, OWNERSHIPDECLARATION, OWNERSHIPPARAMETERNAME,
+                 CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE, RELEASERFUNCTIONNAME) *)
   TJclQueueImpParams = class(TJclClassImplementationParams)
   protected
     // function CodeUnit: string; override;
@@ -75,12 +75,12 @@ type
   published
     property SelfClassName: string index taQueueClassName read GetTypeAttribute write SetTypeAttribute stored False;
     property OwnershipDeclaration;
-    property OwnershipParameter: string index taOwnershipParameter read GetTypeAttribute write SetTypeAttribute stored False;
+    property OwnershipParameterName: string index taOwnershipParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
     property DefaultValue: string index taDefaultValue read GetTypeAttribute write SetTypeAttribute stored False;
-    property ReleaserName: string index taReleaserName read GetTypeAttribute write SetTypeAttribute stored False;
+    property ReleaserFunctionName: string index taReleaserFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
     property MacroFooter;
   end;
 

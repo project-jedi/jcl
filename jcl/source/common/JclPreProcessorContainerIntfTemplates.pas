@@ -66,101 +66,101 @@ type
     function GetAncestorName: string; override;
   end;
 
-  (* ITERPROCEDURE(PROCNAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME) *)
+  (* ITERPROCEDURE(ITERATEPROCEDURETYPENAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME) *)
   TJclIterProcedureParams = class(TJclContainerIntf1DParams)
   public
     function AliasAttributeIDs: TAllTypeAttributeIDs; override;
   published
-    property ProcName: string index taIterateProcedureName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
+    property IterateProcedureTypeName: string index taIterateProcedureTypeName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* APPLYFUNCTION(FUNCNAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME) *)
+  (* APPLYFUNCTION(APPLYFUNCTIONTYPENAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME) *)
   TJclApplyFunctionParams = class(TJclContainerIntf1DParams)
   public
     function AliasAttributeIDs: TAllTypeAttributeIDs; override;
   published
-    property FuncName: string index taApplyFunctionName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
+    property ApplyFunctionTypeName: string index taApplyFunctionTypeName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* COMPAREFUNCTION(FUNCNAME, CONSTKEYWORD, TYPENAME) *)
+  (* COMPAREFUNCTION(COMPAREFUNCTIONTYPENAME, CONSTKEYWORD, TYPENAME) *)
   TJclCompareFunctionParams = class(TJclContainerIntf1DParams)
   public
     function AliasAttributeIDs: TAllTypeAttributeIDs; override;
   published
-    property FuncName: string index taCompareFunctionName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
+    property CompareFunctionTypeName: string index taCompareFunctionTypeName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* EQUALITYCOMPAREFUNCTION(FUNCNAME, CONSTKEYWORD, TYPENAME) *)
+  (* EQUALITYCOMPAREFUNCTION(EQUALITYCOMPAREFUNCTIONTYPENAME, CONSTKEYWORD, TYPENAME) *)
   TJclEqualityCompareFunctionParams = class(TJclContainerIntf1DParams)
   public
     function AliasAttributeIDs: TAllTypeAttributeIDs; override;
   published
-    property FuncName: string index taEqualityCompareFunctionName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
+    property EqualityCompareFunctionTypeName: string index taEqualityCompareFunctionTypeName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* HASHFUNCTION(FUNCNAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME) *)
+  (* HASHFUNCTION(HASHCONVERTFUNCTIONTYPENAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME) *)
   TJclHashFunctionParams = class(TJclContainerIntf1DParams)
   public
     function AliasAttributeIDs: TAllTypeAttributeIDs; override;
   published
-    property FuncName: string index taHashConvertFunctionName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
+    property HashConvertFunctionTypeName: string index taHashConvertFunctionTypeName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* SORTPROC(PROCNAME, LISTINTERFACENAME, COMPAREFUNCNAME) *)
+  (* SORTPROC(SORTPROCEDURETYPENAME, LISTINTERFACENAME, COMPAREFUNCTIONTYPENAME) *)
   TJclSortFunctionParams = class(TJclContainerIntf1DParams)
   public
     function AliasAttributeIDs: TAllTypeAttributeIDs; override;
   published
-    property ProcName: string index taSortProcedureName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
+    property SortProcedureTypeName: string index taSortProcedureTypeName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
     property ListInterfaceName: string index taListInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
-    property CompareFuncName: string index taCompareFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
+    property CompareFunctionTypeName: string index taCompareFunctionTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* EQUALITYCOMPARER(INTERFACENAME, GUID, EQUALITYCOMPARETYPENAME, CONSTKEYWORD, TYPENAME) *)
+  (* EQUALITYCOMPARER(INTERFACENAME, GUID, EQUALITYCOMPAREFUNCTIONTYPENAME, CONSTKEYWORD, TYPENAME) *)
   TJclEqualityComparerParams = class(TJclContainerIntf1DParams)
   public
     function AliasAttributeIDs: TAllTypeAttributeIDs; override;
   published
     property InterfaceName: string index taEqualityComparerInterfaceName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
     property GUID: string index taEqualityComparerInterfaceGUID read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
-    property EqualityCompareTypeName: string index taEqualityCompareFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
+    property EqualityCompareFunctionTypeName: string index taEqualityCompareFunctionTypeName read GetTypeAttribute write SetTypeAttribute stored False;
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* COMPARER(INTERFACENAME, GUID, COMPARETYPENAME, CONSTKEYWORD, TYPENAME) *)
+  (* COMPARER(INTERFACENAME, GUID, COMPAREFUNCTIONTYPENAME, CONSTKEYWORD, TYPENAME) *)
   TJclComparerParams = class(TJclContainerIntf1DParams)
   public
     function AliasAttributeIDs: TAllTypeAttributeIDs; override;
   published
     property InterfaceName: string index taComparerInterfaceName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
     property GUID: string index taComparerInterfaceGUID read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
-    property CompareTypeName: string index taCompareFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
+    property CompareFunctionTypeName: string index taCompareFunctionTypeName read GetTypeAttribute write SetTypeAttribute stored False;
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* HASHCONVERTER(INTERFACENAME, GUID, HASHCONVERTTYPENAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME) *)
+  (* HASHCONVERTER(INTERFACENAME, GUID, HASHCONVERTFUNCTIONTYPENAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME) *)
   TJclHashConverterParams = class(TJclContainerIntf1DParams)
   public
     function AliasAttributeIDs: TAllTypeAttributeIDs; override;
   published
     property InterfaceName: string index taHashConverterInterfaceName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
     property GUID: string index taHashConverterInterfaceGUID read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
-    property HashConvertTypeName: string index taHashConvertFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
+    property HashConvertFunctionTypeName: string index taHashConvertFunctionTypeName read GetTypeAttribute write SetTypeAttribute stored False;
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
@@ -176,7 +176,7 @@ type
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* OWNER(INTERFACENAME, ANCESTORNAME, GUID, RELEASERNAME, RELEASEEVENTNAME, RELEASEEVENTTYPENAME, PARAMETERNAME, TYPENAME, OWNERADDITIONAL) *)
+  (* OWNER(INTERFACENAME, ANCESTORNAME, GUID, RELEASERFUNCTIONNAME, RELEASEEVENTNAME, RELEASEEVENTTYPENAME, PARAMETERNAME, TYPENAME, OWNERADDITIONAL) *)
   TJclOwnerParams = class(TJclContainerIntfAncestorParams)
   protected
     FOwnerAdditional: string;
@@ -188,7 +188,7 @@ type
     property InterfaceName: string index taOwnershipInterfaceName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
     property AncestorName;
     property GUID: string index taOwnershipInterfaceGUID read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
-    property ReleaserName: string index taReleaserName read GetTypeAttribute write SetTypeAttribute stored False;
+    property ReleaserFunctionName: string index taReleaserFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
     property ReleaseEventName: string index taReleaseEventName read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
     property ReleaseEventTypeName: string index taReleaseEventTypeName read GetTypeAttribute write SetTypeAttribute stored False;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
@@ -196,7 +196,7 @@ type
     property OwnerAdditional: string read GetOwnerAdditional write FOwnerAdditional;
   end;
 
-  (* ITERATOR(INTERFACENAME, ANCESTORNAME, GUID, CONSTKEYWORD, PARAMETERNAME, TYPENAME, GETTERNAME, SETTERNAME) *)
+  (* ITERATOR(INTERFACENAME, ANCESTORNAME, GUID, CONSTKEYWORD, PARAMETERNAME, TYPENAME, GETTERFUNCTIONNAME, SETTERPROCEDURENAME) *)
   TJclIteratorParams = class(TJclContainerIntfAncestorParams)
   protected
     function GetAncestorName: string; override;
@@ -209,8 +209,8 @@ type
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
-    property GetterName: string index taGetterName read GetTypeAttribute write SetTypeAttribute stored False;
-    property SetterName: string index taSetterName read GetTypeAttribute write SetTypeAttribute stored False;
+    property GetterFunctionName: string index taGetterFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
+    property SetterProcedureName: string index taSetterProcedureName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
   (* TREEITERATOR(INTERFACENAME, ANCESTORNAME, GUID, CONSTKEYWORD, PARAMETERNAME, TYPENAME) *)
@@ -251,7 +251,7 @@ type
     property ItrName: string index taIteratorInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* LIST(INTERFACENAME, ANCESTORNAME, GUID, CONSTKEYWORD, PARAMETERNAME, TYPENAME, GETTERNAME, SETTERNAME, PROPNAME) *)
+  (* LIST(INTERFACENAME, ANCESTORNAME, GUID, CONSTKEYWORD, PARAMETERNAME, TYPENAME, GETTERFUNCTIONNAME, SETTERPROCEDURENAME, ARRAYPROPERTYNAME) *)
   TJclListParams = class(TJclContainerIntf1DParams)
   public
     function AliasAttributeIDs: TAllTypeAttributeIDs; override;
@@ -264,12 +264,12 @@ type
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
-    property GetterName: string index taGetterName read GetTypeAttribute write SetTypeAttribute stored False;
-    property SetterName: string index taSetterName read GetTypeAttribute write SetTypeAttribute stored False;
-    property PropName: string index taArrayName read GetTypeAttribute write SetTypeAttribute stored False;
+    property GetterFunctionName: string index taGetterFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
+    property SetterProcedureName: string index taSetterProcedureName read GetTypeAttribute write SetTypeAttribute stored False;
+    property ArrayPropertyName: string index taArrayPropertyName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* ARRAY(INTERFACENAME, ANCESTORNAME, GUID, CONSTKEYWORD, PARAMETERNAME, TYPENAME, GETTERNAME, SETTERNAME, PROPNAME) *)
+  (* ARRAY(INTERFACENAME, ANCESTORNAME, GUID, CONSTKEYWORD, PARAMETERNAME, TYPENAME, GETTERFUNCTIONNAME, SETTERPROCEDURENAME, ARRAYPROPERTYNAME) *)
   TJclArrayParams = class(TJclContainerIntf1DParams)
   public
     function AliasAttributeIDs: TAllTypeAttributeIDs; override;
@@ -280,9 +280,9 @@ type
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
-    property GetterName: string index taGetterName read GetTypeAttribute write SetTypeAttribute stored False;
-    property SetterName: string index taSetterName read GetTypeAttribute write SetTypeAttribute stored False;
-    property PropName: string index taArrayName read GetTypeAttribute write SetTypeAttribute stored False;
+    property GetterFunctionName: string index taGetterFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
+    property SetterProcedureName: string index taSetterProcedureName read GetTypeAttribute write SetTypeAttribute stored False;
+    property ArrayPropertyName: string index taArrayPropertyName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
   (* SET(INTERFACENAME, ANCESTORNAME, GUID) *)
@@ -471,42 +471,42 @@ end;
 
 function TJclIterProcedureParams.AliasAttributeIDs: TAllTypeAttributeIDs;
 begin
-  Result := [taIterateProcedureName];
+  Result := [taIterateProcedureTypeName];
 end;
 
 //=== { TJclApplyFunctionParams } ============================================
 
 function TJclApplyFunctionParams.AliasAttributeIDs: TAllTypeAttributeIDs;
 begin
-  Result := [taApplyFunctionName];
+  Result := [taApplyFunctionTypeName];
 end;
 
 //=== { TJclCompareFunctionParams } ==========================================
 
 function TJclCompareFunctionParams.AliasAttributeIDs: TAllTypeAttributeIDs;
 begin
-  Result := [taCompareFunctionName];
+  Result := [taCompareFunctionTypeName];
 end;
 
 //=== { TJclEqualityCompareFunctionParams } ==================================
 
 function TJclEqualityCompareFunctionParams.AliasAttributeIDs: TAllTypeAttributeIDs;
 begin
-  Result := [taEqualityCompareFunctionName];
+  Result := [taEqualityCompareFunctionTypeName];
 end;
 
 //=== { TJclHashFunctionParams } =============================================
 
 function TJclHashFunctionParams.AliasAttributeIDs: TAllTypeAttributeIDs;
 begin
-  Result := [taHashConvertFunctionName];
+  Result := [taHashConvertFunctionTypeName];
 end;
 
 //=== { TJclSortFunctionParams } =============================================
 
 function TJclSortFunctionParams.AliasAttributeIDs: TAllTypeAttributeIDs;
 begin
-  Result := [taSortProcedureName];
+  Result := [taSortProcedureTypeName];
 end;
 
 //=== { TJclEqualityComparerParams } =========================================

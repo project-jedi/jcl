@@ -83,7 +83,7 @@ type
     property DynArrayTypeName: string index taDynArrayTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* ITERATEINT(PROCNAME, ITRINTERFACENAME, CALLBACKTYPE, OVERLOAD) *)
+  (* ITERATEINT(PROCNAME, ITRINTERFACENAME, ITERATEPROCEDURETYPENAME, OVERLOAD) *)
   TJclIterateIntParams = class(TJclAlgorithmsIntProcParams)
   protected
     function GetProcName: string; override;
@@ -91,18 +91,18 @@ type
     property Overload;
     property ProcName;
     property ItrInterfaceName: string index taIteratorInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
-    property CallbackType: string index taIterateProcedureName read GetTypeAttribute write SetTypeAttribute stored False;
+    property IterateProcedureTypeName: string index taIterateProcedureTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* ITERATEIMP(PROCNAME, ITRINTERFACENAME, CALLBACKTYPE) *)
+  (* ITERATEIMP(PROCNAME, ITRINTERFACENAME, ITERATEPROCEDURETYPENAME) *)
   TJclIterateImpParams = class(TJclAlgorithmsImpProcParams)
   published
     property ProcName;
     property ItrInterfaceName: string index taIteratorInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
-    property CallbackType: string index taIterateProcedureName read GetTypeAttribute write SetTypeAttribute stored False;
+    property IterateProcedureTypeName: string index taIterateProcedureTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* APPLYINT(PROCNAME, ITRINTERFACENAME, CALLBACKTYPE, OVERLOAD) *)
+  (* APPLYINT(PROCNAME, ITRINTERFACENAME, APPLYFUNCTIONTYPENAME, OVERLOAD) *)
   TJclApplyIntParams = class(TJclAlgorithmsIntProcParams)
   protected
     function GetProcName: string; override;
@@ -110,16 +110,16 @@ type
     property Overload;
     property ProcName;
     property ItrInterfaceName: string index taIteratorInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
-    property CallbackType: string index taApplyFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
+    property ApplyFunctionTypeName: string index taApplyFunctionTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* APPLYIMP(PROCNAME, ITRINTERFACENAME, CALLBACKTYPE, SETTERNAME) *)
+  (* APPLYIMP(PROCNAME, ITRINTERFACENAME, APPLYFUNCTIONNAME, SETTERPROCEDURENAME) *)
   TJclApplyImpParams = class(TJclAlgorithmsImpProcParams)
   published
     property ProcName;
     property ItrInterfaceName: string index taIteratorInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
-    property CallbackType: string index taApplyFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
-    property SetterName: string index taSetterName read GetTypeAttribute write SetTypeAttribute stored False;
+    property ApplyFunctionTypeName: string index taApplyFunctionTypeName read GetTypeAttribute write SetTypeAttribute stored False;
+    property SetterProcedureName: string index taSetterProcedureName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
   (* SIMPLECOMPAREINT(PROCNAME, CONSTKEYWORD, TYPENAME) *)
@@ -147,7 +147,7 @@ type
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* FINDINT(PROCNAME, ITRINTERFACENAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME, CALLBACKTYPE, OVERLOAD) *)
+  (* FINDINT(PROCNAME, ITRINTERFACENAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME, COMPAREFUNCTIONTYPENAME, OVERLOAD) *)
   TJclFindIntParams = class(TJclAlgorithmsIntProcParams)
   protected
     function GetProcName: string; override;
@@ -157,10 +157,10 @@ type
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
-    property CallbackType: string index taCompareFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
+    property CompareFunctionTypeName: string index taCompareFunctionTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* FINDIMP(PROCNAME, ITRINTERFACENAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME, CALLBACKTYPE) *)
+  (* FINDIMP(PROCNAME, ITRINTERFACENAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME, COMPAREFUNCTIONTYPENAME) *)
   TJclFindImpParams = class(TJclAlgorithmsImpProcParams)
   published
     property ProcName;
@@ -168,7 +168,7 @@ type
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
-    property CallbackType: string index taCompareFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
+    property CompareFunctionTypeName: string index taCompareFunctionTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
   (* FINDEQINT(PROCNAME,ITRINTERFACENAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME, CALLBACKTYPE, OVERLOAD) *)
@@ -181,10 +181,10 @@ type
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
-    property CallbackType: string index taEqualityCompareFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
+    property EqualityCompareFunctionTypeName: string index taEqualityCompareFunctionTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* FINDEQIMP(PROCNAME, ITRINTERFACENAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME, CALLBACKTYPE) *)
+  (* FINDEQIMP(PROCNAME, ITRINTERFACENAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME, EQUALITYCOMPAREFUNCTIONTYPENAME) *)
   TJclFindEqImpParams = class(TJclAlgorithmsImpProcParams)
   published
     property ProcName;
@@ -192,10 +192,10 @@ type
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
-    property CallbackType: string index taEqualityCompareFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
+    property EqualityCompareFunctionTypeName: string index taEqualityCompareFunctionTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* COUNTOBJECTINT(PROCNAME, ITRINTERFACENAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME, CALLBACKTYPE, OVERLOAD) *)
+  (* COUNTOBJECTINT(PROCNAME, ITRINTERFACENAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME, COMPAREFUNCTIONTYPENAME, OVERLOAD) *)
   TJclCountObjectIntParams = class(TJclAlgorithmsIntProcParams)
   protected
     function GetProcName: string; override;
@@ -205,10 +205,10 @@ type
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
-    property CallbackType: string index taCompareFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
+    property CompareFunctionTypeName: string index taCompareFunctionTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* COUNTOBJECTIMP(PROCNAME, ITRINTERFACENAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME, CALLBACKTYPE) *)
+  (* COUNTOBJECTIMP(PROCNAME, ITRINTERFACENAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME, COMPAREFUNCTIONTYPENAME) *)
   TJclCountObjectImpParams = class(TJclAlgorithmsImpProcParams)
   published
     property ProcName;
@@ -216,10 +216,10 @@ type
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
-    property CallbackType: string index taCompareFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
+    property CompareFunctionTypeName: string index taCompareFunctionTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* COUNTOBJECTEQINT(PROCNAME, ITRINTERFACENAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME, CALLBACKTYPE, OVERLOAD) *)
+  (* COUNTOBJECTEQINT(PROCNAME, ITRINTERFACENAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME, EQUALITYCOMPAREFUNCTIONTYPENAME, OVERLOAD) *)
   TJclCountObjectEqIntParams = class(TJclAlgorithmsIntProcParams)
   protected
     function GetProcName: string; override;
@@ -229,10 +229,10 @@ type
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
-    property CallbackType: string index taEqualityCompareFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
+    property EqualityCompareFunctionTypeName: string index taEqualityCompareFunctionTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* COUNTOBJECTEQIMP(PROCNAME, ITRINTERFACENAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME, CALLBACKTYPE) *)
+  (* COUNTOBJECTEQIMP(PROCNAME, ITRINTERFACENAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME, EQUALITYCOMPAREFUNCTIONTYPENAME) *)
   TJclCountObjectEqImpParams = class(TJclAlgorithmsImpProcParams)
   published
     property ProcName;
@@ -240,7 +240,7 @@ type
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
-    property CallbackType: string index taEqualityCompareFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
+    property EqualityCompareFunctionTypeName: string index taEqualityCompareFunctionTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
   (* COPYINT(PROCNAME, ITRINTERFACENAME, OVERLOAD) *)
@@ -252,12 +252,12 @@ type
     property ItrInterfaceName: string index taIteratorInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* COPYIMP(PROCNAME, ITRINTERFACENAME, SETTERNAME) *)
+  (* COPYIMP(PROCNAME, ITRINTERFACENAME, SETTERPROCEDURENAME) *)
   TJclCopyImpParams = class(TJclAlgorithmsImpProcParams)
   published
     property ProcName;
     property ItrInterfaceName: string index taIteratorInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
-    property SetterName: string index taSetterName read GetTypeAttribute write SetTypeAttribute stored False;
+    property SetterProcedureName: string index taSetterProcedureName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
   (* GENERATEINT(PROCNAME, LISTINTERFACENAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME, OVERLOAD) *)
@@ -294,7 +294,7 @@ type
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* FILLIMP(PROCNAME, ITRINTERFACENAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME, SETTERNAME) *)
+  (* FILLIMP(PROCNAME, ITRINTERFACENAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME, SETTERPROCEDURENAME) *)
   TJclFillImpParams = class(TJclAlgorithmsImpProcParams)
   published
     property ProcName;
@@ -302,7 +302,7 @@ type
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
-    property SetterName: string index taSetterName read GetTypeAttribute write SetTypeAttribute stored False;
+    property SetterProcedureName: string index taSetterProcedureName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
   (* REVERSEINT(PROCNAME, ITRINTERFACENAME, OVERLOAD) *)
@@ -314,17 +314,17 @@ type
     property ItrInterfaceName: string index taIteratorInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* REVERSEIMP(PROCNAME, ITRINTERFACENAME, TYPENAME, GETTERNAME, SETTERNAME) *)
+  (* REVERSEIMP(PROCNAME, ITRINTERFACENAME, TYPENAME, GETTERFUNCTIONNAME, SETTERPROCEDURENAME) *)
   TJclReverseImpParams = class(TJclAlgorithmsImpProcParams)
   published
     property ProcName;
     property ItrInterfaceName: string index taIteratorInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
-    property GetterName: string index taGetterName read GetTypeAttribute write SetTypeAttribute stored False;
-    property SetterName: string index taSetterName read GetTypeAttribute write SetTypeAttribute stored False;
+    property GetterFunctionName: string index taGetterFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
+    property SetterProcedureName: string index taSetterProcedureName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* SORTINT(PROCNAME, LISTINTERFACENAME, LEFT, RIGHT, CALLBACKTYPE, OVERLOAD) *)
+  (* SORTINT(PROCNAME, LISTINTERFACENAME, LEFT, RIGHT, COMPAREFUNCTIONTYPENAME, OVERLOAD) *)
   TJclSortIntParams = class(TJclAlgorithmsIntProcParams)
   private
     FLeft: string;
@@ -340,10 +340,10 @@ type
     property ListInterfaceName: string index taListInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property Left: string read GetLeft write FLeft stored IsLeftStored;
     property Right: string read GetRight write FRight stored IsRightStored;
-    property CallbackType: string index taCompareFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
+    property CompareFunctionTypeName: string index taCompareFunctionTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* QUICKSORTIMP(PROCNAME, LISTINTERFACENAME, LEFT, RIGHT, CALLBACKTYPE, TYPENAME, GETTERNAME, SETTERNAME) *)
+  (* QUICKSORTIMP(PROCNAME, LISTINTERFACENAME, LEFT, RIGHT, COMPAREFUNCTIONTYPENAME, TYPENAME, GETTERFUNCTIONNAME, SETTERPROCEDURENAME) *)
   TJclQuickSortImpParams = class(TJclAlgorithmsImpProcParams)
   private
     function GetLeft: string;
@@ -355,10 +355,10 @@ type
     property ListInterfaceName: string index taListInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property Left: string read GetLeft write SetLeft stored False;
     property Right: string read GetRight write SetRight stored False;
-    property CallbackType: string index taCompareFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
+    property CompareFunctionTypeName: string index taCompareFunctionTypeName read GetTypeAttribute write SetTypeAttribute stored False;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
-    property GetterName: string index taGetterName read GetTypeAttribute write SetTypeAttribute stored False;
-    property SetterName: string index taSetterName read GetTypeAttribute write SetTypeAttribute stored False;
+    property GetterFunctionName: string index taGetterFunctionName read GetTypeAttribute write SetTypeAttribute stored False;
+    property SetterProcedureName: string index taSetterProcedureName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
 {$IFDEF UNITVERSIONING}

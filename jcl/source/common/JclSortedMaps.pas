@@ -108,7 +108,7 @@ type
   end;
 
   TJclAnsiStrIntfSortedMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclStrBaseContainer, IJclAnsiStrContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclStrBaseContainer, IJclAnsiStrContainer, IJclIntfContainer,
     IJclAnsiStrIntfMap, IJclAnsiStrIntfSortedMap)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -156,7 +156,7 @@ type
   end;
 
   TJclIntfAnsiStrSortedMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclStrBaseContainer, IJclIntfContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclStrBaseContainer, IJclIntfContainer, IJclAnsiStrContainer,
     IJclIntfAnsiStrMap, IJclIntfAnsiStrSortedMap)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -252,7 +252,7 @@ type
   end;
 
   TJclWideStrIntfSortedMap = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclStrBaseContainer, IJclWideStrContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclStrBaseContainer, IJclWideStrContainer, IJclIntfContainer,
     IJclWideStrIntfMap, IJclWideStrIntfSortedMap)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -300,7 +300,7 @@ type
   end;
 
   TJclIntfWideStrSortedMap = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclStrBaseContainer, IJclIntfContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclStrBaseContainer, IJclIntfContainer, IJclWideStrContainer,
     IJclIntfWideStrMap, IJclIntfWideStrSortedMap)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -399,7 +399,7 @@ type
 
   {$IFDEF SUPPORTS_UNICODE_STRING}
   TJclUnicodeStrIntfSortedMap = class(TJclUnicodeStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclStrBaseContainer, IJclUnicodeStrContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclStrBaseContainer, IJclUnicodeStrContainer, IJclIntfContainer,
     IJclUnicodeStrIntfMap, IJclUnicodeStrIntfSortedMap)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -451,7 +451,7 @@ type
 
   {$IFDEF SUPPORTS_UNICODE_STRING}
   TJclIntfUnicodeStrSortedMap = class(TJclUnicodeStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclStrBaseContainer, IJclIntfContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclStrBaseContainer, IJclIntfContainer, IJclUnicodeStrContainer,
     IJclIntfUnicodeStrMap, IJclIntfUnicodeStrSortedMap)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -612,7 +612,7 @@ type
   end;
 
   TJclSingleIntfSortedMap = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclSingleContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclSingleContainer, IJclIntfContainer,
     IJclSingleIntfMap, IJclSingleIntfSortedMap)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -660,7 +660,7 @@ type
   end;
 
   TJclIntfSingleSortedMap = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclIntfContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclIntfContainer, IJclSingleContainer,
     IJclIntfSingleMap, IJclIntfSingleSortedMap)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -756,7 +756,7 @@ type
   end;
 
   TJclDoubleIntfSortedMap = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclDoubleContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclDoubleContainer, IJclIntfContainer,
     IJclDoubleIntfMap, IJclDoubleIntfSortedMap)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -804,7 +804,7 @@ type
   end;
 
   TJclIntfDoubleSortedMap = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclIntfContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclIntfContainer, IJclDoubleContainer,
     IJclIntfDoubleMap, IJclIntfDoubleSortedMap)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -900,7 +900,7 @@ type
   end;
 
   TJclExtendedIntfSortedMap = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclExtendedContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclExtendedContainer, IJclIntfContainer,
     IJclExtendedIntfMap, IJclExtendedIntfSortedMap)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -948,7 +948,7 @@ type
   end;
 
   TJclIntfExtendedSortedMap = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclIntfContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclIntfContainer, IJclExtendedContainer,
     IJclIntfExtendedMap, IJclIntfExtendedSortedMap)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1104,7 +1104,7 @@ type
   end;
 
   TJclIntegerIntfSortedMap = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclIntegerContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclIntegerContainer, IJclIntfContainer,
     IJclIntegerIntfMap, IJclIntegerIntfSortedMap)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1152,7 +1152,7 @@ type
   end;
 
   TJclIntfIntegerSortedMap = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclIntfContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclIntfContainer, IJclIntegerContainer,
     IJclIntfIntegerMap, IJclIntfIntegerSortedMap)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1248,7 +1248,7 @@ type
   end;
 
   TJclCardinalIntfSortedMap = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclCardinalContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclCardinalContainer, IJclIntfContainer,
     IJclCardinalIntfMap, IJclCardinalIntfSortedMap)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1296,7 +1296,7 @@ type
   end;
 
   TJclIntfCardinalSortedMap = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclIntfContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclIntfContainer, IJclCardinalContainer,
     IJclIntfCardinalMap, IJclIntfCardinalSortedMap)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1392,7 +1392,7 @@ type
   end;
 
   TJclInt64IntfSortedMap = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclInt64Container,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclInt64Container, IJclIntfContainer,
     IJclInt64IntfMap, IJclInt64IntfSortedMap)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1440,7 +1440,7 @@ type
   end;
 
   TJclIntfInt64SortedMap = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclIntfContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclIntfContainer, IJclInt64Container,
     IJclIntfInt64Map, IJclIntfInt64SortedMap)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1536,7 +1536,7 @@ type
   end;
 
   TJclPtrIntfSortedMap = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclPtrContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclPtrContainer, IJclIntfContainer,
     IJclPtrIntfMap, IJclPtrIntfSortedMap)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1584,7 +1584,7 @@ type
   end;
 
   TJclIntfPtrSortedMap = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclIntfContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclIntfContainer, IJclPtrContainer,
     IJclIntfPtrMap, IJclIntfPtrSortedMap)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1680,7 +1680,7 @@ type
   end;
 
   TJclIntfSortedMap = class(TJclIntfAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclIntfContainer, IJclValueOwner,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclIntfContainer, IJclContainer, IJclValueOwner,
     IJclIntfMap, IJclIntfSortedMap)
   private
     FOwnsValues: Boolean;
@@ -1734,7 +1734,7 @@ type
   end;
 
   TJclAnsiStrSortedMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclStrBaseContainer, IJclAnsiStrContainer, IJclValueOwner,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclStrBaseContainer, IJclAnsiStrContainer, IJclContainer, IJclValueOwner,
     IJclAnsiStrMap, IJclAnsiStrSortedMap)
   private
     FOwnsValues: Boolean;
@@ -1788,7 +1788,7 @@ type
   end;
 
   TJclWideStrSortedMap = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclStrBaseContainer, IJclWideStrContainer, IJclValueOwner,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclStrBaseContainer, IJclWideStrContainer, IJclContainer, IJclValueOwner,
     IJclWideStrMap, IJclWideStrSortedMap)
   private
     FOwnsValues: Boolean;
@@ -1845,7 +1845,7 @@ type
 
   {$IFDEF SUPPORTS_UNICODE_STRING}
   TJclUnicodeStrSortedMap = class(TJclUnicodeStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclStrBaseContainer, IJclUnicodeStrContainer, IJclValueOwner,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclStrBaseContainer, IJclUnicodeStrContainer, IJclContainer, IJclValueOwner,
     IJclUnicodeStrMap, IJclUnicodeStrSortedMap)
   private
     FOwnsValues: Boolean;
@@ -1920,7 +1920,7 @@ type
   end;
 
   TJclSingleSortedMap = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclSingleContainer, IJclValueOwner,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclSingleContainer, IJclContainer, IJclValueOwner,
     IJclSingleMap, IJclSingleSortedMap)
   private
     FOwnsValues: Boolean;
@@ -1974,7 +1974,7 @@ type
   end;
 
   TJclDoubleSortedMap = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclDoubleContainer, IJclValueOwner,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclDoubleContainer, IJclContainer, IJclValueOwner,
     IJclDoubleMap, IJclDoubleSortedMap)
   private
     FOwnsValues: Boolean;
@@ -2028,7 +2028,7 @@ type
   end;
 
   TJclExtendedSortedMap = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclExtendedContainer, IJclValueOwner,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclExtendedContainer, IJclContainer, IJclValueOwner,
     IJclExtendedMap, IJclExtendedSortedMap)
   private
     FOwnsValues: Boolean;
@@ -2102,7 +2102,7 @@ type
   end;
 
   TJclIntegerSortedMap = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclIntegerContainer, IJclValueOwner,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclIntegerContainer, IJclContainer, IJclValueOwner,
     IJclIntegerMap, IJclIntegerSortedMap)
   private
     FOwnsValues: Boolean;
@@ -2156,7 +2156,7 @@ type
   end;
 
   TJclCardinalSortedMap = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclCardinalContainer, IJclValueOwner,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclCardinalContainer, IJclContainer, IJclValueOwner,
     IJclCardinalMap, IJclCardinalSortedMap)
   private
     FOwnsValues: Boolean;
@@ -2210,7 +2210,7 @@ type
   end;
 
   TJclInt64SortedMap = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclInt64Container, IJclValueOwner,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclInt64Container, IJclContainer, IJclValueOwner,
     IJclInt64Map, IJclInt64SortedMap)
   private
     FOwnsValues: Boolean;
@@ -2264,7 +2264,7 @@ type
   end;
 
   TJclPtrSortedMap = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclPtrContainer, IJclValueOwner,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclPtrContainer, IJclContainer, IJclValueOwner,
     IJclPtrMap, IJclPtrSortedMap)
   private
     FOwnsValues: Boolean;

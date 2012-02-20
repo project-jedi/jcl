@@ -1,5 +1,5 @@
 (*$JPPDEFINEMACRO JCLARRAYLISTITRIMP(SELFCLASSNAME, ITRINTERFACENAME, LISTCLASSNAME,
-  CONSTKEYWORD, PARAMETERNAME, TYPENAME, GETTERNAME, SETTERNAME)
+  CONSTKEYWORD, PARAMETERNAME, TYPENAME, GETTERFUNCTIONNAME, SETTERPROCEDURENAME)
 //=== { SELFCLASSNAME } ===============================================================
 
 constructor SELFCLASSNAME.Create(AOwnList: LISTCLASSNAME; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
@@ -41,10 +41,10 @@ begin
   FOwnList.ExtractIndex(FCursor);
 end;
 
-function SELFCLASSNAME.GETTERNAME: TYPENAME;
+function SELFCLASSNAME.GETTERFUNCTIONNAME: TYPENAME;
 begin
   CheckValid;
-  Result := FOwnList.GETTERNAME(FCursor);
+  Result := FOwnList.GETTERFUNCTIONNAME(FCursor);
 end;
 
 function SELFCLASSNAME.HasNext: Boolean;
@@ -102,7 +102,7 @@ begin
     Inc(FCursor)
   else
     Valid := True;
-  Result := FOwnList.GETTERNAME(FCursor);
+  Result := FOwnList.GETTERFUNCTIONNAME(FCursor);
 end;
 
 function SELFCLASSNAME.NextIndex: Integer;
@@ -119,7 +119,7 @@ begin
     Dec(FCursor)
   else
     Valid := True;
-  Result := FOwnList.GETTERNAME(FCursor);
+  Result := FOwnList.GETTERFUNCTIONNAME(FCursor);
 end;
 
 function SELFCLASSNAME.PreviousIndex: Integer;
@@ -148,25 +148,25 @@ begin
   end;
 end;
 
-procedure SELFCLASSNAME.SETTERNAME(CONSTKEYWORDPARAMETERNAME: TYPENAME);
+procedure SELFCLASSNAME.SETTERPROCEDURENAME(CONSTKEYWORDPARAMETERNAME: TYPENAME);
 begin
   CheckValid;
-  FOwnList.SETTERNAME(FCursor, PARAMETERNAME);
+  FOwnList.SETTERPROCEDURENAME(FCursor, PARAMETERNAME);
 end;*)
 (*$JPPDEFINEMACRO JCLARRAYLISTIMP(SELFCLASSNAME,
-  OWNERSHIPDECLARATION, OWNERSHIPPARAMETER, COLLECTIONINTERFACENAME, ITRINTERFACENAME, ITRCLASSNAME, LISTINTERFACENAME,
-  CONSTKEYWORD, PARAMETERNAME, GETTERNAME, SETTERNAME, RELEASERNAME, TYPENAME, DEFAULTVALUE)
+  OWNERSHIPDECLARATION, OWNERSHIPPARAMETERNAME, COLLECTIONINTERFACENAME, ITRINTERFACENAME, ITRCLASSNAME, LISTINTERFACENAME,
+  CONSTKEYWORD, PARAMETERNAME, GETTERFUNCTIONNAME, SETTERPROCEDURENAME, RELEASERFUNCTIONNAME, TYPENAME, DEFAULTVALUE)
 //=== { SELFCLASSNAME } ======================================================
 
 constructor SELFCLASSNAME.Create(ACapacity: IntegerOWNERSHIPDECLARATION);
 begin
-  inherited Create(OWNERSHIPPARAMETER);
+  inherited Create(OWNERSHIPPARAMETERNAME);
   SetCapacity(ACapacity);
 end;
 
 constructor SELFCLASSNAME.Create(const ACollection: COLLECTIONINTERFACENAMEOWNERSHIPDECLARATION);
 begin
-  inherited Create(OWNERSHIPPARAMETER);
+  inherited Create(OWNERSHIPPARAMETERNAME);
   if ACollection = nil then
     raise EJclNoCollectionError.Create;
   SetCapacity(ACollection.Size);
@@ -252,7 +252,7 @@ var
 begin
   {$JPPDEFINE WRITE}{$JPPEXPANDMACRO LOCK}
     for I := 0 to FSize - 1 do
-      RELEASERNAME(FElementData[I]);
+      RELEASERFUNCTIONNAME(FElementData[I]);
     FSize := 0;
     AutoPack;
   {$JPPEXPANDMACRO UNLOCK}
@@ -312,7 +312,7 @@ var
 begin
   {$JPPDEFINE WRITE}{$JPPEXPANDMACRO LOCK}
     Extracted := ExtractIndex(Index);
-    Result := RELEASERNAME(Extracted);
+    Result := RELEASERFUNCTIONNAME(Extracted);
   {$JPPEXPANDMACRO UNLOCK}
 end;
 
@@ -383,7 +383,7 @@ begin
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
-function SELFCLASSNAME.GETTERNAME(Index: Integer): TYPENAME;
+function SELFCLASSNAME.GETTERFUNCTIONNAME(Index: Integer): TYPENAME;
 begin
   {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
     Result := DEFAULTVALUE;
@@ -504,7 +504,7 @@ begin
     if Result then
     begin
       Extracted := PARAMETERNAME;
-      RELEASERNAME(Extracted);
+      RELEASERFUNCTIONNAME(Extracted);
     end;
   {$JPPEXPANDMACRO UNLOCK}
 end;
@@ -552,7 +552,7 @@ begin
   {$JPPEXPANDMACRO UNLOCK}
 end;
 
-procedure SELFCLASSNAME.SETTERNAME(Index: Integer; CONSTKEYWORDPARAMETERNAME: TYPENAME);
+procedure SELFCLASSNAME.SETTERPROCEDURENAME(Index: Integer; CONSTKEYWORDPARAMETERNAME: TYPENAME);
 var
   ReplaceItem: Boolean;
   I: Integer;
@@ -572,7 +572,7 @@ begin
           end;
       if ReplaceItem then
       begin
-        RELEASERNAME(FElementData[Index]);
+        RELEASERFUNCTIONNAME(FElementData[Index]);
         FElementData[Index] := PARAMETERNAME;
       end;
     end;

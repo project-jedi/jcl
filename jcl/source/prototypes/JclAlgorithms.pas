@@ -174,10 +174,10 @@ type
   public
     class {$JPPEXPANDMACRO ITERATEINT(Iterate,IJclIterator<T>,TIterateProcedure<T>,)}
     class {$JPPEXPANDMACRO APPLYINT(Apply,IJclIterator<T>,TApplyFunction<T>,)}
-    class {$JPPEXPANDMACRO FINDINT(Find,IJclIterator<T>,const ,AItem,T,TCompare<T>, overload;)}
-    class {$JPPEXPANDMACRO FINDEQINT(Find,IJclIterator<T>,const ,AItem,T,TEqualityCompare<T>, overload;)}
-    class {$JPPEXPANDMACRO COUNTOBJECTINT(CountObject,IJclIterator<T>,const ,AItem,T,TCompare<T>, overload;)}
-    class {$JPPEXPANDMACRO COUNTOBJECTEQINT(CountObject,IJclIterator<T>,const ,AItem,T,TEqualityCompare<T>, overload;)}
+    class {$JPPEXPANDMACRO FINDINT(Find,IJclIterator<T>,const ,AItem,TCompare<T>,T, overload;)}
+    class {$JPPEXPANDMACRO FINDEQINT(Find,IJclIterator<T>,const ,AItem,TEqualityCompare<T>,T, overload;)}
+    class {$JPPEXPANDMACRO COUNTOBJECTINT(CountObject,IJclIterator<T>,const ,AItem,TCompare<T>,T, overload;)}
+    class {$JPPEXPANDMACRO COUNTOBJECTEQINT(CountObject,IJclIterator<T>,const ,AItem,TEqualityCompare<T>,T, overload;)}
     class {$JPPEXPANDMACRO COPYINT(Copy,IJclIterator<T>,)}
     class {$JPPEXPANDMACRO GENERATEINT(Generate,IJclList<T>,const ,AItem,T,)}
     class {$JPPEXPANDMACRO FILLINT(Fill,IJclIterator<T>,const ,AItem,T,)}
@@ -977,13 +977,13 @@ class {$JPPEXPANDMACRO ITERATEIMP(TJclAlgorithms<T>.Iterate,IJclIterator<T>,TIte
 
 class {$JPPEXPANDMACRO APPLYIMP(TJclAlgorithms<T>.Apply,IJclIterator<T>,TApplyFunction<T>,SetItem)}
 
-class {$JPPEXPANDMACRO FINDIMP(TJclAlgorithms<T>.Find,IJclIterator<T>,const ,AItem,T,TCompare<T>)}
+class {$JPPEXPANDMACRO FINDIMP(TJclAlgorithms<T>.Find,IJclIterator<T>,const ,AItem,TCompare<T>,T)}
 
-class {$JPPEXPANDMACRO FINDEQIMP(TJclAlgorithms<T>.Find,IJclIterator<T>,const ,AItem,T,TEqualityCompare<T>)}
+class {$JPPEXPANDMACRO FINDEQIMP(TJclAlgorithms<T>.Find,IJclIterator<T>,const ,AItem,TEqualityCompare<T>,T)}
 
-class {$JPPEXPANDMACRO COUNTOBJECTIMP(TJclAlgorithms<T>.CountObject,IJclIterator<T>,const ,AItem,T,TCompare<T>)}
+class {$JPPEXPANDMACRO COUNTOBJECTIMP(TJclAlgorithms<T>.CountObject,IJclIterator<T>,const ,AItem,TCompare<T>,T)}
 
-class {$JPPEXPANDMACRO COUNTOBJECTEQIMP(TJclAlgorithms<T>.CountObject,IJclIterator<T>,const ,AItem,T,TEqualityCompare<T>)}
+class {$JPPEXPANDMACRO COUNTOBJECTEQIMP(TJclAlgorithms<T>.CountObject,IJclIterator<T>,const ,AItem,TEqualityCompare<T>,T)}
 
 class {$JPPEXPANDMACRO COPYIMP(TJclAlgorithms<T>.Copy,IJclIterator<T>,SetItem)}
 
