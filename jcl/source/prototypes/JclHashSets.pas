@@ -75,13 +75,13 @@ type
     procedure MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: Integer);
   end;
 
-  {$JPPEXPANDMACRO JCLHASHSETINT(TJclHashSet<T>,TJclAbstractContainer<T>,IJclBaseContainer<T>,IJclFlatContainer<T>,TJclHashSetBucket<T>,IJclCollection<T>,IJclSet<T>,IJclIterator<T>,IJclEqualityComparer<T>,IJclHashConverter<T>, IJclItemOwner<T>\,,,,const ,AItem,T,; AOwnsItems: Boolean)}
+  {$JPPEXPANDMACRO JCLHASHSETINT(TJclHashSet<T>,TJclAbstractContainer<T>,IJclContainer<T>,IJclFlatContainer<T>,TJclHashSetBucket<T>,IJclCollection<T>,IJclSet<T>,IJclIterator<T>,IJclEqualityComparer<T>,IJclHashConverter<T>, IJclItemOwner<T>\,,,,const ,AItem,T,; AOwnsItems: Boolean)}
 
   {$JPPEXPANDMACRO JCLHASHSETITRINT(TJclHashSetIterator<T>,IJclIterator<T>,TJclHashSet<T>,const ,AItem,T,GetItem,SetItem)}
 
   // E = External helper to compare items for equality
   TJclHashSetE<T> = class(TJclHashSet<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclContainer<T>,
     IJclEqualityComparer<T>, IJclHashConverter<T>, IJclItemOwner<T>, IJclCollection<T>, IJclSet<T>)
   private
     FEqualityComparer: IJclEqualityComparer<T>;
@@ -102,7 +102,7 @@ type
 
   // F = Function to compare items for equality
   TJclHashSetF<T> = class(TJclHashSet<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclContainer<T>,
     IJclEqualityComparer<T>, IJclHashConverter<T>, IJclItemOwner<T>,
     IJclCollection<T>, IJclSet<T>)
   protected
@@ -114,7 +114,7 @@ type
 
   // I = Items can compare themselves to others
   TJclHashSetI<T: IEquatable<T>, IHashable> = class(TJclHashSet<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclContainer<T>,
     IJclEqualityComparer<T>, IJclHashConverter<T>, IJclItemOwner<T>,
     IJclCollection<T>, IJclSet<T>)
   protected

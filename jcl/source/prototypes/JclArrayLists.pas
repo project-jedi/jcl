@@ -77,7 +77,7 @@ protected
   // E = External helper to compare items for equality
   // GetHashCode is not used
   TJclArrayListE<T> = class(TJclArrayList<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclItemOwner<T>, IJclEqualityComparer<T>,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclContainer<T>, IJclItemOwner<T>, IJclEqualityComparer<T>,
     IJclCollection<T>, IJclList<T>, IJclArray<T>)
   private
     FEqualityComparer: IJclEqualityComparer<T>;
@@ -94,7 +94,7 @@ protected
 
   // F = Function to compare items for equality
   TJclArrayListF<T> = class(TJclArrayList<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclItemOwner<T>, IJclEqualityComparer<T>,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclContainer<T>, IJclItemOwner<T>, IJclEqualityComparer<T>,
     IJclCollection<T>, IJclList<T>, IJclArray<T>)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -105,7 +105,7 @@ protected
 
   // I = Items can compare themselves to others
   TJclArrayListI<T: IEquatable<T>> = class(TJclArrayList<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclItemOwner<T>, IJclEqualityComparer<T>,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclContainer<T>, IJclItemOwner<T>, IJclEqualityComparer<T>,
     IJclCollection<T>, IJclList<T>, IJclArray<T>)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;

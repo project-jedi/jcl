@@ -1106,7 +1106,7 @@ type
 
   TJclVector<T> = class(TJclAbstractContainer<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
-    IJclBaseContainer<T>, IJclFlatContainer<T>, IJclEqualityComparer<T>, IJclItemOwner<T>,
+    IJclContainer<T>, IJclFlatContainer<T>, IJclEqualityComparer<T>, IJclItemOwner<T>,
     IJclCollection<T>, IJclList<T>, IJclArray<T>)
   protected
     type
@@ -1192,7 +1192,7 @@ type
 
   // E = External helper to compare items for equality (GetHashCode is not used)
   TJclVectorE<T> = class(TJclVector<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclContainer<T>,
     IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclItemOwner<T>)
   private
     FEqualityComparer: IJclEqualityComparer<T>;
@@ -1208,7 +1208,7 @@ type
 
   // F = Function to compare items for equality
   TJclVectorF<T> = class(TJclVector<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclContainer<T>,
     IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclItemOwner<T>)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1218,7 +1218,7 @@ type
 
   // I = Items can compare themselves to an other for equality
   TJclVectorI<T: IEquatable<T>> = class(TJclVector<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclContainer<T>,
     IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclItemOwner<T>)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;

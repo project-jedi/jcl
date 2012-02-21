@@ -355,7 +355,7 @@ type
 
   // E = External helper to compare items
   TJclArraySetE<T> = class(TJclArraySet<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclContainer<T>, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
     IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclSet<T>)
   private
     FComparer: IJclComparer<T>;
@@ -374,7 +374,7 @@ type
 
   // F = Function to compare items
   TJclArraySetF<T> = class(TJclArraySet<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclContainer<T>, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
     IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclSet<T>)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -385,7 +385,7 @@ type
 
   // I = Items can compare themselves to others
   TJclArraySetI<T: IComparable<T>> = class(TJclArraySet<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclContainer<T>, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
     IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclSet<T>)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;

@@ -71,7 +71,7 @@ type
 
   TJclLinkedListIterator<T> = class;
 
-  (*$JPPEXPANDMACRO JCLLINKEDLISTINT(TLinkedListItem,TJclLinkedList<T>,TJclAbstractContainer<T>,IJclBaseContainer<T>,IJclFlatContainer<T>,IJclCollection<T>,IJclList<T>,IJclIterator<T>,IJclEqualityComparer<T>,IJclItemOwner<T>\,,
+  (*$JPPEXPANDMACRO JCLLINKEDLISTINT(TLinkedListItem,TJclLinkedList<T>,TJclAbstractContainer<T>,IJclContainer<T>,IJclFlatContainer<T>,IJclCollection<T>,IJclList<T>,IJclIterator<T>,IJclEqualityComparer<T>,IJclItemOwner<T>\,,
 protected
   type
     TLinkedListItem = TJclLinkedListItem<T>;
@@ -82,7 +82,7 @@ protected
   // E = External helper to compare items
   // GetHashCode is never called
   TJclLinkedListE<T> = class(TJclLinkedList<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclCollection<T>, IJclList<T>, IJclEqualityComparer<T>,
+    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclContainer<T>, IJclCollection<T>, IJclList<T>, IJclEqualityComparer<T>,
     IJclItemOwner<T>)
   private
     FEqualityComparer: IJclEqualityComparer<T>;
@@ -99,7 +99,7 @@ protected
 
   // F = Function to compare items for equality
   TJclLinkedListF<T> = class(TJclLinkedList<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclCollection<T>, IJclList<T>, IJclEqualityComparer<T>,
+    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclContainer<T>, IJclCollection<T>, IJclList<T>, IJclEqualityComparer<T>,
     IJclItemOwner<T>)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -110,7 +110,7 @@ protected
 
   // I = Items can compare themselves to an other
   TJclLinkedListI<T: IEquatable<T>> = class(TJclLinkedList<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclCollection<T>, IJclList<T>, IJclEqualityComparer<T>,
+    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclContainer<T>, IJclCollection<T>, IJclList<T>, IJclEqualityComparer<T>,
     IJclItemOwner<T>)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;

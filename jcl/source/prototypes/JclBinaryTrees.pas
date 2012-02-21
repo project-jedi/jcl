@@ -83,7 +83,7 @@ protected
 
   // E = External helper to compare items
   TJclBinaryTreeE<T> = class(TJclBinaryTree<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
+    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclContainer<T>, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
     IJclCollection<T>, IJclTree<T>)
   private
     FComparer: IJclComparer<T>;
@@ -101,7 +101,7 @@ protected
 
   // F = Function to compare items
   TJclBinaryTreeF<T> = class(TJclBinaryTree<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
+    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclContainer<T>, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
     IJclCollection<T>, IJclTree<T>)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -111,7 +111,7 @@ protected
 
   // I = Items can compare themselves to an other
   TJclBinaryTreeI<T: IComparable<T>> = class(TJclBinaryTree<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
+    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclContainer<T>, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
     IJclCollection<T>, IJclTree<T>)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;

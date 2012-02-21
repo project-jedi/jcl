@@ -414,7 +414,7 @@ type
 
   TJclQueue<T> = class(TJclAbstractContainer<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
-    IJclBaseContainer<T>, IJclEqualityComparer<T>, IJclItemOwner<T>,
+    IJclContainer<T>, IJclEqualityComparer<T>, IJclItemOwner<T>,
     IJclQueue<T>)
   protected
     type
@@ -444,7 +444,7 @@ type
 
   // E = external helper to compare items for equality (GetHashCode is not used)
   TJclQueueE<T> = class(TJclQueue<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclQueue<T>, IJclItemOwner<T>)
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclContainer<T>, IJclQueue<T>, IJclItemOwner<T>)
   private
     FEqualityComparer: IEqualityComparer<T>;
   protected
@@ -459,7 +459,7 @@ type
 
   // F = function to compare items for equality
   TJclQueueF<T> = class(TJclQueue<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclQueue<T>, IJclItemOwner<T>)
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclContainer<T>, IJclQueue<T>, IJclItemOwner<T>)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
@@ -468,7 +468,7 @@ type
 
   // I = items can compare themselves to an other
   TJclQueueI<T: IEquatable<T>> = class(TJclQueue<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclQueue<T>, IJclItemOwner<T>)
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclContainer<T>, IJclQueue<T>, IJclItemOwner<T>)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public

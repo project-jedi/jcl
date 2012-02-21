@@ -66,7 +66,7 @@ type
 
   TJclVectorIterator<T> = class;
 
-  (*$JPPEXPANDMACRO JCLVECTORINT(TJclVector<T>,TJclAbstractContainer<T>,IJclBaseContainer<T>,IJclFlatContainer<T>,IJclCollection<T>,IJclList<T>,IJclArray<T>,IJclIterator<T>,IJclEqualityComparer<T>, IJclItemOwner<T>\,,
+  (*$JPPEXPANDMACRO JCLVECTORINT(TJclVector<T>,TJclAbstractContainer<T>,IJclContainer<T>,IJclFlatContainer<T>,IJclCollection<T>,IJclList<T>,IJclArray<T>,IJclIterator<T>,IJclEqualityComparer<T>, IJclItemOwner<T>\,,
 protected
   type
     TDynArray = array of T;
@@ -77,7 +77,7 @@ protected
 
   // E = External helper to compare items for equality (GetHashCode is not used)
   TJclVectorE<T> = class(TJclVector<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclContainer<T>,
     IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclItemOwner<T>)
   private
     FEqualityComparer: IJclEqualityComparer<T>;
@@ -93,7 +93,7 @@ protected
 
   // F = Function to compare items for equality
   TJclVectorF<T> = class(TJclVector<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclContainer<T>,
     IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclItemOwner<T>)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -103,7 +103,7 @@ protected
 
   // I = Items can compare themselves to an other for equality
   TJclVectorI<T: IEquatable<T>> = class(TJclVector<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclContainer<T>,
     IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclItemOwner<T>)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;

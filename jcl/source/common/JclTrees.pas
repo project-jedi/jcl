@@ -1719,7 +1719,7 @@ type
 
   TJclTree<T> = class(TJclAbstractContainer<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
-    IJclBaseContainer<T>, IJclFlatContainer<T>, IJclEqualityComparer<T>, IJclItemOwner<T>,
+    IJclContainer<T>, IJclFlatContainer<T>, IJclEqualityComparer<T>, IJclItemOwner<T>,
     IJclCollection<T>, IJclTree<T>)
   protected
     type
@@ -1838,7 +1838,7 @@ type
 
   // E = External helper to compare items for equality
   TJclTreeE<T> = class(TJclTree<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclItemOwner<T>, IJclEqualityComparer<T>,
+    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclContainer<T>, IJclItemOwner<T>, IJclEqualityComparer<T>,
     IJclCollection<T>, IJclTree<T>)
   private
     FEqualityComparer: IJclEqualityComparer<T>;
@@ -1854,7 +1854,7 @@ type
 
   // F = Function to compare items for equality
   TJclTreeF<T> = class(TJclTree<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclItemOwner<T>, IJclEqualityComparer<T>,
+    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclContainer<T>, IJclItemOwner<T>, IJclEqualityComparer<T>,
     IJclCollection<T>, IJclTree<T>)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1864,7 +1864,7 @@ type
 
   // I = Items can compare themselves to an other for equality
   TJclTreeI<T: IEquatable<T>> = class(TJclTree<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclItemOwner<T>, IJclEqualityComparer<T>,
+    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclContainer<T>, IJclItemOwner<T>, IJclEqualityComparer<T>,
     IJclCollection<T>, IJclTree<T>)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;

@@ -64,14 +64,14 @@ type
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
 
-  (*$JPPEXPANDMACRO JCLSTACKINT(TJclStack<T>,IJclBaseContainer<T>,IJclStack<T>,TJclAbstractContainer<T>,TDynArray,IJclEqualityComparer<T>, IJclItemOwner<T>\,,
+  (*$JPPEXPANDMACRO JCLSTACKINT(TJclStack<T>,IJclContainer<T>,IJclStack<T>,TJclAbstractContainer<T>,TDynArray,IJclEqualityComparer<T>, IJclItemOwner<T>\,,
 protected
   type
     TDynArray = array of T;,; AOwnsItems: Boolean,const ,AItem,T)*)
 
   // E = external helper to compare items for equality
   TJclStackE<T> = class(TJclStack<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclContainer<T>,
     IJclStack<T>, IJclItemOwner<T>)
   private
     FEqualityComparer: IEqualityComparer<T>;
@@ -87,7 +87,7 @@ protected
 
   // F = Function to compare items for equality
   TJclStackF<T> = class(TJclStack<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclContainer<T>,
     IJclStack<T>, IJclItemOwner<T>)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -97,7 +97,7 @@ protected
 
   // I = items can compare themselves to an other for equality
   TJclStackI<T: IEquatable<T>> = class(TJclStack<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclContainer<T>,
     IJclStack<T>, IJclItemOwner<T>)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;

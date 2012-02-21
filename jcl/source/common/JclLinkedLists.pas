@@ -1159,7 +1159,7 @@ type
   TJclLinkedListIterator<T> = class;
 
   TJclLinkedList<T> = class(TJclAbstractContainer<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclBaseContainer<T>,
+    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclContainer<T>,
     IJclFlatContainer<T>, IJclEqualityComparer<T>,IJclItemOwner<T>,
     IJclCollection<T>, IJclList<T>)
   protected
@@ -1241,7 +1241,7 @@ type
   // E = External helper to compare items
   // GetHashCode is never called
   TJclLinkedListE<T> = class(TJclLinkedList<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclCollection<T>, IJclList<T>, IJclEqualityComparer<T>,
+    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclContainer<T>, IJclCollection<T>, IJclList<T>, IJclEqualityComparer<T>,
     IJclItemOwner<T>)
   private
     FEqualityComparer: IJclEqualityComparer<T>;
@@ -1258,7 +1258,7 @@ type
 
   // F = Function to compare items for equality
   TJclLinkedListF<T> = class(TJclLinkedList<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclCollection<T>, IJclList<T>, IJclEqualityComparer<T>,
+    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclContainer<T>, IJclCollection<T>, IJclList<T>, IJclEqualityComparer<T>,
     IJclItemOwner<T>)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1269,7 +1269,7 @@ type
 
   // I = Items can compare themselves to an other
   TJclLinkedListI<T: IEquatable<T>> = class(TJclLinkedList<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclCollection<T>, IJclList<T>, IJclEqualityComparer<T>,
+    IJclIntfCloneable, IJclCloneable, IJclBaseContainer, IJclContainer<T>, IJclCollection<T>, IJclList<T>, IJclEqualityComparer<T>,
     IJclItemOwner<T>)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;

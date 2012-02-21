@@ -1112,7 +1112,7 @@ type
 
   TJclHashSet<T> = class(TJclAbstractContainer<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
-    IJclBaseContainer<T>, IJclFlatContainer<T>, IJclEqualityComparer<T>, IJclHashConverter<T>, IJclItemOwner<T>,
+    IJclContainer<T>, IJclFlatContainer<T>, IJclEqualityComparer<T>, IJclHashConverter<T>, IJclItemOwner<T>,
     IJclCollection<T>, IJclSet<T>)
   private
     FBuckets: array of TJclHashSetBucket<T>;
@@ -1185,7 +1185,7 @@ type
 
   // E = External helper to compare items for equality
   TJclHashSetE<T> = class(TJclHashSet<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclContainer<T>,
     IJclEqualityComparer<T>, IJclHashConverter<T>, IJclItemOwner<T>, IJclCollection<T>, IJclSet<T>)
   private
     FEqualityComparer: IJclEqualityComparer<T>;
@@ -1206,7 +1206,7 @@ type
 
   // F = Function to compare items for equality
   TJclHashSetF<T> = class(TJclHashSet<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclContainer<T>,
     IJclEqualityComparer<T>, IJclHashConverter<T>, IJclItemOwner<T>,
     IJclCollection<T>, IJclSet<T>)
   protected
@@ -1218,7 +1218,7 @@ type
 
   // I = Items can compare themselves to others
   TJclHashSetI<T: IEquatable<T>, IHashable> = class(TJclHashSet<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclBaseContainer, IJclContainer<T>,
     IJclEqualityComparer<T>, IJclHashConverter<T>, IJclItemOwner<T>,
     IJclCollection<T>, IJclSet<T>)
   protected
