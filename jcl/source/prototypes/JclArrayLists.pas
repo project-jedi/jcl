@@ -153,7 +153,7 @@ uses
 
 {$JPPEXPANDMACRO JCLARRAYLISTITRIMP(TJclArrayIterator<T>,IJclIterator<T>,IJclList<T>,const ,AItem,T,GetItem,SetItem)}
 
-{$JPPDEFINE GENERIC}{$JPPEXPANDMACRO MOVEARRAYIMP(TJclArrayList<T>.MoveArray,TDynArray,Default(T))}
+{$JPPDEFINE GENERIC}{$JPPEXPANDMACRO MOVEARRAYIMP(TJclArrayList<T>.MoveArray,TDynArray,Default(T),)}
 
 //=== { TJclArrayListE<T> } ==================================================
 

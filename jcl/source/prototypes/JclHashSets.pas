@@ -155,7 +155,7 @@ implementation
 
 //=== { TJclHashSetBucket<T> } =================================================
 
-{$JPPDEFINE GENERIC}{$JPPEXPANDMACRO MOVEARRAYIMP(TJclHashSetBucket<T>.MoveArray,TDynArray,Default(T))}
+{$JPPDEFINE GENERIC}{$JPPEXPANDMACRO MOVEARRAYIMP(TJclHashSetBucket<T>.MoveArray,TDynArray,Default(T),)}
 
 {$JPPEXPANDMACRO JCLHASHSETIMP(TJclHashSet<T>,TJclHashSetBucket<T>,; AOwnsItems: Boolean,AOwnsItems,IJclCollection<T>,TJclHashSetIterator<T>,IJclIterator<T>,Bucket.MoveArray,const ,AItem,T,Default(T),FreeItem)}
 

@@ -129,7 +129,7 @@ uses
 
 (*$JPPEXPANDMACRO JCLQUEUEIMP(TJclQueue<T>,; AOwnsItems: Boolean,AOwnsItems,MoveArray,const ,AItem,T,Default(T),FreeItem)*)
 
-{$JPPDEFINE GENERIC}{$JPPEXPANDMACRO MOVEARRAYIMP(TJclQueue<T>.MoveArray,TDynArray,Default(T))}
+{$JPPDEFINE GENERIC}{$JPPEXPANDMACRO MOVEARRAYIMP(TJclQueue<T>.MoveArray,TDynArray,Default(T),)}
 
 //=== { TJclQueueE<T> } ======================================================
 

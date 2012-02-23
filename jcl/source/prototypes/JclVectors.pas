@@ -151,7 +151,7 @@ uses
 
 (*$JPPEXPANDMACRO JCLVECTORITRIMP(TJclVectorIterator<T>,IJclIterator<T>,IJclList<T>,const ,AItem,T,GetItem,SetItem)*)
 
-{$JPPDEFINE GENERIC}{$JPPEXPANDMACRO MOVEARRAYIMP(TJclVector<T>.MoveArray,TDynArray,Default(T))}
+{$JPPDEFINE GENERIC}{$JPPEXPANDMACRO MOVEARRAYIMP(TJclVector<T>.MoveArray,TDynArray,Default(T),)}
 
 //=== { TJclVectorE<T> } =====================================================
 
