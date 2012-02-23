@@ -34,9 +34,9 @@ interface
 
 uses
   {$IFDEF HAS_UNITSCOPE}
-  System.Classes, Vcl.Forms,
+  System.Classes,
   {$ELSE ~HAS_UNITSCOPE}
-  Classes, Forms,
+  Classes,
   {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
@@ -188,7 +188,7 @@ begin
   FModuleOffset := False;
   FDelayedTrace := True;
   FFormName := 'ExceptionDialog';
-  FFormAncestor := TForm.ClassName;
+  FFormAncestor := 'TForm';
   FLogFile := False;
   FLogFileName := 'ExtractFileName(Application.ExeName) + ''-exception-'' + FormatDateTime(''yyyy-mm-dd'', Date) + ''.log''';
   FAutoSaveWorkingDirectory := False;
