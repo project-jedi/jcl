@@ -1,5 +1,5 @@
 (*$JPPDEFINEMACRO JCLHASHSETIMP(SELFCLASSNAME, BUCKETTYPENAME, OWNERSHIPDECLARATION, OWNERSHIPPARAMETERNAME,
-  COLLECTIONINTERFACENAME, ITRCLASSNAME, ITRINTERFACENAME, MOVEARRAYPREFIX,
+  COLLECTIONINTERFACENAME, ITRCLASSNAME, ITRINTERFACENAME, MOVEARRAYPROCEDURENAME,
   CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE, RELEASERFUNCTIONNAME)
 //=== { SELFCLASSNAME } ====================================================
 
@@ -207,7 +207,7 @@ begin
           Result := True;
           Bucket.Entries[I] := DEFAULTVALUE;
           if I < Length(Bucket.Entries) - 1 then
-            MOVEARRAYPREFIXMoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            MOVEARRAYPROCEDURENAME(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -367,7 +367,7 @@ begin
         begin
           Bucket.Entries[J] := RELEASERFUNCTIONNAME(Bucket.Entries[J]);
           if J < Length(Bucket.Entries) - 1 then
-            MOVEARRAYPREFIXMoveArray(Bucket.Entries, J + 1, J, Bucket.Size - J - 1);
+            MOVEARRAYPROCEDURENAME(Bucket.Entries, J + 1, J, Bucket.Size - J - 1);
           Dec(Bucket.Size);
           Dec(FSize);
         end;

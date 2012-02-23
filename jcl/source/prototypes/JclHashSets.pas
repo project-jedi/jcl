@@ -51,6 +51,8 @@ uses
 {$I containers\JclContainerCommon.imp}
 {$I containers\JclHashSets.imp}
 {$I containers\JclHashSets.int}
+{$I containers\JclAlgorithms.int}
+{$I containers\JclAlgorithms.imp}
 type
   TItrStart = (isFirst, isLast);
 
@@ -72,7 +74,7 @@ type
   public
     Size: Integer;
     Entries: TDynArray;
-    procedure MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: Integer);
+    {$JPPEXPANDMACRO MOVEARRAYINT(MoveArray,TDynArray,)}
   end;
 
   {$JPPEXPANDMACRO JCLHASHSETINT(TJclHashSet<T>,TJclAbstractContainer<T>,IJclContainer<T>,IJclFlatContainer<T>,TJclHashSetBucket<T>,IJclCollection<T>,IJclSet<T>,IJclIterator<T>,IJclEqualityComparer<T>,IJclHashConverter<T>, IJclItemOwner<T>\,,,,const ,AItem,T,; AOwnsItems: Boolean)}
@@ -153,41 +155,9 @@ implementation
 
 //=== { TJclHashSetBucket<T> } =================================================
 
-procedure TJclHashSetBucket<T>.MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: Integer);
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
+{$JPPDEFINE GENERIC}{$JPPEXPANDMACRO MOVEARRAYIMP(TJclHashSetBucket<T>.MoveArray,TDynArray,Default(T))}
 
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-        List[FromIndex + I] := Default(T)
-    else
-      // independant
-      for I := 0 to Count - 1 do
-        List[FromIndex + I] := Default(T);
-  end
-  else
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-        List[FromIndex + I] := Default(T)
-    else
-      // independant
-      for I := 0 to Count - 1 do
-        List[FromIndex + I] := Default(T);
-  end; 
-end;
-
-{$JPPEXPANDMACRO JCLHASHSETIMP(TJclHashSet<T>,TJclHashSetBucket<T>,; AOwnsItems: Boolean,AOwnsItems,IJclCollection<T>,TJclHashSetIterator<T>,IJclIterator<T>,Bucket.,const ,AItem,T,Default(T),FreeItem)}
+{$JPPEXPANDMACRO JCLHASHSETIMP(TJclHashSet<T>,TJclHashSetBucket<T>,; AOwnsItems: Boolean,AOwnsItems,IJclCollection<T>,TJclHashSetIterator<T>,IJclIterator<T>,Bucket.MoveArray,const ,AItem,T,Default(T),FreeItem)}
 
 {$JPPEXPANDMACRO JCLHASHSETITRIMP(TJclHashSetIterator<T>,TJclHashSet<T>,TJclHashSetBucket<T>,IJclIterator<T>,const ,AItem,T,Default(T),GetItem,SetItem)}
 

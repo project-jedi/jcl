@@ -1107,7 +1107,7 @@ type
   public
     Size: Integer;
     Entries: TDynArray;
-    procedure MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclHashSet<T> = class(TJclAbstractContainer<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -13019,9 +13019,9 @@ end;
 
 //=== { TJclHashSetBucket<T> } =================================================
 
-procedure TJclHashSetBucket<T>.MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclHashSetBucket<T>.MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: SizeInt);
 var
-  I: Integer;
+  I: SizeInt;
 begin
   if FromIndex < ToIndex then
   begin

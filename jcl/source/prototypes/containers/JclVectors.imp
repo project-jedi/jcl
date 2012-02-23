@@ -154,7 +154,7 @@ begin
   FOwnList.SETTERPROCEDURENAME(FCursor, PARAMETERNAME);
 end;*)
 (*$JPPDEFINEMACRO JCLVECTORIMP(SELFCLASSNAME, COLLECTIONINTERFACENAME, LISTINTERFACENAME, ITRINTERFACENAME, ITRCLASSNAME,
-  OWNERSHIPDECLARATION, OWNERSHIPPARAMETERNAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE,
+  OWNERSHIPDECLARATION, OWNERSHIPPARAMETERNAME, MOVEARRAYPROCEDURENAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE,
   GETTERFUNCTIONNAME, SETTERPROCEDURENAME, RELEASERFUNCTIONNAME)
 //=== { SELFCLASSNAME } ======================================================
 
@@ -325,7 +325,7 @@ begin
       if ItemsEqual(FItems[I], PARAMETERNAME) then
       begin
         if I < (FSize - 1) then
-          MoveArray(FItems, I + 1, I, FSize - 1 - I)
+          MOVEARRAYPROCEDURENAME(FItems, I + 1, I, FSize - 1 - I)
         else
           FItems[I] := DEFAULTVALUE;
         Dec(FSize);
@@ -359,7 +359,7 @@ begin
     begin
       Result := FItems[Index];
       if Index < (FSize - 1) then
-        MoveArray(FItems, Index + 1, Index, FSize - 1 - Index)
+        MOVEARRAYPROCEDURENAME(FItems, Index + 1, Index, FSize - 1 - Index)
       else
         FItems[Index] := DEFAULTVALUE;
       Dec(FSize);
@@ -434,7 +434,7 @@ begin
         if Result then
         begin
           if Index < FSize then
-            MoveArray(FItems, Index, Index + 1, FSize - Index);
+            MOVEARRAYPROCEDURENAME(FItems, Index, Index + 1, FSize - Index);
           FItems[Index] := PARAMETERNAME;
           Inc(FSize);
         end;

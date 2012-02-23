@@ -66,11 +66,12 @@ type
     property DynArrayTypeName: string index taDynArrayTypeName read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
-  (* MOVEARRAYIMP(MOVEARRAYPROCEDURENAME, DYNARRAYTYPENAME) *)
+  (* MOVEARRAYIMP(MOVEARRAYPROCEDURENAME, DYNARRAYTYPENAME, DEFAULTVALUE) *)
   TJclMoveArrayImpParams = class(TJclAlgorithmsImpProcParams)
   published
     property MoveArrayProcedureName: string index taMoveArrayProcedureName read GetTypeAttribute write SetTypeAttribute stored False;
     property DynArrayTypeName: string index taDynArrayTypeName read GetTypeAttribute write SetTypeAttribute stored False;
+    property DefaultValue: string index taDefaultValue read GetTypeAttribute write SetTypeAttribute stored False;
   end;
 
   (* ITERATEINT(ITERATEPROCEDURENAME, ITRINTERFACENAME, ITERATEPROCEDURETYPENAME, OVERLOAD) *)

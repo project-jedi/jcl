@@ -92,7 +92,8 @@ type
   end;
 
  (* JCLARRAYLISTIMP(SELFCLASSNAME, OWNERSHIPDECLARATION, OWNERSHIPPARAMETERNAME, COLLECTIONINTERFACENAME,
-                    ITRINTERFACENAME, ITRCLASSNAME, LISTINTERFACENAME, CONSTKEYWORD, PARAMETERNAME, GETTERFUNCTIONNAME,
+                    ITRINTERFACENAME, ITRCLASSNAME, LISTINTERFACENAME, MOVEARRAYPROCEDURENAME,
+                    CONSTKEYWORD, PARAMETERNAME, GETTERFUNCTIONNAME,
                     SETTERPROCEDURENAME, RELEASERFUNCTIONNAME, TYPENAME, DEFAULTVALUE) *)
   TJclArrayListImpParams = class(TJclCollectionImplementationParams)
   protected
@@ -108,6 +109,7 @@ type
     property ItrInterfaceName: string index taIteratorInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property ItrClassName: string index taArrayIteratorClassName read GetTypeAttribute write SetTypeAttribute stored False;
     property ListInterfaceName: string index taListInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
+    property MoveArrayProcedureName: string index taMoveArrayProcedureName read GetTypeAttribute write SetTypeAttribute stored False;
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
     property ParameterName: string index taParameterName read GetTypeAttribute write SetTypeAttribute stored False;
     property GetterFunctionName: string index taGetterFunctionName read GetTypeAttribute write SetTypeAttribute stored False;

@@ -1319,6 +1319,7 @@ begin
 end;
 
 {$IFDEF SUPPORTS_UNICODE_STRING}
+
 procedure FinalizeArrayBeforeMove(var List: TDynUnicodeStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
 {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 begin

@@ -1,4 +1,39 @@
-(*$JPPDEFINEMACRO MOVEARRAYIMP(MOVEARRAYPROCEDURENAME, DYNARRAYTYPENAME)
+(*$JPPDEFINEMACRO MOVEARRAYIMP(MOVEARRAYPROCEDURENAME, DYNARRAYTYPENAME, DEFAULTVALUE)
+{$IFDEF GENERIC}
+procedure MOVEARRAYPROCEDURENAME(var List: DYNARRAYTYPENAME; FromIndex, ToIndex, Count: SizeInt);
+var
+  I: SizeInt;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      List[ToIndex + I] := List[FromIndex + I];
+
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+        List[FromIndex + I] := DEFAULTVALUE
+    else
+      // independant
+      for I := 0 to Count - 1 do
+        List[FromIndex + I] := DEFAULTVALUE;
+  end
+  else
+  begin
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I];
+
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+        List[FromIndex + I] := DEFAULTVALUE
+    else
+      // independant
+      for I := 0 to Count - 1 do
+        List[FromIndex + I] := DEFAULTVALUE;
+  end; 
+end;
+{$ELSE ~GENERIC}
 {$IFDEF REFCOUNTED}
 procedure FinalizeArrayBeforeMove(var List: DYNARRAYTYPENAME; FromIndex, ToIndex, Count: SizeInt); overload;
 {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
@@ -87,7 +122,7 @@ begin
 {$IFDEF REFCOUNTED}    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
 {$ELSE ~REFCOUNTED}{$IFDEF ZEROINIT}    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);{$ENDIF ZEROINIT}{$ENDIF ~REFCOUNTED}
   end;
-end;*)
+end;{$ENDIF ~GENERIC}*)
 (*$JPPDEFINEMACRO ITERATEIMP(ITERATEPROCEDURENAME, ITRINTERFACENAME, ITERATEPROCEDURETYPENAME)
 procedure ITERATEPROCEDURENAME(const First: ITRINTERFACENAME; Count: Integer; F: ITERATEPROCEDURETYPENAME);
 var

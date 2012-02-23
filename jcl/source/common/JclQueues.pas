@@ -419,7 +419,7 @@ type
   protected
     type
       TDynArray = array of T;
-    procedure MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: SizeInt);
   private
     FElements: TDynArray;
     FHead: Integer;
@@ -4180,9 +4180,9 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclQueue<T>.MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclQueue<T>.MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: SizeInt);
 var
-  I: Integer;
+  I: SizeInt;
 begin
   if FromIndex < ToIndex then
   begin

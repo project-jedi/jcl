@@ -1086,7 +1086,7 @@ type
     type
       TDynArray = array of T;
       TArrayIterator = TJclArrayIterator<T>;
-    procedure MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: SizeInt);
   private
     FElementData: TDynArray;
     // fix ambiguous warnings when compiled on Delphi.net and earlier versions of Delphi.win32
@@ -11916,9 +11916,9 @@ begin
   FOwnList.SetItem(FCursor, AItem);
 end;
 
-procedure TJclArrayList<T>.MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclArrayList<T>.MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: SizeInt);
 var
-  I: Integer;
+  I: SizeInt;
 begin
   if FromIndex < ToIndex then
   begin

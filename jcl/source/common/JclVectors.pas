@@ -1112,7 +1112,7 @@ type
     type
       TDynArray = array of T;
       TVectorIterator = TJclVectorIterator<T>;
-    procedure MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: SizeInt);
   private
     FItems: TDynArray;
   protected
@@ -11875,9 +11875,9 @@ begin
   FOwnList.SetItem(FCursor, AItem);
 end;
 
-procedure TJclVector<T>.MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclVector<T>.MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: SizeInt);
 var
-  I: Integer;
+  I: SizeInt;
 begin
   if FromIndex < ToIndex then
   begin

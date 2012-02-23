@@ -61,7 +61,7 @@ JclAlgorithms.pas: \
 	$(touch) $@
 
 JclArrayLists.pas: \
-		containers\JclArrayLists.imp containers\JclArrayLists.int containers\JclContainerCommon.imp
+		containers\JclArrayLists.imp containers\JclArrayLists.int containers\JclContainerCommon.imp containers\JclAlgorithms.int containers\JclAlgorithms.imp
 	$(touch) $@
 
 JclArraySets.pas: \
@@ -77,11 +77,11 @@ JclContainerIntf.pas: \
 	$(touch) $@
 
 JclHashMaps.pas: \
-		containers\JclHashMaps.imp containers\JclHashMaps.int containers\JclContainerCommon.imp
+		containers\JclHashMaps.imp containers\JclHashMaps.int containers\JclContainerCommon.imp containers\JclAlgorithms.int containers\JclAlgorithms.imp
 	$(touch) $@
 
 JclHashSets.pas: \
-		containers\JclHashSets.imp containers\JclHashSets.int containers\JclContainerCommon.imp
+		containers\JclHashSets.imp containers\JclHashSets.int containers\JclContainerCommon.imp containers\JclAlgorithms.int containers\JclAlgorithms.imp
 	$(touch) $@
 
 JclLinkedLists.pas: \
@@ -89,11 +89,11 @@ JclLinkedLists.pas: \
 	$(touch) $@
 
 JclQueues.pas: \
-		containers\JclQueues.imp containers\JclQueues.int containers\JclContainerCommon.imp
+		containers\JclQueues.imp containers\JclQueues.int containers\JclContainerCommon.imp containers\JclAlgorithms.int containers\JclAlgorithms.imp
 	$(touch) $@
 
 JclSortedMaps.pas: \
-		containers\JclSortedMaps.imp containers\JclSortedMaps.int containers\JclContainerCommon.imp
+		containers\JclSortedMaps.imp containers\JclSortedMaps.int containers\JclContainerCommon.imp containers\JclAlgorithms.int containers\JclAlgorithms.imp
 	$(touch) $@
 
 JclStacks.pas: \
@@ -105,7 +105,7 @@ JclTrees.pas: \
 	$(touch) $@
 
 JclVectors.pas: \
-		containers\JclVectors.imp containers\JclVectors.int containers\JclContainerCommon.imp
+		containers\JclVectors.imp containers\JclVectors.int containers\JclContainerCommon.imp containers\JclAlgorithms.int containers\JclAlgorithms.imp
 	$(touch) $@
 
 {.}.pas{..\common}.pas:
