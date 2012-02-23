@@ -95,6 +95,7 @@ contains
   JclDebugSerialization in '..\..\source\windows\JclDebugSerialization.pas' ,
   JclDebugXMLDeserializer in '..\..\source\windows\JclDebugXMLDeserializer.pas' ,
   JclDebugXMLSerializer in '..\..\source\windows\JclDebugXMLSerializer.pas' ,
+  JclDotNet in '..\..\source\windows\JclDotNet.pas' ,
   JclHookExcept in '..\..\source\windows\JclHookExcept.pas' ,
   JclLANMan in '..\..\source\windows\JclLANMan.pas' ,
   JclLocales in '..\..\source\windows\JclLocales.pas' ,
@@ -116,6 +117,8 @@ contains
   JclWin32 in '..\..\source\windows\JclWin32.pas' ,
   JclWin32Ex in '..\..\source\windows\JclWin32Ex.pas' ,
   JclWinMIDI in '..\..\source\windows\JclWinMIDI.pas' ,
+  mscoree_TLB in '..\..\source\windows\mscoree_TLB.pas' ,
+  mscorlib_TLB in '..\..\source\windows\mscorlib_TLB.pas' ,
   MSTask in '..\..\source\windows\MSTask.pas' ,
   sevenzip in '..\..\source\windows\sevenzip.pas' ,
   Snmp in '..\..\source\windows\Snmp.pas' 

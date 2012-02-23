@@ -64,6 +64,7 @@
       ..\..\lib\c6\JclDebugSerialization.obj
       ..\..\lib\c6\JclDebugXMLDeserializer.obj
       ..\..\lib\c6\JclDebugXMLSerializer.obj
+      ..\..\lib\c6\JclDotNet.obj
       ..\..\lib\c6\JclHookExcept.obj
       ..\..\lib\c6\JclLANMan.obj
       ..\..\lib\c6\JclLocales.obj
@@ -85,6 +86,8 @@
       ..\..\lib\c6\JclWin32.obj
       ..\..\lib\c6\JclWin32Ex.obj
       ..\..\lib\c6\JclWinMIDI.obj
+      ..\..\lib\c6\mscoree_TLB.obj
+      ..\..\lib\c6\mscorlib_TLB.obj
       ..\..\lib\c6\MSTask.obj
       ..\..\lib\c6\sevenzip.obj
       ..\..\lib\c6\Snmp.obj
@@ -188,6 +191,7 @@
       <FILE FILENAME="..\..\source\windows\JclDebugSerialization.pas" FORMNAME="" UNITNAME="JclDebugSerialization" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\windows\JclDebugXMLDeserializer.pas" FORMNAME="" UNITNAME="JclDebugXMLDeserializer" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\windows\JclDebugXMLSerializer.pas" FORMNAME="" UNITNAME="JclDebugXMLSerializer" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\windows\JclDotNet.pas" FORMNAME="" UNITNAME="JclDotNet" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\windows\JclHookExcept.pas" FORMNAME="" UNITNAME="JclHookExcept" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\windows\JclLANMan.pas" FORMNAME="" UNITNAME="JclLANMan" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\windows\JclLocales.pas" FORMNAME="" UNITNAME="JclLocales" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -209,6 +213,8 @@
       <FILE FILENAME="..\..\source\windows\JclWin32.pas" FORMNAME="" UNITNAME="JclWin32" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\windows\JclWin32Ex.pas" FORMNAME="" UNITNAME="JclWin32Ex" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\windows\JclWinMIDI.pas" FORMNAME="" UNITNAME="JclWinMIDI" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\windows\mscoree_TLB.pas" FORMNAME="" UNITNAME="mscoree_TLB" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\windows\mscorlib_TLB.pas" FORMNAME="" UNITNAME="mscorlib_TLB" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\windows\MSTask.pas" FORMNAME="" UNITNAME="MSTask" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\windows\sevenzip.pas" FORMNAME="" UNITNAME="sevenzip" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\windows\Snmp.pas" FORMNAME="" UNITNAME="Snmp" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
