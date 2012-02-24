@@ -60,7 +60,7 @@ type
 protected
   type
     TDynArray = array of T;
-  {$JPPEXPANDMACRO MOVEARRAYINT(MoveArray,TDynArray,)},; AOwnsItems: Boolean,const ,AItem,T)*)
+  {$JPPDEFINE GENERIC}{$JPPEXPANDMACRO MOVEARRAYINT(MoveArray,TDynArray,)},; AOwnsItems: Boolean,const ,AItem,T)*)
 
   // E = external helper to compare items for equality (GetHashCode is not used)
   TJclQueueE<T> = class(TJclQueue<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -129,7 +129,7 @@ uses
 
 (*$JPPEXPANDMACRO JCLQUEUEIMP(TJclQueue<T>,; AOwnsItems: Boolean,AOwnsItems,MoveArray,const ,AItem,T,Default(T),FreeItem)*)
 
-{$JPPDEFINE GENERIC}{$JPPEXPANDMACRO MOVEARRAYIMP(TJclQueue<T>.MoveArray,TDynArray,Default(T),)}
+{$JPPDEFINE GENERIC}{$JPPEXPANDMACRO MOVEARRAYIMP(MoveArray,TDynArray,Default(T),TJclQueue<T>.,)}
 
 //=== { TJclQueueE<T> } ======================================================
 

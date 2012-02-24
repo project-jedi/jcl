@@ -74,7 +74,7 @@ type
   public
     Size: Integer;
     Entries: TDynArray;
-    {$JPPEXPANDMACRO MOVEARRAYINT(MoveArray,TDynArray,)}
+    {$JPPDEFINE GENERIC}{$JPPEXPANDMACRO MOVEARRAYINT(MoveArray,TDynArray,)}
   end;
 
   {$JPPEXPANDMACRO JCLHASHSETINT(TJclHashSet<T>,TJclAbstractContainer<T>,IJclContainer<T>,IJclFlatContainer<T>,TJclHashSetBucket<T>,IJclCollection<T>,IJclSet<T>,IJclIterator<T>,IJclEqualityComparer<T>,IJclHashConverter<T>, IJclItemOwner<T>\,,,,const ,AItem,T,; AOwnsItems: Boolean)}
@@ -155,7 +155,7 @@ implementation
 
 //=== { TJclHashSetBucket<T> } =================================================
 
-{$JPPDEFINE GENERIC}{$JPPEXPANDMACRO MOVEARRAYIMP(TJclHashSetBucket<T>.MoveArray,TDynArray,Default(T),)}
+{$JPPDEFINE GENERIC}{$JPPEXPANDMACRO MOVEARRAYIMP(MoveArray,TDynArray,Default(T),TJclHashSetBucket<T>.,)}
 
 {$JPPEXPANDMACRO JCLHASHSETIMP(TJclHashSet<T>,TJclHashSetBucket<T>,; AOwnsItems: Boolean,AOwnsItems,IJclCollection<T>,TJclHashSetIterator<T>,IJclIterator<T>,Bucket.MoveArray,const ,AItem,T,Default(T),FreeItem)}
 
