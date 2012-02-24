@@ -52,9 +52,11 @@ uses
 {$I containers\JclContainerCommon.imp}
 {$I containers\JclHashMaps.imp}
 {$I containers\JclHashMaps.int}
+{$I containers\JclAlgorithms.int}
+{$I containers\JclAlgorithms.imp}
 type
 (*$JPPLOOP ALLMAPINDEX ALLMAPCOUNT
-  {$JPPEXPANDMACRO JCLHASHMAPTYPESINT(,,,)}
+  {$JPPEXPANDMACRO JCLHASHMAPTYPESINT(,,,,)}
 
   {$JPPEXPANDMACRO JCLHASHMAPINT(,,,,,,,,,,,,,)}
 
@@ -62,7 +64,22 @@ type
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
 
-  (*$JPPEXPANDMACRO JCLHASHMAPTYPESINT(TJclHashEntry<TKey\,TValue>,TJclBucket<TKey\,TValue>,TKey,TValue)*)
+  TJclHashEntry<TKey,TValue> = record
+    Key: TKey;
+    Value: TValue;
+  end;
+
+  TJclHashEntryArray<TKey,TValue> = array of TJclHashEntry<TKey,TValue>;
+
+  TJclBucket<TKey,TValue> = class
+  public
+    type
+      THashEntryArray = TJclHashEntryArray<TKey,TValue>;
+  public
+    Size: Integer;
+    Entries: THashEntryArray;
+    {$JPPUNDEF GENERIC}{$JPPDEFINE REFCOUNTED}{$JPPEXPANDMACRO MOVEARRAYINT(MoveArray,THashEntryArray,)}
+  end;
 
   (*$JPPEXPANDMACRO JCLHASHMAPINT(TBucket,TJclHashMap<TKey\,TValue>,TJclAbstractContainerBase,IJclMap<TKey\,TValue>,IJclSet<TKey>,IJclCollection<TValue>, IJclPairOwner<TKey\, TValue>\,,
 protected
@@ -195,7 +212,7 @@ uses
   JclResources;
 
 (*$JPPLOOP TRUEMAPINDEX TRUEMAPCOUNT
-{$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(,,)}
+{$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(,,,)}
 
 {$JPPEXPANDMACRO JCLHASHMAPIMP(,,,,,,,,,,,,,,,,)}
 
@@ -203,7 +220,9 @@ uses
 {$IFDEF SUPPORTS_GENERICS}
 //DOM-IGNORE-BEGIN
 
-{$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclBucket<TKey\, TValue>,Default(TKey),Default(TValue))}
+//=== { TJclBucket<TKey, TValue> } ==========================================
+
+{$JPPUNDEF GENERIC}{$JPPDEFINE REFCOUNTED}{$JPPEXPANDMACRO MOVEARRAYIMP(MoveArray,THashEntryArray,,TJclBucket<TKey\, TValue>.,)}
 
 {$JPPEXPANDMACRO JCLHASHMAPIMP(TJclHashMap<TKey\, TValue>,TBucket,IJclMap<TKey\, TValue>,IJclSet<TKey>,IJclIterator<TKey>,IJclCollection<TValue>,; AOwnsKeys: Boolean,; AOwnsValues: Boolean,
 

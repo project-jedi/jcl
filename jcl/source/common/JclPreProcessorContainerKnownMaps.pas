@@ -49,9 +49,11 @@ const
         {maSortedMapInterfaceGUID} '{265A6EB2-4BB3-459F-8813-360FD32A4971}',
         {maMapAncestorClassName} 'TJclIntfAbstractContainer',
         {maHashMapEntryTypeName} 'TJclIntfIntfHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclIntfIntfHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclIntfIntfHashMapBucket',
         {maHashMapClassName} 'TJclIntfIntfHashMap',
         {maSortedMapEntryTypeName} 'TJclIntfIntfSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclIntfIntfSortedMapEntryArray',
         {maSortedMapClassName} 'TJclIntfIntfSortedMap' );
       KeyAttributes: @IInterfaceKnownType;
       ValueAttributes: @IInterfaceKnownType);
@@ -65,9 +67,11 @@ const
         {maSortedMapInterfaceGUID} '{706D1C91-5416-4FDC-B6B1-F4C1E8CFCD38}',
         {maMapAncestorClassName} 'TJclAnsiStrAbstractContainer',
         {maHashMapEntryTypeName} 'TJclAnsiStrIntfHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclAnsiStrIntfHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclAnsiStrIntfHashMapBucket',
         {maHashMapClassName} 'TJclAnsiStrIntfHashMap',
         {maSortedMapEntryTypeName} 'TJclAnsiStrIntfSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclAnsiStrIntfSortedMapEntryArray',
         {maSortedMapClassName} 'TJclAnsiStrIntfSortedMap' );
       KeyAttributes: @AnsiStringKnownType;
       ValueAttributes: @IInterfaceKnownType);
@@ -81,9 +85,11 @@ const
         {maSortedMapInterfaceGUID} '{299FDCFD-2DB7-4D64-BF18-EE3668316430}',
         {maMapAncestorClassName} 'TJclWideStrAbstractContainer',
         {maHashMapEntryTypeName} 'TJclWideStrIntfHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclWideStrIntfHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclWideStrIntfHashMapBucket',
         {maHashMapClassName} 'TJclWideStrIntfHashMap',
         {maSortedMapEntryTypeName} 'TJclWideStrIntfSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclWideStrIntfSortedMapEntryArray',
         {maSortedMapClassName} 'TJclWideStrIntfSortedMap' );
       KeyAttributes: @WideStringKnownType;
       ValueAttributes: @IInterfaceKnownType);
@@ -97,9 +103,11 @@ const
         {maSortedMapInterfaceGUID} '{25FDE916-730D-449A-BA29-852D8A0470B6}',
         {maMapAncestorClassName} 'TJclUnicodeStrAbstractContainer',
         {maHashMapEntryTypeName} 'TJclUnicodeStrIntfHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclUnicodeStrIntfHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclUnicodeStrIntfHashMapBucket',
         {maHashMapClassName} 'TJclUnicodeStrIntfHashMap',
         {maSortedMapEntryTypeName} 'TJclUnicodeStrIntfSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclUnicodeStrIntfSortedMapEntryArray',
         {maSortedMapClassName} 'TJclUnicodeStrIntfSortedMap' );
       KeyAttributes: @UnicodeStringKnownType;
       ValueAttributes: @IInterfaceKnownType);
@@ -113,9 +121,11 @@ const
         {maSortedMapInterfaceGUID} '',
         {maMapAncestorClassName} 'TJclStrAbstractContainer',
         {maHashMapEntryTypeName} 'TJclStrIntfHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclStrIntfHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclStrIntfHashMapBucket',
         {maHashMapClassName} 'TJclStrIntfHashMap',
         {maSortedMapEntryTypeName} 'TJclStrIntfSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclStrIntfSortedMapEntryArray',
         {maSortedMapClassName} 'TJclStrIntfSortedMap' );
       KeyAttributes: @StringKnownType;
       ValueAttributes: @IInterfaceKnownType);
@@ -129,9 +139,11 @@ const
         {maSortedMapInterfaceGUID} '{96E6AC5E-8C40-4795-9C8A-CFD098B58680}',
         {maMapAncestorClassName} 'TJclAnsiStrAbstractContainer',
         {maHashMapEntryTypeName} 'TJclIntfAnsiStrHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclIntfAnsiStrHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclIntfAnsiStrHashMapBucket',
         {maHashMapClassName} 'TJclIntfAnsiStrHashMap',
         {maSortedMapEntryTypeName} 'TJclIntfAnsiStrSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclIntfAnsiStrSortedMapEntryArray',
         {maSortedMapClassName} 'TJclIntfAnsiStrSortedMap' );
       KeyAttributes: @IInterfaceKnownType;
       ValueAttributes: @AnsiStringKnownType);
@@ -145,9 +157,11 @@ const
         {maSortedMapInterfaceGUID} '{FBE3AD2E-2781-4DC0-9E80-027027380E21}',
         {maMapAncestorClassName} 'TJclWideStrAbstractContainer',
         {maHashMapEntryTypeName} 'TJclIntfWideStrHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclIntfWideStrHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclIntfWideStrHashMapBucket',
         {maHashMapClassName} 'TJclIntfWideStrHashMap',
         {maSortedMapEntryTypeName} 'TJclIntfWideStrSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclIntfWideStrSortedMapEntryArray',
         {maSortedMapClassName} 'TJclIntfWideStrSortedMap' );
       KeyAttributes: @IInterfaceKnownType;
       ValueAttributes: @WideStringKnownType);
@@ -161,9 +175,11 @@ const
         {maSortedMapInterfaceGUID} '{B0B0CB9B-268B-40D2-94A8-0B8B5BE2E1AC}',
         {maMapAncestorClassName} 'TJclUnicodeStrAbstractContainer',
         {maHashMapEntryTypeName} 'TJclIntfUnicodeStrHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclIntfUnicodeStrHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclIntfUnicodeStrHashMapBucket',
         {maHashMapClassName} 'TJclIntfUnicodeStrHashMap',
         {maSortedMapEntryTypeName} 'TJclIntfUnicodeStrSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclIntfUnicodeStrSortedMapEntryArray',
         {maSortedMapClassName} 'TJclIntfUnicodeStrSortedMap' );
       KeyAttributes: @IInterfaceKnownType;
       ValueAttributes: @UnicodeStringKnownType);
@@ -177,9 +193,11 @@ const
         {maSortedMapInterfaceGUID} '',
         {maMapAncestorClassName} 'TJclStrAbstractContainer',
         {maHashMapEntryTypeName} 'TJclIntfStrHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclIntfStrHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclIntfStrHashMapBucket',
         {maHashMapClassName} 'TJclIntfStrHashMap',
         {maSortedMapEntryTypeName} 'TJclIntfStrSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclIntfStrSortedMapEntryArray',
         {maSortedMapClassName} 'TJclIntfStrSortedMap' );
       KeyAttributes: @IInterfaceKnownType;
       ValueAttributes: @StringKnownType);
@@ -193,9 +211,11 @@ const
         {maSortedMapInterfaceGUID} '{4F457799-5D03-413D-A46C-067DC4200CC3}',
         {maMapAncestorClassName} 'TJclAnsiStrAbstractContainer',
         {maHashMapEntryTypeName} 'TJclAnsiStrAnsiStrHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclAnsiStrAnsiStrHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclAnsiStrAnsiStrHashMapBucket',
         {maHashMapClassName} 'TJclAnsiStrAnsiStrHashMap',
         {maSortedMapEntryTypeName} 'TJclAnsiStrAnsiStrSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclAnsiStrAnsiStrSortedMapEntryArray',
         {maSortedMapClassName} 'TJclAnsiStrAnsiStrSortedMap' );
       KeyAttributes: @AnsiStringKnownType;
       ValueAttributes: @AnsiStringKnownType);
@@ -209,9 +229,11 @@ const
         {maSortedMapInterfaceGUID} '{3B0757B2-2290-4AFA-880D-F9BA600E501E}',
         {maMapAncestorClassName} 'TJclWideStrAbstractContainer',
         {maHashMapEntryTypeName} 'TJclWideStrWideStrHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclWideStrWideStrHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclWideStrWideStrHashMapBucket',
         {maHashMapClassName} 'TJclWideStrWideStrHashMap',
         {maSortedMapEntryTypeName} 'TJclWideStrWideStrSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclWideStrWideStrSortedMapEntryArray',
         {maSortedMapClassName} 'TJclWideStrWideStrSortedMap' );
       KeyAttributes: @WideStringKnownType;
       ValueAttributes: @WideStringKnownType);
@@ -225,9 +247,11 @@ const
         {maSortedMapInterfaceGUID} '{D8EACC5D-B31E-47A8-9CC9-32B15A79CACA}',
         {maMapAncestorClassName} 'TJclUnicodeStrAbstractContainer',
         {maHashMapEntryTypeName} 'TJclUnicodeStrUnicodeStrHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclUnicodeStrUnicodeStrHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclUnicodeStrUnicodeStrHashMapBucket',
         {maHashMapClassName} 'TJclUnicodeStrUnicodeStrHashMap',
         {maSortedMapEntryTypeName} 'TJclUnicodeStrUnicodeStrSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclUnicodeStrUnicodeStrSortedMapEntryArray',
         {maSortedMapClassName} 'TJclUnicodeStrUnicodeStrSortedMap' );
       KeyAttributes: @UnicodeStringKnownType;
       ValueAttributes: @UnicodeStringKnownType);
@@ -241,9 +265,11 @@ const
         {maSortedMapInterfaceGUID} '',
         {maMapAncestorClassName} 'TJclStrAbstractContainer',
         {maHashMapEntryTypeName} 'TJclStrStrHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclStrStrHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclStrStrHashMapBucket',
         {maHashMapClassName} 'TJclStrStrHashMap',
         {maSortedMapEntryTypeName} 'TJclStrStrSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclStrStrSortedMapEntryArray',
         {maSortedMapClassName} 'TJclStrStrSortedMap' );
       KeyAttributes: @StringKnownType;
       ValueAttributes: @StringKnownType);
@@ -257,9 +283,11 @@ const
         {maSortedMapInterfaceGUID} '{83D57068-7B8E-453E-B35B-2AB4B594A7A9}',
         {maMapAncestorClassName} 'TJclSingleAbstractContainer',
         {maHashMapEntryTypeName} 'TJclSingleIntfHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclSingleIntfHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclSingleIntfHashMapBucket',
         {maHashMapClassName} 'TJclSingleIntfHashMap',
         {maSortedMapEntryTypeName} 'TJclSingleIntfSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclSingleIntfSortedMapEntryArray',
         {maSortedMapClassName} 'TJclSingleIntfSortedMap' );
       KeyAttributes: @SingleKnownType;
       ValueAttributes: @IInterfaceKnownType);
@@ -273,9 +301,11 @@ const
         {maSortedMapInterfaceGUID} '{B07FA192-3466-4F2A-BBF0-2DC0100B08A8}',
         {maMapAncestorClassName} 'TJclSingleAbstractContainer',
         {maHashMapEntryTypeName} 'TJclIntfSingleHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclIntfSingleHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclIntfSingleHashMapBucket',
         {maHashMapClassName} 'TJclIntfSingleHashMap',
         {maSortedMapEntryTypeName} 'TJclIntfSingleSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclIntfSingleSortedMapEntryArray',
         {maSortedMapClassName} 'TJclIntfSingleSortedMap' );
       KeyAttributes: @IInterfaceKnownType;
       ValueAttributes: @SingleKnownType);
@@ -289,9 +319,11 @@ const
         {maSortedMapInterfaceGUID} '{7C6EA0B4-959D-44D5-915F-99DFC1753B00}',
         {maMapAncestorClassName} 'TJclSingleAbstractContainer',
         {maHashMapEntryTypeName} 'TJclSingleSingleHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclSingleSingleHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclSingleSingleHashMapBucket',
         {maHashMapClassName} 'TJclSingleSingleHashMap',
         {maSortedMapEntryTypeName} 'TJclSingleSingleSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclSingleSingleSortedMapEntryArray',
         {maSortedMapClassName} 'TJclSingleSingleSortedMap' );
       KeyAttributes: @SingleKnownType;
       ValueAttributes: @SingleKnownType);
@@ -305,9 +337,11 @@ const
         {maSortedMapInterfaceGUID} '{F36C5F4F-4F8C-4943-AA35-41623D3C21E9}',
         {maMapAncestorClassName} 'TJclDoubleAbstractContainer',
         {maHashMapEntryTypeName} 'TJclDoubleIntfHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclDoubleIntfHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclDoubleIntfHashMapBucket',
         {maHashMapClassName} 'TJclDoubleIntfHashMap',
         {maSortedMapEntryTypeName} 'TJclDoubleIntfSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclDoubleIntfSortedMapEntryArray',
         {maSortedMapClassName} 'TJclDoubleIntfSortedMap' );
       KeyAttributes: @DoubleKnownType;
       ValueAttributes: @IInterfaceKnownType);
@@ -321,9 +355,11 @@ const
         {maSortedMapInterfaceGUID} '{0F16ADAE-F499-4857-B5EA-6F3CC9009DBA}',
         {maMapAncestorClassName} 'TJclDoubleAbstractContainer',
         {maHashMapEntryTypeName} 'TJclIntfDoubleHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclIntfDoubleHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclIntfDoubleHashMapBucket',
         {maHashMapClassName} 'TJclIntfDoubleHashMap',
         {maSortedMapEntryTypeName} 'TJclIntfDoubleSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclIntfDoubleSortedMapEntryArray',
         {maSortedMapClassName} 'TJclIntfDoubleSortedMap' );
       KeyAttributes: @IInterfaceKnownType;
       ValueAttributes: @DoubleKnownType);
@@ -337,9 +373,11 @@ const
         {maSortedMapInterfaceGUID} '{855C858B-74CF-4338-872B-AF88A02DB537}',
         {maMapAncestorClassName} 'TJclDoubleAbstractContainer',
         {maHashMapEntryTypeName} 'TJclDoubleDoubleHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclDoubleDoubleHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclDoubleDoubleHashMapBucket',
         {maHashMapClassName} 'TJclDoubleDoubleHashMap',
         {maSortedMapEntryTypeName} 'TJclDoubleDoubleSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclDoubleDoubleSortedMapEntryArray',
         {maSortedMapClassName} 'TJclDoubleDoubleSortedMap' );
       KeyAttributes: @DoubleKnownType;
       ValueAttributes: @DoubleKnownType);
@@ -353,9 +391,11 @@ const
         {maSortedMapInterfaceGUID} '{A30B8835-A319-4776-9A11-D1EEF60B9C26}',
         {maMapAncestorClassName} 'TJclExtendedAbstractContainer',
         {maHashMapEntryTypeName} 'TJclExtendedIntfHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclExtendedIntfHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclExtendedIntfHashMapBucket',
         {maHashMapClassName} 'TJclExtendedIntfHashMap',
         {maSortedMapEntryTypeName} 'TJclExtendedIntfSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclExtendedIntfSortedMapEntryArray',
         {maSortedMapClassName} 'TJclExtendedIntfSortedMap' );
       KeyAttributes: @ExtendedKnownType;
       ValueAttributes: @IInterfaceKnownType);
@@ -369,9 +409,11 @@ const
         {maSortedMapInterfaceGUID} '{3493D6C4-3075-48B6-8E99-CB0000D3978C}',
         {maMapAncestorClassName} 'TJclExtendedAbstractContainer',
         {maHashMapEntryTypeName} 'TJclIntfExtendedHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclIntfExtendedHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclIntfExtendedHashMapBucket',
         {maHashMapClassName} 'TJclIntfExtendedHashMap',
         {maSortedMapEntryTypeName} 'TJclIntfExtendedSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclIntfExtendedSortedMapEntryArray',
         {maSortedMapClassName} 'TJclIntfExtendedSortedMap' );
       KeyAttributes: @IInterfaceKnownType;
       ValueAttributes: @ExtendedKnownType);
@@ -385,9 +427,11 @@ const
         {maSortedMapInterfaceGUID} '{8CAA505C-D9BB-47E7-92EC-6043DC4AF42C}',
         {maMapAncestorClassName} 'TJclExtendedAbstractContainer',
         {maHashMapEntryTypeName} 'TJclExtendedExtendedHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclExtendedExtendedHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclExtendedExtendedHashMapBucket',
         {maHashMapClassName} 'TJclExtendedExtendedHashMap',
         {maSortedMapEntryTypeName} 'TJclExtendedExtendedSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclExtendedExtendedSortedMapEntryArray',
         {maSortedMapClassName} 'TJclExtendedExtendedSortedMap' );
       KeyAttributes: @ExtendedKnownType;
       ValueAttributes: @ExtendedKnownType);
@@ -401,9 +445,11 @@ const
         {maSortedMapInterfaceGUID} '',
         {maMapAncestorClassName} 'TJclFloatAbstractContainer',
         {maHashMapEntryTypeName} 'TJclFloatIntfHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclFloatIntfHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclFloatIntfHashMapBucket',
         {maHashMapClassName} 'TJclFloatIntfHashMap',
         {maSortedMapEntryTypeName} 'TJclFloatIntfSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclFloatIntfSortedMapEntryArray',
         {maSortedMapClassName} 'TJclFloatIntfSortedMap' );
       KeyAttributes: @FloatKnownType;
       ValueAttributes: @IInterfaceKnownType);
@@ -417,9 +463,11 @@ const
         {maSortedMapInterfaceGUID} '',
         {maMapAncestorClassName} 'TJclFloatAbstractContainer',
         {maHashMapEntryTypeName} 'TJclIntfFloatHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclIntfFloatHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclIntfFloatHashMapBucket',
         {maHashMapClassName} 'TJclIntfFloatHashMap',
         {maSortedMapEntryTypeName} 'TJclIntfFloatSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclIntfFloatSortedMapEntryArray',
         {maSortedMapClassName} 'TJclIntfFloatSortedMap' );
       KeyAttributes: @IInterfaceKnownType;
       ValueAttributes: @FloatKnownType);
@@ -433,9 +481,11 @@ const
         {maSortedMapInterfaceGUID} '{8CAA505C-D9BB-47E7-92EC-6043DC4AF42C}',
         {maMapAncestorClassName} 'TJclFloatAbstractContainer',
         {maHashMapEntryTypeName} 'TJclFloatFloatHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclFloatFloatHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclFloatFloatHashMapBucket',
         {maHashMapClassName} 'TJclFloatFloatHashMap',
         {maSortedMapEntryTypeName} 'TJclFloatFloatSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclFloatFloatSortedMapEntryArray',
         {maSortedMapClassName} 'TJclFloatFloatSortedMap' );
       KeyAttributes: @FloatKnownType;
       ValueAttributes: @FloatKnownType);
@@ -449,9 +499,11 @@ const
         {maSortedMapInterfaceGUID} '{8B22802C-61F2-4DA5-B1E9-DBB7840E7996}',
         {maMapAncestorClassName} 'TJclIntegerAbstractContainer',
         {maHashMapEntryTypeName} 'TJclIntegerIntfHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclIntegerIntfHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclIntegerIntfHashMapBucket',
         {maHashMapClassName} 'TJclIntegerIntfHashMap',
         {maSortedMapEntryTypeName} 'TJclIntegerIntfSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclIntegerIntfSortedMapEntryArray',
         {maSortedMapClassName} 'TJclIntegerIntfSortedMap' );
       KeyAttributes: @IntegerKnownType;
       ValueAttributes: @IInterfaceKnownType);
@@ -465,9 +517,11 @@ const
         {maSortedMapInterfaceGUID} '{8D3C9B7E-772D-409B-A58C-0CABFAFDEFF0}',
         {maMapAncestorClassName} 'TJclIntegerAbstractContainer',
         {maHashMapEntryTypeName} 'TJclIntfIntegerHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclIntfIntegerHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclIntfIntegerHashMapBucket',
         {maHashMapClassName} 'TJclIntfIntegerHashMap',
         {maSortedMapEntryTypeName} 'TJclIntfIntegerSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclIntfIntegerSortedMapEntryArray',
         {maSortedMapClassName} 'TJclIntfIntegerSortedMap' );
       KeyAttributes: @IInterfaceKnownType;
       ValueAttributes: @IntegerKnownType);
@@ -481,9 +535,11 @@ const
         {maSortedMapInterfaceGUID} '{8A8BA17A-F468-469C-AF99-77D64C802F7A}',
         {maMapAncestorClassName} 'TJclIntegerAbstractContainer',
         {maHashMapEntryTypeName} 'TJclIntegerIntegerHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclIntegerIntegerHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclIntegerIntegerHashMapBucket',
         {maHashMapClassName} 'TJclIntegerIntegerHashMap',
         {maSortedMapEntryTypeName} 'TJclIntegerIntegerSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclIntegerIntegerSortedMapEntryArray',
         {maSortedMapClassName} 'TJclIntegerIntegerSortedMap' );
       KeyAttributes: @IntegerKnownType;
       ValueAttributes: @IntegerKnownType);
@@ -497,9 +553,11 @@ const
         {maSortedMapInterfaceGUID} '{BAE97425-4F2E-461B-88DD-F83D27657AFA}',
         {maMapAncestorClassName} 'TJclCardinalAbstractContainer',
         {maHashMapEntryTypeName} 'TJclCardinalIntfHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclCardinalIntfHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclCardinalIntfHashMapBucket',
         {maHashMapClassName} 'TJclCardinalIntfHashMap',
         {maSortedMapEntryTypeName} 'TJclCardinalIntfSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclCardinalIntfSortedMapEntryArray',
         {maSortedMapClassName} 'TJclCardinalIntfSortedMap' );
       KeyAttributes: @CardinalKnownType;
       ValueAttributes: @IInterfaceKnownType);
@@ -513,9 +571,11 @@ const
         {maSortedMapInterfaceGUID} '{BC66BACF-23AE-48C4-9573-EDC3B5110BE7}',
         {maMapAncestorClassName} 'TJclCardinalAbstractContainer',
         {maHashMapEntryTypeName} 'TJclIntfCardinalHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclIntfCardinalHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclIntfCardinalHashMapBucket',
         {maHashMapClassName} 'TJclIntfCardinalHashMap',
         {maSortedMapEntryTypeName} 'TJclIntfCardinalSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclIntfCardinalSortedMapEntryArray',
         {maSortedMapClassName} 'TJclIntfCardinalSortedMap' );
       KeyAttributes: @IInterfaceKnownType;
       ValueAttributes: @CardinalKnownType);
@@ -529,9 +589,11 @@ const
         {maSortedMapInterfaceGUID} '{182ACDA4-7D74-4D29-BB5C-4C8189DA774E}',
         {maMapAncestorClassName} 'TJclCardinalAbstractContainer',
         {maHashMapEntryTypeName} 'TJclCardinalCardinalHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclCardinalCardinalHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclCardinalCardinalHashMapBucket',
         {maHashMapClassName} 'TJclCardinalCardinalHashMap',
         {maSortedMapEntryTypeName} 'TJclCardinalCardinalSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclCardinalCardinalSortedMapEntryArray',
         {maSortedMapClassName} 'TJclCardinalCardinalSortedMap' );
       KeyAttributes: @CardinalKnownType;
       ValueAttributes: @CardinalKnownType);
@@ -545,9 +607,11 @@ const
         {maSortedMapInterfaceGUID} '{24391756-FB02-4901-81E3-A37738B73DAD}',
         {maMapAncestorClassName} 'TJclInt64AbstractContainer',
         {maHashMapEntryTypeName} 'TJclInt64IntfHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclInt64IntfHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclInt64IntfHashMapBucket',
         {maHashMapClassName} 'TJclInt64IntfHashMap',
         {maSortedMapEntryTypeName} 'TJclInt64IntfSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclInt64IntfSortedMapEntryArray',
         {maSortedMapClassName} 'TJclInt64IntfSortedMap' );
       KeyAttributes: @Int64KnownType;
       ValueAttributes: @IInterfaceKnownType);
@@ -561,9 +625,11 @@ const
         {maSortedMapInterfaceGUID} '{6E2AB647-59CC-4609-82E8-6AE75AED80CA}',
         {maMapAncestorClassName} 'TJclInt64AbstractContainer',
         {maHashMapEntryTypeName} 'TJclIntfInt64HashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclIntfInt64HashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclIntfInt64HashMapBucket',
         {maHashMapClassName} 'TJclIntfInt64HashMap',
         {maSortedMapEntryTypeName} 'TJclIntfInt64SortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclIntfInt64SortedMapEntryArray',
         {maSortedMapClassName} 'TJclIntfInt64SortedMap' );
       KeyAttributes: @IInterfaceKnownType;
       ValueAttributes: @Int64KnownType);
@@ -577,9 +643,11 @@ const
         {maSortedMapInterfaceGUID} '{168581D2-9DD3-46D0-934E-EA0CCE5E3C0C}',
         {maMapAncestorClassName} 'TJclInt64AbstractContainer',
         {maHashMapEntryTypeName} 'TJclInt64Int64HashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclInt64Int64HashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclInt64Int64HashMapBucket',
         {maHashMapClassName} 'TJclInt64Int64HashMap',
         {maSortedMapEntryTypeName} 'TJclInt64Int64SortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclInt64Int64SortedMapEntryArray',
         {maSortedMapClassName} 'TJclInt64Int64SortedMap' );
       KeyAttributes: @Int64KnownType;
       ValueAttributes: @Int64KnownType);
@@ -593,9 +661,11 @@ const
         {maSortedMapInterfaceGUID} '{6D7B8042-3CBC-4C8F-98B5-69AFAA104532}',
         {maMapAncestorClassName} 'TJclPtrAbstractContainer',
         {maHashMapEntryTypeName} 'TJclPtrIntfHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclPtrIntfHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclPtrIntfHashMapBucket',
         {maHashMapClassName} 'TJclPtrIntfHashMap',
         {maSortedMapEntryTypeName} 'TJclPtrIntfSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclPtrIntfSortedMapEntryArray',
         {maSortedMapClassName} 'TJclPtrIntfSortedMap' );
       KeyAttributes: @PointerKnownType;
       ValueAttributes: @IInterfaceKnownType);
@@ -609,9 +679,11 @@ const
         {maSortedMapInterfaceGUID} '{B054BDA2-536F-4C16-B6BB-BB64FA0818B3}',
         {maMapAncestorClassName} 'TJclPtrAbstractContainer',
         {maHashMapEntryTypeName} 'TJclIntfPtrHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclIntfPtrHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclIntfPtrHashMapBucket',
         {maHashMapClassName} 'TJclIntfPtrHashMap',
         {maSortedMapEntryTypeName} 'TJclIntfPtrSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclIntfPtrSortedMapEntryArray',
         {maSortedMapClassName} 'TJclIntfPtrSortedMap' );
       KeyAttributes: @IInterfaceKnownType;
       ValueAttributes: @PointerKnownType);
@@ -625,9 +697,11 @@ const
         {maSortedMapInterfaceGUID} '{F1FAE922-0212-41D0-BB4E-76A8AB2CAB86}',
         {maMapAncestorClassName} 'TJclPtrAbstractContainer',
         {maHashMapEntryTypeName} 'TJclPtrPtrHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclPtrPtrHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclPtrPtrHashMapBucket',
         {maHashMapClassName} 'TJclPtrPtrHashMap',
         {maSortedMapEntryTypeName} 'TJclPtrPtrSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclPtrPtrSortedMapEntryArray',
         {maSortedMapClassName} 'TJclPtrPtrSortedMap' );
       KeyAttributes: @PointerKnownType;
       ValueAttributes: @PointerKnownType);
@@ -641,9 +715,11 @@ const
         {maSortedMapInterfaceGUID} '{3CED1477-B958-4109-9BDA-7C84B9E063B2}',
         {maMapAncestorClassName} 'TJclIntfAbstractContainer',
         {maHashMapEntryTypeName} 'TJclIntfHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclIntfHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclIntfHashMapBucket',
         {maHashMapClassName} 'TJclIntfHashMap',
         {maSortedMapEntryTypeName} 'TJclIntfSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclIntfSortedMapEntryArray',
         {maSortedMapClassName} 'TJclIntfSortedMap' );
       KeyAttributes: @IInterfaceKnownType;
       ValueAttributes: @TObjectKnownType);
@@ -657,9 +733,11 @@ const
         {maSortedMapInterfaceGUID} '{573F98E3-EBCD-4F28-8F35-96A7366CBF47}',
         {maMapAncestorClassName} 'TJclAnsiStrAbstractContainer',
         {maHashMapEntryTypeName} 'TJclAnsiStrHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclAnsiStrHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclAnsiStrHashMapBucket',
         {maHashMapClassName} 'TJclAnsiStrHashMap',
         {maSortedMapEntryTypeName} 'TJclAnsiStrSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclAnsiStrSortedMapEntryArray',
         {maSortedMapClassName} 'TJclAnsiStrSortedMap' );
       KeyAttributes: @AnsiStringKnownType;
       ValueAttributes: @TObjectKnownType);
@@ -673,9 +751,11 @@ const
         {maSortedMapInterfaceGUID} '{B3021EFC-DE25-4B4B-A896-ACE823CD5C01}',
         {maMapAncestorClassName} 'TJclWideStrAbstractContainer',
         {maHashMapEntryTypeName} 'TJclWideStrHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclWideStrHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclWideStrHashMapBucket',
         {maHashMapClassName} 'TJclWideStrHashMap',
         {maSortedMapEntryTypeName} 'TJclWideStrSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclWideStrSortedMapEntryArray',
         {maSortedMapClassName} 'TJclWideStrSortedMap' );
       KeyAttributes: @WideStringKnownType;
       ValueAttributes: @TObjectKnownType);
@@ -689,9 +769,11 @@ const
         {maSortedMapInterfaceGUID} '{5510B8FC-3439-4211-8D1F-5EDD9A56D3E3}',
         {maMapAncestorClassName} 'TJclUnicodeStrAbstractContainer',
         {maHashMapEntryTypeName} 'TJclUnicodeStrHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclUnicodeStrHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclUnicodeStrHashMapBucket',
         {maHashMapClassName} 'TJclUnicodeStrHashMap',
         {maSortedMapEntryTypeName} 'TJclUnicodeStrSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclUnicodeStrSortedMapEntryArray',
         {maSortedMapClassName} 'TJclUnicodeStrSortedMap' );
       KeyAttributes: @UnicodeStringKnownType;
       ValueAttributes: @TObjectKnownType);
@@ -705,9 +787,11 @@ const
         {maSortedMapInterfaceGUID} '',
         {maMapAncestorClassName} 'TJclStrAbstractContainer',
         {maHashMapEntryTypeName} 'TJclStrHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclStrHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclStrHashMapBucket',
         {maHashMapClassName} 'TJclStrHashMap',
         {maSortedMapEntryTypeName} 'TJclStrSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclStrSortedMapEntryArray',
         {maSortedMapClassName} 'TJclStrSortedMap' );
       KeyAttributes: @StringKnownType;
       ValueAttributes: @TObjectKnownType);
@@ -721,9 +805,11 @@ const
         {maSortedMapInterfaceGUID} '{8C1A12BE-A7F2-4351-90B7-25DB0AAF5F94}',
         {maMapAncestorClassName} 'TJclSingleAbstractContainer',
         {maHashMapEntryTypeName} 'TJclSingleHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclSingleHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclSingleHashMapBucket',
         {maHashMapClassName} 'TJclSingleHashMap',
         {maSortedMapEntryTypeName} 'TJclSingleSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclSingleSortedMapEntryArray',
         {maSortedMapClassName} 'TJclSingleSortedMap' );
       KeyAttributes: @SingleKnownType;
       ValueAttributes: @TObjectKnownType);
@@ -737,9 +823,11 @@ const
         {maSortedMapInterfaceGUID} '{8018D66B-AA54-4016-84FC-3E780FFCC38B}',
         {maMapAncestorClassName} 'TJclDoubleAbstractContainer',
         {maHashMapEntryTypeName} 'TJclDoubleHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclDoubleHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclDoubleHashMapBucket',
         {maHashMapClassName} 'TJclDoubleHashMap',
         {maSortedMapEntryTypeName} 'TJclDoubleSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclDoubleSortedMapEntryArray',
         {maSortedMapClassName} 'TJclDoubleSortedMap' );
       KeyAttributes: @DoubleKnownType;
       ValueAttributes: @TObjectKnownType);
@@ -753,9 +841,11 @@ const
         {maSortedMapInterfaceGUID} '{2B82C65A-B3EF-477D-BEC0-3D8620A226B1}',
         {maMapAncestorClassName} 'TJclExtendedAbstractContainer',
         {maHashMapEntryTypeName} 'TJclExtendedHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclExtendedHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclExtendedHashMapBucket',
         {maHashMapClassName} 'TJclExtendedHashMap',
         {maSortedMapEntryTypeName} 'TJclExtendedSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclExtendedSortedMapEntryArray',
         {maSortedMapClassName} 'TJclExtendedSortedMap' );
       KeyAttributes: @ExtendedKnownType;
       ValueAttributes: @TObjectKnownType);
@@ -769,9 +859,11 @@ const
         {maSortedMapInterfaceGUID} '',
         {maMapAncestorClassName} 'TJclFloatAbstractContainer',
         {maHashMapEntryTypeName} 'TJclFloatHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclFloatHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclFloatHashMapBucket',
         {maHashMapClassName} 'TJclFloatHashMap',
         {maSortedMapEntryTypeName} 'TJclFloatSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclFloatSortedMapEntryArray',
         {maSortedMapClassName} 'TJclFloatSortedMap' );
       KeyAttributes: @FloatKnownType;
       ValueAttributes: @TObjectKnownType);
@@ -785,9 +877,11 @@ const
         {maSortedMapInterfaceGUID} '{DD7B4C5E-6D51-44CC-9328-B38396A7E1C9}',
         {maMapAncestorClassName} 'TJclIntegerAbstractContainer',
         {maHashMapEntryTypeName} 'TJclIntegerHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclIntegerHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclIntegerHashMapBucket',
         {maHashMapClassName} 'TJclIntegerHashMap',
         {maSortedMapEntryTypeName} 'TJclIntegerSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclIntegerSortedMapEntryArray',
         {maSortedMapClassName} 'TJclIntegerSortedMap' );
       KeyAttributes: @IntegerKnownType;
       ValueAttributes: @TObjectKnownType);
@@ -801,9 +895,11 @@ const
         {maSortedMapInterfaceGUID} '{4AEAF81F-D72E-4499-B10E-3D017F39915E}',
         {maMapAncestorClassName} 'TJclCardinalAbstractContainer',
         {maHashMapEntryTypeName} 'TJclCardinalHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclCardinalHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclCardinalHashMapBucket',
         {maHashMapClassName} 'TJclCardinalHashMap',
         {maSortedMapEntryTypeName} 'TJclCardinalSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclCardinalSortedMapEntryArray',
         {maSortedMapClassName} 'TJclCardinalSortedMap' );
       KeyAttributes: @CardinalKnownType;
       ValueAttributes: @TObjectKnownType);
@@ -817,9 +913,11 @@ const
         {maSortedMapInterfaceGUID} '{06C03F90-7DE9-4043-AA56-AAE071D8BD50}',
         {maMapAncestorClassName} 'TJclInt64AbstractContainer',
         {maHashMapEntryTypeName} 'TJclInt64HashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclInt64HashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclInt64HashMapBucket',
         {maHashMapClassName} 'TJclInt64HashMap',
         {maSortedMapEntryTypeName} 'TJclInt64SortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclInt64SortedMapEntryArray',
         {maSortedMapClassName} 'TJclInt64SortedMap' );
       KeyAttributes: @Int64KnownType;
       ValueAttributes: @TObjectKnownType);
@@ -833,9 +931,11 @@ const
         {maSortedMapInterfaceGUID} '{578918DB-6A4A-4A9D-B44E-AE3E8FF70818}',
         {maMapAncestorClassName} 'TJclPtrAbstractContainer',
         {maHashMapEntryTypeName} 'TJclPtrHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclPtrHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclPtrHashMapBucket',
         {maHashMapClassName} 'TJclPtrHashMap',
         {maSortedMapEntryTypeName} 'TJclPtrSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclPtrSortedMapEntryArray',
         {maSortedMapClassName} 'TJclPtrSortedMap' );
       KeyAttributes: @PointerKnownType;
       ValueAttributes: @TObjectKnownType);
@@ -849,9 +949,11 @@ const
         {maSortedMapInterfaceGUID} '{F317A70F-7851-49C2-9DCF-092D8F4D4F98}',
         {maMapAncestorClassName} 'TJclAbstractContainerBase',
         {maHashMapEntryTypeName} 'TJclHashMapEntry',
+        {maHashMapEntryArrayTypeName} 'TJclHashMapEntryArray',
         {maHashMapBucketTypeName} 'TJclHashMapBucket',
         {maHashMapClassName} 'TJclHashMap',
         {maSortedMapEntryTypeName} 'TJclSortedMapEntry',
+        {maSortedMapEntryArrayTypeName} 'TJclSortedMapEntryArray',
         {maSortedMapClassName} 'TJclSortedMap' );
       KeyAttributes: @TObjectKnownType;
       ValueAttributes: @TObjectKnownType);

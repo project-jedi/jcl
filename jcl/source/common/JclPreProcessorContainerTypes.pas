@@ -170,9 +170,11 @@ type
     maSortedMapInterfaceGUID,
     maMapAncestorClassName,
     maHashMapEntryTypeName,
+    maHashMapEntryArrayTypeName,
     maHashMapBucketTypeName,
     maHashMapClassName,
     maSortedMapEntryTypeName,
+    maSortedMapEntryArrayTypeName,
     maSortedMapClassName);
   TAllTypeAttributeIDs = set of TAllTypeAttributeID;
 
@@ -344,9 +346,11 @@ const
       {SortedMapInterfaceGUID} (IsGUID: True; DefaultValue: ''),
       {MapAncestorClassName} (IsGUID: False; DefaultValue: 'TJclContainer'),
       {HashMapEntryTypeName} (IsGUID: False; DefaultValue: 'TJcl%s%sHashEntry'),
+      {HashMapEntryArrayTypeName} (IsGUID: False; DefaultValue: 'TJcl%s%sHashEntryArray'),
       {HashMapBucketTypeName} (IsGUID: False; DefaultValue: 'TJcl%s%sHashBucket'),
       {HashMapClassName} (IsGUID: False; DefaultValue: 'TJcl%s%sHashMap'),
       {SortedMapEntryTypeName} (IsGUID: False; DefaultValue: 'TJcl%s%sSortedEntry'),
+      {SortedMapEntryArrayTypeName} (IsGUID: False; DefaultValue: 'TJcl%s%sSortedEntryArray'),
       {SortedMapClassName} (IsGUID: False; DefaultValue: 'TJcl%s%sSortedMap') );
 
 type

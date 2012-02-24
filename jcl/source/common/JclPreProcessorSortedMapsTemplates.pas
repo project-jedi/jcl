@@ -41,17 +41,18 @@ uses
   JclPreProcessorContainer2DTemplates;
 
 type
-  (* JCLSORTEDMAPTYPESINT(ENTRYTYPENAME, KEYTYPENAME, VALUETYPENAME) *)
+  (* JCLSORTEDMAPTYPESINT(ENTRYTYPENAME, ENTRYARRAYTYPENAME, KEYTYPENAME, VALUETYPENAME) *)
   TJclSortedMapTypeIntParams = class(TJclMapInterfaceParams)
   public
     function AliasAttributeIDs: TAllTypeAttributeIDs; override;
   published
     property EntryTypeName: string index maSortedMapEntryTypeName read GetMapAttribute write SetMapAttribute stored IsMapAttributeStored;
+    property EntryArrayTypeName: string index maSortedMapEntryArrayTypeName read GetMapAttribute write SetMapAttribute stored IsMapAttributeStored;
     property KeyTypeName: string index kaKeyTypeName read GetKeyAttribute write SetKeyAttribute stored False;
     property ValueTypeName: string index vaValueTypeName read GetValueAttribute write SetValueAttribute stored False;
   end;
 
-  (* JCLSORTEDMAPINT(ENTRYTYPENAME, SELFCLASSNAME, ANCESTORNAME,
+  (* JCLSORTEDMAPINT(ENTRYTYPENAME, ENTRYARRAYTYPENAME, SELFCLASSNAME, ANCESTORNAME,
                      STDMAPINTERFACENAME, SORTEDMAPINTERFACENAME,
                      KEYSETINTERFACENAME, VALUECOLLECTIONINTERFACENAME,
                      INTERFACEADDITIONAL, SECTIONADDITIONAL, KEYOWNERSHIPDECLARATION,
@@ -66,6 +67,7 @@ type
     function GetComparisonSectionAdditional: string; override;
   published
     property EntryTypeName: string index maSortedMapEntryTypeName read GetMapAttribute write SetMapAttribute stored False;
+    property EntryArrayTypeName: string index maSortedMapEntryArrayTypeName read GetMapAttribute write SetMapAttribute stored False;
     property SelfClassName: string index maSortedMapClassName read GetMapAttribute write SetMapAttribute stored IsMapAttributeStored;
     property AncestorName: string index maMapAncestorClassName read GetMapAttribute write SetMapAttribute stored False;
     property StdMapInterfaceName: string index maMapInterfaceName read GetMapAttribute write SetMapAttribute stored False;
@@ -82,7 +84,7 @@ type
     property ValueTypeName;
   end;
 
-  (* JCLSORTEDMAPIMP(SELFCLASSNAME,
+  (* JCLSORTEDMAPIMP(ENTRYTYPENAME, ENTRYARRAYTYPENAME, SELFCLASSNAME,
                      STDMAPINTERFACENAME, SORTEDMAPINTERFACENAME,
                      KEYSETINTERFACENAME, KEYITRINTERFACENAME,
                      VALUECOLLECTIONINTERFACENAME,
@@ -98,6 +100,8 @@ type
     function GetMacroFooter: string; override;
     function GetSelfClassName: string; override;
   published
+    property EntryTypeName: string index maSortedMapEntryTypeName read GetMapAttribute write SetMapAttribute stored False;
+    property EntryArrayTypeName: string index maSortedMapEntryArrayTypeName read GetMapAttribute write SetMapAttribute stored False;
     property SelfClassName: string index maSortedMapClassName read GetMapAttribute write SetMapAttribute stored False;
     property AncestorClassName: string index maMapAncestorClassName read GetMapAttribute write SetMapAttribute stored False;
     property StdMapInterfaceName: string index maMapInterfaceName read GetMapAttribute write SetMapAttribute stored False;

@@ -1,29 +1,9 @@
-(*$JPPDEFINEMACRO JCLHASHMAPTYPESIMP(BUCKETTYPENAME, KEYDEFAULT, VALUEDEFAULT)
+(*$JPPDEFINEMACRO JCLHASHMAPTYPESIMP(ENTRYARRAYTYPENAME, BUCKETTYPENAME, KEYDEFAULT, VALUEDEFAULT)
 //=== { BUCKETTYPENAME } ==========================================
 
-procedure BUCKETTYPENAME.MoveArray(FromIndex, ToIndex, Count: Integer);
-begin
-  if Count > 0 then
-  begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
-  end;
-end;*)
+{$JPPUNDEF GENERIC}{$JPPUNDEF REFCOUNTED}{$IFDEF KEYREFCOUNTED}{$JPPDEFINE REFCOUNTED}{$ENDIF}{$IFDEF VALUEREFCOUNTED}{$JPPDEFINE REFCOUNTED}{$ENDIF}{$IFDEF KEYZEROINIT}{$JPPDEFINE ZEROINIT}{$ENDIF}{$IFDEF VALUEZEROINIT}{$JPPDEFINE ZEROINIT}{$ENDIF}{$JPPEXPANDMACRO MOVEARRAYIMP(MoveArray,ENTRYARRAYTYPENAME,,BUCKETTYPENAME.,)}
+
+*)
 (*$JPPDEFINEMACRO JCLHASHMAPIMP(SELFCLASSNAME, BUCKETTYPENAME,
   MAPINTERFACENAME, KEYSETINTERFACENAME, KEYITRINTERFACENAME, VALUECOLLECTIONINTERFACENAME,
   KEYOWNERSHIPDECLARATION, VALUEOWNERSHIPDECLARATION, OWNERSHIPASSIGNMENTS,
@@ -170,7 +150,7 @@ begin
           Bucket.Entries[I].Value := VALUEDEFAULT;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;

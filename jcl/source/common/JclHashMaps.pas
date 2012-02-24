@@ -61,11 +61,20 @@ type
     Value: IInterface;
   end;
 
+  TJclIntfIntfHashMapEntryArray = array of TJclIntfIntfHashMapEntry;
+
   TJclIntfIntfHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclIntfIntfHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclIntfIntfHashMapEntryArray;
+    procedure FinalizeArrayBeforeMove(var List: TJclIntfIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArray(var List: TJclIntfIntfHashMapEntryArray; FromIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArrayAfterMove(var List: TJclIntfIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
+    procedure MoveArray(var List: TJclIntfIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclIntfIntfHashMap = class(TJclIntfAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -112,11 +121,20 @@ type
     Value: IInterface;
   end;
 
+  TJclAnsiStrIntfHashMapEntryArray = array of TJclAnsiStrIntfHashMapEntry;
+
   TJclAnsiStrIntfHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclAnsiStrIntfHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclAnsiStrIntfHashMapEntryArray;
+    procedure FinalizeArrayBeforeMove(var List: TJclAnsiStrIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArray(var List: TJclAnsiStrIntfHashMapEntryArray; FromIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArrayAfterMove(var List: TJclAnsiStrIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
+    procedure MoveArray(var List: TJclAnsiStrIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclAnsiStrIntfHashMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -163,11 +181,20 @@ type
     Value: AnsiString;
   end;
 
+  TJclIntfAnsiStrHashMapEntryArray = array of TJclIntfAnsiStrHashMapEntry;
+
   TJclIntfAnsiStrHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclIntfAnsiStrHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclIntfAnsiStrHashMapEntryArray;
+    procedure FinalizeArrayBeforeMove(var List: TJclIntfAnsiStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArray(var List: TJclIntfAnsiStrHashMapEntryArray; FromIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArrayAfterMove(var List: TJclIntfAnsiStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
+    procedure MoveArray(var List: TJclIntfAnsiStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclIntfAnsiStrHashMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -215,11 +242,20 @@ type
     Value: AnsiString;
   end;
 
+  TJclAnsiStrAnsiStrHashMapEntryArray = array of TJclAnsiStrAnsiStrHashMapEntry;
+
   TJclAnsiStrAnsiStrHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclAnsiStrAnsiStrHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclAnsiStrAnsiStrHashMapEntryArray;
+    procedure FinalizeArrayBeforeMove(var List: TJclAnsiStrAnsiStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArray(var List: TJclAnsiStrAnsiStrHashMapEntryArray; FromIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArrayAfterMove(var List: TJclAnsiStrAnsiStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
+    procedure MoveArray(var List: TJclAnsiStrAnsiStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclAnsiStrAnsiStrHashMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -266,11 +302,20 @@ type
     Value: IInterface;
   end;
 
+  TJclWideStrIntfHashMapEntryArray = array of TJclWideStrIntfHashMapEntry;
+
   TJclWideStrIntfHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclWideStrIntfHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclWideStrIntfHashMapEntryArray;
+    procedure FinalizeArrayBeforeMove(var List: TJclWideStrIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArray(var List: TJclWideStrIntfHashMapEntryArray; FromIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArrayAfterMove(var List: TJclWideStrIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
+    procedure MoveArray(var List: TJclWideStrIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclWideStrIntfHashMap = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -317,11 +362,20 @@ type
     Value: WideString;
   end;
 
+  TJclIntfWideStrHashMapEntryArray = array of TJclIntfWideStrHashMapEntry;
+
   TJclIntfWideStrHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclIntfWideStrHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclIntfWideStrHashMapEntryArray;
+    procedure FinalizeArrayBeforeMove(var List: TJclIntfWideStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArray(var List: TJclIntfWideStrHashMapEntryArray; FromIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArrayAfterMove(var List: TJclIntfWideStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
+    procedure MoveArray(var List: TJclIntfWideStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclIntfWideStrHashMap = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -369,11 +423,20 @@ type
     Value: WideString;
   end;
 
+  TJclWideStrWideStrHashMapEntryArray = array of TJclWideStrWideStrHashMapEntry;
+
   TJclWideStrWideStrHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclWideStrWideStrHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclWideStrWideStrHashMapEntryArray;
+    procedure FinalizeArrayBeforeMove(var List: TJclWideStrWideStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArray(var List: TJclWideStrWideStrHashMapEntryArray; FromIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArrayAfterMove(var List: TJclWideStrWideStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
+    procedure MoveArray(var List: TJclWideStrWideStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclWideStrWideStrHashMap = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -421,11 +484,20 @@ type
     Value: IInterface;
   end;
 
+  TJclUnicodeStrIntfHashMapEntryArray = array of TJclUnicodeStrIntfHashMapEntry;
+
   TJclUnicodeStrIntfHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclUnicodeStrIntfHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclUnicodeStrIntfHashMapEntryArray;
+    procedure FinalizeArrayBeforeMove(var List: TJclUnicodeStrIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArray(var List: TJclUnicodeStrIntfHashMapEntryArray; FromIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArrayAfterMove(var List: TJclUnicodeStrIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
+    procedure MoveArray(var List: TJclUnicodeStrIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
   {$ENDIF SUPPORTS_UNICODE_STRING}
 
@@ -476,11 +548,20 @@ type
     Value: UnicodeString;
   end;
 
+  TJclIntfUnicodeStrHashMapEntryArray = array of TJclIntfUnicodeStrHashMapEntry;
+
   TJclIntfUnicodeStrHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclIntfUnicodeStrHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclIntfUnicodeStrHashMapEntryArray;
+    procedure FinalizeArrayBeforeMove(var List: TJclIntfUnicodeStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArray(var List: TJclIntfUnicodeStrHashMapEntryArray; FromIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArrayAfterMove(var List: TJclIntfUnicodeStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
+    procedure MoveArray(var List: TJclIntfUnicodeStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
   {$ENDIF SUPPORTS_UNICODE_STRING}
 
@@ -532,11 +613,20 @@ type
     Value: UnicodeString;
   end;
 
+  TJclUnicodeStrUnicodeStrHashMapEntryArray = array of TJclUnicodeStrUnicodeStrHashMapEntry;
+
   TJclUnicodeStrUnicodeStrHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclUnicodeStrUnicodeStrHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclUnicodeStrUnicodeStrHashMapEntryArray;
+    procedure FinalizeArrayBeforeMove(var List: TJclUnicodeStrUnicodeStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArray(var List: TJclUnicodeStrUnicodeStrHashMapEntryArray; FromIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArrayAfterMove(var List: TJclUnicodeStrUnicodeStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
+    procedure MoveArray(var List: TJclUnicodeStrUnicodeStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
   {$ENDIF SUPPORTS_UNICODE_STRING}
 
@@ -655,11 +745,20 @@ type
     Value: IInterface;
   end;
 
+  TJclSingleIntfHashMapEntryArray = array of TJclSingleIntfHashMapEntry;
+
   TJclSingleIntfHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclSingleIntfHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclSingleIntfHashMapEntryArray;
+    procedure FinalizeArrayBeforeMove(var List: TJclSingleIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArray(var List: TJclSingleIntfHashMapEntryArray; FromIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArrayAfterMove(var List: TJclSingleIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
+    procedure MoveArray(var List: TJclSingleIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclSingleIntfHashMap = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -706,11 +805,20 @@ type
     Value: Single;
   end;
 
+  TJclIntfSingleHashMapEntryArray = array of TJclIntfSingleHashMapEntry;
+
   TJclIntfSingleHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclIntfSingleHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclIntfSingleHashMapEntryArray;
+    procedure FinalizeArrayBeforeMove(var List: TJclIntfSingleHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArray(var List: TJclIntfSingleHashMapEntryArray; FromIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArrayAfterMove(var List: TJclIntfSingleHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
+    procedure MoveArray(var List: TJclIntfSingleHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclIntfSingleHashMap = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -758,11 +866,15 @@ type
     Value: Single;
   end;
 
+  TJclSingleSingleHashMapEntryArray = array of TJclSingleSingleHashMapEntry;
+
   TJclSingleSingleHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclSingleSingleHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclSingleSingleHashMapEntryArray;
+    procedure InitializeArrayAfterMove(var List: TJclSingleSingleHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure MoveArray(var List: TJclSingleSingleHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclSingleSingleHashMap = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -809,11 +921,20 @@ type
     Value: IInterface;
   end;
 
+  TJclDoubleIntfHashMapEntryArray = array of TJclDoubleIntfHashMapEntry;
+
   TJclDoubleIntfHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclDoubleIntfHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclDoubleIntfHashMapEntryArray;
+    procedure FinalizeArrayBeforeMove(var List: TJclDoubleIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArray(var List: TJclDoubleIntfHashMapEntryArray; FromIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArrayAfterMove(var List: TJclDoubleIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
+    procedure MoveArray(var List: TJclDoubleIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclDoubleIntfHashMap = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -860,11 +981,20 @@ type
     Value: Double;
   end;
 
+  TJclIntfDoubleHashMapEntryArray = array of TJclIntfDoubleHashMapEntry;
+
   TJclIntfDoubleHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclIntfDoubleHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclIntfDoubleHashMapEntryArray;
+    procedure FinalizeArrayBeforeMove(var List: TJclIntfDoubleHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArray(var List: TJclIntfDoubleHashMapEntryArray; FromIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArrayAfterMove(var List: TJclIntfDoubleHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
+    procedure MoveArray(var List: TJclIntfDoubleHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclIntfDoubleHashMap = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -912,11 +1042,15 @@ type
     Value: Double;
   end;
 
+  TJclDoubleDoubleHashMapEntryArray = array of TJclDoubleDoubleHashMapEntry;
+
   TJclDoubleDoubleHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclDoubleDoubleHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclDoubleDoubleHashMapEntryArray;
+    procedure InitializeArrayAfterMove(var List: TJclDoubleDoubleHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure MoveArray(var List: TJclDoubleDoubleHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclDoubleDoubleHashMap = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -963,11 +1097,20 @@ type
     Value: IInterface;
   end;
 
+  TJclExtendedIntfHashMapEntryArray = array of TJclExtendedIntfHashMapEntry;
+
   TJclExtendedIntfHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclExtendedIntfHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclExtendedIntfHashMapEntryArray;
+    procedure FinalizeArrayBeforeMove(var List: TJclExtendedIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArray(var List: TJclExtendedIntfHashMapEntryArray; FromIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArrayAfterMove(var List: TJclExtendedIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
+    procedure MoveArray(var List: TJclExtendedIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclExtendedIntfHashMap = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -1014,11 +1157,20 @@ type
     Value: Extended;
   end;
 
+  TJclIntfExtendedHashMapEntryArray = array of TJclIntfExtendedHashMapEntry;
+
   TJclIntfExtendedHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclIntfExtendedHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclIntfExtendedHashMapEntryArray;
+    procedure FinalizeArrayBeforeMove(var List: TJclIntfExtendedHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArray(var List: TJclIntfExtendedHashMapEntryArray; FromIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArrayAfterMove(var List: TJclIntfExtendedHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
+    procedure MoveArray(var List: TJclIntfExtendedHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclIntfExtendedHashMap = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -1066,11 +1218,15 @@ type
     Value: Extended;
   end;
 
+  TJclExtendedExtendedHashMapEntryArray = array of TJclExtendedExtendedHashMapEntry;
+
   TJclExtendedExtendedHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclExtendedExtendedHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclExtendedExtendedHashMapEntryArray;
+    procedure InitializeArrayAfterMove(var List: TJclExtendedExtendedHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure MoveArray(var List: TJclExtendedExtendedHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclExtendedExtendedHashMap = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -1186,11 +1342,20 @@ type
     Value: IInterface;
   end;
 
+  TJclIntegerIntfHashMapEntryArray = array of TJclIntegerIntfHashMapEntry;
+
   TJclIntegerIntfHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclIntegerIntfHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclIntegerIntfHashMapEntryArray;
+    procedure FinalizeArrayBeforeMove(var List: TJclIntegerIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArray(var List: TJclIntegerIntfHashMapEntryArray; FromIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArrayAfterMove(var List: TJclIntegerIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
+    procedure MoveArray(var List: TJclIntegerIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclIntegerIntfHashMap = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -1237,11 +1402,20 @@ type
     Value: Integer;
   end;
 
+  TJclIntfIntegerHashMapEntryArray = array of TJclIntfIntegerHashMapEntry;
+
   TJclIntfIntegerHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclIntfIntegerHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclIntfIntegerHashMapEntryArray;
+    procedure FinalizeArrayBeforeMove(var List: TJclIntfIntegerHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArray(var List: TJclIntfIntegerHashMapEntryArray; FromIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArrayAfterMove(var List: TJclIntfIntegerHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
+    procedure MoveArray(var List: TJclIntfIntegerHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclIntfIntegerHashMap = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -1289,11 +1463,15 @@ type
     Value: Integer;
   end;
 
+  TJclIntegerIntegerHashMapEntryArray = array of TJclIntegerIntegerHashMapEntry;
+
   TJclIntegerIntegerHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclIntegerIntegerHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclIntegerIntegerHashMapEntryArray;
+    procedure InitializeArrayAfterMove(var List: TJclIntegerIntegerHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure MoveArray(var List: TJclIntegerIntegerHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclIntegerIntegerHashMap = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -1340,11 +1518,20 @@ type
     Value: IInterface;
   end;
 
+  TJclCardinalIntfHashMapEntryArray = array of TJclCardinalIntfHashMapEntry;
+
   TJclCardinalIntfHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclCardinalIntfHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclCardinalIntfHashMapEntryArray;
+    procedure FinalizeArrayBeforeMove(var List: TJclCardinalIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArray(var List: TJclCardinalIntfHashMapEntryArray; FromIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArrayAfterMove(var List: TJclCardinalIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
+    procedure MoveArray(var List: TJclCardinalIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclCardinalIntfHashMap = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -1391,11 +1578,20 @@ type
     Value: Cardinal;
   end;
 
+  TJclIntfCardinalHashMapEntryArray = array of TJclIntfCardinalHashMapEntry;
+
   TJclIntfCardinalHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclIntfCardinalHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclIntfCardinalHashMapEntryArray;
+    procedure FinalizeArrayBeforeMove(var List: TJclIntfCardinalHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArray(var List: TJclIntfCardinalHashMapEntryArray; FromIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArrayAfterMove(var List: TJclIntfCardinalHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
+    procedure MoveArray(var List: TJclIntfCardinalHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclIntfCardinalHashMap = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -1443,11 +1639,15 @@ type
     Value: Cardinal;
   end;
 
+  TJclCardinalCardinalHashMapEntryArray = array of TJclCardinalCardinalHashMapEntry;
+
   TJclCardinalCardinalHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclCardinalCardinalHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclCardinalCardinalHashMapEntryArray;
+    procedure InitializeArrayAfterMove(var List: TJclCardinalCardinalHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure MoveArray(var List: TJclCardinalCardinalHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclCardinalCardinalHashMap = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -1494,11 +1694,20 @@ type
     Value: IInterface;
   end;
 
+  TJclInt64IntfHashMapEntryArray = array of TJclInt64IntfHashMapEntry;
+
   TJclInt64IntfHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclInt64IntfHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclInt64IntfHashMapEntryArray;
+    procedure FinalizeArrayBeforeMove(var List: TJclInt64IntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArray(var List: TJclInt64IntfHashMapEntryArray; FromIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArrayAfterMove(var List: TJclInt64IntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
+    procedure MoveArray(var List: TJclInt64IntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclInt64IntfHashMap = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -1545,11 +1754,20 @@ type
     Value: Int64;
   end;
 
+  TJclIntfInt64HashMapEntryArray = array of TJclIntfInt64HashMapEntry;
+
   TJclIntfInt64HashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclIntfInt64HashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclIntfInt64HashMapEntryArray;
+    procedure FinalizeArrayBeforeMove(var List: TJclIntfInt64HashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArray(var List: TJclIntfInt64HashMapEntryArray; FromIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArrayAfterMove(var List: TJclIntfInt64HashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
+    procedure MoveArray(var List: TJclIntfInt64HashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclIntfInt64HashMap = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -1597,11 +1815,15 @@ type
     Value: Int64;
   end;
 
+  TJclInt64Int64HashMapEntryArray = array of TJclInt64Int64HashMapEntry;
+
   TJclInt64Int64HashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclInt64Int64HashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclInt64Int64HashMapEntryArray;
+    procedure InitializeArrayAfterMove(var List: TJclInt64Int64HashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure MoveArray(var List: TJclInt64Int64HashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclInt64Int64HashMap = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -1648,11 +1870,20 @@ type
     Value: IInterface;
   end;
 
+  TJclPtrIntfHashMapEntryArray = array of TJclPtrIntfHashMapEntry;
+
   TJclPtrIntfHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclPtrIntfHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclPtrIntfHashMapEntryArray;
+    procedure FinalizeArrayBeforeMove(var List: TJclPtrIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArray(var List: TJclPtrIntfHashMapEntryArray; FromIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArrayAfterMove(var List: TJclPtrIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
+    procedure MoveArray(var List: TJclPtrIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclPtrIntfHashMap = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -1699,11 +1930,20 @@ type
     Value: Pointer;
   end;
 
+  TJclIntfPtrHashMapEntryArray = array of TJclIntfPtrHashMapEntry;
+
   TJclIntfPtrHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclIntfPtrHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclIntfPtrHashMapEntryArray;
+    procedure FinalizeArrayBeforeMove(var List: TJclIntfPtrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArray(var List: TJclIntfPtrHashMapEntryArray; FromIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArrayAfterMove(var List: TJclIntfPtrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
+    procedure MoveArray(var List: TJclIntfPtrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclIntfPtrHashMap = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -1751,11 +1991,15 @@ type
     Value: Pointer;
   end;
 
+  TJclPtrPtrHashMapEntryArray = array of TJclPtrPtrHashMapEntry;
+
   TJclPtrPtrHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclPtrPtrHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclPtrPtrHashMapEntryArray;
+    procedure InitializeArrayAfterMove(var List: TJclPtrPtrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure MoveArray(var List: TJclPtrPtrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclPtrPtrHashMap = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -1802,11 +2046,20 @@ type
     Value: TObject;
   end;
 
+  TJclIntfHashMapEntryArray = array of TJclIntfHashMapEntry;
+
   TJclIntfHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclIntfHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclIntfHashMapEntryArray;
+    procedure FinalizeArrayBeforeMove(var List: TJclIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArray(var List: TJclIntfHashMapEntryArray; FromIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArrayAfterMove(var List: TJclIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
+    procedure MoveArray(var List: TJclIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclIntfHashMap = class(TJclIntfAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -1859,11 +2112,20 @@ type
     Value: TObject;
   end;
 
+  TJclAnsiStrHashMapEntryArray = array of TJclAnsiStrHashMapEntry;
+
   TJclAnsiStrHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclAnsiStrHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclAnsiStrHashMapEntryArray;
+    procedure FinalizeArrayBeforeMove(var List: TJclAnsiStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArray(var List: TJclAnsiStrHashMapEntryArray; FromIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArrayAfterMove(var List: TJclAnsiStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
+    procedure MoveArray(var List: TJclAnsiStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclAnsiStrHashMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -1916,11 +2178,20 @@ type
     Value: TObject;
   end;
 
+  TJclWideStrHashMapEntryArray = array of TJclWideStrHashMapEntry;
+
   TJclWideStrHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclWideStrHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclWideStrHashMapEntryArray;
+    procedure FinalizeArrayBeforeMove(var List: TJclWideStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArray(var List: TJclWideStrHashMapEntryArray; FromIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArrayAfterMove(var List: TJclWideStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
+    procedure MoveArray(var List: TJclWideStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclWideStrHashMap = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -1974,11 +2245,20 @@ type
     Value: TObject;
   end;
 
+  TJclUnicodeStrHashMapEntryArray = array of TJclUnicodeStrHashMapEntry;
+
   TJclUnicodeStrHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclUnicodeStrHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclUnicodeStrHashMapEntryArray;
+    procedure FinalizeArrayBeforeMove(var List: TJclUnicodeStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArray(var List: TJclUnicodeStrHashMapEntryArray; FromIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArrayAfterMove(var List: TJclUnicodeStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
+    procedure MoveArray(var List: TJclUnicodeStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
   {$ENDIF SUPPORTS_UNICODE_STRING}
 
@@ -2057,11 +2337,15 @@ type
     Value: TObject;
   end;
 
+  TJclSingleHashMapEntryArray = array of TJclSingleHashMapEntry;
+
   TJclSingleHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclSingleHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclSingleHashMapEntryArray;
+    procedure InitializeArrayAfterMove(var List: TJclSingleHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure MoveArray(var List: TJclSingleHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclSingleHashMap = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -2114,11 +2398,15 @@ type
     Value: TObject;
   end;
 
+  TJclDoubleHashMapEntryArray = array of TJclDoubleHashMapEntry;
+
   TJclDoubleHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclDoubleHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclDoubleHashMapEntryArray;
+    procedure InitializeArrayAfterMove(var List: TJclDoubleHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure MoveArray(var List: TJclDoubleHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclDoubleHashMap = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -2171,11 +2459,15 @@ type
     Value: TObject;
   end;
 
+  TJclExtendedHashMapEntryArray = array of TJclExtendedHashMapEntry;
+
   TJclExtendedHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclExtendedHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclExtendedHashMapEntryArray;
+    procedure InitializeArrayAfterMove(var List: TJclExtendedHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure MoveArray(var List: TJclExtendedHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclExtendedHashMap = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -2251,11 +2543,15 @@ type
     Value: TObject;
   end;
 
+  TJclIntegerHashMapEntryArray = array of TJclIntegerHashMapEntry;
+
   TJclIntegerHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclIntegerHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclIntegerHashMapEntryArray;
+    procedure InitializeArrayAfterMove(var List: TJclIntegerHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure MoveArray(var List: TJclIntegerHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclIntegerHashMap = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -2308,11 +2604,15 @@ type
     Value: TObject;
   end;
 
+  TJclCardinalHashMapEntryArray = array of TJclCardinalHashMapEntry;
+
   TJclCardinalHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclCardinalHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclCardinalHashMapEntryArray;
+    procedure InitializeArrayAfterMove(var List: TJclCardinalHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure MoveArray(var List: TJclCardinalHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclCardinalHashMap = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -2365,11 +2665,15 @@ type
     Value: TObject;
   end;
 
+  TJclInt64HashMapEntryArray = array of TJclInt64HashMapEntry;
+
   TJclInt64HashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclInt64HashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclInt64HashMapEntryArray;
+    procedure InitializeArrayAfterMove(var List: TJclInt64HashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure MoveArray(var List: TJclInt64HashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclInt64HashMap = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -2422,11 +2726,15 @@ type
     Value: TObject;
   end;
 
+  TJclPtrHashMapEntryArray = array of TJclPtrHashMapEntry;
+
   TJclPtrHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclPtrHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclPtrHashMapEntryArray;
+    procedure InitializeArrayAfterMove(var List: TJclPtrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure MoveArray(var List: TJclPtrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclPtrHashMap = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -2479,11 +2787,15 @@ type
     Value: TObject;
   end;
 
+  TJclHashMapEntryArray = array of TJclHashMapEntry;
+
   TJclHashMapBucket = class
   public
     Size: Integer;
-    Entries: array of TJclHashMapEntry;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: TJclHashMapEntryArray;
+    procedure InitializeArrayAfterMove(var List: TJclHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure MoveArray(var List: TJclHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclHashMap = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -2545,11 +2857,23 @@ type
     Value: TValue;
   end;
 
+  TJclHashEntryArray<TKey,TValue> = array of TJclHashEntry<TKey,TValue>;
+
   TJclBucket<TKey,TValue> = class
   public
+    type
+      THashEntryArray = TJclHashEntryArray<TKey,TValue>;
+  public
     Size: Integer;
-    Entries: array of TJclHashEntry<TKey,TValue>;
-    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    Entries: THashEntryArray;
+    procedure FinalizeArrayBeforeMove(var List: THashEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArray(var List: THashEntryArray; FromIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure InitializeArrayAfterMove(var List: THashEntryArray; FromIndex, ToIndex, Count: SizeInt);
+      {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
+    procedure MoveArray(var List: THashEntryArray; FromIndex, ToIndex, Count: SizeInt);
   end;
 
   TJclHashMap<TKey,TValue> = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -2715,27 +3039,65 @@ uses
 
 //=== { TJclIntfIntfHashMapBucket } ==========================================
 
-procedure TJclIntfIntfHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfIntfHashMapBucket.FinalizeArrayBeforeMove(var List: TJclIntfIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  Assert(Count > 0);
+  if FromIndex < ToIndex then
+  begin
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
+  end;
+end;
+
+procedure TJclIntfIntfHashMapBucket.InitializeArray(var List: TJclIntfIntfHashMapEntryArray; FromIndex, Count: SizeInt);
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
+procedure TJclIntfIntfHashMapBucket.InitializeArrayAfterMove(var List: TJclIntfIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    InitializeArray(List, FromIndex, Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
+    else
+      InitializeArray(List, FromIndex, Count);
+  end;
+end;
+
+procedure TJclIntfIntfHashMapBucket.MoveArray(var List: TJclIntfIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -2924,7 +3286,7 @@ begin
           Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -3293,27 +3655,65 @@ end;
 
 //=== { TJclAnsiStrIntfHashMapBucket } ==========================================
 
-procedure TJclAnsiStrIntfHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclAnsiStrIntfHashMapBucket.FinalizeArrayBeforeMove(var List: TJclAnsiStrIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  Assert(Count > 0);
+  if FromIndex < ToIndex then
+  begin
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
+  end;
+end;
+
+procedure TJclAnsiStrIntfHashMapBucket.InitializeArray(var List: TJclAnsiStrIntfHashMapEntryArray; FromIndex, Count: SizeInt);
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
+procedure TJclAnsiStrIntfHashMapBucket.InitializeArrayAfterMove(var List: TJclAnsiStrIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    InitializeArray(List, FromIndex, Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
+    else
+      InitializeArray(List, FromIndex, Count);
+  end;
+end;
+
+procedure TJclAnsiStrIntfHashMapBucket.MoveArray(var List: TJclAnsiStrIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -3502,7 +3902,7 @@ begin
           Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -3871,27 +4271,65 @@ end;
 
 //=== { TJclIntfAnsiStrHashMapBucket } ==========================================
 
-procedure TJclIntfAnsiStrHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfAnsiStrHashMapBucket.FinalizeArrayBeforeMove(var List: TJclIntfAnsiStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  Assert(Count > 0);
+  if FromIndex < ToIndex then
+  begin
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
+  end;
+end;
+
+procedure TJclIntfAnsiStrHashMapBucket.InitializeArray(var List: TJclIntfAnsiStrHashMapEntryArray; FromIndex, Count: SizeInt);
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
+procedure TJclIntfAnsiStrHashMapBucket.InitializeArrayAfterMove(var List: TJclIntfAnsiStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    InitializeArray(List, FromIndex, Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
+    else
+      InitializeArray(List, FromIndex, Count);
+  end;
+end;
+
+procedure TJclIntfAnsiStrHashMapBucket.MoveArray(var List: TJclIntfAnsiStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -4080,7 +4518,7 @@ begin
           Bucket.Entries[I].Value := '';
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -4454,27 +4892,65 @@ end;
 
 //=== { TJclAnsiStrAnsiStrHashMapBucket } ==========================================
 
-procedure TJclAnsiStrAnsiStrHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclAnsiStrAnsiStrHashMapBucket.FinalizeArrayBeforeMove(var List: TJclAnsiStrAnsiStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  Assert(Count > 0);
+  if FromIndex < ToIndex then
+  begin
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
+  end;
+end;
+
+procedure TJclAnsiStrAnsiStrHashMapBucket.InitializeArray(var List: TJclAnsiStrAnsiStrHashMapEntryArray; FromIndex, Count: SizeInt);
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
+procedure TJclAnsiStrAnsiStrHashMapBucket.InitializeArrayAfterMove(var List: TJclAnsiStrAnsiStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    InitializeArray(List, FromIndex, Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
+    else
+      InitializeArray(List, FromIndex, Count);
+  end;
+end;
+
+procedure TJclAnsiStrAnsiStrHashMapBucket.MoveArray(var List: TJclAnsiStrAnsiStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -4663,7 +5139,7 @@ begin
           Bucket.Entries[I].Value := '';
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -5032,27 +5508,65 @@ end;
 
 //=== { TJclWideStrIntfHashMapBucket } ==========================================
 
-procedure TJclWideStrIntfHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclWideStrIntfHashMapBucket.FinalizeArrayBeforeMove(var List: TJclWideStrIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  Assert(Count > 0);
+  if FromIndex < ToIndex then
+  begin
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
+  end;
+end;
+
+procedure TJclWideStrIntfHashMapBucket.InitializeArray(var List: TJclWideStrIntfHashMapEntryArray; FromIndex, Count: SizeInt);
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
+procedure TJclWideStrIntfHashMapBucket.InitializeArrayAfterMove(var List: TJclWideStrIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    InitializeArray(List, FromIndex, Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
+    else
+      InitializeArray(List, FromIndex, Count);
+  end;
+end;
+
+procedure TJclWideStrIntfHashMapBucket.MoveArray(var List: TJclWideStrIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -5241,7 +5755,7 @@ begin
           Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -5610,27 +6124,65 @@ end;
 
 //=== { TJclIntfWideStrHashMapBucket } ==========================================
 
-procedure TJclIntfWideStrHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfWideStrHashMapBucket.FinalizeArrayBeforeMove(var List: TJclIntfWideStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  Assert(Count > 0);
+  if FromIndex < ToIndex then
+  begin
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
+  end;
+end;
+
+procedure TJclIntfWideStrHashMapBucket.InitializeArray(var List: TJclIntfWideStrHashMapEntryArray; FromIndex, Count: SizeInt);
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
+procedure TJclIntfWideStrHashMapBucket.InitializeArrayAfterMove(var List: TJclIntfWideStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    InitializeArray(List, FromIndex, Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
+    else
+      InitializeArray(List, FromIndex, Count);
+  end;
+end;
+
+procedure TJclIntfWideStrHashMapBucket.MoveArray(var List: TJclIntfWideStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -5819,7 +6371,7 @@ begin
           Bucket.Entries[I].Value := '';
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -6193,27 +6745,65 @@ end;
 
 //=== { TJclWideStrWideStrHashMapBucket } ==========================================
 
-procedure TJclWideStrWideStrHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclWideStrWideStrHashMapBucket.FinalizeArrayBeforeMove(var List: TJclWideStrWideStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  Assert(Count > 0);
+  if FromIndex < ToIndex then
+  begin
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
+  end;
+end;
+
+procedure TJclWideStrWideStrHashMapBucket.InitializeArray(var List: TJclWideStrWideStrHashMapEntryArray; FromIndex, Count: SizeInt);
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
+procedure TJclWideStrWideStrHashMapBucket.InitializeArrayAfterMove(var List: TJclWideStrWideStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    InitializeArray(List, FromIndex, Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
+    else
+      InitializeArray(List, FromIndex, Count);
+  end;
+end;
+
+procedure TJclWideStrWideStrHashMapBucket.MoveArray(var List: TJclWideStrWideStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -6402,7 +6992,7 @@ begin
           Bucket.Entries[I].Value := '';
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -6772,29 +7362,69 @@ end;
 {$IFDEF SUPPORTS_UNICODE_STRING}
 //=== { TJclUnicodeStrIntfHashMapBucket } ==========================================
 
-procedure TJclUnicodeStrIntfHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclUnicodeStrIntfHashMapBucket.FinalizeArrayBeforeMove(var List: TJclUnicodeStrIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  Assert(Count > 0);
+  if FromIndex < ToIndex then
+  begin
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
+  end;
+end;
+
+procedure TJclUnicodeStrIntfHashMapBucket.InitializeArray(var List: TJclUnicodeStrIntfHashMapEntryArray; FromIndex, Count: SizeInt);
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
+procedure TJclUnicodeStrIntfHashMapBucket.InitializeArrayAfterMove(var List: TJclUnicodeStrIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    InitializeArray(List, FromIndex, Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
+    else
+      InitializeArray(List, FromIndex, Count);
+  end;
+end;
+
+procedure TJclUnicodeStrIntfHashMapBucket.MoveArray(var List: TJclUnicodeStrIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
+
+
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
 {$IFDEF SUPPORTS_UNICODE_STRING}
@@ -6983,7 +7613,7 @@ begin
           Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -7355,29 +7985,69 @@ end;
 {$IFDEF SUPPORTS_UNICODE_STRING}
 //=== { TJclIntfUnicodeStrHashMapBucket } ==========================================
 
-procedure TJclIntfUnicodeStrHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfUnicodeStrHashMapBucket.FinalizeArrayBeforeMove(var List: TJclIntfUnicodeStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  Assert(Count > 0);
+  if FromIndex < ToIndex then
+  begin
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
+  end;
+end;
+
+procedure TJclIntfUnicodeStrHashMapBucket.InitializeArray(var List: TJclIntfUnicodeStrHashMapEntryArray; FromIndex, Count: SizeInt);
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
+procedure TJclIntfUnicodeStrHashMapBucket.InitializeArrayAfterMove(var List: TJclIntfUnicodeStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    InitializeArray(List, FromIndex, Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
+    else
+      InitializeArray(List, FromIndex, Count);
+  end;
+end;
+
+procedure TJclIntfUnicodeStrHashMapBucket.MoveArray(var List: TJclIntfUnicodeStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
+
+
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
 {$IFDEF SUPPORTS_UNICODE_STRING}
@@ -7566,7 +8236,7 @@ begin
           Bucket.Entries[I].Value := '';
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -7943,29 +8613,69 @@ end;
 {$IFDEF SUPPORTS_UNICODE_STRING}
 //=== { TJclUnicodeStrUnicodeStrHashMapBucket } ==========================================
 
-procedure TJclUnicodeStrUnicodeStrHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclUnicodeStrUnicodeStrHashMapBucket.FinalizeArrayBeforeMove(var List: TJclUnicodeStrUnicodeStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  Assert(Count > 0);
+  if FromIndex < ToIndex then
+  begin
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
+  end;
+end;
+
+procedure TJclUnicodeStrUnicodeStrHashMapBucket.InitializeArray(var List: TJclUnicodeStrUnicodeStrHashMapEntryArray; FromIndex, Count: SizeInt);
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
+procedure TJclUnicodeStrUnicodeStrHashMapBucket.InitializeArrayAfterMove(var List: TJclUnicodeStrUnicodeStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    InitializeArray(List, FromIndex, Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
+    else
+      InitializeArray(List, FromIndex, Count);
+  end;
+end;
+
+procedure TJclUnicodeStrUnicodeStrHashMapBucket.MoveArray(var List: TJclUnicodeStrUnicodeStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
+
+
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
 {$IFDEF SUPPORTS_UNICODE_STRING}
@@ -8154,7 +8864,7 @@ begin
           Bucket.Entries[I].Value := '';
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -8525,27 +9235,65 @@ end;
 
 //=== { TJclSingleIntfHashMapBucket } ==========================================
 
-procedure TJclSingleIntfHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclSingleIntfHashMapBucket.FinalizeArrayBeforeMove(var List: TJclSingleIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  Assert(Count > 0);
+  if FromIndex < ToIndex then
+  begin
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
+  end;
+end;
+
+procedure TJclSingleIntfHashMapBucket.InitializeArray(var List: TJclSingleIntfHashMapEntryArray; FromIndex, Count: SizeInt);
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
+procedure TJclSingleIntfHashMapBucket.InitializeArrayAfterMove(var List: TJclSingleIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    InitializeArray(List, FromIndex, Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
+    else
+      InitializeArray(List, FromIndex, Count);
+  end;
+end;
+
+procedure TJclSingleIntfHashMapBucket.MoveArray(var List: TJclSingleIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -8734,7 +9482,7 @@ begin
           Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -9103,27 +9851,65 @@ end;
 
 //=== { TJclIntfSingleHashMapBucket } ==========================================
 
-procedure TJclIntfSingleHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfSingleHashMapBucket.FinalizeArrayBeforeMove(var List: TJclIntfSingleHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  Assert(Count > 0);
+  if FromIndex < ToIndex then
+  begin
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
+  end;
+end;
+
+procedure TJclIntfSingleHashMapBucket.InitializeArray(var List: TJclIntfSingleHashMapEntryArray; FromIndex, Count: SizeInt);
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
+procedure TJclIntfSingleHashMapBucket.InitializeArrayAfterMove(var List: TJclIntfSingleHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    InitializeArray(List, FromIndex, Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
+    else
+      InitializeArray(List, FromIndex, Count);
+  end;
+end;
+
+procedure TJclIntfSingleHashMapBucket.MoveArray(var List: TJclIntfSingleHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -9312,7 +10098,7 @@ begin
           Bucket.Entries[I].Value := 0.0;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -9686,27 +10472,31 @@ end;
 
 //=== { TJclSingleSingleHashMapBucket } ==========================================
 
-procedure TJclSingleSingleHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclSingleSingleHashMapBucket.InitializeArrayAfterMove(var List: TJclSingleSingleHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Clean array }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+    else
+     FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end;
+end;
+
+procedure TJclSingleSingleHashMapBucket.MoveArray(var List: TJclSingleSingleHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -9895,7 +10685,7 @@ begin
           Bucket.Entries[I].Value := 0.0;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -10264,27 +11054,65 @@ end;
 
 //=== { TJclDoubleIntfHashMapBucket } ==========================================
 
-procedure TJclDoubleIntfHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclDoubleIntfHashMapBucket.FinalizeArrayBeforeMove(var List: TJclDoubleIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  Assert(Count > 0);
+  if FromIndex < ToIndex then
+  begin
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
+  end;
+end;
+
+procedure TJclDoubleIntfHashMapBucket.InitializeArray(var List: TJclDoubleIntfHashMapEntryArray; FromIndex, Count: SizeInt);
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
+procedure TJclDoubleIntfHashMapBucket.InitializeArrayAfterMove(var List: TJclDoubleIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    InitializeArray(List, FromIndex, Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
+    else
+      InitializeArray(List, FromIndex, Count);
+  end;
+end;
+
+procedure TJclDoubleIntfHashMapBucket.MoveArray(var List: TJclDoubleIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -10473,7 +11301,7 @@ begin
           Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -10842,27 +11670,65 @@ end;
 
 //=== { TJclIntfDoubleHashMapBucket } ==========================================
 
-procedure TJclIntfDoubleHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfDoubleHashMapBucket.FinalizeArrayBeforeMove(var List: TJclIntfDoubleHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  Assert(Count > 0);
+  if FromIndex < ToIndex then
+  begin
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
+  end;
+end;
+
+procedure TJclIntfDoubleHashMapBucket.InitializeArray(var List: TJclIntfDoubleHashMapEntryArray; FromIndex, Count: SizeInt);
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
+procedure TJclIntfDoubleHashMapBucket.InitializeArrayAfterMove(var List: TJclIntfDoubleHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    InitializeArray(List, FromIndex, Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
+    else
+      InitializeArray(List, FromIndex, Count);
+  end;
+end;
+
+procedure TJclIntfDoubleHashMapBucket.MoveArray(var List: TJclIntfDoubleHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -11051,7 +11917,7 @@ begin
           Bucket.Entries[I].Value := 0.0;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -11425,27 +12291,31 @@ end;
 
 //=== { TJclDoubleDoubleHashMapBucket } ==========================================
 
-procedure TJclDoubleDoubleHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclDoubleDoubleHashMapBucket.InitializeArrayAfterMove(var List: TJclDoubleDoubleHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Clean array }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+    else
+     FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end;
+end;
+
+procedure TJclDoubleDoubleHashMapBucket.MoveArray(var List: TJclDoubleDoubleHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -11634,7 +12504,7 @@ begin
           Bucket.Entries[I].Value := 0.0;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -12003,27 +12873,65 @@ end;
 
 //=== { TJclExtendedIntfHashMapBucket } ==========================================
 
-procedure TJclExtendedIntfHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclExtendedIntfHashMapBucket.FinalizeArrayBeforeMove(var List: TJclExtendedIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  Assert(Count > 0);
+  if FromIndex < ToIndex then
+  begin
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
+  end;
+end;
+
+procedure TJclExtendedIntfHashMapBucket.InitializeArray(var List: TJclExtendedIntfHashMapEntryArray; FromIndex, Count: SizeInt);
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
+procedure TJclExtendedIntfHashMapBucket.InitializeArrayAfterMove(var List: TJclExtendedIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    InitializeArray(List, FromIndex, Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
+    else
+      InitializeArray(List, FromIndex, Count);
+  end;
+end;
+
+procedure TJclExtendedIntfHashMapBucket.MoveArray(var List: TJclExtendedIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -12212,7 +13120,7 @@ begin
           Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -12581,27 +13489,65 @@ end;
 
 //=== { TJclIntfExtendedHashMapBucket } ==========================================
 
-procedure TJclIntfExtendedHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfExtendedHashMapBucket.FinalizeArrayBeforeMove(var List: TJclIntfExtendedHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  Assert(Count > 0);
+  if FromIndex < ToIndex then
+  begin
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
+  end;
+end;
+
+procedure TJclIntfExtendedHashMapBucket.InitializeArray(var List: TJclIntfExtendedHashMapEntryArray; FromIndex, Count: SizeInt);
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
+procedure TJclIntfExtendedHashMapBucket.InitializeArrayAfterMove(var List: TJclIntfExtendedHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    InitializeArray(List, FromIndex, Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
+    else
+      InitializeArray(List, FromIndex, Count);
+  end;
+end;
+
+procedure TJclIntfExtendedHashMapBucket.MoveArray(var List: TJclIntfExtendedHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -12790,7 +13736,7 @@ begin
           Bucket.Entries[I].Value := 0.0;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -13164,27 +14110,31 @@ end;
 
 //=== { TJclExtendedExtendedHashMapBucket } ==========================================
 
-procedure TJclExtendedExtendedHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclExtendedExtendedHashMapBucket.InitializeArrayAfterMove(var List: TJclExtendedExtendedHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Clean array }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+    else
+     FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end;
+end;
+
+procedure TJclExtendedExtendedHashMapBucket.MoveArray(var List: TJclExtendedExtendedHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -13373,7 +14323,7 @@ begin
           Bucket.Entries[I].Value := 0.0;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -13742,27 +14692,65 @@ end;
 
 //=== { TJclIntegerIntfHashMapBucket } ==========================================
 
-procedure TJclIntegerIntfHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclIntegerIntfHashMapBucket.FinalizeArrayBeforeMove(var List: TJclIntegerIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  Assert(Count > 0);
+  if FromIndex < ToIndex then
+  begin
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
+  end;
+end;
+
+procedure TJclIntegerIntfHashMapBucket.InitializeArray(var List: TJclIntegerIntfHashMapEntryArray; FromIndex, Count: SizeInt);
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
+procedure TJclIntegerIntfHashMapBucket.InitializeArrayAfterMove(var List: TJclIntegerIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    InitializeArray(List, FromIndex, Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
+    else
+      InitializeArray(List, FromIndex, Count);
+  end;
+end;
+
+procedure TJclIntegerIntfHashMapBucket.MoveArray(var List: TJclIntegerIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -13951,7 +14939,7 @@ begin
           Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -14320,27 +15308,65 @@ end;
 
 //=== { TJclIntfIntegerHashMapBucket } ==========================================
 
-procedure TJclIntfIntegerHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfIntegerHashMapBucket.FinalizeArrayBeforeMove(var List: TJclIntfIntegerHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  Assert(Count > 0);
+  if FromIndex < ToIndex then
+  begin
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
+  end;
+end;
+
+procedure TJclIntfIntegerHashMapBucket.InitializeArray(var List: TJclIntfIntegerHashMapEntryArray; FromIndex, Count: SizeInt);
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
+procedure TJclIntfIntegerHashMapBucket.InitializeArrayAfterMove(var List: TJclIntfIntegerHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    InitializeArray(List, FromIndex, Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
+    else
+      InitializeArray(List, FromIndex, Count);
+  end;
+end;
+
+procedure TJclIntfIntegerHashMapBucket.MoveArray(var List: TJclIntfIntegerHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -14529,7 +15555,7 @@ begin
           Bucket.Entries[I].Value := 0;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -14903,27 +15929,31 @@ end;
 
 //=== { TJclIntegerIntegerHashMapBucket } ==========================================
 
-procedure TJclIntegerIntegerHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclIntegerIntegerHashMapBucket.InitializeArrayAfterMove(var List: TJclIntegerIntegerHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Clean array }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+    else
+     FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end;
+end;
+
+procedure TJclIntegerIntegerHashMapBucket.MoveArray(var List: TJclIntegerIntegerHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -15112,7 +16142,7 @@ begin
           Bucket.Entries[I].Value := 0;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -15481,27 +16511,65 @@ end;
 
 //=== { TJclCardinalIntfHashMapBucket } ==========================================
 
-procedure TJclCardinalIntfHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclCardinalIntfHashMapBucket.FinalizeArrayBeforeMove(var List: TJclCardinalIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  Assert(Count > 0);
+  if FromIndex < ToIndex then
+  begin
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
+  end;
+end;
+
+procedure TJclCardinalIntfHashMapBucket.InitializeArray(var List: TJclCardinalIntfHashMapEntryArray; FromIndex, Count: SizeInt);
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
+procedure TJclCardinalIntfHashMapBucket.InitializeArrayAfterMove(var List: TJclCardinalIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    InitializeArray(List, FromIndex, Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
+    else
+      InitializeArray(List, FromIndex, Count);
+  end;
+end;
+
+procedure TJclCardinalIntfHashMapBucket.MoveArray(var List: TJclCardinalIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -15690,7 +16758,7 @@ begin
           Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -16059,27 +17127,65 @@ end;
 
 //=== { TJclIntfCardinalHashMapBucket } ==========================================
 
-procedure TJclIntfCardinalHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfCardinalHashMapBucket.FinalizeArrayBeforeMove(var List: TJclIntfCardinalHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  Assert(Count > 0);
+  if FromIndex < ToIndex then
+  begin
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
+  end;
+end;
+
+procedure TJclIntfCardinalHashMapBucket.InitializeArray(var List: TJclIntfCardinalHashMapEntryArray; FromIndex, Count: SizeInt);
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
+procedure TJclIntfCardinalHashMapBucket.InitializeArrayAfterMove(var List: TJclIntfCardinalHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    InitializeArray(List, FromIndex, Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
+    else
+      InitializeArray(List, FromIndex, Count);
+  end;
+end;
+
+procedure TJclIntfCardinalHashMapBucket.MoveArray(var List: TJclIntfCardinalHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -16268,7 +17374,7 @@ begin
           Bucket.Entries[I].Value := 0;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -16642,27 +17748,31 @@ end;
 
 //=== { TJclCardinalCardinalHashMapBucket } ==========================================
 
-procedure TJclCardinalCardinalHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclCardinalCardinalHashMapBucket.InitializeArrayAfterMove(var List: TJclCardinalCardinalHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Clean array }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+    else
+     FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end;
+end;
+
+procedure TJclCardinalCardinalHashMapBucket.MoveArray(var List: TJclCardinalCardinalHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -16851,7 +17961,7 @@ begin
           Bucket.Entries[I].Value := 0;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -17220,27 +18330,65 @@ end;
 
 //=== { TJclInt64IntfHashMapBucket } ==========================================
 
-procedure TJclInt64IntfHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclInt64IntfHashMapBucket.FinalizeArrayBeforeMove(var List: TJclInt64IntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  Assert(Count > 0);
+  if FromIndex < ToIndex then
+  begin
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
+  end;
+end;
+
+procedure TJclInt64IntfHashMapBucket.InitializeArray(var List: TJclInt64IntfHashMapEntryArray; FromIndex, Count: SizeInt);
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
+procedure TJclInt64IntfHashMapBucket.InitializeArrayAfterMove(var List: TJclInt64IntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    InitializeArray(List, FromIndex, Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
+    else
+      InitializeArray(List, FromIndex, Count);
+  end;
+end;
+
+procedure TJclInt64IntfHashMapBucket.MoveArray(var List: TJclInt64IntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -17429,7 +18577,7 @@ begin
           Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -17798,27 +18946,65 @@ end;
 
 //=== { TJclIntfInt64HashMapBucket } ==========================================
 
-procedure TJclIntfInt64HashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfInt64HashMapBucket.FinalizeArrayBeforeMove(var List: TJclIntfInt64HashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  Assert(Count > 0);
+  if FromIndex < ToIndex then
+  begin
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
+  end;
+end;
+
+procedure TJclIntfInt64HashMapBucket.InitializeArray(var List: TJclIntfInt64HashMapEntryArray; FromIndex, Count: SizeInt);
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
+procedure TJclIntfInt64HashMapBucket.InitializeArrayAfterMove(var List: TJclIntfInt64HashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    InitializeArray(List, FromIndex, Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
+    else
+      InitializeArray(List, FromIndex, Count);
+  end;
+end;
+
+procedure TJclIntfInt64HashMapBucket.MoveArray(var List: TJclIntfInt64HashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -18007,7 +19193,7 @@ begin
           Bucket.Entries[I].Value := 0;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -18381,27 +19567,31 @@ end;
 
 //=== { TJclInt64Int64HashMapBucket } ==========================================
 
-procedure TJclInt64Int64HashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclInt64Int64HashMapBucket.InitializeArrayAfterMove(var List: TJclInt64Int64HashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Clean array }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+    else
+     FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end;
+end;
+
+procedure TJclInt64Int64HashMapBucket.MoveArray(var List: TJclInt64Int64HashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -18590,7 +19780,7 @@ begin
           Bucket.Entries[I].Value := 0;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -18959,27 +20149,65 @@ end;
 
 //=== { TJclPtrIntfHashMapBucket } ==========================================
 
-procedure TJclPtrIntfHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclPtrIntfHashMapBucket.FinalizeArrayBeforeMove(var List: TJclPtrIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  Assert(Count > 0);
+  if FromIndex < ToIndex then
+  begin
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
+  end;
+end;
+
+procedure TJclPtrIntfHashMapBucket.InitializeArray(var List: TJclPtrIntfHashMapEntryArray; FromIndex, Count: SizeInt);
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
+procedure TJclPtrIntfHashMapBucket.InitializeArrayAfterMove(var List: TJclPtrIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    InitializeArray(List, FromIndex, Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
+    else
+      InitializeArray(List, FromIndex, Count);
+  end;
+end;
+
+procedure TJclPtrIntfHashMapBucket.MoveArray(var List: TJclPtrIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -19168,7 +20396,7 @@ begin
           Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -19537,27 +20765,65 @@ end;
 
 //=== { TJclIntfPtrHashMapBucket } ==========================================
 
-procedure TJclIntfPtrHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfPtrHashMapBucket.FinalizeArrayBeforeMove(var List: TJclIntfPtrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  Assert(Count > 0);
+  if FromIndex < ToIndex then
+  begin
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
+  end;
+end;
+
+procedure TJclIntfPtrHashMapBucket.InitializeArray(var List: TJclIntfPtrHashMapEntryArray; FromIndex, Count: SizeInt);
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
+procedure TJclIntfPtrHashMapBucket.InitializeArrayAfterMove(var List: TJclIntfPtrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    InitializeArray(List, FromIndex, Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
+    else
+      InitializeArray(List, FromIndex, Count);
+  end;
+end;
+
+procedure TJclIntfPtrHashMapBucket.MoveArray(var List: TJclIntfPtrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -19746,7 +21012,7 @@ begin
           Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -20120,27 +21386,31 @@ end;
 
 //=== { TJclPtrPtrHashMapBucket } ==========================================
 
-procedure TJclPtrPtrHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclPtrPtrHashMapBucket.InitializeArrayAfterMove(var List: TJclPtrPtrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Clean array }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+    else
+     FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end;
+end;
+
+procedure TJclPtrPtrHashMapBucket.MoveArray(var List: TJclPtrPtrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -20329,7 +21599,7 @@ begin
           Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -20698,27 +21968,65 @@ end;
 
 //=== { TJclIntfHashMapBucket } ==========================================
 
-procedure TJclIntfHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfHashMapBucket.FinalizeArrayBeforeMove(var List: TJclIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  Assert(Count > 0);
+  if FromIndex < ToIndex then
+  begin
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
+  end;
+end;
+
+procedure TJclIntfHashMapBucket.InitializeArray(var List: TJclIntfHashMapEntryArray; FromIndex, Count: SizeInt);
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
+procedure TJclIntfHashMapBucket.InitializeArrayAfterMove(var List: TJclIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    InitializeArray(List, FromIndex, Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
+    else
+      InitializeArray(List, FromIndex, Count);
+  end;
+end;
+
+procedure TJclIntfHashMapBucket.MoveArray(var List: TJclIntfHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -20908,7 +22216,7 @@ begin
           Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -21290,27 +22598,65 @@ end;
 
 //=== { TJclAnsiStrHashMapBucket } ==========================================
 
-procedure TJclAnsiStrHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclAnsiStrHashMapBucket.FinalizeArrayBeforeMove(var List: TJclAnsiStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  Assert(Count > 0);
+  if FromIndex < ToIndex then
+  begin
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
+  end;
+end;
+
+procedure TJclAnsiStrHashMapBucket.InitializeArray(var List: TJclAnsiStrHashMapEntryArray; FromIndex, Count: SizeInt);
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
+procedure TJclAnsiStrHashMapBucket.InitializeArrayAfterMove(var List: TJclAnsiStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    InitializeArray(List, FromIndex, Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
+    else
+      InitializeArray(List, FromIndex, Count);
+  end;
+end;
+
+procedure TJclAnsiStrHashMapBucket.MoveArray(var List: TJclAnsiStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -21500,7 +22846,7 @@ begin
           Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -21882,27 +23228,65 @@ end;
 
 //=== { TJclWideStrHashMapBucket } ==========================================
 
-procedure TJclWideStrHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclWideStrHashMapBucket.FinalizeArrayBeforeMove(var List: TJclWideStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  Assert(Count > 0);
+  if FromIndex < ToIndex then
+  begin
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
+  end;
+end;
+
+procedure TJclWideStrHashMapBucket.InitializeArray(var List: TJclWideStrHashMapEntryArray; FromIndex, Count: SizeInt);
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
+procedure TJclWideStrHashMapBucket.InitializeArrayAfterMove(var List: TJclWideStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    InitializeArray(List, FromIndex, Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
+    else
+      InitializeArray(List, FromIndex, Count);
+  end;
+end;
+
+procedure TJclWideStrHashMapBucket.MoveArray(var List: TJclWideStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -22092,7 +23476,7 @@ begin
           Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -22475,29 +23859,69 @@ end;
 {$IFDEF SUPPORTS_UNICODE_STRING}
 //=== { TJclUnicodeStrHashMapBucket } ==========================================
 
-procedure TJclUnicodeStrHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclUnicodeStrHashMapBucket.FinalizeArrayBeforeMove(var List: TJclUnicodeStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  Assert(Count > 0);
+  if FromIndex < ToIndex then
+  begin
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
+  end;
+end;
+
+procedure TJclUnicodeStrHashMapBucket.InitializeArray(var List: TJclUnicodeStrHashMapEntryArray; FromIndex, Count: SizeInt);
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
+procedure TJclUnicodeStrHashMapBucket.InitializeArrayAfterMove(var List: TJclUnicodeStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    InitializeArray(List, FromIndex, Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
+    else
+      InitializeArray(List, FromIndex, Count);
+  end;
+end;
+
+procedure TJclUnicodeStrHashMapBucket.MoveArray(var List: TJclUnicodeStrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
+
+
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
 {$IFDEF SUPPORTS_UNICODE_STRING}
@@ -22687,7 +24111,7 @@ begin
           Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -23071,27 +24495,31 @@ end;
 
 //=== { TJclSingleHashMapBucket } ==========================================
 
-procedure TJclSingleHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclSingleHashMapBucket.InitializeArrayAfterMove(var List: TJclSingleHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Clean array }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+    else
+     FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end;
+end;
+
+procedure TJclSingleHashMapBucket.MoveArray(var List: TJclSingleHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -23281,7 +24709,7 @@ begin
           Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -23663,27 +25091,31 @@ end;
 
 //=== { TJclDoubleHashMapBucket } ==========================================
 
-procedure TJclDoubleHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclDoubleHashMapBucket.InitializeArrayAfterMove(var List: TJclDoubleHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Clean array }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+    else
+     FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end;
+end;
+
+procedure TJclDoubleHashMapBucket.MoveArray(var List: TJclDoubleHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -23873,7 +25305,7 @@ begin
           Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -24255,27 +25687,31 @@ end;
 
 //=== { TJclExtendedHashMapBucket } ==========================================
 
-procedure TJclExtendedHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclExtendedHashMapBucket.InitializeArrayAfterMove(var List: TJclExtendedHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Clean array }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+    else
+     FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end;
+end;
+
+procedure TJclExtendedHashMapBucket.MoveArray(var List: TJclExtendedHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -24465,7 +25901,7 @@ begin
           Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -24847,27 +26283,31 @@ end;
 
 //=== { TJclIntegerHashMapBucket } ==========================================
 
-procedure TJclIntegerHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclIntegerHashMapBucket.InitializeArrayAfterMove(var List: TJclIntegerHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Clean array }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+    else
+     FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end;
+end;
+
+procedure TJclIntegerHashMapBucket.MoveArray(var List: TJclIntegerHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -25057,7 +26497,7 @@ begin
           Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -25439,27 +26879,31 @@ end;
 
 //=== { TJclCardinalHashMapBucket } ==========================================
 
-procedure TJclCardinalHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclCardinalHashMapBucket.InitializeArrayAfterMove(var List: TJclCardinalHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Clean array }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+    else
+     FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end;
+end;
+
+procedure TJclCardinalHashMapBucket.MoveArray(var List: TJclCardinalHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -25649,7 +27093,7 @@ begin
           Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -26031,27 +27475,31 @@ end;
 
 //=== { TJclInt64HashMapBucket } ==========================================
 
-procedure TJclInt64HashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclInt64HashMapBucket.InitializeArrayAfterMove(var List: TJclInt64HashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Clean array }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+    else
+     FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end;
+end;
+
+procedure TJclInt64HashMapBucket.MoveArray(var List: TJclInt64HashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -26241,7 +27689,7 @@ begin
           Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -26623,27 +28071,31 @@ end;
 
 //=== { TJclPtrHashMapBucket } ==========================================
 
-procedure TJclPtrHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclPtrHashMapBucket.InitializeArrayAfterMove(var List: TJclPtrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Clean array }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+    else
+     FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end;
+end;
+
+procedure TJclPtrHashMapBucket.MoveArray(var List: TJclPtrHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -26833,7 +28285,7 @@ begin
           Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -27215,27 +28667,31 @@ end;
 
 //=== { TJclHashMapBucket } ==========================================
 
-procedure TJclHashMapBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclHashMapBucket.InitializeArrayAfterMove(var List: TJclHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Clean array }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+    else
+     FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+  end;
+end;
+
+procedure TJclHashMapBucket.MoveArray(var List: TJclHashMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -27426,7 +28882,7 @@ begin
           Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -27830,27 +29286,65 @@ end;
 
 //=== { TJclBucket<TKey, TValue> } ==========================================
 
-procedure TJclBucket<TKey, TValue>.MoveArray(FromIndex, ToIndex, Count: Integer);
+procedure TJclBucket<TKey, TValue>.FinalizeArrayBeforeMove(var List: THashEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  Assert(Count > 0);
+  if FromIndex < ToIndex then
+  begin
+    if Count > (ToIndex - FromIndex) then
+      Finalize(List[FromIndex + Count], ToIndex - FromIndex)
+    else
+      Finalize(List[ToIndex], Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if Count > (FromIndex - ToIndex) then
+      Count := FromIndex - ToIndex;
+    Finalize(List[ToIndex], Count)
+  end;
+end;
+
+procedure TJclBucket<TKey, TValue>.InitializeArray(var List: THashEntryArray; FromIndex, Count: SizeInt);
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
+procedure TJclBucket<TKey, TValue>.InitializeArrayAfterMove(var List: THashEntryArray; FromIndex, ToIndex, Count: SizeInt);
+begin
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+  begin
+    if (ToIndex - FromIndex) < Count then
+      Count := ToIndex - FromIndex;
+    InitializeArray(List, FromIndex, Count);
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    if (FromIndex - ToIndex) < Count then
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
+    else
+      InitializeArray(List, FromIndex, Count);
+  end;
+end;
+
+procedure TJclBucket<TKey, TValue>.MoveArray(var List: THashEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
-    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
-      else
-        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
-    end;
+    FinalizeArrayBeforeMove(List, FromIndex, ToIndex, Count);
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
 
@@ -28042,7 +29536,7 @@ begin
           Bucket.Entries[I].Value := Default(TValue);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;

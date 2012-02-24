@@ -41,12 +41,13 @@ uses
   JclPreProcessorContainer2DTemplates;
 
 type
-  (* JCLHASHMAPTYPESINT(ENTRYTYPENAME, BUCKETTYPENAME, KEYTYPENAME, VALUETYPENAME) *)
+  (* JCLHASHMAPTYPESINT(ENTRYTYPENAME, ENTRYARRAYTYPENAME, BUCKETTYPENAME, KEYTYPENAME, VALUETYPENAME) *)
   TJclHashMapTypeIntParams = class(TJclMapInterfaceParams)
   public
     function AliasAttributeIDs: TAllTypeAttributeIDs; override;
   published
     property EntryTypeName: string index maHashMapEntryTypeName read GetMapAttribute write SetMapAttribute stored IsMapAttributeStored;
+    property EntryArrayTypeName: string index maHashMapEntryArrayTypeName read GetMapAttribute write SetMapAttribute stored IsMapAttributeStored;
     property BucketTypeName: string index maHashMapBucketTypeName read GetMapAttribute write SetMapAttribute stored IsMapAttributeStored;
     property KeyTypeName: string index kaKeyTypeName read GetKeyAttribute write SetKeyAttribute stored False;
     property ValueTypeName: string index vaValueTypeName read GetValueAttribute write SetValueAttribute stored False;
@@ -79,9 +80,10 @@ type
     property ValueTypeName;
   end;
 
-  (* JCLHASHMAPTYPESIMP(BUCKETTYPENAME, KEYDEFAULT, VALUEDEFAULT) *)
+  (* JCLHASHMAPTYPESIMP(ENTRYARRAYTYPENAME, BUCKETTYPENAME, KEYDEFAULT, VALUEDEFAULT) *)
   TJclHashMapTypeImpParams = class(TJclMapImplementationParams)
   published
+    property EntryArrayTypeName: string index maHashMapEntryArrayTypeName read GetMapAttribute write SetMapAttribute stored False;
     property BucketTypeName: string index maHashMapBucketTypeName read GetMapAttribute write SetMapAttribute stored False;
     property KeyDefault: string index kaKeyDefaultValue read GetKeyAttribute write SetKeyAttribute stored False;
     property ValueDefault: string index vaValueDefaultValue read GetValueAttribute write SetValueAttribute stored False;

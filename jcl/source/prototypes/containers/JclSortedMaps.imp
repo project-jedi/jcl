@@ -1,4 +1,4 @@
-(*$JPPDEFINEMACRO JCLSORTEDMAPIMP(SELFCLASSNAME,
+(*$JPPDEFINEMACRO JCLSORTEDMAPIMP(ENTRYTYPENAME, ENTRYARRAYTYPENAME, SELFCLASSNAME,
   STDMAPINTERFACENAME, SORTEDMAPINTERFACENAME, KEYSETINTERFACENAME, KEYITRINTERFACENAME, VALUECOLLECTIONINTERFACENAME,
   KEYOWNERSHIPDECLARATION, VALUEOWNERSHIPDECLARATION, OWNERSHIPASSIGNMENTS,
   KEYCONSTKEYWORD, KEYTYPENAME, KEYDEFAULT, VALUECONSTKEYWORD, VALUETYPENAME, VALUEDEFAULT,
@@ -124,7 +124,7 @@ begin
       FEntries[Index].Value := VALUEDEFAULT;
       FreeKey(FEntries[Index].Key);
       if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
+        MoveArray(FEntries, Index + 1, Index, FSize - Index - 1);
       Dec(FSize);
       AutoPack;
     end
@@ -247,29 +247,7 @@ begin
   {$JPPEXPANDMACRO UNLOCK}
 end;
 
-procedure SELFCLASSNAME.MoveArray(FromIndex, ToIndex, Count: Integer);
-begin
-  if Count > 0 then
-  begin
-    Move(FEntries[FromIndex], FEntries[ToIndex], Count * SizeOf(FEntries[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(FEntries[FromIndex], (ToIndex - FromIndex) * SizeOf(FEntries[0]), 0)
-      else
-        FillChar(FEntries[FromIndex], Count * SizeOf(FEntries[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(FEntries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(FEntries[0]), 0)
-      else
-        FillChar(FEntries[FromIndex], Count * SizeOf(FEntries[0]), 0);
-    end;
-  end;
-end;
+{$JPPUNDEF GENERIC}{$IFDEF KEYGENERIC}{$JPPDEFINE GENERIC}{$ENDIF}{$IFDEF VALUEGENERIC}{$JPPDEFINE GENERIC}{$ENDIF}{$JPPUNDEF REFCOUNTED}{$IFDEF KEYREFCOUNTED}{$JPPDEFINE REFCOUNTED}{$ENDIF}{$IFDEF VALUEREFCOUNTED}{$JPPDEFINE REFCOUNTED}{$ENDIF}{$JPPUNDEF ZEROINIT}{$IFDEF KEYZEROINIT}{$JPPDEFINE ZEROINIT}{$ENDIF}{$IFDEF VALUEZEROINIT}{$JPPDEFINE ZEROINIT}{$ENDIF}{$JPPEXPANDMACRO MOVEARRAYIMP[MoveArray|ENTRYARRAYTYPENAME|Default(ENTRYTYPENAME)|SELFCLASSNAME.|]}
 
 procedure SELFCLASSNAME.PutAll(const AMap: STDMAPINTERFACENAME);
 var
@@ -310,7 +288,7 @@ begin
         begin
           Inc(Index);
           if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
+            MoveArray(FEntries, Index, Index + 1, FSize - Index);
           FEntries[Index].Key := Key;
           FEntries[Index].Value := Value;
           Inc(FSize);
