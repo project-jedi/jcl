@@ -149,9 +149,9 @@ uses
 
 (*$JPPEXPANDMACRO JCLVECTORIMP(TJclVector<T>,IJclCollection<T>,IJclList<T>,IJclIterator<T>,TVectorIterator,; AOwnsItems: Boolean,AOwnsItems,MoveArray,const ,AItem,T,Default(T),GetItem,SetItem,FreeItem)*)
 
-(*$JPPEXPANDMACRO JCLVECTORITRIMP(TJclVectorIterator<T>,IJclIterator<T>,IJclList<T>,const ,AItem,T,GetItem,SetItem)*)
-
 {$JPPDEFINE GENERIC}{$JPPEXPANDMACRO MOVEARRAYIMP(TJclVector<T>.MoveArray,TDynArray,Default(T),)}
+
+(*$JPPEXPANDMACRO JCLVECTORITRIMP(TJclVectorIterator<T>,IJclIterator<T>,IJclList<T>,const ,AItem,T,GetItem,SetItem)*)
 
 //=== { TJclVectorE<T> } =====================================================
 

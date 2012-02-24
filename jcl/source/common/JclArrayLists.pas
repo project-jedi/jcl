@@ -11762,6 +11762,40 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+procedure TJclArrayList<T>.MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: SizeInt);
+var
+  I: SizeInt;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      List[ToIndex + I] := List[FromIndex + I];
+
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+        List[FromIndex + I] := Default(T)
+    else
+      // independant
+      for I := 0 to Count - 1 do
+        List[FromIndex + I] := Default(T);
+  end
+  else
+  begin
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I];
+
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+        List[FromIndex + I] := Default(T)
+    else
+      // independant
+      for I := 0 to Count - 1 do
+        List[FromIndex + I] := Default(T);
+  end; 
+end;
+
 //=== { TJclArrayIterator<T> } ===============================================================
 
 constructor TJclArrayIterator<T>.Create(AOwnList: IJclList<T>; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
@@ -11914,40 +11948,6 @@ procedure TJclArrayIterator<T>.SetItem(const AItem: T);
 begin
   CheckValid;
   FOwnList.SetItem(FCursor, AItem);
-end;
-
-procedure TJclArrayList<T>.MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: SizeInt);
-var
-  I: SizeInt;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-        List[FromIndex + I] := Default(T)
-    else
-      // independant
-      for I := 0 to Count - 1 do
-        List[FromIndex + I] := Default(T);
-  end
-  else
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-        List[FromIndex + I] := Default(T)
-    else
-      // independant
-      for I := 0 to Count - 1 do
-        List[FromIndex + I] := Default(T);
-  end; 
 end;
 
 //=== { TJclArrayListE<T> } ==================================================

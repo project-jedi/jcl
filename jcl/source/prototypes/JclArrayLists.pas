@@ -151,9 +151,9 @@ uses
 
 {$JPPEXPANDMACRO JCLARRAYLISTIMP(TJclArrayList<T>,; AOwnsItems: Boolean,AOwnsItems,IJclCollection<T>,IJclIterator<T>,TArrayIterator,IJclList<T>,MoveArray,const ,AItem,GetItem,SetItem,FreeItem,T,Default(T))}
 
-{$JPPEXPANDMACRO JCLARRAYLISTITRIMP(TJclArrayIterator<T>,IJclIterator<T>,IJclList<T>,const ,AItem,T,GetItem,SetItem)}
-
 {$JPPDEFINE GENERIC}{$JPPEXPANDMACRO MOVEARRAYIMP(TJclArrayList<T>.MoveArray,TDynArray,Default(T),)}
+
+{$JPPEXPANDMACRO JCLARRAYLISTITRIMP(TJclArrayIterator<T>,IJclIterator<T>,IJclList<T>,const ,AItem,T,GetItem,SetItem)}
 
 //=== { TJclArrayListE<T> } ==================================================
 
