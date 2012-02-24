@@ -260,6 +260,7 @@ var
   Comment: Boolean;
   ParenthesisCount: Integer;
   MacroTextLen: Integer;
+  MacroParenthesis, MacroBracket: Boolean;
 begin
   MacroTextLen := Length(MacroText);
   I := 1;
@@ -275,7 +276,9 @@ begin
   if J <= MacroTextLen then
   begin
     SetLength(ParamNames, 0);
-    if MacroText[J] = '(' then
+    MacroParenthesis := MacroText[J] = '(';
+    MacroBracket := MacroText[J] = '[';
+    if MacroParenthesis or MacroBracket then
     begin
       Inc(J);
       if ParamDeclaration then
@@ -291,15 +294,26 @@ begin
           while (I <= MacroTextLen) and CharIsSpace(MacroText[I]) do
             Inc(I);
           if (I <= MacroTextLen) then
-            case MacroText[I] of
-              ',':
-                Inc(I);
-              ')': ;
-            else
-              raise EPppParserError.CreateFmt('invalid parameter declaration in macro "%s"', [MacroText]);
-            end;
+          begin
+            if MacroParenthesis then
+              case MacroText[I] of
+                ',':
+                  Inc(I);
+                ')': ;
+              else
+                raise EPppParserError.CreateFmt('invalid parameter declaration in macro "%s"', [MacroText]);
+              end;
+            if MacroBracket then
+              case MacroText[I] of
+                '|':
+                  Inc(I);
+                ']': ;
+              else
+                raise EPppParserError.CreateFmt('invalid parameter declaration in macro "%s"', [MacroText]);
+              end;
+          end;
           J := I;
-        until (J > MacroTextLen) or (MacroText[J] = ')');
+        until (J > MacroTextLen) or (MacroParenthesis and (MacroText[J] = ')')) or (MacroBracket and (MacroText[J] = ']'));
       end
       else
       begin
@@ -318,16 +332,22 @@ begin
                   Inc(ParenthesisCount);
               ')':
                 begin
-                  if (not Comment) and (ParenthesisCount = 0) then
+                  if MacroParenthesis and (not Comment) and (ParenthesisCount = 0) then
                     Break;
                   if not Comment then
                     Dec(ParenthesisCount);
                 end;
+              ']':
+                if MacroBracket and (not Comment) and (ParenthesisCount = 0) then
+                  Break;
               NativeBackslash:
                 if (not Comment) and (ParenthesisCount = 0) and (I < MacroTextLen) and (MacroText[i + 1] = NativeComma) then
                   Inc(I);
               NativeComma:
-                if (not Comment) and (ParenthesisCount = 0) then
+                if MacroParenthesis and (not Comment) and (ParenthesisCount = 0) then
+                  Break;
+              '|':
+                if MacroBracket and (not Comment) and (ParenthesisCount = 0) then
                   Break;
             end;
             Inc(I);
@@ -335,20 +355,36 @@ begin
           SetLength(ParamNames, Length(ParamNames) + 1);
           ParamNames[High(ParamNames)] := Copy(MacroText, J, I - J);
           StrReplace(ParamNames[High(ParamNames)], '\,', ',', [rfReplaceAll]);
-          if (I < MacroTextLen) and (MacroText[I] = ')') then
+          if MacroParenthesis then
           begin
-            J := I;
-            Break;
+            if (I < MacroTextLen) and (MacroText[I] = ')') then
+            begin
+              J := I;
+              Break;
+            end;
+            if (I < MacroTextLen) and (MacroText[I] = ',') then
+              Inc(I);
           end;
-          if (I < MacroTextLen) and (MacroText[I] = ',') then
-            Inc(I);
+          if MacroBracket then
+          begin
+            if (I < MacroTextLen) and (MacroText[I] = ']') then
+            begin
+              J := I;
+              Break;
+            end;
+            if (I < MacroTextLen) and (MacroText[I] = '|') then
+              Inc(I);
+          end;
           J := I;
         until J > MacroTextLen;
       end;
       if J <= MacroTextLen then
       begin
-        if MacroText[J] = ')' then
+        if MacroParenthesis and (MacroText[J] = ')') then
           Inc(J) // skip )
+        else
+        if MacroBracket and (MacroText[J] = ']') then
+          Inc(J) // skip ]
         else
           raise EPppParserError.CreateFmt('Unterminated list of arguments for macro "%s"', [MacroText]);
       end;
