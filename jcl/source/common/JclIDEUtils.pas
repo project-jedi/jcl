@@ -47,7 +47,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                       $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -646,6 +646,7 @@ type
     function GetCommonProjectsDir: string; override;
     class function GetDefaultProjectsDirectory(const RootDir: string; IDEVersionNumber: Integer): string;
     class function GetCommonProjectsDirectory(const RootDir: string; IDEVersionNumber: Integer): string;
+    class procedure GetRsVars(const RootDir: string; IDEVersionNumber: Integer; Variables: TStrings);
     {class }function RadToolName: string; override;
 
     function AddToCppSearchPath(const Path: string; APlatform: TJclBDSPlatform): Boolean;
@@ -3455,23 +3456,18 @@ end;
 class function TJclBDSInstallation.GetCommonProjectsDirectory(const RootDir: string;
   IDEVersionNumber: Integer): string;
 var
-  RsVarsOutput, ComSpec: string;
-  Lines: TStrings;
+  Variables: TStrings;
 begin
   if IDEVersionNumber >= 5 then
   begin
     Result := '';
-    RsVarsOutput := '';
-    if GetEnvironmentVar('COMSPEC', ComSpec) and (JclSysUtils.Execute(Format('%s /C "%s%sbin%srsvars.bat && set BDS"',
-      [ComSpec, ExtractShortPathName(RootDir), DirDelimiter, DirDelimiter]), RsVarsOutput) = 0) then
-    begin
-      Lines := TStringList.Create;
-      try
-        Lines.Text := RsVarsOutput;
-        Result := Lines.Values[EnvVariableBDSCOMDIRValueName];
-      finally
-        Lines.Free;
-      end;
+
+    Variables := TStringList.Create;
+    try
+      GetRsVars(RootDir, IDEVersionNumber, Variables);
+      Result := Variables.Values[EnvVariableBDSCOMDIRValueName];
+    finally
+      Variables.Free;
     end;
 
     if Result = '' then
@@ -3687,6 +3683,22 @@ begin
   end;
 end;
 
+class procedure TJclBDSInstallation.GetRsVars(const RootDir: string; IDEVersionNumber: Integer; Variables: TStrings);
+var
+  RsVarsOutput, ComSpec, RsVarsError: string;
+begin
+  if IDEVersionNumber >= 5 then
+  begin
+    RsVarsOutput := '';
+    RsVarsError := '';
+    if GetEnvironmentVar('COMSPEC', ComSpec) and (JclSysUtils.Execute(Format('%s /C "%s%sbin%srsvars.bat && set"',
+      [ComSpec, ExtractShortPathName(RootDir), DirDelimiter, DirDelimiter]), RsVarsOutput, RsVarsError) = 0) then
+      Variables.Text := RsVarsOutput
+    else
+      raise EJclBorRADException.CreateResFmt(@RsERsVars, [RsVarsError]);
+  end;
+end;
+
 function TJclBDSInstallation.GetValid: Boolean;
 begin
   Result := (inherited GetValid) and ((IDEVersionNumber < 5) or FileExists(GetMsBuildEnvOptionsFileName));
@@ -3756,7 +3768,9 @@ end;
 function TJclBDSInstallation.GetMsBuildEnvOption(const OptionName: string; APlatform: TJclBDSPlatform; Raw: Boolean): string;
 var
   EnvOptions: TJclMsBuildParser;
-  MsBuildEnvironmentFileName: string;
+  MsBuildEnvironmentFileName, EnvOptionName: string;
+  Variables: TStrings;
+  Index: Integer;
 begin
   Result := '';
 
@@ -3768,6 +3782,20 @@ begin
     EnvOptions := TJclMsBuildParser.Create(GetMsBuildEnvOptionsFileName);
   try
     EnvOptions.Init;
+
+    // add custom "environment" variables
+    Variables := TStringList.Create;
+    try
+      GetRsVars(RootDir, IDEVersionNumber, Variables);
+      for Index := 0 to Variables.Count - 1 do
+      begin
+        EnvOptionName := Variables.Names[Index];
+        EnvOptions.Properties.EnvironmentProperties.Values[EnvOptionName] := Variables.Values[EnvOptionName];
+      end;
+    finally
+      Variables.Free;
+    end;
+
     if SupportsPlatform then
       EnvOptions.Properties.GlobalProperties.Values['Platform'] := GetBDSPlatformStr(APlatform);
     EnvOptions.Parse;
@@ -4036,13 +4064,29 @@ end;
 
 procedure TJclBDSInstallation.SetMsBuildEnvOption(const OptionName, Value: string; APlatform: TJclBDSPlatform);
 var
-  EnvOptionsFileName, BakEnvOptionsFileName: string;
+  EnvOptionsFileName, BakEnvOptionsFileName, EnvOptionName: string;
   EnvOptions: TJclMsBuildParser;
+  Variables: TStrings;
+  Index: Integer;
 begin
   EnvOptionsFileName := GetMsBuildEnvOptionsFileName;
   EnvOptions := TJclMsBuildParser.Create(EnvOptionsFileName);
   try
     EnvOptions.Init;
+
+    // add custom "environment" variables
+    Variables := TStringList.Create;
+    try
+      GetRsVars(RootDir, IDEVersionNumber, Variables);
+      for Index := 0 to Variables.Count - 1 do
+      begin
+        EnvOptionName := Variables.Names[Index];
+        EnvOptions.Properties.EnvironmentProperties.Values[EnvOptionName] := Variables.Values[EnvOptionName];
+      end;
+    finally
+      Variables.Free;
+    end;
+
     if SupportsPlatform then
       EnvOptions.Properties.GlobalProperties.Values['Platform'] := GetBDSPlatformStr(APlatform);
     EnvOptions.Parse;
