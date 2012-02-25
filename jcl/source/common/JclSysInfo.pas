@@ -635,7 +635,7 @@ const
   EINTEL_OSXSAVE   = BIT_27; // OS has enabled features present in EINTEL_XSAVE
   EINTEL_AVX       = BIT_28; // Advanced Vector Extensions
   EINTEL_BIT_29    = BIT_29; // Reserved, do not count on value
-  EINTEL_BIT_30    = BIT_30; // Reserved, do not count on value
+  EINTEL_RDRAND    = BIT_30; // the processor supports the RDRAND instruction.
   EINTEL_BIT_31    = BIT_31; // Always return 0
 
   { Extended Intel 64 Bits Feature Flags }
