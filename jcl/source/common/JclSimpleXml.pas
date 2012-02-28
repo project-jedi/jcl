@@ -3702,9 +3702,10 @@ end;
 
 //=== { TJclSimpleXMLElemsProlog } ===========================================
 
-constructor TJclSimpleXMLElemsProlog.Create;
+constructor TJclSimpleXMLElemsProlog.Create(ASimpleXML: TJclSimpleXML);
 begin
   inherited Create;
+  FSimpleXML := ASimpleXML;
   FElems := THashedStringList.Create;
 end;
 
