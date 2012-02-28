@@ -79,7 +79,7 @@ type
     function GetIntValue: Int64;
     procedure SetIntValue(const Value: Int64);
   public
-    constructor Create; overload;
+    constructor Create; overload; virtual; 
     constructor Create(const AName: string); overload;
     constructor Create(const AName, AValue: string); overload;
     property Name: string read FName write SetName;
@@ -482,6 +482,8 @@ type
     procedure SetStandalone(const Value: Boolean);
     procedure SetVersion(const Value: string);
   public
+    constructor Create; override;
+
     procedure LoadFromStringStream(StringStream: TJclStringStream); override;
     procedure SaveToStringStream(StringStream: TJclStringStream; const Level: string = ''); override;
     property Version: string read GetVersion write SetVersion;
@@ -1460,7 +1462,7 @@ end;
 
 constructor TJclSimpleXMLElem.Create(ASimpleXML: TJclSimpleXML);
 begin
-  inherited Create;
+  Create;
   FSimpleXML := ASimpleXML;
 end;
 
@@ -3471,6 +3473,13 @@ begin
 end;
 
 //=== { TJclSimpleXMLElemHeader } ============================================
+
+constructor TJclSimpleXMLElemHeader.Create;
+begin
+  inherited Create;
+
+  Name := 'xml';
+end;
 
 function TJclSimpleXMLElemHeader.GetEncoding: string;
 var
