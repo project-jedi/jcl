@@ -1,4 +1,4 @@
-{**************************************************************************************************}
+﻿{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -133,7 +133,7 @@ resourcestring
   {$IFDEF MSWINDOWS}
   RsENoOpenHelp                 = 'open help not present in Borland Developer Studio';
   {$ENDIF MSWINDOWS}
-  RsERsVars                     = 'Query of RsVars reported the following error "%s"';
+  RsERsVars                     = 'Query of RsVars for %s %d reported the following error "%s"';
 
 //=== JclMsBuild.pas =========================================================
 resourcestring

@@ -1,4 +1,4 @@
-{**************************************************************************************************}
+﻿{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -647,7 +647,8 @@ type
     class function GetDefaultProjectsDirectory(const RootDir: string; IDEVersionNumber: Integer): string;
     class function GetCommonProjectsDirectory(const RootDir: string; IDEVersionNumber: Integer): string;
     class procedure GetRsVars(const RootDir: string; IDEVersionNumber: Integer; Variables: TStrings);
-    {class }function RadToolName: string; override;
+    {class }function RadToolName: string; overload; override;
+    class function RadToolName(IDEVersionNumber: Integer): string; reintroduce; overload;
 
     function AddToCppSearchPath(const Path: string; APlatform: TJclBDSPlatform): Boolean;
     function AddToCppBrowsingPath(const Path: string; APlatform: TJclBDSPlatform): Boolean;
@@ -3695,7 +3696,7 @@ begin
       [ComSpec, ExtractShortPathName(RootDir), DirDelimiter, DirDelimiter]), RsVarsOutput, RsVarsError) = 0) then
       Variables.Text := RsVarsOutput
     else
-      raise EJclBorRADException.CreateResFmt(@RsERsVars, [RsVarsError]);
+      raise EJclBorRADException.CreateResFmt(@RsERsVars, [RadToolName(IDEVersionNumber), IDEVersionNumber, RsVarsError]);
   end;
 end;
 
@@ -3971,12 +3972,21 @@ begin
   Result := brBorlandDevStudio;
 end;
 
+class function TJclBDSInstallation.RadToolName(
+  IDEVersionNumber: Integer): string;
+begin
+  if IDEVersionNumber in [Low(BDSVersions)..High(BDSVersions)] then
+    Result := LoadResString(BDSVersions[IDEVersionNumber].Name)
+  else
+    Result := LoadResString(@RsBDSName);
+end;
+
 function TJclBDSInstallation.RadToolName: string;
 begin
   // The name comes from IDEVersionNumber
+  Result := RadToolName(IDEVersionNumber);
   if IDEVersionNumber in [Low(BDSVersions)..High(BDSVersions)] then
   begin
-    Result := LoadResString(BDSVersions[IDEVersionNumber].Name);
     // IDE Version 5 comes in three flavors:
     // - Delphi only  (Spacely)
     // - C++Builder only  (Cogswell)
@@ -3986,9 +3996,7 @@ begin
     else
     if (IDEVersionNumber = 5) and (Personalities = [bpBCBuilder32]) then
       Result := LoadResString(@RsBCBName);
-  end
-  else
-    Result := LoadResString(@RsBDSName);
+  end;
 end;
 
 function TJclBDSInstallation.RegisterPackage(const BinaryFileName, Description: string): Boolean;
