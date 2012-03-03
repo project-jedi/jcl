@@ -63,7 +63,10 @@ type
   {$IFDEF SUPPORTS_GENERICS}{$JPPDEFINE KEYGENERIC}{$JPPDEFINE VALUEGENERIC}{$JPPUNDEF KEYREFCOUNTED}{$JPPUNDEF VALUEREFCOUNTED}{$JPPUNDEF KEYZEROINIT}{$JPPUNDEF VALUEZEROINIT}
   //DOM-IGNORE-BEGIN
 
-  (*$JPPEXPANDMACRO JCLSORTEDMAPTYPESINT(TJclSortedEntry<TKey\,TValue>,TJclSortedEntryArray<TKey\,TValue>,TKey,TValue)*)
+  TJclSortedEntry<TKey,TValue> = record
+    Key: TKey;
+    Value: TValue;
+  end;
 
   (*$JPPEXPANDMACRO JCLSORTEDMAPINT(TSortedEntry,TSortedEntryArray,TJclSortedMap<TKey\,TValue>,TJclAbstractContainerBase,IJclMap<TKey\,TValue>,IJclSortedMap<TKey\,TValue>,IJclSet<TKey>,IJclCollection<TValue>, IJclPairOwner<TKey\,TValue>\,,
 

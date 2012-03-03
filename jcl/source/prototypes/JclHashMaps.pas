@@ -69,12 +69,10 @@ type
     Value: TValue;
   end;
 
-  TJclHashEntryArray<TKey,TValue> = array of TJclHashEntry<TKey,TValue>;
-
   TJclBucket<TKey,TValue> = class
   public
     type
-      THashEntryArray = TJclHashEntryArray<TKey,TValue>;
+      THashEntryArray = array of TJclHashEntry<TKey,TValue>;
   public
     Size: Integer;
     Entries: THashEntryArray;

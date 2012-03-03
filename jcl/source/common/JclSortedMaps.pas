@@ -2691,8 +2691,6 @@ type
     Value: TValue;
   end;
 
-  TJclSortedEntryArray<TKey,TValue> = array of TJclSortedEntry<TKey,TValue>;
-
   TJclSortedMap<TKey,TValue> = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclPairOwner<TKey,TValue>,
     IJclMap<TKey,TValue>, IJclSortedMap<TKey,TValue>)
