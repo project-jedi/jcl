@@ -71,8 +71,9 @@ uses
   {$ELSE ~HAS_UNITSCOPE}
   Windows, SysUtils,
   {$IFNDEF FPC}
-  AccCtrl, ActiveX,
+  AccCtrl,
   {$ENDIF ~FPC}
+  ActiveX,
   {$ENDIF ~HAS_UNITSCOPE}
   JclBase;
 
@@ -81,6 +82,7 @@ uses
 {$HPPEMIT '#include <WinBase.h>'}
 {$HPPEMIT '#include <BaseTsd.h>'}
 {$HPPEMIT '#include <ImageHlp.h>'}
+{$HPPEMIT '#include <IoAPI.h>'}
 {$HPPEMIT '#include <lm.h>'}
 {$HPPEMIT '#include <Nb30.h>'}
 {$HPPEMIT '#include <RasDlg.h>'}
@@ -3520,6 +3522,13 @@ const
 
   SYMOPT_DEBUG                  = $80000000;
   {$EXTERNALSYM SYMOPT_DEBUG}
+
+// IoAPI.h
+
+
+function CancelIo(hFile: THandle): BOOL; stdcall;
+{$EXTERNALSYM CancelIo}
+
 
 const
   NERR_Success = 0; // Success
@@ -7978,6 +7987,18 @@ begin
 end;
 
 
+
+
+type
+  TCancelIo = function (hFile: THandle): BOOL; stdcall;
+var
+  _CancelIo: TCancelIo = nil;
+
+function CancelIo(hFile: THandle): BOOL;
+begin
+  GetProcedureAddress(Pointer(@_CancelIo), kernel32, 'CancelIo');
+  Result := _CancelIo(hFile);
+end;
 
 
 type

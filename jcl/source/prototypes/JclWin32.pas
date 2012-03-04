@@ -67,8 +67,9 @@ uses
   {$ELSE ~HAS_UNITSCOPE}
   Windows, SysUtils,
   {$IFNDEF FPC}
-  AccCtrl, ActiveX,
+  AccCtrl,
   {$ENDIF ~FPC}
+  ActiveX,
   {$ENDIF ~HAS_UNITSCOPE}
   JclBase;
 
@@ -77,6 +78,7 @@ uses
 {$HPPEMIT '#include <WinBase.h>'}
 {$HPPEMIT '#include <BaseTsd.h>'}
 {$HPPEMIT '#include <ImageHlp.h>'}
+{$HPPEMIT '#include <IoAPI.h>'}
 {$HPPEMIT '#include <lm.h>'}
 {$HPPEMIT '#include <Nb30.h>'}
 {$HPPEMIT '#include <RasDlg.h>'}
@@ -129,6 +131,7 @@ type
 {$I win32api\WinBase.int}
 {$I win32api\AclApi.int}
 {$I win32api\ImageHlp.int}
+{$I win32api\IoAPI.int}
 {$I win32api\LmErr.int}
 {$I win32api\LmCons.int}
 {$I win32api\LmAccess.int}
@@ -293,6 +296,7 @@ end;
 
 {$I win32api\AclApi.imp}
 {$I win32api\ImageHlp.imp}
+{$I win32api\IoAPI.imp}
 {$I win32api\LmAccess.imp}
 {$I win32api\LmApiBuf.imp}
 {$I win32api\Lmwksta.imp}

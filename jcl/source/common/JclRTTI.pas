@@ -1890,7 +1890,7 @@ begin
       AInstance := GetObjectProp(FInstance, PropInfo);
       if AInstance <> nil then
       begin
-        SubClassTypeInfo := TJclObjClassTypeInfo.Create(PropInfo.PropType^, Prefix, AInstance);
+        SubClassTypeInfo := TJclObjClassTypeInfo.Create(PropInfo.PropType{$IFDEF BORLAND}^{$ENDIF}, Prefix, AInstance);
         Result := SubClassTypeInfo.ObjPropNames[Suffix];
       end
       else

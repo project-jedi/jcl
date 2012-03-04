@@ -845,11 +845,11 @@ asm
        // --> RCX Str
        XOR     RAX, RAX // clear high order byte to be able to use 64bit operand below
 @@1:
-       MOV     AX, WORD PTR [ECX]
+       MOV     AX, WORD PTR [RCX]
        OR      RAX, RAX
        JZ      @@2
        XCHG    AL, AH
-       MOV     WORD PTR [ECX], AX
+       MOV     WORD PTR [RCX], AX
        ADD     ECX, 2
        JMP     @@1
 @@2:

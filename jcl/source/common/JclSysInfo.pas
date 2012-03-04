@@ -4323,6 +4323,9 @@ function CPUID: TCpuInfo;
       SETNZ   Result
       {$ENDIF CPU32}
       {$IFDEF CPU64}
+      {$IFDEF FPC}
+        {$DEFINE DELPHI64_TEMPORARY}
+      {$ENDIF FPC}
       {$IFDEF DELPHI64_TEMPORARY}
       PUSHFQ
       {$ELSE ~DELPHI64_TEMPORARY}
@@ -4347,6 +4350,9 @@ function CPUID: TCpuInfo;
       AND     RAX, ID_FLAG
       XOR     RAX, RCX
       SETNZ   Result
+      {$IFDEF FPC}
+        {$UNDEF DELPHI64_TEMPORARY}
+      {$ENDIF FPC}
       {$ENDIF CPU64}
     end;
   {$IFNDEF DELPHI64_TEMPORARY}

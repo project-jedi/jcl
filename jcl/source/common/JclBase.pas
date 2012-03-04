@@ -351,7 +351,6 @@ function Addr32ToAddr64(const Value: TJclAddr32): TJclAddr64;
 {$IFDEF FPC}
 type
   HWND = type Windows.HWND;
-  HMODULE = type Windows.HMODULE;
 {$ENDIF FPC}
 
  {$IFDEF SUPPORTS_GENERICS}
