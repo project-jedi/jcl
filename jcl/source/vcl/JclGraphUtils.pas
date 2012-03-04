@@ -32,7 +32,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                          $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -291,7 +291,12 @@ uses
   {$IFDEF HAS_UNITSCOPE}
   System.Classes, Vcl.Consts, System.Math,
   {$ELSE ~HAS_UNITSCOPE}
-  Classes, Consts, Math,
+  Classes, Math,
+  {$IFDEF FPC}
+  RTLConsts,
+  {$ELSE ~FPC}
+  Consts,
+  {$ENDIF ~FPC}
   {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
   System.UITypes,
@@ -575,9 +580,10 @@ var
   P: ^Longword;
 begin
   GetMem(AlphaTable, 257 * 8);
-  alpha_ptr := Pointer(Integer(AlphaTable) and $FFFFFFF8);
-  if Integer(alpha_ptr) < Integer(AlphaTable) then
-    alpha_ptr := Pointer(Integer(alpha_ptr) + 8);
+  if (TJclAddr(AlphaTable) mod 8) <> 0 then
+    alpha_ptr := Pointer((TJclAddr(AlphaTable) + 8) and (not TJclAddr(7)))
+  else
+    alpha_ptr := AlphaTable;
   P := alpha_ptr;
   for I := 0 to 255 do
   begin
@@ -587,7 +593,7 @@ begin
     P^ := L;
     Inc(P);
   end;
-  bias_ptr := Pointer(Integer(alpha_ptr) + $80 * 8);
+  bias_ptr := Pointer(TJclAddr(alpha_ptr) + $80 * 8);
 end;
 
 procedure FreeAlphaTable;

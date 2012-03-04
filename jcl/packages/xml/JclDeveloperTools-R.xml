@@ -24,29 +24,29 @@
     <File Name="..\..\source\common\JclCompilerUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclDevToolsResources.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclIDEUtils.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclPreProcessorAlgorithmsTemplates.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclPreProcessorArrayListsTemplates.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclPreProcessorArraySetsTemplates.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclPreProcessorBinaryTreesTemplates.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclPreProcessorContainer1DTemplates.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclPreProcessorContainer2DTemplates.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclPreProcessorContainerIntfTemplates.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclPreProcessorContainerKnownMaps.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclPreProcessorContainerKnownTypes.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclPreProcessorContainerTemplates.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclPreProcessorContainerTypes.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclPreProcessorExcDlgTemplates.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclPreProcessorHashMapsTemplates.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclPreProcessorHashSetsTemplates.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclPreProcessorLexer.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclPreProcessorLinkedListsTemplates.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclPreProcessorParser.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclPreProcessorQueuesTemplates.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclPreProcessorSortedMapsTemplates.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclPreProcessorStacksTemplates.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclPreProcessorTemplates.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclPreProcessorTreesTemplates.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclPreProcessorVectorsTemplates.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclPreProcessorAlgorithmsTemplates.pas" Targets="runtimeIDE,help" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclPreProcessorArrayListsTemplates.pas" Targets="runtimeIDE,help" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclPreProcessorArraySetsTemplates.pas" Targets="runtimeIDE,help" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclPreProcessorBinaryTreesTemplates.pas" Targets="runtimeIDE,help" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclPreProcessorContainer1DTemplates.pas" Targets="runtimeIDE,help" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclPreProcessorContainer2DTemplates.pas" Targets="runtimeIDE,help" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclPreProcessorContainerIntfTemplates.pas" Targets="runtimeIDE,help" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclPreProcessorContainerKnownMaps.pas" Targets="runtimeIDE,help" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclPreProcessorContainerKnownTypes.pas" Targets="runtimeIDE,help" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclPreProcessorContainerTemplates.pas" Targets="runtimeIDE,help" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclPreProcessorContainerTypes.pas" Targets="runtimeIDE,help" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclPreProcessorExcDlgTemplates.pas" Targets="runtimeIDE,help" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclPreProcessorHashMapsTemplates.pas" Targets="runtimeIDE,help" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclPreProcessorHashSetsTemplates.pas" Targets="runtimeIDE,help" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclPreProcessorLexer.pas" Targets="runtimeIDE,help" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclPreProcessorLinkedListsTemplates.pas" Targets="runtimeIDE,help" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclPreProcessorParser.pas" Targets="runtimeIDE,help" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclPreProcessorQueuesTemplates.pas" Targets="runtimeIDE,help" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclPreProcessorSortedMapsTemplates.pas" Targets="runtimeIDE,help" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclPreProcessorStacksTemplates.pas" Targets="runtimeIDE,help" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclPreProcessorTemplates.pas" Targets="runtimeIDE,help" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclPreProcessorTreesTemplates.pas" Targets="runtimeIDE,help" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclPreProcessorVectorsTemplates.pas" Targets="runtimeIDE,help" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclUsesUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclHelpUtils.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclMsBuild.pas" Targets="Windows" Formname="" Condition=""/>

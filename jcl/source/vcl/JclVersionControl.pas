@@ -643,17 +643,21 @@ end;
 
 function TJclVersionControlSystemPlugin.ExecuteAction(const FileName: TFileName; const Action:
     TJclVersionControlActionType): Boolean;
+var
+  AppHandle: THandle;
 begin
+  AppHandle := {$IFDEF BORLAND}Application.Handle{$ELSE}0{$ENDIF};
+
   case Action of
     vcaContextMenu:
       Result := DisplayContextMenu(0, FileName, Mouse.CursorPos);
     vcaExplore:
-      Result := OpenFolder(PathExtractFileDirFixed(FileName), Application.Handle, True);
+      Result := OpenFolder(PathExtractFileDirFixed(FileName), AppHandle, True);
     vcaExploreSandbox:
-      Result := OpenFolder(FileName, Application.Handle, True);
+      Result := OpenFolder(FileName, AppHandle, True);
     vcaProperties,
     vcaPropertiesSandbox:
-      Result := DisplayPropDialog(Application.Handle, FileName);
+      Result := DisplayPropDialog(AppHandle, FileName);
     else
       Result := inherited ExecuteAction(FileName, Action);
   end;

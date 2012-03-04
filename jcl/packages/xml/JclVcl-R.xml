@@ -9,6 +9,8 @@
   <Requires>
     <Package Name="rtl" Targets="Delphi,Bcb,Bds" Condition=""/>
     <Package Name="vcl" Targets="Delphi,Bcb,Bds" Condition=""/>
+    <Package Name="FCL" Targets="fpc" Condition=""/>
+    <Package Name="LCL" Targets="fpc" Condition=""/>
     <Package Name="vcljpg" Targets="c6,d6,d7,d8,d9,d10,cs1,d11" Condition=""/>
     <Package Name="vclimg" Targets="allv11up" Condition=""/>
     <Package Name="..\..\..\help\VCL" Targets="help" Condition=""/>
@@ -21,16 +23,16 @@
   </Platforms>
   <Contains>
     <File Name="..\..\source\vcl\JclPrint.pas" Targets="Vcl" Formname="" Condition=""/>
-    <File Name="..\..\source\vcl\JclGraphUtils.pas" Targets="Vcl" Formname="" Condition=""/>
-    <File Name="..\..\source\vcl\JclGraphics.pas" Targets="Vcl" Formname="" Condition=""/>
-    <File Name="..\..\source\vcl\JclFont.pas" Targets="Vcl" Formname="" Condition=""/>
+    <File Name="..\..\source\vcl\JclGraphUtils.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\source\vcl\JclGraphics.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\source\vcl\JclFont.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\vcl\JclOpenDialogHooks.pas" Targets="Vcl" Formname="" Condition=""/>
     <File Name="..\..\source\vcl\JclOpenDialogFavorites.pas" Targets="Vcl" Formname="" Condition=""/>
-    <File Name="..\..\source\vcl\JclVclResources.pas" Targets="Vcl" Formname="" Condition=""/>
-    <File Name="..\..\source\vcl\JclVersionControl.pas" Targets="Vcl" Formname="" Condition=""/>
-    <File Name="..\..\source\vcl\JclVersionCtrlCVSImpl.pas" Targets="Vcl" Formname="" Condition=""/>
-    <File Name="..\..\source\vcl\JclVersionCtrlGITImpl.pas" Targets="Vcl" Formname="" Condition=""/>
-    <File Name="..\..\source\vcl\JclVersionCtrlSVNImpl.pas" Targets="Vcl" Formname="" Condition=""/>
+    <File Name="..\..\source\vcl\JclVclResources.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\source\vcl\JclVersionControl.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\source\vcl\JclVersionCtrlCVSImpl.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\source\vcl\JclVersionCtrlGITImpl.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\source\vcl\JclVersionCtrlSVNImpl.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\..\help\Bitmap32.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\Font.dtx" Targets="help" Formname="" Condition=""/>

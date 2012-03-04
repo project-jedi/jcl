@@ -103,7 +103,7 @@ begin
 
   if (FontType = ftAuto) then
   begin
-    if (AObject.ClassType = TMemo) or (AObject.ClassType = TRichEdit) then
+    if (AObject.ClassType = TMemo) {$IFDEF BORLAND}or (AObject.ClassType = TRichEdit){$ENDIF} then
       AFontType := ftContent
     else
       AFontType := ftCaption;

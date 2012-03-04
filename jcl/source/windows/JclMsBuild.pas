@@ -1451,7 +1451,7 @@ var
   Index: Integer;
   Prop: TJclSimpleXmlProp;
   SubElem: TJclSimpleXmlElem;
-  Executed, Otherwise: Boolean;
+  Executed, _Otherwise: Boolean;
 begin
   for Index := 0 to XmlElem.PropertyCount - 1 do
   begin
@@ -1460,7 +1460,7 @@ begin
   end;
 
   Executed := False;
-  Otherwise := False;
+  _Otherwise := False;
   
   for Index := 0 to XmlElem.ItemCount - 1 do
   begin
@@ -1470,9 +1470,9 @@ begin
     else
     if SubElem.Name = 'Otherwise' then
     begin
-      if Otherwise then
+      if _Otherwise then
         raise EJclMsBuildError.CreateRes(@RsEMultipleOtherwise);
-      Otherwise := True;
+      _Otherwise := True;
       Executed := ParseOtherwise(SubElem, Executed);
     end
     else
