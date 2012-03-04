@@ -48,6 +48,8 @@ uses
   SysUtils;
   {$ENDIF ~HAS_UNITSCOPE}
 
+{$IFDEF BORLAND}
+
 type
   PJclCppStdException = type Pointer; { mapped to std::exception* via $HPPEMIT }
   {$EXTERNALSYM PJclCppStdException}
@@ -144,6 +146,7 @@ procedure JclInstallCppExceptionFilter;
 procedure JclUninstallCppExceptionFilter;
 function JclCppExceptionFilterInstalled: Boolean;
 
+{$ENDIF BORLAND}
 
 {$IFDEF UNITVERSIONING}
 const
@@ -158,6 +161,8 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
+
+{$IFDEF BORLAND}
 
 uses
   JclResources, JclHookExcept;
@@ -735,6 +740,16 @@ function JclCppExceptionFilterInstalled: Boolean;
 begin
   Result := HookInstalled;
 end;
+
+{$ENDIF BORLAND}
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 
