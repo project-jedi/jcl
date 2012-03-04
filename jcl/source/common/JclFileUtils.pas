@@ -6557,9 +6557,9 @@ begin
   if fsMaxSize in Options then
     Task.FileSizeMax := FileSizeMax;
   if fsLastChangeAfter in Options then
-    Task.FFileTimeMin := DateTimeToFileDate(LastChangeAfter);
+    Task.FFileTimeMin := {$IFDEF RTL220_UP}LastChangeAfter{$ELSE}DateTimeToFileDate(LastChangeAfter){$ENDIF};
   if fsLastChangeBefore in Options then
-    Task.FFileTimeMax := DateTimeToFileDate(LastChangeBefore);
+    Task.FFileTimeMax := {$IFDEF RTL220_UP}LastChangeBefore{$ELSE}DateTimeToFileDate(LastChangeBefore){$ENDIF};
   Task.SynchronizationMode := SynchronizationMode;
   Task.FOnEnterDirectory := OnEnterDirectory;
   Task.OnTerminate := TaskTerminated;
