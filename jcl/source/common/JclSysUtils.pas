@@ -412,14 +412,14 @@ function GetImplementorOfInterface(const I: IInterface): TObject;
 
 // interfaced persistent
 type
-  TJclInterfacedPersistent = class(TPersistent, IInterface)
+  TJclInterfacedPersistent = class(TInterfacedPersistent, IInterface)
   protected
     FOwnerInterface: IInterface;
     FRefCount: Integer;
   public
     procedure AfterConstruction; override;
     { IInterface }
-    function QueryInterface(const IID: TGUID; out Obj): HRESULT; virtual; stdcall;
+    // function QueryInterface(const IID: TGUID; out Obj): HRESULT; virtual; stdcall;
     function _AddRef: Integer; stdcall;
     function _Release: Integer; stdcall;
   end;
@@ -641,14 +641,14 @@ function GUIDEquals(const GUID1, GUID2: TGUID): Boolean;
 // thread safe support
 
 type
-  TJclIntfCriticalSection = class(TObject, IInterface)
+  TJclIntfCriticalSection = class(TInterfacedObject, IInterface)
   private
     FCriticalSection: TCriticalSection;
   public
     constructor Create;
     destructor Destroy; override;
     { IInterface }
-    function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
+    // function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
     function _AddRef: Integer; stdcall;
     function _Release: Integer; stdcall;
   end;
@@ -814,7 +814,8 @@ uses
   AnsiStrings,
   {$ENDIF HAS_UNIT_ANSISTRINGS}
   {$ENDIF ~HAS_UNITSCOPE}
-  JclFileUtils, JclMath, JclResources, JclStrings, JclStringConversions, JclSysInfo; 
+  JclFileUtils, JclMath, JclResources, JclStrings,
+  JclStringConversions, JclSysInfo, JclWin32;
 
 // memory initialization
 procedure ResetMemory(out P; Size: Longint);
@@ -2222,15 +2223,6 @@ begin
     GetOwner.GetInterface(IInterface, FOwnerInterface);
 end;
 
-function TJclInterfacedPersistent.QueryInterface(const IID: TGUID;
-  out Obj): HRESULT;
-begin
-  if GetInterface(IID, Obj) then
-    Result := S_OK
-  else
-    Result := E_NOINTERFACE;
-end;
-
 function TJclInterfacedPersistent._AddRef: Integer;
 begin
   if FOwnerInterface <> nil then
@@ -2860,7 +2852,7 @@ begin
       end;
       InternalAbort := False;
       if AbortPtr <> nil then
-        AbortPtr^ := False
+        AbortPtr^ := {$IFDEF FPC}Byte({$ENDIF}False{$IFDEF FPC}){$ENDIF}
       else
         AbortPtr := @InternalAbort;
       // init the array of events to wait for
@@ -2902,7 +2894,7 @@ begin
         InternalExecuteReadPipe(ErrorPipeInfo, ErrorOverlapped);
       end;
       // event based loop
-      while not AbortPtr^ do
+      while not {$IFDEF FPC}Boolean({$ENDIF}AbortPtr^{$IFDEF FPC}){$ENDIF} do
       begin
         Index := WaitAlertableForMultipleObjects(WaitEvents, False, INFINITE);
         if Index = WAIT_OBJECT_0 then
@@ -2932,7 +2924,7 @@ begin
         if ((Index = (WAIT_OBJECT_0 + 2)) and MergeError) or
            ((Index = (WAIT_OBJECT_0 + 3)) and not MergeError) then
           // event on abort
-          AbortPtr^ := True
+          AbortPtr^ := {$IFDEF FPC}Byte({$ENDIF}True{$IFDEF FPC}){$ENDIF}
         else
           {$IFDEF DELPHI11_UP}
           RaiseLastOSError(Index);
@@ -2940,7 +2932,7 @@ begin
           RaiseLastOSError;
           {$ENDIF DELPHI11_UP}
       end;
-      if AbortPtr^ then
+      if {$IFDEF FPC}Boolean({$ENDIF}AbortPtr^{$IFDEF FPC}){$ENDIF} then
         TerminateProcess(ProcessEvent.Handle, Cardinal(ABORT_EXIT_CODE));
       if (ProcessEvent.WaitForever = wrSignaled) and not GetExitCodeProcess(ProcessEvent.Handle, Result) then
         Result := $FFFFFFFF;
@@ -3645,14 +3637,6 @@ function TJclIntfCriticalSection._Release: Integer;
 begin
   FCriticalSection.Release;
   Result := 0;
-end;
-
-function TJclIntfCriticalSection.QueryInterface(const IID: TGUID; out Obj): HRESULT;
-begin
-  if GetInterface(IID, Obj) then
-    Result := S_OK
-  else
-    Result := E_NOINTERFACE;
 end;
 
 //=== { TJclSimpleLog } ======================================================

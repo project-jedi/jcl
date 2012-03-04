@@ -36,7 +36,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -764,7 +764,7 @@ type
   TJclStreamAccess = (saCreate, saReadOnly, saReadOnlyDenyNone, saWriteOnly, saReadWrite);
 
   { TJclCompressionArchive is not ref-counted }
-  TJclCompressionArchive = class(TObject, IInterface)
+  TJclCompressionArchive = class(TInterfacedObject, IInterface)
   private
     FOnProgress: TJclCompressionProgressEvent;
     FOnRatio: TJclCompressionRatioEvent;
@@ -799,7 +799,7 @@ type
     function GetSupportsNestedArchive: Boolean; virtual;
   public
     { IInterface }
-    function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
+    // function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
     function _AddRef: Integer; stdcall;
     function _Release: Integer; stdcall;
   public
@@ -5040,14 +5040,6 @@ end;
 function TJclCompressionArchive._Release: Integer;
 begin
   Result := -1;
-end;
-
-function TJclCompressionArchive.QueryInterface(const IID: TGUID; out Obj): HRESULT;
-begin
-  if GetInterface(IID, Obj) then
-    Result := 0
-  else
-    Result := E_NOINTERFACE;
 end;
 
 //=== { TJclCompressItem } ===================================================

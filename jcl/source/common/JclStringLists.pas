@@ -82,7 +82,11 @@ type
     function GetObjects(Index: Integer): TObject;
     function GetTextStr: string;
     function GetValue(const Name: string): string;
+    {$IFDEF FPC}
+    function Find(const S: string; out Index: Integer): Boolean;
+    {$ELSE ~FPC}
     function Find(const S: string; var Index: Integer): Boolean;
+    {$ENDIF ~FPC}
     function IndexOf(const S: string): Integer;
     function GetCaseSensitive: Boolean;
     function GetDuplicates: TDuplicates;
@@ -208,18 +212,30 @@ type
   end;
 
 type
-  TJclUpdateControl = class(TObject, IInterface)
+  TJclUpdateControl = class(TInterfacedObject, IInterface)
   private
     FStrings: TStrings;
   public
     constructor Create(AStrings: TStrings);
     { IInterface }
-    function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
+    // function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
     function _AddRef: Integer; stdcall;
     function _Release: Integer; stdcall;
   end;
 
-  TJclStringList = class(TStringList, IJclStringList)
+  TJclInterfacedStringList = class(TStringList, IInterface)
+   private
+    FOwnerInterface: IInterface;
+  public
+    { IInterface }
+     function _AddRef: Integer; stdcall;
+     function _Release: Integer; stdcall;
+     function QueryInterface({$IFDEF FPC_HAS_CONSTREF}constref{$ELSE}const{$ENDIF} IID: TGUID; out Obj): HResult;  stdcall;
+     procedure AfterConstruction; override;
+  end;
+
+
+  TJclStringList = class(TJclInterfacedStringList, IInterface, IJclStringList)
   private
     FObjectsMode: TJclStringListObjectsMode;
     FSelfAsInterface: IJclStringList;
@@ -240,7 +256,7 @@ type
     constructor Create;
     destructor Destroy; override;
     { IInterface }
-    function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
+    // function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
     function _AddRef: Integer; stdcall;
     function _Release: Integer; stdcall;
     { IJclStringList }
@@ -444,6 +460,45 @@ begin
   Result := JclStringList.Add(A);
 end;
 
+//=== { TJclInterfacedStringList } ==============================================
+
+procedure TJclInterfacedStringList.AfterConstruction;
+Var
+  MyOwner : TPersistent;
+begin
+  inherited;
+  MyOwner := GetOwner;
+  if Assigned(MyOwner) then
+    MyOwner.GetInterface(IUnknown,FOwnerInterface);
+end;
+
+
+function TJclInterfacedStringList._AddRef: Integer;stdcall;
+begin
+  if assigned(FOwnerInterface) then
+    Result := FOwnerInterface._AddRef
+  else
+    Result := -1;
+end;
+
+
+function TJclInterfacedStringList._Release: Integer;stdcall;
+begin
+  if assigned(FOwnerInterface) then
+    Result := FOwnerInterface._Release
+  else
+    Result := -1;
+end;
+
+
+function TJclInterfacedStringList.QueryInterface({$IFDEF FPC_HAS_CONSTREF}constref{$ELSE}const{$ENDIF} IID: TGUID; out Obj): HResult;stdcall;
+begin
+  if GetInterface(IID, Obj) then
+    Result := 0
+  else
+    Result := E_NOINTERFACE;
+end;
+
 //=== { TJclStringList } =====================================================
 
 function TJclStringList.Add(const A: array of const): IJclStringList;
@@ -603,14 +658,6 @@ begin
   for I := 0 to LastIndex do
     Strings[I] := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.Trim(Strings[I]);
   Result := FSelfAsInterface;
-end;
-
-function TJclStringList.QueryInterface(const IID: TGUID; out Obj): HRESULT;
-begin
-  if GetInterface(IID, Obj) then
-    Result := 0
-  else
-    Result := E_NOINTERFACE;
 end;
 
 function TJclStringList._AddRef: Integer;
@@ -1355,14 +1402,6 @@ function TJclUpdateControl._Release: Integer;
 begin
   FStrings.EndUpdate;
   Result := 0;
-end;
-
-function TJclUpdateControl.QueryInterface(const IID: TGUID; out Obj): HRESULT;
-begin
-  if GetInterface(IID, Obj) then
-    Result := S_OK
-  else
-    Result := E_NOINTERFACE;
 end;
 
 {$IFDEF UNITVERSIONING}

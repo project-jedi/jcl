@@ -171,7 +171,7 @@ type
     property ModuleName: string read GetModuleName;
   end;
 
-  TJclStackTraceViewerModuleInfoList = class(TObject, IJclModuleInfoList)
+  TJclStackTraceViewerModuleInfoList = class(TInterfacedObject, IInterface, IJclModuleInfoList)
   private
     FItems: TObjectList;
   public
@@ -181,7 +181,7 @@ type
     procedure Clear;
 
     { IInterface }
-    function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
+    // function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
     function _AddRef: Integer; stdcall;
     function _Release: Integer; stdcall;
     { IJclModuleInfoList }
@@ -615,14 +615,6 @@ end;
 function TJclStackTraceViewerModuleInfoList.GetModuleInfo(AIndex: Integer): IJclModuleInfo;
 begin
   FItems[AIndex].GetInterface(IJclModuleInfo, Result);
-end;
-
-function TJclStackTraceViewerModuleInfoList.QueryInterface(const IID: TGUID; out Obj): HRESULT;
-begin
-  if GetInterface(IID, Obj) then
-    Result := S_OK
-  else
-    Result := E_NOINTERFACE;
 end;
 
 function TJclStackTraceViewerModuleInfoList._AddRef: Integer;

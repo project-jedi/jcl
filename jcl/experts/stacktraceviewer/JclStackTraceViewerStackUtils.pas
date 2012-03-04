@@ -48,7 +48,7 @@ type
   TJclLocationInfoProgressEvent = procedure(AStatus: TLocationInfoProcessorProgressStatus;
     APos, AMax: Integer; const AText: string) of object;
 
-  TJclLocationInfoProcessor = class(TObject, IJclStackTraceViewerStackProcessorServices)
+  TJclLocationInfoProcessor = class(TInterfacedObject, IInterface, IJclStackTraceViewerStackProcessorServices)
   private
     FModuleList: IJclModuleInfoList;
     FOnProgress: TJclLocationInfoProgressEvent;
@@ -61,7 +61,7 @@ type
     property RootDir: string read FRootDir write FRootDir;
 
     { IInterface }
-    function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
+    // function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
     function _AddRef: Integer; stdcall;
     function _Release: Integer; stdcall;
     { IJclStackTraceViewerStackProcessorServices }
@@ -554,14 +554,6 @@ begin
     DoProgress(lippsFinished, 0, 0, '');
     AStack.Prepared := True;
   end;
-end;
-
-function TJclLocationInfoProcessor.QueryInterface(const IID: TGUID; out Obj): HRESULT;
-begin
-  if GetInterface(IID, Obj) then
-    Result := S_OK
-  else
-    Result := E_NOINTERFACE;
 end;
 
 procedure TJclLocationInfoProcessor.SetModuleInfoList(AValue: IJclModuleInfoList);

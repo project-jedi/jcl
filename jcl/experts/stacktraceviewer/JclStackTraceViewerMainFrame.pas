@@ -122,7 +122,7 @@ uses
 {$R *.dfm}
 
 type
-  TCustomTreeViewLink = class(TObject, IJclStackTraceViewerTreeViewLink)
+  TCustomTreeViewLink = class(TInterfacedObject, IInterface, IJclStackTraceViewerTreeViewLink)
   private
     function GetInternalItems(AIndex: Integer): TCustomTreeViewLink;
   protected
@@ -138,7 +138,7 @@ type
     property OwnsData: Boolean read FOwnsData write FOwnsData;
     property Parent: TCustomTreeViewLink read FParent;
     { IInterface }
-    function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
+    // function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
     function _AddRef: Integer; stdcall;
     function _Release: Integer; stdcall;
     { IJclStackTraceViewerTreeViewLink }
@@ -237,14 +237,6 @@ end;
 function TCustomTreeViewLink.GetText: string;
 begin
   Result := '';
-end;
-
-function TCustomTreeViewLink.QueryInterface(const IID: TGUID; out Obj): HRESULT;
-begin
-  if GetInterface(IID, Obj) then
-    Result := S_OK
-  else
-    Result := E_NOINTERFACE;
 end;
 
 procedure TCustomTreeViewLink.Show(AFrame: TCustomFrame);
