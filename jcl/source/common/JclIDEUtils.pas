@@ -588,6 +588,7 @@ type
     FDCCIL: TJclDCCIL;
     FDCC64: TJclDCC64;
     FPdbCreate: Boolean;
+    FRsVars: TStrings;
     procedure SetDualPackageInstallation(const Value: Boolean);
     function GetCppPathsKeyName: string;
     function GetCppBrowsingPath(APlatform: TJclBDSPlatform): TJclBorRADToolPath;
@@ -611,6 +612,7 @@ type
     function GetMsBuildEnvOption(const OptionName: string; APlatform: TJclBDSPlatform; Raw: Boolean): string;
     procedure SetMsBuildEnvOption(const OptionName, Value: string; APlatform: TJclBDSPlatform);
     function GetBDSPlatformStr(APlatform: TJclBDSPlatform): string;
+    function GetRsVars: TStrings; overload;
   protected
     function GetDCPOutputPath(APlatform: TJclBDSPlatform): string; override;
     function GetBPLOutputPath(APlatform: TJclBDSPlatform): string; override;
@@ -646,7 +648,7 @@ type
     function GetCommonProjectsDir: string; override;
     class function GetDefaultProjectsDirectory(const RootDir: string; IDEVersionNumber: Integer): string;
     class function GetCommonProjectsDirectory(const RootDir: string; IDEVersionNumber: Integer): string;
-    class procedure GetRsVars(const RootDir: string; IDEVersionNumber: Integer; Variables: TStrings);
+    class procedure GetRADStudioVars(const RootDir: string; IDEVersionNumber: Integer; Variables: TStrings); overload;
     {class }function RadToolName: string; overload; override;
     class function RadToolName(IDEVersionNumber: Integer): string; reintroduce; overload;
 
@@ -682,6 +684,7 @@ type
     property DCCIL: TJclDCCIL read GetDCCIL;
     property MaxDelphiCLRVersion: string read GetMaxDelphiCLRVersion;
     property PdbCreate: Boolean read FPdbCreate write FPdbCreate;
+    property RsVars: TStrings read GetRsVars;
   end;
   {$ENDIF MSWINDOWS}
 
@@ -3210,6 +3213,7 @@ end;
 
 destructor TJclBDSInstallation.Destroy;
 begin
+  FreeAndNil(FRsVars);
   FreeAndNil(FDCCIL);
   FreeAndNil(FHelp2Manager);
   inherited Destroy;
@@ -3465,7 +3469,7 @@ begin
 
     Variables := TStringList.Create;
     try
-      GetRsVars(RootDir, IDEVersionNumber, Variables);
+      GetRADStudioVars(RootDir, IDEVersionNumber, Variables);
       Result := Variables.Values[EnvVariableBDSCOMDIRValueName];
     finally
       Variables.Free;
@@ -3684,7 +3688,7 @@ begin
   end;
 end;
 
-class procedure TJclBDSInstallation.GetRsVars(const RootDir: string; IDEVersionNumber: Integer; Variables: TStrings);
+class procedure TJclBDSInstallation.GetRADStudioVars(const RootDir: string; IDEVersionNumber: Integer; Variables: TStrings);
 var
   RsVarsOutput, ComSpec, RsVarsError: string;
 begin
@@ -3698,6 +3702,16 @@ begin
     else
       raise EJclBorRADException.CreateResFmt(@RsERsVars, [RadToolName(IDEVersionNumber), IDEVersionNumber, RsVarsError]);
   end;
+end;
+
+function TJclBDSInstallation.GetRsVars: TStrings;
+begin
+  if not Assigned(FRsVars) or (FRsVars.Count = 0) then
+  begin
+    FRsVars := TStringList.Create;
+    GetRADStudioVars(RootDir, IDEVersionNumber, FRsVars);
+  end;
+  Result := FRsVars;
 end;
 
 function TJclBDSInstallation.GetValid: Boolean;
@@ -3785,16 +3799,11 @@ begin
     EnvOptions.Init;
 
     // add custom "environment" variables
-    Variables := TStringList.Create;
-    try
-      GetRsVars(RootDir, IDEVersionNumber, Variables);
-      for Index := 0 to Variables.Count - 1 do
-      begin
-        EnvOptionName := Variables.Names[Index];
-        EnvOptions.Properties.EnvironmentProperties.Values[EnvOptionName] := Variables.Values[EnvOptionName];
-      end;
-    finally
-      Variables.Free;
+    Variables := RsVars;
+    for Index := 0 to Variables.Count - 1 do
+    begin
+      EnvOptionName := Variables.Names[Index];
+      EnvOptions.Properties.EnvironmentProperties.Values[EnvOptionName] := Variables.Values[EnvOptionName];
     end;
 
     if SupportsPlatform then
@@ -4083,16 +4092,11 @@ begin
     EnvOptions.Init;
 
     // add custom "environment" variables
-    Variables := TStringList.Create;
-    try
-      GetRsVars(RootDir, IDEVersionNumber, Variables);
-      for Index := 0 to Variables.Count - 1 do
-      begin
-        EnvOptionName := Variables.Names[Index];
-        EnvOptions.Properties.EnvironmentProperties.Values[EnvOptionName] := Variables.Values[EnvOptionName];
-      end;
-    finally
-      Variables.Free;
+    Variables := RsVars;
+    for Index := 0 to Variables.Count - 1 do
+    begin
+      EnvOptionName := Variables.Names[Index];
+      EnvOptions.Properties.EnvironmentProperties.Values[EnvOptionName] := Variables.Values[EnvOptionName];
     end;
 
     if SupportsPlatform then

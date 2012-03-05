@@ -125,6 +125,8 @@ type
     FCppSearchPath: string;
     FSupportsNoConfig: Boolean;
     FSupportsPlatform: Boolean;
+    FRsVars: TStrings;
+    procedure SetRsVars(const Value: TStrings);
   protected
     procedure AddProjectOptions(const ProjectFileName, DCPPath: string);
     function Compile(const ProjectFileName: string): Boolean;
@@ -133,6 +135,7 @@ type
     constructor Create(const ABinDirectory: string; ALongPathBug: Boolean;
       ACompilerSettingsFormat: TJclCompilerSettingsFormat; ASupportsNoConfig, ASupportsPlatform: Boolean;
       const ADCPSearchPath, ALibrarySearchPath, ALibraryDebugSearchPath, ACppSearchPath: string);
+    destructor Destroy; override;
     function GetExeName: string; override;
     function Execute(const CommandLine: string): Boolean; override;
     function MakePackage(const PackageName, BPLPath, DCPPath: string;
@@ -147,6 +150,7 @@ type
     property DCPSearchPath: string read FDCPSearchPath;
     property LibrarySearchPath: string read FLibrarySearchPath;
     property LibraryDebugSearchPath: string read FLibraryDebugSearchPath;
+    property RsVars: TStrings read FRsVars write SetRsVars;
     property SupportsNoConfig: Boolean read FSupportsNoConfig;
     property SupportsPlatform: Boolean read FSupportsPlatform;
   end;
@@ -813,7 +817,8 @@ end;
 
 function TJclDCC32.AddDProjOptions(const ProjectFileName: string; var ProjectOptions: TProjectOptions): Boolean;
 var
-  DProjFileName, PersonalityName: string;
+  Index: Integer;
+  DProjFileName, PersonalityName, Name: string;
   MsBuildOptions: TJclMsBuildParser;
   ProjectExtensionsNode, PersonalityNode: TJclSimpleXMLElem;
 begin
@@ -826,6 +831,11 @@ begin
       MsBuildOptions.Init;
       if SupportsPlatform then
         MsBuildOptions.Properties.GlobalProperties.Values['Platform'] := GetPlatform;
+      for Index := 0 to RsVars.Count - 1 do
+      begin
+        Name := RsVars.Names[Index];
+        MsBuildOptions.Properties.EnvironmentProperties.Values[Name] := RsVars.Values[Name];
+      end;
       MsBuildOptions.Parse;
 
       PersonalityName := '';
@@ -1008,7 +1018,14 @@ begin
   FLibrarySearchPath := ALibrarySearchPath;
   FLibraryDebugSearchPath := ALibraryDebugSearchPath;
   FCppSearchPath := ACppSearchPath;
+  FRsVars := TStringList.Create;
   SetDefaultOptions(False); // in case $(DELPHI)\bin\dcc32.cfg (replace as appropriate) is invalid
+end;
+
+destructor TJclDCC32.Destroy;
+begin
+  FRsVars.Free;
+  inherited Destroy;
 end;
 
 function TJclDCC32.Execute(const CommandLine: string): Boolean;
@@ -1178,6 +1195,11 @@ begin
     AddPathOption('U', CppSearchPath);
     Options.Add('-LUrtl');
   end;
+end;
+
+procedure TJclDCC32.SetRsVars(const Value: TStrings);
+begin
+  FRsVars.Assign(Value);
 end;
 
 //=== { TJclDCC64 } ==========================================================
