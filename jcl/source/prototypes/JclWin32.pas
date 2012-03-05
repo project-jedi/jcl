@@ -78,7 +78,6 @@ uses
 {$HPPEMIT '#include <WinBase.h>'}
 {$HPPEMIT '#include <BaseTsd.h>'}
 {$HPPEMIT '#include <ImageHlp.h>'}
-{$HPPEMIT '#include <IoAPI.h>'}
 {$HPPEMIT '#include <lm.h>'}
 {$HPPEMIT '#include <Nb30.h>'}
 {$HPPEMIT '#include <RasDlg.h>'}
