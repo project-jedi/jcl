@@ -904,7 +904,8 @@ begin
 end;
 
 function TJclMsBuildParser.EvaluateString(const S: string): string;
-  procedure FindClosingBrace(const R: string; var Position: Integer);
+
+  function FindClosingBrace(const R: string; var Position: Integer): Boolean;
   var
     Index, Len, BraceCount: Integer;
     Quotes: string;
@@ -956,9 +957,16 @@ function TJclMsBuildParser.EvaluateString(const S: string): string;
       end;
       Inc(Position);
     end;
-    if Position > Len then
-      raise EJclMsBuildError.CreateResFmt(@RsEEndOfString, [S]);
+    Result := Position <= Len;
+
+//    Delphi XE's CodeGear.Delphi.Targets has a bug where the closing paran is missing
+//    "'$(DelphiWin32DebugDCUPath'!=''". But it is still a valid string and not worth
+//    an exception.
+//
+//    if Position > Len then
+//      raise EJclMsBuildError.CreateResFmt(@RsEEndOfString, [S]);
   end;
+
 var
   Start, Position, Index: Integer;
   PropertyName, PropertyValue, Path, Name: string;
@@ -975,7 +983,8 @@ begin
       if Start > 0 then
       begin
         Position := Start;
-        FindClosingBrace(Result, Position);
+        if not FindClosingBrace(Result, Position) then
+          Break;
         PropertyName := Copy(Result, Start + 2, Position - Start - 2);
 
         Prop := True;
