@@ -2751,18 +2751,42 @@ begin
   if not ReadFile(PipeInfo.PipeRead, PipeInfo.Buffer[0], BufferSize, NullDWORD^, @Overlapped) then
   begin
     Res := GetLastError;
-    if Res = ERROR_BROKEN_PIPE then
-    begin
-      CloseHandle(PipeInfo.PipeRead);
-      PipeInfo.PipeRead := 0;
-    end
+    case Res of
+      ERROR_BROKEN_PIPE:
+        begin
+          CloseHandle(PipeInfo.PipeRead);
+          PipeInfo.PipeRead := 0;
+        end;
+      ERROR_IO_PENDING:
+        ;
     else
       {$IFDEF DELPHI11_UP}
       RaiseLastOSError(Res);
       {$ELSE}
       RaiseLastOSError;
       {$ENDIF DELPHI11_UP}
+    end;
   end;
+end;
+
+procedure InternalExecuteHandlePipeEvent(var PipeInfo: TPipeInfo; var Overlapped: TOverlapped);
+var
+  PipeBytesRead: DWORD;
+begin
+  if GetOverlappedResult(PipeInfo.PipeRead, Overlapped, PipeBytesRead, False) then
+  begin
+    InternalExecuteProcessBuffer(PipeInfo, PipeBytesRead);
+    // automatically launch the next read
+    InternalExecuteReadPipe(PipeInfo, Overlapped);
+  end
+  else
+  if GetLastError = ERROR_BROKEN_PIPE then
+  begin
+    CloseHandle(PipeInfo.PipeRead);
+    PipeInfo.PipeRead := 0;
+  end
+  else
+    RaiseLastOSError;
 end;
 
 procedure InternalExecuteFlushPipe(var PipeInfo: TPipeInfo; var Overlapped: TOverlapped);
@@ -2783,12 +2807,58 @@ begin
   end;
 end;
 
+var
+  AsyncPipeCounter: Integer;
+
+// CreateAsyncPipe creates a pipe that uses overlapped reading.
+function CreateAsyncPipe(var hReadPipe, hWritePipe: THandle;
+  lpPipeAttributes: PSecurityAttributes; nSize: DWORD): BOOL;
+var
+  PipeName: string;
+  Error: DWORD;
+  PipeReadHandle, PipeWriteHandle: THandle;
+begin
+  Result := False;
+
+  if (@hReadPipe = nil) or (@hWritePipe = nil) then
+  begin
+    SetLastError(ERROR_INVALID_PARAMETER);
+    Exit;
+  end;
+
+  if nSize = 0 then
+    nSize := 4096;
+
+  InterlockedIncrement(AsyncPipeCounter);
+  PipeName := Format('\\.\Pipe\AsyncAnonPipe.%.8x.%.8x', [GetCurrentProcessId, AsyncPipeCounter]);
+
+  PipeReadHandle := CreateNamedPipe(PChar(PipeName), PIPE_ACCESS_INBOUND or FILE_FLAG_OVERLAPPED,
+      PIPE_TYPE_BYTE or PIPE_WAIT, 1, nSize, nSize, 120 * 1000, lpPipeAttributes);
+  if PipeReadHandle = 0 then
+    Exit;
+
+  PipeWriteHandle := CreateFile(PChar(PipeName), GENERIC_WRITE, 0, lpPipeAttributes, OPEN_EXISTING,
+      FILE_ATTRIBUTE_NORMAL {or FILE_FLAG_OVERLAPPED}, 0);
+  if PipeWriteHandle = INVALID_HANDLE_VALUE then
+  begin
+    Error := GetLastError;
+    CloseHandle(PipeReadHandle);
+    SetLastError(Error);
+    Exit;
+  end;
+
+  hReadPipe := PipeReadHandle;
+  hWritePipe := PipeWriteHandle;
+
+  Result := True;
+end;
+
 function InternalExecute(CommandLine: string; AbortPtr: PBoolean; AbortEvent: TJclEvent;
   var Output: string; OutputLineCallback: TTextHandler; RawOutput: Boolean;
   MergeError: Boolean; var Error: string; ErrorLineCallback: TTextHandler; RawError: Boolean): Cardinal;
 var
   OutPipeInfo, ErrorPipeInfo: TPipeInfo;
-  Index, PipeBytesRead: Cardinal;
+  Index: Cardinal;
 {$IFDEF MSWINDOWS}
 var
   StartupInfo: TStartupInfo;
@@ -2804,10 +2874,11 @@ begin
   SecurityAttr.nLength := SizeOf(SecurityAttr);
   SecurityAttr.lpSecurityDescriptor := nil;
   SecurityAttr.bInheritHandle := True;
+
   ResetMemory(OutPipeInfo, SizeOf(OutPipeInfo));
   OutPipeInfo.TextHandler := OutputLineCallback;
   OutPipeInfo.RawOutput := RawOutput;
-  if not CreatePipe(OutPipeInfo.PipeRead, OutPipeInfo.PipeWrite, @SecurityAttr, 0) then
+  if not CreateAsyncPipe(OutPipeInfo.PipeRead, OutPipeInfo.PipeWrite, @SecurityAttr, 0) then
   begin
     Result := GetLastError;
     Exit;
@@ -2818,13 +2889,17 @@ begin
   begin
     ErrorPipeInfo.TextHandler := ErrorLineCallback;
     ErrorPipeInfo.RawOutput := RawError;
-    if not CreatePipe(ErrorPipeInfo.PipeRead, ErrorPipeInfo.PipeWrite, @SecurityAttr, 0) then
+    if not CreateAsyncPipe(ErrorPipeInfo.PipeRead, ErrorPipeInfo.PipeWrite, @SecurityAttr, 0) then
     begin
       Result := GetLastError;
+      CloseHandle(OutPipeInfo.PipeWrite);
+      CloseHandle(OutPipeInfo.PipeRead);
+      OutPipeInfo.Event.Free;
       Exit;
     end;
     ErrorPipeInfo.Event := TJclEvent.Create(@SecurityAttr, False {automatic reset}, False {not flagged}, '' {anonymous});
   end;
+
   ResetMemory(StartupInfo, SizeOf(TStartupInfo));
   StartupInfo.cb := SizeOf(TStartupInfo);
   StartupInfo.dwFlags := STARTF_USESHOWWINDOW or STARTF_USESTDHANDLES;
@@ -2878,18 +2953,12 @@ begin
         WaitEvents[Index] := AbortEvent;
       end;
       // init the asynchronous reads
-      OutOverlapped.Internal := 0;
-      OutOverlapped.InternalHigh := 0;
-      OutOverlapped.Offset := 0;
-      OutOverlapped.OffsetHigh := 0;
+      ResetMemory(OutOverlapped, SizeOf(OutOverlapped));
       OutOverlapped.hEvent := OutPipeInfo.Event.Handle;
       InternalExecuteReadPipe(OutPipeInfo, OutOverlapped);
       if not MergeError then
       begin
-        ErrorOverlapped.Internal := 0;
-        ErrorOverlapped.InternalHigh := 0;
-        ErrorOverlapped.Offset := 0;
-        ErrorOverlapped.OffsetHigh := 0;
+        ResetMemory(ErrorOverlapped, SizeOf(ErrorOverlapped));
         ErrorOverlapped.hEvent := ErrorPipeInfo.Event.Handle;
         InternalExecuteReadPipe(ErrorPipeInfo, ErrorOverlapped);
       end;
@@ -2904,21 +2973,13 @@ begin
         if Index = (WAIT_OBJECT_0 + 1) then
         begin
           // event on output
-          if not GetOverlappedResult(OutPipeInfo.PipeRead, OutOverlapped, PipeBytesRead, False) then
-            RaiseLastOSError;
-          InternalExecuteProcessBuffer(OutPipeInfo, PipeBytesRead);
-          // automatically launch the next read
-          InternalExecuteReadPipe(OutpipeInfo, OutOverlapped);
+          InternalExecuteHandlePipeEvent(OutPipeInfo, OutOverlapped);
         end
         else
         if (Index = (WAIT_OBJECT_0 + 2)) and not MergeError then
         begin
           // event on error
-          if not GetOverlappedResult(ErrorPipeInfo.PipeRead, ErrorOverlapped, PipeBytesRead, False) then
-            RaiseLastOSError;
-          InternalExecuteProcessBuffer(ErrorPipeInfo, PipeBytesRead);
-          // automatically launch the next read
-          InternalExecuteReadPipe(ErrorPipeInfo, ErrorOverlapped);
+          InternalExecuteHandlePipeEvent(ErrorPipeInfo, ErrorOverlapped);
         end
         else
         if ((Index = (WAIT_OBJECT_0 + 2)) and MergeError) or
@@ -2941,7 +3002,7 @@ begin
       if OutPipeInfo.PipeRead <> 0 then
         // read data remaining in output pipe
         InternalExecuteFlushPipe(OutPipeinfo, OutOverlapped);
-      if (not MergeError) and (ErrorPipeInfo.PipeRead <> 0) then
+      if not MergeError and (ErrorPipeInfo.PipeRead <> 0) then
         // read data remaining in error pipe
         InternalExecuteFlushPipe(ErrorPipeInfo, ErrorOverlapped);
     end;
@@ -2970,6 +3031,7 @@ begin
 {$ENDIF MSWINDOWS}
 {$IFDEF UNIX}
 var
+  PipeBytesRead: Cardinal;
   Pipe: PIOFile;
   Cmd: string;
 begin
