@@ -542,6 +542,7 @@ type
     procedure DoValueParsed(const AName, AValue: string);
     procedure DoEncodeValue(var Value: string); virtual;
     procedure DoDecodeValue(var Value: string); virtual;
+    procedure GetEncodingFromXMLHeader(var Encoding: TJclStringEncoding; var CodePage: Word);
   public
     constructor Create;
     destructor Destroy; override;
@@ -1248,6 +1249,38 @@ begin
   end;
 end;
 
+procedure TJclSimpleXML.GetEncodingFromXMLHeader(var Encoding: TJclStringEncoding; var CodePage: Word);
+var
+  XMLHeader: TJclSimpleXMLElemHeader;
+  I: Integer;
+begin
+  XMLHeader := nil;
+  for I := 0 to Prolog.Count - 1 do
+    if Prolog.Item[I] is TJclSimpleXMLElemHeader then
+    begin
+      XMLHeader := TJclSimpleXMLElemHeader(Prolog.Item[I]);
+      Break;
+    end;
+  if Assigned(XMLHeader) then
+  begin
+    CodePage := CodePageFromCharsetName(XMLHeader.Encoding);
+    case CodePage of
+      CP_UTF8:
+        Encoding := seUTF8;
+      CP_UTF16LE:
+        Encoding := seUTF16;
+    else
+      Encoding := seAnsi;
+    end;
+  end
+  else
+  begin
+    // restore from previous load
+    Encoding := FEncoding;
+    CodePage := FCodePage;
+  end;
+end;
+
 procedure TJclSimpleXML.SaveToFile(const FileName: TFileName; Encoding: TJclStringEncoding; CodePage: Word);
 var
   Stream: TMemoryStream;
@@ -1266,8 +1299,6 @@ var
   AOutStream: TStream;
   AStringStream: TJclStringStream;
   DoFree: Boolean;
-  XMLHeader: TJclSimpleXMLElemHeader;
-  I: Integer;
 begin
   if Assigned(FOnEncodeStream) then
   begin
@@ -1281,33 +1312,7 @@ begin
   end;
   try
     if Encoding = seAuto then
-    begin
-      XMLHeader := nil;
-      for I := 0 to Prolog.Count - 1 do
-        if Prolog.Item[I] is TJclSimpleXMLElemHeader then
-      begin
-        XMLHeader := TJclSimpleXMLElemHeader(Prolog.Item[I]);
-        Break;
-      end;
-      if Assigned(XMLHeader) then
-      begin
-        CodePage := CodePageFromCharsetName(XMLHeader.Encoding);
-        case CodePage of
-          CP_UTF8:
-            Encoding := seUTF8;
-          CP_UTF16LE:
-            Encoding := seUTF16;
-        else
-          Encoding := seAnsi;
-        end;
-      end
-      else
-      begin
-        // restore from previous load
-        Encoding := FEncoding;
-        CodePage := FCodePage;
-      end;
-    end;
+      GetEncodingFromXMLHeader(Encoding, CodePage);
 
     case Encoding of
       seUTF8:
@@ -1373,13 +1378,18 @@ var
   Stream: TStringStream;
 begin
   {$IFDEF SUPPORTS_UNICODE}
+  // Use the same logic for seAuto as in SaveToStream for creating the TStringStream.
+  // Otherwise a Unicode-TStringStream is written to from a TJclAnsiStream proxy.
+  if Encoding = seAuto then
+    GetEncodingFromXMLHeader(Encoding, CodePage);
+
   case Encoding of
     seAnsi:
       Stream := TStringStream.Create('', TEncoding.{$IFDEF COMPILER16_UP}ANSI{$ELSE}Default{$ENDIF});
     seUTF8:
       Stream := TStringStream.Create('', TEncoding.UTF8);
   else
-    //seUTF16, seAuto:
+    //seUTF16:
     Stream := TStringStream.Create('', TEncoding.Unicode);
   end;
   {$ELSE ~SUPPORTS_UNICODE}
