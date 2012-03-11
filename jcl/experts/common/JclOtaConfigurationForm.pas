@@ -65,7 +65,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure AddPage(Expert: TJclOTAExpertBase);
+    procedure AddPage(Expert: IJclOTAOptionsCallback);
     function Execute(PageName: string): Boolean;
     property Settings: TJclOTASettings read FSettings;
   end;
@@ -94,12 +94,12 @@ type
   TItemDataRec = class
   public
     Frame: TCustomFrame;
-    Expert: TJclOTAExpertBase;
+    Expert: IJclOTAOptionsCallback;
   end;
 
 //=== TJclOtaOptionsForm =====================================================
 
-procedure TJclOtaOptionsForm.AddPage(Expert: TJclOTAExpertBase);
+procedure TJclOtaOptionsForm.AddPage(Expert: IJclOTAOptionsCallback);
 var
   ParentNode, ChildNode: TTreeNode;
   PageName, NodeName: string;

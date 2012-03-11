@@ -118,7 +118,25 @@ type
   end;
   {$ENDIF BDS8_UP}
 
-  TJclOTAExpertBase = class(TInterfacedObject)
+  // Note: we MUST use an interface as the type of the Expert parameter
+  // and not an object to avoid a bug in C++ Builder 6 (or lower) compiler. If we 
+  // used an object, the compiler would crash or give internal error GH4148
+  // being obviously lost trying to resolve almost circular references 
+  // between this unit and the JclOtaConfigurationForm unit.
+  IJclOTAOptionsCallback = interface;
+
+  TJclOTAAddPageFunc = procedure (Expert: IJclOTAOptionsCallback) of object;
+
+  IJclOTAOptionsCallback = interface
+    procedure AddConfigurationPages(AddPageFunc: TJclOTAAddPageFunc);
+    procedure DialogClosed(SaveChanges: Boolean);
+    function GetPageName: string;
+    function GetFrameClass: TCustomFrameClass;
+    procedure FrameCreated(AFrame: TCustomFrame);
+    function ValidateContents: Boolean;
+  end;
+
+  TJclOTAExpertBase = class(TInterfacedObject, IJclOTAOptionsCallback)
   private
     FRootDir: string;
     FJCLRootDir: string;
@@ -186,6 +204,9 @@ type
     function GetOutputDirectory(const Project: IOTAProject): string;
     function IsInstalledPackage(const Project: IOTAProject): Boolean;
     function IsPackage(const Project: IOTAProject): Boolean;
+
+    { IJclOTAOptionsCallback }
+    procedure AddConfigurationPages(AddPageFunc: TJclOTAAddPageFunc); virtual;
 
     procedure RegisterCommands; virtual;
     procedure UnregisterCommands; virtual;
@@ -884,7 +905,7 @@ begin
       Expert := GetExpert(Index);
       FrameClass := Expert.GetFrameClass;
       if Assigned(FrameClass) then
-        OptionsForm.AddPage(Expert);
+        Expert.AddConfigurationPages(OptionsForm.AddPage);
     end;
     Result := OptionsForm.Execute(StartName);
   finally
@@ -1029,6 +1050,13 @@ class procedure TJclOTAExpertBase.RemoveExpert(AExpert: TJclOTAExpertBase);
 begin
   if Assigned(GlobalExpertList) then
     GlobalExpertList.Remove(AExpert);
+end;
+
+procedure TJclOTAExpertBase.AddConfigurationPages(
+  AddPageFunc: TJclOTAAddPageFunc);
+begin
+  // AddPageFunc uses '\' as a separator in PageName to build a tree
+  AddPageFunc(Self);
 end;
 
 constructor TJclOTAExpertBase.Create(AName: string);
