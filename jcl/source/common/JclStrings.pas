@@ -309,8 +309,8 @@ function CharIsDigit(const C: Char): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {
 function CharIsFracDigit(const C: Char): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 function CharIsHexDigit(const C: Char): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 function CharIsLower(const C: Char): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-function CharIsNumberChar(const C: Char): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-function CharIsNumber(const C: Char): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function CharIsNumberChar(const C: Char): Boolean; {$IFDEF SUPPORTS_INLINE} {$IFDEF COMPILER16_UP} inline; {$ENDIF} {$ENDIF}
+function CharIsNumber(const C: Char): Boolean; {$IFDEF SUPPORTS_INLINE} {$IFDEF COMPILER16_UP} inline; {$ENDIF} {$ENDIF}
 function CharIsPrintable(const C: Char): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 function CharIsPunctuation(const C: Char): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 function CharIsReturn(const C: Char): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
