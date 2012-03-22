@@ -278,9 +278,9 @@ function IsRootDirectory(const CanonicFileName: string): Boolean;
 {$IFDEF MSWINDOWS}
 function LockVolume(const Volume: string; var Handle: THandle): Boolean;
 function OpenVolume(const Drive: Char): THandle;
-function SetDirLastWrite(const DirName: string; const DateTime: TDateTime): Boolean;
-function SetDirLastAccess(const DirName: string; const DateTime: TDateTime): Boolean;
-function SetDirCreation(const DirName: string; const DateTime: TDateTime): Boolean;
+function SetDirLastWrite(const DirName: string; const DateTime: TDateTime; RequireBackupRestorePrivileges: Boolean = True): Boolean;
+function SetDirLastAccess(const DirName: string; const DateTime: TDateTime; RequireBackupRestorePrivileges: Boolean = True): Boolean;
+function SetDirCreation(const DirName: string; const DateTime: TDateTime; RequireBackupRestorePrivileges: Boolean = True): Boolean;
 {$ENDIF MSWINDOWS}
 function SetFileLastWrite(const FileName: string; const DateTime: TDateTime): Boolean;
 function SetFileLastAccess(const FileName: string; const DateTime: TDateTime): Boolean;
@@ -4443,14 +4443,14 @@ begin
 end;
 
 function SetDirTimesHelper(const DirName: string; const DateTime: TDateTime;
-  Times: TFileTimes): Boolean;
+  Times: TFileTimes; RequireBackupRestorePrivileges: Boolean): Boolean;
 var
   Handle: THandle;
   FileTime: TFileTime;
   SystemTime: TSystemTime;
 begin
   Result := False;
-  if IsDirectory(DirName) and BackupPrivilegesEnabled then
+  if IsDirectory(DirName) and (not RequireBackupRestorePrivileges or BackupPrivilegesEnabled) then
   begin
     Handle := CreateFile(PChar(DirName), GENERIC_WRITE, FILE_SHARE_READ, nil,
       OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, 0);
@@ -4474,19 +4474,19 @@ begin
   end;
 end;
 
-function SetDirLastWrite(const DirName: string; const DateTime: TDateTime): Boolean;
+function SetDirLastWrite(const DirName: string; const DateTime: TDateTime; RequireBackupRestorePrivileges: Boolean = True): Boolean;
 begin
-  Result := SetDirTimesHelper(DirName, DateTime, ftLastWrite);
+  Result := SetDirTimesHelper(DirName, DateTime, ftLastWrite, RequireBackupRestorePrivileges);
 end;
 
-function SetDirLastAccess(const DirName: string; const DateTime: TDateTime): Boolean;
+function SetDirLastAccess(const DirName: string; const DateTime: TDateTime; RequireBackupRestorePrivileges: Boolean = True): Boolean;
 begin
-  Result := SetDirTimesHelper(DirName, DateTime, ftLastAccess);
+  Result := SetDirTimesHelper(DirName, DateTime, ftLastAccess, RequireBackupRestorePrivileges);
 end;
 
-function SetDirCreation(const DirName: string; const DateTime: TDateTime): Boolean;
+function SetDirCreation(const DirName: string; const DateTime: TDateTime; RequireBackupRestorePrivileges: Boolean = True): Boolean;
 begin
-  Result := SetDirTimesHelper(DirName, DateTime, ftCreation);
+  Result := SetDirTimesHelper(DirName, DateTime, ftCreation, RequireBackupRestorePrivileges);
 end;
 
 procedure FillByteArray(var Bytes: array of Byte; Count: Cardinal; B: Byte);
