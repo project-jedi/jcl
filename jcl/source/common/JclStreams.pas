@@ -1545,11 +1545,10 @@ begin
   CurrPos := Position;
   repeat
   until ReadAnsiChar = #0;
-  StrSize := Position - CurrPos - 1;
-  SetLength(Result, StrSize);
-  Position := CurrPos;
-  ReadBuffer(Result[1], StrSize * SizeOf(Result[1]));
-  Position := Position + 1;
+  StrSize := Position - CurrPos;                       // Get number of bytes
+  SetLength(Result, StrSize div SizeOf(AnsiChar) - 1); // Set number of chars without #0
+  Position := CurrPos;                                 // Seek to start read
+  ReadBuffer(Result[1], StrSize);                      // Read ansi data and #0
 end;
 
 function TJclEasyStream.ReadCWideString: WideString;
@@ -1560,11 +1559,10 @@ begin
   CurrPos := Position;
   repeat
   until ReadWideChar = #0;
-  StrSize := Position - CurrPos - 1;
-  SetLength(Result, StrSize);
-  Position := CurrPos;
-  ReadBuffer(Result[1], StrSize * SizeOf(Result[1]));
-  Position := Position + 1;
+  StrSize := Position - CurrPos;                       // Get number of bytes
+  SetLength(Result, StrSize div SizeOf(WideChar) - 1); // Set number of chars without #0
+  Position := CurrPos;                                 // Seek to start read
+  ReadBuffer(Result[1], StrSize);                      // Read wide data and #0
 end;
 
 function TJclEasyStream.ReadShortString: string;
