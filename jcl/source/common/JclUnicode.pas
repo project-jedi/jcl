@@ -6992,7 +6992,7 @@ function UnicodeIsWhiteSpace(C: UCS4): Boolean;
 // tabulator, new line etc.)?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) = TUnicodeCategory.ucSpaceSeparator;
+  Result := TCharacter.IsWhiteSpace(Chr(C));
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, ClassSpace + [ccWhiteSpace, ccSegmentSeparator]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
