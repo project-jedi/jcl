@@ -43,6 +43,13 @@
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
+			<VerInfo_MajorVer>2</VerInfo_MajorVer>
+			<VerInfo_Build>4198</VerInfo_Build>
+			<VerInfo_Release>0</VerInfo_Release>
+			<VerInfo_MinorVer>4</VerInfo_MinorVer>
+			<VerInfo_Keys>CompanyName=Project JEDI;FileDescription=JCL Debug Window of XMM registers;FileVersion=2.4.0.4198;InternalName=JclSIMDViewExpertDLL;LegalCopyright=Copyright (C) 1999, 2011 Project JEDI;OriginalFilename=JclSIMDViewExpertDLL160.dll;ProductName=JEDI Code Library;ProductVersion=2.4.0.4198</VerInfo_Keys>
+			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+			<VerInfo_Locale>1033</VerInfo_Locale>
 			<DCC_Namespace>System;System.Win;WinApi;Vcl;Vcl.Imaging;$(DCC_Namespace)</DCC_Namespace>
 			<DCC_DebugInformation>false</DCC_DebugInformation>
 			<DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
@@ -154,7 +161,7 @@
 						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename">JclSIMDViewExpertDLL160.dll</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
-						<VersionInfoKeys Name="ProductVersion">2.4 Build 4198</VersionInfoKeys>
+						<VersionInfoKeys Name="ProductVersion">2.4.0.4198</VersionInfoKeys>
 					</VersionInfoKeys>
 					<Source>
 						<Source Name="MainSource">JclSIMDViewExpertDLL.dpr</Source>

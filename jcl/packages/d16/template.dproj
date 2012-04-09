@@ -66,6 +66,13 @@
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
+			<VerInfo_MajorVer>%VERSION_MAJOR_NUMBER%</VerInfo_MajorVer>
+			<VerInfo_Build>%BUILD_NUMBER%</VerInfo_Build>
+			<VerInfo_Release>%RELEASE_NUMBER%</VerInfo_Release>
+			<VerInfo_MinorVer>%VERSION_MINOR_NUMBER%</VerInfo_MinorVer>
+			<VerInfo_Keys>CompanyName=Project JEDI;FileDescription=%DESCRIPTION%;FileVersion=%VERSION_MAJOR_NUMBER%.%VERSION_MINOR_NUMBER%.%RELEASE_NUMBER%.%BUILD_NUMBER%;InternalName=%NAME%;LegalCopyright=%COPYRIGHT%;OriginalFilename=%NAME%160%BINEXTENSION%;ProductName=JEDI Code Library;ProductVersion=%VERSION_MAJOR_NUMBER%.%VERSION_MINOR_NUMBER%.%RELEASE_NUMBER%.%BUILD_NUMBER%</VerInfo_Keys>
+			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+			<VerInfo_Locale>1033</VerInfo_Locale>
 			<DCC_Namespace>System;System.Win;WinApi;Vcl;Vcl.Imaging;$(DCC_Namespace)</DCC_Namespace>
 <%%% BEGIN RUNONLY %%%>
 			<RuntimeOnlyPackage>true</RuntimeOnlyPackage>
@@ -215,7 +222,7 @@
 						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename">%NAME%160%BINEXTENSION%</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
-						<VersionInfoKeys Name="ProductVersion">%VERSION_MAJOR_NUMBER%.%VERSION_MINOR_NUMBER% Build %BUILD_NUMBER%</VersionInfoKeys>
+						<VersionInfoKeys Name="ProductVersion">%VERSION_MAJOR_NUMBER%.%VERSION_MINOR_NUMBER%.%RELEASE_NUMBER%.%BUILD_NUMBER%</VersionInfoKeys>
 					</VersionInfoKeys>
 					<Source>
 						<Source Name="MainSource">%NAME%%SOURCEEXTENSION%</Source>

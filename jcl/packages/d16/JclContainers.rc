@@ -22,7 +22,7 @@ BEGIN
               VALUE "LegalCopyright", "Copyright (C) 1999, 2011 Project JEDI\0"
               VALUE "OriginalFilename", "JclContainers160.bpl\0"
               VALUE "ProductName", "JEDI Code Library\0"
-              VALUE "ProductVersion", "2.4 Build 4198\0"
+              VALUE "ProductVersion", "2.4.0.4198\0"
          END
     END
     BLOCK "VarFileInfo"
