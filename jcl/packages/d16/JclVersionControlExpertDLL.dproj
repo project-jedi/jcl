@@ -54,7 +54,7 @@
 			<DllSuffix>160</DllSuffix>
 			<GenDll>true</GenDll>
 			<GenPackage>true</GenPackage>
-			<DCC_ImageBase>$58170000</DCC_ImageBase>
+			<DCC_ImageBase>$58200000</DCC_ImageBase>
 			<DCC_UsePackage>rtl;vcl;designide;Jcl;JclVcl;JclBaseExpert;$(DCC_UsePackage)</DCC_UsePackage>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base_Win32)'!=''">

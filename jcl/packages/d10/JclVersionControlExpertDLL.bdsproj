@@ -114,7 +114,7 @@
       <Linker Name="GenerateDRC">False</Linker>
       <Linker Name="MinStackSize">16384</Linker>
       <Linker Name="MaxStackSize">1048576</Linker>
-      <Linker Name="ImageBase">$58170000</Linker>
+      <Linker Name="ImageBase">$58200000</Linker>
       <Linker Name="ExeDescription">JCL Integration of version control systems in the IDE</Linker>
       <Linker Name="GenerateHpps">False</Linker>
     </Linker>

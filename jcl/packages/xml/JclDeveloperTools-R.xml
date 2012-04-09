@@ -7,7 +7,7 @@
   <C5Libs/>
   <C6Libs/>
   <CompilerDefines>RELEASE</CompilerDefines>
-  <ImageBase>48380000</ImageBase>
+  <ImageBase>48800000</ImageBase>
   <Requires>
     <Package Name="rtl" Targets="Delphi,Bcb,Bds" Condition=""/>
     <Package Name="FCL" Targets="fpc" Condition=""/>
