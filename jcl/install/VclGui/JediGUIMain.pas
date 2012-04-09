@@ -134,6 +134,11 @@ function CreateMainForm: IJediInstallGUI;
 var
   MainForm: TMainForm;
 begin
+  {$IFDEF RTL185_UP}
+  Application.MainFormOnTaskbar := True;
+  {$ENDIF RTL185_UP}
+  Application.Initialize;
+  Application.Title := 'JEDI Installer';
   Application.CreateForm(TMainForm, MainForm);
   Result := MainForm;
 end;
@@ -144,6 +149,7 @@ constructor TMainForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FPages := TJclIntfArrayList.Create(5);
+  Application.OnException := HandleException;
 end;
 
 destructor TMainForm.Destroy;
@@ -152,30 +158,17 @@ begin
   inherited Destroy;
 end;
 
-procedure TMainForm.HandleException(Sender: TObject; E: Exception);
-begin
-  if E is EJediInstallInitFailure then
-  begin
-    Dialog(E.Message, dtError);
-    Application.ShowMainForm := False;
-    Application.Terminate;
-  end
-  else
-    Application.ShowException(E);
-end;
-
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  SetStatus('');
+
   Caption := LoadResString(@RsGUIJEDIInstaller);
   Title.Caption := LoadResString(@RsGUIProjectJEDIInstaller);
   InstallBtn.Caption := LoadResString(@RsGUIInstall);
   UninstallBtn.Caption := LoadResString(@RsGUIUninstall);
   QuitBtn.Caption := LoadResString(@RsGUIQuit);
 
-  Application.OnException := HandleException;
   JediImage.Hint := DelphiJediURL;
-
-  SetStatus('');
 
   TitlePanel.DoubleBuffered := True;
   {$IFDEF COMPILER7_UP}
@@ -296,6 +289,18 @@ procedure TMainForm.JediImageClick(Sender: TObject);
 begin
   { TODO : implement for Unix }
   ShellExecEx(DelphiJediURL);
+end;
+
+procedure TMainForm.HandleException(Sender: TObject; E: Exception);
+begin
+  if E is EJediInstallInitFailure then
+  begin
+    Dialog(E.Message, dtError);
+    Application.ShowMainForm := False;
+    Application.Terminate;
+  end
+  else
+    Application.ShowException(E);
 end;
 
 function TMainForm.Dialog(const Text: string; DialogType: TDialogType = dtInformation;
@@ -529,6 +534,6 @@ end;
 
 initialization
 
-InstallCore.InstallGUICreator := CreateMainForm;
+  InstallCore.InstallGUICreator := CreateMainForm;
 
 end.
