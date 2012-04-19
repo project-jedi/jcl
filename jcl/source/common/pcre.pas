@@ -674,6 +674,80 @@ var
 {$ENDIF ~PCRE_RTL}
 //DOM-IGNORE-END
 
+const
+  {$IFDEF MSWINDOWS}
+  PCREDefaultLibraryName = 'pcre3.dll';
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  PCREDefaultLibraryName = 'libpcre.so.0';
+  {$ENDIF UNIX}
+  PCRECompileDefaultExportName = 'pcre_compile';
+  PCRECompile2DefaultExportName = 'pcre_compile2';
+  PCREConfigDefaultExportName = 'pcre_config';
+  PCRECopyNamedSubstringDefaultExportName = 'pcre_copy_named_substring';
+  PCRECopySubStringDefaultExportName = 'pcre_copy_substring';
+  PCREDfaExecDefaultExportName = 'pcre_dfa_exec';
+  PCREExecDefaultExportName = 'pcre_exec';
+  PCREFreeSubStringDefaultExportName = 'pcre_free_substring';
+  PCREFreeSubStringListDefaultExportName = 'pcre_free_substring_list';
+  PCREFullInfoDefaultExportName = 'pcre_fullinfo';
+  PCREGetNamedSubstringDefaultExportName = 'pcre_get_named_substring';
+  PCREGetStringNumberDefaultExportName = 'pcre_get_stringnumber';
+  PCREGetStringTableEntriesDefaultExportName = 'pcre_get_stringtable_entries';
+  PCREGetSubStringDefaultExportName = 'pcre_get_substring';
+  PCREGetSubStringListDefaultExportName = 'pcre_get_substring_list';
+  PCREInfoDefaultExportName = 'pcre_info';
+  PCREMakeTablesDefaultExportName = 'pcre_maketables';
+  PCRERefCountDefaultExportName = 'pcre_refcount';
+  PCREStudyDefaultExportName = 'pcre_study';
+  PCREFreeStudyDefaultExportName = 'pcre_free_study';
+  PCREVersionDefaultExportName = 'pcre_version';
+  PCREJITStackAllocDefaultExportName = 'pcre_jit_stack_alloc';
+  PCREJITStackFreeDefaultExportName = 'pcre_jit_stack_free';
+  PCREAssignJITStackDefaultExportName = 'pcre_assign_jit_stack';
+  PCREMallocDefaultExportName = 'pcre_malloc';
+  PCREFreeDefaultExportName = 'pcre_free';
+  PCREStackMallocDefaultExportName = 'pcre_stack_malloc';
+  PCREStackFreeDefaultExportName = 'pcre_stack_free';
+  PCRECalloutDefaultExportName = 'pcre_callout';
+
+{$IFDEF PCRE_LINKONREQUEST}
+var
+  PCRELibraryName: string = PCREDefaultLibraryName;
+  PCRECompileExportName: string = PCRECompileDefaultExportName;
+  PCRECompile2ExportName: string = PCRECompile2DefaultExportName;
+  PCREConfigExportName: string = PCREConfigDefaultExportName;
+  PCRECopyNamedSubstringExportName: string = PCRECopyNamedSubstringDefaultExportName;
+  PCRECopySubStringExportName: string = PCRECopySubStringDefaultExportName;
+  PCREDfaExecExportName: string = PCREDfaExecDefaultExportName;
+  PCREExecExportName: string = PCREExecDefaultExportName;
+  PCREFreeSubStringExportName: string = PCREFreeSubStringDefaultExportName;
+  PCREFreeSubStringListExportName: string = PCREFreeSubStringListDefaultExportName;
+  PCREFullInfoExportName: string = PCREFullInfoDefaultExportName;
+  PCREGetNamedSubstringExportName: string = PCREGetNamedSubstringDefaultExportName;
+  PCREGetStringNumberExportName: string = PCREGetStringNumberDefaultExportName;
+  PCREGetStringTableEntriesExportName: string = PCREGetStringTableEntriesDefaultExportName;
+  PCREGetSubStringExportName: string = PCREGetSubStringDefaultExportName;
+  PCREGetSubStringListExportName: string = PCREGetSubStringListDefaultExportName;
+  PCREInfoExportName: string = PCREInfoDefaultExportName;
+  PCREMakeTablesExportName: string = PCREMakeTablesDefaultExportName;
+  PCRERefCountExportName: string = PCRERefCountDefaultExportName;
+  PCREStudyExportName: string = PCREStudyDefaultExportName;
+  PCREFreeStudyExportName: string = PCREFreeStudyDefaultExportName;
+  PCREVersionExportName: string = PCREVersionDefaultExportName;
+  PCREJITStackAllocExportName: string = PCREJITStackAllocDefaultExportName;
+  PCREJITStackFreeExportName: string = PCREJITStackFreeDefaultExportName;
+  PCREAssignJITStackExportName: string = PCREAssignJITStackDefaultExportName;
+  PCREMallocExportName: string = PCREMallocDefaultExportName;
+  PCREFreeExportName: string = PCREFreeDefaultExportName;
+  PCREStackMallocExportName: string = PCREStackMallocDefaultExportName;
+  PCREStackFreeExportName: string = PCREStackFreeDefaultExportName;
+  PCRECalloutExportName: string = PCRECalloutDefaultExportName;
+{$ENDIF PCRE_LINKONREQUEST}
+
+var
+  PCRELib: TModuleHandle = INVALID_MODULEHANDLE_VALUE;
+
 function IsPCRELoaded: Boolean;
 function LoadPCRE: Boolean;
 procedure UnloadPCRE;
@@ -933,48 +1007,7 @@ const
   pcre_callout: pcre_callout_callback = pcre_callout_jcl;
 {$ENDIF CPU64}
 
-{$ELSE ~PCRE_STATICLINK}
-
-const
-  {$IFDEF MSWINDOWS}
-  libpcremodulename = 'pcre3.dll';
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  libpcremodulename = 'libpcre.so.0';
-  {$ENDIF UNIX}
-  PCRECompileExportName = 'pcre_compile';
-  PCRECompile2ExportName = 'pcre_compile2';
-  PCREConfigExportName = 'pcre_config';
-  PCRECopyNamedSubstringExportName = 'pcre_copy_named_substring';
-  PCRECopySubStringExportName = 'pcre_copy_substring';
-  PCREDfaExecExportName = 'pcre_dfa_exec';
-  PCREExecExportName = 'pcre_exec';
-  PCREFreeSubStringExportName = 'pcre_free_substring';
-  PCREFreeSubStringListExportName = 'pcre_free_substring_list';
-  PCREFullInfoExportName = 'pcre_fullinfo';
-  PCREGetNamedSubstringExportName = 'pcre_get_named_substring';
-  PCREGetStringNumberExportName = 'pcre_get_stringnumber';
-  PCREGetStringTableEntriesExportName = 'pcre_get_stringtable_entries';
-  PCREGetSubStringExportName = 'pcre_get_substring';
-  PCREGetSubStringListExportName = 'pcre_get_substring_list';
-  PCREInfoExportName = 'pcre_info';
-  PCREMakeTablesExportName = 'pcre_maketables';
-  PCRERefCountExportName = 'pcre_refcount';
-  PCREStudyExportName = 'pcre_study';
-  PCREFreeStudyExportName = 'pcre_free_study';
-  PCREVersionExportName = 'pcre_version';
-  PCREJITStackAllocExportName = 'pcre_jit_stack_alloc';
-  PCREJITStackFreeExportName = 'pcre_jit_stack_free';
-  PCREAssignJITStackExportName = 'pcre_assign_jit_stack';
-  PCREMallocExportName = 'pcre_malloc';
-  PCREFreeExportName = 'pcre_free';
-  PCREStackMallocExportName = 'pcre_stack_malloc';
-  PCREStackFreeExportName = 'pcre_stack_free';
-  PCRECalloutExportName = 'pcre_callout';
-
-var
-  PCRELib: TModuleHandle = INVALID_MODULEHANDLE_VALUE;
-{$ENDIF ~PCRE_STATICLINK}
+{$ENDIF PCRE_STATICLINK}
 
 procedure SetPCREMallocCallback(const Value: pcre_malloc_callback);
 begin
@@ -1258,7 +1291,11 @@ begin
   if Result then
     Exit;
 
-  Result := JclSysUtils.LoadModule(PCRELib, libpcremodulename);
+  {$IFDEF PCRE_LINKONREQUEST}
+  Result := JclSysUtils.LoadModule(PCRELib, PCRELibraryName);
+  {$ELSE ~PCRE_LINKONREQUEST}
+  Result := JclSysUtils.LoadModule(PCRELib, PCREDefaultLibraryName);
+  {$ENDIF ~PCRE_LINKONREQUEST}
   if Result then
   begin
     {$IFDEF PCRE_LINKONREQUEST}
@@ -1286,12 +1323,18 @@ begin
     @pcre_jit_stack_alloc := GetModuleSymbol(PCRELib, PCREJITStackAllocExportName);
     @pcre_jit_stack_free := GetModuleSymbol(PCRELib, PCREJITStackFreeExportName);
     @pcre_assign_jit_stack := GetModuleSymbol(PCRELib, PCREAssignJITStackExportName);
-    {$ENDIF PCRE_LINKONREQUEST}
     pcre_malloc_func := GetModuleSymbol(PCRELib, PCREMallocExportName);
     pcre_free_func := GetModuleSymbol(PCRELib, PCREFreeExportName);
     pcre_stack_malloc_func := GetModuleSymbol(PCRELib, PCREStackMallocExportName);
     pcre_stack_free_func := GetModuleSymbol(PCRELib, PCREStackFreeExportName);
     pcre_callout_func := GetModuleSymbol(PCRELib, PCRECalloutExportName);
+    {$ELSE ~PCRE_LINKONREQUEST}
+    pcre_malloc_func := GetModuleSymbol(PCRELib, PCREMallocDefaultExportName);
+    pcre_free_func := GetModuleSymbol(PCRELib, PCREFreeDefaultExportName);
+    pcre_stack_malloc_func := GetModuleSymbol(PCRELib, PCREStackMallocDefaultExportName);
+    pcre_stack_free_func := GetModuleSymbol(PCRELib, PCREStackFreeDefaultExportName);
+    pcre_callout_func := GetModuleSymbol(PCRELib, PCRECalloutDefaultExportName);
+    {$ENDIF ~PCRE_LINKONREQUEST}
   end
   else
     InitPCREFuncPtrs(@LibNotLoadedHandler);
@@ -1310,30 +1353,30 @@ begin
 end;
 
 {$IFDEF PCRE_LINKDLL}
-function pcre_compile; external libpcremodulename name PCRECompileExportName;
-function pcre_compile2; external libpcremodulename name PCRECompile2ExportName;
-function pcre_config; external libpcremodulename name PCREConfigExportName;
-function pcre_copy_named_substring; external libpcremodulename name PCRECopyNamedSubStringExportName;
-function pcre_copy_substring; external libpcremodulename name PCRECopySubStringExportName;
-function pcre_dfa_exec; external libpcremodulename name PCREDfaExecExportName;
-function pcre_exec; external libpcremodulename name PCREExecExportName;
-procedure pcre_free_substring; external libpcremodulename name PCREFreeSubStringExportName;
-procedure pcre_free_substring_list; external libpcremodulename name PCREFreeSubStringListExportName;
-function pcre_fullinfo; external libpcremodulename name PCREFullInfoExportName;
-function pcre_get_named_substring; external libpcremodulename name PCREGetNamedSubStringExportName;
-function pcre_get_stringnumber; external libpcremodulename name PCREGetStringNumberExportName;
-function pcre_get_stringtable_entries; external libpcremodulename name PCREGetStringTableEntriesExportName;
-function pcre_get_substring; external libpcremodulename name PCREGetSubStringExportName;
-function pcre_get_substring_list; external libpcremodulename name PCREGetSubStringListExportName;
-function pcre_info; external libpcremodulename name PCREInfoExportName;
-function pcre_maketables; external libpcremodulename name PCREMakeTablesExportName;
-function pcre_refcount; external libpcremodulename name PCRERefCountExportName;
-function pcre_study; external libpcremodulename name PCREStudyExportName;
-procedure pcre_free_study; external libpcremodulename name PCREFreeStudyExportName;
-function pcre_version; external libpcremodulename name PCREVersionExportName;
-function pcre_jit_stack_alloc; external libpcremodulename name PCREJITStackAllocExportName;
-procedure pcre_jit_stack_free; external libpcremodulename name PCREJITStackFreeExportName;
-procedure pcre_assign_jit_stack; external libpcremodulename name PCREAssignJITStackExportName;
+function pcre_compile; external PCREDefaultLibraryName name PCRECompileDefaultExportName;
+function pcre_compile2; external PCREDefaultLibraryName name PCRECompile2DefaultExportName;
+function pcre_config; external PCREDefaultLibraryName name PCREConfigDefaultExportName;
+function pcre_copy_named_substring; external PCREDefaultLibraryName name PCRECopyNamedSubStringDefaultExportName;
+function pcre_copy_substring; external PCREDefaultLibraryName name PCRECopySubStringDefaultExportName;
+function pcre_dfa_exec; external PCREDefaultLibraryName name PCREDfaExecDefaultExportName;
+function pcre_exec; external PCREDefaultLibraryName name PCREExecDefaultExportName;
+procedure pcre_free_substring; external PCREDefaultLibraryName name PCREFreeSubStringDefaultExportName;
+procedure pcre_free_substring_list; external PCREDefaultLibraryName name PCREFreeSubStringListDefaultExportName;
+function pcre_fullinfo; external PCREDefaultLibraryName name PCREFullInfoDefaultExportName;
+function pcre_get_named_substring; external PCREDefaultLibraryName name PCREGetNamedSubStringDefaultExportName;
+function pcre_get_stringnumber; external PCREDefaultLibraryName name PCREGetStringNumberDefaultExportName;
+function pcre_get_stringtable_entries; external PCREDefaultLibraryName name PCREGetStringTableEntriesDefaultExportName;
+function pcre_get_substring; external PCREDefaultLibraryName name PCREGetSubStringDefaultExportName;
+function pcre_get_substring_list; external PCREDefaultLibraryName name PCREGetSubStringListDefaultExportName;
+function pcre_info; external PCREDefaultLibraryName name PCREInfoDefaultExportName;
+function pcre_maketables; external PCREDefaultLibraryName name PCREMakeTablesDefaultExportName;
+function pcre_refcount; external PCREDefaultLibraryName name PCRERefCountDefaultExportName;
+function pcre_study; external PCREDefaultLibraryName name PCREStudyDefaultExportName;
+procedure pcre_free_study; external PCREDefaultLibraryName name PCREFreeStudyDefaultExportName;
+function pcre_version; external PCREDefaultLibraryName name PCREVersionDefaultExportName;
+function pcre_jit_stack_alloc; external PCREDefaultLibraryName name PCREJITStackAllocDefaultExportName;
+procedure pcre_jit_stack_free; external PCREDefaultLibraryName name PCREJITStackFreeDefaultExportName;
+procedure pcre_assign_jit_stack; external PCREDefaultLibraryName name PCREAssignJITStackDefaultExportName;
 {$ENDIF PCRE_LINKDLL}
 
 {$IFDEF UNITVERSIONING}

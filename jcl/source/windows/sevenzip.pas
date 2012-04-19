@@ -647,6 +647,29 @@ function SetLargePageMode: HRESULT; stdcall;
 
 //DOM-IGNORE-END
 
+const
+  SevenzipDefaultLibraryName = '7z.dll';
+  CreateObjectDefaultExportName = 'CreateObject';
+  GetHandlerProperty2DefaultExportName = 'GetHandlerProperty2';
+  GetHandlerPropertyDefaultExportName = 'GetHandlerProperty';
+  GetMethodPropertyDefaultExportName = 'GetMethodProperty';
+  GetNumberOfFormatsDefaultExportName = 'GetNumberOfFormats';
+  GetNumberOfMethodsDefaultExportName = 'GetNumberOfMethods';
+  SetLargePageModeDefaultExportName = 'SetLargePageMode';
+
+{$IFDEF 7ZIP_LINKONREQUEST}
+var
+  SevenzipLibraryName: string = SevenzipDefaultLibraryName;
+  CreateObjectExportName: string = CreateObjectDefaultExportName;
+  GetHandlerProperty2ExportName: string = GetHandlerProperty2DefaultExportName;
+  GetHandlerPropertyExportName: string = GetHandlerPropertyDefaultExportName;
+  GetMethodPropertyExportName: string = GetMethodPropertyDefaultExportName;
+  GetNumberOfFormatsExportName: string = GetNumberOfFormatsDefaultExportName;
+  GetNumberOfMethodsExportName: string = GetNumberOfMethodsDefaultExportName;
+  SetLargePageModeExportName: string = SetLargePageModeDefaultExportName;
+  SevenzipLibraryHandle: TModuleHandle = INVALID_MODULEHANDLE_VALUE;
+{$ENDIF 7ZIP_LINKONREQUEST}
+
 function Load7Zip: Boolean;
 function Is7ZipLoaded: Boolean;
 procedure Unload7Zip;
@@ -665,48 +688,33 @@ const
 
 implementation
 
-const
-  sz7Zip = '7z.dll';
-  CreateObjectExportName = 'CreateObject';
-  GetHandlerProperty2ExportName = 'GetHandlerProperty2';
-  GetHandlerPropertyExportName = 'GetHandlerProperty';
-  GetMethodPropertyExportName = 'GetMethodProperty';
-  GetNumberOfFormatsExportName = 'GetNumberOfFormats';
-  GetNumberOfMethodsExportName = 'GetNumberOfMethods';
-  SetLargePageModeExportName = 'SetLargePageMode';
-
 {$IFDEF 7ZIP_LINKDLL}
-function CreateObject; external sz7Zip name CreateObjectExportName;
-function GetHandlerProperty2; external sz7Zip name GetHandlerProperty2ExportName;
-function GetHandlerProperty; external sz7Zip name GetHandlerPropertyExportName;
-function GetMethodProperty; external sz7Zip name GetMethodPropertyExportName;
-function GetNumberOfFormats; external sz7Zip name GetNumberOfFormatsExportName;
-function GetNumberOfMethods; external sz7Zip name GetNumberOfMethodsExportName;
-function SetLargePageMode; external sz7Zip name SetLargePageModeExportName;
+function CreateObject; external SevenzipDefaultLibraryName name CreateObjectDefaultExportName;
+function GetHandlerProperty2; external SevenzipDefaultLibraryName name GetHandlerProperty2DefaultExportName;
+function GetHandlerProperty; external SevenzipDefaultLibraryName name GetHandlerPropertyDefaultExportName;
+function GetMethodProperty; external SevenzipDefaultLibraryName name GetMethodPropertyDefaultExportName;
+function GetNumberOfFormats; external SevenzipDefaultLibraryName name GetNumberOfFormatsDefaultExportName;
+function GetNumberOfMethods; external SevenzipDefaultLibraryName name GetNumberOfMethodsDefaultExportName;
+function SetLargePageMode; external SevenzipDefaultLibraryName name SetLargePageModeDefaultExportName;
 {$ENDIF 7ZIP_LINKDLL}
-
-{$IFDEF 7ZIP_LINKONREQUEST}
-var
-  SevenzipLib: TModuleHandle = INVALID_MODULEHANDLE_VALUE;
-{$ENDIF 7ZIP_LINKONREQUEST}
 
 function Load7Zip: Boolean;
 {$IFDEF 7ZIP_LINKONREQUEST}
 begin
-  Result := SevenzipLib <> INVALID_MODULEHANDLE_VALUE;
+  Result := SevenzipLibraryHandle <> INVALID_MODULEHANDLE_VALUE;
   if Result then
     Exit;
 
-  Result := JclSysUtils.LoadModule(SevenzipLib, sz7Zip);
+  Result := JclSysUtils.LoadModule(SevenzipLibraryHandle, SevenzipLibraryName);
   if Result then
   begin
-    @CreateObject := GetModuleSymbol(SevenzipLib, CreateObjectExportName);
-    @GetHandlerProperty2 := GetModuleSymbol(SevenzipLib, GetHandlerProperty2ExportName);
-    @GetHandlerProperty := GetModuleSymbol(SevenzipLib, GetHandlerPropertyExportName);
-    @GetMethodProperty := GetModuleSymbol(SevenzipLib, GetMethodPropertyExportName);
-    @GetNumberOfFormats := GetModuleSymbol(SevenzipLib, GetNumberOfFormatsExportName);
-    @GetNumberOfMethods := GetModuleSymbol(SevenzipLib, GetNumberOfMethodsExportName);
-    @SetLargePageMode := GetModuleSymbol(SevenzipLib, SetLargePageModeExportName);
+    @CreateObject := GetModuleSymbol(SevenzipLibraryHandle, CreateObjectExportName);
+    @GetHandlerProperty2 := GetModuleSymbol(SevenzipLibraryHandle, GetHandlerProperty2ExportName);
+    @GetHandlerProperty := GetModuleSymbol(SevenzipLibraryHandle, GetHandlerPropertyExportName);
+    @GetMethodProperty := GetModuleSymbol(SevenzipLibraryHandle, GetMethodPropertyExportName);
+    @GetNumberOfFormats := GetModuleSymbol(SevenzipLibraryHandle, GetNumberOfFormatsExportName);
+    @GetNumberOfMethods := GetModuleSymbol(SevenzipLibraryHandle, GetNumberOfMethodsExportName);
+    @SetLargePageMode := GetModuleSymbol(SevenzipLibraryHandle, SetLargePageModeExportName);
     Result := Assigned(@CreateObject) and Assigned(@GetHandlerProperty2) and
       Assigned(@GetHandlerProperty) and Assigned(@GetMethodProperty) and
       Assigned(@GetNumberOfFormats) and Assigned(@GetNumberOfMethods) and
@@ -722,7 +730,7 @@ end;
 function Is7ZipLoaded: Boolean;
 begin
   {$IFDEF 7ZIP_LINKONREQUEST}
-  Result := SevenzipLib <> INVALID_MODULEHANDLE_VALUE;
+  Result := SevenzipLibraryHandle <> INVALID_MODULEHANDLE_VALUE;
   {$ELSE ~7ZIP_LINKONREQUEST}
   Result := True;
   {$ENDIF ~7ZIP_LINKONREQUEST}
@@ -738,7 +746,7 @@ begin
   @GetNumberOfFormats := nil;
   @GetNumberOfMethods := nil;
   @SetLargePageMode := nil;
-  JclSysUtils.UnloadModule(SevenzipLib);
+  JclSysUtils.UnloadModule(SevenzipLibraryHandle);
   {$ENDIF 7ZIP_LINKONREQUEST}
 end;
 
