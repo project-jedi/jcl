@@ -163,7 +163,7 @@ begin
   if Result then
   begin
     Inc(P);
-    while CharIsValidIdentifierLetter(P^) do
+    while CharIsValidIdentifierLetter(P^) or (P^ = '.') do
       Inc(P);
   end;
 end;
@@ -226,7 +226,7 @@ begin
     PStart := P;
 
     Inc(P);
-    while CharIsValidIdentifierLetter(P^) do
+    while CharIsValidIdentifierLetter(P^) or (P^ = '.') do
       Inc(P);
 
     SetString(Result, PStart, P - PStart);
@@ -405,7 +405,7 @@ begin
     Inc(I);
     if I = Index then
     begin
-      while CharIsValidIdentifierLetter(PIdentifier^) do
+      while CharIsValidIdentifierLetter(PIdentifier^) or (P^ = '.') do
       begin
         Result := Result + PIdentifier^;
         Inc(PIdentifier);
