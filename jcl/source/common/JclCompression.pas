@@ -777,6 +777,7 @@ type
     FVolumeFileNameMask: TFileName;
     FProgressMax: Int64;
     FCancelCurrentOperation: Boolean;
+    FCurrentItemIndex: Integer;
     function GetItemCount: Integer;
     function GetItem(Index: Integer): TJclCompressionItem;
     function GetVolumeCount: Integer;
@@ -846,6 +847,7 @@ type
     property VolumeFileNameMask: TFileName read FVolumeFileNameMask;
     property VolumeIndexOffset: Integer read FVolumeIndexOffset write FVolumeIndexOffset;
 
+    property CurrentItemIndex: Integer read FCurrentItemIndex; // valid during OnProgress
     property OnProgress: TJclCompressionProgressEvent read FOnProgress write FOnProgress;
     property OnRatio: TJclCompressionRatioEvent read FOnRatio write FOnRatio;
 
@@ -5661,8 +5663,12 @@ end;
 
 procedure TJclSevenzipOutStream.NeedStream;
 begin
-  if Assigned(FArchive) and not Assigned(FStream) then
-    FStream := FArchive.Items[FItemIndex].Stream;
+  if Assigned(FArchive) then
+  begin
+    FArchive.FCurrentItemIndex := FItemIndex;
+    if not Assigned(FStream) then
+      FStream := FArchive.Items[FItemIndex].Stream;
+  end;
 end;
 
 procedure TJclSevenzipOutStream.ReleaseStream;
@@ -5813,8 +5819,12 @@ end;
 
 procedure TJclSevenzipInStream.NeedStream;
 begin
-  if Assigned(FArchive) and not Assigned(FStream) then
-    FStream := FArchive.Items[FItemIndex].Stream;
+  if Assigned(FArchive) then
+  begin
+    FArchive.FCurrentItemIndex := FItemIndex;
+    if not Assigned(FStream) then
+      FStream := FArchive.Items[FItemIndex].Stream;
+  end;
 end;
 
 function TJclSevenzipInStream.Read(Data: Pointer; Size: Cardinal;
@@ -7624,6 +7634,7 @@ begin
     FDestinationDir := '';
     FDecompressing := False;
     FExtractingAllIndex := -1;
+    FCurrentItemIndex := -1;
     AExtractCallback := nil;
     // release volumes and other finalizations
     inherited ExtractAll(ADestinationDir, AAutoCreateSubDir);
@@ -7671,6 +7682,7 @@ begin
     FDestinationDir := '';
     FDecompressing := False;
     AExtractCallback := nil;
+    FCurrentItemIndex := -1;
     // release volumes and other finalizations
     inherited ExtractSelected(ADestinationDir, AAutoCreateSubDir);
   end;
@@ -8880,6 +8892,7 @@ begin
     FDestinationDir := '';
     FDecompressing := False;
     FExtractingAllIndex := -1;
+    FCurrentItemIndex := -1;
     AExtractCallback := nil;
     // release volumes and other finalizations
     inherited ExtractAll(ADestinationDir, AAutoCreateSubDir);
@@ -8928,6 +8941,7 @@ begin
     FDestinationDir := '';
     FDecompressing := False;
     AExtractCallback := nil;
+    FCurrentItemIndex := -1;
     // release volumes and other finalizations
     inherited ExtractSelected(ADestinationDir, AAutoCreateSubDir);
   end;
