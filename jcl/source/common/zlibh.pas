@@ -70,7 +70,8 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclBase;
+  JclBase,
+  JclSysUtils;
 
 //DOM-IGNORE-BEGIN
 
@@ -2256,15 +2257,6 @@ end;
 {$ENDIF ~LINK_TO_MSVCRT}
 {$ELSE ~ZLIB_STATICLINK}
 
-{$IFDEF MSWINDOWS}
-type
-  TModuleHandle = HINST;
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
-type
-  TModuleHandle = Pointer;
-{$ENDIF LINUX}
-
 const
   {$IFDEF MSWINDOWS}
   szZLIB = 'zlib1.dll';
@@ -2272,7 +2264,6 @@ const
   {$IFDEF UNIX}
   szZLIB = 'libz.so';
   {$ENDIF UNIX}
-  INVALID_MODULEHANDLE_VALUE = TModuleHandle(0);
 
   ZLIBzlibVersionExportName = 'zlibVersion';
   ZLIBdeflateInit_ExportName = 'deflateInit_';
@@ -2323,62 +2314,46 @@ end;
 
 function LoadZLib: Boolean;
 {$IFDEF ZLIB_LINKONREQUEST}
-  function GetSymbol(SymbolName: PAnsiChar): Pointer;
-  begin
-    {$IFDEF MSWINDOWS}
-    Result := GetProcAddress(ZLibModuleHandle, SymbolName);
-    {$ENDIF MSWINDOWS}
-    {$IFDEF UNIX}
-    Result := dlsym(ZLibModuleHandle, SymbolName);
-    {$ENDIF UNIX}
-  end;
 begin
   Result := ZLibModuleHandle <> INVALID_MODULEHANDLE_VALUE;
   if Result then
     Exit;
 
-  if ZLibModuleHandle = INVALID_MODULEHANDLE_VALUE then
-    {$IFDEF MSWINDOWS}
-    ZLibModuleHandle := SafeLoadLibrary(szZLIB);
-    {$ENDIF MSWINDOWS}
-    {$IFDEF UNIX}
-    ZLibModuleHandle := dlopen(PAnsiChar(szZLIB), RTLD_NOW);
-    {$ENDIF UNIX}
-  Result := ZLibModuleHandle <> INVALID_MODULEHANDLE_VALUE;
+  Result := JclSysUtils.LoadModule(ZLibModuleHandle, szZLIB);
   if Result then
   begin
-    @zlibVersion := GetSymbol(ZLIBzlibVersionExportName);
-    @deflateInit_ := GetSymbol(ZLIBdeflateInit_ExportName);
-    @deflate := GetSymbol(ZLIBdeflateExportName);
-    @deflateEnd := GetSymbol(ZLIBdeflateEndExportName);
-    @inflateInit_ := GetSymbol(ZLIBinflateInit_ExportName);
-    @inflate := GetSymbol(ZLIBinflateExportName);
-    @inflateEnd := GetSymbol(ZLIBinflateEndExportName);
-    @deflateInit2_ := GetSymbol(ZLIBdeflateInit2_ExportName);
-    @deflateSetDictionary := GetSymbol(ZLIBdeflateSetDictionaryExportName);
-    @deflateCopy := GetSymbol(ZLIBdeflateCopyExportName);
-    @deflateReset := GetSymbol(ZLIBdeflateResetExportName);
-    @deflateParams := GetSymbol(ZLIBdeflateParamsExportName);
-    @deflateBound := GetSymbol(ZLIBdeflateBoundExportName);
-    @deflatePrime := GetSymbol(ZLIBdeflatePrimeExportName);
-    @inflateInit2_ := GetSymbol(ZLIBinflateInit2_ExportName);
-    @inflateSetDictionary := GetSymbol(ZLIBinflateSetDictionaryExportName);
-    @inflateSync := GetSymbol(ZLIBinflateSyncExportName);
-    @inflateCopy := GetSymbol(ZLIBinflateCopyExportName);
-    @inflateReset := GetSymbol(ZLIBinflateResetExportName);
-    @inflateBackInit_ := GetSymbol(ZLIBinflateBackInit_ExportName);
-    @inflateBack := GetSymbol(ZLIBinflateBackExportName);
-    @inflateBackEnd := GetSymbol(ZLIBinflateBackEndExportName);
-    @zlibCompileFlags := GetSymbol(ZLIBzlibCompileFlagsExportName);
-    @compress := GetSymbol(ZLIBcompressExportName);
-    @compress2 := GetSymbol(ZLIBcompress2ExportName);
-    @compressBound := GetSymbol(ZLIBcompressBoundExportName);
-    @uncompress := GetSymbol(ZLIBuncompressExportName);
-    @adler32 := GetSymbol(ZLIBadler32ExportName);
-    @crc32 := GetSymbol(ZLIBcrc32ExportName);
-    @zError := GetSymbol(ZLIBzErrorExportName);
-    @inflateSyncPoint := GetSymbol(ZLIBinflateSyncPointExportName);
-    @get_crc_table := GetSymbol(ZLIBget_crc_tableExportName);
+    @zlibVersion := GetModuleSymbol(ZLibModuleHandle, ZLIBzlibVersionExportName);
+    @deflateInit_ := GetModuleSymbol(ZLibModuleHandle, ZLIBdeflateInit_ExportName);
+    @deflate := GetModuleSymbol(ZLibModuleHandle, ZLIBdeflateExportName);
+    @deflateEnd := GetModuleSymbol(ZLibModuleHandle, ZLIBdeflateEndExportName);
+    @inflateInit_ := GetModuleSymbol(ZLibModuleHandle, ZLIBinflateInit_ExportName);
+    @inflate := GetModuleSymbol(ZLibModuleHandle, ZLIBinflateExportName);
+    @inflateEnd := GetModuleSymbol(ZLibModuleHandle, ZLIBinflateEndExportName);
+    @deflateInit2_ := GetModuleSymbol(ZLibModuleHandle, ZLIBdeflateInit2_ExportName);
+    @deflateSetDictionary := GetModuleSymbol(ZLibModuleHandle, ZLIBdeflateSetDictionaryExportName);
+    @deflateCopy := GetModuleSymbol(ZLibModuleHandle, ZLIBdeflateCopyExportName);
+    @deflateReset := GetModuleSymbol(ZLibModuleHandle, ZLIBdeflateResetExportName);
+    @deflateParams := GetModuleSymbol(ZLibModuleHandle, ZLIBdeflateParamsExportName);
+    @deflateBound := GetModuleSymbol(ZLibModuleHandle, ZLIBdeflateBoundExportName);
+    @deflatePrime := GetModuleSymbol(ZLibModuleHandle, ZLIBdeflatePrimeExportName);
+    @inflateInit2_ := GetModuleSymbol(ZLibModuleHandle, ZLIBinflateInit2_ExportName);
+    @inflateSetDictionary := GetModuleSymbol(ZLibModuleHandle, ZLIBinflateSetDictionaryExportName);
+    @inflateSync := GetModuleSymbol(ZLibModuleHandle, ZLIBinflateSyncExportName);
+    @inflateCopy := GetModuleSymbol(ZLibModuleHandle, ZLIBinflateCopyExportName);
+    @inflateReset := GetModuleSymbol(ZLibModuleHandle, ZLIBinflateResetExportName);
+    @inflateBackInit_ := GetModuleSymbol(ZLibModuleHandle, ZLIBinflateBackInit_ExportName);
+    @inflateBack := GetModuleSymbol(ZLibModuleHandle, ZLIBinflateBackExportName);
+    @inflateBackEnd := GetModuleSymbol(ZLibModuleHandle, ZLIBinflateBackEndExportName);
+    @zlibCompileFlags := GetModuleSymbol(ZLibModuleHandle, ZLIBzlibCompileFlagsExportName);
+    @compress := GetModuleSymbol(ZLibModuleHandle, ZLIBcompressExportName);
+    @compress2 := GetModuleSymbol(ZLibModuleHandle, ZLIBcompress2ExportName);
+    @compressBound := GetModuleSymbol(ZLibModuleHandle, ZLIBcompressBoundExportName);
+    @uncompress := GetModuleSymbol(ZLibModuleHandle, ZLIBuncompressExportName);
+    @adler32 := GetModuleSymbol(ZLibModuleHandle, ZLIBadler32ExportName);
+    @crc32 := GetModuleSymbol(ZLibModuleHandle, ZLIBcrc32ExportName);
+    @zError := GetModuleSymbol(ZLibModuleHandle, ZLIBzErrorExportName);
+    @inflateSyncPoint := GetModuleSymbol(ZLibModuleHandle, ZLIBinflateSyncPointExportName);
+    @get_crc_table := GetModuleSymbol(ZLibModuleHandle, ZLIBget_crc_tableExportName);
   end;
 end;
 {$ELSE ~ZLIB_LINKONREQUEST}
@@ -2390,14 +2365,7 @@ end;
 procedure UnloadZLib;
 begin
   {$IFDEF ZLIB_LINKONREQUEST}
-  if ZLibModuleHandle <> INVALID_MODULEHANDLE_VALUE then
-    {$IFDEF MSWINDOWS}
-    FreeLibrary(ZLibModuleHandle);
-    {$ENDIF MSWINDOWS}
-    {$IFDEF UNIX}
-    dlclose(Pointer(ZLibModuleHandle));
-    {$ENDIF UNIX}
-  ZLibModuleHandle := INVALID_MODULEHANDLE_VALUE;
+  JclSysUtils.UnloadModule(ZLibModuleHandle);
   {$ENDIF ZLIB_LINKONREQUEST}
 end;
 

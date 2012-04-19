@@ -48,7 +48,8 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclBase;
+  JclBase,
+  JclSysUtils;
 
 //DOM-IGNORE-BEGIN
 
@@ -934,14 +935,6 @@ const
 
 {$ELSE ~PCRE_STATICLINK}
 
-type
-  {$IFDEF MSWINDOWS}
-  TModuleHandle = HINST;
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  TModuleHandle = Pointer;
-  {$ENDIF LINUX}
-
 const
   {$IFDEF MSWINDOWS}
   libpcremodulename = 'pcre3.dll';
@@ -978,7 +971,6 @@ const
   PCREStackMallocExportName = 'pcre_stack_malloc';
   PCREStackFreeExportName = 'pcre_stack_free';
   PCRECalloutExportName = 'pcre_callout';
-  INVALID_MODULEHANDLE_VALUE = TModuleHandle(0);
 
 var
   PCRELib: TModuleHandle = INVALID_MODULEHANDLE_VALUE;
@@ -1261,62 +1253,45 @@ begin
   Result := True;
 end;
 {$ELSE ~PCRE_STATICLINK}
-  function GetSymbol(SymbolName: PAnsiChar): Pointer;
-  begin
-    {$IFDEF MSWINDOWS}
-    Result := GetProcAddress(PCRELib, SymbolName);
-    {$ENDIF MSWINDOWS}
-    {$IFDEF UNIX}
-    Result := dlsym(PCRELib, SymbolName);
-    {$ENDIF UNIX}
-  end;
-
 begin
   Result := PCRELib <> INVALID_MODULEHANDLE_VALUE;
   if Result then
     Exit;
 
-  if PCRELib = INVALID_MODULEHANDLE_VALUE then
-    {$IFDEF MSWINDOWS}
-    PCRELib := SafeLoadLibrary(libpcremodulename);
-    {$ENDIF MSWINDOWS}
-    {$IFDEF UNIX}
-    PCRELib := dlopen(PAnsiChar(libpcremodulename), RTLD_NOW);
-    {$ENDIF UNIX}
-  Result := PCRELib <> INVALID_MODULEHANDLE_VALUE;
+  Result := JclSysUtils.LoadModule(PCRELib, libpcremodulename);
   if Result then
   begin
     {$IFDEF PCRE_LINKONREQUEST}
-    @pcre_compile := GetSymbol(PCRECompileExportName);
-    @pcre_compile2 := GetSymbol(PCRECompile2ExportName);
-    @pcre_config := GetSymbol(PCREConfigExportName);
-    @pcre_copy_named_substring := GetSymbol(PCRECopyNamedSubstringExportName);
-    @pcre_copy_substring := GetSymbol(PCRECopySubStringExportName);
-    @pcre_dfa_exec := GetSymbol(PCREDfaExecExportName);
-    @pcre_exec := GetSymbol(PCREExecExportName);
-    @pcre_free_substring := GetSymbol(PCREFreeSubStringExportName);
-    @pcre_free_substring_list := GetSymbol(PCREFreeSubStringListExportName);
-    @pcre_fullinfo := GetSymbol(PCREFullInfoExportName);
-    @pcre_get_named_substring := GetSymbol(PCREGetNamedSubstringExportName);
-    @pcre_get_stringnumber := GetSymbol(PCREGetStringNumberExportName);
-    @pcre_get_stringtable_entries := GetSymbol(PCREGetStringTableEntriesExportName);
-    @pcre_get_substring := GetSymbol(PCREGetSubStringExportName);
-    @pcre_get_substring_list := GetSymbol(PCREGetSubStringListExportName);
-    @pcre_info := GetSymbol(PCREInfoExportName);
-    @pcre_maketables := GetSymbol(PCREMakeTablesExportName);
-    @pcre_refcount := GetSymbol(PCRERefCountExportName);
-    @pcre_study := GetSymbol(PCREStudyExportName);
-    @pcre_free_study := GetSymbol(PCREFreeStudyExportName);
-    @pcre_version := GetSymbol(PCREVersionExportName);
-    @pcre_jit_stack_alloc := GetSymbol(PCREJITStackAllocExportName);
-    @pcre_jit_stack_free := GetSymbol(PCREJITStackFreeExportName);
-    @pcre_assign_jit_stack := GetSymbol(PCREAssignJITStackExportName);
+    @pcre_compile := GetModuleSymbol(PCRELib, PCRECompileExportName);
+    @pcre_compile2 := GetModuleSymbol(PCRELib, PCRECompile2ExportName);
+    @pcre_config := GetModuleSymbol(PCRELib, PCREConfigExportName);
+    @pcre_copy_named_substring := GetModuleSymbol(PCRELib, PCRECopyNamedSubstringExportName);
+    @pcre_copy_substring := GetModuleSymbol(PCRELib, PCRECopySubStringExportName);
+    @pcre_dfa_exec := GetModuleSymbol(PCRELib, PCREDfaExecExportName);
+    @pcre_exec := GetModuleSymbol(PCRELib, PCREExecExportName);
+    @pcre_free_substring := GetModuleSymbol(PCRELib, PCREFreeSubStringExportName);
+    @pcre_free_substring_list := GetModuleSymbol(PCRELib, PCREFreeSubStringListExportName);
+    @pcre_fullinfo := GetModuleSymbol(PCRELib, PCREFullInfoExportName);
+    @pcre_get_named_substring := GetModuleSymbol(PCRELib, PCREGetNamedSubstringExportName);
+    @pcre_get_stringnumber := GetModuleSymbol(PCRELib, PCREGetStringNumberExportName);
+    @pcre_get_stringtable_entries := GetModuleSymbol(PCRELib, PCREGetStringTableEntriesExportName);
+    @pcre_get_substring := GetModuleSymbol(PCRELib, PCREGetSubStringExportName);
+    @pcre_get_substring_list := GetModuleSymbol(PCRELib, PCREGetSubStringListExportName);
+    @pcre_info := GetModuleSymbol(PCRELib, PCREInfoExportName);
+    @pcre_maketables := GetModuleSymbol(PCRELib, PCREMakeTablesExportName);
+    @pcre_refcount := GetModuleSymbol(PCRELib, PCRERefCountExportName);
+    @pcre_study := GetModuleSymbol(PCRELib, PCREStudyExportName);
+    @pcre_free_study := GetModuleSymbol(PCRELib, PCREFreeStudyExportName);
+    @pcre_version := GetModuleSymbol(PCRELib, PCREVersionExportName);
+    @pcre_jit_stack_alloc := GetModuleSymbol(PCRELib, PCREJITStackAllocExportName);
+    @pcre_jit_stack_free := GetModuleSymbol(PCRELib, PCREJITStackFreeExportName);
+    @pcre_assign_jit_stack := GetModuleSymbol(PCRELib, PCREAssignJITStackExportName);
     {$ENDIF PCRE_LINKONREQUEST}
-    pcre_malloc_func := GetSymbol(PCREMallocExportName);
-    pcre_free_func := GetSymbol(PCREFreeExportName);
-    pcre_stack_malloc_func := GetSymbol(PCREStackMallocExportName);
-    pcre_stack_free_func := GetSymbol(PCREStackFreeExportName);
-    pcre_callout_func := GetSymbol(PCRECalloutExportName);
+    pcre_malloc_func := GetModuleSymbol(PCRELib, PCREMallocExportName);
+    pcre_free_func := GetModuleSymbol(PCRELib, PCREFreeExportName);
+    pcre_stack_malloc_func := GetModuleSymbol(PCRELib, PCREStackMallocExportName);
+    pcre_stack_free_func := GetModuleSymbol(PCRELib, PCREStackFreeExportName);
+    pcre_callout_func := GetModuleSymbol(PCRELib, PCRECalloutExportName);
   end
   else
     InitPCREFuncPtrs(@LibNotLoadedHandler);
@@ -1328,15 +1303,8 @@ procedure UnloadPCRE;
 begin
   {$IFNDEF PCRE_RTL}
   {$IFNDEF PCRE_STATICLINK}
-  if PCRELib <> INVALID_MODULEHANDLE_VALUE then
-    {$IFDEF MSWINDOWS}
-    FreeLibrary(PCRELib);
-    {$ENDIF MSWINDOWS}
-    {$IFDEF UNIX}
-    dlclose(Pointer(PCRELib));
-    {$ENDIF UNIX}
-  PCRELib := INVALID_MODULEHANDLE_VALUE;
   InitPCREFuncPtrs(@LibNotLoadedHandler);
+  JclSysUtils.UnloadModule(PCRELib);
   {$ENDIF ~PCRE_STATICLINK}
   {$ENDIF ~PCRE_RTL}
 end;

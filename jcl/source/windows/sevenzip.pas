@@ -67,7 +67,8 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclBase;
+  JclBase,
+  JclSysUtils;
 
 //DOM-IGNORE-BEGIN
 
@@ -664,14 +665,6 @@ const
 
 implementation
 
-type
-  {$IFDEF MSWINDOWS}
-  TModuleHandle = HINST;
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  TModuleHandle = Pointer;
-  {$ENDIF LINUX}
-
 const
   sz7Zip = '7z.dll';
   CreateObjectExportName = 'CreateObject';
@@ -681,7 +674,6 @@ const
   GetNumberOfFormatsExportName = 'GetNumberOfFormats';
   GetNumberOfMethodsExportName = 'GetNumberOfMethods';
   SetLargePageModeExportName = 'SetLargePageMode';
-  INVALID_MODULEHANDLE_VALUE = TModuleHandle(0);
 
 {$IFDEF 7ZIP_LINKDLL}
 function CreateObject; external sz7Zip name CreateObjectExportName;
@@ -700,40 +692,25 @@ var
 
 function Load7Zip: Boolean;
 {$IFDEF 7ZIP_LINKONREQUEST}
-  function GetSymbol(SymbolName: PChar): Pointer;
-  begin
-    {$IFDEF MSWINDOWS}
-    Result := GetProcAddress(SevenzipLib, PChar(SymbolName));
-    {$ENDIF MSWINDOWS}
-    {$IFDEF UNIX}
-    Result := dlsym(SevenzipLib, PChar(SymbolName));
-    {$ENDIF UNIX}
-  end;
 begin
   Result := SevenzipLib <> INVALID_MODULEHANDLE_VALUE;
-  if not Result then
+  if Result then
+    Exit;
+
+  Result := JclSysUtils.LoadModule(SevenzipLib, sz7Zip);
+  if Result then
   begin
-    {$IFDEF MSWINDOWS}
-    SevenzipLib := LoadLibrary(sz7Zip);
-    {$ENDIF MSWINDOWS}
-    {$IFDEF UNIX}
-    SevenzipLib := dlopen(PChar(sz7Zip), RTLD_NOW);
-    {$ENDIF UNIX}
-    Result := SevenzipLib <> INVALID_MODULEHANDLE_VALUE;
-    if Result then
-    begin
-      @CreateObject := GetSymbol(CreateObjectExportName);
-      @GetHandlerProperty2 := GetSymbol(GetHandlerProperty2ExportName);
-      @GetHandlerProperty := GetSymbol(GetHandlerPropertyExportName);
-      @GetMethodProperty := GetSymbol(GetMethodPropertyExportName);
-      @GetNumberOfFormats := GetSymbol(GetNumberOfFormatsExportName);
-      @GetNumberOfMethods := GetSymbol(GetNumberOfMethodsExportName);
-      @SetLargePageMode := GetSymbol(SetLargePageModeExportName);
-      Result := Assigned(@CreateObject) and Assigned(@GetHandlerProperty2) and
-        Assigned(@GetHandlerProperty) and Assigned(@GetMethodProperty) and
-        Assigned(@GetNumberOfFormats) and Assigned(@GetNumberOfMethods) and
-        Assigned(@SetLargePageMode);
-    end;
+    @CreateObject := GetModuleSymbol(SevenzipLib, CreateObjectExportName);
+    @GetHandlerProperty2 := GetModuleSymbol(SevenzipLib, GetHandlerProperty2ExportName);
+    @GetHandlerProperty := GetModuleSymbol(SevenzipLib, GetHandlerPropertyExportName);
+    @GetMethodProperty := GetModuleSymbol(SevenzipLib, GetMethodPropertyExportName);
+    @GetNumberOfFormats := GetModuleSymbol(SevenzipLib, GetNumberOfFormatsExportName);
+    @GetNumberOfMethods := GetModuleSymbol(SevenzipLib, GetNumberOfMethodsExportName);
+    @SetLargePageMode := GetModuleSymbol(SevenzipLib, SetLargePageModeExportName);
+    Result := Assigned(@CreateObject) and Assigned(@GetHandlerProperty2) and
+      Assigned(@GetHandlerProperty) and Assigned(@GetMethodProperty) and
+      Assigned(@GetNumberOfFormats) and Assigned(@GetNumberOfMethods) and
+      Assigned(@SetLargePageMode);
   end;
 end;
 {$ELSE ~7ZIP_LINKONREQUEST}
@@ -761,14 +738,7 @@ begin
   @GetNumberOfFormats := nil;
   @GetNumberOfMethods := nil;
   @SetLargePageMode := nil;
-  if SevenzipLib <> INVALID_MODULEHANDLE_VALUE then
-    {$IFDEF MSWINDOWS}
-    FreeLibrary(SevenzipLib);
-    {$ENDIF MSWINDOWS}
-    {$IFDEF UNIX}
-    dlclose(Pointer(SevenzipLib));
-    {$ENDIF UNIX}
-  SevenzipLib := INVALID_MODULEHANDLE_VALUE;
+  JclSysUtils.UnloadModule(SevenzipLib);
   {$ENDIF 7ZIP_LINKONREQUEST}
 end;
 

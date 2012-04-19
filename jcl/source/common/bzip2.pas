@@ -42,7 +42,8 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclBase; // PByte, PCardinal for Delphi 5 and C++Builder 5...
+  JclBase,
+  JclSysUtils;
 
 //DOM-IGNORE-BEGIN
 
@@ -425,14 +426,6 @@ end;
 
 {$ELSE ~BZIP2_STATICLINK}
 
-type
-  {$IFDEF MSWINDOWS}
-  TModuleHandle = HINST;
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  TModuleHandle = Pointer;
-  {$ENDIF LINUX}
-
 const
   {$IFDEF MSWINDOWS}
   szBZIP2 = 'bzip2.dll'; // from http://gnuwin32.sourceforge.net/
@@ -449,7 +442,6 @@ const
   BZ2BuffToBuffCompressExportName = 'BZ2_bzBuffToBuffCompress';
   BZ2BuffToBuffDecompressExportName = 'BZ2_bzBuffToBuffDecompress';
   BZ2LibVersionExportName = 'BZ2_bzlibVersion';
-  INVALID_MODULEHANDLE_VALUE = TModuleHandle(0);
 
 {$ENDIF ~BZIP2_STATICLINK}
 
@@ -472,39 +464,23 @@ var
 
 function LoadBZip2: Boolean;
 {$IFDEF BZIP2_LINKONREQUEST}
-  function GetSymbol(SymbolName: PAnsiChar): Pointer;
-  begin
-    {$IFDEF MSWINDOWS}
-    Result := GetProcAddress(BZip2Lib, SymbolName);
-    {$ENDIF MSWINDOWS}
-    {$IFDEF UNIX}
-    Result := dlsym(BZip2Lib, SymbolName);
-    {$ENDIF UNIX}
-  end;
 begin
   Result := BZip2Lib <> INVALID_MODULEHANDLE_VALUE;
   if Result then
     Exit;
 
-  if BZip2Lib = INVALID_MODULEHANDLE_VALUE then
-    {$IFDEF MSWINDOWS}
-    BZip2Lib := SafeLoadLibrary(szBZIP2);
-    {$ENDIF MSWINDOWS}
-    {$IFDEF UNIX}
-    BZip2Lib := dlopen(PAnsiChar(szBZIP2), RTLD_NOW);
-    {$ENDIF UNIX}
-  Result := BZip2Lib <> INVALID_MODULEHANDLE_VALUE;
+  Result := JclSysUtils.LoadModule(BZip2Lib, szBZIP2);
   if Result then
   begin
-    @BZ2_bzCompressInit := GetSymbol(BZ2CompressInitExportName);
-    @BZ2_bzCompress := GetSymbol(BZ2CompressExportName);
-    @BZ2_bzCompressEnd := GetSymbol(BZ2CompressEndExportName);
-    @BZ2_bzDecompressInit := GetSymbol(BZ2DecompressInitExportName);
-    @BZ2_bzDecompress := GetSymbol(BZ2DecompressExportName);
-    @BZ2_bzDecompressEnd := GetSymbol(BZ2DecompressEndExportName);
-    @BZ2_bzBuffToBuffCompress := GetSymbol(BZ2BuffToBuffCompressExportName);
-    @BZ2_bzBuffToBuffDecompress := GetSymbol(BZ2BuffToBuffDecompressExportName);
-    @BZ2_bzlibVersion := GetSymbol(BZ2LibVersionExportName);
+    @BZ2_bzCompressInit := GetModuleSymbol(BZip2Lib, BZ2CompressInitExportName);
+    @BZ2_bzCompress := GetModuleSymbol(BZip2Lib, BZ2CompressExportName);
+    @BZ2_bzCompressEnd := GetModuleSymbol(BZip2Lib, BZ2CompressEndExportName);
+    @BZ2_bzDecompressInit := GetModuleSymbol(BZip2Lib, BZ2DecompressInitExportName);
+    @BZ2_bzDecompress := GetModuleSymbol(BZip2Lib, BZ2DecompressExportName);
+    @BZ2_bzDecompressEnd := GetModuleSymbol(BZip2Lib, BZ2DecompressEndExportName);
+    @BZ2_bzBuffToBuffCompress := GetModuleSymbol(BZip2Lib, BZ2BuffToBuffCompressExportName);
+    @BZ2_bzBuffToBuffDecompress := GetModuleSymbol(BZip2Lib, BZ2BuffToBuffDecompressExportName);
+    @BZ2_bzlibVersion := GetModuleSymbol(BZip2Lib, BZ2LibVersionExportName);
   end;
 end;
 {$ELSE ~BZIP2_LINKONREQUEST}
@@ -525,14 +501,7 @@ end;
 procedure UnloadBZip2;
 begin
   {$IFDEF BZIP2_LINKONREQUEST}
-  if BZip2Lib <> INVALID_MODULEHANDLE_VALUE then
-    {$IFDEF MSWINDOWS}
-    FreeLibrary(BZip2Lib);
-    {$ENDIF MSWINDOWS}
-    {$IFDEF UNIX}
-    dlclose(Pointer(BZip2Lib));
-    {$ENDIF UNIX}
-  BZip2Lib := INVALID_MODULEHANDLE_VALUE;
+  JclSysUtils.UnloadModule(BZip2Lib);
   {$ENDIF BZIP2_LINKONREQUEST}
 end;
 
