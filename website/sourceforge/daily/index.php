@@ -114,6 +114,9 @@ JCL done automatically every night.<br>
 They contain a copy of the development repository and as such contain
 all the latest bug fixes and improvements provided by the JCL
 developers.<br>
+<font color="red">However, from time to time, the content of those files may not compile or may not work properly. We will do everything we can to prevent that but we can't avoid all errors.<br>
+These daily builds are provided for testing purposes and should not be considered stable.</font>
+<br>
 <br>
 The latest source files are available for download below:<br>
 <br>
