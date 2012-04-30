@@ -4175,8 +4175,14 @@ begin
   CheckSetProperty(ipStream);
   ReleaseStream;
   FStream := Value;
-  Include(FModifiedProperties, ipStream);
-  Include(FValidProperties, ipStream);
+  if Value <> nil then begin
+    Include(FModifiedProperties, ipStream);
+    Include(FValidProperties, ipStream);
+  end
+  else begin
+    Exclude(FModifiedProperties, ipStream);
+    Exclude(FValidProperties, ipStream);
+  end;
 end;
 
 procedure TJclCompressionItem.SetUser(const Value: WideString);
