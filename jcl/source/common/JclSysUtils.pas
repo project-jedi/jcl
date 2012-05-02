@@ -2932,7 +2932,6 @@ begin
         AbortPtr := @InternalAbort;
       // init the array of events to wait for
       ProcessEvent := TJclDispatcherObject.Attach(ProcessInfo.hProcess);
-      ProcessInfo.hProcess := 0; // ProcessEvent now "owns" the handle
       SetLength(WaitEvents, 2);
       // add the process first
       WaitEvents[0] := ProcessEvent;
@@ -3017,14 +3016,16 @@ begin
       CloseHandle(ErrorPipeInfo.PipeWrite);
     if ProcessInfo.hThread <> 0 then
       CloseHandle(ProcessInfo.hThread);
-    if ProcessInfo.hProcess <> 0 then
-    begin
-      TerminateProcess(ProcessInfo.hProcess, Cardinal(ABORT_EXIT_CODE));
-      WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
-      GetExitCodeProcess(ProcessInfo.hProcess, Result);
+
+    // always terminate process, especially useful when an exception occured
+    // in one of the texthandler
+    TerminateProcess(ProcessInfo.hProcess, Cardinal(ABORT_EXIT_CODE));
+    WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
+    GetExitCodeProcess(ProcessInfo.hProcess, Result);
+    if Assigned(ProcessEvent) then
+      ProcessEvent.Free // this calls CloseHandle(ProcessInfo.hProcess)
+    else
       CloseHandle(ProcessInfo.hProcess);
-    end;
-    ProcessEvent.Free; // this calls CloseHandle(ProcessInfo.hProcess)
     OutPipeInfo.Event.Free;
     ErrorPipeInfo.Event.Free;
   end;
