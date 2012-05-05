@@ -149,6 +149,7 @@ type
     function GetRootDir: string;
     function GetJCLRootDir: string;
     function GetJCLSettings: TStrings;
+    function GetRADInstallation: TJclBorRADToolInstallation;
     procedure ReadEnvVariables(EnvVariables: TStrings);
     function GetActivePersonality: TJclBorPersonality;
     function GetDesigner: string;
@@ -975,35 +976,24 @@ end;
 
 function TJclOTAExpertBase.GetJCLSettings: TStrings;
 var
-  Installations: TJclBorRADToolInstallations;
-  Installation: TJclBorRADToolInstallation;
-  I: Integer;
-  IDERegKey: string;
   ConfigIni: TIniFile;
+  Installation: TJclBorRADToolInstallation;
 const
   JclConfigIni = 'bin\JCL-install.ini';
 begin
   if not Assigned(FJCLSettings) then
   begin
-    IDERegKey := StrEnsureNoSuffix('\', GetOTAServices.GetBaseRegistryKey);
-    Installations := TJclBorRADToolInstallations.Create;
+    Installation := GetRADInstallation;
     try
-      for I := 0 to Installations.Count - 1 do
-      begin
-        Installation := Installations.Installations[I];
-        if StrSame(IDERegKey, StrEnsureNoSuffix('\', Installation.ConfigDataLocation)) then
-        begin
-          ConfigIni := TIniFile.Create(PathAddSeparator(FJCLRootDir) + JclConfigIni);
-          try
-            FJCLSettings := TStringList.Create;
-            ConfigIni.ReadSectionValues(Installation.Name, FJCLSettings);
-          finally
-            ConfigIni.Free;
-          end;
-        end;
+      ConfigIni := TIniFile.Create(PathAddSeparator(FJCLRootDir) + JclConfigIni);
+      try
+        FJCLSettings := TStringList.Create;
+        ConfigIni.ReadSectionValues(Installation.Name, FJCLSettings);
+      finally
+        ConfigIni.Free;
       end;
     finally
-      Installations.Free;
+      Installation.Free;
     end;
   end;
   Result := FJCLSettings;
@@ -1469,6 +1459,28 @@ begin
       Exit;
   end;
   Result := nil;
+end;
+
+function TJclOTAExpertBase.GetRADInstallation: TJclBorRADToolInstallation;
+var
+  Installations: TJclBorRADToolInstallations;
+  Installation: TJclBorRADToolInstallation;
+  I: Integer;
+  IDERegKey: string;
+begin
+  Result := nil;
+  IDERegKey := StrEnsureNoSuffix('\', GetOTAServices.GetBaseRegistryKey);
+  Installations := TJclBorRADToolInstallations.Create;
+  try
+    for I := 0 to Installations.Count - 1 do
+    begin
+      Installation := Installations.Installations[I];
+      if StrSame(IDERegKey, StrEnsureNoSuffix('\', Installation.ConfigDataLocation)) then
+        Result := TJclBorRADToolInstallationClass(Installation.ClassType).Create(Installation.ConfigDataLocation, Installation.RootKey);
+    end;
+  finally
+    Installations.Free;
+  end;
 end;
 
 function TJclOTAExpertBase.GetRootDir: string;
