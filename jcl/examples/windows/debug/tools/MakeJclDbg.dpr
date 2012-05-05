@@ -38,7 +38,43 @@ uses
   JclDebug, JclFileUtils, JclPeImage, JclStrings;
 
 var
-  JdbgFlag, InsertToExeFlag: Boolean;
+  CreateJdbgFlag, InsertToExeFlag, DeleteMapFlag: Boolean;
+
+function FindExecutableFileName(const MapFileName: TFileName): TFileName;
+var
+  ExecFilesList: TStringList;
+  I, ValidCnt: Integer;
+begin
+  Result := '';
+  ValidCnt := 0;
+  ExecFilesList := TStringList.Create;
+  try
+    if AdvBuildFileList(ChangeFileExt(MapFileName, '.*'), faArchive, ExecFilesList, amSubSetOf, [flFullNames]) then
+      with ExecFilesList do
+      begin
+        for I := 0 to Count - 1 do
+          if IsValidPeFile(Strings[I]) then
+          begin
+            Objects[I] := Pointer(True);
+            Inc(ValidCnt);
+            if Result = '' then
+              Result := Strings[I];
+          end;
+        case ValidCnt of
+          0: WriteLn(#13#10'Can not find any executable file for the MAP file.');
+          1: Write(' -> ' + ExtractFileName(Result));
+        else
+          Result := '';
+          WriteLn(#13#10'Ambiguous executable file names:');
+          for I := 0 to Count - 1 do
+            if Boolean(Objects[I]) then
+              WriteLn(Strings[I]);
+        end;
+      end;
+  finally
+    ExecFilesList.Free;
+  end;
+end;
 
 function MakeDebugData(const FileNames: string): Boolean;
 var
@@ -47,43 +83,6 @@ var
   MapFileSize, BinDataSize: Integer;
   FileName, ExecutableFileName: TFileName;
   LinkerBugUnit: string;
-
-  procedure FindExecutableFileName(const MapFileName: TFileName);
-  var
-    ExecFilesList: TStringList;
-    I, ValidCnt: Integer;
-  begin
-    ExecutableFileName := '';
-    ValidCnt := 0;
-    ExecFilesList := TStringList.Create;
-    try
-      if AdvBuildFileList(ChangeFileExt(MapFileName, '.*'), faArchive, ExecFilesList, amSubSetOf, [flFullNames]) then
-        with ExecFilesList do
-        begin
-          for I := 0 to Count - 1 do
-            if IsValidPeFile(Strings[I]) then
-            begin
-              Objects[I] := Pointer(True);
-              Inc(ValidCnt);
-              if ExecutableFileName = '' then
-                ExecutableFileName := Strings[I];
-            end;
-          case ValidCnt of
-            0: WriteLn(#13#10'Can not find any executable file for the MAP file.');
-            1: Write(' -> ' + ExtractFileName(ExecutableFileName));
-          else
-            ExecutableFileName := '';
-            WriteLn(#13#10'Ambiguous executable file names:');
-            for I := 0 to Count - 1 do
-              if Boolean(Objects[I]) then
-                WriteLn(Strings[I]);
-          end;
-        end;
-    finally
-      ExecFilesList.Free;
-    end;
-  end;
-
 begin
   Result := True;
   FilesList := TStringList.Create;
@@ -95,17 +94,18 @@ begin
         if not AnsiSameText(ExtractFileExt(FileName), '.map') then
           Continue;
         Write(#13#10, FilesList[I]);
-        Result := False;
-        if JdbgFlag then
+        Result := True;
+        if Result and CreateJdbgFlag then
           Result := ConvertMapFileToJdbgFile(FileName);
-        if InsertToExeFlag then
+        if Result and InsertToExeFlag then
         begin
-          FindExecutableFileName(FileName);
-          Result := (ExecutableFileName <> '');
-          if Result then
-            Result := InsertDebugDataIntoExecutableFile(ExecutableFileName,
+          ExecutableFileName := FindExecutableFileName(FileName);
+          Result := (ExecutableFileName <> '') and
+            InsertDebugDataIntoExecutableFile(ExecutableFileName,
               FileName, LinkerBugUnit, MapFileSize, BinDataSize);
         end;
+        if Result and DeleteMapFlag then
+          Result := FileDelete(FileName);
         if Result then
           WriteLn(' ... OK')
         else
@@ -120,14 +120,16 @@ begin
 end;
 
 begin
-  WriteLn('Make JCL debug data command line utility. (c) 2002 Project JEDI');
-  JdbgFlag := AnsiSameText(ParamStr(1), '-J');
-  InsertToExeFlag := AnsiSameText(ParamStr(1), '-E');
-  if (ParamCount <> 2) or not (JdbgFlag xor InsertToExeFlag) then
+  WriteLn('Make JCL debug data command line utility. (c) 2002-2012 Project JEDI');
+  CreateJdbgFlag := ParamPos('J') > 0;
+  InsertToExeFlag := ParamPos('E') > 0;
+  DeleteMapFlag := ParamPos('M') > 0;
+  if (ParamCount <> 2) or (not CreateJdbgFlag and not InsertToExeFlag and not DeleteMapFlag) then
   begin
-    WriteLn('Usage: MAKEJCLDBG -<J|E> <map filenames>');
+    WriteLn('Usage: MAKEJCLDBG [-J] [-E] [-M] <map filenames>');
     WriteLn('       J - Create .JDBG files');
     WriteLn('       E - Insert debug data into executable files');
+    WriteLn('       M - Delete MAP file after conversion');
     WriteLn('Executable files must be in the same directory as the MAP files');
   end
   else
