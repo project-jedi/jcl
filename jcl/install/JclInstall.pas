@@ -1,4 +1,4 @@
-{**************************************************************************************************}
+﻿{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL) extension                                                        }
 {                                                                                                  }
@@ -3397,95 +3397,97 @@ var
   XML: TJclSimpleXML;
   AInstallationElem: TJclSimpleXMLElem;
 begin
-  KeepSettings := True;
+  try
+    KeepSettings := True;
 
-  if RadToolInstallations.AnyInstanceRunning {$IFDEF MSWINDOWS} and not IsDebuggerAttached {$ENDIF} then
-  begin
+    if RadToolInstallations.AnyInstanceRunning {$IFDEF MSWINDOWS} and not IsDebuggerAttached {$ENDIF} then
+    begin
+      if Assigned(GUI) then
+        GUI.Dialog(LoadResString(@RsCloseRADTool), dtError, [drCancel]);
+      Result := False;
+      Exit;
+    end;
+
+    if Assigned(LicensePage) and not LicensePage.Options[0] and not GUI.AutoAcceptMPL then
+    begin
+      if Assigned(GUI) then
+        GUI.Dialog(LoadResString(@RsMissingLicenseAgreement), dtError, [drCancel]);
+      LicensePage.Show;
+      Result := False;
+      Exit;
+    end;
+
+    {$IFDEF MSWINDOWS}
     if Assigned(GUI) then
-      GUI.Dialog(LoadResString(@RsCloseRADTool), dtError, [drCancel]);
-    Result := False;
-    Exit;
-  end;
+    begin
+      for I := 0 to TargetInstallCount - 1 do
+      begin
+        AInstallation := TargetInstalls[I];
+        if AInstallation.Enabled then
+        begin
+          if Assigned(AInstallation.GUIPage) then
+            AInstallation.GUIPage.Show;
+          KeepSettings := GUI.Dialog(LoadResString(@RsKeepExpertSettings),
+            dtConfirmation, [drYes, drNo]) = drYes;
+          Break;
+        end;
+      end;
+    end;
+    RegHelpClearCommands;
+    {$ENDIF MSWINDOWS}
 
-  if Assigned(LicensePage) and not LicensePage.Options[0] and not GUI.AutoAcceptMPL then
-  begin
-    if Assigned(GUI) then
-      GUI.Dialog(LoadResString(@RsMissingLicenseAgreement), dtError, [drCancel]);
-    LicensePage.Show;
-    Result := False;
-    Exit;
-  end;
+    FNbEnabled := 0;
+    FNbInstalled := 0;
 
-  {$IFDEF MSWINDOWS}
-  if Assigned(GUI) then
-  begin
+    for I := 0 to TargetInstallCount - 1 do
+      if TargetInstalls[I].Enabled then
+        Inc(FNbEnabled);
+
+    Result := True;
     for I := 0 to TargetInstallCount - 1 do
     begin
       AInstallation := TargetInstalls[I];
       if AInstallation.Enabled then
       begin
-        if Assigned(AInstallation.GUIPage) then
-          AInstallation.GUIPage.Show;
-        KeepSettings := GUI.Dialog(LoadResString(@RsKeepExpertSettings),
-          dtConfirmation, [drYes, drNo]) = drYes;
-        Break;
+        AInstallation.Silent := False;
+        if not KeepSettings then
+          AInstallation.RemoveSettings;
+        AInstallation.Uninstall(False);
+        Result := AInstallation.Install;
+        if not Result and (not Assigned(GUI) or not GUI.ContinueOnTargetError) then
+          Break;
+        Inc(FNbInstalled);
       end;
     end;
-  end;
-  RegHelpClearCommands;
-  {$ENDIF MSWINDOWS}
 
-  FNbEnabled := 0;
-  FNbInstalled := 0;
-
-  for I := 0 to TargetInstallCount - 1 do
-    if TargetInstalls[I].Enabled then
-      Inc(FNbEnabled);
-
-  Result := True;
-  for I := 0 to TargetInstallCount - 1 do
-  begin
-    AInstallation := TargetInstalls[I];
-    if AInstallation.Enabled then
+    {$IFDEF MSWINDOWS}
+    Result := Result and RegHelpExecuteCommands(True);
+    {$ENDIF MSWINDOWS}
+  finally
+    if Assigned(GUI) and (GUI.XMLResultFileName <> '') then
     begin
-      AInstallation.Silent := False;
-      if not KeepSettings then
-        AInstallation.RemoveSettings;
-      AInstallation.Uninstall(False);
-      Result := AInstallation.Install;
-      if not Result and (not Assigned(GUI) or not GUI.ContinueOnTargetError) then
-        Break;
-      Inc(FNbInstalled);
-    end;
-  end;
+      XML := TJclSimpleXML.Create;
+      try
+        XML.Options := [sxoAutoCreate, sxoAutoIndent, sxoAutoEncodeValue, sxoAutoEncodeEntity];
+        XML.Root.Name := 'JclInstall';
+        for I := 0 to TargetInstallCount - 1 do
+        begin
+          AInstallation := TargetInstalls[I];
+          AInstallationElem := XML.Root.Items.Add('Installation');
 
-  if Assigned(GUI) and (GUI.XMLResultFileName <> '') then
-  begin
-    XML := TJclSimpleXML.Create;
-    try
-      XML.Options := [sxoAutoCreate, sxoAutoIndent, sxoAutoEncodeValue, sxoAutoEncodeEntity];
-      XML.Root.Name := 'JclInstall';
-      for I := 0 to TargetInstallCount - 1 do
-      begin
-        AInstallation := TargetInstalls[I];
-        AInstallationElem := XML.Root.Items.Add('Installation');
-
-        AInstallationElem.Properties.Add('Target', AInstallation.Target.VersionNumberStr);
-        AInstallationElem.Properties.Add('TargetName', AInstallation.TargetName);
-        AInstallationElem.Properties.Add('Enabled', AInstallation.Enabled);
-        AInstallationElem.Properties.Add('InstallAttempted', I <= FNbInstalled);
-        AInstallationElem.Properties.Add('InstallSuccess', AInstallation.InstallSuccess);
-        AInstallationElem.Properties.Add('LogFileName', AInstallation.LogFileName);
+          AInstallationElem.Properties.Add('Target', AInstallation.Target.VersionNumberStr);
+          AInstallationElem.Properties.Add('TargetName', AInstallation.TargetName);
+          AInstallationElem.Properties.Add('Enabled', AInstallation.Enabled);
+          AInstallationElem.Properties.Add('InstallAttempted', I <= FNbInstalled);
+          AInstallationElem.Properties.Add('InstallSuccess', AInstallation.InstallSuccess);
+          AInstallationElem.Properties.Add('LogFileName', AInstallation.LogFileName);
+        end;
+        XML.SaveToFile(GUI.XMLResultFileName, JclStreams.seUTF8);
+      finally
+        XML.Free;
       end;
-      XML.SaveToFile(GUI.XMLResultFileName, JclStreams.seUTF8);
-    finally
-      XML.Free;
     end;
   end;
-
-  {$IFDEF MSWINDOWS}
-  Result := Result and RegHelpExecuteCommands(True);
-  {$ENDIF MSWINDOWS}
 end;
 
 {$IFDEF MSWINDOWS}
