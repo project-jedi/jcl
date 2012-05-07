@@ -3475,7 +3475,12 @@ begin
           AInstallation := TargetInstalls[I];
           AInstallationElem := XML.Root.Items.Add('Installation');
 
-          AInstallationElem.Properties.Add('Target', AInstallation.Target.VersionNumberStr);
+          case AInstallation.TargetPlatform of
+            bpWin64:
+              AInstallationElem.Properties.Add('Target', AInstallation.Target.VersionNumberStr + '_x64');
+            else
+              AInstallationElem.Properties.Add('Target', AInstallation.Target.VersionNumberStr);
+          end;
           AInstallationElem.Properties.Add('TargetName', AInstallation.TargetName);
           AInstallationElem.Properties.Add('Enabled', AInstallation.Enabled);
           AInstallationElem.Properties.Add('InstallAttempted', I <= FNbInstalled);
