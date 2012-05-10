@@ -46,32 +46,70 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF HAS_UNITSCOPE}
+  {$IFDEF HAS_UNIT_RTLCONSTS}
+  System.RTLConsts,
+  {$ENDIF HAS_UNIT_RTLCONSTS}
   {$IFDEF MSWINDOWS}
   Winapi.Windows, // Delphi 2005 inline
   {$ENDIF MSWINDOWS}
   System.SysUtils, System.Classes,
   System.Variants,
   System.IniFiles,
+  System.Contnrs,
   {$ELSE ~HAS_UNITSCOPE}
+  {$IFDEF HAS_UNIT_RTLCONSTS}
+  RTLConsts,
+  {$ENDIF HAS_UNIT_RTLCONSTS}
   {$IFDEF MSWINDOWS}
   Windows, // Delphi 2005 inline
   {$ENDIF MSWINDOWS}
   SysUtils, Classes,
   Variants,
   IniFiles,
+  Contnrs,
   {$ENDIF ~HAS_UNITSCOPE}
   JclBase, JclStreams;
 
 type
-  TJclSimpleData = class(TObject)
+  TJclSimpleItem = class(TObject)
   private
     FName: string;
+  protected
+    procedure SetName(const Value: string); virtual;
+  public
+    property Name: string read FName write SetName;
+  end;
+
+type
+  TJclSimpleItemHashedList = class(TObjectList)
+  private
+    FNameHash: TStringHash;
+    function GetSimpleItemByName(const Name: string): TJclSimpleItem;
+    function GetSimpleItem(Index: Integer): TJclSimpleItem;
+  protected
+    procedure Notify(Ptr: Pointer; Action: TListNotification); override;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function Add(Item: TJclSimpleItem): Integer;
+    procedure Clear; override;
+    function IndexOfSimpleItem(Item: TJclSimpleItem): Integer;
+    function IndexOfName(const Name: string): Integer;
+    procedure Insert(Index: Integer; Item: TJclSimpleItem);
+    procedure InvalidateHash;
+    procedure Move(CurIndex, NewIndex: Integer);
+    property SimpleItemByNames[const Name: string]: TJclSimpleItem read GetSimpleItemByName;
+    property SimpleItems[Index: Integer]: TJclSimpleItem read GetSimpleItem;
+  end;
+
+type
+  TJclSimpleData = class(TJclSimpleItem)
+  private
     FValue: string;
     FData: Pointer;
   protected
     function GetBoolValue: Boolean;
     procedure SetBoolValue(const Value: Boolean);
-    procedure SetName(const Value: string); virtual;
     function GetFloatValue: Extended;
     procedure SetFloatValue(const Value: Extended);
     function GetAnsiValue: AnsiString;
@@ -79,10 +117,9 @@ type
     function GetIntValue: Int64;
     procedure SetIntValue(const Value: Int64);
   public
-    constructor Create; overload; virtual; 
+    constructor Create; overload; virtual;
     constructor Create(const AName: string); overload;
     constructor Create(const AName, AValue: string); overload;
-    property Name: string read FName write SetName;
     property Value: string read FValue write FValue;
     property AnsiValue: AnsiString read GetAnsiValue write SetAnsiValue;
     property IntValue: Int64 read GetIntValue write SetIntValue;
@@ -227,7 +264,7 @@ type
 
   TJclSimpleXMLElemsProlog = class(TObject)
   private
-    FElems: THashedStringList;
+    FElems: TJclSimpleItemHashedList;
     function GetCount: Integer;
     function GetItem(const Index: Integer): TJclSimpleXMLElem;
     function GetEncoding: string;
@@ -275,14 +312,14 @@ type
   end;
   {$ENDIF SUPPORTS_FOR_IN}
 
-  TJclSimpleXMLNamedElems = class(TObject)
+  TJclSimpleXMLNamedElems = class(TJclSimpleItem)
   private
     FElems: TJclSimpleXMLElems;
-    FName: string;
     function GetCount: Integer;
   protected
     FItems: TList;
     function GetItem(const Index: Integer): TJclSimpleXMLElem;
+    procedure SetName(const Value: string); override;
   public
     constructor Create(AElems: TJclSimpleXMLElems; const AName: string);
     destructor Destroy; override;
@@ -308,7 +345,6 @@ type
     property Elems: TJclSimpleXMLElems read FElems;
     property Item[const Index: Integer]: TJclSimpleXMLElem read GetItem; default;
     property Count: Integer read GetCount;
-    property Name: string read FName;
   end;
 
   {$IFDEF SUPPORTS_FOR_IN}
@@ -333,15 +369,16 @@ type
     function GetItemNamed(const Name: string): TJclSimpleXMLElem;
     function GetNamedElems(const Name: string): TJclSimpleXMLNamedElems;
   protected
-    FElems: THashedStringList;
+    FElems: TJclSimpleItemHashedList;
     FCompare: TJclSimpleXMLElemCompare;
-    FNamedElems: THashedStringList;
+    FNamedElems: TJclSimpleItemHashedList;
     function GetItem(const Index: Integer): TJclSimpleXMLElem;
     procedure AddChild(const Value: TJclSimpleXMLElem);
     procedure AddChildFirst(const Value: TJclSimpleXMLElem);
     procedure InsertChild(const Value: TJclSimpleXMLElem; Index: Integer);
     procedure DoItemRename(Value: TJclSimpleXMLElem; const Name: string);
     procedure CreateElems;
+    function SimpleCompare(Elems: TJclSimpleXMLElems; Index1, Index2: Integer): Integer;
   public
     constructor Create(AParent: TJclSimpleXMLElem);
     destructor Destroy; override;
@@ -641,19 +678,10 @@ const
   cBufferSize = 8192;
 
 var
-  GlobalSorts: TList = nil;
-
   GlobalXMLVariant: TXMLVariant = nil;
 
   PreparedNibbleCharMapping: Boolean = False;
   NibbleCharMapping: array [Low(Char)..High(Char)] of Byte;
-
-function GSorts: TList;
-begin
-  if not Assigned(GlobalSorts) then
-    GlobalSorts := TList.Create;
-  Result := GlobalSorts;
-end;
 
 function XMLVariant: TXMLVariant;
 begin
@@ -974,6 +1002,98 @@ begin
   SimpleXMLDecode(Result, False);
 end;
 
+//=== { TJclSimpleItem } =====================================================
+
+procedure TJclSimpleItem.SetName(const Value: string);
+begin
+  FName := Value;
+end;
+
+//=== { TJclSimpleItemHashedList } ===========================================
+
+procedure TJclSimpleItemHashedList.Clear;
+begin
+  InvalidateHash;
+  inherited Clear;
+end;
+
+constructor TJclSimpleItemHashedList.Create;
+begin
+  inherited Create(True);
+end;
+
+destructor TJclSimpleItemHashedList.Destroy;
+begin
+  FreeAndNil(FNameHash);
+  inherited Destroy;
+end;
+
+function TJclSimpleItemHashedList.Add(Item: TJclSimpleItem): Integer;
+begin
+  Result := inherited Add(Item);
+  if FNameHash <> nil then
+    FNameHash.Add(Item.Name, Result);
+end;
+
+function TJclSimpleItemHashedList.GetSimpleItem(Index: Integer): TJclSimpleItem;
+begin
+  Result := TJclSimpleItem(GetItem(Index));
+end;
+
+function TJclSimpleItemHashedList.GetSimpleItemByName(const Name: string): TJclSimpleItem;
+var
+  I: Integer;
+begin
+  I := IndexOfName(Name);
+  if I >= 0 then
+    Result := TJclSimpleItem(Items[I])
+  else
+    Result := nil;
+end;
+
+function TJclSimpleItemHashedList.IndexOfSimpleItem(Item: TJclSimpleItem): Integer;
+begin
+  Result := IndexOf(Item);
+end;
+
+function TJclSimpleItemHashedList.IndexOfName(const Name: string): Integer;
+var
+  I: Integer;
+begin
+  if FNameHash = nil then
+  begin
+    FNameHash := TStringHash.Create(8);
+    for I := 0 to Count - 1 do
+      FNameHash.Add(TJclSimpleData(Items[I]).Name, I);
+  end;
+
+  Result := FNameHash.ValueOf(Name);
+end;
+
+procedure TJclSimpleItemHashedList.Insert(Index: Integer; Item: TJclSimpleItem);
+begin
+  InvalidateHash;
+  inherited Insert(Index, Item);
+end;
+
+procedure TJclSimpleItemHashedList.InvalidateHash;
+begin
+  FreeAndNil(FNameHash);
+end;
+
+procedure TJclSimpleItemHashedList.Move(CurIndex, NewIndex: Integer);
+begin
+  InvalidateHash;
+  inherited Move(CurIndex, NewIndex);
+end;
+
+procedure TJclSimpleItemHashedList.Notify(Ptr: Pointer; Action: TListNotification);
+begin
+  if (Action = lnDeleted) and (FNameHash <> nil) then
+    FNameHash.Remove(TJclSimpleItem(Ptr).Name);
+  inherited Notify(Ptr, Action);
+end;
+
 //=== { TJclSimpleData } =====================================================
 
 constructor TJclSimpleData.Create;
@@ -1034,11 +1154,6 @@ end;
 procedure TJclSimpleData.SetIntValue(const Value: Int64);
 begin
   FValue := IntToStr(Value);
-end;
-
-procedure TJclSimpleData.SetName(const Value: string);
-begin
-  FName := Value;
 end;
 
 //=== { TJclSimpleXMLData } ==================================================
@@ -1573,13 +1688,12 @@ begin
   Stream.Write(Buf, J);
 end;
 
-function TJclSimpleXMLElem.GetChildIndex(
-  const AChild: TJclSimpleXMLElem): Integer;
+function TJclSimpleXMLElem.GetChildIndex(const AChild: TJclSimpleXMLElem): Integer;
 begin
   if FItems = nil then
     Result := -1
   else
-    Result := FItems.FElems.IndexOfObject(AChild);
+    Result := FItems.FElems.IndexOfSimpleItem(AChild);
 end;
 
 function TJclSimpleXMLElem.GetChildsCount: Integer;
@@ -1846,6 +1960,11 @@ begin
   FItems.Move(CurIndex, NewIndex);
 end;
 
+procedure TJclSimpleXMLNamedElems.SetName(const Value: string);
+begin
+  raise EJclSimpleXMLError.CreateRes(@SReadOnlyProperty);
+end;
+
 //=== { TJclSimpleXMLElemsEnumerator } =======================================
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -1936,13 +2055,13 @@ begin
   if Assigned(Value.Parent) then
     Value.Parent.Items.Notify(Value, opRemove);
 
-  FElems.AddObject(Value.Name, Value);
+  FElems.Add(Value);
 
   if FNamedElems <> nil then
   begin
-    NamedIndex := FNamedElems.IndexOf(Value.Name);
+    NamedIndex := FNamedElems.IndexOfName(Value.Name);
     if NamedIndex >= 0 then
-      TJclSimpleXMLNamedElems(FNamedElems.Objects[NamedIndex]).FItems.Add(Value);
+      TJclSimpleXMLNamedElems(FNamedElems.SimpleItems[NamedIndex]).FItems.Add(Value);
   end;
 
   Notify(Value, opInsert);
@@ -1958,13 +2077,13 @@ begin
   if Assigned(Value.Parent) then
     Value.Parent.Items.Notify(Value, opRemove);
 
-  FElems.InsertObject(0, Value.Name, Value);
+  FElems.Insert(0, Value);
 
   if FNamedElems <> nil then
   begin
-    NamedIndex := FNamedElems.IndexOf(Value.Name);
+    NamedIndex := FNamedElems.IndexOfName(Value.Name);
     if NamedIndex >= 0 then
-      TJclSimpleXMLNamedElems(FNamedElems.Objects[NamedIndex]).FItems.Insert(0, Value);
+      TJclSimpleXMLNamedElems(FNamedElems.SimpleItems[NamedIndex]).FItems.Insert(0, Value);
   end;
 
   Notify(Value, opInsert);
@@ -2027,28 +2146,11 @@ begin
 end;
 
 procedure TJclSimpleXMLElems.Clear;
-var
-  I: Integer;
 begin
   if FElems <> nil then
-  begin
-    for I := 0 to FElems.Count - 1 do
-    begin
-      // TJclSimpleXMLElem(FElems.Objects[I]).Clear; // (p3) not needed -called in Destroy
-      FElems.Objects[I].Free;
-      FElems.Objects[I] := nil;
-    end;
     FElems.Clear;
-  end;
   if FNamedElems <> nil then
-  begin
-    for I := 0 to FNamedElems.Count - 1 do
-    begin
-      FNamedElems.Objects[I].Free;
-      FNamedElems.Objects[I] := nil;
-    end;
     FNamedElems.Clear;
-  end;
 end;
 
 constructor TJclSimpleXMLElems.Create(AParent: TJclSimpleXMLElem);
@@ -2060,7 +2162,7 @@ end;
 procedure TJclSimpleXMLElems.CreateElems;
 begin
   if FElems = nil then
-    FElems := THashedStringList.Create;
+    FElems := TJclSimpleItemHashedList.Create;
 end;
 
 procedure TJclSimpleXMLElems.Delete(const Index: Integer);
@@ -2070,23 +2172,22 @@ var
 begin
   if (FElems <> nil) and (Index >= 0) and (Index < FElems.Count) then
   begin
-    Elem := TJclSimpleXMLElem(FElems.Objects[Index]);
+    Elem := TJclSimpleXMLElem(FElems.SimpleItems[Index]);
     if FNamedElems <> nil then
     begin
-      NamedIndex := FNamedElems.IndexOf(Elem.Name);
+      NamedIndex := FNamedElems.IndexOfName(Elem.Name);
       if NamedIndex >= 0 then
-        TJclSimpleXMLNamedElems(FNamedElems.Objects[NamedIndex]).FItems.Remove(Elem);
+        TJclSimpleXMLNamedElems(FNamedElems.SimpleItems[NamedIndex]).FItems.Remove(Elem);
     end;
     FElems.Delete(Index);
     FreeAndNil(Elem);
-    
   end;
 end;
 
 procedure TJclSimpleXMLElems.Delete(const Name: string);
 begin
   if FElems <> nil then
-    Delete(FElems.IndexOf(Name));
+    Delete(FElems.IndexOfName(Name));
 end;
 
 destructor TJclSimpleXMLElems.Destroy;
@@ -2100,25 +2201,17 @@ end;
 
 procedure TJclSimpleXMLElems.DoItemRename(Value: TJclSimpleXMLElem; const Name: string);
 var
-  I: Integer;
   NamedIndex: Integer;
 begin
   if FNamedElems <> nil then
   begin
-    NamedIndex := FNamedElems.IndexOf(Value.Name);
+    NamedIndex := FNamedElems.IndexOfName(Value.Name);
     if NamedIndex >= 0 then
-      TJclSimpleXMLNamedElems(FNamedElems.Objects[NamedIndex]).FItems.Remove(Value);
-  end;
+      TJclSimpleXMLNamedElems(FNamedElems.SimpleItems[NamedIndex]).FItems.Remove(Value);
 
-  I := FElems.IndexOfObject(Value);
-  if I <> -1 then
-    FElems.Strings[I] := Name;
-
-  if FNamedElems <> nil then
-  begin
-    NamedIndex := FNamedElems.IndexOf(Name);
+    NamedIndex := FNamedElems.IndexOfName(Name);
     if NamedIndex >= 0 then
-      TJclSimpleXMLNamedElems(FNamedElems.Objects[NamedIndex]).FItems.Add(Value);
+      TJclSimpleXMLNamedElems(FNamedElems.SimpleItems[NamedIndex]).FItems.Add(Value);
   end;
 end;
 
@@ -2154,7 +2247,7 @@ begin
   if (FElems = nil) or (Index > FElems.Count) then
     Result := nil
   else
-    Result := TJclSimpleXMLElem(FElems.Objects[Index]);
+    Result := TJclSimpleXMLElem(FElems.SimpleItems[Index]);
 end;
 
 function TJclSimpleXMLElems.GetItemNamedDefault(const Name, Default: string): TJclSimpleXMLElem;
@@ -2164,9 +2257,9 @@ begin
   Result := nil;
   if FElems <> nil then
   begin
-    I := FElems.IndexOf(Name);
+    I := FElems.IndexOfName(Name);
     if I <> -1 then
-      Result := TJclSimpleXMLElem(FElems.Objects[I])
+      Result := TJclSimpleXMLElem(FElems.SimpleItems[I])
     else
     if Assigned(Parent) and Assigned(Parent.SimpleXML) and (sxoAutoCreate in Parent.SimpleXML.Options) then
       Result := Add(Name, Default);
@@ -2181,19 +2274,19 @@ var
   NamedIndex: Integer;
 begin
   if FNamedElems = nil then
-    FNamedElems := THashedStringList.Create;
-  NamedIndex := FNamedElems.IndexOf(Name);
+    FNamedElems := TJclSimpleItemHashedList.Create;
+  NamedIndex := FNamedElems.IndexOfName(Name);
   if NamedIndex = -1 then
   begin
     Result := TJclSimpleXMLNamedElems.Create(Self, Name);
-    FNamedElems.AddObject(Name, Result);
+    FNamedElems.Add(Result);
     if FElems <> nil then
-      for NamedIndex := 0 to FElems.Count - 1 do                 
-        if FElems.Strings[NamedIndex] = Name then
-          Result.FItems.Add(FElems.Objects[NamedIndex]);
+      for NamedIndex := 0 to FElems.Count - 1 do
+        if FElems.SimpleItems[NamedIndex].Name = Name then
+          Result.FItems.Add(FElems.SimpleItems[NamedIndex]);
   end
   else
-    Result := TJclSimpleXMLNamedElems(FNamedElems.Objects[NamedIndex]);
+    Result := TJclSimpleXMLNamedElems(FNamedElems.SimpleItems[NamedIndex]);
 end;
 
 function TJclSimpleXMLElems.GetItemNamed(const Name: string): TJclSimpleXMLElem;
@@ -2273,7 +2366,7 @@ begin
                   CreateElems;
                   Notify(lElem,opInsert);
                   lElem.LoadFromStringStream(StringStream);
-                  FElems.AddObject(lElem.Name, lElem);
+                  FElems.Add(lElem);
                 end;
                 Break;
               end
@@ -2331,15 +2424,14 @@ begin
             CreateElems;
             Notify(lElem, opInsert);
             lElem.LoadFromStringStream(StringStream);
-            FElems.AddObject(lElem.Name, lElem);
+            FElems.Add(lElem);
           end;
         end;
     end;
   end;
 end;
 
-procedure TJclSimpleXMLElems.Notify(Value: TJclSimpleXMLElem;
-  Operation: TOperation);
+procedure TJclSimpleXMLElems.Notify(Value: TJclSimpleXMLElem; Operation: TOperation);
 var
   NamedIndex: Integer;
 begin
@@ -2349,11 +2441,11 @@ begin
       begin
         if FNamedElems <> nil then
         begin
-          NamedIndex := FNamedElems.IndexOf(Value.Name);
+          NamedIndex := FNamedElems.IndexOfName(Value.Name);
           if NamedIndex >= 0 then
-            TJclSimpleXMLNamedElems(FNamedElems.Objects[NamedIndex]).FItems.Remove(Value);
+            TJclSimpleXMLNamedElems(FNamedElems.SimpleItems[NamedIndex]).FItems.Remove(Value);
         end;
-        FElems.Delete(FElems.IndexOfObject(Value));
+        FElems.Remove(Value);
         Value.FParent := nil;
         Value.FSimpleXML := nil;
       end;
@@ -2367,7 +2459,7 @@ end;
 
 function TJclSimpleXMLElems.Remove(Value: TJclSimpleXMLElem): Integer;
 begin
-  Result := FElems.IndexOfObject(Value);
+  Result := FElems.IndexOfSimpleItem(Value);
   Notify(Value, opRemove);
 end;
 
@@ -2378,6 +2470,12 @@ var
 begin
   for I := 0 to Count - 1 do
     Item[I].SaveToStringStream(StringStream, Level);
+end;
+
+function TJclSimpleXMLElems.SimpleCompare(Elems: TJclSimpleXMLElems; Index1,
+  Index2: Integer): Integer;
+begin
+  Result := CompareText(Elems.Item[Index1].Name, Elems.Item[Index2].Name);
 end;
 
 function TJclSimpleXMLElems.Value(const Name, Default: string): string;
@@ -2403,7 +2501,7 @@ begin
   if FElems = nil then
     Result := -1
   else
-    Result := FElems.IndexOfObject(Value);
+    Result := FElems.IndexOfSimpleItem(Value);
 end;
 
 function TJclSimpleXMLElems.IndexOf(const Name: string): Integer;
@@ -2411,7 +2509,7 @@ begin
   if FElems = nil then
     Result := -1
   else
-    Result := FElems.IndexOf(Name);
+    Result := FElems.IndexOfName(Name);
 end;
 
 procedure TJclSimpleXMLElems.InsertChild(const Value: TJclSimpleXMLElem; Index: Integer);
@@ -2424,13 +2522,13 @@ begin
   if Assigned(Value.Parent) then
     Value.Parent.Items.Notify(Value, opRemove);
 
-  FElems.InsertObject(Index, Value.Name, Value);
+  FElems.Insert(Index, Value);
 
   if FNamedElems <> nil then
   begin
-    NamedIndex := FNamedElems.IndexOf(Value.Name);
+    NamedIndex := FNamedElems.IndexOfName(Value.Name);
     if NamedIndex >= 0 then
-      TJclSimpleXMLNamedElems(FNamedElems.Objects[NamedIndex]).FItems.Add(Value);
+      TJclSimpleXMLNamedElems(FNamedElems.SimpleItems[NamedIndex]).FItems.Add(Value);
   end;
 
   Notify(Value, opInsert);
@@ -2451,34 +2549,45 @@ begin
   InsertChild(Result, Index);
 end;
 
-function SortItems(List: TStringList; Index1, Index2: Integer): Integer;
+procedure QuickSort(Elems: TJclSimpleXMLElems; List: TList; L, R: Integer;
+  AFunction: TJclSimpleXMLElemCompare);
 var
-  I: Integer;
+  I, J, M: Integer;
+  T: Pointer;
 begin
-  Result := 0;
-  for I := 0 to GSorts.Count - 1 do
-    if TJclSimpleXMLElems(GSorts[I]).FElems = List then
-    begin
-      Result := TJclSimpleXMLElems(GSorts[I]).FCompare(TJclSimpleXMLElems(GSorts[I]), Index1, Index2);
-      Break;
-    end;
+  repeat
+    I := L;
+    J := R;
+    M := (L + R) shr 1;
+    repeat
+      while AFunction(Elems, I, M) < 0 do
+        Inc(I);
+      while AFunction(Elems, J, M) > 0 do
+        Dec(J);
+      if I <= J then
+      begin
+        T := List[I];
+        List[I] := List[J];
+        List[J] := T;
+        Inc(I);
+        Dec(J);
+      end;
+    until I > J;
+    if L < J then
+      QuickSort(Elems, List, L, J, AFunction);
+    L := I;
+  until I >= R;
 end;
 
 procedure TJclSimpleXMLElems.CustomSort(AFunction: TJclSimpleXMLElemCompare);
 begin
   if FElems <> nil then
-  begin
-    GSorts.Add(Self);
-    FCompare := AFunction;
-    FElems.CustomSort(SortItems);
-    GSorts.Remove(Self);
-  end;
+    QuickSort(Self, FElems, 0, FElems.Count - 1, AFunction);
 end;
 
 procedure TJclSimpleXMLElems.Sort;
 begin
-  if FElems <> nil then
-    FElems.Sort;
+  CustomSort(SimpleCompare);
 end;
 
 //=== { TJclSimpleXMLPropsEnumerator } =======================================
@@ -3716,7 +3825,7 @@ constructor TJclSimpleXMLElemsProlog.Create(ASimpleXML: TJclSimpleXML);
 begin
   inherited Create;
   FSimpleXML := ASimpleXML;
-  FElems := THashedStringList.Create;
+  FElems := TJclSimpleItemHashedList.Create;
 end;
 
 destructor TJclSimpleXMLElemsProlog.Destroy;
@@ -3727,14 +3836,7 @@ begin
 end;
 
 procedure TJclSimpleXMLElemsProlog.Clear;
-var
-  I: Integer;
 begin
-  for I := 0 to FElems.Count - 1 do
-  begin
-    FElems.Objects[I].Free;
-    FElems.Objects[I] := nil;
-  end;
   FElems.Clear;
 end;
 
@@ -3745,7 +3847,7 @@ end;
 
 function TJclSimpleXMLElemsProlog.GetItem(const Index: Integer): TJclSimpleXMLElem;
 begin
-  Result := TJclSimpleXMLElem(FElems.Objects[Index]);
+  Result := TJclSimpleXMLElem(FElems.SimpleItems[Index]);
 end;
 
 procedure TJclSimpleXMLElemsProlog.LoadFromStringStream(StringStream: TJclStringStream);
@@ -3823,7 +3925,7 @@ begin
           else
           if lElem <> nil then
           begin
-            FElems.AddObject(lElem.Name, lElem);
+            FElems.Add(lElem);
             lElem.LoadFromStringStream(StringStream);
             SetLength(St, 0);
             lPos := 0;
@@ -4182,7 +4284,7 @@ begin
     end;
   // (p3) if we get here, an xml header was not found
   Result := TJclSimpleXMLElemHeader.Create(SimpleXML);
-  FElems.AddObject('', Result);
+  FElems.Add(Result);
 end;
 
 function TJclSimpleXMLElemsProlog.AddStyleSheet(const AType, AHRef: string): TJclSimpleXMLElemSheet;
@@ -4192,7 +4294,7 @@ begin
   Result := TJclSimpleXMLElemSheet.Create('xml-stylesheet');
   Result.Properties.Add('type',AType);
   Result.Properties.Add('href',AHRef);
-  FElems.AddObject('xml-stylesheet', Result);
+  FElems.Add(Result);
 end;
 
 function TJclSimpleXMLElemsProlog.AddMSOApplication(const AProgId : string): TJclSimpleXMLElemMSOApplication;
@@ -4201,7 +4303,7 @@ begin
   FindHeader;
   Result := TJclSimpleXMLElemMSOApplication.Create('mso-application');
   Result.Properties.Add('progid',AProgId);
-  FElems.AddObject('mso-application', Result);
+  FElems.Add(Result);
 end;
 
 function TJclSimpleXMLElemsProlog.AddComment(const AValue: string): TJclSimpleXMLElemComment;
@@ -4209,7 +4311,7 @@ begin
   // make sure there is an xml header
   FindHeader;
   Result := TJclSimpleXMLElemComment.Create('', AValue);
-  FElems.AddObject('', Result);
+  FElems.Add(Result);
 end;
 
 function TJclSimpleXMLElemsProlog.AddDocType(const AValue: string): TJclSimpleXMLElemDocType;
@@ -4217,7 +4319,7 @@ begin
   // make sure there is an xml header
   FindHeader;
   Result := TJclSimpleXMLElemDocType.Create('', AValue);
-  FElems.AddObject('', Result);
+  FElems.Add(Result);
 end;
 
 initialization
@@ -4227,7 +4329,6 @@ initialization
 
 finalization
   FreeAndNil(GlobalXMLVariant);
-  FreeAndNil(GlobalSorts);
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
