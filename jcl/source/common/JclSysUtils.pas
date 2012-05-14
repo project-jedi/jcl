@@ -493,27 +493,28 @@ function IntToStrZeroPad(Value, Count: Integer): string;
 type
   // e.g. TStrings.Append
   TTextHandler = procedure(const Text: string) of object;
+  TJclProcessPriority = (ppIdle, ppNormal, ppHigh, ppRealTime, ppBelowNormal, ppAboveNormal);
 
 const
   ABORT_EXIT_CODE = {$IFDEF MSWINDOWS} ERROR_CANCELLED {$ELSE} 1223 {$ENDIF};
 
 function Execute(const CommandLine: string; OutputLineCallback: TTextHandler; RawOutput: Boolean = False;
-  AbortPtr: PBoolean = nil): Cardinal; overload;
+  AbortPtr: PBoolean = nil; ProcessPriority: TJclProcessPriority = ppNormal): Cardinal; overload;
 function Execute(const CommandLine: string; AbortEvent: TJclEvent;
-  OutputLineCallback: TTextHandler; RawOutput: Boolean = False): Cardinal; overload;
+  OutputLineCallback: TTextHandler; RawOutput: Boolean = False; ProcessPriority: TJclProcessPriority = ppNormal): Cardinal; overload;
 function Execute(const CommandLine: string; var Output: string; RawOutput: Boolean = False;
-  AbortPtr: PBoolean = nil): Cardinal; overload;
+  AbortPtr: PBoolean = nil; ProcessPriority: TJclProcessPriority = ppNormal): Cardinal; overload;
 function Execute(const CommandLine: string; AbortEvent: TJclEvent;
-  var Output: string; RawOutput: Boolean = False): Cardinal; overload;
+  var Output: string; RawOutput: Boolean = False; ProcessPriority: TJclProcessPriority = ppNormal): Cardinal; overload;
 
 function Execute(const CommandLine: string; OutputLineCallback, ErrorLineCallback: TTextHandler;
-  RawOutput: Boolean = False; RawError: Boolean = False; AbortPtr: PBoolean = nil): Cardinal; overload;
+  RawOutput: Boolean = False; RawError: Boolean = False; AbortPtr: PBoolean = nil; ProcessPriority: TJclProcessPriority = ppNormal): Cardinal; overload;
 function Execute(const CommandLine: string; AbortEvent: TJclEvent;
-  OutputLineCallback, ErrorLineCallback: TTextHandler; RawOutput: Boolean = False; RawError: Boolean = False): Cardinal; overload;
+  OutputLineCallback, ErrorLineCallback: TTextHandler; RawOutput: Boolean = False; RawError: Boolean = False; ProcessPriority: TJclProcessPriority = ppNormal): Cardinal; overload;
 function Execute(const CommandLine: string; var Output, Error: string;
-  RawOutput: Boolean = False; RawError: Boolean = False; AbortPtr: PBoolean = nil): Cardinal; overload;
+  RawOutput: Boolean = False; RawError: Boolean = False; AbortPtr: PBoolean = nil; ProcessPriority: TJclProcessPriority = ppNormal): Cardinal; overload;
 function Execute(const CommandLine: string; AbortEvent: TJclEvent;
-  var Output, Error: string; RawOutput: Boolean = False; RawError: Boolean = False): Cardinal; overload;
+  var Output, Error: string; RawOutput: Boolean = False; RawError: Boolean = False; ProcessPriority: TJclProcessPriority = ppNormal): Cardinal; overload;
 
 type
 {$HPPEMIT 'namespace Jclsysutils'}
@@ -2853,9 +2854,18 @@ begin
   Result := True;
 end;
 
+const
+  BELOW_NORMAL_PRIORITY_CLASS = $00004000;
+  ABOVE_NORMAL_PRIORITY_CLASS = $00008000;
+
+  ProcessPriorities: array [TJclProcessPriority] of DWORD =
+    (IDLE_PRIORITY_CLASS, NORMAL_PRIORITY_CLASS, HIGH_PRIORITY_CLASS, REALTIME_PRIORITY_CLASS,
+     BELOW_NORMAL_PRIORITY_CLASS, ABOVE_NORMAL_PRIORITY_CLASS);
+
 function InternalExecute(CommandLine: string; AbortPtr: PBoolean; AbortEvent: TJclEvent;
   var Output: string; OutputLineCallback: TTextHandler; RawOutput: Boolean;
-  MergeError: Boolean; var Error: string; ErrorLineCallback: TTextHandler; RawError: Boolean): Cardinal;
+  MergeError: Boolean; var Error: string; ErrorLineCallback: TTextHandler; RawError: Boolean;
+  ProcessPriority: TJclProcessPriority): Cardinal;
 var
   OutPipeInfo, ErrorPipeInfo: TPipeInfo;
   Index: Cardinal;
@@ -2914,7 +2924,7 @@ begin
   ProcessInfo.dwProcessId := 0;
   ProcessEvent := nil;
   try
-    if CreateProcess(nil, PChar(CommandLine), nil, nil, True, NORMAL_PRIORITY_CLASS,
+    if CreateProcess(nil, PChar(CommandLine), nil, nil, True, ProcessPriorities[ProcessPriority],
       nil, nil, StartupInfo, ProcessInfo) then
     begin
       // init out and error events
@@ -3082,20 +3092,20 @@ RawOutput: Do not process isolated carriage returns (#13).
 That is, for RawOutput = False, lines not terminated by a line feed (#10) are deleted from Output. }
 
 function Execute(const CommandLine: string; var Output: string; RawOutput: Boolean;
-  AbortPtr: PBoolean): Cardinal;
+  AbortPtr: PBoolean; ProcessPriority: TJclProcessPriority): Cardinal;
 var
   Error: string;
 begin
   Error := '';
-  Result := InternalExecute(CommandLine, AbortPtr, nil, Output, nil, RawOutput, True, Error, nil, False);
+  Result := InternalExecute(CommandLine, AbortPtr, nil, Output, nil, RawOutput, True, Error, nil, False, ProcessPriority);
 end;
 
-function Execute(const CommandLine: string; AbortEvent: TJclEvent; var Output: string; RawOutput: Boolean): Cardinal;
+function Execute(const CommandLine: string; AbortEvent: TJclEvent; var Output: string; RawOutput: Boolean; ProcessPriority: TJclProcessPriority): Cardinal;
 var
   Error: string;
 begin
   Error := '';
-  Result := InternalExecute(CommandLine, nil, AbortEvent, Output, nil, RawOutput, True, Error, nil, False);
+  Result := InternalExecute(CommandLine, nil, AbortEvent, Output, nil, RawOutput, True, Error, nil, False, ProcessPriority);
 end;
 
 { TODO -cHelp :
@@ -3103,22 +3113,22 @@ Author: Robert Rossmair
 OutputLineCallback called once per line of output. }
 
 function Execute(const CommandLine: string; OutputLineCallback: TTextHandler; RawOutput: Boolean;
-  AbortPtr: PBoolean): Cardinal;
+  AbortPtr: PBoolean; ProcessPriority: TJclProcessPriority): Cardinal;
 var
   Output, Error: string;
 begin
   Output := '';
   Error := '';
-  Result := InternalExecute(CommandLine, AbortPtr, nil, Output, OutputLineCallback, RawOutput, True, Error, nil, False);
+  Result := InternalExecute(CommandLine, AbortPtr, nil, Output, OutputLineCallback, RawOutput, True, Error, nil, False, ProcessPriority);
 end;
 
-function Execute(const CommandLine: string; AbortEvent: TJclEvent; OutputLineCallback: TTextHandler; RawOutput: Boolean): Cardinal;
+function Execute(const CommandLine: string; AbortEvent: TJclEvent; OutputLineCallback: TTextHandler; RawOutput: Boolean; ProcessPriority: TJclProcessPriority): Cardinal;
 var
   Output, Error: string;
 begin
   Output := '';
   Error := '';
-  Result := InternalExecute(CommandLine, nil, AbortEvent, Output, OutputLineCallback, RawOutput, True, Error, nil, False);
+  Result := InternalExecute(CommandLine, nil, AbortEvent, Output, OutputLineCallback, RawOutput, True, Error, nil, False, ProcessPriority);
 end;
 
 { TODO -cHelp :
@@ -3126,15 +3136,15 @@ RawOutput: Do not process isolated carriage returns (#13).
 That is, for RawOutput = False, lines not terminated by a line feed (#10) are deleted from Output. }
 
 function Execute(const CommandLine: string; var Output, Error: string; RawOutput, RawError: Boolean;
-  AbortPtr: PBoolean): Cardinal;
+  AbortPtr: PBoolean; ProcessPriority: TJclProcessPriority): Cardinal;
 begin
-  Result := InternalExecute(CommandLine, AbortPtr, nil, Output, nil, RawOutput, False, Error, nil, RawError);
+  Result := InternalExecute(CommandLine, AbortPtr, nil, Output, nil, RawOutput, False, Error, nil, RawError, ProcessPriority);
 end;
 
 function Execute(const CommandLine: string; AbortEvent: TJclEvent; var Output, Error: string;
-  RawOutput, RawError: Boolean): Cardinal;
+  RawOutput, RawError: Boolean; ProcessPriority: TJclProcessPriority): Cardinal;
 begin
-  Result := InternalExecute(CommandLine, nil, AbortEvent, Output, nil, RawOutput, False, Error, nil, RawError);
+  Result := InternalExecute(CommandLine, nil, AbortEvent, Output, nil, RawOutput, False, Error, nil, RawError, ProcessPriority);
 end;
 
 { TODO -cHelp :
@@ -3142,23 +3152,23 @@ Author: Robert Rossmair
 OutputLineCallback called once per line of output. }
 
 function Execute(const CommandLine: string; OutputLineCallback, ErrorLineCallback: TTextHandler;
-  RawOutput, RawError: Boolean; AbortPtr: PBoolean): Cardinal;
+  RawOutput, RawError: Boolean; AbortPtr: PBoolean; ProcessPriority: TJclProcessPriority): Cardinal;
 var
   Output, Error: string;
 begin
   Output := '';
   Error := '';
-  Result := InternalExecute(CommandLine, AbortPtr, nil, Output, OutputLineCallback, RawOutput, False, Error, ErrorLineCallback, RawError);
+  Result := InternalExecute(CommandLine, AbortPtr, nil, Output, OutputLineCallback, RawOutput, False, Error, ErrorLineCallback, RawError, ProcessPriority);
 end;
 
 function Execute(const CommandLine: string; AbortEvent: TJclEvent; OutputLineCallback, ErrorLineCallback: TTextHandler;
-  RawOutput, RawError: Boolean): Cardinal;
+  RawOutput, RawError: Boolean; ProcessPriority: TJclProcessPriority): Cardinal;
 var
   Output, Error: string;
 begin
   Output := '';
   Error := '';
-  Result := InternalExecute(CommandLine, nil, AbortEvent, Output, OutputLineCallback, RawOutput, False, Error, ErrorLineCallback, RawError);
+  Result := InternalExecute(CommandLine, nil, AbortEvent, Output, OutputLineCallback, RawOutput, False, Error, ErrorLineCallback, RawError, ProcessPriority);
 end;
 
 //=== { TJclCommandLineTool } ================================================
