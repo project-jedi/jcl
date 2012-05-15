@@ -3029,12 +3029,19 @@ begin
 
     // always terminate process, especially useful when an exception occured
     // in one of the texthandler
-    TerminateProcess(ProcessInfo.hProcess, Cardinal(ABORT_EXIT_CODE));
-    WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
-    GetExitCodeProcess(ProcessInfo.hProcess, Result);
+    // but only do it if the process actually started, this prevents eating
+    // up the last error value by calling those three functions with an
+    // invalid handle
+    if ProcessInfo.hProcess <> 0 then
+    begin
+      TerminateProcess(ProcessInfo.hProcess, Cardinal(ABORT_EXIT_CODE));
+      WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
+      GetExitCodeProcess(ProcessInfo.hProcess, Result);
+    end;
+
     if Assigned(ProcessEvent) then
       ProcessEvent.Free // this calls CloseHandle(ProcessInfo.hProcess)
-    else
+    else if ProcessInfo.hProcess <> 0 then
       CloseHandle(ProcessInfo.hProcess);
     OutPipeInfo.Event.Free;
     ErrorPipeInfo.Event.Free;
