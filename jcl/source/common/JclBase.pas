@@ -257,8 +257,13 @@ type
 
   // string types
   TUTF8String = AnsiString;
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  TUTF16String = UnicodeString;
+  TUCS2String = UnicodeString;
+  {$ELSE}
   TUTF16String = WideString;
   TUCS2String = WideString;
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
 var
   AnsiReplacementCharacter: AnsiChar;

@@ -107,7 +107,7 @@ type
     property Items[Index: Integer]: Pointer read GetItem;
   end;
 
-    TJclSafeGuard = class(TInterfacedObject, ISafeGuard)
+  TJclSafeGuard = class(TInterfacedObject, ISafeGuard)
   private
     FItem: Pointer;
   public
@@ -1449,43 +1449,54 @@ var
   var
     I, J, T: SizeInt;
     P, IPtr, JPtr: Pointer;
+    ElSize: Integer;
   begin
+    ElSize := ElementSize;
     repeat
       I := L;
       J := R;
       P := ArrayItemPointer((L + R) shr 1);
       repeat
-        while SortFunc(ArrayItemPointer(I), P) < 0 do
+        IPtr := ArrayItemPointer(I);
+        JPtr := ArrayItemPointer(J);
+        while SortFunc(IPtr, P) < 0 do
+        begin
           Inc(I);
-        while SortFunc(ArrayItemPointer(J), P) > 0 do
+          Inc(PByte(IPtr), ElSize);
+        end;
+        while SortFunc(JPtr, P) > 0 do
+        begin
           Dec(J);
+          Dec(PByte(JPtr), ElSize);
+        end;
         if I <= J then
         begin
-          IPtr := ArrayItemPointer(I);
-          JPtr := ArrayItemPointer(J);
-          case ElementSize of
-            SizeOf(Byte):
-              begin
-                T := PByte(IPtr)^;
-                PByte(IPtr)^ := PByte(JPtr)^;
-                PByte(JPtr)^ := T;
-              end;
-            SizeOf(Word):
-              begin
-                T := PWord(IPtr)^;
-                PWord(IPtr)^ := PWord(JPtr)^;
-                PWord(JPtr)^ := T;
-              end;
-            SizeOf(Integer):
-              begin
-                T := PInteger(IPtr)^;
-                PInteger(IPtr)^ := PInteger(JPtr)^;
-                PInteger(JPtr)^ := T;
-              end;
-          else
-            Move(IPtr^, TempBuf[0], ElementSize);
-            Move(JPtr^, IPtr^, ElementSize);
-            Move(TempBuf[0], JPtr^, ElementSize);
+          if I <> J then
+          begin
+            case ElementSize of
+              SizeOf(Byte):
+                begin
+                  T := PByte(IPtr)^;
+                  PByte(IPtr)^ := PByte(JPtr)^;
+                  PByte(JPtr)^ := T;
+                end;
+              SizeOf(Word):
+                begin
+                  T := PWord(IPtr)^;
+                  PWord(IPtr)^ := PWord(JPtr)^;
+                  PWord(JPtr)^ := T;
+                end;
+              SizeOf(Integer):
+                begin
+                  T := PInteger(IPtr)^;
+                  PInteger(IPtr)^ := PInteger(JPtr)^;
+                  PInteger(JPtr)^ := T;
+                end;
+            else
+              Move(IPtr^, TempBuf[0], ElementSize);
+              Move(JPtr^, IPtr^, ElementSize);
+              Move(TempBuf[0], JPtr^, ElementSize);
+            end;
           end;
           if P = IPtr then
             P := JPtr

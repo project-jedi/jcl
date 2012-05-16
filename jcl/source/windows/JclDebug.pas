@@ -1038,14 +1038,20 @@ implementation
 uses
   {$IFDEF HAS_UNITSCOPE}
   System.RTLConsts,
-  {$IFDEF HAS_UNIT_CHARACTER}
+    {$IFDEF HAS_UNIT_CHARACTER}
   System.Character,
-  {$ENDIF HAS_UNIT_CHARACTER}
+   {$ENDIF HAS_UNIT_CHARACTER}
+   {$IFDEF SUPPORTS_GENERICS}
+  System.Generics.Collections,
+   {$ENDIF SUPPORTS_GENERICS}
   {$ELSE ~HAS_UNITSCOPE}
   RTLConsts,
-  {$IFDEF HAS_UNIT_CHARACTER}
+   {$IFDEF HAS_UNIT_CHARACTER}
   Character,
-  {$ENDIF HAS_UNIT_CHARACTER}
+   {$ENDIF HAS_UNIT_CHARACTER}
+   {$IFDEF SUPPORTS_GENERICS}
+  Generics.Collections,
+   {$ENDIF SUPPORTS_GENERICS}
   {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
   JclRegistry,
@@ -1309,13 +1315,13 @@ begin
     Exit;
   end;
   PEnd := MapString;
-  while (PEnd^ <> '=') and not CharIsReturn(Char(PEnd^)) do
+  while (PEnd^ <> #0) and not (PEnd^ in ['=', #10, #13]) do
     Inc(PEnd);
   if (PEnd^ = '=') then
   begin
-    while (PEnd >= MapString) and not (PEnd^ = NativeSpace) do
+    while (PEnd >= MapString) and (PEnd^ <> ' ') do
       Dec(PEnd);
-    while (PEnd >= MapString) and ((PEnd-1)^ = NativeSpace) do
+    while (PEnd >= MapString) and ((PEnd-1)^ = ' ') do
       Dec(PEnd);
   end;
   SetString(Result, MapString, PEnd - MapString);
@@ -1331,13 +1337,13 @@ begin
     Exit;
   end;
   PEnd := MapString;
-  while (PEnd^ <> '=') and not CharIsReturn(Char(PEnd^)) do
+  while (PEnd^ <> #0) and not (PEnd^ in ['=', #10, #13]) do
     Inc(PEnd);
   if (PEnd^ = '=') then
   begin
-    while (PEnd >= MapString) and not (PEnd^ = NativeSpace) do
+    while (PEnd >= MapString) and (PEnd^ <> ' ') do
       Dec(PEnd);
-    while (PEnd >= MapString) and ((PEnd-1)^ = NativeSpace) do
+    while (PEnd >= MapString) and ((PEnd-1)^ = ' ') do
       Dec(PEnd);
   end;
   PExtension := PEnd;
@@ -1370,17 +1376,17 @@ begin
   begin
     Inc(MapString);
     P := MapString;
-    while (P^ <> ')') and not CharIsReturn(Char(P^)) do
+    while (P^ <> #0) and not (P^ in [')', #10, #13]) do
       Inc(P);
   end
   else
   begin
     P := MapString;
     if IgnoreSpaces then
-      while (P^ <> '(') and not CharIsReturn(Char(P^)) do
+      while (P^ <> #0) and not (P^ in ['(', #10, #13]) do
         Inc(P)
     else
-      while (P^ <> '(') and not CharIsWhiteSpace(Char(P^)) do
+      while (P^ <> #0) and (P^ <> '(') and (P^ > ' ') do
         Inc(P);
   end;
   SetString(Result, MapString, P - MapString);
@@ -1409,7 +1415,7 @@ var
 
   procedure SkipWhiteSpace;
   begin
-    while not Eof and CharIsWhiteSpace(Char(CurrPos^)) do
+    while (CurrPos < EndPos) and (CurrPos^ <= ' ') do
       Inc(CurrPos);
   end;
 
@@ -1430,7 +1436,7 @@ var
     P: PJclMapString;
   begin
     P := CurrPos;
-    while (CurrPos^ <> NativeNull) and not CharIsReturn(Char(CurrPos^)) do
+    while (CurrPos^ <> #0) and not (CurrPos^ in [#10, #13]) do
       Inc(CurrPos);
     SetString(Result, P, CurrPos - P);
   end;
@@ -1439,7 +1445,7 @@ var
   function ReadDecValue: Integer;
   begin
     Result := 0;
-    while CharIsDigit(Char(CurrPos^)) do
+    while CurrPos^ in ['0'..'9'] do
     begin
       Result := Result * 10 + (Ord(CurrPos^) - Ord('0'));
       Inc(CurrPos);
@@ -1448,11 +1454,11 @@ var
 
   function ReadHexValue: DWORD;
   var
-    C: Char;
+    C: AnsiChar;
   begin
     Result := 0;
     repeat
-      C := Char(CurrPos^);
+      C := CurrPos^;
       case C of
         '0'..'9':
           Result := (Result shl 4) or DWORD(Ord(C) - Ord('0'));
@@ -1488,7 +1494,7 @@ var
   begin
     SkipWhiteSpace;
     Result := CurrPos;
-    while not CharIsWhiteSpace(Char(CurrPos^)) do
+    while {(CurrPos^ <> #0) and} (CurrPos^ > ' ') do
       Inc(CurrPos);
   end;
 
@@ -1545,7 +1551,7 @@ var
     SkipWhiteSpace;
     I := Length(Prefix);
     P := CurrPos;
-    while not Eof and (P^ <> NativeCarriageReturn) and (P^ <> NativeNull) and (I > 0) do
+    while not Eof and (P^ <> #13) and (P^ <> #0) and (I > 0) do
     begin
       Inc(P);
       Dec(I);
@@ -2113,7 +2119,7 @@ begin
     Inc(B);
     Inc(I);
   until B >= SizeOf(Buffer) - 1;
-  Buffer[B] := NativeNull;
+  Buffer[B] := #0;
   Result := UTF8ToString(Buffer);
 end;
 
@@ -2130,7 +2136,11 @@ begin
   for I := StartIndex + 1 to Length(S) do
     if not CharIsValidIdentifierLetter(Char(S[I])) then
     begin
+      {$IFDEF SUPPORTS_UNICODE}
+      Result := #1 + SimpleCryptString(UTF8Encode(S)) + #0; // UTF8Encode is much faster than StringToUTF8
+      {$ELSE}
       Result := #1 + SimpleCryptString(StringToUTF8(S)) + #0;
+      {$ENDIF SUPPORTS_UNICODE}
       Exit;
     end;
   SetLength(Result, Length(S) + StartIndex);
@@ -2424,14 +2434,22 @@ end;
 
 procedure TJclBinDebugGenerator.CreateData;
 var
+  {$IFDEF SUPPORTS_GENERICS}
+  WordList: TDictionary<string, Integer>;
+  {$ELSE}
   WordList: TStringList;
+  {$ENDIF SUPPORTS_GENERICS}
   WordStream: TMemoryStream;
   LastSegmentID: Word;
   LastSegmentStored: Boolean;
 
   function AddWord(const S: string): Integer;
   var
+    {$IFDEF SUPPORTS_GENERICS}
+    LowerS: string;
+    {$ELSE}
     N: Integer;
+    {$ENDIF SUPPORTS_GENERICS}
     E: AnsiString;
   begin
     if S = '' then
@@ -2439,6 +2457,16 @@ var
       Result := 0;
       Exit;
     end;
+    {$IFDEF SUPPORTS_GENERICS}
+    LowerS := AnsiLowerCase(S);
+    if not WordList.TryGetValue(LowerS, Result) then
+    begin
+      Result := WordStream.Position;
+      E := EncodeNameString(S);
+      WordStream.WriteBuffer(E[1], Length(E));
+      WordList.Add(LowerS, Result);
+    end;
+    {$ELSE} // for large map files this is very slow
     N := WordList.IndexOf(S);
     if N = -1 then
     begin
@@ -2449,6 +2477,7 @@ var
     end
     else
       Result := DWORD(WordList.Objects[N]);
+    {$ENDIF SUPPORTS_GENERICS}
     Inc(Result);
   end;
 
@@ -2498,19 +2527,29 @@ var
     Result := LastSegmentStored;
   end;
 
+const
+  AlignBytes: array[0..2] of Byte = (0, 0, 0);
 var
   FileHeader: TJclDbgHeader;
   I, D: Integer;
   S: string;
   L1, L2, L3: Integer;
   FirstWord, SecondWord: Integer;
+  WordStreamSize, DataStreamSize: Int64;
 begin
   LastSegmentID := $FFFF;
   WordStream := TMemoryStream.Create;
+  {$IFDEF SUPPORTS_GENERICS}
+  WordList := TDictionary<string, Integer>.Create(Length(FSourceNames) + Length(FProcNames));
+  {$ELSE}
   WordList := TStringList.Create;
+  {$ENDIF SUPPORTS_GENERICS}
   try
+    {$IFNDEF SUPPORTS_GENERICS}
     WordList.Sorted := True;
     WordList.Duplicates := dupError;
+    {$ENDIF ~SUPPORTS_GENERICS}
+    WordStream.SetSize((Length(FSourceNames) + Length(FProcNames)) * 40); // take an average of 40 chars per identifier
 
     FileHeader.Signature := JclDbgDataSignature;
     FileHeader.Version := JclDbgHeaderVersion;
@@ -2524,10 +2563,10 @@ begin
     L2 := 0;
     for I := 0 to Length(FSegments) - 1 do
       if IsSegmentStored(FSegments[I].Segment) then
-    begin
-      WriteValueOfs(FSegments[I].StartVA, L1);
-      WriteValueOfs(AddWord(MapStringCacheToModuleName(FSegments[I].UnitName)), L2);
-    end;
+      begin
+        WriteValueOfs(FSegments[I].StartVA, L1);
+        WriteValueOfs(AddWord(MapStringCacheToModuleName(FSegments[I].UnitName)), L2);
+      end;
     WriteValue(MaxInt);
 
     FileHeader.SourceNames := FDataStream.Position;
@@ -2535,10 +2574,10 @@ begin
     L2 := 0;
     for I := 0 to Length(FSourceNames) - 1 do
       if IsSegmentStored(FSourceNames[I].Segment) then
-    begin
-      WriteValueOfs(FSourceNames[I].VA, L1);
-      WriteValueOfs(AddWord(MapStringCacheToStr(FSourceNames[I].ProcName)), L2);
-    end;
+      begin
+        WriteValueOfs(FSourceNames[I].VA, L1);
+        WriteValueOfs(AddWord(MapStringCacheToStr(FSourceNames[I].ProcName)), L2);
+      end;
     WriteValue(MaxInt);
 
     FileHeader.Symbols := FDataStream.Position;
@@ -2547,30 +2586,30 @@ begin
     L3 := 0;
     for I := 0 to Length(FProcNames) - 1 do
       if IsSegmentStored(FProcNames[I].Segment) then
-    begin
-      WriteValueOfs(FProcNames[I].VA, L1);
-      // MAP files generated by C++Builder have spaces in their names
-      S := MapStringCacheToStr(FProcNames[I].ProcName, True);
-      D := Pos('.', S);
-      if D = 1 then
       begin
-        FirstWord := 0;
-        SecondWord := 0;
-      end
-      else
-      if D = 0 then
-      begin
-        FirstWord := AddWord(S);
-        SecondWord := 0;
-      end
-      else
-      begin
-        FirstWord := AddWord(Copy(S, 1, D - 1));
-        SecondWord := AddWord(Copy(S, D + 1, Length(S)));
+        WriteValueOfs(FProcNames[I].VA, L1);
+        // MAP files generated by C++Builder have spaces in their names
+        S := MapStringCacheToStr(FProcNames[I].ProcName, True);
+        D := Pos('.', S);
+        if D = 1 then
+        begin
+          FirstWord := 0;
+          SecondWord := 0;
+        end
+        else
+        if D = 0 then
+        begin
+          FirstWord := AddWord(S);
+          SecondWord := 0;
+        end
+        else
+        begin
+          FirstWord := AddWord(Copy(S, 1, D - 1));
+          SecondWord := AddWord(Copy(S, D + 1, Length(S)));
+        end;
+        WriteValueOfs(FirstWord, L2);
+        WriteValueOfs(SecondWord, L3);
       end;
-      WriteValueOfs(FirstWord, L2);
-      WriteValueOfs(SecondWord, L3);
-    end;
     WriteValue(MaxInt);
 
     FileHeader.LineNumbers := FDataStream.Position;
@@ -2578,17 +2617,29 @@ begin
     L2 := 0;
     for I := 0 to Length(FLineNumbers) - 1 do
       if IsSegmentStored(FLineNumbers[I].Segment) then
-    begin
-      WriteValueOfs(FLineNumbers[I].VA, L1);
-      WriteValueOfs(FLineNumbers[I].LineNumber, L2);
-    end;
+      begin
+        WriteValueOfs(FLineNumbers[I].VA, L1);
+        WriteValueOfs(FLineNumbers[I].LineNumber, L2);
+      end;
     WriteValue(MaxInt);
 
     FileHeader.Words := FDataStream.Position;
-    FDataStream.CopyFrom(WordStream, 0);
-    I := 0;
-    while FDataStream.Size mod 4 <> 0 do
-      FDataStream.WriteBuffer(I, 1);
+
+    // Calculate and allocate the required size in advance instead of reallocating on the fly.
+    WordStreamSize := WordStream.Position;
+    DataStreamSize := FDataStream.Position + WordStreamSize;
+    DataStreamSize := DataStreamSize + (4 - (DataStreamSize and $3));
+    FDataStream.Size := DataStreamSize; // set capacity
+
+    WordStream.Position := 0;
+    FDataStream.CopyFrom(WordStream, WordStreamSize);
+
+    // Align to 4 bytes
+    FDataStream.WriteBuffer(AlignBytes, 4 - (FDataStream.Position and $3));
+    if FDataStream.Size <> FDataStream.Position then // just in case something changed without adjusting the size calculation
+      FDataStream.Size := FDataStream.Position;
+
+    // Update the file header
     FDataStream.Seek(0, soFromBeginning);
     FDataStream.WriteBuffer(FileHeader, SizeOf(FileHeader));
   finally
