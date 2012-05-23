@@ -596,6 +596,7 @@ type
     FStatus: TJclPeImageStatus;
     FTarget: TJclPeTarget;
     FVersionInfo: TJclFileVersionInfo;
+    FStringTable: TStringList;
     function GetCertificateList: TJclPeCertificateList;
     function GetCLRHeader: TJclPeCLRHeader;
     function GetDebugList: TJclPeDebugList;
@@ -620,7 +621,11 @@ type
     function GetVersionInfo: TJclFileVersionInfo;
     function GetVersionInfoAvailable: Boolean;
     procedure ReadImageSections;
+    procedure ReadStringTable;
     procedure SetFileName(const Value: TFileName);
+    function GetStringTableCount: Integer;
+    function GetStringTableItem(Index: Integer): string;
+    function GetImageSectionFullNames(Index: Integer): string;
   protected
     procedure AfterOpen; dynamic;
     procedure CheckNotAttached;
@@ -640,6 +645,7 @@ type
     function DirectoryEntryToData(Directory: Word): Pointer;
     function GetSectionHeader(const SectionName: string; out Header: PImageSectionHeader): Boolean;
     function GetSectionName(Header: PImageSectionHeader): string;
+    function GetNameInStringTable(Offset: ULONG): string;
     function IsBrokenFormat: Boolean;
     function IsCLR: Boolean;
     function IsSystemImage: Boolean;
@@ -673,11 +679,14 @@ type
     property ImageSectionCount: Integer read GetImageSectionCount;
     property ImageSectionHeaders[Index: Integer]: TImageSectionHeader read GetImageSectionHeaders;
     property ImageSectionNames[Index: Integer]: string read GetImageSectionNames;
+    property ImageSectionFullNames[Index: Integer]: string read GetImageSectionFullNames;
     property ImageSectionNameFromRva[const Rva: DWORD]: string read GetImageSectionNameFromRva;
     property ImportList: TJclPeImportList read GetImportList;
     property LoadConfigValues[Index: TJclLoadConfig]: string read GetLoadConfigValues;
     property LoadedImage: TLoadedImage read FLoadedImage;
     property MappedAddress: TJclAddr read GetMappedAddress;
+    property StringTableCount: Integer read GetStringTableCount;
+    property StringTable[Index: Integer]: string read GetStringTableItem;
     // use the following properties
     // property OptionalHeader: TImageOptionalHeader
     property OptionalHeader32: TImageOptionalHeader32 read GetOptionalHeader32;
@@ -3078,12 +3087,15 @@ begin
   FNoExceptions := ANoExceptions;
   FReadOnlyAccess := True;
   FImageSections := TStringList.Create;
+  FStringTable := TStringList.Create;
 end;
 
 destructor TJclPeImage.Destroy;
 begin
   Clear;
   FreeAndNil(FImageSections);
+  FStringTable.Free;
+
   inherited Destroy;
 end;
 
@@ -3117,6 +3129,7 @@ procedure TJclPeImage.AttachLoadedModule(const Handle: HMODULE);
       FLoadedImage.fDOSImage := False;
       FLoadedImage.SizeOfImage := NtHeaders^.OptionalHeader.SizeOfImage;
       ReadImageSections;
+      ReadStringTable;
       AfterOpen;
     end;
     RaiseStatusException;
@@ -3147,6 +3160,7 @@ procedure TJclPeImage.AttachLoadedModule(const Handle: HMODULE);
       FLoadedImage.fDOSImage := False;
       FLoadedImage.SizeOfImage := NtHeaders^.OptionalHeader.SizeOfImage;
       ReadImageSections;
+      ReadStringTable;
       AfterOpen;
     end;
     RaiseStatusException;
@@ -3190,6 +3204,7 @@ end;
 procedure TJclPeImage.Clear;
 begin
   FImageSections.Clear;
+  FStringTable.Clear;
   FreeAndNil(FCertificateList);
   FreeAndNil(FCLRHeader);
   FreeAndNil(FDebugList);
@@ -3645,6 +3660,15 @@ begin
   Result := FImageSections.Count;
 end;
 
+function TJclPeImage.GetImageSectionFullNames(Index: Integer): string;
+var
+  Offset: Integer;
+begin
+  Result := ImageSectionNames[Index];
+  if (Length(Result) > 0) and (Result[1] = '/') and TryStrToInt(Copy(Result, 2, MaxInt), Offset) then
+    Result := GetNameInStringTable(Offset);
+end;
+
 function TJclPeImage.GetImageSectionHeaders(Index: Integer): TImageSectionHeader;
 begin
   Result := PImageSectionHeader(FImageSections.Objects[Index])^;
@@ -3774,6 +3798,25 @@ begin
     Result := 0;
 end;
 
+function TJclPeImage.GetNameInStringTable(Offset: ULONG): string;
+var
+  Index: Integer;
+begin
+  Dec(Offset, SizeOf(ULONG));
+  Index := 0;
+  while (Offset > 0) and (Index < FStringTable.Count) do
+  begin
+    Dec(Offset, Length(FStringTable[Index]) + 1);
+    if Offset > 0 then
+      Inc(Index);
+  end;
+
+  if Offset = 0 then
+    Result := FStringTable[Index]
+  else
+    Result := '';
+end;
+
 function TJclPeImage.GetOptionalHeader32: TImageOptionalHeader32;
 begin
   if Target = taWin32 then
@@ -3836,6 +3879,16 @@ begin
     Result := ''
   else
     Result := FImageSections[I];
+end;
+
+function TJclPeImage.GetStringTableCount: Integer;
+begin
+  Result := FStringTable.Count;
+end;
+
+function TJclPeImage.GetStringTableItem(Index: Integer): string;
+begin
+  Result := FStringTable[Index];
 end;
 
 function TJclPeImage.GetUnusedHeaderBytes: TImageDataDirectory;
@@ -4084,6 +4137,41 @@ begin
   end;
 end;
 
+procedure TJclPeImage.ReadStringTable;
+var
+  SymbolTable: DWORD;
+  StringTablePtr: PAnsiChar;
+  Ptr: PAnsiChar;
+  ByteSize: ULONG;
+  Start: PAnsiChar;
+  StringEntry: AnsiString;
+begin
+  SymbolTable := LoadedImage.FileHeader.FileHeader.PointerToSymbolTable;
+  if SymbolTable = 0 then
+    Exit;
+
+  StringTablePtr := PAnsiChar(LoadedImage.MappedAddress) +
+                    SymbolTable +
+                    (LoadedImage.FileHeader.FileHeader.NumberOfSymbols * SizeOf(IMAGE_SYMBOL));
+
+  ByteSize := PULONG(StringTablePtr)^;
+  Ptr := StringTablePtr + SizeOf(ByteSize);
+
+  while Ptr < StringTablePtr + ByteSize do
+  begin
+    Start := Ptr;
+    while (Ptr^ <> #0) and (Ptr < StringTablePtr + ByteSize) do
+      Inc(Ptr);
+    if Start <> Ptr then
+    begin
+      SetLength(StringEntry, Ptr - Start);
+      Move(Start^, StringEntry[1], Ptr - Start);
+      FStringTable.Add(string(StringEntry));
+    end;
+    Inc(Ptr); // to skip the #0 character
+  end;
+end;
+
 function TJclPeImage.ResourceItemCreate(AEntry: PImageResourceDirectoryEntry;
   AParentItem: TJclPeResourceItem): TJclPeResourceItem;
 begin
@@ -4175,6 +4263,7 @@ begin
       begin
         FStatus := stOk;
         ReadImageSections;
+        ReadStringTable;
         AfterOpen;
       end
       else
