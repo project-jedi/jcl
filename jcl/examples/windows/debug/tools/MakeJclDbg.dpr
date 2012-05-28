@@ -124,7 +124,7 @@ begin
   CreateJdbgFlag := ParamPos('J') > 0;
   InsertToExeFlag := ParamPos('E') > 0;
   DeleteMapFlag := ParamPos('M') > 0;
-  if (ParamCount <> 2) or (not CreateJdbgFlag and not InsertToExeFlag and not DeleteMapFlag) then
+  if not (CreateJdbgFlag or InsertToExeFlag or DeleteMapFlag) then
   begin
     WriteLn('Usage: MAKEJCLDBG [-J] [-E] [-M] <map filenames>');
     WriteLn('       J - Create .JDBG files');
@@ -133,6 +133,6 @@ begin
     WriteLn('Executable files must be in the same directory as the MAP files');
   end
   else
-  if not MakeDebugData(ParamStr(2)) then
+  if not MakeDebugData(ParamStr(ParamCount)) then
     Halt(1);
 end.
