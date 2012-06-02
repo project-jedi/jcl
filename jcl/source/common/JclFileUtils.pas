@@ -216,8 +216,26 @@ function DirectoryExists(const Name: string {$IFDEF UNIX}; ResolveSymLinks: Bool
 function FileCreateTemp(var Prefix: string): THandle;
 function FileBackup(const FileName: string; Move: Boolean = False): Boolean;
 function FileCopy(const ExistingFileName, NewFileName: string; ReplaceExisting: Boolean = False): Boolean;
+function FileDateTime(const FileName: string): TDateTime;
 function FileDelete(const FileName: string; MoveToRecycleBin: Boolean = False): Boolean;
 function FileExists(const FileName: string): Boolean;
+/// <summary>procedure FileHistory Creates a list of history files of a specified
+/// source file. Each version of the file get's an extention .~<Nr>~ The file with
+/// the lowest number is the youngest file.
+/// </summary>
+/// <param name="FileName"> (string) Name of the source file</param>
+/// <param name="HistoryPath"> (string) Folder where the history files should be
+/// created. If no folder is defined the folder of the source file is used.</param>
+/// <param name="MaxHistoryCount"> (Integer) Max number of files</param>
+/// <param name="MinFileDate"> (TDateTime) Timestamp how old the file has to be to
+/// create a new history version. For example: NOW-1/24 => Only once per hour a new
+/// history file is created. Default 0 means allways
+/// <param name="ReplaceExtention"> (boolean) Flag to define that the history file
+/// extention should replace the current extention or should be added at the
+/// end</param>
+/// </param>
+procedure FileHistory(const FileName: string; HistoryPath: string = ''; MaxHistoryCount: Integer = 100; MinFileDate:
+    TDateTime = 0; ReplaceExtention: Boolean = true);
 function FileMove(const ExistingFileName, NewFileName: string; ReplaceExisting: Boolean = False): Boolean;
 function FileRestore(const FileName: string): Boolean;
 function GetBackupFileName(const FileName: string): string;
@@ -3486,6 +3504,27 @@ begin
   {$ENDIF UNIX}
 end;
 
+function FileDateTime(const FileName: string): TDateTime;
+{$IFNDEF COMPILER10_UP}
+var
+  Age: Longint;
+{$ENDIF !COMPILER10_UP}
+begin
+  {$IFDEF COMPILER10_UP}
+  if not FileAge(Filename, Result) then
+    Result := 0;
+  {$ELSE}
+  Age := FileAge(FileName);
+  {$IFDEF MSWINDOWS}
+  // [roko] -1 is valid FileAge value on Linux
+  if Age = -1 then
+    Result := 0
+  else
+  {$ENDIF MSWINDOWS}
+    Result := FileDateToDateTime(Age);
+  {$ENDIF COMPILER10_UP}
+end;
+
 function FileDelete(const FileName: string; MoveToRecycleBin: Boolean = False): Boolean;
 {$IFDEF MSWINDOWS}
 begin
@@ -3522,6 +3561,55 @@ begin
   else
     Result := False;
 end;
+
+procedure FileHistory(const FileName: string; HistoryPath: string = ''; MaxHistoryCount: Integer = 100; MinFileDate:
+    TDateTime = 0; ReplaceExtention: Boolean = true);
+
+  Function Extention (Number : Integer) : String;
+  begin
+    Result := inttostr(Number);
+    while Length(Result) < 3 do
+      Result := '0' + Result;
+    Result := '.~'+Result+'~';
+  end;
+
+  procedure RenameToNumber(const RenameFileName: string; Number: Integer);
+  var
+    f1: string;
+    f2: string;
+  begin
+    f1 := ChangeFileExt(RenameFileName,Extention(Number-1));
+    f2 := ChangeFileExt(RenameFileName,Extention(Number));
+    if FileExists(f2) then
+      if Number >= MaxHistoryCount then
+        if not FileDelete(f2) then
+          Exception.Create('Unable to delete file "' + f2 + '".')
+        else
+      else
+        RenameToNumber(RenameFileName, Number + 1);
+    if FileExists(f1) then
+      if not FileMove(f1, f2, true) then
+        Exception.Create('Unable to rename file "' + f1 + '" to "' + f2 + '".')
+  end;
+
+Var FirstFile : string;
+begin
+  // TODO -cMM: FileHistory default body inserted
+  if not FileExists(FileName) or (MaxHistoryCount <= 0) then
+    Exit;
+  if HistoryPath = '' then
+    HistoryPath := ExtractFilePath(FileName);
+  FirstFile := PathAppend(HistoryPath, ExtractFileName(FileName));
+  if ReplaceExtention then
+    FirstFile := ChangeFileExt(FirstFile, Extention(1))
+  else
+    FirstFile := FirstFile+Extention(1);
+  if (FileDateTime(FirstFile) > MinFileDate) and (MinFileDate <> 0) then
+    Exit;
+  RenameToNumber(FirstFile, 2);
+  FileCopy(FileName, FirstFile, True);
+end;
+
 
 function FileMove(const ExistingFileName, NewFileName: string; ReplaceExisting: Boolean = False): Boolean;
 {$IFDEF MSWINDOWS}
