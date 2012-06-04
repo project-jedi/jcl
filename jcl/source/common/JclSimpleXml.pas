@@ -84,12 +84,14 @@ type
   TJclSimpleItemHashedList = class(TObjectList)
   private
     FNameHash: TStringHash;
+    FCaseSensitive: Boolean;
     function GetSimpleItemByName(const Name: string): TJclSimpleItem;
     function GetSimpleItem(Index: Integer): TJclSimpleItem;
+    procedure SetCaseSensitive(const Value: Boolean);
   protected
     procedure Notify(Ptr: Pointer; Action: TListNotification); override;
   public
-    constructor Create;
+    constructor Create(ACaseSensitive: Boolean);
     destructor Destroy; override;
     function Add(Item: TJclSimpleItem): Integer;
     procedure Clear; override;
@@ -98,6 +100,7 @@ type
     procedure Insert(Index: Integer; Item: TJclSimpleItem);
     procedure InvalidateHash;
     procedure Move(CurIndex, NewIndex: Integer);
+    property CaseSensitive: Boolean read FCaseSensitive write SetCaseSensitive;
     property SimpleItemByNames[const Name: string]: TJclSimpleItem read GetSimpleItemByName;
     property SimpleItems[Index: Integer]: TJclSimpleItem read GetSimpleItem;
   end;
@@ -544,7 +547,7 @@ type
 
   TJclSimpleXMLOptions = set of (sxoAutoCreate, sxoAutoIndent, sxoAutoEncodeValue,
     sxoAutoEncodeEntity, sxoDoNotSaveProlog, sxoTrimPrecedingTextWhitespace,
-    sxoTrimFollowingTextWhitespace, sxoKeepWhitespace, sxoDoNotSaveBOM);
+    sxoTrimFollowingTextWhitespace, sxoKeepWhitespace, sxoDoNotSaveBOM, sxoCaseSensitive);
   TJclSimpleXMLEncodeEvent = procedure(Sender: TObject; var Value: string) of object;
   TJclSimpleXMLEncodeStreamEvent = procedure(Sender: TObject; InStream, OutStream: TStream) of object;
 
@@ -1017,9 +1020,10 @@ begin
   inherited Clear;
 end;
 
-constructor TJclSimpleItemHashedList.Create;
+constructor TJclSimpleItemHashedList.Create(ACaseSensitive: Boolean);
 begin
   inherited Create(True);
+  FCaseSensitive := ACaseSensitive;
 end;
 
 destructor TJclSimpleItemHashedList.Destroy;
@@ -1032,7 +1036,12 @@ function TJclSimpleItemHashedList.Add(Item: TJclSimpleItem): Integer;
 begin
   Result := inherited Add(Item);
   if FNameHash <> nil then
-    FNameHash.Add(Item.Name, Result);
+  begin
+    if FCaseSensitive then
+      FNameHash.Add(Item.Name, Result)
+    else
+      FNameHash.Add(UpperCase(Item.Name), Result);
+  end;
 end;
 
 function TJclSimpleItemHashedList.GetSimpleItem(Index: Integer): TJclSimpleItem;
@@ -1060,14 +1069,26 @@ function TJclSimpleItemHashedList.IndexOfName(const Name: string): Integer;
 var
   I: Integer;
 begin
-  if FNameHash = nil then
+  if FCaseSensitive then
   begin
-    FNameHash := TStringHash.Create(8);
-    for I := 0 to Count - 1 do
-      FNameHash.Add(TJclSimpleData(Items[I]).Name, I);
+    if FNameHash = nil then
+    begin
+      FNameHash := TStringHash.Create(8);
+      for I := 0 to Count - 1 do
+        FNameHash.Add(TJclSimpleData(Items[I]).Name, I);
+    end;
+    Result := FNameHash.ValueOf(Name);
+  end
+  else
+  begin
+    if FNameHash = nil then
+    begin
+      FNameHash := TStringHash.Create(8);
+      for I := 0 to Count - 1 do
+        FNameHash.Add(UpperCase(TJclSimpleData(Items[I]).Name), I);
+    end;
+    Result := FNameHash.ValueOf(UpperCase(Name));
   end;
-
-  Result := FNameHash.ValueOf(Name);
 end;
 
 procedure TJclSimpleItemHashedList.Insert(Index: Integer; Item: TJclSimpleItem);
@@ -1090,8 +1111,22 @@ end;
 procedure TJclSimpleItemHashedList.Notify(Ptr: Pointer; Action: TListNotification);
 begin
   if (Action = lnDeleted) and (FNameHash <> nil) then
-    FNameHash.Remove(TJclSimpleItem(Ptr).Name);
+  begin
+    if FCaseSensitive then
+      FNameHash.Remove(TJclSimpleItem(Ptr).Name)
+    else
+      FNameHash.Remove(UpperCase(TJclSimpleItem(Ptr).Name));
+  end;
   inherited Notify(Ptr, Action);
+end;
+
+procedure TJclSimpleItemHashedList.SetCaseSensitive(const Value: Boolean);
+begin
+  if FCaseSensitive <> Value then
+  begin
+    InvalidateHash;
+    FCaseSensitive := Value;
+  end;
 end;
 
 //=== { TJclSimpleData } =====================================================
@@ -2160,9 +2195,15 @@ begin
 end;
 
 procedure TJclSimpleXMLElems.CreateElems;
+var
+  CaseSensitive: Boolean;
 begin
   if FElems = nil then
-    FElems := TJclSimpleItemHashedList.Create;
+  begin
+    CaseSensitive := Assigned(Parent) and Assigned(Parent.SimpleXML)
+      and (sxoCaseSensitive in Parent.SimpleXML.Options);
+    FElems := TJclSimpleItemHashedList.Create(CaseSensitive);
+  end;
 end;
 
 procedure TJclSimpleXMLElems.Delete(const Index: Integer);
@@ -2272,9 +2313,14 @@ end;
 function TJclSimpleXMLElems.GetNamedElems(const Name: string): TJclSimpleXMLNamedElems;
 var
   NamedIndex: Integer;
+  CaseSensitive: Boolean;
 begin
   if FNamedElems = nil then
-    FNamedElems := TJclSimpleItemHashedList.Create;
+  begin
+    CaseSensitive := Assigned(Parent) and Assigned(Parent.SimpleXML)
+      and (sxoCaseSensitive in Parent.SimpleXML.Options);
+    FNamedElems := TJclSimpleItemHashedList.Create(CaseSensitive);
+  end;
   NamedIndex := FNamedElems.IndexOfName(Name);
   if NamedIndex = -1 then
   begin
@@ -3822,10 +3868,13 @@ end;
 //=== { TJclSimpleXMLElemsProlog } ===========================================
 
 constructor TJclSimpleXMLElemsProlog.Create(ASimpleXML: TJclSimpleXML);
+var
+  CaseSensitive: Boolean;
 begin
   inherited Create;
   FSimpleXML := ASimpleXML;
-  FElems := TJclSimpleItemHashedList.Create;
+  CaseSensitive := Assigned(ASimpleXML) and (sxoCaseSensitive in ASimpleXML.Options);
+  FElems := TJclSimpleItemHashedList.Create(CaseSensitive);
 end;
 
 destructor TJclSimpleXMLElemsProlog.Destroy;
