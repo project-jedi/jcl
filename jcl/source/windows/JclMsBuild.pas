@@ -23,7 +23,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -1050,7 +1050,7 @@ begin
     until Start = 0;
     // convert hexa to decimal
     if Copy(Result, 1, 2) = '0x' then
-      Result := IntToStr(StrToInt('$' + Copy(Result, 3, Length(Result) - 2)));
+      Result := IntToStr(StrToInt64('$' + Copy(Result, 3, Length(Result) - 2)));
   end;
 end;
 
@@ -1708,13 +1708,13 @@ begin
         opNotEqual:
           Result := LeftString <> RightString;
         opLess:
-          Result := StrToInt(LeftString) < StrToInt(RightString);
+          Result := StrToInt64(LeftString) < StrToInt64(RightString);
         opLessOrEqual:
-          Result := StrToInt(LeftString) <= StrToInt(RightString);
+          Result := StrToInt64(LeftString) <= StrToInt64(RightString);
         opGreater:
-          Result := StrToInt(LeftString) > StrToInt(RightString);
+          Result := StrToInt64(LeftString) > StrToInt64(RightString);
         OpGreaterOrEqual:
-          Result := StrToInt(LeftString) >= StrToInt(RightString);
+          Result := StrToInt64(LeftString) >= StrToInt64(RightString);
       end;
     end
     else
