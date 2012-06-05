@@ -428,7 +428,7 @@ var
 begin
   if Length(List) > 0 then
   begin
-    EnumThreadWindows(MainThreadID, @RestoreTaskWnds, Integer(List));
+    EnumThreadWindows(MainThreadID, @RestoreTaskWnds, LPARAM(List));
     for I := 0 to Length(List) - 1 do
       EnableWindow(List[I], True);
     SetFocus(List[0]);
@@ -452,7 +452,7 @@ function SaveTaskWindowsList: TJclTaskWindowsList;
 begin
   SetLength(Result, 1);
   Result[0] := GetFocus;
-  EnumThreadWindows(MainThreadID, @SaveTaskWnds, Integer(@Result));
+  EnumThreadWindows(MainThreadID, @SaveTaskWnds, LPARAM(@Result));
 end;
 
 //=== { TJclSimpleMapi } =====================================================
