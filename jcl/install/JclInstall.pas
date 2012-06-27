@@ -3396,6 +3396,7 @@ var
   AInstallation: TJclInstallation;
   XML: TJclSimpleXML;
   AInstallationElem: TJclSimpleXMLElem;
+  LogContent: TStringList;
 begin
   try
     KeepSettings := True;
@@ -3443,6 +3444,10 @@ begin
       if TargetInstalls[I].Enabled then
         Inc(FNbEnabled);
 
+    for I := 0 to TargetInstallCount - 1 do
+      if GUI.DeletePreviousLogFiles then
+        SysUtils.DeleteFile(TargetInstalls[I].LogFileName);
+
     Result := True;
     for I := 0 to TargetInstallCount - 1 do
     begin
@@ -3485,7 +3490,17 @@ begin
           AInstallationElem.Properties.Add('Enabled', AInstallation.Enabled);
           AInstallationElem.Properties.Add('InstallAttempted', I <= FNbInstalled);
           AInstallationElem.Properties.Add('InstallSuccess', AInstallation.InstallSuccess);
-          AInstallationElem.Properties.Add('LogFileName', AInstallation.LogFileName);
+          AInstallationElem.Properties.Add('LogFileName', Iff(FileExists(AInstallation.LogFileName), AInstallation.LogFileName, ''));
+          if GUI.IncludeLogFilesInXML and FileExists(AInstallation.LogFileName) then
+          begin
+            LogContent := TStringList.Create;
+            try
+              LogContent.LoadFromFile(AInstallation.LogFileName{$IFDEF UNICODE}, TEncoding.UTF8{$ENDIF UNICODE});
+              AInstallationElem.Items.Add('LogFile').Items.AddCData('', {$IFNDEF UNICODE}UTF8Decode{$ENDIF UNICODE}(LogContent.Text));
+            finally
+              LogContent.Free;
+            end;
+          end;
         end;
         XML.SaveToFile(GUI.XMLResultFileName, JclStreams.seUTF8);
       finally

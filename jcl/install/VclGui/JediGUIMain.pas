@@ -75,6 +75,9 @@ type
     FAutoUninstall: Boolean;
     FContinueOnTargetError: Boolean;
     FXMLResultFileName: string;
+    FIncludeLogFilesInXML: Boolean;
+    FDeletePreviousLogFiles: Boolean;
+
     procedure HandleException(Sender: TObject; E: Exception);
     procedure SetFrameIcon(Sender: TObject; const FileName: string);
     procedure WMAfterShow(var Message: TMessage); Message WM_AFTERSHOW;
@@ -113,6 +116,10 @@ type
     procedure SetContinueOnTargetError(Value: Boolean);
     function GetXMLResultFileName: string;
     procedure SetXMLResultFileName(const Value: string);
+    function GetDeletePreviousLogFiles: Boolean;
+    procedure SetDeletePreviousLogFiles(Value: Boolean);
+    function GetIncludeLogFilesInXML: Boolean;
+    procedure SetIncludeLogFilesInXML(Value: Boolean);
     procedure Execute;
   end;
 
@@ -233,6 +240,11 @@ begin
   finally
     DestroyIcon(IconHandle);
   end;
+end;
+
+procedure TMainForm.SetIncludeLogFilesInXML(Value: Boolean);
+begin
+  FIncludeLogFilesInXML := Value;
 end;
 
 procedure TMainForm.QuitBtnClick(Sender: TObject);
@@ -477,6 +489,16 @@ begin
   Result := FContinueOnTargetError;
 end;
 
+function TMainForm.GetDeletePreviousLogFiles: Boolean;
+begin
+  Result := FDeletePreviousLogFiles;
+end;
+
+function TMainForm.GetIncludeLogFilesInXML: Boolean;
+begin
+  Result := FIncludeLogFilesInXML;
+end;
+
 procedure TMainForm.SetAutoAcceptDialogs(Value: TDialogTypes);
 begin
   FAutoAcceptDialogs := Value;
@@ -515,6 +537,11 @@ end;
 procedure TMainForm.SetContinueOnTargetError(Value: Boolean);
 begin
   FContinueOnTargetError := Value;
+end;
+
+procedure TMainForm.SetDeletePreviousLogFiles(Value: Boolean);
+begin
+  FDeletePreviousLogFiles := Value;
 end;
 
 function TMainForm.GetProgress: Integer;

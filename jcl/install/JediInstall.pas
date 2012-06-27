@@ -198,6 +198,10 @@ type
     procedure SetContinueOnTargetError(Value: Boolean);
     function GetXMLResultFileName: string;
     procedure SetXMLResultFileName(const Value: string);
+    function GetDeletePreviousLogFiles: Boolean;
+    procedure SetDeletePreviousLogFiles(Value: Boolean);
+    function GetIncludeLogFilesInXML: Boolean;
+    procedure SetIncludeLogFilesInXML(Value: Boolean);
     procedure Execute;
 
     property AutoAcceptDialogs: TDialogTypes read GetAutoAcceptDialogs write SetAutoAcceptDialogs;
@@ -208,6 +212,8 @@ type
     property AutoUninstall: Boolean read GetAutoUninstall write SetAutoUninstall;
     property ContinueOnTargetError: Boolean read GetContinueOnTargetError write SetContinueOnTargetError;
     property XMLResultFileName: string read GetXMLResultFileName write SetXMLResultFileName;  
+    property DeletePreviousLogFiles: Boolean read GetDeletePreviousLogFiles write SetDeletePreviousLogFiles;
+    property IncludeLogFilesInXML: Boolean read GetIncludeLogFilesInXML write SetIncludeLogFilesInXML;
     property PageCount: Integer read GetPageCount;
     property Pages[Index: Integer]: IJediPage read GetPage;
     property Status: string read GetStatus write SetStatus;
@@ -410,8 +416,10 @@ begin
     FInstallGUI.AutoCloseOnSuccess := ParamPos('CloseOnSuccess') >= 1;
     FInstallGUI.AutoInstall := ParamPos('Install') >= 1;
     FInstallGUI.AutoUninstall := ParamPos('Uninstall') >= 1;
+    FInstallGUI.DeletePreviousLogFiles := ParamPos('DeletePreviousLogFiles') >= 1;
     FInstallGUI.ContinueOnTargetError := ParamPos('ContinueOnTargetError') >= 1;
     FInstallGUI.XMLResultFileName := ParamValue('XMLResult');
+    FInstallGUI.IncludeLogFilesInXML := ParamPos('IncludeLogFilesInXML') >= 1;
   end;
   Result := FInstallGUI;
 end;
