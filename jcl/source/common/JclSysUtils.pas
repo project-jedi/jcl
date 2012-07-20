@@ -2938,93 +2938,112 @@ begin
     if CreateProcess(nil, PChar(CommandLine), nil, nil, True, ProcessPriorities[ProcessPriority],
       nil, nil, StartupInfo, ProcessInfo) then
     begin
-      // init out and error events
-      CloseHandle(OutPipeInfo.PipeWrite);
-      OutPipeInfo.PipeWrite := 0;
-      if not MergeError then
-      begin
-        CloseHandle(ErrorPipeInfo.PipeWrite);
-        ErrorPipeInfo.PipeWrite := 0;
-      end;
-      InternalAbort := False;
-      if AbortPtr <> nil then
-        AbortPtr^ := {$IFDEF FPC}Byte({$ENDIF}False{$IFDEF FPC}){$ENDIF}
-      else
-        AbortPtr := @InternalAbort;
-      // init the array of events to wait for
-      ProcessEvent := TJclDispatcherObject.Attach(ProcessInfo.hProcess);
-      SetLength(WaitEvents, 2);
-      // add the process first
-      WaitEvents[0] := ProcessEvent;
-      // add the output event
-      WaitEvents[1] := OutPipeInfo.Event;
-      // add the error event
-      if not MergeError then
-      begin
-        SetLength(WaitEvents, 3);
-        WaitEvents[2] := ErrorPipeInfo.Event;
-      end;
-      // add the abort event if any
-      if AbortEvent <> nil then
-      begin
-        AbortEvent.ResetEvent;
-        Index := Length(WaitEvents);
-        SetLength(WaitEvents, Index + 1);
-        WaitEvents[Index] := AbortEvent;
-      end;
-      // init the asynchronous reads
-      ResetMemory(OutOverlapped, SizeOf(OutOverlapped));
-      OutOverlapped.hEvent := OutPipeInfo.Event.Handle;
-      InternalExecuteReadPipe(OutPipeInfo, OutOverlapped);
-      if not MergeError then
-      begin
-        ResetMemory(ErrorOverlapped, SizeOf(ErrorOverlapped));
-        ErrorOverlapped.hEvent := ErrorPipeInfo.Event.Handle;
-        InternalExecuteReadPipe(ErrorPipeInfo, ErrorOverlapped);
-      end;
-      // event based loop
-      while not {$IFDEF FPC}Boolean({$ENDIF}AbortPtr^{$IFDEF FPC}){$ENDIF} do
-      begin
-        Index := WaitAlertableForMultipleObjects(WaitEvents, False, INFINITE);
-        if Index = WAIT_OBJECT_0 then
-          // the subprocess has ended
-          Break
-        else
-        if Index = (WAIT_OBJECT_0 + 1) then
+      try
+        // init out and error events
+        CloseHandle(OutPipeInfo.PipeWrite);
+        OutPipeInfo.PipeWrite := 0;
+        if not MergeError then
         begin
-          // event on output
-          InternalExecuteHandlePipeEvent(OutPipeInfo, OutOverlapped);
-        end
+          CloseHandle(ErrorPipeInfo.PipeWrite);
+          ErrorPipeInfo.PipeWrite := 0;
+        end;
+        InternalAbort := False;
+        if AbortPtr <> nil then
+          AbortPtr^ := {$IFDEF FPC}Byte({$ENDIF}False{$IFDEF FPC}){$ENDIF}
         else
-        if (Index = (WAIT_OBJECT_0 + 2)) and not MergeError then
+          AbortPtr := @InternalAbort;
+        // init the array of events to wait for
+        ProcessEvent := TJclDispatcherObject.Attach(ProcessInfo.hProcess);
+        SetLength(WaitEvents, 2);
+        // add the process first
+        WaitEvents[0] := ProcessEvent;
+        // add the output event
+        WaitEvents[1] := OutPipeInfo.Event;
+        // add the error event
+        if not MergeError then
         begin
-          // event on error
-          InternalExecuteHandlePipeEvent(ErrorPipeInfo, ErrorOverlapped);
-        end
-        else
-        if ((Index = (WAIT_OBJECT_0 + 2)) and MergeError) or
-           ((Index = (WAIT_OBJECT_0 + 3)) and not MergeError) then
-          // event on abort
-          AbortPtr^ := {$IFDEF FPC}Byte({$ENDIF}True{$IFDEF FPC}){$ENDIF}
-        else
-          {$IFDEF DELPHI11_UP}
-          RaiseLastOSError(Index);
-          {$ELSE}
-          RaiseLastOSError;
-          {$ENDIF DELPHI11_UP}
+          SetLength(WaitEvents, 3);
+          WaitEvents[2] := ErrorPipeInfo.Event;
+        end;
+        // add the abort event if any
+        if AbortEvent <> nil then
+        begin
+          AbortEvent.ResetEvent;
+          Index := Length(WaitEvents);
+          SetLength(WaitEvents, Index + 1);
+          WaitEvents[Index] := AbortEvent;
+        end;
+        // init the asynchronous reads
+        ResetMemory(OutOverlapped, SizeOf(OutOverlapped));
+        OutOverlapped.hEvent := OutPipeInfo.Event.Handle;
+        InternalExecuteReadPipe(OutPipeInfo, OutOverlapped);
+        if not MergeError then
+        begin
+          ResetMemory(ErrorOverlapped, SizeOf(ErrorOverlapped));
+          ErrorOverlapped.hEvent := ErrorPipeInfo.Event.Handle;
+          InternalExecuteReadPipe(ErrorPipeInfo, ErrorOverlapped);
+        end;
+        // event based loop
+        while not {$IFDEF FPC}Boolean({$ENDIF}AbortPtr^{$IFDEF FPC}){$ENDIF} do
+        begin
+          Index := WaitAlertableForMultipleObjects(WaitEvents, False, INFINITE);
+          if Index = WAIT_OBJECT_0 then
+            // the subprocess has ended
+            Break
+          else
+          if Index = (WAIT_OBJECT_0 + 1) then
+          begin
+            // event on output
+            InternalExecuteHandlePipeEvent(OutPipeInfo, OutOverlapped);
+          end
+          else
+          if (Index = (WAIT_OBJECT_0 + 2)) and not MergeError then
+          begin
+            // event on error
+            InternalExecuteHandlePipeEvent(ErrorPipeInfo, ErrorOverlapped);
+          end
+          else
+          if ((Index = (WAIT_OBJECT_0 + 2)) and MergeError) or
+             ((Index = (WAIT_OBJECT_0 + 3)) and not MergeError) then
+            // event on abort
+            AbortPtr^ := {$IFDEF FPC}Byte({$ENDIF}True{$IFDEF FPC}){$ENDIF}
+          else
+            {$IFDEF DELPHI11_UP}
+            RaiseLastOSError(Index);
+            {$ELSE}
+            RaiseLastOSError;
+            {$ENDIF DELPHI11_UP}
+        end;
+        if {$IFDEF FPC}Boolean({$ENDIF}AbortPtr^{$IFDEF FPC}){$ENDIF} then
+          TerminateProcess(ProcessEvent.Handle, Cardinal(ABORT_EXIT_CODE));
+        if (ProcessEvent.WaitForever = wrSignaled) and not GetExitCodeProcess(ProcessEvent.Handle, Result) then
+          Result := $FFFFFFFF;
+        CloseHandle(ProcessInfo.hThread);
+        ProcessInfo.hThread := 0;
+        if OutPipeInfo.PipeRead <> 0 then
+          // read data remaining in output pipe
+          InternalExecuteFlushPipe(OutPipeinfo, OutOverlapped);
+        if not MergeError and (ErrorPipeInfo.PipeRead <> 0) then
+          // read data remaining in error pipe
+          InternalExecuteFlushPipe(ErrorPipeInfo, ErrorOverlapped);
+      except
+        // always terminate process in case of an exception.
+        // This is especially useful when an exception occured in one of
+        // the texthandler but only do it if the process actually started,
+        // this prevents eating up the last error value by calling those
+        // three functions with an invalid handle
+        // Note that we don't do it in the finally block because these
+        // calls would also then eat up the last error value which we tried
+        // to avoid in the first place
+        if ProcessInfo.hProcess <> 0 then
+        begin
+          TerminateProcess(ProcessInfo.hProcess, Cardinal(ABORT_EXIT_CODE));
+          WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
+          GetExitCodeProcess(ProcessInfo.hProcess, Result);
+        end;
+
+        raise;
       end;
-      if {$IFDEF FPC}Boolean({$ENDIF}AbortPtr^{$IFDEF FPC}){$ENDIF} then
-        TerminateProcess(ProcessEvent.Handle, Cardinal(ABORT_EXIT_CODE));
-      if (ProcessEvent.WaitForever = wrSignaled) and not GetExitCodeProcess(ProcessEvent.Handle, Result) then
-        Result := $FFFFFFFF;
-      CloseHandle(ProcessInfo.hThread);
-      ProcessInfo.hThread := 0;
-      if OutPipeInfo.PipeRead <> 0 then
-        // read data remaining in output pipe
-        InternalExecuteFlushPipe(OutPipeinfo, OutOverlapped);
-      if not MergeError and (ErrorPipeInfo.PipeRead <> 0) then
-        // read data remaining in error pipe
-        InternalExecuteFlushPipe(ErrorPipeInfo, ErrorOverlapped);
     end;
   finally
     if OutPipeInfo.PipeRead <> 0 then
@@ -3037,18 +3056,6 @@ begin
       CloseHandle(ErrorPipeInfo.PipeWrite);
     if ProcessInfo.hThread <> 0 then
       CloseHandle(ProcessInfo.hThread);
-
-    // always terminate process, especially useful when an exception occured
-    // in one of the texthandler
-    // but only do it if the process actually started, this prevents eating
-    // up the last error value by calling those three functions with an
-    // invalid handle
-    if ProcessInfo.hProcess <> 0 then
-    begin
-      TerminateProcess(ProcessInfo.hProcess, Cardinal(ABORT_EXIT_CODE));
-      WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
-      GetExitCodeProcess(ProcessInfo.hProcess, Result);
-    end;
 
     if Assigned(ProcessEvent) then
       ProcessEvent.Free // this calls CloseHandle(ProcessInfo.hProcess)
