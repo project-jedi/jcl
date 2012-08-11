@@ -97,14 +97,14 @@
 		<PropertyGroup Condition="'$(Base_Win64)'!=''">
 			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
 			<VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
-			<VerInfo_Locale>1031</VerInfo_Locale>
+			<VerInfo_Locale>1033</VerInfo_Locale>
 			<Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
 		</PropertyGroup>
 <%%% END PLATFORM WIN64 %%%>
 		<PropertyGroup Condition="'$(Base_Win32)'!=''">
 			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
 			<VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
-			<VerInfo_Locale>1031</VerInfo_Locale>
+			<VerInfo_Locale>1033</VerInfo_Locale>
 			<Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_1)'!=''">
@@ -123,7 +123,7 @@
 			<DCC_ObjPath>..\..\lib\d16\win64\debug;..\..\source\include;$(DCC_ObjPath)</DCC_ObjPath>
 			<DCC_IncludePath>..\..\lib\d16\win64\debug;..\..\source\include;$(DCC_IncludePath)</DCC_IncludePath>
 			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-			<VerInfo_Locale>1031</VerInfo_Locale>
+			<VerInfo_Locale>1033</VerInfo_Locale>
 		</PropertyGroup>
 <%%% END PLATFORM WIN64 %%%>
 		<PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
@@ -136,7 +136,7 @@
 			<DCC_ObjPath>..\..\lib\d16\win32\debug;..\..\source\include;$(DCC_ObjPath)</DCC_ObjPath>
 			<DCC_IncludePath>..\..\lib\d16\win32\debug;..\..\source\include;$(DCC_IncludePath)</DCC_IncludePath>
 			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-			<VerInfo_Locale>1031</VerInfo_Locale>
+			<VerInfo_Locale>1033</VerInfo_Locale>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_2)'!=''">
 			<DCC_AssertionsAtRuntime>false</DCC_AssertionsAtRuntime>
@@ -155,7 +155,7 @@
 			<DCC_ObjPath>..\..\lib\d16\win64;..\..\source\include;$(DCC_ObjPath)</DCC_ObjPath>
 			<DCC_IncludePath>..\..\lib\d16\win64;..\..\source\include;$(DCC_IncludePath)</DCC_IncludePath>
 			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-			<VerInfo_Locale>1031</VerInfo_Locale>
+			<VerInfo_Locale>1033</VerInfo_Locale>
 		</PropertyGroup>
 <%%% END PLATFORM WIN64 %%%>
 		<PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
@@ -168,7 +168,7 @@
 			<DCC_ObjPath>..\..\lib\d16\win32;..\..\source\include;$(DCC_ObjPath)</DCC_ObjPath>
 			<DCC_IncludePath>..\..\lib\d16\win32;..\..\source\include;$(DCC_IncludePath)</DCC_IncludePath>
 			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-			<VerInfo_Locale>1031</VerInfo_Locale>
+			<VerInfo_Locale>1033</VerInfo_Locale>
 		</PropertyGroup>
 		<ItemGroup>
 			<DelphiCompile Include="$(MainSource)">
@@ -210,7 +210,7 @@
 						<VersionInfo Name="Special">False</VersionInfo>
 						<VersionInfo Name="Private">False</VersionInfo>
 						<VersionInfo Name="DLL">False</VersionInfo>
-						<VersionInfo Name="Locale">1031</VersionInfo>
+						<VersionInfo Name="Locale">1033</VersionInfo>
 						<VersionInfo Name="CodePage">1252</VersionInfo>
 					</VersionInfo>
 					<VersionInfoKeys>
