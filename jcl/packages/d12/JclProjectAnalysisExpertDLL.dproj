@@ -111,7 +111,7 @@
 						<VersionInfoKeys Name="FileDescription">JCL Project Analyzer</VersionInfoKeys>
 						<VersionInfoKeys Name="FileVersion">2.4.0.4198</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName">JclProjectAnalysisExpertDLL</VersionInfoKeys>
-						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2011 Project JEDI</VersionInfoKeys>
+						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2012 Project JEDI</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename">JclProjectAnalysisExpertDLL120.dll</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>

@@ -153,7 +153,7 @@
       <VersionInfoKeys Name="FileDescription">JCL Integration of version control systems in the IDE</VersionInfoKeys>
       <VersionInfoKeys Name="FileVersion">2.4.0.4198</VersionInfoKeys>
       <VersionInfoKeys Name="InternalName">JclVersionControlExpert</VersionInfoKeys>
-      <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2011 Project JEDI</VersionInfoKeys>
+      <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2012 Project JEDI</VersionInfoKeys>
       <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
       <VersionInfoKeys Name="OriginalFilename">JclVersionControlExpert100.bpl</VersionInfoKeys>
       <VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>

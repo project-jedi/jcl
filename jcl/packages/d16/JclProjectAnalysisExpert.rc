@@ -19,7 +19,7 @@ BEGIN
               VALUE "FileDescription", "JCL Project Analyzer\0"
               VALUE "FileVersion", "2.4.0.4198\0"
               VALUE "InternalName", "JclProjectAnalysisExpert\0"
-              VALUE "LegalCopyright", "Copyright (C) 1999, 2011 Project JEDI\0"
+              VALUE "LegalCopyright", "Copyright (C) 1999, 2012 Project JEDI\0"
               VALUE "OriginalFilename", "JclProjectAnalysisExpert160.bpl\0"
               VALUE "ProductName", "JEDI Code Library\0"
               VALUE "ProductVersion", "2.4.0.4198\0"

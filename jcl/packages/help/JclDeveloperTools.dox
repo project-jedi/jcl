@@ -67,7 +67,7 @@ File30=..\..\..\help\Common.dtx
 File31=..\..\..\help\JclDeveloperTools.dtx
 
 [General]
-Copyright=Copyright (C) 1999, 2011 Project JEDI
+Copyright=Copyright (C) 1999, 2012 Project JEDI
 Summary=Documentation of the JEDI Code Library Developer Tools package
 Title=JEDI Code Library Developer Tools package
 VersionBuild=4198
