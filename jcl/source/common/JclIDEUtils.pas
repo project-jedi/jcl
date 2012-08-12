@@ -3213,6 +3213,7 @@ end;
 destructor TJclBDSInstallation.Destroy;
 begin
   FreeAndNil(FDCCIL);
+  FreeAndNil(FDCC64);
   FreeAndNil(FHelp2Manager);
   inherited Destroy;
 end;
