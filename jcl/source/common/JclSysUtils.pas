@@ -597,9 +597,9 @@ function BooleanToStr(B: Boolean): string;
 function IntToBool(I: Integer): Boolean;
 function BoolToInt(B: Boolean): Integer;
 
-function TryStrToCardinal(const Value: string; out Res: Cardinal): boolean;
-function StrToCardinalDef(const Value: string; const Default: Cardinal): Cardinal;
-function StrToCardinal(const Value: string): Cardinal;
+function TryStrToUInt(const Value: string; out Res: Cardinal): Boolean;
+function StrToUIntDef(const Value: string; const Default: Cardinal): Cardinal;
+function StrToUInt(const Value: string): Cardinal;
 
 const
   {$IFDEF MSWINDOWS}
@@ -3468,7 +3468,7 @@ begin
   Result := Ord(B);
 end;
 
-function TryStrToCardinal(const Value: string; out Res: Cardinal): boolean;
+function TryStrToUInt(const Value: string; out Res: Cardinal): Boolean;
 var i6: Int64;
 begin
   Result := false;
@@ -3479,15 +3479,15 @@ begin
   Res := i6;
 end;
 
-function StrToCardinalDef(const Value: string; const Default: Cardinal): Cardinal;
+function StrToUIntDef(const Value: string; const Default: Cardinal): Cardinal;
 begin
-  if not TryStrToCardinal(Value, Result)
+  if not TryStrToUInt(Value, Result)
      then Result := Default;
 end;
 
-function StrToCardinal(const Value: string): Cardinal;
+function StrToUInt(const Value: string): Cardinal;
 begin
-  if not TryStrToCardinal(Value, Result)
+  if not TryStrToUInt(Value, Result)
      then raise EConvertError.Create('"'+Value+'" is not within range of Cardinal data type');
 end;
 
