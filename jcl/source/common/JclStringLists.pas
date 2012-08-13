@@ -606,7 +606,7 @@ end;
 
 function TJclStringList.First: string;
 begin
-  Result := Strings[0];
+  Result := Get(0);
 end;
 
 function TJclStringList.Join(const ASeparator: string): string;
@@ -615,14 +615,14 @@ var
 begin
   Result := '';
   for I := 0 to LastIndex - 1 do
-    Result := Result + Strings[I] + ASeparator;
+    Result := Result + Get(I) + ASeparator;
   if Count > 0 then
     Result := Result + Last;
 end;
 
 function TJclStringList.Last: string;
 begin
-  Result := Strings[LastIndex];
+  Result := Get(LastIndex);
 end;
 
 function TJclStringList.Split(const AText, ASeparator: string;
@@ -656,7 +656,7 @@ var
 begin
   AutoUpdateControl;
   for I := 0 to LastIndex do
-    Strings[I] := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.Trim(Strings[I]);
+    Put(I, {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.Trim(Strings[I]));
   Result := FSelfAsInterface;
 end;
 
@@ -686,7 +686,7 @@ var
 begin
   AutoUpdateControl;
   for I := LastIndex downto 0 do
-    if MatchRegEx(Strings[I], APattern) then
+    if MatchRegEx(Get(I), APattern) then
       Delete(I);
   Result := FSelfAsInterface;
 end;
@@ -697,7 +697,7 @@ var
 begin
   AutoUpdateControl;
   for I := LastIndex downto 0 do
-    if not MatchRegEx(Strings[I], APattern) then
+    if not MatchRegEx(Get(I), APattern) then
       Delete(I);
   Result := FSelfAsInterface;
 end;
@@ -1250,7 +1250,7 @@ var
 begin
   AutoUpdateControl;
   for I := 0 to LastIndex do
-    Strings[I] := ADelimiter + Strings[I] + ADelimiter;
+    Put(I, ADelimiter + Get(I) + ADelimiter);
   Result := FSelfAsInterface;
 end;
 
@@ -1287,7 +1287,7 @@ var
 begin
   AutoUpdateControl;
   for I := LastIndex downto 0 do
-    if {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.Trim(Strings[I]) = '' then
+    if {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.Trim(Get(I)) = '' then
       Delete(I);
   Result := FSelfAsInterface;
 end;
@@ -1299,7 +1299,7 @@ begin
   AutoUpdateControl;
   X := 0;
   for I := LastIndex downto 0 do
-    if not TryStrToInt(Strings[I], X) then
+    if not TryStrToInt(Get(I), X) then
       Delete(I);
   Result := FSelfAsInterface;
 end;
@@ -1311,7 +1311,7 @@ begin
   AutoUpdateControl;
   X := 0;
   for I := LastIndex downto 0 do
-    if TryStrToInt(Strings[I], X) then
+    if TryStrToInt(Get(I), X) then
       Delete(I);
   Result := FSelfAsInterface;
 end;
