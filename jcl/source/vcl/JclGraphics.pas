@@ -156,12 +156,6 @@ type
     property Count: Integer read GetCount;
   end;
 
-  {$IFDEF RTL200_UP}
-    {$DEFINE HAS_EQUALS}
-  {$ENDIF RTL200_UP}
-  {$IFDEF FPC}
-    {$DEFINE HAS_EQUALS}
-  {$ENDIF FPC}
   TJclRegion = class(TObject)
   private
     FHandle: HRGN;
@@ -184,9 +178,7 @@ type
     constructor CreateRect(const Top, Left, Bottom, Right: Integer; DummyForBCB: Byte = 0); overload;
     constructor CreateRoundRect(const ARect: TRect; CornerWidth, CornerHeight: Integer); overload;
     constructor CreateRoundRect(const Top, Left, Bottom, Right, CornerWidth, CornerHeight: Integer); overload;
-    {$IFDEF BORLAND}
     constructor CreateBitmap(Bitmap: TBitmap; RegionColor: TColor; RegionBitmapMode: TJclRegionBitmapMode);
-    {$ENDIF BORLAND}
     constructor CreatePath(Canvas: TCanvas);
     constructor CreateRegionInfo(RegionInfo: TJclRegionInfo);
     constructor CreateMapWindow(InitialRegion: TJclRegion; hWndFrom, hWndTo: THandle); overload;
@@ -196,7 +188,7 @@ type
     procedure Combine(DestRegion, SrcRegion: TJclRegion; CombineOp: TJclRegionCombineOperator); overload;
     procedure Combine(SrcRegion: TJclRegion; CombineOp: TJclRegionCombineOperator); overload;
     function Copy: TJclRegion;
-    function Equals(CompareRegion: TJclRegion): Boolean; {$IFDEF HAS_EQUALS} reintroduce; {$ENDIF HAS_EQUALS}
+    function Equals(CompareRegion: TJclRegion): Boolean; {$IFDEF RTL200_UP} reintroduce; {$ENDIF RTL200_UP}
     procedure Fill(Canvas: TCanvas);
     procedure FillGradient(Canvas: TCanvas; ColorCount: Integer; StartColor, EndColor: TColor; ADirection: TGradientDirection);
     procedure Frame(Canvas: TCanvas; FrameWidth, FrameHeight: Integer);
@@ -472,14 +464,12 @@ type
   end;
 
 // Bitmap Functions
-{$IFDEF BORLAND}
 procedure Stretch(NewWidth, NewHeight: Cardinal; Filter: TResamplingFilter;
   Radius: Single; Source: TGraphic; Target: TBitmap); overload;
 procedure Stretch(NewWidth, NewHeight: Cardinal; Filter: TResamplingFilter;
   Radius: Single; Bitmap: TBitmap); overload;
 
 procedure DrawBitmap(DC: HDC; Bitmap: HBITMAP; X, Y, Width, Height: Integer);
-{$ENDIF BORLAND}
 
 function ExtractIconCount(const FileName: string): Integer;
 function BitmapToIcon(Bitmap: HBITMAP; cx, cy: Integer): HICON; overload;
@@ -499,7 +489,6 @@ procedure BitmapToPng(const FileName: string);
 procedure PngToBitmap(const FileName: string);
 {$ENDIF HAS_UNIT_PNGIMAGE}
 
-{$IFDEF BORLAND}
 procedure SaveIconToFile(Icon: HICON; const FileName: string);
 procedure WriteIcon(Stream: TStream; ColorBitmap, MaskBitmap: HBITMAP;
   WriteLength: Boolean = False); overload;
@@ -507,7 +496,6 @@ procedure WriteIcon(Stream: TStream; Icon: HICON; WriteLength: Boolean = False);
 procedure GetIconFromBitmap(Icon: TIcon; Bitmap: TBitmap);
 
 function GetAntialiasedBitmap(const Bitmap: TBitmap): TBitmap;
-{$ENDIF BORLAND}
 
 procedure BlockTransfer(Dst: TJclBitmap32; DstX: Integer; DstY: Integer; Src: TJclBitmap32;
   SrcRect: TRect; CombineOp: TDrawMode);
@@ -521,10 +509,8 @@ procedure SetBorderTransparent(ABitmap: TJclBitmap32; ARect: TRect);
 function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
   StartColor, EndColor: TColor; ADirection: TGradientDirection): Boolean; overload;
 
-{$IFDEF BORLAND}
 function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
   RegionBitmapMode: TJclRegionBitmapMode; UseAlphaChannel: Boolean = False): HRGN;
-{$ENDIF BORLAND}
 procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer; Window: THandle = HWND_DESKTOP); overload;
 procedure ScreenShot(bm: TBitmap; IncludeTaskBar: Boolean = True); overload;
 procedure ScreenShot(bm: TBitmap; ControlToPrint: TWinControl); overload;
@@ -593,10 +579,7 @@ uses
   {$IFDEF HAS_UNIT_PNGIMAGE}
   PngImage,
   {$ENDIF HAS_UNIT_PNGIMAGE}
-  ClipBrd, TypInfo,
-  {$IFDEF BORLAND}
-  JPeg,
-  {$ENDIF BORLAND}
+  ClipBrd, JPeg, TypInfo,
   {$ENDIF ~HAS_UNITSCOPE}
   JclVclResources,
   JclSysUtils,
@@ -931,8 +914,6 @@ begin
   end;
 end;
 
-{$IFDEF BORLAND}
-
 // This is the actual scaling routine. Target must be allocated already with
 // sufficient size. Source must contain valid data, Radius must not be 0 and
 // Filter must not be nil.
@@ -1168,8 +1149,6 @@ begin
   end;
 end;
 
-{$ENDIF BORLAND}
-
 // Filter functions for TJclBitmap32
 type
   TPointRec = record
@@ -1305,8 +1284,6 @@ begin
   end;
 end;
 
-{$IFDEF BORLAND}
-
 // Bitmap Functions
 // Scales the source graphic to the given size (NewWidth, NewHeight) and stores the Result in Target.
 // Filter describes the filter function to be applied and Radius the size of the filter area.
@@ -1350,8 +1327,6 @@ procedure Stretch(NewWidth, NewHeight: Cardinal; Filter: TResamplingFilter;
 begin
   Stretch(NewWidth, NewHeight, Filter, Radius, Bitmap, Bitmap);
 end;
-
-{$ENDIF BORLAND}
 
 procedure StretchNearest(Dst: TJclBitmap32; DstRect: TRect;
   Src: TJclBitmap32; SrcRect: TRect; CombineOp: TDrawMode);
@@ -1624,8 +1599,6 @@ begin
   DeleteObject(MemDC);
 end;
 
-{$IFDEF BORLAND}
-
 { TODO : remove VCL-dependency by replacing pf24bit by pf32bit }
 
 function GetAntialiasedBitmap(const Bitmap: TBitmap): TBitmap;
@@ -1661,8 +1634,6 @@ begin
   end;
   Result := Antialias;
 end;
-
-{$ENDIF BORLAND}
 
 procedure ImgToBitmap(const FileName: string; GraphicClass: TGraphicClass);
 var
@@ -1799,8 +1770,6 @@ begin
   end;
 end;
 
-{$IFDEF BORLAND}
-
 const
   rc3_Icon = 1;
 
@@ -1909,8 +1878,6 @@ begin
     Stream.Free;
   end;
 end;
-
-{$ENDIF BORLAND}
 
 procedure Transform(Dst, Src: TJclBitmap32; SrcRect: TRect;
   Transformation: TJclTransformation);
@@ -2038,8 +2005,6 @@ begin
   end;
 end;
 
-{$IFDEF BORLAND}
-
 function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
   RegionBitmapMode: TJclRegionBitmapMode; UseAlphaChannel: Boolean): HRGN;
 var
@@ -2141,8 +2106,6 @@ begin
     LBitmap.Free;
   end;
 end;
-
-{$ENDIF BORLAND}
 
 procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer; Window: THandle); overload;
 var
@@ -2364,11 +2327,12 @@ begin
 end;
 
 function TJclRegionInfo.GetRect(Index: Integer): TRect;
-var RectP: PRect;
+var
+  RectP: PRect;
 begin
   if (Index < 0) or (DWORD(Index) >= TRgnData(FData^).rdh.nCount) then
     raise EJclGraphicsError.CreateRes(@RsRegionDataOutOfBound);
-  RectP := PRect(PChar(@TRgnData(FData^).Buffer) + (SizeOf(TRect)*Index));
+  RectP := PRect(PAnsiChar(@TRgnData(FData^).Buffer) + (SizeOf(TRect)*Index));
   Result := RectAssign(RectP^.Left, RectP.Top, RectP^.Right, RectP^.Bottom);
 end;
 
@@ -2383,13 +2347,11 @@ begin
   GetBox;
 end;
 
-{$IFDEF BORLAND}
 constructor TJclRegion.CreateBitmap(Bitmap: TBitmap; RegionColor: TColor;
   RegionBitmapMode: TJclRegionBitmapMode);
 begin
   Create(CreateRegionFromBitmap(Bitmap, RegionColor, RegionBitmapMode), True);
 end;
-{$ENDIF BORLAND}
 
 constructor TJclRegion.CreateElliptic(const ARect: TRect);
 begin
@@ -2777,9 +2739,7 @@ begin
   FOuterColor := $00000000;  // by default as full transparency black
   FFont := TFont.Create;
   FFont.OnChange := FontChanged;
-  {$IFDEF BORLAND}
   FFont.OwnerCriticalSection := @FLock;
-  {$ENDIF BORLAND}
   FMasterAlpha := $FF;
   FPenColor := clWhite32;
   FStippleStep := 1;
