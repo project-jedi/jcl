@@ -687,7 +687,7 @@ begin
       {$IFDEF SUPPORTS_UNICODE}
       Result := CompareText(Obj1, Obj2);
       {$ELSE ~SUPPORTS_UNICODE}
-      Result := WideCompareText(Obj1, Obj2);
+      {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.WideCompareText(Obj1, Obj2);
       {$ENDIF ~SUPPORTS_UNICODE}
   else
     raise EJclOperationNotSupportedError.Create;
