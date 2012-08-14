@@ -763,7 +763,7 @@ function TJclBorlandCommandLineTool.InternalExecute(
 var
   LaunchCommand: string;
 begin
-  LaunchCommand := Format('%s %s', [FileName, CommandLine]);
+  LaunchCommand := Format('%s %s', [FileName, StrAnsiToOem(AnsiString(CommandLine))]);
   if Assigned(FOutputCallback) then
   begin
     FOutputCallback(LaunchCommand);
