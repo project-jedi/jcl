@@ -197,6 +197,7 @@ begin
       else
       begin
         NtUserFileName := PathAddSeparator(FProfiles[Index].LocalProfile) + 'NTUSER.DAT';
+        ExpandEnvironmentVar(NtUserFileName);
         if not RegKeyExists(HKUS, '\' + FProfiles[Index].SID) then
         begin
           EnableProcessPrivilege(True, SE_RESTORE_NAME);
