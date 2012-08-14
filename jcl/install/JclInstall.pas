@@ -2539,15 +2539,16 @@ function TJclInstallation.CompileLibraryUnits(const SubDir: string; Debug: Boole
   function CopyHppFiles(UnitList: TStrings; const TargetDir: string): Boolean;
   var
     I: Integer;
-    FileName: string;
+    TargetDirectory, FileName: string;
   begin
     Result := True;
+    TargetDirectory := PathAddSeparator(TargetDir);
     for I := 0 to UnitList.Count - 1 do
     begin
       FileName := UnitList[I] + '.hpp';
       if FileExists(FileName) then
       begin
-        Result := Result and FileCopy(FileName, TargetDir + FileName, True);
+        Result := Result and FileCopy(FileName, TargetDirectory + FileName, True);
 
         // Always remove once copied because if they are left in place they
         // will clutter the source folder and might even prevent compilation
@@ -2557,8 +2558,8 @@ function TJclInstallation.CompileLibraryUnits(const SubDir: string; Debug: Boole
       end;
       if (CompareText(UnitList[I], 'zlibh') = 0) and (Target.RadToolKind = brCppBuilder) and (Target.VersionNumber = 6) then
       begin
-        Result := Result and FileCopy('zlib.h', TargetDir + 'zlib.h', True)
-          and FileCopy('zconf.h', TargetDir + 'zconf.h', True);
+        Result := Result and FileCopy('zlib.h', TargetDirectory + 'zlib.h', True)
+          and FileCopy('zconf.h', TargetDirectory + 'zconf.h', True);
       end;
     end;
   end;
