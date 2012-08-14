@@ -34,6 +34,7 @@
     <File Name="..\..\source\common\JclQueues.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclSortedMaps.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclStacks.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclStrHashMap.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclTrees.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclVectors.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>

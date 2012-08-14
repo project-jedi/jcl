@@ -171,6 +171,7 @@
 			<DCCReference Include="..\..\source\common\JclQueues.pas"/>
 			<DCCReference Include="..\..\source\common\JclSortedMaps.pas"/>
 			<DCCReference Include="..\..\source\common\JclStacks.pas"/>
+			<DCCReference Include="..\..\source\common\JclStrHashMap.pas"/>
 			<DCCReference Include="..\..\source\common\JclTrees.pas"/>
 			<DCCReference Include="..\..\source\common\JclVectors.pas"/>
 			<BuildConfiguration Include="Release">

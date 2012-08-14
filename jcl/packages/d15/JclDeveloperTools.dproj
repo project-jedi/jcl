@@ -74,6 +74,7 @@
 			<DCCReference Include="JclContainers.dcp"/>
 			<DCCReference Include="..\..\source\common\JclCompilerUtils.pas"/>
 			<DCCReference Include="..\..\source\common\JclDevToolsResources.pas"/>
+			<DCCReference Include="..\..\source\common\JclExprEval.pas"/>
 			<DCCReference Include="..\..\source\common\JclIDEUtils.pas"/>
 			<DCCReference Include="..\..\source\common\JclPreProcessorAlgorithmsTemplates.pas"/>
 			<DCCReference Include="..\..\source\common\JclPreProcessorArrayListsTemplates.pas"/>

@@ -167,7 +167,6 @@
 			<DCCReference Include="..\..\source\common\JclCompression.pas"/>
 			<DCCReference Include="..\..\source\common\JclCounter.pas"/>
 			<DCCReference Include="..\..\source\common\JclDateTime.pas"/>
-			<DCCReference Include="..\..\source\common\JclExprEval.pas"/>
 			<DCCReference Include="..\..\source\common\JclFileUtils.pas"/>
 			<DCCReference Include="..\..\source\common\JclIniFiles.pas"/>
 			<DCCReference Include="..\..\source\common\JclLogic.pas"/>
@@ -182,7 +181,6 @@
 			<DCCReference Include="..\..\source\common\JclSimpleXml.pas"/>
 			<DCCReference Include="..\..\source\common\JclStatistics.pas"/>
 			<DCCReference Include="..\..\source\common\JclStreams.pas"/>
-			<DCCReference Include="..\..\source\common\JclStrHashMap.pas"/>
 			<DCCReference Include="..\..\source\common\JclStringConversions.pas"/>
 			<DCCReference Include="..\..\source\common\JclStringLists.pas"/>
 			<DCCReference Include="..\..\source\common\JclStrings.pas"/>

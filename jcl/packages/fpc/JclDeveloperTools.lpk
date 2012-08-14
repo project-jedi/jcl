@@ -40,7 +40,7 @@
     <Description Value="JEDI Code Library Developer Tools package"/>
     <License Value="Copyright (C) 1999, 2012 Project JEDI"/>
     <Version Major="2" Minor="4" Release="0" Build="4198"/>
-    <Files Count="7">
+    <Files Count="8">
       <Item1>
         <Filename Value="..\..\source\common\JclCompilerUtils.pas"/>
         <UnitName Value="JclCompilerUtils"/>
@@ -50,25 +50,29 @@
         <UnitName Value="JclDevToolsResources"/>
       </Item2>
       <Item3>
-        <Filename Value="..\..\source\common\JclIDEUtils.pas"/>
-        <UnitName Value="JclIDEUtils"/>
+        <Filename Value="..\..\source\common\JclExprEval.pas"/>
+        <UnitName Value="JclExprEval"/>
       </Item3>
       <Item4>
-        <Filename Value="..\..\source\common\JclUsesUtils.pas"/>
-        <UnitName Value="JclUsesUtils"/>
+        <Filename Value="..\..\source\common\JclIDEUtils.pas"/>
+        <UnitName Value="JclIDEUtils"/>
       </Item4>
       <Item5>
-        <Filename Value="..\..\source\windows\JclHelpUtils.pas"/>
-        <UnitName Value="JclHelpUtils"/>
+        <Filename Value="..\..\source\common\JclUsesUtils.pas"/>
+        <UnitName Value="JclUsesUtils"/>
       </Item5>
       <Item6>
-        <Filename Value="..\..\source\windows\JclMsBuild.pas"/>
-        <UnitName Value="JclMsBuild"/>
+        <Filename Value="..\..\source\windows\JclHelpUtils.pas"/>
+        <UnitName Value="JclHelpUtils"/>
       </Item6>
       <Item7>
+        <Filename Value="..\..\source\windows\JclMsBuild.pas"/>
+        <UnitName Value="JclMsBuild"/>
+      </Item7>
+      <Item8>
         <Filename Value="..\..\source\windows\MSHelpServices_TLB.pas"/>
         <UnitName Value="MSHelpServices_TLB"/>
-      </Item7>
+      </Item8>
     </Files>
     <RequiredPkgs Count="3">
       <Item1>

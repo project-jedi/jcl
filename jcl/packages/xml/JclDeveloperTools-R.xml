@@ -23,6 +23,7 @@
   <Contains>
     <File Name="..\..\source\common\JclCompilerUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclDevToolsResources.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclExprEval.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclIDEUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclPreProcessorAlgorithmsTemplates.pas" Targets="runtimeIDE,help" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclPreProcessorArrayListsTemplates.pas" Targets="runtimeIDE,help" Formname="" Condition=""/>
