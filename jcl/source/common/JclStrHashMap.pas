@@ -124,9 +124,6 @@ type
 
 { Str=case sensitive, text=case insensitive }
 
-function StrHash(const S: string): THashValue;
-function TextHash(const S: string): THashValue;
-function DataHash(var AValue; ASize: Cardinal): THashValue;
 function Iterate_FreeObjects(AUserData: PUserData; const AStr: string; var AData: PData): Boolean;
 function Iterate_Dispose(AUserData: PUserData; const AStr: string; var AData: PData): Boolean;
 function Iterate_FreeMem(AUserData: PUserData; const AStr: string; var AData: PData): Boolean;
@@ -158,6 +155,9 @@ const
 
 implementation
 
+uses
+  JclAlgorithms;
+
 // Case Sensitive & Insensitive Traits
 function TCaseSensitiveTraits.Compare(const L, R: string): Integer;
 begin
@@ -166,7 +166,7 @@ end;
 
 function TCaseSensitiveTraits.Hash(const S: string): Cardinal;
 begin
-  Result := StrHash(S);
+  Result := StrSimpleHashConvert(S);
 end;
 
 function TCaseInsensitiveTraits.Compare(const L, R: string): Integer;
@@ -176,7 +176,7 @@ end;
 
 function TCaseInsensitiveTraits.Hash(const S: string): Cardinal;
 begin
-  Result := TextHash(S);
+  Result := StrSimpleHashConvertI(S);
 end;
 
 var
@@ -219,88 +219,6 @@ begin
   AData := nil;
   Result := True;
 end;
-
-{$OVERFLOWCHECKS OFF}
-
-function StrHash(const S: string): Cardinal;
-const
-  cOneEight = 4;
-  cThreeFourths = 24;
-  cHighBits = $F0000000;
-var
-  I: Integer;
-  P: PChar;
-  Temp: Cardinal;
-begin
-  { TODO : I should really be processing 4 bytes at once... }
-  Result := 0;
-  P := PChar(S);
-
-  I := Length(S);
-  while I > 0 do
-  begin
-    Result := (Result shl cOneEight) or Ord(P^);
-    Temp := Result and cHighBits;
-    if Temp <> 0 then
-      Result := (Result xor (Temp shr cThreeFourths)) and (not cHighBits);
-    Dec(I);
-    Inc(P);
-  end;
-end;
-
-function TextHash(const S: string): Cardinal;
-const
-  cOneEight = 4;
-  cThreeFourths = 24;
-  cHighBits = $F0000000;
-var
-  I: Integer;
-  P: PChar;
-  Temp: Cardinal;
-begin
-  { TODO : I should really be processing 4 bytes at once... }
-  Result := 0;
-  P := PChar(S);
-
-  I := Length(S);
-  while I > 0 do
-  begin
-    Result := (Result shl cOneEight) or Ord(UpCase(P^));
-    Temp := Result and cHighBits;
-    if Temp <> 0 then
-      Result := (Result xor (Temp shr cThreeFourths)) and (not cHighBits);
-    Dec(I);
-    Inc(P);
-  end;
-end;
-
-function DataHash(var AValue; ASize: Cardinal): THashValue;
-const
-  cOneEight = 4;
-  cThreeFourths = 24;
-  cHighBits = $F0000000;
-var
-  P: PChar;
-  Temp: Cardinal;
-begin
-  { TODO : I should really be processing 4 bytes at once... }
-  Result := 0;
-  P := @AValue;
-
-  while ASize > 0 do
-  begin
-    Result := (Result shl cOneEight) or Ord(P^);
-    Temp := Result and cHighBits;
-    if Temp <> 0 then
-      Result := (Result xor (Temp shr cThreeFourths)) and (not cHighBits);
-    Dec(ASize);
-    Inc(P);
-  end;
-end;
-
-{$IFDEF OVERFLOWCHECKS_ON}
-{$OVERFLOWCHECKS ON}
-{$ENDIF OVERFLOWCHECKS_ON}
 
 //=== { TStringHashMap } =====================================================
 
