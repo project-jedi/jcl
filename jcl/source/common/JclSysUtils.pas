@@ -3728,13 +3728,13 @@ end;
 function TJclIntfCriticalSection._AddRef: Integer;
 begin
   FCriticalSection.Acquire;
-  Result := 0;
+  Result := -1;
 end;
 
 function TJclIntfCriticalSection._Release: Integer;
 begin
   FCriticalSection.Release;
-  Result := 0;
+  Result := -1;
 end;
 
 //=== { TJclSimpleLog } ======================================================
