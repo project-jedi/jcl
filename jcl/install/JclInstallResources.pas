@@ -42,6 +42,7 @@ resourcestring
   RsCaptionBPLPath    = '&BPL path:';
   RsCaptionDCPPath    = '&DCP path:';
   RsCaptionBPIPath    = 'BP&I path:';
+  RsCaptionHPPPath    = '&HPP path:';
 
   // License
   RsCaptionLicense          = 'MPL 1.1 License';
@@ -119,12 +120,14 @@ resourcestring
   RsCaptionEnvLibPath      = 'Add JCL to IDE Library Path';
   RsCaptionEnvBrowsingPath = 'Add JCL to IDE Browsing Path';
   RsCaptionEnvDebugDCUPath = 'Add JCL to Debug DCU Path';
+  RsCaptionEnvIncludePath  = 'Add JCL to C++ Include Path';
 
   // make units
   RsCaptionMake          = 'Make library units';
   RsCaptionMakeRelease   = 'Release';
   RsCaptionMakeDebug     = 'Debug';
   RsCaptionCopyHppFiles  = 'Copy HPP files to %s';
+  RsCaptionHppDirectory  = 'configured HPP directory';
   RsCaptionCheckHppFiles = 'Check HPP files';
 
   // packages
@@ -234,6 +237,7 @@ resourcestring
   RsHintEnvBrowsingPath = 'Add JCL source directories to browsing path';
   RsHintEnvDebugDCUPath = 'This is a prerequisite for using the precompiled JCL debug units by means of the respective' + NativeLineBreak +
     'Project Options|Compiler switch. See "Make library units/Debug" option below.';
+  RsHintEnvIncludePath  = 'Add JCL include path to C++ include path';
 
   // make units
   RsHintMake            = 'Generate .dcu files.' + NativeLineBreak + 'Recommended.';
@@ -247,7 +251,7 @@ resourcestring
   RsHintPackages             = 'Build and eventually install JCL runtime packages and optional IDE experts.';
   RsHintDualPackages         = 'The same package introduce code for Delphi Win32 and C++Builder Win32';
   RsHintCopyPackagesHppFiles = 'Output .hpp files into C++Builder''s include path instead of ' +
-    'the source paths.';
+    'the JCL source paths.';
 
   // exception dialogs
   RsHintExceptDlg       = 'Add selected Exception dialogs to the Object Repository.';
@@ -328,6 +332,12 @@ resourcestring
   RsLogFailedAddDebugDCUPath = 'Failed to add debug DCU path';
   RsLogDelDebugDCUPath = 'Removed "%s" from debug DCU Path.';
   RsLogFailedDelDebugDCUPath = 'Failed to remove debug DCU Path.';
+  RsLogAddIncludePath = 'Added "%s" to C++ Include Path.';
+  RsLogFailedAddIncludePath = 'Failed to add C++ Include path';
+  RsLogIgnoreAddIncludePath = 'Not adding standard C++ Include Path "%s".';
+  RsLogDelIncludePath = 'Removed "%s" from C++ Include Path.';
+  RsLogFailedDelIncludePath = 'Failed to remove C++ Include Path.';
+  RsLogIgnoreDelIncludePath = 'Not removing standard C++ Include Path "%s".';
   RsLogAddIdeTools = 'Added %s to %s IDE Tools';
   RsLogFailedAddIdeTools = 'Failed to add help file to IDE Tools';
   RsLogDelIdeTools = 'Removing %s from %s IDE Tools';
