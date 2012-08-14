@@ -355,7 +355,6 @@ uses
   JclPeImage,
   JclRegistry,
   JclDebug,
-  JclDotNet,
   JclSecurity,
   JediRegInfo,
   JclShell,
