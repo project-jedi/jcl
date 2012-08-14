@@ -72,6 +72,7 @@ function WideStrSimpleCompareI(const Obj1, Obj2: WideString): Integer;
 {$IFDEF SUPPORTS_UNICODE_STRING}
 function UnicodeStrSimpleCompareI(const Obj1, Obj2: UnicodeString): Integer;
 {$ENDIF SUPPORTS_UNICODE_STRING}
+function StrSimpleCompareI(const Obj1, Obj2: string): Integer;
 
 // Compare functions for equality
 function IntfSimpleEqualityCompare(const Obj1, Obj2: IInterface): Boolean;
@@ -96,6 +97,7 @@ function WideStrSimpleEqualityCompareI(const Obj1, Obj2: WideString): Boolean;
 {$IFDEF SUPPORTS_UNICODE_STRING}
 function UnicodeStrSimpleEqualityCompareI(const Obj1, Obj2: UnicodeString): Boolean;
 {$ENDIF SUPPORTS_UNICODE_STRING}
+function StrSimpleEqualityCompareI(const Obj1, Obj2: string): Boolean;
 
 // Hash conversion functions
 function IntfSimpleHashConvert(const AInterface: IInterface): Integer;
@@ -122,6 +124,7 @@ function WideStrSimpleHashConvertI(const AString: WideString): Integer;
 {$IFDEF SUPPORTS_UNICODE_STRING}
 function UnicodeStrSimpleHashConvertI(const AString: UnicodeString): Integer;
 {$ENDIF SUPPORTS_UNICODE_STRING}
+function StrSimpleHashConvertI(const AString: string): Integer;
 
 type
   // Hash Function
@@ -675,6 +678,22 @@ begin
   end;
 end;
 
+function StrSimpleCompareI(const Obj1, Obj2: string): Integer;
+begin
+  case SizeOf(Obj1[1]) of
+    SizeOf(AnsiChar):
+      Result := CompareText(Obj1, Obj2);
+    SizeOf(WideChar):
+      {$IFDEF SUPPORTS_UNICODE}
+      Result := CompareText(Obj1, Obj2);
+      {$ELSE ~SUPPORTS_UNICODE}
+      Result := WideCompareText(Obj1, Obj2);
+      {$ENDIF ~SUPPORTS_UNICODE}
+  else
+    raise EJclOperationNotSupportedError.Create;
+  end;
+end;
+
 function SingleSimpleCompare(const Obj1, Obj2: Single): Integer;
 begin
   if Obj1 < Obj2 then
@@ -835,6 +854,18 @@ begin
       Result := CompareStr(Obj1, Obj2) = 0;
     SizeOf(WideChar):
       Result := WideCompareStr(Obj1, Obj2) = 0;
+  else
+    raise EJclOperationNotSupportedError.Create;
+  end;
+end;
+
+function StrSimpleEqualityCompareI(const Obj1, Obj2: string): Boolean;
+begin
+  case SizeOf(Obj1[1]) of
+    SizeOf(AnsiChar):
+      Result := CompareText(Obj1, Obj2) = 0;
+    SizeOf(WideChar):
+      Result := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.WideCompareText(Obj1, Obj2) = 0;
   else
     raise EJclOperationNotSupportedError.Create;
   end;
@@ -1152,6 +1183,19 @@ begin
   {$ENDIF ~SUPPORTS_UNICODE_STRING}
   {$ELSE ~SUPPORTS_UNICODE}
   Result := AnsiStrSimpleHashConvert(AString);
+  {$ENDIF ~SUPPORTS_UNICODE}
+end;
+
+function StrSimpleHashConvertI(const AString: string): Integer;
+begin
+  {$IFDEF SUPPORTS_UNICODE}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  Result := UnicodeStrSimpleHashConvertI(AString);
+  {$ELSE ~SUPPORTS_UNICODE_STRING}
+  Result := WideStrSimpleHashConvertI(AString);
+  {$ENDIF ~SUPPORTS_UNICODE_STRING}
+  {$ELSE ~SUPPORTS_UNICODE}
+  Result := AnsiStrSimpleHashConvertI(AString);
   {$ENDIF ~SUPPORTS_UNICODE}
 end;
 
