@@ -292,6 +292,7 @@ resourcestring
   RsHtmlHelp2Credentials = 'Registering HTML Help 2.0 files requires administrator privilege to be performed' + sLineBreak +
     'The RegHelper.exe utility will make this operation';
   RsKeepExpertSettings = 'Do you want to keep JCL expert settings?';
+  RsHppCheckFailure = 'The JCL HPP files fail to compile, continue anyway?';
 
   RsExceptDlgVclName    = 'Exception Dialog';
   RsExceptDlgVclSndName = 'Exception Dialog with Send';

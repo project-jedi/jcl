@@ -1601,6 +1601,8 @@ var
       finally
         SetCurrentDir(SaveDir);
       end;
+      if (not Result) and Assigned(GUI) then
+        Result := GUI.Dialog(LoadResString(@RsHppCheckFailure), dtWarning, [drYes, drNo]) = drYes;
     end;
   var
     I: Integer;
