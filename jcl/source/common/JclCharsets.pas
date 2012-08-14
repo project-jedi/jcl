@@ -55,7 +55,7 @@ type
     FamilyCodePage: Word;
   end;
 
-const JclCharsetInfos: array [0..305] of TJclCharsetInfo =
+const JclCharsetInfos: array [0..285] of TJclCharsetInfo =
 (* Arabic (ASMO 708) ASMO-708 708 1256 *)
     ((Name: 'ASMO-708'; CodePage: 708; FamilyCodePage: 1256),
 (* Arabic (DOS) DOS-720 720 1256 *)
@@ -139,13 +139,11 @@ const JclCharsetInfos: array [0..305] of TJclCharsetInfo =
      (Name: 'ibm866'; CodePage: 866; FamilyCodePage: 1251),
 (* Cyrillic (ISO) iso-8859-5 csISOLatin5, csISOLatinCyrillic, cyrillic, ISO_8859-5, ISO_8859-5:1988, iso-ir-144, l5 28595 1251 *)
      (Name: 'iso-8859-5'; CodePage: 28595; FamilyCodePage: 1251),
-     (Name: 'csISOLatin5'; CodePage: 28595; FamilyCodePage: 1251),
      (Name: 'csISOLatinCyrillic'; CodePage: 28595; FamilyCodePage: 1251),
      (Name: 'cyrillic'; CodePage: 28595; FamilyCodePage: 1251),
      (Name: 'ISO_8859-5'; CodePage: 28595; FamilyCodePage: 1251),
      (Name: 'ISO_8859-5:1988'; CodePage: 28595; FamilyCodePage: 1251),
      (Name: 'iso-ir-144'; CodePage: 28595; FamilyCodePage: 1251),
-     (Name: 'l5'; CodePage: 28595; FamilyCodePage: 1251),
 (* Cyrillic (KOI8-R) koi8-r csKOI8R, koi, koi8, koi8r 20866 1251 *)
      (Name: 'koi8-r'; CodePage: 20866; FamilyCodePage: 1251),
      (Name: 'csKOI8R'; CodePage: 20866; FamilyCodePage: 1251),
@@ -216,8 +214,6 @@ const JclCharsetInfos: array [0..305] of TJclCharsetInfo =
      (Name: 'x-ebcdic-denmarknorway-euro'; CodePage: 1142; FamilyCodePage: 1252),
 (* IBM EBCDIC (Finland-Sweden) x-EBCDIC-FinlandSweden 20278 1252 *)
      (Name: 'x-EBCDIC-FinlandSweden'; CodePage: 20278; FamilyCodePage: 1252),
-(* IBM EBCDIC (Finland-Sweden-Euro) x-ebcdic-finlandsweden-euro 1143 1252 *)
-     (Name: 'x-ebcdic-finlandsweden-euro'; CodePage: 1143; FamilyCodePage: 1252),
 (* IBM EBCDIC (Finland-Sweden-Euro) x-ebcdic-finlandsweden-euro X-EBCDIC-France 1143 1252 *)
      (Name: 'x-ebcdic-finlandsweden-euro'; CodePage: 1143; FamilyCodePage: 1252),
      (Name: 'X-EBCDIC-France'; CodePage: 1143; FamilyCodePage: 1252),
@@ -284,34 +280,24 @@ const JclCharsetInfos: array [0..305] of TJclCharsetInfo =
 (* Icelandic (Mac) x-mac-icelandic 10079 1252 *)
      (Name: 'x-mac-icelandic'; CodePage: 10079; FamilyCodePage: 1252),
 (* ISCII Assamese x-iscii-as 57006 57006 *)
-     (Name: 'Assamese'; CodePage: 57006; FamilyCodePage: 57006),
      (Name: 'x-iscii-as'; CodePage: 57006; FamilyCodePage: 57006),
 (* ISCII Bengali x-iscii-be 57003 57003 *)
-     (Name: 'Bengali'; CodePage: 57003; FamilyCodePage: 57003),
      (Name: 'x-iscii-be'; CodePage: 57003; FamilyCodePage: 57003),
 (* ISCII Devanagari x-iscii-de 57002 57002 *)
-     (Name: 'Devanagari'; CodePage: 57002; FamilyCodePage: 57002),
      (Name: 'x-iscii-de'; CodePage: 57002; FamilyCodePage: 57002),
 (* ISCII Gujarathi x-iscii-gu 57010 57010 *)
-     (Name: 'Gujarathi'; CodePage: 57010; FamilyCodePage: 57010),
      (Name: 'x-iscii-gu'; CodePage: 57010; FamilyCodePage: 57010),
 (* ISCII Kannada x-iscii-ka 57008 57008 *)
-     (Name: 'Kannada'; CodePage: 57008; FamilyCodePage: 57008),
      (Name: 'x-iscii-ka'; CodePage: 57008; FamilyCodePage: 57008),
 (* ISCII Malayalam x-iscii-ma 57009 57009 *)
-     (Name: 'Malayalam'; CodePage: 57009; FamilyCodePage: 57009),
      (Name: 'x-iscii-ma'; CodePage: 57009; FamilyCodePage: 57009),
 (* ISCII Oriya x-iscii-or 57007 57007 *)
-     (Name: 'Oriya'; CodePage: 57007; FamilyCodePage: 57007),
      (Name: 'x-iscii-or'; CodePage: 57007; FamilyCodePage: 57007),
 (* ISCII Panjabi x-iscii-pa 57011 57011 *)
-     (Name: 'Panjabi'; CodePage: 57011; FamilyCodePage: 57011),
      (Name: 'x-iscii-pa'; CodePage: 57011; FamilyCodePage: 57011),
 (* ISCII Tamil x-iscii-ta 57004 57004 *)
-     (Name: 'Tamil'; CodePage: 57004; FamilyCodePage: 57004),
      (Name: 'x-iscii-ta'; CodePage: 57004; FamilyCodePage: 57004),
 (* ISCII Telugu x-iscii-te 57005 57005 *)
-     (Name: 'Telugu'; CodePage: 57005; FamilyCodePage: 57005),
      (Name: 'x-iscii-te'; CodePage: 57005; FamilyCodePage: 57005),
 (* Japanese (EUC) euc-jp csEUCPkdFmtJapanese, Extended_UNIX_Code_Packed_Format_for_Japanese, x-euc, x-euc-jp 51932 932 *)
      (Name: 'euc-jp'; CodePage: 51932; FamilyCodePage: 932),
@@ -359,27 +345,23 @@ const JclCharsetInfos: array [0..305] of TJclCharsetInfo =
      (Name: 'Johab'; CodePage: 1361; FamilyCodePage: 1361),
 (* Korean (Mac) x-mac-korean 10003 949 *)
      (Name: 'x-mac-korean'; CodePage: 10003; FamilyCodePage: 949),
-(* Latin 3 (ISO) iso-8859-3 csISO, Latin3, ISO_8859-3, ISO_8859-3:1988, iso-ir-109, l3, latin3 28593 1254 *)
+(* Latin 3 (ISO) iso-8859-3 csISOLatin3, ISO_8859-3, ISO_8859-3:1988, iso-ir-109, l3, latin3 28593 1254 *)
      (Name: 'iso-8859-3'; CodePage: 28593; FamilyCodePage: 1254),
-     (Name: 'csISO'; CodePage: 28593; FamilyCodePage: 1254),
-     (Name: 'Latin3'; CodePage: 28593; FamilyCodePage: 1254),
+     (Name: 'csISOLatin3'; CodePage: 28593; FamilyCodePage: 1254),
      (Name: 'ISO_8859-3'; CodePage: 28593; FamilyCodePage: 1254),
      (Name: 'ISO_8859-3:1988'; CodePage: 28593; FamilyCodePage: 1254),
      (Name: 'iso-ir-109'; CodePage: 28593; FamilyCodePage: 1254),
      (Name: 'l3,'; CodePage: 28593; FamilyCodePage: 1254),
      (Name: 'latin3'; CodePage: 28593; FamilyCodePage: 1254),
-(* Latin 9 (ISO) iso-8859-15 csISO, Latin9, ISO_8859-15, l9, latin9 28605 1252 *)
+(* Latin 9 (ISO) iso-8859-15 csISOLatin9, ISO_8859-15, l9, latin9 28605 1252 *)
      (Name: 'iso-8859-15'; CodePage: 28605; FamilyCodePage: 1252),
-     (Name: 'csISO'; CodePage: 28605; FamilyCodePage: 1252),
-     (Name: 'Latin9'; CodePage: 28605; FamilyCodePage: 1252),
+     (Name: 'csISOLatin9'; CodePage: 28605; FamilyCodePage: 1252),
      (Name: 'ISO_8859-15'; CodePage: 28605; FamilyCodePage: 1252),
      (Name: 'l9'; CodePage: 28605; FamilyCodePage: 1252),
      (Name: 'latin9'; CodePage: 28605; FamilyCodePage: 1252),
 (* Norwegian (IA5) x-IA5-Norwegian 20108 1252 *)
      (Name: 'x-IA5-Norwegian'; CodePage: 20108; FamilyCodePage: 1252),
 (* OEM United States IBM437 437, cp437, csPC8, CodePage437 437 1252 *)
-     (Name: 'United'; CodePage: 437; FamilyCodePage: 1252),
-     (Name: 'States'; CodePage: 437; FamilyCodePage: 1252),
      (Name: 'IBM437'; CodePage: 437; FamilyCodePage: 1252),
      (Name: '437'; CodePage: 437; FamilyCodePage: 1252),
      (Name: 'cp437'; CodePage: 437; FamilyCodePage: 1252),
@@ -394,10 +376,9 @@ const JclCharsetInfos: array [0..305] of TJclCharsetInfo =
      (Name: 'TIS-620'; CodePage: 874; FamilyCodePage: 874),
 (* Turkish (DOS) ibm857 857 1254 *)
      (Name: 'ibm857'; CodePage: 857; FamilyCodePage: 1254),
-(* Turkish (ISO) iso-8859-9 csISO, Latin5, ISO_8859-9, ISO_8859-9:1989, iso-ir-148, l5, latin5 28599 1254 *)
+(* Turkish (ISO) iso-8859-9 csISOLatin5, ISO_8859-9, ISO_8859-9:1989, iso-ir-148, l5, latin5 28599 1254 *)
      (Name: 'iso-8859-9'; CodePage: 28599; FamilyCodePage: 1254),
-     (Name: 'csISO'; CodePage: 28599; FamilyCodePage: 1254),
-     (Name: 'Latin5'; CodePage: 28599; FamilyCodePage: 1254),
+     (Name: 'csISOLatin5'; CodePage: 28599; FamilyCodePage: 1254),
      (Name: 'ISO_8859-9'; CodePage: 28599; FamilyCodePage: 1254),
      (Name: 'ISO_8859-9:1989'; CodePage: 28599; FamilyCodePage: 1254),
      (Name: 'iso-ir-148'; CodePage: 28599; FamilyCodePage: 1254),
@@ -411,7 +392,6 @@ const JclCharsetInfos: array [0..305] of TJclCharsetInfo =
      (Name: 'ISO_8859-9:1989'; CodePage: 1254; FamilyCodePage: 1254),
      (Name: 'iso-8859-9'; CodePage: 1254; FamilyCodePage: 1254),
      (Name: 'iso-ir-148'; CodePage: 1254; FamilyCodePage: 1254),
-     (Name: 'latin5'; CodePage: 1254; FamilyCodePage: 1254),
 (* Unicode unicode utf-16 1200 1200 *)
      (Name: 'utf-16'; CodePage: 1200; FamilyCodePage: 1200),
      (Name: 'unicode'; CodePage: 1200; FamilyCodePage: 1200),
@@ -444,11 +424,10 @@ const JclCharsetInfos: array [0..305] of TJclCharsetInfo =
      (Name: 'ibm850'; CodePage: 850; FamilyCodePage: 1252),
 (* Western European (IA5) x-IA5 20105 1252 *)
      (Name: 'x-IA5'; CodePage: 20105; FamilyCodePage: 1252),
-(* Western European (ISO) iso-8859-1 cp819, csISO, Latin1, ibm819, iso_8859-1, iso_8859-1:1987, iso8859-1, iso-ir-100, l1, latin1 28591 1252 *)
+(* Western European (ISO) iso-8859-1 cp819, csISOLatin1, ibm819, iso_8859-1, iso_8859-1:1987, iso8859-1, iso-ir-100, l1, latin1 28591 1252 *)
      (Name: 'iso-8859-1'; CodePage: 28591; FamilyCodePage: 1252),
      (Name: 'cp819'; CodePage: 28591; FamilyCodePage: 1252),
-     (Name: 'csISO'; CodePage: 28591; FamilyCodePage: 1252),
-     (Name: 'Latin1'; CodePage: 28591; FamilyCodePage: 1252),
+     (Name: 'csISOLatin1'; CodePage: 28591; FamilyCodePage: 1252),
      (Name: 'ibm819'; CodePage: 28591; FamilyCodePage: 1252),
      (Name: 'iso_8859-1'; CodePage: 28591; FamilyCodePage: 1252),
      (Name: 'iso_8859-1:1987'; CodePage: 28591; FamilyCodePage: 1252),
