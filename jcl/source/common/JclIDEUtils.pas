@@ -3634,7 +3634,7 @@ end;
 
 function TJclBDSInstallation.GetEnvironmentVariables: TStrings;
 var
-  RsVars: TStrings;
+  UserVariables: TStrings;
   Index: Integer;
   EnvOptionName: string;
 begin
@@ -3643,16 +3643,18 @@ begin
     Result := inherited GetEnvironmentVariables;
     if Assigned(Result) and (IDEVersionNumber >= 5) then
     begin
-      RsVars := TStringList.Create;
+      UserVariables := TStringList.Create;
       try
-        GetRADStudioVars(RootDir, IDEVersionNumber, RsVars);
-        for Index := 0 to RsVars.Count - 1 do
+        UserVariables.Assign(Result);
+        Result.Clear;
+        GetRADStudioVars(RootDir, IDEVersionNumber, Result);
+        for Index := 0 to UserVariables.Count - 1 do
         begin
-          EnvOptionName := RsVars.Names[Index];
-          Result.Values[EnvOptionName] := RsVars.Values[EnvOptionName];
+          EnvOptionName := UserVariables.Names[Index];
+          Result.Values[EnvOptionName] := UserVariables.Values[EnvOptionName];
         end;
       finally
-        RsVars.Free;
+        UserVariables.Free;
       end;
     end
     else

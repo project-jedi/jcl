@@ -282,7 +282,7 @@ resourcestring
   RsWarningPackageNodeNotSelected = 'The "Packages" node is not selected.' + sLineBreak +
     'Various libraries (including the JVCL) require JCL packages to be compiled' + sLineBreak +
     'Do you want to continue without compiling JCL packages?';
-  RsWarningCreatePath = 'The path where %s files will be created doesn''t exists.' + sLineBreak +
+  RsWarningCreatePath = 'The path where %s files will be created doesn''t exist.' + sLineBreak +
     'Do you want the JCL installer to create it?';
   RsErrorCantCreatePath = 'The path %s cannot be created';
   RsWarningAddPathToEnvironment = 'The path where BPL are created must be present in the PATH' + sLineBreak +
