@@ -111,7 +111,8 @@
 		<DebugOptions>$(DebugOptions) -U&quot;$(DelphiDebugDCUPath);$(DelphiLibraryPath)&quot;</DebugOptions>
 		
 		<!-- Package Configuration -->
-		<PackageOptions Condition=" '$(BCBCompile)' == 'true' ">$(PackageOptions) -JL -DBCB $(UnitScopeOption)</PackageOptions>
+		<PackageOptions Condition=" '$(BCBCompile)' == 'true' ">$(PackageOptions) -JL -DBCB</PackageOptions>
+		<PackageOptions>$(PackageOptions) $(UnitScopeOption)</PackageOptions>
 		<PackageOptions>$(PackageOptions) -DRELEASE</PackageOptions>
 		<PackageOptions>$(PackageOptions) -LN&quot;$(DcuOutDir)&quot;</PackageOptions>
 		<PackageOptions>$(PackageOptions) -LE&quot;$(BplOutDir)&quot;</PackageOptions>
