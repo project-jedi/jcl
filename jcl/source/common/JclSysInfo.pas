@@ -95,6 +95,7 @@ type
 
 function DelEnvironmentVar(const Name: string): Boolean;
 function ExpandEnvironmentVar(var Value: string): Boolean;
+function ExpandEnvironmentVarCustom(var Value: string; Vars: TStrings): Boolean;
 function GetEnvironmentVar(const Name: string; out Value: string): Boolean; overload;
 function GetEnvironmentVar(const Name: string; out Value: string; Expand: Boolean): Boolean; overload;
 function GetEnvironmentVars(const Vars: TStrings): Boolean; overload;
@@ -1491,6 +1492,102 @@ begin
   end;
 end;
 {$ENDIF MSWINDOWS}
+
+function ExpandEnvironmentVarCustom(var Value: string; Vars: TStrings): Boolean;
+
+  function FindClosingBrace(const R: string; var Position: Integer): Boolean;
+  var
+    Index, Len, BraceCount: Integer;
+    Quotes: string;
+  begin
+    Len := Length(R);
+    BraceCount := 0;
+    Quotes := '';
+    while (Position <= Len) do
+    begin
+      // handle quotes first
+      if (R[Position] = NativeSingleQuote) then
+      begin
+        Index := JclStrings.CharPos(Quotes, NativeSingleQuote);
+        if Index >= 0 then
+          SetLength(Quotes, Index - 1)
+        else
+          Quotes := Quotes + NativeSingleQuote;
+      end;
+
+      if (R[Position] = NativeDoubleQuote) then
+      begin
+        Index := JclStrings.CharPos(Quotes, NativeDoubleQuote);
+        if Index >= 0 then
+          SetLength(Quotes, Index - 1)
+        else
+          Quotes := Quotes + NativeDoubleQuote;
+      end;
+
+      if (R[Position] = '`') then
+      begin
+        Index := JclStrings.CharPos(Quotes, '`');
+        if Index >= 0 then
+          SetLength(Quotes, Index - 1)
+        else
+          Quotes := Quotes + '`';
+      end;
+
+      if Quotes = '' then
+      begin
+        if R[Position] = ')' then
+        begin
+          Dec(BraceCount);
+          if BraceCount = 0 then
+            Break;
+        end
+        else
+        if R[Position] = '(' then
+          Inc(BraceCount);
+      end;
+      Inc(Position);
+    end;
+    Result := Position <= Len;
+
+//    Delphi XE's CodeGear.Delphi.Targets has a bug where the closing paran is missing
+//    "'$(DelphiWin32DebugDCUPath'!=''". But it is still a valid string and not worth
+//    an exception.
+//
+//    if Position > Len then
+//      raise EJclMsBuildError.CreateResFmt(@RsEEndOfString, [S]);
+  end;
+
+var
+  Start, Position: Integer;
+  PropertyName, PropertyValue: string;
+begin
+  Result := True;
+  repeat
+    // start with the last match in order to convert $(some$(other))
+    // evaluate properties
+    Start := StrLastPos('$(', Value);
+    if Start > 0 then
+    begin
+      Position := Start;
+      if not FindClosingBrace(Value, Position) then
+        Break;
+      PropertyName := Copy(Value, Start + 2, Position - Start - 2);
+
+      PropertyValue := Vars.Values[PropertyName];
+
+      if PropertyValue <> '' then
+        StrReplace(Value,
+                   Copy(Value, Start, Position - Start + 1), // $(PropertyName)
+                   PropertyValue,
+                   [rfReplaceAll, rfIgnoreCase])
+      else
+      begin
+        Result := False;
+        Start := 0;
+      end;
+    end;
+  until Start = 0;
+end;
 
 {$IFDEF UNIX}
 

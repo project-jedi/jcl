@@ -2073,7 +2073,7 @@ end;
 function TJclBorRADToolInstallation.GetEnvironmentVariables: TStrings;
 var
   EnvNames: TStringList;
-  EnvVarKeyName: string;
+  EnvVarKeyName, EnvVarValue: string;
   I: Integer;
 begin
   if FEnvironmentVariables = nil then
@@ -2098,8 +2098,9 @@ begin
         for I := 0 to EnvNames.Count - 1 do
         begin
           EnvVarKeyName := EnvNames[I];
-          FEnvironmentVariables.Values[EnvVarKeyName] :=
-            ConfigData.ReadString(EnvVariablesKeyName, EnvVarKeyName, '');
+          EnvVarValue := ConfigData.ReadString(EnvVariablesKeyName, EnvVarKeyName, '');
+          ExpandEnvironmentVarCustom(EnvVarValue, FEnvironmentVariables);
+          FEnvironmentVariables.Values[EnvVarKeyName] := EnvVarValue;
         end;
       finally
         EnvNames.Free;
@@ -3662,7 +3663,7 @@ function TJclBDSInstallation.GetEnvironmentVariables: TStrings;
 var
   UserVariables: TStrings;
   Index: Integer;
-  EnvOptionName: string;
+  EnvOptionName, EnvOptionValue: string;
 begin
   if not Assigned(FEnvironmentVariables) then
   begin
@@ -3677,7 +3678,9 @@ begin
         for Index := 0 to UserVariables.Count - 1 do
         begin
           EnvOptionName := UserVariables.Names[Index];
-          Result.Values[EnvOptionName] := UserVariables.Values[EnvOptionName];
+          EnvOptionValue := UserVariables.Values[EnvOptionName];
+          ExpandEnvironmentVarCustom(EnvOptionValue, Result);
+          Result.Values[EnvOptionName] := EnvOptionValue;
         end;
       finally
         UserVariables.Free;
