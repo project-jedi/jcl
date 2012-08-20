@@ -28,6 +28,7 @@ object TextFrame: TTextFrame
       Width = 288
       Height = 208
       Anchors = [akLeft, akTop, akRight, akBottom]
+      ScrollBars = ssBoth
       TabOrder = 0
     end
   end
