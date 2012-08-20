@@ -2066,9 +2066,6 @@ begin
 
     // at first get system environment variables
     JclSysInfo.GetEnvironmentVars(FEnvironmentVariables, True);
-    for I := FEnvironmentVariables.count-1 downto 0 do
-      if FEnvironmentVariables.Names[I] = EmptyStr then
-        FEnvironmentVariables.Delete(I);
 
     // Overwrite BDSCommonDir because it conflicts with older versions and
     // the RAD Studio 2009 setup doesn't update the environment variable anymore
@@ -2092,6 +2089,11 @@ begin
         EnvNames.Free;
       end;
     end;
+
+    // remove empty environment variables
+    for I := FEnvironmentVariables.count-1 downto 0 do
+      if FEnvironmentVariables.Names[I] = EmptyStr then
+        FEnvironmentVariables.Delete(I);
   end;
   Result := FEnvironmentVariables;
 end;
