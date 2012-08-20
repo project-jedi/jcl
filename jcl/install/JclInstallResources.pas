@@ -350,6 +350,8 @@ resourcestring
   RsLogDelHelp2Files = 'Unregistering help 2.0 files...';
   RsLogInstalling = 'Installing %s...';
   RsLogUninstalling = 'Removing %s...';
+  RsLogInstallingJCL = 'Installing JCL for %s...';
+  RsLogUninstallingJCL = 'Removing JCL for %s...';
   RsLogBuilding = 'Building %s...';
   RsLogRegistering = 'Registering %s...';
   RsLogFirstCompilationOk = 'First compilation ok.';

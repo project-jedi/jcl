@@ -2040,7 +2040,7 @@ begin
     Target.OutputCallback := WriteLog;
 
     if Assigned(GUI) then
-      GUI.Status := Format(LoadResString(@RsLogInstalling), [TargetName]);
+      GUI.Status := Format(LoadResString(@RsLogInstallingJCL), [TargetName]);
 
     if Assigned(GUIPage) then
     begin
@@ -2421,7 +2421,7 @@ begin
   try
     Target.OutputCallback := WriteLog;
     if Assigned(GUI) then
-      GUI.Status := Format(LoadResString(@RsLogUninstalling), [TargetName]);
+      GUI.Status := Format(LoadResString(@RsLogUninstallingJCL), [TargetName]);
     if Assigned(GUIPage) then
       GUIPage.Show;
 
