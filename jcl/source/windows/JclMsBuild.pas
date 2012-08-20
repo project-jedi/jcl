@@ -1026,7 +1026,7 @@ begin
         StrReplace(Result,
                    Copy(Result, Start, Position - Start + 1), // $(PropertyName)
                    PropertyValue,
-                   [rfReplaceAll])
+                   [rfReplaceAll, rfIgnoreCase])
       end;
       if Start = 0 then
       begin
@@ -1040,11 +1040,11 @@ begin
           PropertyName := Copy(Result, Start + 2, Position - Start - 2);
 
           PropertyValue := EvaluateList(PropertyName);
-          
+
           StrReplace(Result,
                      Copy(Result, Start, Position - Start + 1), // @(PropertyName...)
                      PropertyValue,
-                     [rfReplaceAll])
+                     [rfReplaceAll, rfIgnoreCase])
         end;
       end;
     until Start = 0;
@@ -1088,7 +1088,7 @@ var
       EndIndex := StrSearch(')', Result, Index + 2);
       MetaDataName := Copy(Result, Index + 2, EndIndex - Index - 2);
       UserDefinedMetadataNames.Add(MetaDataName);
-      StrReplace(Result, '%(' + MetaDataName + ')', '%' + IntToStr(Num) + ':s', [rfReplaceAll]);
+      StrReplace(Result, '%(' + MetaDataName + ')', '%' + IntToStr(Num) + ':s', [rfReplaceAll, rfIgnoreCase]);
       Inc(Num);
       Index := StrSearch('%(', Result, Index);
     end;
