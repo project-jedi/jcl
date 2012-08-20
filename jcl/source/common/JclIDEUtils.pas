@@ -138,6 +138,7 @@ const
   Personality32Bit        = '32 bit';
   Personality64Bit        = '64 bit';
   PersonalityDelphi       = 'Delphi';
+  PersonalityDelphiOSX    = 'Delphi for OSX';
   PersonalityDelphiDotNet = 'Delphi.net';
   PersonalityBCB          = 'C++Builder';
   PersonalityCSB          = 'C#Builder';
@@ -155,10 +156,9 @@ const
 
 // Installed versions information classes
 type
-  TJclBorPersonality = (bpDelphi32, bpDelphi64, bpBCBuilder32, bpBCBuilder64,
+  TJclBorPersonality = (bpDelphi32, bpDelphi64, bpDelphiOSX32, bpBCBuilder32, bpBCBuilder64,
     bpDelphiNet32, bpDelphiNet64, bpCSBuilder32, bpCSBuilder64,
     bpVisualBasic32, bpVisualBasic64, bpDesign, bpUnknown);
-  //  bpDelphi64, bpBCBuilder64);
 
   TJclBorPersonalities = set of TJclBorPersonality;
 
@@ -173,6 +173,7 @@ const
    (
     Personality32Bit + ' ' + PersonalityDelphi,
     Personality64Bit + ' ' + PersonalityDelphi,
+    Personality32Bit + ' ' + PersonalityDelphiOSX,
     Personality32Bit + ' ' + PersonalityBCB,
     Personality64Bit + ' ' + PersonalityBCB,
     Personality32Bit + ' ' + PersonalityDelphiDotNet,
@@ -313,7 +314,7 @@ type
     property Pages: TStrings read GetPages;
   end;
 
-  TCommandLineTool = (clAsm, clBcc32, clDcc32, clDcc64, clDccIL, clMake, clProj2Mak);
+  TCommandLineTool = (clAsm, clBcc32, clDcc32, clDcc64, clDccOSX32, clDccIL, clMake, clProj2Mak);
   TCommandLineTools = set of TCommandLineTool;
 
   TJclBorRADToolInstallationClass = class of TJclBorRADToolInstallation;
@@ -588,6 +589,7 @@ type
     FHelp2Manager: TJclHelp2Manager;
     FDCCIL: TJclDCCIL;
     FDCC64: TJclDCC64;
+    FDCCOSX32: TJclDCCOSX32;
     FPdbCreate: Boolean;
     procedure SetDualPackageInstallation(const Value: Boolean);
     function GetCppPathsKeyName: string;
@@ -605,6 +607,7 @@ type
     procedure SetRawCppIncludePath(APlatform: TJclBDSPlatform; const Value: TJclBorRADToolPath);
     function GetMaxDelphiCLRVersion: string;
     function GetDCC64: TJclDCC64;
+    function GetDCCOSX32: TJclDCCOSX32;
     function GetDCCIL: TJclDCCIL;
 
     function GetMsBuildEnvOptionsFileName: string;
@@ -681,6 +684,7 @@ type
     property DualPackageInstallation: Boolean read FDualPackageInstallation write SetDualPackageInstallation;
     property Help2Manager: TJclHelp2Manager read FHelp2Manager;
     property DCC64: TJclDCC64 read GetDCC64;
+    property DCCOSX32: TJclDCCOSX32 read GetDCCOSX32;
     property DCCIL: TJclDCCIL read GetDCCIL;
     property MaxDelphiCLRVersion: string read GetMaxDelphiCLRVersion;
     property PdbCreate: Boolean read FPdbCreate write FPdbCreate;
@@ -1648,6 +1652,8 @@ begin
     Include(FCommandLineTools, clDcc32);
   if FileExists(BinFolderName + DCC64ExeName) then
     Include(FCommandLineTools, clDcc64);
+  if FileExists(BinFolderName + DCCOSX32ExeName) then
+    Include(FCommandLineTools, clDccOSX32);
   {$IFDEF MSWINDOWS}
   if FileExists(BinFolderName + DCCILExeName) then
     Include(FCommandLineTools, clDccIL);
@@ -1763,7 +1769,8 @@ end;
 procedure TJclBorRADToolInstallation.CheckPlatform(APlatform: TJclBDSPlatform);
 begin
   if ((APlatform = bpWin32) and ([bpDelphi32,bpBCBuilder32] * Personalities = [])) or
-     ((APlatform = bpWin64) and ([bpDelphi64,bpBCBuilder64] * Personalities = [])) then
+     ((APlatform = bpWin64) and ([bpDelphi64,bpBCBuilder64] * Personalities = [])) or
+     ((APlatform = bpOSX32) and ([bpDelphiOSX32] * Personalities = [])) then
     raise EJclBorRADException.CreateRes(@RsEPlatformNotValid);
 end;
 
@@ -3233,12 +3240,15 @@ begin
     Include(FPersonalities, bpDelphi32);
   if clDcc64 in CommandLineTools then
     Include(FPersonalities, bpDelphi64);
+  if clDccOSX32 in CommandLineTools then
+    Include(FPersonalities, bpDelphiOSX32);
 end;
 
 destructor TJclBDSInstallation.Destroy;
 begin
   FreeAndNil(FDCCIL);
   FreeAndNil(FDCC64);
+  FreeAndNil(FDCCOSX32);
   FreeAndNil(FHelp2Manager);
   inherited Destroy;
 end;
@@ -3564,6 +3574,19 @@ begin
                                LibDebugFolderName[bpWin64], ObjFolderName[bpWin64]);
   end;
   Result := FDCC64;
+end;
+
+function TJclBDSInstallation.GetDCCOSX32: TJclDCCOSX32;
+begin
+  if not Assigned(FDCCOSX32) then
+  begin
+    if not (clDccOSX32 in CommandLineTools) then
+      raise EJclBorRadException.CreateResFmt(@RsENotFound, [DccOSX32ExeName]);
+    FDCCOSX32 := TJclDCCOSX32.Create(BinFolderName, LongPathBug, CompilerSettingsFormat,
+                                     SupportsNoConfig, SupportsPlatform, DCPOutputPath[bpOSX32], LibFolderName[bpOSX32],
+                                     LibDebugFolderName[bpOSX32], ObjFolderName[bpOSX32]);
+  end;
+  Result := FDCCOSX32;
 end;
 
 function TJclBDSInstallation.GetDCCIL: TJclDCCIL;
@@ -4120,6 +4143,8 @@ begin
   inherited SetOutputCallback(Value);
   if clDcc64 in CommandLineTools then
     DCC64.OutputCallback := Value;
+  if clDccOSX32 in CommandLineTools then
+    DCCOSX32.OutputCallback := Value;
   if clDccIL in CommandLineTools then
     DCCIL.OutputCallback := Value;
 end;

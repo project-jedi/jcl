@@ -161,6 +161,12 @@ type
     function GetExeName: string; override;
   end;
 
+  TJclDCCOSX32 = class(TJclDCC32)
+  public
+    class function GetPlatform: string; override;
+    function GetExeName: string; override;
+  end;
+
   {$IFDEF MSWINDOWS}
   TJclDCCIL = class(TJclDCC32)
   private
@@ -191,6 +197,7 @@ const
   BCC32ExeName              = 'bcc32.exe';
   DCC32ExeName              = 'dcc32.exe';
   DCC64ExeName              = 'dcc64.exe';
+  DCCOSX32ExeName           = 'dccosx.exe';
   DCCILExeName              = 'dccil.exe';
   Bpr2MakExeName            = 'bpr2mak.exe';
   MakeExeName               = 'make.exe';
@@ -1198,6 +1205,18 @@ end;
 function TJclDCC64.GetExeName: string;
 begin
   Result := DCC64ExeName;
+end;
+
+//=== { TJclDCCOSX32 } =======================================================
+
+class function TJclDCCOSX32.GetPlatform: string;
+begin
+  Result := BDSPlatformOSX32;
+end;
+
+function TJclDCCOSX32.GetExeName: string;
+begin
+  Result := DCCOSX32ExeName;
 end;
 
 {$IFDEF MSWINDOWS}
