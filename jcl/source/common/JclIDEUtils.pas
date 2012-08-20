@@ -2522,6 +2522,7 @@ var
   Key, GlobalKey: string;
   Ed: TJclBorRADToolEdition;
   GlobalsBuffer: TStrings;
+  Version: Extended;
 begin
   Key := ConfigData.FileName;
   GlobalKey := StrEnsureSuffix('\', Key) + GlobalsKeyName;
@@ -2540,9 +2541,14 @@ begin
     GlobalsBuffer.Free;
   end;
 
-  KeyLen := Length(Key);
-  if (KeyLen > 3) and StrIsDigit(Key[KeyLen - 2]) and (Key[KeyLen - 1] = '.') and (Key[KeyLen] = '0') then
-    FIDEVersionNumber := Ord(Key[KeyLen - 2]) - Ord('0')
+  I := StrLastPos('\', Key);
+  if I > 0 then
+    Key := Copy(Key, I + 1, Length(Key) - I);
+
+  Key := StrReplaceChar(Key, '.', {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}DecimalSeparator);
+  Version := StrToFloatSafe(Key);
+  if Frac(Version) = 0 then
+    FIDEVersionNumber := Round(Version)
   else
     FIDEVersionNumber := 0;
 
