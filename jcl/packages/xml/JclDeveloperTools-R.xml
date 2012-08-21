@@ -53,6 +53,7 @@
     <File Name="..\..\source\windows\JclMsBuild.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\MSHelpServices_TLB.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\ExprEval.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JclDeveloperTools.dtx" Targets="help" Formname="" Condition=""/>
   </Contains>
 </Package>

@@ -35,10 +35,6 @@
 <copy TJclHashSet.ContainsAll@IJclCollection>
 \ \
 
-@@SELFCLASSNAME.Create@MAPINTERFACENAME
-<copy TJclHashSet.Create@IJclMap>
-\ \
-
 @@SELFCLASSNAME.Create@Integer
 <copy TJclHashSet.Create@Integer@Boolean>
 \ \
@@ -63,44 +59,8 @@
 <copy TJclHashSet.First>
 \ \
 
-@@SELFCLASSNAME.GetAllowDefaultElements
-<copy TJclHashSet.GetAllowDefaultElements>
-\ \
-
-@@SELFCLASSNAME.GetAutoPackParameter
-<copy TJclHashSet.GetAutoPackParameter>
-\ \
-
-@@SELFCLASSNAME.GetAutoPackStrategy
-<copy TJclHashSet.GetAutoPackStrategy>
-\ \
-
-@@SELFCLASSNAME.GetCapacity
-<copy TJclHashSet.GetCapacity>
-\ \
-
-@@SELFCLASSNAME.GetDuplicates
-<copy TJclHashSet.GetDuplicates>
-\ \
-
 @@SELFCLASSNAME.GetEnumerator
 <copy TJclHashSet.GetEnumerator>
-\ \
-
-@@SELFCLASSNAME.GetReadOnly
-<copy TJclHashSet.GetReadOnly>
-\ \
-
-@@SELFCLASSNAME.GetRemoveSingleElement
-<copy TJclHashSet.GetRemoveSingleElement>
-\ \
-
-@@SELFCLASSNAME.GetReturnDefaultElements
-<copy TJclHashSet.GetReturnDefaultElements>
-\ \
-
-@@SELFCLASSNAME.GetThreadSafe
-<copy TJclHashSet.GetThreadSafe>
 \ \
 
 @@SELFCLASSNAME.Intersect@COLLECTIONINTERFACENAME
@@ -131,40 +91,8 @@
 <copy TJclHashSet.RetainAll@IJclCollection>
 \ \
 
-@@SELFCLASSNAME.SetAllowDefaultElements@Boolean
-<copy TJclHashSet.SetAllowDefaultElements@Boolean>
-\ \
-
-@@SELFCLASSNAME.SetAutoPackParameter@Integer
-<copy TJclHashSet.SetAutoPackParameter@Integer>
-\ \
-
-@@SELFCLASSNAME.SetAutoPackStrategy@TJclAutoPackStrategy
-<copy TJclHashSet.SetAutoPackStrategy@TJclAutoPackStrategy>
-\ \
-
 @@SELFCLASSNAME.SetCapacity@Integer
 <copy TJclHashSet.SetCapacity@Integer>
-\ \
-
-@@SELFCLASSNAME.SetDuplicates@TDuplicates
-<copy TJclHashSet.SetDuplicates@TDuplicates>
-\ \
-
-@@SELFCLASSNAME.SetReadOnly@Boolean
-<copy TJclHashSet.SetReadOnly@Boolean>
-\ \
-
-@@SELFCLASSNAME.SetRemoveSingleElement@Boolean
-<copy TJclHashSet.SetRemoveSingleElement@Boolean>
-\ \
-
-@@SELFCLASSNAME.SetReturnDefaultElements@Boolean
-<copy TJclHashSet.SetReturnDefaultElements@Boolean>
-\ \
-
-@@SELFCLASSNAME.SetThreadSafe@Boolean
-<copy TJclHashSet.SetThreadSafe@Boolean>
 \ \
 
 @@SELFCLASSNAME.Size

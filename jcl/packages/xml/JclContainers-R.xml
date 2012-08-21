@@ -41,5 +41,6 @@
     <File Name="..\..\..\help\ContainerCopies.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\Containers.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JclContainers.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\StrHashMap.dtx" Targets="help" Formname="" Condition=""/>
   </Contains>
 </Package>

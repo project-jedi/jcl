@@ -1,4 +1,4 @@
-; This is a Doc-O-Matic version 6.5.1.1382 project file.
+﻿; This is a Doc-O-Matic version 6.5.1.1382 project file.
 ; This file is maintained by Doc-O-Matic, do not edit manually.
 
 [*Control*]
@@ -32,7 +32,7 @@ File2=Jcl.doxdb
 File3=JclContainers.doxdb
 
 [Source Files]
-Count=33
+Count=34
 File0=..\..\source\common\JclCompilerUtils.pas
 File1=..\..\source\common\JclDevToolsResources.pas
 File2=..\..\source\common\JclExprEval.pas
@@ -65,7 +65,8 @@ File28=..\..\source\windows\JclHelpUtils.pas
 File29=..\..\source\windows\JclMsBuild.pas
 File30=..\..\source\windows\MSHelpServices_TLB.pas
 File31=..\..\..\help\Common.dtx
-File32=..\..\..\help\JclDeveloperTools.dtx
+File32=..\..\..\help\ExprEval.dtx
+File33=..\..\..\help\JclDeveloperTools.dtx
 
 [General]
 Copyright=Copyright (C) 1999, 2012 Project JEDI

@@ -141,7 +141,6 @@
     <File Name="..\..\..\help\CppExceptions.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\DateTime.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\Debug.dtx" Targets="help" Formname="" Condition=""/>
-    <File Name="..\..\..\help\ExprEval.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\FileUtils.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\Hardlinks.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\IncludedFiles.dtx" Targets="help" Formname="" Condition=""/>
@@ -167,7 +166,6 @@
     <File Name="..\..\..\help\Shell.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\Statistics.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\Streams.dtx" Targets="help" Formname="" Condition=""/>
-    <File Name="..\..\..\help\StrHashMap.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\Strings.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\SvcCtrl.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\Synch.dtx" Targets="help" Formname="" Condition=""/>

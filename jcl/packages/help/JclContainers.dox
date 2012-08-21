@@ -1,4 +1,4 @@
-; This is a Doc-O-Matic version 6.5.1.1382 project file.
+﻿; This is a Doc-O-Matic version 6.5.1.1382 project file.
 ; This file is maintained by Doc-O-Matic, do not edit manually.
 
 [*Control*]
@@ -31,7 +31,7 @@ File1=..\..\..\help\JEDI.doxdb
 File2=Jcl.doxdb
 
 [Source Files]
-Count=19
+Count=20
 File0=..\..\source\common\JclAbstractContainers.pas
 File1=..\..\source\common\JclAlgorithms.pas
 File2=..\..\source\common\JclArrayLists.pas
@@ -51,6 +51,7 @@ File15=..\..\..\help\Common.dtx
 File16=..\..\..\help\ContainerCopies.dtx
 File17=..\..\..\help\Containers.dtx
 File18=..\..\..\help\JclContainers.dtx
+File19=..\..\..\help\StrHashMap.dtx
 
 [General]
 Copyright=Copyright (C) 1999, 2012 Project JEDI
