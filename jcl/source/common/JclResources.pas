@@ -1923,6 +1923,8 @@ resourcestring
   RsOSVersionWinServer2008      = 'Windows Server 2008';
   RsOSVersionWin7               = 'Windows 7';
   RsOSVersionWinServer2008R2    = 'Windows Server 2008 R2';
+  RsOSVersionWin8               = 'Windows 8';
+  RsOSVersionWinServer2012      = 'Windows Server 2012';
 
   RsEditionWinXPHome            = 'Home Edition';
   RsEditionWinXPPro             = 'Professional';
