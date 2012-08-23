@@ -2207,12 +2207,9 @@ end;
 
 function TJclBorRADToolInstallation.GetObjFolderName(APlatform: TJclBDSPlatform): string;
 begin
-  if RadToolKind = brCppBuilder then
-  begin
-    CheckCBuilderPlatform(APlatform);
-    Result := LibFolderName[APlatform] + PathAddSeparator('obj');
-  end
-  else
+  CheckPlatform(APlatform);
+  Result := LibFolderName[APlatform] + PathAddSeparator('obj');
+  if not DirectoryExists(Result) then
     Result := '';
 end;
 
