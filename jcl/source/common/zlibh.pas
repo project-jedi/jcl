@@ -182,7 +182,7 @@ const
 
 const
   {$EXTERNALSYM ZLIB_VERSION}
-  ZLIB_VERSION = '1.2.5';
+  ZLIB_VERSION = '1.2.7';
   {$EXTERNALSYM ZLIB_VERNUM}
   ZLIB_VERNUM = $1250;
   {$EXTERNALSYM ZLIB_VER_MAJOR}
@@ -190,7 +190,7 @@ const
   {$EXTERNALSYM ZLIB_VER_MINOR}
   ZLIB_VER_MINOR = 2;
   {$EXTERNALSYM ZLIB_VER_REVISION}
-  ZLIB_VER_REVISION = 5;
+  ZLIB_VER_REVISION = 7;
   {$EXTERNALSYM ZLIB_VER_SUBREVISION}
   ZLIB_VER_SUBREVISION = 0;
 
@@ -1067,6 +1067,40 @@ function deflateBound(var strm: TZStreamRec;
    or deflateInit2().  This would be used to allocate an output buffer
    for deflation in a single pass, and so would be called before deflate().
 *}
+
+{$IFDEF ZLIB_LINKONREQUEST}
+
+type
+  {$EXTERNALSYM TdeflatePending}
+  TdeflatePending = function (var strm: TZStreamRec;
+                              pending: PCardinal;
+                              bits: PInteger): Integer;
+    {$IFDEF ZLIB_EXPORT_CDECL} cdecl; {$ENDIF ZLIB_EXPORT_CDECL}
+var
+  {$EXTERNALSYM deflatePending}
+  deflatePending: TdeflatePending = nil;
+
+{$ELSE ~ZLIB_LINKONREQUEST}
+
+{$EXTERNALSYM deflatePending}
+function deflatePending(var strm: TZStreamRec;
+                        pending: PCardinal;
+                        bits: PInteger): Integer;
+  {$IFDEF ZLIB_EXPORT_CDECL} cdecl; {$ENDIF ZLIB_EXPORT_CDECL}
+
+{$ENDIF ~ZLIB_LINKONREQUEST}
+
+(*
+     deflatePending() returns the number of bytes and bits of output that have
+   been generated, but not yet provided in the available output.  The bytes not
+   provided would be due to the available output space having being consumed.
+   The number of bits of output not provided are between 0 and 7, where they
+   await more bits to join them in order to fill out a full byte.  If pending
+   or bits are Z_NULL, then those values are not set.
+
+     deflatePending returns Z_OK if success, or Z_STREAM_ERROR if the source
+   stream state was inconsistent.
+*)
 
 {$IFDEF ZLIB_LINKONREQUEST}
 
@@ -2046,6 +2080,7 @@ const
   ZLibdeflateResetDefaultExportName = 'deflateReset';
   ZLibdeflateParamsDefaultExportName = 'deflateParams';
   ZLibdeflateBoundDefaultExportName = 'deflateBound';
+  ZLibdeflatePendingDefaultExportName = 'deflatePending';
   ZLibdeflatePrimeDefaultExportName = 'deflatePrime';
   ZLibinflateInit2_DefaultExportName = 'inflateInit2_';
   ZLibinflateSetDictionaryDefaultExportName = 'inflateSetDictionary';
@@ -2081,6 +2116,7 @@ var
   ZLibdeflateResetExportName: string = ZLibdeflateResetDefaultExportName;
   ZLibdeflateParamsExportName: string = ZLibdeflateParamsDefaultExportName;
   ZLibdeflateBoundExportName: string = ZLibdeflateBoundDefaultExportName;
+  ZLibdeflatePendingExportName: string = ZLibdeflatePendingDefaultExportName;
   ZLibdeflatePrimeExportName: string = ZLibdeflatePrimeDefaultExportName;
   ZLibinflateInit2_ExportName: string = ZLibinflateInit2_DefaultExportName;
   ZLibinflateSetDictionaryExportName: string = ZLibinflateSetDictionaryDefaultExportName;
@@ -2207,6 +2243,7 @@ function deflateCopy;          external;
 function deflateReset;         external;
 function deflateParams;        external;
 function deflateBound;         external;
+function deflatePending;       external;
 function deflatePrime;         external;
 function inflateInit2_;        external; // wrapped by inflateInit2()
 function inflateSetDictionary; external;
@@ -2334,6 +2371,14 @@ begin
 end;
 
 {$ENDIF ~LINK_TO_MSVCRT}
+
+{$IFDEF CPU32}
+procedure __llmod; cdecl;
+asm
+  jmp System.@_llmod;
+end;
+{$ENDIF CPU32}
+
 {$ENDIF ZLIB_STATICLINK}
 {$ENDIF ~ZLIB_RTL}
 
@@ -2369,6 +2414,7 @@ begin
     @deflateReset := GetModuleSymbol(ZLibModuleHandle, ZLIBdeflateResetExportName);
     @deflateParams := GetModuleSymbol(ZLibModuleHandle, ZLIBdeflateParamsExportName);
     @deflateBound := GetModuleSymbol(ZLibModuleHandle, ZLIBdeflateBoundExportName);
+    @deflatePending := GetModuleSymbol(ZLibModuleHandle, ZLIBdeflatePendingExportName);
     @deflatePrime := GetModuleSymbol(ZLibModuleHandle, ZLIBdeflatePrimeExportName);
     @inflateInit2_ := GetModuleSymbol(ZLibModuleHandle, ZLIBinflateInit2_ExportName);
     @inflateSetDictionary := GetModuleSymbol(ZLibModuleHandle, ZLIBinflateSetDictionaryExportName);
@@ -2419,6 +2465,7 @@ function deflateCopy;          external ZLibDefaultLibraryName name ZLibdeflateC
 function deflateReset;         external ZLibDefaultLibraryName name ZLibdeflateResetDefaultExportName;
 function deflateParams;        external ZLibDefaultLibraryName name ZLibdeflateParamsDefaultExportName;
 function deflateBound;         external ZLibDefaultLibraryName name ZLibdeflateBoundDefaultExportName;
+function deflatePending;       external ZLibDefaultLibraryName name ZLibdeflatePendingDefaultExportName;
 function deflatePrime;         external ZLibDefaultLibraryName name ZLibdeflatePrimeDefaultExportName;
 function inflateInit2_;        external ZLibDefaultLibraryName name ZLibinflateInit2_DefaultExportName;
 function inflateSetDictionary; external ZLibDefaultLibraryName name ZLibinflateSetDictionaryDefaultExportName;

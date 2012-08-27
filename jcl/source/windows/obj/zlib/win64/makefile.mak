@@ -1,7 +1,7 @@
 #
 # makefile to make zlib .obj files using Microsoft C++ compiler (cl.exe)
 #
-# if zlib source directory is different from ..\..\..\..\..\..\thirdparty\zlib\zlib-1.2.5, use
+# if zlib source directory is different from ..\..\..\..\..\..\thirdparty\zlib\zlib-1.2.7, use
 # "make -Dzlibsrc=<path to zlib sources>" to tell make where to find the
 # source files
 #
@@ -20,7 +20,7 @@
 # >C:\Program files\Borland\BDS\4.0\bin\make
 
 !if !$d(zlibsrc)
-zlibsrc = ..\..\..\..\..\..\thirdparty\zlib\zlib-1.2.5
+zlibsrc = ..\..\..\..\..\..\thirdparty\zlib\zlib-1.2.7
 !endif
 
 # ---------------------------------------------------------------------------
