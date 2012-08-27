@@ -256,7 +256,14 @@ var
   {$ENDIF PCRE_RTL}
 {$ENDIF RTL230_UP}
 
-function JclPCREGetMem(Size: {$IFDEF PCRE_RTL}Integer{$ELSE}SizeInt{$ENDIF}): Pointer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
+type
+  {$IFDEF PCRE_RTL}
+  TPCREGetMemInteger = Integer;
+  {$ELSE ~PCRE_RTL}
+  TPCREGetMemInteger = SizeInt;
+  {$ENDIF ~PCRE_RTL}
+
+function JclPCREGetMem(Size: TPCREGetMemInteger): Pointer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 begin
   GetMem(Result, Size);
 end;

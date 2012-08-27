@@ -1,7 +1,7 @@
 #
 # makefile to make pcre .obj files using Microsoft C++ compiler (cl.exe)
 #
-# if pcre source directory is different from ..\..\..\..\..\..\thirdparty\pcre\pcre-8.21, use
+# if pcre source directory is different from ..\..\..\..\..\..\thirdparty\pcre\pcre-8.31, use
 # "make -Dpcresrc=<path to pcre sources>" to tell make where to find the 
 # source files
 #
@@ -26,7 +26,7 @@ BCB = $(MAKEDIR)\..
 BCC = $(BCB)
 
 !if !$d(pcresrc)
-pcresrc = ..\..\..\..\..\..\thirdparty\pcre\pcre-8.21
+pcresrc = ..\..\..\..\..\..\thirdparty\pcre\pcre-8.31
 !endif
 
 # ---------------------------------------------------------------------------
@@ -34,7 +34,7 @@ OBJFILES = .\pcre_compile.obj .\pcre_config.obj .\pcre_dfa_exec.obj \
   .\pcre_exec.obj .\pcre_fullinfo.obj .\pcre_get.obj \
   .\pcre_jit_compile.obj .\pcre_maketables.obj \
   .\pcre_newline.obj .\pcre_ord2utf8.obj .\pcre_refcount.obj .\pcre_study.obj \
-  .\pcre_tables.obj .\pcre_try_flipped.obj .\pcre_ucd.obj \
+  .\pcre_tables.obj .\pcre_ucd.obj \
   .\pcre_valid_utf8.obj .\pcre_version.obj .\pcre_xclass.obj \
   .\pcre_default_tables.obj
 

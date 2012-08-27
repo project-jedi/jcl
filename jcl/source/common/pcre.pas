@@ -795,7 +795,6 @@ procedure _pcre_jit_free; external;
 {$LINK ..\windows\obj\pcre\win32\pcre_refcount.obj}
 {$LINK ..\windows\obj\pcre\win32\pcre_study.obj}
 {$LINK ..\windows\obj\pcre\win32\pcre_tables.obj}
-{$LINK ..\windows\obj\pcre\win32\pcre_try_flipped.obj}
 {$LINK ..\windows\obj\pcre\win32\pcre_ucd.obj}
 {$LINK ..\windows\obj\pcre\win32\pcre_valid_utf8.obj}
 {$LINK ..\windows\obj\pcre\win32\pcre_version.obj}
@@ -816,7 +815,6 @@ procedure _pcre_jit_free; external;
 {$LINK ..\windows\obj\pcre\win64\pcre_refcount.obj}
 {$LINK ..\windows\obj\pcre\win64\pcre_study.obj}
 {$LINK ..\windows\obj\pcre\win64\pcre_tables.obj}
-{$LINK ..\windows\obj\pcre\win64\pcre_try_flipped.obj}
 {$LINK ..\windows\obj\pcre\win64\pcre_ucd.obj}
 {$LINK ..\windows\obj\pcre\win64\pcre_valid_utf8.obj}
 {$LINK ..\windows\obj\pcre\win64\pcre_version.obj}
