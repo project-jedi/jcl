@@ -508,9 +508,6 @@ function pcre_get_substring_list(const subject: PAnsiChar; ovector: PInteger;
   stringcount: Integer; listptr: PPPAnsiChar): Integer;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_get_substring_list}
-function pcre_info(const code: PPCRE; optptr, firstcharptr: PInteger): Integer;
-  {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
-{$EXTERNALSYM pcre_info}
 function pcre_maketables: PAnsiChar;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_maketables}
@@ -593,9 +590,6 @@ type
     stringcount: Integer; listptr: PPPAnsiChar): Integer;
     {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_get_substring_list_func}
-  pcre_info_func = function(const code: PPCRE; optptr, firstcharptr: PInteger): Integer;
-  {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
-  {$EXTERNALSYM pcre_info_func}
   pcre_maketables_func = function: PAnsiChar; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_maketables_func}
   pcre_refcount_func = function(argument_re: PPCRE; adjust: Integer): Integer;
@@ -650,8 +644,6 @@ var
   {$EXTERNALSYM pcre_get_substring}
   pcre_get_substring_list: pcre_get_substring_list_func = nil;
   {$EXTERNALSYM pcre_get_substring_list}
-  pcre_info: pcre_info_func = nil;
-  {$EXTERNALSYM pcre_info}
   pcre_maketables: pcre_maketables_func = nil;
   {$EXTERNALSYM pcre_maketables}
   pcre_refcount: pcre_refcount_func = nil;
@@ -696,7 +688,6 @@ const
   PCREGetStringTableEntriesDefaultExportName = 'pcre_get_stringtable_entries';
   PCREGetSubStringDefaultExportName = 'pcre_get_substring';
   PCREGetSubStringListDefaultExportName = 'pcre_get_substring_list';
-  PCREInfoDefaultExportName = 'pcre_info';
   PCREMakeTablesDefaultExportName = 'pcre_maketables';
   PCRERefCountDefaultExportName = 'pcre_refcount';
   PCREStudyDefaultExportName = 'pcre_study';
@@ -729,7 +720,6 @@ var
   PCREGetStringTableEntriesExportName: string = PCREGetStringTableEntriesDefaultExportName;
   PCREGetSubStringExportName: string = PCREGetSubStringDefaultExportName;
   PCREGetSubStringListExportName: string = PCREGetSubStringListDefaultExportName;
-  PCREInfoExportName: string = PCREInfoDefaultExportName;
   PCREMakeTablesExportName: string = PCREMakeTablesDefaultExportName;
   PCRERefCountExportName: string = PCRERefCountDefaultExportName;
   PCREStudyExportName: string = PCREStudyDefaultExportName;
@@ -798,7 +788,6 @@ procedure _pcre_jit_free; external;
 {$LINK ..\windows\obj\pcre\win32\pcre_exec.obj}
 {$LINK ..\windows\obj\pcre\win32\pcre_fullinfo.obj}
 {$LINK ..\windows\obj\pcre\win32\pcre_get.obj}
-{$LINK ..\windows\obj\pcre\win32\pcre_info.obj}
 {$LINK ..\windows\obj\pcre\win32\pcre_jit_compile.obj}
 {$LINK ..\windows\obj\pcre\win32\pcre_maketables.obj}
 {$LINK ..\windows\obj\pcre\win32\pcre_newline.obj}
@@ -820,7 +809,6 @@ procedure _pcre_jit_free; external;
 {$LINK ..\windows\obj\pcre\win64\pcre_exec.obj}
 {$LINK ..\windows\obj\pcre\win64\pcre_fullinfo.obj}
 {$LINK ..\windows\obj\pcre\win64\pcre_get.obj}
-{$LINK ..\windows\obj\pcre\win64\pcre_info.obj}
 {$LINK ..\windows\obj\pcre\win64\pcre_jit_compile.obj}
 {$LINK ..\windows\obj\pcre\win64\pcre_maketables.obj}
 {$LINK ..\windows\obj\pcre\win64\pcre_newline.obj}
@@ -859,7 +847,6 @@ function pcre_get_stringnumber; external;
 function pcre_get_stringtable_entries; external;
 function pcre_get_substring; external;
 function pcre_get_substring_list; external;
-function pcre_info; external;
 function pcre_maketables; external;
 function pcre_refcount; external;
 function pcre_study; external;
@@ -1243,7 +1230,6 @@ begin
   @pcre_get_stringtable_entries := Value;
   @pcre_get_substring := Value;
   @pcre_get_substring_list := Value;
-  @pcre_info := Value;
   @pcre_maketables := Value;
   @pcre_refcount := Value;
   @pcre_study := Value;
@@ -1314,7 +1300,6 @@ begin
     @pcre_get_stringtable_entries := GetModuleSymbol(PCRELib, PCREGetStringTableEntriesExportName);
     @pcre_get_substring := GetModuleSymbol(PCRELib, PCREGetSubStringExportName);
     @pcre_get_substring_list := GetModuleSymbol(PCRELib, PCREGetSubStringListExportName);
-    @pcre_info := GetModuleSymbol(PCRELib, PCREInfoExportName);
     @pcre_maketables := GetModuleSymbol(PCRELib, PCREMakeTablesExportName);
     @pcre_refcount := GetModuleSymbol(PCRELib, PCRERefCountExportName);
     @pcre_study := GetModuleSymbol(PCRELib, PCREStudyExportName);
@@ -1368,7 +1353,6 @@ function pcre_get_stringnumber; external PCREDefaultLibraryName name PCREGetStri
 function pcre_get_stringtable_entries; external PCREDefaultLibraryName name PCREGetStringTableEntriesDefaultExportName;
 function pcre_get_substring; external PCREDefaultLibraryName name PCREGetSubStringDefaultExportName;
 function pcre_get_substring_list; external PCREDefaultLibraryName name PCREGetSubStringListDefaultExportName;
-function pcre_info; external PCREDefaultLibraryName name PCREInfoDefaultExportName;
 function pcre_maketables; external PCREDefaultLibraryName name PCREMakeTablesDefaultExportName;
 function pcre_refcount; external PCREDefaultLibraryName name PCRERefCountDefaultExportName;
 function pcre_study; external PCREDefaultLibraryName name PCREStudyDefaultExportName;
