@@ -59,13 +59,23 @@ CPU = 5         # Pentium
 
 VERSION = BCB.06.00
 # ---------------------------------------------------------------------------
-OBJFILES = .\pcre_compile.obj .\pcre_config.obj .\pcre_dfa_exec.obj \
+OBJ32FILES = .\pcre_compile.obj .\pcre_config.obj .\pcre_dfa_exec.obj \
   .\pcre_exec.obj .\pcre_fullinfo.obj .\pcre_get.obj \
   .\pcre_jit_compile.obj .\pcre_maketables.obj \
   .\pcre_newline.obj .\pcre_ord2utf8.obj .\pcre_refcount.obj .\pcre_study.obj \
   .\pcre_tables.obj .\pcre_ucd.obj \
   .\pcre_valid_utf8.obj .\pcre_version.obj .\pcre_xclass.obj \
   .\pcre_chartables.obj
+
+OBJ64FILES = .\pcre16_compile.obj .\pcre16_config.obj .\pcre16_dfa_exec.obj \
+  .\pcre16_exec.obj .\pcre16_fullinfo.obj .\pcre16_get.obj \
+  .\pcre16_jit_compile.obj .\pcre16_maketables.obj \
+  .\pcre16_newline.obj .\pcre16_ord2utf16.obj .\pcre16_refcount.obj \
+  .\pcre16_study.obj .\pcre16_tables.obj .\pcre16_ucd.obj \
+  .\pcre16_valid_utf16.obj .\pcre16_version.obj .\pcre16_xclass.obj \
+  .\pcre16_chartables.obj .\pcre16_string_utils.obj
+
+OBJFILES = $(OBJ32FILES) $(OBJ64FILES)
 
 # ---------------------------------------------------------------------------
 DEBUGLIBPATH = $(BCB)\lib\debug

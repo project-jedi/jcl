@@ -1451,7 +1451,9 @@ resourcestring
   RsErrMatchLimit    = 'Match limit';
   RsErrCallout       = 'Callout';
   RsErrBadUTF8       = 'Bad UTF-8';
+  RsErrBadUTF16      = 'Bad UTF-16';
   RsErrBadUTF8Offset = 'Bad UTF-8 offset';
+  RsErrBadUTF16Offset = 'Bad UTF-16 offset';
   RsErrPartial       = 'Partial';
   RsErrBadPartial    = 'Bad partial';
   RsErrInternal      = 'Internal';
@@ -1465,7 +1467,8 @@ resourcestring
   RsErrNullWsLimit   = 'Null WS limit';
   RsErrBadNewLine    = 'Bad new line';
   RsErrBadOffset     = 'Bad offset';
-  RsErrShortUTF8     = 'Short UTF8';
+  RsErrShortUTF8     = 'Short UTF-8';
+  RsErrShortUTF16    = 'Short UTF-16';
   RsErrRecurseLoop   = 'Recurse loop';
   RsErrJITStackLimit = 'JIT stack limit';
   RsErrLibNotLoaded  = 'PCRE library not loaded';
@@ -1473,8 +1476,12 @@ resourcestring
   RsErrStudyFailed   = 'Study failed';
   RsErrCalloutError  = 'Unhandled exception in callout';
   RsErrUnknownError  = 'Unknown error';
-  RsErrNoUTF8Support = 'No UTF8 support in this version of PCRE';
+  RsErrNoUTF8Support = 'No UTF-8 support in this version of PCRE';
+  RsErrNoUTF16Support = 'No UTF-16 support in this version of PCRE';
   RsErrNoJITSupport  = 'No JIT support in this version of PCRE';
+  RsErrBadMode       = 'Bad Mode';
+  RsErrBadEndianness = 'Bad endianness';
+  RsErrBadRestart    = 'Bad Restart';
 
 //=== JclPeImage =============================================================
 resourcestring
