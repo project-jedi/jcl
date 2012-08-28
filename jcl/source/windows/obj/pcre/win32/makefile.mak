@@ -65,7 +65,7 @@ OBJFILES = .\pcre_compile.obj .\pcre_config.obj .\pcre_dfa_exec.obj \
   .\pcre_newline.obj .\pcre_ord2utf8.obj .\pcre_refcount.obj .\pcre_study.obj \
   .\pcre_tables.obj .\pcre_ucd.obj \
   .\pcre_valid_utf8.obj .\pcre_version.obj .\pcre_xclass.obj \
-  .\pcre_default_tables.obj
+  .\pcre_chartables.obj
 
 # ---------------------------------------------------------------------------
 DEBUGLIBPATH = $(BCB)\lib\debug
@@ -80,7 +80,7 @@ PATHC = .;$(pcresrc)
 # PATHOBJ = .;$(LIBPATH)
 ALLLIB = import32.lib cw32i.lib
 INCLUDES = $(pcresrc)\pcre.h $(pcresrc)\config.h
-TABLES = pcre_default_tables.c
+TABLES = $(pcresrc)\pcre_chartables.c
 # ---------------------------------------------------------------------------
 CFLAG1 = -O2 -Ve -X- -a8 -$(CPU) -b -d -k- -vi -tWM- -DHAVE_CONFIG_H
 
@@ -121,13 +121,9 @@ $(pcresrc)\pcre.h: $(pcresrc)\pcre.h.generic
 $(pcresrc)\config.h: $(pcresrc)\config.h.generic
     copy /Y $? $@
 
-pcre_default_tables.c: $(pcresrc)\dftables.c
-    $(BCC)\BIN\$(BCC32) -c -tWC $(CFLAG1) $(WARNINGS) -I$(INCLUDEPATH) -D$(USERDEFINES);$(SYSDEFINES) -n.\ $?
-    $(BCC)\BIN\$(LINKER) $(LFLAGS) -L$(LIBPATH) c0x32.obj .\dftables.obj, .\dftables.exe,, $(ALLLIB),,
-    del dftables.tds
-    del dftables.obj
-    dftables.exe $@
-    del dftables.exe
+$(pcresrc)\pcre_chartables.c: $(pcresrc)\pcre_chartables.c.dist
+    copy /Y $? $@
+
 # ---------------------------------------------------------------------------
 
 

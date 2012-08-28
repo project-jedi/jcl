@@ -799,7 +799,7 @@ procedure _pcre_jit_free; external;
 {$LINK ..\windows\obj\pcre\win32\pcre_valid_utf8.obj}
 {$LINK ..\windows\obj\pcre\win32\pcre_version.obj}
 {$LINK ..\windows\obj\pcre\win32\pcre_xclass.obj}
-{$LINK ..\windows\obj\pcre\win32\pcre_default_tables.obj}
+{$LINK ..\windows\obj\pcre\win32\pcre_chartables.obj}
 {$ENDIF CPU32}
 {$IFDEF CPU64}
 {$LINK ..\windows\obj\pcre\win64\pcre_compile.obj}
@@ -819,7 +819,7 @@ procedure _pcre_jit_free; external;
 {$LINK ..\windows\obj\pcre\win64\pcre_valid_utf8.obj}
 {$LINK ..\windows\obj\pcre\win64\pcre_version.obj}
 {$LINK ..\windows\obj\pcre\win64\pcre_xclass.obj}
-{$LINK ..\windows\obj\pcre\win64\pcre_default_tables.obj}
+{$LINK ..\windows\obj\pcre\win64\pcre_chartables.obj}
 {$ENDIF CPU64}
 
 // user's defined callbacks
