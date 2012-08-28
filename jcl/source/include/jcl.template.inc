@@ -88,6 +88,8 @@
 {.$DEFINE PCRE_LINKONREQUEST} // default
 {.$DEFINE PCRE_RTL} // DXE and newer
 
+// UCS2/UTF16 enabled PCRE
+{.$DEFINE PCRE_16} // only valid when PCRE_STATICLINK is enabled, the RTL does not support it and the DLL found over the internet are completly outdated.
 
 // BZIP2 options, mutually exclusive
 

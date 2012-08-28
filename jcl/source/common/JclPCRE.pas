@@ -201,7 +201,7 @@ type
   TJclAnsiCaptureRange = TJclCaptureRange;
   TJclAnsiRegExCallout = TJclRegExCallout;
 
-  {$IFNDEF PCRE_RTL}
+  {$IFDEF PCRE_16}
   TJclWideRegEx = class(TJclRegExBase)
   private
     FCode: PPCRE16;
@@ -229,15 +229,15 @@ type
   TJclWideRegExOptions = TJclRegExOptions;
   TJclWideCaptureRange = TJclCaptureRange;
   TJclWideRegExCallout = TJclRegExCallout;
-  {$ENDIF ~PCRE_RTL}
+  {$ENDIF PCRE_16}
 
 procedure InitializeLocaleSupport;
 procedure TerminateLocaleSupport;
 
-{$IFNDEF PCRE_RTL}
+{$IFDEF PCRE_16}
 procedure InitializeLocaleSupport16;
 procedure TerminateLocaleSupport16;
-{$ENDIF ~PCRE_RTL}
+{$ENDIF PCRE_16}
 
 // Args is an array of pairs (CaptureIndex, Value) or (CaptureName, Value).
 // For example: NewIp := StrReplaceRegEx(DirIP, '(\d+)\.(\d+)\.(\d+)\.(\d+)', [3, '128', 4, '254']);
@@ -359,9 +359,9 @@ end;
 
 var
   GTables: PAnsiChar;
-  {$IFNDEF PCRE_RTL}
+  {$IFDEF PCRE_16}
   GTables16: PAnsiChar;
-  {$ENDIF ~PCRE_RTL}
+  {$ENDIF PCRE_16}
 
 {$IFDEF RTL230_UP}
   {$IFDEF PCRE_RTL}
@@ -401,12 +401,12 @@ begin
    Result := TJclAnsiRegEx(callout_block.callout_data).CalloutHandler(callout_block);
 end;
 
-{$IFNDEF PCRE_RTL}
+{$IFDEF PCRE_16}
 function JclPCRE16Callout(var callout_block: pcre16_callout_block): Integer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 begin
    Result := TJclWideRegEx(callout_block.callout_data).CalloutHandler(callout_block);
 end;
-{$ENDIF ~PCRE_RTL}
+{$ENDIF PCRE_16}
 
 function PCRECheck(Value: Integer; Wide: Boolean): Boolean;
 var
@@ -647,7 +647,7 @@ begin
   end;
 end;
 
-{$IFNDEF PCRE_RTL}
+{$IFDEF PCRE_16}
 procedure InitializeLocaleSupport16;
 begin
   if not Assigned(GTables16) then
@@ -662,7 +662,7 @@ begin
     GTables16 := nil;
   end;
 end;
-{$ENDIF ~PCRE_RTL}
+{$ENDIF PCRE_16}
 
 // TODO: Better/specific error messages, show index when available.
 function StrReplaceRegEx(const Subject, Pattern: string; Args: array of const): string;
@@ -1003,7 +1003,7 @@ begin
   SetCapture(Index, Value);
 end;
 
-{$IFNDEF PCRE_RTL}
+{$IFDEF PCRE_16}
 
 //=== { TJclWideRegEx } ======================================================
 
@@ -1271,7 +1271,7 @@ function TJclWideRegEx.SupportsWideChar: Boolean;
 begin
   Result := True;
 end;
-{$ENDIF ~PCRE_RTL}
+{$ENDIF PCRE_16}
 
 initialization
   {$IFNDEF PCRE_RTL}
@@ -1281,10 +1281,10 @@ initialization
   begin
     SetPCREMallocCallback(JclPCREGetMem);
     SetPCREFreeCallback(JclPCREFreeMem);
-    {$IFNDEF PCRE_RTL}
+    {$IFDEF PCRE_16}
     SetPCRE16MallocCallback(JclPCRE16GetMem);
     SetPCRE16FreeCallback(JclPCRE16FreeMem);
-    {$ENDIF ~PCRE_RTL}
+    {$ENDIF PCRE_16}
   end;
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -1292,9 +1292,9 @@ initialization
 
 finalization
   TerminateLocaleSupport;
-  {$IFNDEF PCRE_RTL}
+  {$IFDEF PCRE_16}
   TerminateLocaleSupport16;
-  {$ENDIF ~PCRE_RTL}
+  {$ENDIF PCRE_16}
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}

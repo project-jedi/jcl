@@ -367,20 +367,24 @@ type
   TPCRE = real_pcre;
   PPCRE = ^TPCRE;
 
+  {$IFDEF PCRE_16}
   real_pcre16 = packed record
   end;
   TPCRE16 = real_pcre16;
   PPCRE16 = ^TPCRE16;
+  {$ENDIF PCRE_16}
 
   real_pcre_jit_stack = packed record
   end;
   TPCREJITStack = real_pcre_jit_stack;
   PPCREJITStack = ^TPCREJITStack;
 
+  {$IFDEF PCRE_16}
   real_pcre16_jit_stack = packed record
   end;
   TPCRE16JITStack = real_pcre16_jit_stack;
   PPCRE16JITStack = ^TPCRE16JITStack;
+  {$ENDIF PCRE_16}
 
   real_pcre_extra = packed record
     flags: Cardinal;        (* Bits for which fields are set *)
@@ -395,6 +399,7 @@ type
   TPCREExtra = real_pcre_extra;
   PPCREExtra = ^TPCREExtra;
 
+  {$IFDEF PCRE_16}
   real_pcre16_extra = packed record
     flags: Cardinal;        (* Bits for which fields are set *)
     study_data: Pointer;    (* Opaque data from pcre_study() *)
@@ -407,6 +412,7 @@ type
   end;
   TPCRE16Extra = real_pcre16_extra;
   PPCRE16Extra = ^TPCRE16Extra;
+  {$ENDIF PCRE_16}
 
   pcre_callout_block = packed record
     version: Integer;           (* Identifies version of block *)
@@ -428,6 +434,7 @@ type
   (* ------------------------------------------------------------------ *)
   end;
 
+  {$IFDEF PCRE_16}
   pcre16_callout_block = packed record
     version: Integer;           (* Identifies version of block *)
   (* ------------------------ Version 0 ------------------------------- *)
@@ -447,6 +454,7 @@ type
     Mark: PCardinal;            (* Pointer to current mark or NULL *)
   (* ------------------------------------------------------------------ *)
   end;
+  {$ENDIF PCRE_16}
 
   pcre_malloc_callback = function(Size: SizeInt): Pointer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_malloc_callback}
@@ -460,6 +468,8 @@ type
   {$EXTERNALSYM pcre_callout_callback}
   pcre_jit_callback = function (P: Pointer): PPCREJITStack; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_jit_callback}
+
+  {$IFDEF PCRE_16}
   pcre16_malloc_callback = pcre_malloc_callback;
   {$EXTERNALSYM pcre16_malloc_callback}
   pcre16_free_callback = pcre_free_callback;
@@ -472,6 +482,7 @@ type
   {$EXTERNALSYM pcre16_callout_callback}
   pcre16_jit_callback = function (P: Pointer): PPCRE16JITStack; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre16_jit_callback}
+  {$ENDIF PCRE_16}
 
 var
   // renamed from "pcre_X" to "pcre_X_func" to allow functions with name "pcre_X" to be
@@ -486,6 +497,8 @@ var
   {$EXTERNALSYM pcre_stack_free_func}
   pcre_callout_func: ^pcre_callout_callback = nil;
   {$EXTERNALSYM pcre_callout_func}
+
+  {$IFDEF PCRE_16}
   pcre16_malloc_func: ^pcre16_malloc_callback = nil;
   {$EXTERNALSYM pcre16_malloc_func}
   pcre16_free_func: ^pcre16_free_callback = nil;
@@ -496,6 +509,7 @@ var
   {$EXTERNALSYM pcre16_stack_free_func}
   pcre16_callout_func: ^pcre16_callout_callback = nil;
   {$EXTERNALSYM pcre16_callout_func}
+  {$ENDIF PCRE_16}
 
 procedure SetPCREMallocCallback(const Value: pcre_malloc_callback);
 {$EXTERNALSYM SetPCREMallocCallback}
@@ -532,6 +546,8 @@ function GetPCRECalloutCallback: pcre_callout_callback;
 function CallPCRECallout(var callout_block: pcre_callout_block): Integer;
 {$EXTERNALSYM CallPCRECallout}
 
+{$IFDEF PCRE_16}
+
 procedure SetPCRE16MallocCallback(const Value: pcre16_malloc_callback);
 {$EXTERNALSYM SetPCRE16MallocCallback}
 function GetPCRE16MallocCallback: pcre16_malloc_callback;
@@ -567,6 +583,8 @@ function GetPCRE16CalloutCallback: pcre16_callout_callback;
 function CallPCRE16Callout(var callout_block: pcre16_callout_block): Integer;
 {$EXTERNALSYM CallPCRE16Callout}
 
+{$ENDIF PCRE_16}
+
 type
   TPCRELibNotLoadedHandler = procedure; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   PPPWideChar = ^PPWideChar;
@@ -584,164 +602,210 @@ function pcre_compile(const pattern: PAnsiChar; options: Integer;
   const errptr: PPAnsiChar; erroffset: PInteger; const tableptr: PAnsiChar): PPCRE;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_compile}
+{$IFDEF PCRE_16}
 function pcre16_compile(const pattern: PWideChar; options: Integer;
   const errptr: PPAnsiChar; erroffset: PInteger; const tableptr: PAnsiChar): PPCRE16;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre16_compile}
+{$ENDIF PCRE_16}
 function pcre_compile2(const pattern: PAnsiChar; options: Integer;
   const errorcodeptr: PInteger; const errorptr: PPAnsiChar; erroroffset: PInteger;
   const tables: PAnsiChar): PPCRE;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_compile2}
+{$IFDEF PCRE_16}
 function pcre16_compile2(const pattern: PWideChar; options: Integer;
   const errorcodeptr: PInteger; const errorptr: PPAnsiChar; erroroffset: PInteger;
   const tables: PAnsiChar): PPCRE16;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre16_compile2}
+{$ENDIF PCRE_16}
 function pcre_config(what: Integer; where: Pointer): Integer;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_config}
+{$IFDEF PCRE_16}
 function pcre16_config(what: Integer; where: Pointer): Integer;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre16_config}
+{$ENDIF PCRE_16}
 function pcre_copy_named_substring(const code: PPCRE; const subject: PAnsiChar;
   ovector: PInteger; stringcount: Integer; const stringname: PAnsiChar;
   buffer: PAnsiChar; size: Integer): Integer;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_copy_named_substring}
+{$IFDEF PCRE_16}
 function pcre16_copy_named_substring(const code: PPCRE16; const subject: PWideChar;
   ovector: PInteger; stringcount: Integer; const stringname: PWideChar;
   buffer: PWideChar; size: Integer): Integer;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre16_copy_named_substring}
+{$ENDIF PCRE_16}
 function pcre_copy_substring(const subject: PAnsiChar; ovector: PInteger;
   stringcount, stringnumber: Integer; buffer: PAnsiChar; buffersize: Integer): Integer;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_copy_substring}
+{$IFDEF PCRE_16}
 function pcre16_copy_substring(const subject: PWideChar; ovector: PInteger;
   stringcount, stringnumber: Integer; buffer: PWideChar; buffersize: Integer): Integer;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre16_copy_substring}
+{$ENDIF PCRE_16}
 function pcre_dfa_exec(const argument_re: PPCRE; const extra_data: PPCREExtra;
   const subject: PAnsiChar; length: Integer; start_offset: Integer;
   options: Integer; offsets: PInteger; offsetcount: Integer; workspace: PInteger;
   wscount: Integer): Integer;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_dfa_exec}
+{$IFDEF PCRE_16}
 function pcre16_dfa_exec(const argument_re: PPCRE16; const extra_data: PPCRE16Extra;
   const subject: PWideChar; length: Integer; start_offset: Integer;
   options: Integer; offsets: PInteger; offsetcount: Integer; workspace: PInteger;
   wscount: Integer): Integer;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre16_dfa_exec}
+{$ENDIF PCRE_16}
 function pcre_exec(const code: PPCRE; const extra: PPCREExtra; const subject: PAnsiChar;
   length, startoffset, options: Integer; ovector: PInteger; ovecsize: Integer): Integer;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_exec}
+{$IFDEF PCRE_16}
 function pcre16_exec(const code: PPCRE16; const extra: PPCRE16Extra; const subject: PWideChar;
   length, startoffset, options: Integer; ovector: PInteger; ovecsize: Integer): Integer;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre16_exec}
+{$ENDIF PCRE_16}
 procedure pcre_free_substring(stringptr: PAnsiChar);
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_free_substring}
+{$IFDEF PCRE_16}
 procedure pcre16_free_substring(stringptr: PWideChar);
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre16_free_substring}
+{$ENDIF PCRE_16}
 procedure pcre_free_substring_list(stringlistptr: PPAnsiChar);
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_free_substring_list}
+{$IFDEF PCRE_16}
 procedure pcre16_free_substring_list(stringlistptr: PPWideChar);
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre16_free_substring_list}
+{$ENDIF PCRE_16}
 function pcre_fullinfo(const code: PPCRE; const extra: PPCREExtra;
   what: Integer; where: Pointer): Integer;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_fullinfo}
+{$IFDEF PCRE_16}
 function pcre16_fullinfo(const code: PPCRE16; const extra: PPCRE16Extra;
   what: Integer; where: Pointer): Integer;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre16_fullinfo}
+{$ENDIF PCRE_16}
 function pcre_get_named_substring(const code: PPCRE; const subject: PAnsiChar;
   ovector: PInteger; stringcount: Integer; const stringname: PAnsiChar;
   const stringptr: PPAnsiChar): Integer;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_get_named_substring}
+{$IFDEF PCRE_16}
 function pcre16_get_named_substring(const code: PPCRE16; const subject: PWideChar;
   ovector: PInteger; stringcount: Integer; const stringname: PWideChar;
   const stringptr: PPWideChar): Integer;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre16_get_named_substring}
+{$ENDIF PCRE_16}
 function pcre_get_stringnumber(const code: PPCRE; const stringname: PAnsiChar): Integer;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_get_stringnumber}
+{$IFDEF PCRE_16}
 function pcre16_get_stringnumber(const code: PPCRE16; const stringname: PWideChar): Integer;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre16_get_stringnumber}
+{$ENDIF PCRE_16}
 function pcre_get_stringtable_entries(const code: PPCRE; const stringname: PAnsiChar;
   firstptr: PPAnsiChar; lastptr: PPAnsiChar): Integer;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_get_stringtable_entries}
+{$IFDEF PCRE_16}
 function pcre16_get_stringtable_entries(const code: PPCRE16; const stringname: PWideChar;
   firstptr: PPWideChar; lastptr: PPWideChar): Integer;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre16_get_stringtable_entries}
+{$ENDIF PCRE_16}
 function pcre_get_substring(const subject: PAnsiChar; ovector: PInteger;
   stringcount, stringnumber: Integer; const stringptr: PPAnsiChar): Integer;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_get_substring}
+{$IFDEF PCRE_16}
 function pcre16_get_substring(const subject: PWideChar; ovector: PInteger;
   stringcount, stringnumber: Integer; const stringptr: PPWideChar): Integer;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre16_get_substring}
+{$ENDIF PCRE_16}
 function pcre_get_substring_list(const subject: PAnsiChar; ovector: PInteger;
   stringcount: Integer; listptr: PPPAnsiChar): Integer;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_get_substring_list}
+{$IFDEF PCRE_16}
 function pcre16_get_substring_list(const subject: PWideChar; ovector: PInteger;
   stringcount: Integer; listptr: PPPWideChar): Integer;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre16_get_substring_list}
+{$ENDIF PCRE_16}
 function pcre_maketables: PAnsiChar;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_maketables}
+{$IFDEF PCRE_16}
 function pcre16_maketables: PAnsiChar;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre16_maketables}
+{$ENDIF PCRE_16}
 function pcre_refcount(argument_re: PPCRE; adjust: Integer): Integer;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_refcount}
+{$IFDEF PCRE_16}
 function pcre16_refcount(argument_re: PPCRE16; adjust: Integer): Integer;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre16_refcount}
+{$ENDIF PCRE_16}
 function pcre_study(const code: PPCRE; options: Integer; const errptr: PPAnsiChar): PPCREExtra;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_study}
+{$IFDEF PCRE_16}
 function pcre16_study(const code: PPCRE16; options: Integer; const errptr: PPAnsiChar): PPCRE16Extra;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre16_study}
+{$ENDIF PCRE_16}
 procedure pcre_free_study(const extra: PPCREExtra);
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_free_study}
+{$IFDEF PCRE_16}
 procedure pcre16_free_study(const extra: PPCRE16Extra);
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre16_free_study}
+{$ENDIF PCRE_16}
 function pcre_version: PAnsiChar; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_version}
+{$IFDEF PCRE_16}
 function pcre16_version: PAnsiChar; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre16_version}
+{$ENDIF PCRE_16}
 function pcre_jit_stack_alloc(startsize, maxsize: Integer): PPCREJITStack; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_jit_stack_alloc}
+{$IFDEF PCRE_16}
 function pcre16_jit_stack_alloc(startsize, maxsize: Integer): PPCRE16JITStack; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre16_jit_stack_alloc}
+{$ENDIF PCRE_16}
 procedure pcre_jit_stack_free(stack: PPCREJITStack); {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_jit_stack_free}
+{$IFDEF PCRE_16}
 procedure pcre16_jit_stack_free(stack: PPCRE16JITStack); {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre16_jit_stack_free}
+{$ENDIF PCRE_16}
 procedure pcre_assign_jit_stack(extra: PPCREExtra; callback: pcre_jit_callback; userdata: Pointer); {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_assign_jit_stack}
+{$IFDEF PCRE_16}
 procedure pcre16_assign_jit_stack(extra: PPCRE16Extra; callback: pcre16_jit_callback; userdata: Pointer); {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre16_assign_jit_stack}
+{$ENDIF PCRE_16}
 
 {$ELSE PCRE_LINKONREQUEST}
 
@@ -751,254 +815,346 @@ type
     const errptr: PPAnsiChar; erroffset: PInteger; const tableptr: PAnsiChar): PPCRE;
     {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_compile_func}
+  {$IFDEF PCRE_16}
   pcre16_compile_func = function(const pattern: PWideChar; options: Integer;
     const errptr: PPAnsiChar; erroffset: PInteger; const tableptr: PAnsiChar): PPCRE16;
     {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre16_compile_func}
+  {$ENDIF PCRE_16}
   pcre_compile2_func = function(const pattern: PAnsiChar; options: Integer;
     const errorcodeptr: PInteger; const errorptr: PPAnsiChar; erroroffset: PInteger;
     const tables: PAnsiChar): PPCRE; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_compile2_func}
+  {$IFDEF PCRE_16}
   pcre16_compile2_func = function(const pattern: PWideChar; options: Integer;
     const errorcodeptr: PInteger; const errorptr: PPAnsiChar; erroroffset: PInteger;
     const tables: PAnsiChar): PPCRE16; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre16_compile2_func}
+  {$ENDIF PCRE_16}
   pcre_config_func = function(what: Integer; where: Pointer): Integer;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_config_func}
+  {$IFDEF PCRE_16}
   pcre16_config_func = function(what: Integer; where: Pointer): Integer;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre16_config_func}
+  {$ENDIF PCRE_16}
   pcre_copy_named_substring_func = function(const code: PPCRE; const subject: PAnsiChar;
     ovector: PInteger; stringcount: Integer; const stringname: PAnsiChar;
     buffer: PAnsiChar; size: Integer): Integer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_copy_named_substring_func}
+  {$IFDEF PCRE_16}
   pcre16_copy_named_substring_func = function(const code: PPCRE16; const subject: PWideChar;
     ovector: PInteger; stringcount: Integer; const stringname: PWideChar;
     buffer: PWideChar; size: Integer): Integer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre16_copy_named_substring_func}
+  {$ENDIF PCRE_16}
   pcre_copy_substring_func = function(const subject: PAnsiChar; ovector: PInteger;
     stringcount, stringnumber: Integer; buffer: PAnsiChar; buffersize: Integer): Integer;
     {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_copy_substring_func}
+  {$IFDEF PCRE_16}
   pcre16_copy_substring_func = function(const subject: PWideChar; ovector: PInteger;
     stringcount, stringnumber: Integer; buffer: PWideChar; buffersize: Integer): Integer;
     {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre16_copy_substring_func}
+  {$ENDIF PCRE_16}
   pcre_dfa_exec_func = function(const argument_re: PPCRE; const extra_data: PPCREExtra;
     const subject: PAnsiChar; length: Integer; start_offset: Integer;
     options: Integer; offsets: PInteger; offsetcount: Integer; workspace: PInteger;
     wscount: Integer): Integer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_dfa_exec_func}
+  {$IFDEF PCRE_16}
   pcre16_dfa_exec_func = function(const argument_re: PPCRE16; const extra_data: PPCRE16Extra;
     const subject: PWideChar; length: Integer; start_offset: Integer;
     options: Integer; offsets: PInteger; offsetcount: Integer; workspace: PInteger;
     wscount: Integer): Integer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre16_dfa_exec_func}
+  {$ENDIF PCRE_16}
   pcre_exec_func = function(const code: PPCRE; const extra: PPCREExtra; const subject: PAnsiChar;
     length, startoffset, options: Integer; ovector: PInteger; ovecsize: Integer): Integer;
     {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_exec_func}
+  {$IFDEF PCRE_16}
   pcre16_exec_func = function(const code: PPCRE16; const extra: PPCRE16Extra; const subject: PWideChar;
     length, startoffset, options: Integer; ovector: PInteger; ovecsize: Integer): Integer;
     {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre16_exec_func}
+  {$ENDIF PCRE_16}
   pcre_free_substring_func = procedure(stringptr: PAnsiChar);
     {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_free_substring_func}
+  {$IFDEF PCRE_16}
   pcre16_free_substring_func = procedure(stringptr: PWideChar);
     {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre16_free_substring_func}
+  {$ENDIF PCRE_16}
   pcre_free_substring_list_func = procedure(stringptr: PPAnsiChar);
     {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_free_substring_list_func}
+  {$IFDEF PCRE_16}
   pcre16_free_substring_list_func = procedure(stringptr: PPWideChar);
     {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre16_free_substring_list_func}
+  {$ENDIF PCRE_16}
   pcre_fullinfo_func = function(const code: PPCRE; const extra: PPCREExtra;
     what: Integer; where: Pointer): Integer;
     {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_fullinfo_func}
+  {$IFDEF PCRE_16}
   pcre16_fullinfo_func = function(const code: PPCRE16; const extra: PPCRE16Extra;
     what: Integer; where: Pointer): Integer;
     {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre16_fullinfo_func}
+  {$ENDIF PCRE_16}
   pcre_get_named_substring_func = function(const code: PPCRE; const subject: PAnsiChar;
     ovector: PInteger; stringcount: Integer; const stringname: PAnsiChar;
     const stringptr: PPAnsiChar): Integer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_get_named_substring_func}
+  {$IFDEF PCRE_16}
   pcre16_get_named_substring_func = function(const code: PPCRE16; const subject: PWideChar;
     ovector: PInteger; stringcount: Integer; const stringname: PWideChar;
     const stringptr: PPWideChar): Integer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre16_get_named_substring_func}
+  {$ENDIF PCRE_16}
   pcre_get_stringnumber_func = function(const code: PPCRE;
     const stringname: PAnsiChar): Integer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_get_stringnumber_func}
+  {$IFDEF PCRE_16}
   pcre16_get_stringnumber_func = function(const code: PPCRE16;
     const stringname: PWideChar): Integer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre16_get_stringnumber_func}
+  {$ENDIF PCRE_16}
   pcre_get_stringtable_entries_func = function(const code: PPCRE; const stringname: PAnsiChar;
     firstptr: PPAnsiChar; lastptr: PPAnsiChar): Integer;
     {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_get_stringtable_entries_func}
+  {$IFDEF PCRE_16}
   pcre16_get_stringtable_entries_func = function(const code: PPCRE16; const stringname: PWideChar;
     firstptr: PPWideChar; lastptr: PPWideChar): Integer;
     {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre16_get_stringtable_entries_func}
+  {$ENDIF PCRE_16}
   pcre_get_substring_func = function(const subject: PAnsiChar; ovector: PInteger;
     stringcount, stringnumber: Integer; const stringptr: PPAnsiChar): Integer;
     {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_get_substring_func}
+  {$IFDEF PCRE_16}
   pcre16_get_substring_func = function(const subject: PWideChar; ovector: PInteger;
     stringcount, stringnumber: Integer; const stringptr: PPWideChar): Integer;
     {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre16_get_substring_func}
+  {$ENDIF PCRE_16}
   pcre_get_substring_list_func = function(const subject: PAnsiChar; ovector: PInteger;
     stringcount: Integer; listptr: PPPAnsiChar): Integer;
     {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_get_substring_list_func}
+  {$IFDEF PCRE_16}
   pcre16_get_substring_list_func = function(const subject: PWideChar; ovector: PInteger;
     stringcount: Integer; listptr: PPPWideChar): Integer;
     {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre16_get_substring_list_func}
+  {$ENDIF PCRE_16}
   pcre_maketables_func = function: PAnsiChar; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_maketables_func}
+  {$IFDEF PCRE_16}
   pcre16_maketables_func = function: PAnsiChar; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre16_maketables_func}
+  {$ENDIF PCRE_16}
   pcre_refcount_func = function(argument_re: PPCRE; adjust: Integer): Integer;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_refcount_func}
+  {$IFDEF PCRE_16}
   pcre16_refcount_func = function(argument_re: PPCRE16; adjust: Integer): Integer;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre16_refcount_func}
+  {$ENDIF PCRE_16}
   pcre_study_func = function(const code: PPCRE; options: Integer; const errptr: PPAnsiChar): PPCREExtra;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_study_func}
+  {$IFDEF PCRE_16}
   pcre16_study_func = function(const code: PPCRE16; options: Integer; const errptr: PPAnsiChar): PPCRE16Extra;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre16_study_func}
+  {$ENDIF PCRE_16}
   pcre_free_study_func = procedure (const extra: PPCREExtra);
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_free_study_func}
+  {$IFDEF PCRE_16}
   pcre16_free_study_func = procedure (const extra: PPCRE16Extra);
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre16_free_study_func}
+  {$ENDIF PCRE_16}
   pcre_version_func = function: PAnsiChar; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_version_func}
+  {$IFDEF PCRE_16}
   pcre16_version_func = function: PAnsiChar; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre16_version_func}
+  {$ENDIF PCRE_16}
   pcre_jit_stack_alloc_func = function (startsize, maxsize: Integer): PPCREJITStack;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_jit_stack_alloc_func}
+  {$IFDEF PCRE_16}
   pcre16_jit_stack_alloc_func = function (startsize, maxsize: Integer): PPCRE16JITStack;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre16_jit_stack_alloc_func}
+  {$ENDIF PCRE_16}
   pcre_jit_stack_free_func = procedure (stack: PPCREJITStack);
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_jit_stack_free_func}
+  {$IFDEF PCRE_16}
   pcre16_jit_stack_free_func = procedure (stack: PPCRE16JITStack);
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre16_jit_stack_free_func}
+  {$ENDIF PCRE_16}
   pcre_assign_jit_stack_func = procedure (extra: PPCREExtra; callback: pcre_jit_callback; userdata: Pointer);
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_assign_jit_stack_func}
+  {$IFDEF PCRE_16}
   pcre16_assign_jit_stack_func = procedure (extra: PPCRE16Extra; callback: pcre16_jit_callback; userdata: Pointer);
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre16_assign_jit_stack_func}
+  {$ENDIF PCRE_16}
 
 var
   pcre_compile: pcre_compile_func = nil;
   {$EXTERNALSYM pcre_compile}
+  {$IFDEF PCRE_16}
   pcre16_compile: pcre16_compile_func = nil;
   {$EXTERNALSYM pcre16_compile}
+  {$ENDIF PCRE_16}
   pcre_compile2: pcre_compile2_func = nil;
   {$EXTERNALSYM pcre_compile2}
+  {$IFDEF PCRE_16}
   pcre16_compile2: pcre16_compile2_func = nil;
   {$EXTERNALSYM pcre16_compile2}
+  {$ENDIF PCRE_16}
   pcre_config: pcre_config_func = nil;
   {$EXTERNALSYM pcre_config}
+  {$IFDEF PCRE_16}
   pcre16_config: pcre16_config_func = nil;
   {$EXTERNALSYM pcre16_config}
+  {$ENDIF PCRE_16}
   pcre_copy_named_substring: pcre_copy_named_substring_func = nil;
   {$EXTERNALSYM pcre_copy_named_substring}
+  {$IFDEF PCRE_16}
   pcre16_copy_named_substring: pcre16_copy_named_substring_func = nil;
   {$EXTERNALSYM pcre16_copy_named_substring}
+  {$ENDIF PCRE_16}
   pcre_copy_substring: pcre_copy_substring_func = nil;
   {$EXTERNALSYM pcre_copy_substring}
+  {$IFDEF PCRE_16}
   pcre16_copy_substring: pcre16_copy_substring_func = nil;
   {$EXTERNALSYM pcre16_copy_substring}
+  {$ENDIF PCRE_16}
   pcre_dfa_exec: pcre_dfa_exec_func = nil;
   {$EXTERNALSYM pcre_dfa_exec}
+  {$IFDEF PCRE_16}
   pcre16_dfa_exec: pcre16_dfa_exec_func = nil;
   {$EXTERNALSYM pcre16_dfa_exec}
+  {$ENDIF PCRE_16}
   pcre_exec: pcre_exec_func = nil;
   {$EXTERNALSYM pcre_exec}
+  {$IFDEF PCRE_16}
   pcre16_exec: pcre16_exec_func = nil;
   {$EXTERNALSYM pcre16_exec}
+  {$ENDIF PCRE_16}
   pcre_free_substring: pcre_free_substring_func = nil;
   {$EXTERNALSYM pcre_free_substring}
+  {$IFDEF PCRE_16}
   pcre16_free_substring: pcre16_free_substring_func = nil;
   {$EXTERNALSYM pcre16_free_substring}
+  {$ENDIF PCRE_16}
   pcre_free_substring_list: pcre_free_substring_list_func = nil;
   {$EXTERNALSYM pcre_free_substring_list}
+  {$IFDEF PCRE_16}
   pcre16_free_substring_list: pcre16_free_substring_list_func = nil;
   {$EXTERNALSYM pcre16_free_substring_list}
+  {$ENDIF PCRE_16}
   pcre_fullinfo: pcre_fullinfo_func = nil;
   {$EXTERNALSYM pcre_fullinfo}
+  {$IFDEF PCRE_16}
   pcre16_fullinfo: pcre16_fullinfo_func = nil;
   {$EXTERNALSYM pcre16_fullinfo}
+  {$ENDIF PCRE_16}
   pcre_get_named_substring: pcre_get_named_substring_func = nil;
   {$EXTERNALSYM pcre_get_named_substring}
+  {$IFDEF PCRE_16}
   pcre16_get_named_substring: pcre16_get_named_substring_func = nil;
   {$EXTERNALSYM pcre16_get_named_substring}
+  {$ENDIF PCRE_16}
   pcre_get_stringnumber: pcre_get_stringnumber_func = nil;
   {$EXTERNALSYM pcre_get_stringnumber}
+  {$IFDEF PCRE_16}
   pcre16_get_stringnumber: pcre16_get_stringnumber_func = nil;
   {$EXTERNALSYM pcre16_get_stringnumber}
+  {$ENDIF PCRE_16}
   pcre_get_stringtable_entries: pcre_get_stringtable_entries_func = nil;
   {$EXTERNALSYM pcre_get_stringtable_entries}
+  {$IFDEF PCRE_16}
   pcre16_get_stringtable_entries: pcre16_get_stringtable_entries_func = nil;
   {$EXTERNALSYM pcre16_get_stringtable_entries}
+  {$ENDIF PCRE_16}
   pcre_get_substring: pcre_get_substring_func = nil;
   {$EXTERNALSYM pcre_get_substring}
+  {$IFDEF PCRE_16}
   pcre16_get_substring: pcre16_get_substring_func = nil;
   {$EXTERNALSYM pcre16_get_substring}
+  {$ENDIF PCRE_16}
   pcre_get_substring_list: pcre_get_substring_list_func = nil;
   {$EXTERNALSYM pcre_get_substring_list}
+  {$IFDEF PCRE_16}
   pcre16_get_substring_list: pcre16_get_substring_list_func = nil;
   {$EXTERNALSYM pcre16_get_substring_list}
+  {$ENDIF PCRE_16}
   pcre_maketables: pcre_maketables_func = nil;
   {$EXTERNALSYM pcre_maketables}
+  {$IFDEF PCRE_16}
   pcre16_maketables: pcre16_maketables_func = nil;
   {$EXTERNALSYM pcre16_maketables}
+  {$ENDIF PCRE_16}
   pcre_refcount: pcre_refcount_func = nil;
   {$EXTERNALSYM pcre_refcount}
+  {$IFDEF PCRE_16}
   pcre16_refcount: pcre16_refcount_func = nil;
   {$EXTERNALSYM pcre16_refcount}
+  {$ENDIF PCRE_16}
   pcre_study: pcre_study_func = nil;
   {$EXTERNALSYM pcre_study}
+  {$IFDEF PCRE_16}
   pcre16_study: pcre16_study_func = nil;
   {$EXTERNALSYM pcre16_study}
+  {$ENDIF PCRE_16}
   pcre_free_study: pcre_free_study_func = nil;
   {$EXTERNALSYM pcre_free_study}
+  {$IFDEF PCRE_16}
   pcre16_free_study: pcre16_free_study_func = nil;
   {$EXTERNALSYM pcre16_free_study}
+  {$ENDIF PCRE_16}
   pcre_version: pcre_version_func = nil;
   {$EXTERNALSYM pcre_version}
+  {$IFDEF PCRE_16}
   pcre16_version: pcre16_version_func = nil;
   {$EXTERNALSYM pcre16_version}
+  {$ENDIF PCRE_16}
   pcre_jit_stack_alloc: pcre_jit_stack_alloc_func = nil;
   {$EXTERNALSYM pcre_jit_stack_alloc}
+  {$IFDEF PCRE_16}
   pcre16_jit_stack_alloc: pcre16_jit_stack_alloc_func = nil;
   {$EXTERNALSYM pcre16_jit_stack_alloc}
+  {$ENDIF PCRE_16}
   pcre_jit_stack_free: pcre_jit_stack_free_func = nil;
   {$EXTERNALSYM pcre_jit_stack_free}
+  {$IFDEF PCRE_16}
   pcre16_jit_stack_free: pcre16_jit_stack_free_func = nil;
   {$EXTERNALSYM pcre16_jit_stack_free}
+  {$ENDIF PCRE_16}
   pcre_assign_jit_stack: pcre_assign_jit_stack_func = nil;
   {$EXTERNALSYM pcre_assign_jit_stack}
+  {$IFDEF PCRE_16}
   pcre16_assign_jit_stack: pcre16_assign_jit_stack_func = nil;
   {$EXTERNALSYM pcre16_assign_jit_stack}
+  {$ENDIF PCRE_16}
 
 {$ENDIF PCRE_LINKONREQUEST}
 
@@ -1013,122 +1169,234 @@ const
   PCREDefaultLibraryName = 'libpcre.so.0';
   {$ENDIF UNIX}
   PCRECompileDefaultExportName = 'pcre_compile';
+  {$IFDEF PCRE_16}
   PCRE16CompileDefaultExportName = 'pcre16_compile';
+  {$ENDIF PCRE_16}
   PCRECompile2DefaultExportName = 'pcre_compile2';
+  {$IFDEF PCRE_16}
   PCRE16Compile2DefaultExportName = 'pcre16_compile2';
+  {$ENDIF PCRE_16}
   PCREConfigDefaultExportName = 'pcre_config';
+  {$IFDEF PCRE_16}
   PCRE16ConfigDefaultExportName = 'pcre16_config';
+  {$ENDIF PCRE_16}
   PCRECopyNamedSubstringDefaultExportName = 'pcre_copy_named_substring';
+  {$IFDEF PCRE_16}
   PCRE16CopyNamedSubstringDefaultExportName = 'pcre16_copy_named_substring';
+  {$ENDIF PCRE_16}
   PCRECopySubStringDefaultExportName = 'pcre_copy_substring';
+  {$IFDEF PCRE_16}
   PCRE16CopySubStringDefaultExportName = 'pcre16_copy_substring';
+  {$ENDIF PCRE_16}
   PCREDfaExecDefaultExportName = 'pcre_dfa_exec';
+  {$IFDEF PCRE_16}
   PCRE16DfaExecDefaultExportName = 'pcre16_dfa_exec';
+  {$ENDIF PCRE_16}
   PCREExecDefaultExportName = 'pcre_exec';
+  {$IFDEF PCRE_16}
   PCRE16ExecDefaultExportName = 'pcre16_exec';
+  {$ENDIF PCRE_16}
   PCREFreeSubStringDefaultExportName = 'pcre_free_substring';
+  {$IFDEF PCRE_16}
   PCRE16FreeSubStringDefaultExportName = 'pcre16_free_substring';
+  {$ENDIF PCRE_16}
   PCREFreeSubStringListDefaultExportName = 'pcre_free_substring_list';
+  {$IFDEF PCRE_16}
   PCRE16FreeSubStringListDefaultExportName = 'pcre16_free_substring_list';
+  {$ENDIF PCRE_16}
   PCREFullInfoDefaultExportName = 'pcre_fullinfo';
+  {$IFDEF PCRE_16}
   PCRE16FullInfoDefaultExportName = 'pcre16_fullinfo';
+  {$ENDIF PCRE_16}
   PCREGetNamedSubstringDefaultExportName = 'pcre_get_named_substring';
+  {$IFDEF PCRE_16}
   PCRE16GetNamedSubstringDefaultExportName = 'pcre16_get_named_substring';
+  {$ENDIF PCRE_16}
   PCREGetStringNumberDefaultExportName = 'pcre_get_stringnumber';
+  {$IFDEF PCRE_16}
   PCRE16GetStringNumberDefaultExportName = 'pcre16_get_stringnumber';
+  {$ENDIF PCRE_16}
   PCREGetStringTableEntriesDefaultExportName = 'pcre_get_stringtable_entries';
+  {$IFDEF PCRE_16}
   PCRE16GetStringTableEntriesDefaultExportName = 'pcre16_get_stringtable_entries';
+  {$ENDIF PCRE_16}
   PCREGetSubStringDefaultExportName = 'pcre_get_substring';
+  {$IFDEF PCRE_16}
   PCRE16GetSubStringDefaultExportName = 'pcre16_get_substring';
+  {$ENDIF PCRE_16}
   PCREGetSubStringListDefaultExportName = 'pcre_get_substring_list';
+  {$IFDEF PCRE_16}
   PCRE16GetSubStringListDefaultExportName = 'pcre16_get_substring_list';
+  {$ENDIF PCRE_16}
   PCREMakeTablesDefaultExportName = 'pcre_maketables';
+  {$IFDEF PCRE_16}
   PCRE16MakeTablesDefaultExportName = 'pcre16_maketables';
+  {$ENDIF PCRE_16}
   PCRERefCountDefaultExportName = 'pcre_refcount';
+  {$IFDEF PCRE_16}
   PCRE16RefCountDefaultExportName = 'pcre16_refcount';
+  {$ENDIF PCRE_16}
   PCREStudyDefaultExportName = 'pcre_study';
+  {$IFDEF PCRE_16}
   PCRE16StudyDefaultExportName = 'pcre16_study';
+  {$ENDIF PCRE_16}
   PCREFreeStudyDefaultExportName = 'pcre_free_study';
+  {$IFDEF PCRE_16}
   PCRE16FreeStudyDefaultExportName = 'pcre16_free_study';
+  {$ENDIF PCRE_16}
   PCREVersionDefaultExportName = 'pcre_version';
+  {$IFDEF PCRE_16}
   PCRE16VersionDefaultExportName = 'pcre16_version';
+  {$ENDIF PCRE_16}
   PCREJITStackAllocDefaultExportName = 'pcre_jit_stack_alloc';
+  {$IFDEF PCRE_16}
   PCRE16JITStackAllocDefaultExportName = 'pcre16_jit_stack_alloc';
+  {$ENDIF PCRE_16}
   PCREJITStackFreeDefaultExportName = 'pcre_jit_stack_free';
+  {$IFDEF PCRE_16}
   PCRE16JITStackFreeDefaultExportName = 'pcre16_jit_stack_free';
+  {$ENDIF PCRE_16}
   PCREAssignJITStackDefaultExportName = 'pcre_assign_jit_stack';
+  {$IFDEF PCRE_16}
   PCRE16AssignJITStackDefaultExportName = 'pcre16_assign_jit_stack';
+  {$ENDIF PCRE_16}
   PCREMallocDefaultExportName = 'pcre_malloc';
+  {$IFDEF PCRE_16}
   PCRE16MallocDefaultExportName = 'pcre16_malloc';
+  {$ENDIF PCRE_16}
   PCREFreeDefaultExportName = 'pcre_free';
+  {$IFDEF PCRE_16}
   PCRE16FreeDefaultExportName = 'pcre16_free';
+  {$ENDIF PCRE_16}
   PCREStackMallocDefaultExportName = 'pcre_stack_malloc';
+  {$IFDEF PCRE_16}
   PCRE16StackMallocDefaultExportName = 'pcre16_stack_malloc';
+  {$ENDIF PCRE_16}
   PCREStackFreeDefaultExportName = 'pcre_stack_free';
+  {$IFDEF PCRE_16}
   PCRE16StackFreeDefaultExportName = 'pcre16_stack_free';
+  {$ENDIF PCRE_16}
   PCRECalloutDefaultExportName = 'pcre_callout';
+  {$IFDEF PCRE_16}
   PCRE16CalloutDefaultExportName = 'pcre16_callout';
+  {$ENDIF PCRE_16}
 
 {$IFDEF PCRE_LINKONREQUEST}
 var
   PCRELibraryName: string = PCREDefaultLibraryName;
 
   PCRECompileExportName: string = PCRECompileDefaultExportName;
+  {$IFDEF PCRE_16}
   PCRE16CompileExportName: string = PCRE16CompileDefaultExportName;
+  {$ENDIF PCRE_16}
   PCRECompile2ExportName: string = PCRECompile2DefaultExportName;
+  {$IFDEF PCRE_16}
   PCRE16Compile2ExportName: string = PCRE16Compile2DefaultExportName;
+  {$ENDIF PCRE_16}
   PCREConfigExportName: string = PCREConfigDefaultExportName;
+  {$IFDEF PCRE_16}
   PCRE16ConfigExportName: string = PCRE16ConfigDefaultExportName;
+  {$ENDIF PCRE_16}
   PCRECopyNamedSubstringExportName: string = PCRECopyNamedSubstringDefaultExportName;
+  {$IFDEF PCRE_16}
   PCRE16CopyNamedSubstringExportName: string = PCRE16CopyNamedSubstringDefaultExportName;
+  {$ENDIF PCRE_16}
   PCRECopySubStringExportName: string = PCRECopySubStringDefaultExportName;
+  {$IFDEF PCRE_16}
   PCRE16CopySubStringExportName: string = PCRE16CopySubStringDefaultExportName;
+  {$ENDIF PCRE_16}
   PCREDfaExecExportName: string = PCREDfaExecDefaultExportName;
+  {$IFDEF PCRE_16}
   PCRE16DfaExecExportName: string = PCRE16DfaExecDefaultExportName;
+  {$ENDIF PCRE_16}
   PCREExecExportName: string = PCREExecDefaultExportName;
+  {$IFDEF PCRE_16}
   PCRE16ExecExportName: string = PCRE16ExecDefaultExportName;
+  {$ENDIF PCRE_16}
   PCREFreeSubStringExportName: string = PCREFreeSubStringDefaultExportName;
+  {$IFDEF PCRE_16}
   PCRE16FreeSubStringExportName: string = PCRE16FreeSubStringDefaultExportName;
+  {$ENDIF PCRE_16}
   PCREFreeSubStringListExportName: string = PCREFreeSubStringListDefaultExportName;
+  {$IFDEF PCRE_16}
   PCRE16FreeSubStringListExportName: string = PCRE16FreeSubStringListDefaultExportName;
+  {$ENDIF PCRE_16}
   PCREFullInfoExportName: string = PCREFullInfoDefaultExportName;
+  {$IFDEF PCRE_16}
   PCRE16FullInfoExportName: string = PCRE16FullInfoDefaultExportName;
+  {$ENDIF PCRE_16}
   PCREGetNamedSubstringExportName: string = PCREGetNamedSubstringDefaultExportName;
+  {$IFDEF PCRE_16}
   PCRE16GetNamedSubstringExportName: string = PCRE16GetNamedSubstringDefaultExportName;
+  {$ENDIF PCRE_16}
   PCREGetStringNumberExportName: string = PCREGetStringNumberDefaultExportName;
+  {$IFDEF PCRE_16}
   PCRE16GetStringNumberExportName: string = PCRE16GetStringNumberDefaultExportName;
+  {$ENDIF PCRE_16}
   PCREGetStringTableEntriesExportName: string = PCREGetStringTableEntriesDefaultExportName;
+  {$IFDEF PCRE_16}
   PCRE16GetStringTableEntriesExportName: string = PCRE16GetStringTableEntriesDefaultExportName;
+  {$ENDIF PCRE_16}
   PCREGetSubStringExportName: string = PCREGetSubStringDefaultExportName;
+  {$IFDEF PCRE_16}
   PCRE16GetSubStringExportName: string = PCRE16GetSubStringDefaultExportName;
+  {$ENDIF PCRE_16}
   PCREGetSubStringListExportName: string = PCREGetSubStringListDefaultExportName;
+  {$IFDEF PCRE_16}
   PCRE16GetSubStringListExportName: string = PCRE16GetSubStringListDefaultExportName;
+  {$ENDIF PCRE_16}
   PCREMakeTablesExportName: string = PCREMakeTablesDefaultExportName;
+  {$IFDEF PCRE_16}
   PCRE16MakeTablesExportName: string = PCRE16MakeTablesDefaultExportName;
+  {$ENDIF PCRE_16}
   PCRERefCountExportName: string = PCRERefCountDefaultExportName;
+  {$IFDEF PCRE_16}
   PCRE16RefCountExportName: string = PCRE16RefCountDefaultExportName;
+  {$ENDIF PCRE_16}
   PCREStudyExportName: string = PCREStudyDefaultExportName;
+  {$IFDEF PCRE_16}
   PCRE16StudyExportName: string = PCRE16StudyDefaultExportName;
+  {$ENDIF PCRE_16}
   PCREFreeStudyExportName: string = PCREFreeStudyDefaultExportName;
+  {$IFDEF PCRE_16}
   PCRE16FreeStudyExportName: string = PCRE16FreeStudyDefaultExportName;
+  {$ENDIF PCRE_16}
   PCREVersionExportName: string = PCREVersionDefaultExportName;
+  {$IFDEF PCRE_16}
   PCRE16VersionExportName: string = PCRE16VersionDefaultExportName;
+  {$ENDIF PCRE_16}
   PCREJITStackAllocExportName: string = PCREJITStackAllocDefaultExportName;
+  {$IFDEF PCRE_16}
   PCRE16JITStackAllocExportName: string = PCRE16JITStackAllocDefaultExportName;
+  {$ENDIF PCRE_16}
   PCREJITStackFreeExportName: string = PCREJITStackFreeDefaultExportName;
+  {$IFDEF PCRE_16}
   PCRE16JITStackFreeExportName: string = PCRE16JITStackFreeDefaultExportName;
+  {$ENDIF PCRE_16}
   PCREAssignJITStackExportName: string = PCREAssignJITStackDefaultExportName;
+  {$IFDEF PCRE_16}
   PCRE16AssignJITStackExportName: string = PCRE16AssignJITStackDefaultExportName;
+  {$ENDIF PCRE_16}
   PCREMallocExportName: string = PCREMallocDefaultExportName;
+  {$IFDEF PCRE_16}
   PCRE16MallocExportName: string = PCRE16MallocDefaultExportName;
+  {$ENDIF PCRE_16}
   PCREFreeExportName: string = PCREFreeDefaultExportName;
+  {$IFDEF PCRE_16}
   PCRE16FreeExportName: string = PCRE16FreeDefaultExportName;
+  {$ENDIF PCRE_16}
   PCREStackMallocExportName: string = PCREStackMallocDefaultExportName;
+  {$IFDEF PCRE_16}
   PCRE16StackMallocExportName: string = PCRE16StackMallocDefaultExportName;
+  {$ENDIF PCRE_16}
   PCREStackFreeExportName: string = PCREStackFreeDefaultExportName;
+  {$IFDEF PCRE_16}
   PCRE16StackFreeExportName: string = PCRE16StackFreeDefaultExportName;
+  {$ENDIF PCRE_16}
   PCRECalloutExportName: string = PCRECalloutDefaultExportName;
+  {$IFDEF PCRE_16}
   PCRE16CalloutExportName: string = PCRE16CalloutDefaultExportName;
+  {$ENDIF PCRE_16}
 {$ENDIF PCRE_LINKONREQUEST}
 
 var
@@ -1177,10 +1445,12 @@ procedure _pcre_find_bracket; external;
 procedure _pcre_jit_compile; external;
 procedure _pcre_jit_free; external;
 
+{$IFDEF PCRE_16}
 // make the linker happy with PCRE 8.30
 procedure _pcre16_find_bracket; external;
 procedure _pcre16_jit_compile; external;
 procedure _pcre16_jit_free; external;
+{$ENDIF PCRE_16}
 
 {$IFDEF CPU32}
 {$LINK ..\windows\obj\pcre\win32\pcre_compile.obj}
@@ -1201,6 +1471,9 @@ procedure _pcre16_jit_free; external;
 {$LINK ..\windows\obj\pcre\win32\pcre_version.obj}
 {$LINK ..\windows\obj\pcre\win32\pcre_xclass.obj}
 {$LINK ..\windows\obj\pcre\win32\pcre_chartables.obj}
+
+{$IFDEF PCRE_16}
+
 {$LINK ..\windows\obj\pcre\win32\pcre16_compile.obj}
 {$LINK ..\windows\obj\pcre\win32\pcre16_config.obj}
 {$LINK ..\windows\obj\pcre\win32\pcre16_dfa_exec.obj}
@@ -1220,6 +1493,8 @@ procedure _pcre16_jit_free; external;
 {$LINK ..\windows\obj\pcre\win32\pcre16_xclass.obj}
 {$LINK ..\windows\obj\pcre\win32\pcre16_chartables.obj}
 {$LINK ..\windows\obj\pcre\win32\pcre16_string_utils.obj}
+{$ENDIF PCRE_16}
+
 {$ENDIF CPU32}
 {$IFDEF CPU64}
 {$LINK ..\windows\obj\pcre\win64\pcre_compile.obj}
@@ -1240,6 +1515,9 @@ procedure _pcre16_jit_free; external;
 {$LINK ..\windows\obj\pcre\win64\pcre_version.obj}
 {$LINK ..\windows\obj\pcre\win64\pcre_xclass.obj}
 {$LINK ..\windows\obj\pcre\win64\pcre_chartables.obj}
+
+{$IFDEF PCRE_16}
+
 {$LINK ..\windows\obj\pcre\win64\pcre16_compile.obj}
 {$LINK ..\windows\obj\pcre\win64\pcre16_config.obj}
 {$LINK ..\windows\obj\pcre\win64\pcre16_dfa_exec.obj}
@@ -1259,20 +1537,25 @@ procedure _pcre16_jit_free; external;
 {$LINK ..\windows\obj\pcre\win64\pcre16_xclass.obj}
 {$LINK ..\windows\obj\pcre\win64\pcre16_chartables.obj}
 {$LINK ..\windows\obj\pcre\win64\pcre16_string_utils.obj}
+
+{$ENDIF PCRE_16}
+
 {$ENDIF CPU64}
 
 // user's defined callbacks
 var
   pcre_malloc_user: pcre_malloc_callback;
-  pcre16_malloc_user: pcre16_malloc_callback;
   pcre_free_user: pcre_free_callback;
-  pcre16_free_user: pcre16_free_callback;
   pcre_stack_malloc_user: pcre_stack_malloc_callback;
-  pcre16_stack_malloc_user: pcre16_stack_malloc_callback;
   pcre_stack_free_user: pcre_stack_free_callback;
-  pcre16_stack_free_user: pcre16_stack_free_callback;
   pcre_callout_user: pcre_callout_callback;
+  {$IFDEF PCRE_16}
+  pcre16_malloc_user: pcre16_malloc_callback;
+  pcre16_free_user: pcre16_free_callback;
+  pcre16_stack_malloc_user: pcre16_stack_malloc_callback;
+  pcre16_stack_free_user: pcre16_stack_free_callback;
   pcre16_callout_user: pcre16_callout_callback;
+  {$ENDIF PCRE_16}
 
 function pcre_compile; external;
 function pcre_compile2; external;
@@ -1297,6 +1580,7 @@ function pcre_version; external;
 function pcre_jit_stack_alloc; external;
 procedure pcre_jit_stack_free; external;
 procedure pcre_assign_jit_stack; external;
+{$IFDEF PCRE_16}
 function pcre16_compile; external;
 function pcre16_compile2; external;
 function pcre16_config; external;
@@ -1320,6 +1604,7 @@ function pcre16_version; external;
 function pcre16_jit_stack_alloc; external;
 procedure pcre16_jit_stack_free; external;
 procedure pcre16_assign_jit_stack; external;
+{$ENDIF PCRE_16}
 
 type
   size_t = Longint;
@@ -1398,6 +1683,7 @@ begin
     Result := malloc(Size);
 end;
 
+{$IFDEF PCRE_16}
 function pcre16_malloc_jcl(Size: SizeInt): Pointer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 begin
   if Assigned(pcre16_malloc_user) then
@@ -1405,6 +1691,7 @@ begin
   else
     Result := malloc(Size);
 end;
+{$ENDIF PCRE_16}
 
 function pcre_stack_malloc_jcl(Size: SizeInt): Pointer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 begin
@@ -1414,6 +1701,7 @@ begin
     Result := malloc(Size);
 end;
 
+{$IFDEF PCRE_16}
 function pcre16_stack_malloc_jcl(Size: SizeInt): Pointer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 begin
   if Assigned(pcre16_stack_malloc_user) then
@@ -1421,6 +1709,7 @@ begin
   else
     Result := malloc(Size);
 end;
+{$ENDIF PCRE_16}
 
 function _malloc(size: size_t): Pointer;
 begin
@@ -1437,6 +1726,7 @@ begin
     free(P);
 end;
 
+{$IFDEF PCRE_16}
 procedure pcre16_free_jcl(P: Pointer); {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 begin
   if Assigned(pcre16_free_user) then
@@ -1444,6 +1734,7 @@ begin
   else
     free(P);
 end;
+{$ENDIF PCRE_16}
 
 procedure pcre_stack_free_jcl(P: Pointer); {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 begin
@@ -1453,6 +1744,7 @@ begin
     free(P);
 end;
 
+{$IFDEF PCRE_16}
 procedure pcre16_stack_free_jcl(P: Pointer); {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 begin
   if Assigned(pcre16_stack_free_user) then
@@ -1460,6 +1752,7 @@ begin
   else
     free(P);
 end;
+{$ENDIF PCRE_16}
 
 procedure _free(pBlock: Pointer);
 begin
@@ -1474,6 +1767,7 @@ begin
     Result := 0;
 end;
 
+{$IFDEF PCRE_16}
 function pcre16_callout_jcl(var callout_block: pcre16_callout_block): Integer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 begin
   if Assigned(pcre16_callout_user) then
@@ -1481,32 +1775,37 @@ begin
   else
     Result := 0;
 end;
+{$ENDIF PCRE_16}
 
 {$IFDEF CPU32}
 const
   _pcre_malloc: pcre_malloc_callback = pcre_malloc_jcl;
-  _pcre16_malloc: pcre16_malloc_callback = pcre16_malloc_jcl;
   _pcre_free: pcre_free_callback = pcre_free_jcl;
-  _pcre16_free: pcre16_free_callback = pcre16_free_jcl;
   _pcre_stack_malloc: pcre_stack_malloc_callback = pcre_stack_malloc_jcl;
-  _pcre16_stack_malloc: pcre16_stack_malloc_callback = pcre16_stack_malloc_jcl;
   _pcre_stack_free: pcre_stack_free_callback = pcre_stack_free_jcl;
-  _pcre16_stack_free: pcre16_stack_free_callback = pcre16_stack_free_jcl;
   _pcre_callout: pcre_callout_callback = pcre_callout_jcl;
+  {$IFDEF PCRE_16}
+  _pcre16_malloc: pcre16_malloc_callback = pcre16_malloc_jcl;
+  _pcre16_free: pcre16_free_callback = pcre16_free_jcl;
+  _pcre16_stack_malloc: pcre16_stack_malloc_callback = pcre16_stack_malloc_jcl;
+  _pcre16_stack_free: pcre16_stack_free_callback = pcre16_stack_free_jcl;
   _pcre16_callout: pcre16_callout_callback = pcre16_callout_jcl;
+  {$ENDIF PCRE_16}
 {$ENDIF CPU32}
 {$IFDEF CPU64}
 const
   pcre_malloc: pcre_malloc_callback = pcre_malloc_jcl;
-  pcre16_malloc: pcre16_malloc_callback = pcre16_malloc_jcl;
   pcre_free: pcre_free_callback = pcre_free_jcl;
-  pcre16_free: pcre16_free_callback = pcre16_free_jcl;
   pcre_stack_malloc: pcre_stack_malloc_callback = pcre_stack_malloc_jcl;
-  pcre16_stack_malloc: pcre16_stack_malloc_callback = pcre16_stack_malloc_jcl;
   pcre_stack_free: pcre_stack_free_callback = pcre_stack_free_jcl;
-  pcre16_stack_free: pcre16_stack_free_callback = pcre16_stack_free_jcl;
   pcre_callout: pcre_callout_callback = pcre_callout_jcl;
+  {$IFDEF PCRE_16}
+  pcre16_malloc: pcre16_malloc_callback = pcre16_malloc_jcl;
+  pcre16_free: pcre16_free_callback = pcre16_free_jcl;
+  pcre16_stack_malloc: pcre16_stack_malloc_callback = pcre16_stack_malloc_jcl;
+  pcre16_stack_free: pcre16_stack_free_callback = pcre16_stack_free_jcl;
   pcre16_callout: pcre16_callout_callback = pcre16_callout_jcl;
+  {$ENDIF PCRE_16}
 {$ENDIF CPU64}
 
 {$ENDIF PCRE_STATICLINK}
@@ -1526,6 +1825,7 @@ begin
   {$ENDIF ~PCRE_STATICLINK}
 end;
 
+{$IFDEF PCRE_16}
 procedure SetPCRE16MallocCallback(const Value: pcre16_malloc_callback);
 begin
   {$IFDEF PCRE_STATICLINK}
@@ -1540,6 +1840,7 @@ begin
     LibNotLoadedHandler;
   {$ENDIF ~PCRE_STATICLINK}
 end;
+{$ENDIF PCRE_16}
 
 function GetPCREMallocCallback: pcre_malloc_callback;
 begin
@@ -1560,6 +1861,7 @@ begin
   {$ENDIF ~PCRE_STATICLINK}
 end;
 
+{$IFDEF PCRE_16}
 function GetPCRE16MallocCallback: pcre16_malloc_callback;
 begin
   {$IFDEF PCRE_STATICLINK}
@@ -1578,6 +1880,7 @@ begin
     Result := pcre16_malloc_func^;
   {$ENDIF ~PCRE_STATICLINK}
 end;
+{$ENDIF PCRE_16}
 
 function CallPCREMalloc(Size: SizeInt): Pointer;
 begin
@@ -1588,6 +1891,7 @@ begin
   {$ENDIF ~PCRE_STATICLINK}
 end;
 
+{$IFDEF PCRE_16}
 function CallPCRE16Malloc(Size: SizeInt): Pointer;
 begin
   {$IFDEF PCRE_STATICLINK}
@@ -1596,6 +1900,7 @@ begin
   Result := pcre16_malloc_func^(Size);
   {$ENDIF ~PCRE_STATICLINK}
 end;
+{$ENDIF PCRE_16}
 
 procedure SetPCREFreeCallback(const Value: pcre_free_callback);
 begin
@@ -1612,6 +1917,7 @@ begin
   {$ENDIF ~PCRE_STATICLINK}
 end;
 
+{$IFDEF PCRE_16}
 procedure SetPCRE16FreeCallback(const Value: pcre16_free_callback);
 begin
   {$IFDEF PCRE_STATICLINK}
@@ -1626,6 +1932,7 @@ begin
     LibNotLoadedHandler;
   {$ENDIF ~PCRE_STATICLINK}
 end;
+{$ENDIF PCRE_16}
 
 function GetPCREFreeCallback: pcre_free_callback;
 begin
@@ -1646,6 +1953,7 @@ begin
   {$ENDIF ~PCRE_STATICLINK}
 end;
 
+{$IFDEF PCRE_16}
 function GetPCRE16FreeCallback: pcre16_free_callback;
 begin
   {$IFDEF PCRE_STATICLINK}
@@ -1664,6 +1972,7 @@ begin
     Result := pcre16_free_func^
   {$ENDIF ~PCRE_STATICLINK}
 end;
+{$ENDIF PCRE_16}
 
 procedure CallPCREFree(P: Pointer);
 begin
@@ -1674,6 +1983,7 @@ begin
   {$ENDIF ~PCRE_STATICLINK}
 end;
 
+{$IFDEF PCRE_16}
 procedure CallPCRE16Free(P: Pointer);
 begin
   {$IFDEF PCRE_STATICLINK}
@@ -1682,6 +1992,7 @@ begin
   pcre16_free_func^(P);
   {$ENDIF ~PCRE_STATICLINK}
 end;
+{$ENDIF PCRE_16}
 
 procedure SetPCREStackMallocCallback(const Value: pcre_stack_malloc_callback);
 begin
@@ -1698,6 +2009,7 @@ begin
   {$ENDIF ~PCRE_STATICLINK}
 end;
 
+{$IFDEF PCRE_16}
 procedure SetPCRE16StackMallocCallback(const Value: pcre16_stack_malloc_callback);
 begin
   {$IFDEF PCRE_STATICLINK}
@@ -1712,6 +2024,7 @@ begin
     LibNotLoadedHandler;
   {$ENDIF ~PCRE_STATICLINK}
 end;
+{$ENDIF PCRE_16}
 
 function GetPCREStackMallocCallback: pcre_stack_malloc_callback;
 begin
@@ -1732,6 +2045,7 @@ begin
   {$ENDIF ~PCRE_STATICLINK}
 end;
 
+{$IFDEF PCRE_16}
 function GetPCRE16StackMallocCallback: pcre16_stack_malloc_callback;
 begin
   {$IFDEF PCRE_STATICLINK}
@@ -1750,6 +2064,7 @@ begin
     Result := pcre16_stack_malloc_func^;
   {$ENDIF ~PCRE_STATICLINK}
 end;
+{$ENDIF PCRE_16}
 
 function CallPCREStackMalloc(Size: SizeInt): Pointer;
 begin
@@ -1760,6 +2075,7 @@ begin
   {$ENDIF ~PCRE_STATICLINK}
 end;
 
+{$IFDEF PCRE_16}
 function CallPCRE16StackMalloc(Size: SizeInt): Pointer;
 begin
   {$IFDEF PCRE_STATICLINK}
@@ -1768,6 +2084,7 @@ begin
   Result := pcre16_stack_malloc_func^(Size);
   {$ENDIF ~PCRE_STATICLINK}
 end;
+{$ENDIF PCRE_16}
 
 procedure SetPCREStackFreeCallback(const Value: pcre_stack_free_callback);
 begin
@@ -1784,6 +2101,7 @@ begin
   {$ENDIF ~PCRE_STATICLINK}
 end;
 
+{$IFDEF PCRE_16}
 procedure SetPCRE16StackFreeCallback(const Value: pcre16_stack_free_callback);
 begin
   {$IFDEF PCRE_STATICLINK}
@@ -1798,6 +2116,7 @@ begin
     LibNotLoadedHandler;
   {$ENDIF ~PCRE_STATICLINK}
 end;
+{$ENDIF PCRE_16}
 
 function GetPCREStackFreeCallback: pcre_stack_free_callback;
 begin
@@ -1818,6 +2137,7 @@ begin
   {$ENDIF ~PCRE_STATICLINK}
 end;
 
+{$IFDEF PCRE_16}
 function GetPCRE16StackFreeCallback: pcre16_stack_free_callback;
 begin
   {$IFDEF PCRE_STATICLINK}
@@ -1836,6 +2156,7 @@ begin
     Result := pcre16_stack_free_func^;
   {$ENDIF ~PCRE_STATICLINK}
 end;
+{$ENDIF PCRE_16}
 
 procedure CallPCREStackFree(P: Pointer);
 begin
@@ -1846,6 +2167,7 @@ begin
   {$ENDIF ~PCRE_STATICLINK}
 end;
 
+{$IFDEF PCRE_16}
 procedure CallPCRE16StackFree(P: Pointer);
 begin
   {$IFDEF PCRE_STATICLINK}
@@ -1854,6 +2176,7 @@ begin
   pcre16_stack_free_func^(P);
   {$ENDIF ~PCRE_STATICLINK}
 end;
+{$ENDIF PCRE_16}
 
 procedure SetPCRECalloutCallback(const Value: pcre_callout_callback);
 begin
@@ -1870,6 +2193,7 @@ begin
   {$ENDIF ~PCRE_STATICLINK}
 end;
 
+{$IFDEF PCRE_16}
 procedure SetPCRE16CalloutCallback(const Value: pcre16_callout_callback);
 begin
   {$IFDEF PCRE_STATICLINK}
@@ -1884,6 +2208,7 @@ begin
     LibNotLoadedHandler;
   {$ENDIF ~PCRE_STATICLINK}
 end;
+{$ENDIF PCRE_16}
 
 function GetPCRECalloutCallback: pcre_callout_callback;
 begin
@@ -1904,6 +2229,7 @@ begin
   {$ENDIF ~PCRE_STATICLINK}
 end;
 
+{$IFDEF PCRE_16}
 function GetPCRE16CalloutCallback: pcre16_callout_callback;
 begin
   {$IFDEF PCRE_STATICLINK}
@@ -1922,6 +2248,7 @@ begin
     Result := pcre16_callout_func^;
   {$ENDIF ~PCRE_STATICLINK}
 end;
+{$ENDIF PCRE_16}
 
 function CallPCRECallout(var callout_block: pcre_callout_block): Integer;
 begin
@@ -1932,6 +2259,7 @@ begin
   {$ENDIF ~PCRE_STATICLINK}
 end;
 
+{$IFDEF PCRE_16}
 function CallPCRE16Callout(var callout_block: pcre16_callout_block): Integer;
 begin
   {$IFDEF PCRE_STATICLINK}
@@ -1940,68 +2268,73 @@ begin
   Result := pcre16_callout_func^(callout_block);
   {$ENDIF ~PCRE_STATICLINK}
 end;
+{$ENDIF PCRE_16}
 
 {$IFNDEF PCRE_STATICLINK}
 procedure InitPCREFuncPtrs(const Value: Pointer);
 begin
   {$IFDEF PCRE_LINKONREQUEST}
   @pcre_compile := Value;
-  @pcre16_compile := Value;
   @pcre_compile2 := Value;
-  @pcre16_compile2 := Value;
   @pcre_config := Value;
-  @pcre16_config := Value;
   @pcre_copy_named_substring := Value;
-  @pcre16_copy_named_substring := Value;
   @pcre_copy_substring := Value;
-  @pcre16_copy_substring := Value;
   @pcre_dfa_exec := Value;
-  @pcre16_dfa_exec := Value;
   @pcre_exec := Value;
-  @pcre16_exec := Value;
   @pcre_free_substring := Value;
-  @pcre16_free_substring := Value;
   @pcre_free_substring_list := Value;
-  @pcre16_free_substring_list := Value;
   @pcre_fullinfo := Value;
-  @pcre16_fullinfo := Value;
   @pcre_get_named_substring := Value;
-  @pcre16_get_named_substring := Value;
   @pcre_get_stringnumber := Value;
-  @pcre16_get_stringnumber := Value;
   @pcre_get_stringtable_entries := Value;
-  @pcre16_get_stringtable_entries := Value;
   @pcre_get_substring := Value;
-  @pcre16_get_substring := Value;
   @pcre_get_substring_list := Value;
-  @pcre16_get_substring_list := Value;
   @pcre_maketables := Value;
-  @pcre16_maketables := Value;
   @pcre_refcount := Value;
-  @pcre16_refcount := Value;
   @pcre_study := Value;
-  @pcre16_study := Value;
   @pcre_free_study := Value;
-  @pcre16_free_study := Value;
   @pcre_version := Value;
-  @pcre16_version := Value;
   @pcre_jit_stack_alloc := Value;
-  @pcre16_jit_stack_alloc := Value;
   @pcre_jit_stack_free := Value;
-  @pcre16_jit_stack_free := Value;
   @pcre_assign_jit_stack := Value;
+  {$IFDEF PCRE_16}
+  @pcre16_compile := Value;
+  @pcre16_compile2 := Value;
+  @pcre16_config := Value;
+  @pcre16_copy_named_substring := Value;
+  @pcre16_copy_substring := Value;
+  @pcre16_dfa_exec := Value;
+  @pcre16_exec := Value;
+  @pcre16_free_substring := Value;
+  @pcre16_free_substring_list := Value;
+  @pcre16_fullinfo := Value;
+  @pcre16_get_named_substring := Value;
+  @pcre16_get_stringnumber := Value;
+  @pcre16_get_stringtable_entries := Value;
+  @pcre16_get_substring := Value;
+  @pcre16_get_substring_list := Value;
+  @pcre16_maketables := Value;
+  @pcre16_refcount := Value;
+  @pcre16_study := Value;
+  @pcre16_free_study := Value;
+  @pcre16_version := Value;
+  @pcre16_jit_stack_alloc := Value;
+  @pcre16_jit_stack_free := Value;
   @pcre16_assign_jit_stack := Value;
+  {$ENDIF PCRE_16}
   {$ENDIF PCRE_LINKONREQUEST}
   pcre_malloc_func := nil;
-  pcre16_malloc_func := nil;
   pcre_free_func := nil;
-  pcre16_free_func := nil;
   pcre_stack_malloc_func := nil;
-  pcre16_stack_malloc_func := nil;
   pcre_stack_free_func := nil;
-  pcre16_stack_free_func := nil;
   pcre_callout_func := nil;
+  {$IFDEF PCRE_16}
+  pcre16_malloc_func := nil;
+  pcre16_free_func := nil;
+  pcre16_stack_malloc_func := nil;
+  pcre16_stack_free_func := nil;
   pcre16_callout_func := nil;
+  {$ENDIF PCRE_16}
 end;
 {$ENDIF ~PCRE_STATICLINK}
 {$ENDIF ~PCRE_RTL}
@@ -2044,72 +2377,76 @@ begin
   begin
     {$IFDEF PCRE_LINKONREQUEST}
     @pcre_compile := GetModuleSymbol(PCRELib, PCRECompileExportName);
-    @pcre16_compile := GetModuleSymbol(PCRELib, PCRE16CompileExportName);
     @pcre_compile2 := GetModuleSymbol(PCRELib, PCRECompile2ExportName);
-    @pcre16_compile2 := GetModuleSymbol(PCRELib, PCRE16Compile2ExportName);
     @pcre_config := GetModuleSymbol(PCRELib, PCREConfigExportName);
-    @pcre16_config := GetModuleSymbol(PCRELib, PCRE16ConfigExportName);
     @pcre_copy_named_substring := GetModuleSymbol(PCRELib, PCRECopyNamedSubstringExportName);
-    @pcre16_copy_named_substring := GetModuleSymbol(PCRELib, PCRE16CopyNamedSubstringExportName);
     @pcre_copy_substring := GetModuleSymbol(PCRELib, PCRECopySubStringExportName);
-    @pcre16_copy_substring := GetModuleSymbol(PCRELib, PCRE16CopySubStringExportName);
     @pcre_dfa_exec := GetModuleSymbol(PCRELib, PCREDfaExecExportName);
-    @pcre16_dfa_exec := GetModuleSymbol(PCRELib, PCRE16DfaExecExportName);
     @pcre_exec := GetModuleSymbol(PCRELib, PCREExecExportName);
-    @pcre16_exec := GetModuleSymbol(PCRELib, PCRE16ExecExportName);
     @pcre_free_substring := GetModuleSymbol(PCRELib, PCREFreeSubStringExportName);
-    @pcre16_free_substring := GetModuleSymbol(PCRELib, PCRE16FreeSubStringExportName);
     @pcre_free_substring_list := GetModuleSymbol(PCRELib, PCREFreeSubStringListExportName);
-    @pcre16_free_substring_list := GetModuleSymbol(PCRELib, PCRE16FreeSubStringListExportName);
     @pcre_fullinfo := GetModuleSymbol(PCRELib, PCREFullInfoExportName);
-    @pcre16_fullinfo := GetModuleSymbol(PCRELib, PCRE16FullInfoExportName);
     @pcre_get_named_substring := GetModuleSymbol(PCRELib, PCREGetNamedSubstringExportName);
-    @pcre16_get_named_substring := GetModuleSymbol(PCRELib, PCRE16GetNamedSubstringExportName);
     @pcre_get_stringnumber := GetModuleSymbol(PCRELib, PCREGetStringNumberExportName);
-    @pcre16_get_stringnumber := GetModuleSymbol(PCRELib, PCRE16GetStringNumberExportName);
     @pcre_get_stringtable_entries := GetModuleSymbol(PCRELib, PCREGetStringTableEntriesExportName);
-    @pcre16_get_stringtable_entries := GetModuleSymbol(PCRELib, PCRE16GetStringTableEntriesExportName);
     @pcre_get_substring := GetModuleSymbol(PCRELib, PCREGetSubStringExportName);
-    @pcre16_get_substring := GetModuleSymbol(PCRELib, PCRE16GetSubStringExportName);
     @pcre_get_substring_list := GetModuleSymbol(PCRELib, PCREGetSubStringListExportName);
-    @pcre16_get_substring_list := GetModuleSymbol(PCRELib, PCRE16GetSubStringListExportName);
     @pcre_maketables := GetModuleSymbol(PCRELib, PCREMakeTablesExportName);
-    @pcre16_maketables := GetModuleSymbol(PCRELib, PCRE16MakeTablesExportName);
     @pcre_refcount := GetModuleSymbol(PCRELib, PCRERefCountExportName);
-    @pcre16_refcount := GetModuleSymbol(PCRELib, PCRE16RefCountExportName);
     @pcre_study := GetModuleSymbol(PCRELib, PCREStudyExportName);
-    @pcre16_study := GetModuleSymbol(PCRELib, PCRE16StudyExportName);
     @pcre_free_study := GetModuleSymbol(PCRELib, PCREFreeStudyExportName);
-    @pcre16_free_study := GetModuleSymbol(PCRELib, PCRE16FreeStudyExportName);
     @pcre_version := GetModuleSymbol(PCRELib, PCREVersionExportName);
-    @pcre16_version := GetModuleSymbol(PCRELib, PCRE16VersionExportName);
     @pcre_jit_stack_alloc := GetModuleSymbol(PCRELib, PCREJITStackAllocExportName);
-    @pcre16_jit_stack_alloc := GetModuleSymbol(PCRELib, PCRE16JITStackAllocExportName);
     @pcre_jit_stack_free := GetModuleSymbol(PCRELib, PCREJITStackFreeExportName);
-    @pcre16_jit_stack_free := GetModuleSymbol(PCRELib, PCRE16JITStackFreeExportName);
     @pcre_assign_jit_stack := GetModuleSymbol(PCRELib, PCREAssignJITStackExportName);
-    @pcre16_assign_jit_stack := GetModuleSymbol(PCRELib, PCRE16AssignJITStackExportName);
     pcre_malloc_func := GetModuleSymbol(PCRELib, PCREMallocExportName);
-    pcre16_malloc_func := GetModuleSymbol(PCRELib, PCRE16MallocExportName);
     pcre_free_func := GetModuleSymbol(PCRELib, PCREFreeExportName);
-    pcre16_free_func := GetModuleSymbol(PCRELib, PCRE16FreeExportName);
     pcre_stack_malloc_func := GetModuleSymbol(PCRELib, PCREStackMallocExportName);
-    pcre16_stack_malloc_func := GetModuleSymbol(PCRELib, PCRE16StackMallocExportName);
     pcre_stack_free_func := GetModuleSymbol(PCRELib, PCREStackFreeExportName);
-    pcre16_stack_free_func := GetModuleSymbol(PCRELib, PCRE16StackFreeExportName);
     pcre_callout_func := GetModuleSymbol(PCRELib, PCRECalloutExportName);
+    {$IFDEF PCRE_16}
+    @pcre16_compile := GetModuleSymbol(PCRELib, PCRE16CompileExportName);
+    @pcre16_compile2 := GetModuleSymbol(PCRELib, PCRE16Compile2ExportName);
+    @pcre16_config := GetModuleSymbol(PCRELib, PCRE16ConfigExportName);
+    @pcre16_copy_named_substring := GetModuleSymbol(PCRELib, PCRE16CopyNamedSubstringExportName);
+    @pcre16_copy_substring := GetModuleSymbol(PCRELib, PCRE16CopySubStringExportName);
+    @pcre16_dfa_exec := GetModuleSymbol(PCRELib, PCRE16DfaExecExportName);
+    @pcre16_exec := GetModuleSymbol(PCRELib, PCRE16ExecExportName);
+    @pcre16_free_substring := GetModuleSymbol(PCRELib, PCRE16FreeSubStringExportName);
+    @pcre16_free_substring_list := GetModuleSymbol(PCRELib, PCRE16FreeSubStringListExportName);
+    @pcre16_fullinfo := GetModuleSymbol(PCRELib, PCRE16FullInfoExportName);
+    @pcre16_get_named_substring := GetModuleSymbol(PCRELib, PCRE16GetNamedSubstringExportName);
+    @pcre16_get_stringnumber := GetModuleSymbol(PCRELib, PCRE16GetStringNumberExportName);
+    @pcre16_get_stringtable_entries := GetModuleSymbol(PCRELib, PCRE16GetStringTableEntriesExportName);
+    @pcre16_get_substring := GetModuleSymbol(PCRELib, PCRE16GetSubStringExportName);
+    @pcre16_get_substring_list := GetModuleSymbol(PCRELib, PCRE16GetSubStringListExportName);
+    @pcre16_maketables := GetModuleSymbol(PCRELib, PCRE16MakeTablesExportName);
+    @pcre16_refcount := GetModuleSymbol(PCRELib, PCRE16RefCountExportName);
+    @pcre16_study := GetModuleSymbol(PCRELib, PCRE16StudyExportName);
+    @pcre16_free_study := GetModuleSymbol(PCRELib, PCRE16FreeStudyExportName);
+    @pcre16_version := GetModuleSymbol(PCRELib, PCRE16VersionExportName);
+    @pcre16_jit_stack_alloc := GetModuleSymbol(PCRELib, PCRE16JITStackAllocExportName);
+    @pcre16_jit_stack_free := GetModuleSymbol(PCRELib, PCRE16JITStackFreeExportName);
+    @pcre16_assign_jit_stack := GetModuleSymbol(PCRELib, PCRE16AssignJITStackExportName);
+    pcre16_malloc_func := GetModuleSymbol(PCRELib, PCRE16MallocExportName);
+    pcre16_free_func := GetModuleSymbol(PCRELib, PCRE16FreeExportName);
+    pcre16_stack_malloc_func := GetModuleSymbol(PCRELib, PCRE16StackMallocExportName);
+    pcre16_stack_free_func := GetModuleSymbol(PCRELib, PCRE16StackFreeExportName);
     pcre16_callout_func := GetModuleSymbol(PCRELib, PCRE16CalloutExportName);
+    {$ENDIF PCRE_16}
     {$ELSE ~PCRE_LINKONREQUEST}
     pcre_malloc_func := GetModuleSymbol(PCRELib, PCREMallocDefaultExportName);
-    pcre16_malloc_func := GetModuleSymbol(PCRELib, PCRE16MallocDefaultExportName);
     pcre_free_func := GetModuleSymbol(PCRELib, PCREFreeDefaultExportName);
-    pcre16_free_func := GetModuleSymbol(PCRELib, PCRE16FreeDefaultExportName);
     pcre_stack_malloc_func := GetModuleSymbol(PCRELib, PCREStackMallocDefaultExportName);
-    pcre16_stack_malloc_func := GetModuleSymbol(PCRELib, PCRE16StackMallocDefaultExportName);
     pcre_stack_free_func := GetModuleSymbol(PCRELib, PCREStackFreeDefaultExportName);
-    pcre16_stack_free_func := GetModuleSymbol(PCRELib, PCRE16StackFreeDefaultExportName);
     pcre_callout_func := GetModuleSymbol(PCRELib, PCRECalloutDefaultExportName);
+    {$IFDEF PCRE_16}
+    pcre16_malloc_func := GetModuleSymbol(PCRELib, PCRE16MallocDefaultExportName);
+    pcre16_free_func := GetModuleSymbol(PCRELib, PCRE16FreeDefaultExportName);
+    pcre16_stack_malloc_func := GetModuleSymbol(PCRELib, PCRE16StackMallocDefaultExportName);
+    pcre16_stack_free_func := GetModuleSymbol(PCRELib, PCRE16StackFreeDefaultExportName);
     pcre16_callout_func := GetModuleSymbol(PCRELib, PCRE16CalloutDefaultExportName);
+    {$ENDIF PCRE_16}
     {$ENDIF ~PCRE_LINKONREQUEST}
   end
   else
@@ -2130,51 +2467,53 @@ end;
 
 {$IFDEF PCRE_LINKDLL}
 function pcre_compile; external PCREDefaultLibraryName name PCRECompileDefaultExportName;
-function pcre16_compile; external PCREDefaultLibraryName name PCRE16CompileDefaultExportName;
 function pcre_compile2; external PCREDefaultLibraryName name PCRECompile2DefaultExportName;
-function pcre16_compile2; external PCREDefaultLibraryName name PCRE16Compile2DefaultExportName;
 function pcre_config; external PCREDefaultLibraryName name PCREConfigDefaultExportName;
-function pcre16_config; external PCREDefaultLibraryName name PCRE16ConfigDefaultExportName;
 function pcre_copy_named_substring; external PCREDefaultLibraryName name PCRECopyNamedSubStringDefaultExportName;
-function pcre16_copy_named_substring; external PCREDefaultLibraryName name PCRE16CopyNamedSubStringDefaultExportName;
 function pcre_copy_substring; external PCREDefaultLibraryName name PCRECopySubStringDefaultExportName;
-function pcre16_copy_substring; external PCREDefaultLibraryName name PCRE16CopySubStringDefaultExportName;
 function pcre_dfa_exec; external PCREDefaultLibraryName name PCREDfaExecDefaultExportName;
-function pcre16_dfa_exec; external PCREDefaultLibraryName name PCRE16DfaExecDefaultExportName;
 function pcre_exec; external PCREDefaultLibraryName name PCREExecDefaultExportName;
-function pcre16_exec; external PCREDefaultLibraryName name PCRE16ExecDefaultExportName;
 procedure pcre_free_substring; external PCREDefaultLibraryName name PCREFreeSubStringDefaultExportName;
-procedure pcre16_free_substring; external PCREDefaultLibraryName name PCRE16FreeSubStringDefaultExportName;
 procedure pcre_free_substring_list; external PCREDefaultLibraryName name PCREFreeSubStringListDefaultExportName;
-procedure pcre16_free_substring_list; external PCREDefaultLibraryName name PCRE16FreeSubStringListDefaultExportName;
 function pcre_fullinfo; external PCREDefaultLibraryName name PCREFullInfoDefaultExportName;
-function pcre16_fullinfo; external PCREDefaultLibraryName name PCRE16FullInfoDefaultExportName;
 function pcre_get_named_substring; external PCREDefaultLibraryName name PCREGetNamedSubStringDefaultExportName;
-function pcre16_get_named_substring; external PCREDefaultLibraryName name PCRE16GetNamedSubStringDefaultExportName;
 function pcre_get_stringnumber; external PCREDefaultLibraryName name PCREGetStringNumberDefaultExportName;
-function pcre16_get_stringnumber; external PCREDefaultLibraryName name PCRE16GetStringNumberDefaultExportName;
 function pcre_get_stringtable_entries; external PCREDefaultLibraryName name PCREGetStringTableEntriesDefaultExportName;
-function pcre16_get_stringtable_entries; external PCREDefaultLibraryName name PCRE16GetStringTableEntriesDefaultExportName;
 function pcre_get_substring; external PCREDefaultLibraryName name PCREGetSubStringDefaultExportName;
-function pcre16_get_substring; external PCREDefaultLibraryName name PCRE16GetSubStringDefaultExportName;
 function pcre_get_substring_list; external PCREDefaultLibraryName name PCREGetSubStringListDefaultExportName;
-function pcre16_get_substring_list; external PCREDefaultLibraryName name PCRE16GetSubStringListDefaultExportName;
 function pcre_maketables; external PCREDefaultLibraryName name PCREMakeTablesDefaultExportName;
-function pcre16_maketables; external PCREDefaultLibraryName name PCRE16MakeTablesDefaultExportName;
 function pcre_refcount; external PCREDefaultLibraryName name PCRERefCountDefaultExportName;
-function pcre16_refcount; external PCREDefaultLibraryName name PCRE16RefCountDefaultExportName;
 function pcre_study; external PCREDefaultLibraryName name PCREStudyDefaultExportName;
-function pcre16_study; external PCREDefaultLibraryName name PCRE16StudyDefaultExportName;
 procedure pcre_free_study; external PCREDefaultLibraryName name PCREFreeStudyDefaultExportName;
-procedure pcre16_free_study; external PCREDefaultLibraryName name PCRE16FreeStudyDefaultExportName;
 function pcre_version; external PCREDefaultLibraryName name PCREVersionDefaultExportName;
-function pcre16_version; external PCREDefaultLibraryName name PCRE16VersionDefaultExportName;
 function pcre_jit_stack_alloc; external PCREDefaultLibraryName name PCREJITStackAllocDefaultExportName;
-function pcre16_jit_stack_alloc; external PCREDefaultLibraryName name PCRE16JITStackAllocDefaultExportName;
 procedure pcre_jit_stack_free; external PCREDefaultLibraryName name PCREJITStackFreeDefaultExportName;
-procedure pcre16_jit_stack_free; external PCREDefaultLibraryName name PCRE16JITStackFreeDefaultExportName;
 procedure pcre_assign_jit_stack; external PCREDefaultLibraryName name PCREAssignJITStackDefaultExportName;
+{$IFDEF PCRE_16}
+function pcre16_compile; external PCREDefaultLibraryName name PCRE16CompileDefaultExportName;
+function pcre16_compile2; external PCREDefaultLibraryName name PCRE16Compile2DefaultExportName;
+function pcre16_config; external PCREDefaultLibraryName name PCRE16ConfigDefaultExportName;
+function pcre16_copy_named_substring; external PCREDefaultLibraryName name PCRE16CopyNamedSubStringDefaultExportName;
+function pcre16_copy_substring; external PCREDefaultLibraryName name PCRE16CopySubStringDefaultExportName;
+function pcre16_dfa_exec; external PCREDefaultLibraryName name PCRE16DfaExecDefaultExportName;
+function pcre16_exec; external PCREDefaultLibraryName name PCRE16ExecDefaultExportName;
+procedure pcre16_free_substring; external PCREDefaultLibraryName name PCRE16FreeSubStringDefaultExportName;
+procedure pcre16_free_substring_list; external PCREDefaultLibraryName name PCRE16FreeSubStringListDefaultExportName;
+function pcre16_fullinfo; external PCREDefaultLibraryName name PCRE16FullInfoDefaultExportName;
+function pcre16_get_named_substring; external PCREDefaultLibraryName name PCRE16GetNamedSubStringDefaultExportName;
+function pcre16_get_stringnumber; external PCREDefaultLibraryName name PCRE16GetStringNumberDefaultExportName;
+function pcre16_get_stringtable_entries; external PCREDefaultLibraryName name PCRE16GetStringTableEntriesDefaultExportName;
+function pcre16_get_substring; external PCREDefaultLibraryName name PCRE16GetSubStringDefaultExportName;
+function pcre16_get_substring_list; external PCREDefaultLibraryName name PCRE16GetSubStringListDefaultExportName;
+function pcre16_maketables; external PCREDefaultLibraryName name PCRE16MakeTablesDefaultExportName;
+function pcre16_refcount; external PCREDefaultLibraryName name PCRE16RefCountDefaultExportName;
+function pcre16_study; external PCREDefaultLibraryName name PCRE16StudyDefaultExportName;
+procedure pcre16_free_study; external PCREDefaultLibraryName name PCRE16FreeStudyDefaultExportName;
+function pcre16_version; external PCREDefaultLibraryName name PCRE16VersionDefaultExportName;
+function pcre16_jit_stack_alloc; external PCREDefaultLibraryName name PCRE16JITStackAllocDefaultExportName;
+procedure pcre16_jit_stack_free; external PCREDefaultLibraryName name PCRE16JITStackFreeDefaultExportName;
 procedure pcre16_assign_jit_stack; external PCREDefaultLibraryName name PCRE16AssignJITStackDefaultExportName;
+{$ENDIF PCRE_16}
 {$ENDIF PCRE_LINKDLL}
 
 {$IFDEF UNITVERSIONING}

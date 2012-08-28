@@ -2,7 +2,7 @@ object frmMain: TfrmMain
   Left = 300
   Top = 115
   Caption = 'JclPCRE Demo'
-  ClientHeight = 473
+  ClientHeight = 517
   ClientWidth = 462
   Color = clBtnFace
   Constraints.MinHeight = 361
@@ -56,7 +56,7 @@ object frmMain: TfrmMain
     Left = 12
     Top = 54
     Width = 437
-    Height = 205
+    Height = 203
     Anchors = [akLeft, akTop, akRight, akBottom]
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -73,27 +73,26 @@ object frmMain: TfrmMain
   end
   object btnOpen: TButton
     Left = 370
-    Top = 274
+    Top = 318
     Width = 75
     Height = 25
     Action = acOpen
-    Anchors = [akRight, akBottom]
+    Anchors = [akLeft, akBottom]
     TabOrder = 4
   end
   object sbMain: TStatusBar
     Left = 0
-    Top = 454
+    Top = 498
     Width = 462
     Height = 19
     Panels = <
       item
         Width = 50
       end>
-    ExplicitTop = 323
   end
   object GroupBoxMatchOptions: TGroupBox
     Left = 8
-    Top = 321
+    Top = 365
     Width = 359
     Height = 127
     Anchors = [akLeft, akBottom]
@@ -195,20 +194,13 @@ object frmMain: TfrmMain
       State = cbChecked
       TabOrder = 10
     end
-    object chkUTF8: TCheckBox
-      Left = 256
-      Top = 98
-      Width = 97
-      Height = 17
-      Caption = 'UTF&8'
-      TabOrder = 11
-    end
   end
   object GroupBoxCompileOptions: TGroupBox
     Left = 8
-    Top = 265
+    Top = 309
     Width = 356
     Height = 50
+    Anchors = [akLeft, akBottom]
     Caption = 'Compile options:'
     TabOrder = 7
     object chkStudy: TCheckBox
@@ -235,6 +227,21 @@ object frmMain: TfrmMain
       Caption = '&JIT Compile'
       TabOrder = 2
     end
+  end
+  object RadioGroupSystemOptions: TRadioGroup
+    Left = 8
+    Top = 264
+    Width = 353
+    Height = 39
+    Caption = 'System options:'
+    Columns = 4
+    ItemIndex = 0
+    Items.Strings = (
+      'ANSI'
+      'UTF-8'
+      'UCS-2'
+      'UTF-16')
+    TabOrder = 8
   end
   object alMain: TActionList
     Left = 144
