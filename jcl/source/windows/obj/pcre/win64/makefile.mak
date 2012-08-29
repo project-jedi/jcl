@@ -49,7 +49,7 @@ OBJ64FILES = .\pcre16_compile.obj .\pcre16_config.obj .\pcre16_dfa_exec.obj \
 OBJFILES = $(OBJ32FILES) $(OBJ64FILES)
 
 # ---------------------------------------------------------------------------
-USERDEFINES = SUPPORT_UTF8;SUPPORT_UCP;SUPPORT_JIT
+USERDEFINES = SUPPORT_UTF;SUPPORT_UCP;SUPPORT_JIT;SUPPORT_PCRE8;SUPPORT_PCRE16
 SYSDEFINES = NO_STRICT;_NO_VCL;_RTLDLL
 INCLUDEPATH = $(pcresrc);$(BCC)\include;$(BCB)\include\vcl
 LIBPATH = $(BCB)\lib\obj;$(BCB)\lib
