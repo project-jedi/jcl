@@ -296,6 +296,9 @@ type
     procedure ParseUsingTask(XmlElem: TJclSimpleXmlElem);
     function ParseWhen(XmlElem: TJclSimpleXmlElem; Skip: Boolean): Boolean;
     procedure ParseXml(AXml: TJclSimpleXML);
+  protected
+    function GetPropertyValue(const Name: string): string; virtual;
+    procedure SetPropertyValue(const Name, Value: string); virtual;
   public
     // evaluate known MsBuild properties
     // http://msdn.microsoft.com/en-us/library/ms171458.aspx
@@ -997,7 +1000,7 @@ begin
           Break;
         end;
         if Prop then
-          PropertyValue := Properties.Values[PropertyName]
+          PropertyValue := GetPropertyValue(PropertyName)
         else
         begin
           Reg := Copy(PropertyName, 1, 9) = 'registry:';
@@ -1336,6 +1339,11 @@ end;
 function TJclMsBuildParser.GetItemDefinitionCount: Integer;
 begin
   Result := FItemDefinitions.Count;
+end;
+
+function TJclMsBuildParser.GetPropertyValue(const Name: string): string;
+begin
+  Result := Properties.Values[Name];
 end;
 
 function TJclMsBuildParser.GetTarget(Index: Integer): TJclMsBuildTarget;
@@ -2356,7 +2364,7 @@ begin
 
   if Condition then
   begin
-    Properties.Values[XmlElem.Name] := EvaluateString(XmlElem.Value);
+    SetPropertyValue(XmlElem.Name, EvaluateString(XmlElem.Value));
     // store the XML element for further modifications in the current file
     if CurrentFileName = ProjectFileName then
     begin
@@ -2668,6 +2676,11 @@ end;
 procedure TJclMsBuildParser.Save;
 begin
   Xml.SaveToFile(ProjectFileName);
+end;
+
+procedure TJclMsBuildParser.SetPropertyValue(const Name, Value: string);
+begin
+  Properties.Values[Name] := Value;
 end;
 
 procedure TJclMsBuildParser.XMLDecodeValue(Sender: TObject; var Value: string);
