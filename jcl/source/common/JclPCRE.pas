@@ -173,7 +173,7 @@ type
     property OnCallout: TJclRegExCallout read FOnCallout write FOnCallout;
   end;
 
-
+  {$IFDEF PCRE_8}
   TJclAnsiRegEx = class(TJclRegExBase)
   private
     FCode: PPCRE;
@@ -200,6 +200,7 @@ type
   TJclAnsiRegExOptions = TJclRegExOptions;
   TJclAnsiCaptureRange = TJclCaptureRange;
   TJclAnsiRegExCallout = TJclRegExCallout;
+  {$ENDIF PCRE_8}
 
   {$IFDEF PCRE_16}
   TJclWideRegEx = class(TJclRegExBase)
@@ -231,17 +232,28 @@ type
   TJclWideRegExCallout = TJclRegExCallout;
   {$ENDIF PCRE_16}
 
+  {$IFDEF JCL_PCRE_8}
+  TJclRegEx = TJclAnsiRegEx;
+  {$ENDIF JCL_PCRE_8}
+  {$IFDEF JCL_PCRE_16}
+  TJclRegEx = TJclWideRegEx;
+  {$ENDIF JCL_PCRE_16}
+
+{$IFDEF PCRE_8}
 procedure InitializeLocaleSupport;
 procedure TerminateLocaleSupport;
+{$ENDIF PCRE_8}
 
 {$IFDEF PCRE_16}
 procedure InitializeLocaleSupport16;
 procedure TerminateLocaleSupport16;
 {$ENDIF PCRE_16}
 
+{$IFDEF JCL_PCRE}
 // Args is an array of pairs (CaptureIndex, Value) or (CaptureName, Value).
 // For example: NewIp := StrReplaceRegEx(DirIP, '(\d+)\.(\d+)\.(\d+)\.(\d+)', [3, '128', 4, '254']);
 function StrReplaceRegEx(const Subject, Pattern: string; Args: array of const): string;
+{$ENDIF JCL_PCRE}
 
 {$IFDEF UNITVERSIONING}
 const
@@ -357,11 +369,15 @@ begin
     Result := Index;
 end;
 
+{$IFDEF JCL_PCRE}
 var
+  {$IFDEF PCRE_8}
   GTables: PAnsiChar;
+  {$ENDIF PCRE_8}
   {$IFDEF PCRE_16}
   GTables16: PAnsiChar;
   {$ENDIF PCRE_16}
+{$ENDIF JCL_PCRE}
 
 {$IFDEF RTL230_UP}
   {$IFDEF PCRE_RTL}
@@ -396,10 +412,12 @@ begin
   FreeMem(P);
 end;
 
+{$IFDEF PCRE_8}
 function JclPCRECallout(var callout_block: pcre_callout_block): Integer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 begin
    Result := TJclAnsiRegEx(callout_block.callout_data).CalloutHandler(callout_block);
 end;
+{$ENDIF PCRE_8}
 
 {$IFDEF PCRE_16}
 function JclPCRE16Callout(var callout_block: pcre16_callout_block): Integer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
@@ -539,19 +557,19 @@ const
     PCRE_NEWLINE_CRLF, PCRE_NEWLINE_ANY, PCRE_BSR_ANYCRLF, PCRE_BSR_UNICODE,
     PCRE_JAVASCRIPT_COMPAT, PCRE_NO_START_OPTIMIZE, 0, 0, PCRE_UCP);
   cRunOptions: array [TJclRegExOption] of Integer =
-   (0, 0, 0, 0, PCRE_ANCHORED, 0, 0, PCRE_NOTBOL, PCRE_NOTEOL,
-    0, PCRE_NOTEMPTY, 0, 0, PCRE_NO_UTF8_CHECK, 0, PCRE_PARTIAL, 0, 0,
-    0, 0, PCRE_NEWLINE_CR, PCRE_NEWLINE_LF, PCRE_NEWLINE_CRLF,
+   (0, 0, 0, 0, PCRE_ANCHORED, PCRE_DOLLAR_ENDONLY, 0, PCRE_NOTBOL, PCRE_NOTEOL,
+    0, PCRE_NOTEMPTY, PCRE_UTF8, 0, PCRE_NO_UTF8_CHECK, 0, PCRE_PARTIAL, 0, 0,
+    PCRE_FIRSTLINE, 0, PCRE_NEWLINE_CR, PCRE_NEWLINE_LF, PCRE_NEWLINE_CRLF,
     PCRE_NEWLINE_ANY, PCRE_BSR_ANYCRLF, PCRE_BSR_UNICODE,
-    0, PCRE_NO_START_OPTIMIZE, PCRE_PARTIAL_HARD,
-    PCRE_NOTEMPTY_ATSTART, 0);
+    PCRE_JAVASCRIPT_COMPAT, PCRE_NO_START_OPTIMIZE, PCRE_PARTIAL_HARD,
+    PCRE_NOTEMPTY_ATSTART, PCRE_UCP);
   cDFARunOptions: array [TJclRegExOption] of Integer =
-   (0, 0, 0, 0, PCRE_ANCHORED, 0, 0, PCRE_NOTBOL, PCRE_NOTEOL,
-    0, PCRE_NOTEMPTY, 0, 0, PCRE_NO_UTF8_CHECK, 0, PCRE_PARTIAL,
-    PCRE_DFA_SHORTEST, PCRE_DFA_RESTART, 0, 0, PCRE_NEWLINE_CR,
+   (0, 0, 0, 0, PCRE_ANCHORED, PCRE_DOLLAR_ENDONLY, 0, PCRE_NOTBOL, PCRE_NOTEOL,
+    0, PCRE_NOTEMPTY, PCRE_UTF8, 0, PCRE_NO_UTF8_CHECK, 0, PCRE_PARTIAL,
+    PCRE_DFA_SHORTEST, PCRE_DFA_RESTART, PCRE_FIRSTLINE, 0, PCRE_NEWLINE_CR,
     PCRE_NEWLINE_LF, PCRE_NEWLINE_CRLF, PCRE_NEWLINE_ANY, PCRE_BSR_ANYCRLF,
     PCRE_BSR_UNICODE, 0, PCRE_NO_START_OPTIMIZE, PCRE_PARTIAL_HARD,
-    PCRE_NOTEMPTY_ATSTART, 0);
+    PCRE_NOTEMPTY_ATSTART, PCRE_UCP);
 var
   I: TJclRegExOption;
 begin
@@ -632,6 +650,7 @@ begin
   Result := False;
 end;
 
+{$IFDEF PCRE_8}
 procedure InitializeLocaleSupport;
 begin
   if not Assigned(GTables) then
@@ -646,6 +665,7 @@ begin
     GTables := nil;
   end;
 end;
+{$ENDIF PCRE_8}
 
 {$IFDEF PCRE_16}
 procedure InitializeLocaleSupport16;
@@ -664,6 +684,7 @@ begin
 end;
 {$ENDIF PCRE_16}
 
+{$IFDEF JCL_PCRE}
 // TODO: Better/specific error messages, show index when available.
 function StrReplaceRegEx(const Subject, Pattern: string; Args: array of const): string;
 
@@ -703,7 +724,7 @@ begin
     raise EConvertError.Create(SArgumentMissing)
   else
   begin
-    Re := TJclAnsiRegEx.Create;
+    Re := TJclRegEx.Create;
     try
       if Re.Compile(Pattern, False) and Re.Match(Subject) then
       begin
@@ -727,6 +748,7 @@ begin
     end;
   end;
 end;
+{$ENDIF JCL_PCRE}
 
 //=== { EPCREError } =========================================================
 
@@ -740,6 +762,8 @@ procedure LibNotLoadedHandler; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EX
 begin
   raise EPCREError.CreateRes(@RsErrLibNotLoaded, 0);
 end;
+
+{$IFDEF PCRE_8}
 
 //=== { TJclAnsiRegEx } ======================================================
 
@@ -1002,6 +1026,8 @@ begin
 
   SetCapture(Index, Value);
 end;
+
+{$ENDIF PCRE_8}
 
 {$IFDEF PCRE_16}
 
@@ -1279,8 +1305,10 @@ initialization
   {$ENDIF ~PCRE_RTL}
   if LoadPCRE then
   begin
+    {$IFDEF PCRE_8}
     SetPCREMallocCallback(JclPCREGetMem);
     SetPCREFreeCallback(JclPCREFreeMem);
+    {$ENDIF PCRE_8}
     {$IFDEF PCRE_16}
     SetPCRE16MallocCallback(JclPCRE16GetMem);
     SetPCRE16FreeCallback(JclPCRE16FreeMem);
@@ -1291,7 +1319,9 @@ initialization
   {$ENDIF UNITVERSIONING}
 
 finalization
+  {$IFDEF PCRE_8}
   TerminateLocaleSupport;
+  {$ENDIF PCRE_8}
   {$IFDEF PCRE_16}
   TerminateLocaleSupport16;
   {$ENDIF PCRE_16}

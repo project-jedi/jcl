@@ -72,8 +72,8 @@ object frmMain: TfrmMain
     WordWrap = False
   end
   object btnOpen: TButton
-    Left = 370
-    Top = 318
+    Left = 373
+    Top = 263
     Width = 75
     Height = 25
     Action = acOpen
@@ -228,20 +228,53 @@ object frmMain: TfrmMain
       TabOrder = 2
     end
   end
-  object RadioGroupSystemOptions: TRadioGroup
+  object GroupBoxSystemOptions: TGroupBox
     Left = 8
-    Top = 264
-    Width = 353
-    Height = 39
+    Top = 263
+    Width = 359
+    Height = 40
     Caption = 'System options:'
-    Columns = 4
-    ItemIndex = 0
-    Items.Strings = (
-      'ANSI'
-      'UTF-8'
-      'UCS-2'
-      'UTF-16')
     TabOrder = 8
+    object RadioButtonDefault: TRadioButton
+      Left = 11
+      Top = 20
+      Width = 65
+      Height = 16
+      Caption = 'Default'
+      TabOrder = 0
+    end
+    object RadioButtonANSI: TRadioButton
+      Left = 79
+      Top = 20
+      Width = 65
+      Height = 16
+      Caption = 'ANSI'
+      TabOrder = 4
+    end
+    object RadioButtonUTF8: TRadioButton
+      Left = 140
+      Top = 19
+      Width = 73
+      Height = 17
+      Caption = 'UTF-8'
+      TabOrder = 1
+    end
+    object RadioButtonUCS2: TRadioButton
+      Left = 220
+      Top = 19
+      Width = 73
+      Height = 17
+      Caption = 'UCS-2'
+      TabOrder = 2
+    end
+    object RadioButtonUTF16: TRadioButton
+      Left = 296
+      Top = 19
+      Width = 73
+      Height = 17
+      Caption = 'UTF-16'
+      TabOrder = 3
+    end
   end
   object alMain: TActionList
     Left = 144

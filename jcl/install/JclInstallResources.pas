@@ -79,7 +79,9 @@ resourcestring
   RsCaptionDefPCRELinkDLL       = 'Static bind to pcre.dll';
   RsCaptionDefPCRELinkOnRequest = 'Late bind to pcre.dll';
   RsCaptionDefPCRERTL           = 'Use RTL''s RegularExpressionAPI';
+  RsCaptionDefPCRE8             = 'Enable 8-bit PCRE';
   RsCaptionDefPCRE16            = 'Enable 16-bit PCRE';
+  RsCaptionDefPCREPrefer16      = 'Prefer 16-bit PCRE';
   // BZip2 options
   RsCaptionDefBZip2              = 'BZip2 options';
   RsCaptionDefBZip2StaticLink    = 'Static link to BZip2 code';
@@ -196,7 +198,9 @@ resourcestring
   RsHintDefPCRELinkDLL       = 'JCL binaries require pcre.dll to be present';
   RsHintDefPCRELinkOnRequest = 'JCL binaries require pcre.dll when calling PCRE functions';
   RsHintDefPCRERTL           = 'JCL relies on RTL''s RegularExpressionsAPI functions and declarations';
+  RsHintDefPCRE8             = 'ANSI and UTF-8 is the historical version of PCRE library';
   RsHintDefPCRE16            = 'Unicode-enabled (UCS-2 and UTF-16) was introduced as of PCRE 8.30';
+  RsHintDefPCREPrefer16      = 'Prefer Unicode-enabled PCRE when both versions are available';
   // BZip2 options
   RsHintDefBZip2              = 'BZip2 specific options (bzip2.pas)';
   RsHintDefBZip2StaticLink    = 'Code from BZip2 is linked into JCL binaries';
