@@ -2842,7 +2842,15 @@ begin
     nSize := 4096;
 
   InterlockedIncrement(AsyncPipeCounter);
-  PipeName := Format('\\.\Pipe\AsyncAnonPipe.%.8x.%.8x', [GetCurrentProcessId, AsyncPipeCounter]);
+  // In some (not so) rare instances there is a race condition
+  // where the counter is the same for two threads at the same 
+  // time. This makes the CreateNamedPipe call below fail 
+  // because of the limit set to 1 in the call.
+  // So, to be sure this call succeeds, we put both the process
+  // and thread id in the name of the pipe.
+  // This was found to happen while simply starting 7 instances
+  // of the same exe file in parallel.
+  PipeName := Format('\\.\Pipe\AsyncAnonPipe.%.8x.%.8x.%.8x', [GetCurrentProcessId, GetCurrentThreadId, AsyncPipeCounter]);
 
   PipeReadHandle := CreateNamedPipe(PChar(PipeName), PIPE_ACCESS_INBOUND or FILE_FLAG_OVERLAPPED,
       PIPE_TYPE_BYTE or PIPE_WAIT, 1, nSize, nSize, 120 * 1000, lpPipeAttributes);
