@@ -61,15 +61,15 @@ Description:
   cannot be located in the search path at run-time.
 
   EPCREError may also be raised when executing methods or accessing
-  properties in TJclRegEx that result in numeric return values from
+  properties in TJclRegExBase that result in numeric return values from
   PCRE.DLL representing an error.
 
 <table>
 Method                  Description
 ----------------------  -----------------------------------------------
-TJclRegEx.Compile       Raised when the regular expression argument is
+TJclRegExBase.Compile       Raised when the regular expression argument is
                         an empty string ('').
-TJclRegEx.Captures      Raised when the Capture at the requested index
+TJclRegExBase.Captures      Raised when the Capture at the requested index
                         cannot be accessed using PCRE.DLL.
 </table>
 
@@ -79,8 +79,8 @@ TJclRegEx.Captures      Raised when the Capture at the requested index
 See also:
   EPCREError.CreateRes
   EPCREError.ErrorCode
-  TJclRegEx.Compile
-  TJclRegEx.Captures
+  TJclRegExBase.Compile
+  TJclRegExBase.Captures
 --------------------------------------------------------------------------------
 @@EPCREError.ErrorCode
 Summary:
@@ -110,18 +110,18 @@ See also:
   Message
   EPCREError.ErrorCode
 --------------------------------------------------------------------------------
-@@TJclRegEx
+@@TJclRegExBase
 Summary:
   Implements a regular expression engine based on the Perl-compatible
   Regular Expression library.
 Description:
-  TJclRegEx implements a regular expression engine based on the
+  TJclRegExBase implements a regular expression engine based on the
   Perl-compatible Regular Expression library.
 
-  TJclRegEx requires the header conversions and import routines in
+  TJclRegExBase requires the header conversions and import routines in
   pcre.pas, and the PCRE.DLL dynamic link library.
 
-  TJclRegEx provides properties and methods that act as wrappers to
+  TJclRegExBase provides properties and methods that act as wrappers to
   routines in the PCRE.DLL library.
 
   Use Compile to examine, study, and localize a regular expression.
@@ -147,7 +147,7 @@ Description:
   Use Options read or write values that affect the configuration and
   behavior of the PCRE.DLL library.
 
-  For more information about using TJclRegEx, please refer to the topic:
+  For more information about using TJclRegExBase, please refer to the topic:
   Using the JCL PCRE Classes
 See also:
   Compile
@@ -160,7 +160,7 @@ See also:
   Options
   JclPCRE_Using
 --------------------------------------------------------------------------------
-@@TJclRegEx.Compile@string@Boolean@Boolean@Boolean
+@@TJclRegExBase.Compile@string@Boolean@Boolean@Boolean
 Summary
 Converts a regular expression into the form required for the
 PCRE.DLL library.
@@ -242,7 +242,7 @@ Refer to the documentation for TJclRegExOption for a
 \description of the values used in the Options property.
 
 The compiled regular expression representing Pattern is
-stored internally in TJclRegEx for subsequent use in the
+stored internally in TJclRegExBase for subsequent use in the
 Match method. An EPCREError exception is raised if Pattern
 contains an empty string ('').
 
@@ -274,7 +274,7 @@ See Also
 Options Match ErrorMessage ErrorOffset TJclRegExOption
 TJclRegExOptions EPCREError
 
-@@TJclRegEx.Destroy
+@@TJclRegExBase.Destroy
 Summary:
   Destructor for object instance.
 Description:
@@ -282,7 +282,7 @@ Description:
 See also:
   Create
 --------------------------------------------------------------------------------
-@@TJclRegEx.Match@string@Cardinal
+@@TJclRegExBase.Match@string@Cardinal
 Summary:
   Examines a text subject for values that match a compiled regular expression.
 Description:
@@ -332,7 +332,7 @@ See also:
   TJclRegExOption
   TJclRegExOptions
 --------------------------------------------------------------------------------
-@@TJclRegEx.CaptureCount
+@@TJclRegExBase.CaptureCount
 Summary:
   Number of strings in the result for a comparison performed using the
   Match method.
@@ -362,7 +362,7 @@ See also:
   Captures
   CaptureRanges
 --------------------------------------------------------------------------------
-@@TJclRegEx.CaptureRanges
+@@TJclRegExBase.CaptureRanges
 Summary:
   Indicates the location of a string in a text subject resulting from a
   call to the Match method.
@@ -388,7 +388,7 @@ See also:
   Compile
   TJclCaptureRange
 --------------------------------------------------------------------------------
-@@TJclRegEx.Captures
+@@TJclRegExBase.Captures
 Summary:
   Strings resulting from a call to the Match method.
 Description:
@@ -419,7 +419,7 @@ See also:
   Match
   EPCREError
 --------------------------------------------------------------------------------
-@@TJclRegEx.ErrorMessage
+@@TJclRegExBase.ErrorMessage
 Summary:
   Represents an error message generated when compiling a regular
   expression.
@@ -500,7 +500,7 @@ See also:
   ErrorOffset
   Compile
 --------------------------------------------------------------------------------
-@@TJclRegEx.ErrorOffset
+@@TJclRegExBase.ErrorOffset
 Summary:
   Represents the location of an error generated when compiling a regular
   expression.
@@ -520,7 +520,7 @@ See also:
   ErrorMessage
   Compile
 --------------------------------------------------------------------------------
-@@TJclRegEx.Options
+@@TJclRegExBase.Options
 Summary:
   Flags for configuring and controlling the run-time behavior of the
   regular expression engine.
@@ -545,14 +545,14 @@ See also:
 @@TJclCaptureRange
 Summary:
   Represents the starting and ending offsets for captured string results
-  in the TJclRegEx class.
+  in the TJclRegExBase class.
 Description:
   TJclCaptureRange is a record type with members that represent the
   starting and ending offsets for captured string results in the
-  TJclRegEx class.
+  TJclRegExBase class.
 
   TJclCaptureRange instances are allocated and updated when reading
-  the indexed values in the TJclRegEx.Captures property.
+  the indexed values in the TJclRegExBase.Captures property.
 
 Notes:
   At the present time, the values in TJclCaptureRange members
@@ -562,8 +562,8 @@ Notes:
 See also:
   TJclCaptureRange.FirstPos
   TJclCaptureRange.LastPos
-  TJclRegEx
-  TJclRegEx.Captures
+  TJclRegExBase
+  TJclRegExBase.Captures
 --------------------------------------------------------------------------------
 @@TJclCaptureRange.FirstPos
 Summary:
@@ -572,8 +572,8 @@ Description:
   FirstPos represents the starting offset into a text subject for a
   captured result string.
 See also:
-  TJclRegEx.Captures
-  TJclRegEx.CaptureRanges
+  TJclRegExBase.Captures
+  TJclRegExBase.CaptureRanges
 --------------------------------------------------------------------------------
 @@TJclCaptureRange.LastPos
 Summary:
@@ -582,8 +582,8 @@ Description:
   LastPos represents the ending offset into a text subject for a
   captured result string.
 See also:
-  TJclRegEx.Captures
-  TJclRegEx.CaptureRanges
+  TJclRegExBase.Captures
+  TJclRegExBase.CaptureRanges
 --------------------------------------------------------------------------------
 @@TJclRegExOption
 Summary:
@@ -593,7 +593,7 @@ Description:
   TJclRegExOption is an enumerated type that represents bit flags
   that can be used to configure or modify the behavior of the PCRE
   regular expression engine.  Values in TJclRegExOption affect the
-  execution of the TJclRegEx.Compile and TJclRegEx.Match methods.
+  execution of the TJclRegExBase.Compile and TJclRegExBase.Match methods.
 
   TJclRegExOption include the following values (and their PCRE
   equivalents):
@@ -622,15 +622,15 @@ roUTF8            PCRE_UTF8             Run in UTF-8 mode
 </table>
 
   Values in TJclRegExOption can be assigned to the
-  TJclRegExOptions set type as used in the TJclRegEx.Options
+  TJclRegExOptions set type as used in the TJclRegExBase.Options
   property.
 
 Notes:
   PCRE must be built with UTF-8 support in order to use roUTF8.
 See also:
-  TJclRegEx.Compile
-  TJclRegEx.Match
-  TJclRegEx.Options
+  TJclRegExBase.Compile
+  TJclRegExBase.Match
+  TJclRegExBase.Options
 --------------------------------------------------------------------------------
 @@TPCREIntArray
 Summary:
@@ -651,13 +651,13 @@ See also:
 @@TJclRegExOptions
 Summary:
   Represents the set of bit flags to use for configuring and
-  controlling the TJclRegEx regular expression engine.
+  controlling the TJclRegExBase regular expression engine.
 Description:
   Represents the set of TJclRegExOption bit flags to use for
-  configuring and controlling the TJclRegEx regular expression
+  configuring and controlling the TJclRegExBase regular expression
   engine.
 See also:
-  TJclRegEx
+  TJclRegExBase
   TJclRegExOption
 --------------------------------------------------------------------------------
 @@JclPCRE_Intro
@@ -690,14 +690,14 @@ Summary:
   Using the JCL PCRE Classes.
 Description:
   The JCL PCRE classes provide access to functions and structures in
-  pcre.dll through the use of TJclRegEx and TJclRegExOptions
+  pcre.dll through the use of TJclRegExBase and TJclRegExOptions
   classes.
 
-  TJclRegEx is a class that provides properties and methods
+  TJclRegExBase is a class that provides properties and methods
   that act as wrappers for routines and structures found in the
   pcre.dll dynamic link library.
 
-  TJclRegEx is a non-visual object; it cannot be used on
+  TJclRegExBase is a non-visual object; it cannot be used on
   the design surfaces of an IDE. It does not, however, require
   any installation other that being availble in the search path
   for the compiler. Simply add the pas unit to the
@@ -711,34 +711,34 @@ Description:
 </code>
 
   In your program, you would normally allocate an instance of
-  TJclRegEx and configure its' options in the
-  TJclRegEx.Options property.
+  TJclRegExBase and configure its' options in the
+  TJclRegExBase.Options property.
 
 <code>
   var
-    RE: TJclRegEx;
+    RE: TJclRegExBase;
     REO: JclRegExOptions;
   ...
 
-  RE := TJclRegEx.Create;
+  RE := TJclRegExBase.Create;
   REO := [roIgnoreCase, roMultiLine, roUnGreedy];
   RE.Options := REO;
 </code>
 
-  TJclRegEx.Options is used primarily to control the behavior of the
-  regular expression engine during calls to the TJclRegEx.Compile and
-  TJclRegEx.Match methods. Values in the JclRegExOptions set
+  TJclRegExBase.Options is used primarily to control the behavior of the
+  regular expression engine during calls to the TJclRegExBase.Compile and
+  TJclRegExBase.Match methods. Values in the JclRegExOptions set
   reflect the attributes passed or retrieved using routines in pcre.dll.
   See JclRegExOptions and JclRegExOption for a detailed
   description of values.
 
-  Use the TJclRegEx.Compile method to specify the
+  Use the TJclRegExBase.Compile method to specify the
   Perl-compatible regular expression to use when matching a
-  text subject. TJclRegEx.Compile is essentially a wrapper
+  text subject. TJclRegExBase.Compile is essentially a wrapper
   around the pcre_compile(), pcre_compile2(), pcre_study(), and
   pcre_maketables() functions in pcre.dll.
 
-  See the documentation for the TJclRegEx.Compile method
+  See the documentation for the TJclRegExBase.Compile method
   for more details about arguments to the method.
 
   Perl-compatible Regular Expressions are very flexible and
@@ -747,23 +747,23 @@ Description:
   a detailed description of the syntax and semantics of
   Perl-compatible Regular Expressions.
 
-  Use the TJclRegEx.ErrorMessage and
-  TJclRegEx.ErrorOffset properties to examine errors
+  Use the TJclRegExBase.ErrorMessage and
+  TJclRegExBase.ErrorOffset properties to examine errors
   detected when compiling the regular expression.
 
-  Use the TJclRegEx.Match method to compare the compiled
+  Use the TJclRegExBase.Match method to compare the compiled
   regular expression against a given subject string using a
   matching algorithm that is similar to Perl's. The
-  TJclRegEx.Match method is a wrapper around the
+  TJclRegExBase.Match method is a wrapper around the
   pcre_exec() function in pcre.dll.
 
-  TJclRegEx.Match returns a boolean value to indicate that
+  TJclRegExBase.Match returns a boolean value to indicate that
   elements of the regular expression exist in the subject text.
-  Use the TJclRegEx.CaptureCount property to find the
+  Use the TJclRegExBase.CaptureCount property to find the
   number of matching strings found for the regular expression.
-  Use the TJclRegEx.Captures property to access the string
+  Use the TJclRegExBase.Captures property to access the string
   values by their ordinal position. Use the
-  TJclRegEx.CaptureRanges property to access the offsets
+  TJclRegExBase.CaptureRanges property to access the offsets
   into the subject text where the string match was located.
 
 <code>
@@ -783,12 +783,12 @@ Description:
   end;
 </code>
 
-  TJclRegEx may raise exceptions when using its' properties
+  TJclRegExBase may raise exceptions when using its' properties
   and methods. These exceptions can normally be handled in your
   application code by responding to EPCREError exception
   instances.
 See also:
-  TJclRegEx
+  TJclRegExBase
   TJclRegExOptions
   TJclRegExOption
   EPCREError
