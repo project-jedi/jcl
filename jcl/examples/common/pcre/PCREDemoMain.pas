@@ -7,7 +7,7 @@ interface
 uses
   Windows, Messages,
   SysUtils, Classes, Forms, Dialogs, ActnList, ComCtrls, StdCtrls, Controls,
-  JclPCRE, System.Actions, Vcl.ExtCtrls;
+  JclPCRE, {System.Actions, Vcl.}ExtCtrls;
 
 type
   TfrmMain = class(TForm)
