@@ -2846,7 +2846,7 @@ begin
 
   PipeReadHandle := CreateNamedPipe(PChar(PipeName), PIPE_ACCESS_INBOUND or FILE_FLAG_OVERLAPPED,
       PIPE_TYPE_BYTE or PIPE_WAIT, 1, nSize, nSize, 120 * 1000, lpPipeAttributes);
-  if PipeReadHandle = 0 then
+  if PipeReadHandle = INVALID_HANDLE_VALUE then
     Exit;
 
   PipeWriteHandle := CreateFile(PChar(PipeName), GENERIC_WRITE, 0, lpPipeAttributes, OPEN_EXISTING,
@@ -2889,6 +2889,7 @@ var
   ProcessEvent: TJclDispatcherObject;
   WaitEvents: array of TJclDispatcherObject;
   InternalAbort: Boolean;
+  LastError: DWORD;
 begin
   // hack to pass a null reference to the parameter lpNumberOfBytesRead of ReadFile
   Result := $FFFFFFFF;
@@ -3046,23 +3047,28 @@ begin
       end;
     end;
   finally
-    if OutPipeInfo.PipeRead <> 0 then
-      CloseHandle(OutPipeInfo.PipeRead);
-    if OutPipeInfo.PipeWrite <> 0 then
-      CloseHandle(OutPipeInfo.PipeWrite);
-    if ErrorPipeInfo.PipeRead <> 0 then
-      CloseHandle(ErrorPipeInfo.PipeRead);
-    if ErrorPipeInfo.PipeWrite <> 0 then
-      CloseHandle(ErrorPipeInfo.PipeWrite);
-    if ProcessInfo.hThread <> 0 then
-      CloseHandle(ProcessInfo.hThread);
+    LastError := GetLastError;
+    try
+      if OutPipeInfo.PipeRead <> 0 then
+        CloseHandle(OutPipeInfo.PipeRead);
+      if OutPipeInfo.PipeWrite <> 0 then
+        CloseHandle(OutPipeInfo.PipeWrite);
+      if ErrorPipeInfo.PipeRead <> 0 then
+        CloseHandle(ErrorPipeInfo.PipeRead);
+      if ErrorPipeInfo.PipeWrite <> 0 then
+        CloseHandle(ErrorPipeInfo.PipeWrite);
+      if ProcessInfo.hThread <> 0 then
+        CloseHandle(ProcessInfo.hThread);
 
-    if Assigned(ProcessEvent) then
-      ProcessEvent.Free // this calls CloseHandle(ProcessInfo.hProcess)
-    else if ProcessInfo.hProcess <> 0 then
-      CloseHandle(ProcessInfo.hProcess);
-    OutPipeInfo.Event.Free;
-    ErrorPipeInfo.Event.Free;
+      if Assigned(ProcessEvent) then
+        ProcessEvent.Free // this calls CloseHandle(ProcessInfo.hProcess)
+      else if ProcessInfo.hProcess <> 0 then
+        CloseHandle(ProcessInfo.hProcess);
+      OutPipeInfo.Event.Free;
+      ErrorPipeInfo.Event.Free;
+    finally
+      SetLastError(LastError);
+    end;
   end;
 {$ENDIF MSWINDOWS}
 {$IFDEF UNIX}
