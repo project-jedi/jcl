@@ -33,7 +33,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -1113,6 +1113,7 @@ implementation
 uses
   {$IFDEF HAS_UNITSCOPE}
   System.RTLConsts,
+  System.Types, // for inlining TList.Remove
   {$IFDEF HAS_UNIT_CHARACTER}
   System.Character,
   {$ENDIF HAS_UNIT_CHARACTER}

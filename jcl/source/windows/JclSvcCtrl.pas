@@ -31,7 +31,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                          $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -383,6 +383,7 @@ uses
   {$ELSE ~FPC}
   {$IFDEF HAS_UNITSCOPE}
   Winapi.RegStr,
+  System.Types, // inlining of TList.Remove
   {$ELSE ~HAS_UNITSCOPE}
   RegStr,
   {$ENDIF ~HAS_UNITSCOPE}

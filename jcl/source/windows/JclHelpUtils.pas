@@ -314,6 +314,9 @@ begin
   FHxPlugin := nil;
   if IDEVersionNumber > 0 then
   begin
+    if (IDEVersionNumber = 10) then
+      FIdeNameSpace := 'embarcadero.rs_xe3'
+    else
     if (IDEVersionNumber = 9) then
       FIdeNameSpace := 'embarcadero.rs_xe2'
     else

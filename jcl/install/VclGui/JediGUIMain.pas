@@ -128,6 +128,9 @@ implementation
 {$R *.dfm}
 
 uses
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   FileCtrl,
   JclDebug, JclShell, JediGUIProfiles,
   JclBase, JclFileUtils, JclStrings, JclSysInfo, JclSysUtils, JclArrayLists,

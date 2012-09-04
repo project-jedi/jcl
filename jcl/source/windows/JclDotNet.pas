@@ -358,11 +358,16 @@ implementation
 
 uses
   {$IFDEF HAS_UNITSCOPE}
-  System.Win.ComObj, System.Variants,
+  System.Win.ComObj,
+  System.Variants,
+  System.Types, // inline of TList.Remove
   {$ELSE ~HAS_UNITSCOPE}
-  ComObj, Variants,
+  ComObj,
+  Variants,
   {$ENDIF ~HAS_UNITSCOPE}
-  JclSysUtils, JclResources, JclStrings;
+  JclSysUtils,
+  JclResources,
+  JclStrings;
 
 function CompareCLRVersions(const LeftVersion, RightVersion: string): Integer;
 var

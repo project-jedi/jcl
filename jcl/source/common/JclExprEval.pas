@@ -975,6 +975,7 @@ uses
   {$IFDEF SUPPORTS_INLINE}
   {$IFDEF HAS_UNITSCOPE}
   Winapi.Windows, // inline of AnsiSameText
+  System.Types, // inline TObjectList.Remove
   {$ELSE ~HAS_UNITSCOPE}
   Windows, // inline of AnsiSameText
   {$ENDIF ~HAS_UNITSCOPE}

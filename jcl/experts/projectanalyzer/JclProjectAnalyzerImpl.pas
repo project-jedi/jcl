@@ -108,6 +108,9 @@ implementation
 {$R JclProjectAnalyzerIcon.res}
 
 uses
+  {$IFDEF HAS_UNIT_SYSTEM_ACTIONS}
+  System.Actions,
+  {$ENDIF HAS_UNIT_SYSTEM_ACTIONS}
   Variants,
   JclDebug, JclFileUtils, JclOtaConsts, 
   JclOtaResources;

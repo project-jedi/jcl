@@ -86,9 +86,9 @@ type
   TJclBorRADToolPath = string;
 
 const
-  SupportedDelphiVersions = [5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16];
-  SupportedBCBVersions    = [5, 6, 10, 11, 12, 14, 15, 16];
-  SupportedBDSVersions    = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  SupportedDelphiVersions = [5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17];
+  SupportedBCBVersions    = [5, 6, 10, 11, 12, 14, 15, 16, 17];
+  SupportedBDSVersions    = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
   // Object Repository
   BorRADToolRepositoryPagesSection    = 'Repository Pages';
@@ -314,7 +314,7 @@ type
     property Pages: TStrings read GetPages;
   end;
 
-  TCommandLineTool = (clAsm, clBcc32, clDcc32, clDcc64, clDccOSX32, clDccIL, clMake, clProj2Mak);
+  TCommandLineTool = (clAsm, clBcc32, clBcc64, clDcc32, clDcc64, clDccOSX32, clDccIL, clMake, clProj2Mak);
   TCommandLineTools = set of TCommandLineTool;
 
   TJclBorRADToolInstallationClass = class of TJclBorRADToolInstallation;
@@ -590,6 +590,7 @@ type
     FDCCIL: TJclDCCIL;
     FDCC64: TJclDCC64;
     FDCCOSX32: TJclDCCOSX32;
+    FBCC64: TJclBCC64;
     FPdbCreate: Boolean;
     procedure SetDualPackageInstallation(const Value: Boolean);
     function GetCppPathsKeyName: string;
@@ -609,6 +610,7 @@ type
     function GetDCC64: TJclDCC64;
     function GetDCCOSX32: TJclDCCOSX32;
     function GetDCCIL: TJclDCCIL;
+    function GetBCC64: TJclBCC64;
 
     function GetMsBuildEnvOptionsFileName: string;
     function GetMsBuildEnvironmentFileName: string;
@@ -685,6 +687,7 @@ type
     property Help2Manager: TJclHelp2Manager read FHelp2Manager;
     property DCC64: TJclDCC64 read GetDCC64;
     property DCCOSX32: TJclDCCOSX32 read GetDCCOSX32;
+    property BCC64: TJclBCC64 read GetBCC64;
     property DCCIL: TJclDCCIL read GetDCCIL;
     property MaxDelphiCLRVersion: string read GetMaxDelphiCLRVersion;
     property PdbCreate: Boolean read FPdbCreate write FPdbCreate;
@@ -786,7 +789,7 @@ const
 
   RADStudioDirName = 'RAD Studio';
 
-  BDSVersions: array [1..9] of TBDSVersionInfo = (
+  BDSVersions: array [1..10] of TBDSVersionInfo = (
     (
       Name: @RsCSharpName;
       VersionStr: '1.0';
@@ -840,6 +843,12 @@ const
       VersionStr: 'XE2';
       Version: 16;
       CoreIdeVersion: '160';
+      Supported: True),
+    (
+      Name: @RsRSName;
+      VersionStr: 'XE3';
+      Version: 17;
+      CoreIdeVersion: '170';
       Supported: True)
   );
   {$ENDIF MSWINDOWS}
@@ -1648,6 +1657,8 @@ begin
   {$ENDIF ~MSWINDOWS}
   if FileExists(BinFolderName + BCC32ExeName) then
     Include(FCommandLineTools, clBcc32);
+  if FileExists(BinFolderName + BCC64ExeName) then
+    Include(FCommandLineTools, clBcc64);
   if FileExists(BinFolderName + DCC32ExeName) then
     Include(FCommandLineTools, clDcc32);
   if FileExists(BinFolderName + DCC64ExeName) then
@@ -1762,7 +1773,8 @@ end;
 
 procedure TJclBorRADToolInstallation.CheckCBuilderPlatform(APlatform: TJclBDSPlatform);
 begin
-  if ((APlatform = bpWin32) and not (bpBCBuilder32 in Personalities)) then
+  if ((APlatform = bpWin32) and not (bpBCBuilder32 in Personalities)) or
+     ((APlatform = bpWin64) and not (bpBCBuilder64 in Personalities)) then
     raise EJclBorRADException.CreateRes(@RsEPlatformNotValid);
 end;
 
@@ -3241,12 +3253,15 @@ begin
     Include(FPersonalities, bpDelphi64);
   if clDccOSX32 in CommandLineTools then
     Include(FPersonalities, bpDelphiOSX32);
+  if clBcc64 in CommandLineTools then
+    Include(FPersonalities, bpBCBuilder64);
 end;
 
 destructor TJclBDSInstallation.Destroy;
 begin
   FreeAndNil(FDCCIL);
   FreeAndNil(FDCC64);
+  FreeAndNil(FBCC64);
   FreeAndNil(FDCCOSX32);
   FreeAndNil(FHelp2Manager);
   inherited Destroy;
@@ -3586,6 +3601,19 @@ begin
                                      LibDebugFolderName[bpOSX32], ObjFolderName[bpOSX32]);
   end;
   Result := FDCCOSX32;
+end;
+
+function TJclBDSInstallation.GetBCC64: TJclBCC64;
+begin
+  if not Assigned(FBCC64) then
+  begin
+    if not (clBcc64 in CommandLineTools) then
+      raise EJclBorRadException.CreateResFmt(@RsENotFound, [Bcc64ExeName]);
+    FBCC64 := TJclBCC64.Create(BinFolderName, LongPathBug, CompilerSettingsFormat);
+                               //SupportsNoConfig, SupportsPlatform, DCPOutputPath[bpWin64], LibFolderName[bpWin64],
+                               //LibDebugFolderName[bpWin64], ObjFolderName[bpWin64]);
+  end;
+  Result := FBCC64;
 end;
 
 function TJclBDSInstallation.GetDCCIL: TJclDCCIL;
@@ -4146,6 +4174,8 @@ begin
     DCC64.OutputCallback := Value;
   if clDccOSX32 in CommandLineTools then
     DCCOSX32.OutputCallback := Value;
+  if clBcc64 in CommandLineTools then
+    BCC64.OutputCallback := Value;
   if clDccIL in CommandLineTools then
     DCCIL.OutputCallback := Value;
 end;

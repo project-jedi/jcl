@@ -598,7 +598,13 @@ const
 implementation
 
 uses
-  JclResources, JclCharsets, JclMath, JclSysUtils;
+  {$IFDEF HAS_UNITSCOPE}
+  System.Types,
+  {$ENDIF HAS_UNITSCOPE}
+  JclResources,
+  JclCharsets,
+  JclMath,
+  JclSysUtils;
 
 function StreamCopy(Source: TStream; Dest: TStream; BufferSize: Longint): Int64;
 var

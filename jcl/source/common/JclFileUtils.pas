@@ -1081,6 +1081,7 @@ implementation
 
 uses
   {$IFDEF HAS_UNITSCOPE}
+  System.Types, // inlining of TList.Remove
   {$IFDEF HAS_UNIT_CHARACTER}
   System.Character,
   {$ENDIF HAS_UNIT_CHARACTER}

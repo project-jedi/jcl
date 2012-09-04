@@ -168,6 +168,7 @@ implementation
 uses
   // make TObjectList functions inlined
   {$IFDEF HAS_UNITSCOPE}
+  System.Types, // inlining of TObjectList.Remove
   System.Classes,
   {$ELSE ~HAS_UNITSCOPE}
   Classes,

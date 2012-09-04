@@ -5689,7 +5689,7 @@ begin
     vaLString, vaString:
       SetText(Reader.ReadString);
   else
-    SetText(Reader.ReadWideString);
+    SetText(Reader.{$IFDEF RTL240_UP}ReadString{$ELSE}ReadWideString{$ENDIF});
   end;
 end;
 
@@ -5900,7 +5900,7 @@ end;
 
 procedure TWideStrings.WriteData(Writer: TWriter);
 begin
-  Writer.WriteWideString(GetTextStr);
+  Writer.{$IFDEF RTL240_UP}WriteString{$ELSE}WriteWideString{$ENDIF}(GetTextStr);
 end;
 
 //=== { TWideStringList } ====================================================

@@ -242,6 +242,9 @@ implementation
 uses
   TypInfo,
   Variants,
+  {$IFDEF HAS_UNIT_SYSTEM_ACTIONS}
+  System.Actions,
+  {$ENDIF HAS_UNIT_SYSTEM_ACTIONS}
   {$IFDEF BDS8_UP}
   JclOtaAddinOptions,
   {$ENDIF BDS8_UP}

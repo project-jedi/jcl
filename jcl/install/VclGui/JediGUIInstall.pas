@@ -123,6 +123,9 @@ implementation
 {$R *.dfm}
 
 uses
+  {$IFDEF HAS_UNIT_TYPES}
+  Types, // inlining of Point
+  {$ENDIF HAS_UNIT_TYPES}
   Windows, Messages,
   FileCtrl,
   JclStrings,

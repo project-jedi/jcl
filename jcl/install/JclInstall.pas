@@ -801,7 +801,8 @@ end;
 
 function TJclInstallation.GetTargetSupportsCBuilder: Boolean;
 begin
-  Result := (bpBCBuilder32 in Target.Personalities) and (TargetPlatform = bpWin32);
+  Result := ((bpBCBuilder32 in Target.Personalities) and (TargetPlatform = bpWin32)) or
+            ((bpBCBuilder64 in Target.Personalities) and (TargetPlatform = bpWin64));
 end;
 
 function TJclInstallation.GetTargetSupportsDelphi: Boolean;
@@ -3262,11 +3263,11 @@ function TJclDistribution.CreateInstall(Target: TJclBorRADToolInstallation): Boo
         Result := Target.VersionNumber in [6];
       brBorlandDevStudio :
         Result := ((Target.VersionNumber in [1, 2]) and (bpDelphi32 in Target.Personalities))
-          or (Target.VersionNumber in [3, 4, 5, 6, 7, 8, 9]);
+          or (Target.VersionNumber in [3, 4, 5, 6, 7, 8, 9, 10]);
       else
         Result := False;
     end;
-    Result := Result and (Target.Personalities * [bpDelphi32, bpBCBuilder32, bpDelphi64] <> []);
+    Result := Result and (Target.Personalities * [bpDelphi32, bpDelphi64, bpBCBuilder32, bpBCBuilder64] <> []);
   end;
 var
   Inst: TJclInstallation;

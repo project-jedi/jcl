@@ -387,7 +387,11 @@ var
 
 type
   {$IFDEF PCRE_RTL}
+  {$IFDEF BDS10_UP}
+  TPCREGetMemInteger = NativeUInt;
+  {$ELSE ~BDS10_UP}
   TPCREGetMemInteger = Integer;
+  {$ENDIF ~BDS10_UP}
   {$ELSE ~PCRE_RTL}
   TPCREGetMemInteger = SizeInt;
   {$ENDIF ~PCRE_RTL}

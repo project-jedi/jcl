@@ -671,6 +671,9 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.Types,
+  {$ENDIF HAS_UNITSCOPE}
   JclCharsets,
   JclStrings,
   JclUnicode,

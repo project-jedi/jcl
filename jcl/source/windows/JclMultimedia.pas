@@ -280,7 +280,7 @@ type
   public
     constructor Create(MciErrNo: MCIERROR; const Msg: string);
     constructor CreateFmt(MciErrNo: MCIERROR; const Msg: string; const Args: array of const);
-    constructor CreateRes(MciErrNo: MCIERROR; Ident: Integer);
+    constructor CreateRes(MciErrNo: MCIERROR; Ident: Integer; Dummy: Integer);
     property MciErrorNo: DWORD read FMciErrorNo;
     property MciErrorMsg: string read FMciErrorMsg;
   end;
@@ -1153,7 +1153,7 @@ begin
   inherited CreateFmt(Msg + NativeLineBreak + LoadResString(@RsMmMciErrorPrefix) + FMciErrorMsg, Args);
 end;
 
-constructor EJclMciError.CreateRes(MciErrNo: MCIERROR; Ident: Integer);
+constructor EJclMciError.CreateRes(MciErrNo: MCIERROR; Ident: Integer; Dummy: Integer);
 begin
   FMciErrorNo := MciErrNo;
   FMciErrorMsg := GetMciErrorMessage(MciErrNo);

@@ -1,7 +1,8 @@
-JEDI Code Library v 2.3 Installation
+JEDI Code Library v 2.4 Installation
 
 Supported development tools versions:
 
+- Delphi XE3 (Win32 and Win64) and C++Builder XE3 (Win32 and Win64)
 - Delphi XE2 and C++Builder XE2;
 - Delphi XE and C++Builder XE;
 - Delphi 2010 and C++Builder 2010;
@@ -49,7 +50,7 @@ Helps you to integrate JCL with Delphi/BCB IDE. Currently it assists with:
 
 To execute for
 
-1) Win32
+1) Win32 and Win64
 - click on "Install.bat" file in the JCL root directory.
 
   Note:	If you have Delphi 8 for Microsoft .NET installed, you probably will have 
@@ -63,4 +64,4 @@ To execute for
         >install d6
 
 --------------------------------
-Document last updated 2010-08-13
+Document last updated 2012-08-31

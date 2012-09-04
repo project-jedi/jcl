@@ -37,7 +37,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -88,6 +88,24 @@ const
   HKPD = DelphiHKEY(HKEY_PERFORMANCE_DATA);
   HKCC = DelphiHKEY(HKEY_CURRENT_CONFIG);
   HKDD = DelphiHKEY(HKEY_DYN_DATA);
+{$IFDEF CPU64}
+{$NODEFINE DelphiHKEY}
+{$NODEFINE HKCR}
+{$NODEFINE HKCU}
+{$NODEFINE HKLM}
+{$NODEFINE HKUS}
+{$NODEFINE HKPD}
+{$NODEFINE HKCC}
+{$NODEFINE HKDD}
+{$HPPEMIT 'typedef HKEY DelphiHKEY;'}
+{$HPPEMIT 'static const DelphiHKEY HKCR = HKEY_CLASSES_ROOT;'}
+{$HPPEMIT 'static const DelphiHKEY HKCU = HKEY_CURRENT_USER;'}
+{$HPPEMIT 'static const DelphiHKEY HKLM = HKEY_LOCAL_MACHINE;'}
+{$HPPEMIT 'static const DelphiHKEY HKUS = HKEY_USERS;'}
+{$HPPEMIT 'static const DelphiHKEY HKPD = HKEY_PERFORMANCE_DATA;'}
+{$HPPEMIT 'static const DelphiHKEY HKCC = HKEY_CURRENT_CONFIG;'}
+{$HPPEMIT 'static const DelphiHKEY HKDD = HKEY_DYN_DATA;'}
+{$ENDIF CPU64}
 {$ENDIF FPC}
 
 function RootKeyName(const RootKey: THandle): string;

@@ -14,7 +14,7 @@
 
 <h1>JEDI Code Library</h1>
 
-<p>Release 2.3<br>
+<p>Release 2.4<br>
 Build 4197<br>
 28-August-2011</p>
 
@@ -49,8 +49,8 @@ Build 4197<br>
 <hr><br>
 
 <h3><a name="about">About this release</a></h3>
-<p>JCL release 2.2 provides support for RAD Studio XE2 (including
-Delphi XE2 and C++Builder XE2) an updated support for all targets.</p>
+<p>JCL release 2.4 provides support for RAD Studio XE3 (including
+Delphi XE3 and C++Builder XE3) an updated support for all targets.</p>
 
 <p>Multiple bugs have been
 fixed; for detailed change logs, use the facilities of our Subversion repository
@@ -63,14 +63,24 @@ at Sourceforge.net&nbsp;
 
 <ul>
 
- <li>New unit JclMsBuild to query and update MsBuild files;</li>
- <li>New string index, prefix and suffix functions in JclAnsiStrings and JclStrings;</li>
- <li>Speed improvements in string conversion functions and in TJclSimpleXml;</li>
- <li>Improvement of JclSysUtils.Execute to add STD_ERROR callbacks and event to immediatly kill the nested application;</li>
- <li>New code to catch and report exceptions raised in C++ code (donation by Moritz Beutel);</li>
- <li>New wrapper for TortoiseGIT actions (donation by Jens Fudickar);</li>
- <li>Wrappers for new archive formats WIM, TED, UEFIc, UEFIs, SquashFS and CramFS introduced in 7zip 9.22.</li>
- <li>Application instances: new features to limit the number of instances on a per-user, per-session and per-machine scope.</li>
+ <li>Speed improvements in string conversion functions and in TJclSimpleXml; new option to enable case sensitivity</li>
+ <li>New function FileDateTime and FileHistory in JclFileUtils.pas</li>
+ <li>JclPeImage can now read string tables</li>
+ <li>Speed improvements in JclDebug when parsing MAP files and generating JCL Debug information</li>
+ <li>JclSysUtils.Execute: Custom priority for spawned processes</li>
+ <li>JclCompression: information about which file is being extracted or compressed</li>
+ <li>bzip2.pas, pcre.pas, zlibh.pas and sevenzip.pas: new option to customize the name of the DLL to load, full support for Win64</li>
+ <li>JclHashSets.pas reimplemented from scratch</li>
+ <li>JclPrint.pas: major update to prevent corruption of printer settings</li>
+ <li>Experts: various fixes to prevent access violations on invokes and on unloads</li>
+ <li>SVN 1.7 support in JCL Version control integration</li>
+ <li>zlibh.pas and JclCompression.pas: new option to use RTL zlib</li>
+ <li>JclUnicode.pas and others: the RTL Unicode database is now fully supported and does not require the JCL Unicode database anymore</li>
+ <li>JclUnicode.pas: update to Unicode Character Database (UCD) 6.0</li>
+ <li>pcre.pas: update to PCRE 8.31 with JIT and 16-bit character support</li>
+ <li>favorite combobox and custom open dialog: support with Vista new-style open dialogs</li>
+ <li>Exception dialog: 64-bit compatibility</li>
+ <li>Stack tracking now supports Win64</li>
 
 </ul>
 
@@ -81,6 +91,7 @@ at Sourceforge.net&nbsp;
 
   <li>
    <p>As of JCL 2.0, the library does not support Delphi 5, C++Builder 5, Kylix 3 and Delphi.net anymore;</p>
+   <p>Due to many internal failure, we do not provide full support for Delphi 2005: JCL for Delphi 2005 should compile, it may work or not.</p>
   </li>
 
 </ul>
@@ -98,7 +109,7 @@ them if the "Packages" node is checked.</p>
 can be linked into binaries to become JCL debug data or be converted to .jdbg files.
 Once linked MAP files could be deleted. These options are subnodes of the "Packages" node.</p>
 
-<p>For BDS 2006, RAD Studio 2007, RAD Studio 2009, RAD Studio 2010, RAD Studio XE and RAD Studio XE2 the
+<p>For BDS 2006, RAD Studio 2007, RAD Studio 2009, RAD Studio 2010, RAD Studio XE, RAD Studio XE2 and RAD Studio XE3 the
 compiler introduced a new option to make the same packages available in C++,
 by checking the "Dual packages" option of the "Packages" node, you will be able
 to call functions of the JCL from C++ code.</p>
@@ -151,6 +162,8 @@ to call functions of the JCL from C++ code.</p>
   <li>Delphi XE and C++Builder XE.</li>
 
   <li>Delphi XE2 and C++Builder XE2.</li>
+
+  <li>Delphi XE3 and C++Builder XE3.</li>
 
 </ul>
 
@@ -250,6 +263,10 @@ file.
     <li>For Delphi XE2 and C++Builder XE2 Win32: source\include\jcld16win32.inc</li>
 
     <li>For Delphi XE2 Win64: source\include\jcld16win64.inc</li>
+
+    <li>For Delphi XE3 and C++Builder XE3 Win32: source\include\jcld17win32.inc</li>
+
+    <li>For Delphi XE3 and C++Builder XE3 Win64: source\include\jcld17win64.inc</li>
 
     <li>For FreePascal: source\include\jclfpc.inc</li>
   </ul>
