@@ -2,6 +2,6 @@ option batch continue
 option confirm off
 option transfer binary
 open jcl.frs.sourceforge.net
-synchronize remote C:\dev\jcl\thirdparty\makedist\files "/home/pfs/project/j/jc/jcl/JCL Releases/JCL 2.3 Build 4197"
+synchronize remote C:\dev\jcl\thirdparty\makedist\files "/home/pfs/project/j/jc/jcl/JCL Releases/JCL 2.4 Build 4571"
 close
 exit
