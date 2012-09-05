@@ -52,6 +52,9 @@
 #define JclLib16    JclLib
 #define   JclBpl16  JclBpl
 #define   JclHpp16  JclHpp
+#define JclLib17    JclLib
+#define   JclBpl17  JclBpl
+#define   JclHpp17  JclHpp
 #endif
 
 ;---------------------------------------------------
@@ -198,6 +201,13 @@ Source: {#JclBpl16}\*; DestDir: "{code:GetDelphiBplDir|16}"; Components: "IDE\De
 Source: {#JclBpl16}\Win64\*; DestDir: "{code:GetDelphiBplDir|16}\Win64"; Components: "IDE\Delphi16"; Flags: ignoreversion sortfilesbyextension
 Source: {#JclHpp16}\*; DestDir: "{app}\include\d16"; Components: "IDE\Delphi16"; Flags: ignoreversion sortfilesbyextension
 #endif
+#ifdef Include_Delphi17
+; SolidBreak;
+Source: {#JclLib17}\*; DestDir: "{app}\lib\d17"; Excludes: ".svn,__history,*.txt,*.hpp"; Components: "IDE\Delphi17"; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs solidbreak
+Source: {#JclBpl17}\*; DestDir: "{code:GetDelphiBplDir|17}"; Components: "IDE\Delphi17"; Flags: ignoreversion sortfilesbyextension
+Source: {#JclBpl17}\Win64\*; DestDir: "{code:GetDelphiBplDir|17}\Win64"; Components: "IDE\Delphi17"; Flags: ignoreversion sortfilesbyextension
+Source: {#JclHpp17}\*; DestDir: "{app}\include\d17"; Components: "IDE\Delphi17"; Flags: ignoreversion sortfilesbyextension
+#endif
 
 #endif
 
@@ -268,13 +278,22 @@ Root: HKCU; Subkey: "{code:GetDelphiRegKey|15}\Jedi\JCL"; ValueType: string; Val
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|15}\Globals"; ValueType: string; ValueName: "ForceEnvOptionsUpdate"; ValueData: "1"; Components: "IDE\Delphi15";
 #endif
 #ifdef Include_Delphi16
-; Delphi XE
+; Delphi XE2
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|16}\Jedi\JCL"; ValueType: string; ValueName: "BplDir"; ValueData: {code:GetDelphiBplDir|16}; Components: "IDE\Delphi16"; Flags: uninsdeletevalue;
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|16}\Jedi\JCL"; ValueType: string; ValueName: "DcpDir"; ValueData: {app}\lib\d16; Components: "IDE\Delphi16"; Flags: uninsdeletevalue;
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|16}\Jedi\JCL"; ValueType: string; ValueName: "RootDir"; ValueData: {app}; Components: "IDE\Delphi16"; Flags: uninsdeletevalue;
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|16}\Jedi\JCL"; ValueType: string; ValueName: "Version"; ValueData: {#JclVersionStr}; Components: "IDE\Delphi16"; Flags: uninsdeletevalue;
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|16}\Globals"; ValueType: string; ValueName: "ForceEnvOptionsUpdate"; ValueData: "1"; Components: "IDE\Delphi16";
 #endif
+#ifdef Include_Delphi17
+; Delphi XE3
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|17}\Jedi\JCL"; ValueType: string; ValueName: "BplDir"; ValueData: {code:GetDelphiBplDir|17}; Components: "IDE\Delphi17"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|17}\Jedi\JCL"; ValueType: string; ValueName: "DcpDir"; ValueData: {app}\lib\d17; Components: "IDE\Delphi17"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|17}\Jedi\JCL"; ValueType: string; ValueName: "RootDir"; ValueData: {app}; Components: "IDE\Delphi17"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|17}\Jedi\JCL"; ValueType: string; ValueName: "Version"; ValueData: {#JclVersionStr}; Components: "IDE\Delphi17"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|17}\Globals"; ValueType: string; ValueName: "ForceEnvOptionsUpdate"; ValueData: "1"; Components: "IDE\Delphi17";
+#endif
+
 #endif
 
 
@@ -334,7 +353,13 @@ Type: files; Name: "{app}\lib\d16\win64\*"
 Type: files; Name: "{app}\lib\d16\win64\debug\*"
 Type: files; Name: "{app}\include\d16\*"
 Type: files; Name: "{code:GetDelphiBplDir|16}\Jcl*.~bpl";
-
+; lib\Delphi/C++Builder XE3
+Type: files; Name: "{app}\lib\d17\win32\*"
+Type: files; Name: "{app}\lib\d17\win32\debug\*"
+Type: files; Name: "{app}\lib\d17\win64\*"
+Type: files; Name: "{app}\lib\d17\win64\debug\*"
+Type: files; Name: "{app}\include\d17\*"
+Type: files; Name: "{code:GetDelphiBplDir|17}\Jcl*.~bpl";
 [Icons]
 Name: "{group}\{cm:ProgramOnTheWeb,{#MyAppName}}"; Filename: "{#MyAppURL}"
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
@@ -359,7 +384,7 @@ var
   Version: Integer;
 begin
 {  // Uninstall from all IDEs ?
-  for Version := 6 to 16 do
+  for Version := 6 to 17 do
     UninstallExpertsPrefixed(ikDelphi, Version, 'Jcl');
   for Version := 6 to 6 do
     UninstallExpertsPrefixed(ikBCB, Version, 'Jcl');}

@@ -1,6 +1,6 @@
 [Components]
 ; IDE selection
-Name: "IDE"; Description: "Install for Professional/Enterprise/Architect IDE"
+Name: "IDE"; Description: "Install for IDE"
 #ifdef Include_Delphi6
 Name: "IDE\Delphi6"; Description: "Install for Delphi 6"; Types: full prefered; Check: IsDelphiInstalled(6)
 #endif
@@ -30,4 +30,7 @@ Name: "IDE\Delphi15"; Description: "Install for RAD Studio XE"; Types: full pref
 #endif
 #ifdef Include_Delphi16
 Name: "IDE\Delphi16"; Description: "Install for RAD Studio XE2"; Types: full prefered; Check: IsDelphiInstalled(16)
+#endif
+#ifdef Include_Delphi17
+Name: "IDE\Delphi17"; Description: "Install for RAD Studio XE3"; Types: full prefered; Check: IsDelphiInstalled(17)
 #endif
