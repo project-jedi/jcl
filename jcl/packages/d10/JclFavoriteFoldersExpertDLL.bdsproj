@@ -137,9 +137,9 @@
       <VersionInfo Name="IncludeVerInfo">True</VersionInfo>
       <VersionInfo Name="AutoIncBuild">False</VersionInfo>
       <VersionInfo Name="MajorVer">2</VersionInfo>
-      <VersionInfo Name="MinorVer">4</VersionInfo>
+      <VersionInfo Name="MinorVer">5</VersionInfo>
       <VersionInfo Name="Release">0</VersionInfo>
-      <VersionInfo Name="Build">4198</VersionInfo>
+      <VersionInfo Name="Build">4572</VersionInfo>
       <VersionInfo Name="Debug">False</VersionInfo>
       <VersionInfo Name="PreRelease">False</VersionInfo>
       <VersionInfo Name="Special">False</VersionInfo>
@@ -151,13 +151,13 @@
     <VersionInfoKeys>
       <VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
       <VersionInfoKeys Name="FileDescription">JCL Open and Save IDE dialogs with favorite folders</VersionInfoKeys>
-      <VersionInfoKeys Name="FileVersion">2.4.0.4198</VersionInfoKeys>
+      <VersionInfoKeys Name="FileVersion">2.5.0.4572</VersionInfoKeys>
       <VersionInfoKeys Name="InternalName">JclFavoriteFoldersExpertDLL</VersionInfoKeys>
       <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2012 Project JEDI</VersionInfoKeys>
       <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
       <VersionInfoKeys Name="OriginalFilename">JclFavoriteFoldersExpertDLL100.dll</VersionInfoKeys>
       <VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
-      <VersionInfoKeys Name="ProductVersion">2.4 Build 4198</VersionInfoKeys>
+      <VersionInfoKeys Name="ProductVersion">2.5 Build 4572</VersionInfoKeys>
     </VersionInfoKeys>
   </Delphi.Personality>
 </BorlandProject>

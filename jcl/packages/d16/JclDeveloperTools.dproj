@@ -61,10 +61,10 @@
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
 			<VerInfo_MajorVer>2</VerInfo_MajorVer>
-			<VerInfo_Build>4198</VerInfo_Build>
+			<VerInfo_Build>4572</VerInfo_Build>
 			<VerInfo_Release>0</VerInfo_Release>
-			<VerInfo_MinorVer>4</VerInfo_MinorVer>
-			<VerInfo_Keys>CompanyName=Project JEDI;FileDescription=JEDI Code Library Developer Tools package;FileVersion=2.4.0.4198;InternalName=JclDeveloperTools;LegalCopyright=Copyright (C) 1999, 2012 Project JEDI;OriginalFilename=JclDeveloperTools160.bpl;ProductName=JEDI Code Library;ProductVersion=2.4.0.4198</VerInfo_Keys>
+			<VerInfo_MinorVer>5</VerInfo_MinorVer>
+			<VerInfo_Keys>CompanyName=Project JEDI;FileDescription=JEDI Code Library Developer Tools package;FileVersion=2.5.0.4572;InternalName=JclDeveloperTools;LegalCopyright=Copyright (C) 1999, 2012 Project JEDI;OriginalFilename=JclDeveloperTools160.bpl;ProductName=JEDI Code Library;ProductVersion=2.5.0.4572</VerInfo_Keys>
 			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
 			<VerInfo_Locale>1033</VerInfo_Locale>
 			<DCC_Namespace>System;System.Win;WinApi;Vcl;Vcl.Imaging;$(DCC_Namespace)</DCC_Namespace>
@@ -213,9 +213,9 @@
 						<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
 						<VersionInfo Name="AutoIncBuild">False</VersionInfo>
 						<VersionInfo Name="MajorVer">2</VersionInfo>
-						<VersionInfo Name="MinorVer">4</VersionInfo>
+						<VersionInfo Name="MinorVer">5</VersionInfo>
 						<VersionInfo Name="Release">0</VersionInfo>
-						<VersionInfo Name="Build">4198</VersionInfo>
+						<VersionInfo Name="Build">4572</VersionInfo>
 						<VersionInfo Name="Debug">False</VersionInfo>
 						<VersionInfo Name="PreRelease">False</VersionInfo>
 						<VersionInfo Name="Special">False</VersionInfo>
@@ -227,13 +227,13 @@
 					<VersionInfoKeys>
 						<VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
 						<VersionInfoKeys Name="FileDescription">JEDI Code Library Developer Tools package</VersionInfoKeys>
-						<VersionInfoKeys Name="FileVersion">2.4.0.4198</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">2.5.0.4572</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName">JclDeveloperTools</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2012 Project JEDI</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename">JclDeveloperTools160.bpl</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
-						<VersionInfoKeys Name="ProductVersion">2.4.0.4198</VersionInfoKeys>
+						<VersionInfoKeys Name="ProductVersion">2.5.0.4572</VersionInfoKeys>
 					</VersionInfoKeys>
 					<Source>
 						<Source Name="MainSource">JclDeveloperTools.dpk</Source>

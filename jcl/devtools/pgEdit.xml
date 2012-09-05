@@ -99,9 +99,9 @@
       </aliases>
       <ProjectProperties>
         <ProjectProperty name="VersionMajorNumber" value="2"/>
-        <ProjectProperty name="VersionMinorNumber" value="4"/>
+        <ProjectProperty name="VersionMinorNumber" value="5"/>
         <ProjectProperty name="ReleaseNumber" value="0"/>
-        <ProjectProperty name="BuildNumber" value="4198"/>
+        <ProjectProperty name="BuildNumber" value="4572"/>
         <ProjectProperty name="Copyright" value="Copyright (C) 1999, 2012 Project JEDI"/>
       </ProjectProperties>
     </Model>
