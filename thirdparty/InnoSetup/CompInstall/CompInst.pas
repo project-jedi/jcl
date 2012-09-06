@@ -101,9 +101,10 @@ var
   Inst: TJclBorRADToolInstallation;
   VStr: string;
   ConfigDataLocation: string;
+  VersionNum: Integer;
 begin
+  Result := 0;
   try
-    Result := Installations.Count;
     for I := 0 to Installations.Count - 1 do
     begin
       Inst := Installations[I];
@@ -112,10 +113,12 @@ begin
       if (ConfigDataLocation <> '') and (ConfigDataLocation[1] = PathDelim) then
         ConfigDataLocation := Copy(ConfigDataLocation, 2, MaxInt); // there is no such thing as an absolute "\Software" registry key
 
+      VersionNum := 0;
       case Inst.RadToolKind of
         brDelphi:
           begin
-            VStr := IntToStr(Inst.VersionNumber);
+            VersionNum := Inst.VersionNumber;
+            VStr := IntToStr(VersionNum);
             SetEnvironmentVariable(PChar('DELPHI' + VStr), PChar(Inst.RootDir));
             SetEnvironmentVariable(PChar('DELPHI' + VStr + 'BPL'), PChar(Inst.BPLOutputPath[bpWin32]));
             SetEnvironmentVariable(PChar('DELPHI' + VStr + 'DCP'), PChar(Inst.DCPOutputPath[bpWin32]));
@@ -123,7 +126,8 @@ begin
           end;
         brCppBuilder:
           begin
-            VStr := IntToStr(Inst.VersionNumber);
+            VersionNum := Inst.VersionNumber;
+            VStr := IntToStr(VersionNum);
             SetEnvironmentVariable(PChar('BCB' + VStr), PChar(Inst.RootDir));
             SetEnvironmentVariable(PChar('BCB' + VStr + 'BPL'), PChar(Inst.BPLOutputPath[bpWin32]));
             SetEnvironmentVariable(PChar('BCB' + VStr + 'DCP'), PChar(Inst.DCPOutputPath[bpWin32]));
@@ -132,9 +136,10 @@ begin
         brBorlandDevStudio:
           begin
             if Inst.VersionNumber >= 7 then
-              VStr := IntToStr(7 + Inst.VersionNumber) // Delphi 14 is RAD Studio 7
+              VersionNum := 7 + Inst.VersionNumber // Delphi 14 is RAD Studio 7
             else
-              VStr := IntToStr(9 - 3 + Inst.VersionNumber); // Delphi 9 is BDS 3
+              VersionNum := 9 - 3 + Inst.VersionNumber; // Delphi 9 is BDS 3
+            VStr := IntToStr(VersionNum);
             if bpDelphi32 in Inst.Personalities then
             begin
               SetEnvironmentVariable(PChar('DELPHI' + VStr), PChar(Inst.RootDir));
@@ -166,6 +171,8 @@ begin
             SetEnvironmentVariable(PChar('BDSCOMMONDIR' + VStr), PChar(Inst.EnvironmentVariables.Values['BDSCOMMONDIR']));
           end;
       end;
+      if Result < VersionNum then
+        Result := VersionNum;
     end;
   except
     HandleException;

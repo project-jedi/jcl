@@ -1,6 +1,7 @@
 @echo off
 SETLOCAL
-SET SETUPDIR=%CD%
+SET CURDIR=%CD%
+SET SETUPDIR=%~dp0
 
 :: ==========================================================
 :: rsvars.bat check
@@ -15,8 +16,12 @@ SET JCLBUILTDIR=%SETUPDIR%\setupbuild
 SET InnoSetupDir=%SETUPDIR%\InnoSetup
 
 :: == Sanity checks ==
-if not exist "%JCLROOT%\source\common\JclBase.pas" goto NoRootDirFound
 if not exist "%SETUPDIR%\Install.iss" goto NoInstallDir
+if exist "%JCLROOT%\source\common\JclBase.pas" goto JclRootDirFound
+:: Try the "thirdparty" checkout
+SET JCLROOT=%SETUPDIR%\..\..\jcl
+if not exist "%JCLROOT%\source\common\JclBase.pas" goto NoRootDirFound
+:JclRootDirFound
 
 
 :: ==========================================================
@@ -31,12 +36,13 @@ md "%JCLBUILTDIR%\lib" 2>NUL >NUL
 md "%JCLBUILTDIR%\bpl" 2>NUL >NUL
 
 :: == Delete all files in the output directories, we always want to rebuild them ==
+if "-%JCLBUILTDIR%" == "-" GOTO NoRootDirFound
 del /Q /S "%JCLBUILTDIR%\*.*" 2>NUL >NUL
 
 :: == Compile the files
 SET JclLib=%JCLBUILTDIR%\lib\win32
 
-cd %JCLROOT%
+cd /d %JCLROOT%
 msbuild make.proj "/p:Platform=win32" "/p:HppOutDir=%JCLBUILTDIR%\hpp" "/p:DcuOutDir=%JCLBUILTDIR%\lib\win32" "/p:BplOutDir=%JCLBUILTDIR%\bpl"
 if ERRORLEVEL 1 goto Failed
 if not exist "%BDS%\bin\dcc64.exe" goto NoWin64
@@ -45,7 +51,14 @@ if ERRORLEVEL 1 goto Failed
 :: For 64bit we have to install both win32 and lib\win64
 SET JclLib=%JCLBUILTDIR%\lib
 :NoWin64
-cd %SETUPDIR%
+cd /d %SETUPDIR%
+
+:: Generate Settings.iss file
+del Settings.iss >NUL 2>NUL
+dcc32 -E. "-U%JCLBUILTDIR%\lib\win32;%BDS%\lib\release;%BDS%\lib;%BDS%\lib\win32\release" GenerateSettings.dpr
+if ERRORLEVEL 1 goto Failed
+GenerateSettings.exe "%JCLROOT%"
+del GenerateSettings.exe >NUL
 
 :: ==========================================================
 :: Compile Setup
@@ -69,5 +82,5 @@ echo.
 pause
 
 :Leave
-cd %SETUPDIR%
+cd /d %CURDIR%
 ENDLOCAL

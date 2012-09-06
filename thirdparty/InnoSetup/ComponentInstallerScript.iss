@@ -4,6 +4,8 @@ Source: CompInstall.dll; DestDir: {app}; Flags: solidbreak
 [Code]
 type
   TIdeKind = (ikUnknown, ikDelphi, ikBCB);
+var
+  LastInstalledIDEVersionNumber: Integer;
 
 function MapDesignPackage(IdeKind: TIdeKind; Version: Integer; const PackageName: string): string;
   forward; // user defined mapping function that maps the component name @PackageName to a full qualified DesignPackage file name
@@ -448,11 +450,11 @@ function InitComponentInstaller(): Boolean;
 var
   Version: Integer;
 begin
-  compinst_init;  // sets the "DELPHIx[|BPL|DCP|RegKey]" and "BCBx[|BPL|DCP|RegKey] environment variables
+  LastInstalledIDEVersionNumber := compinst_init;  // sets the "DELPHIx[|BPL|DCP|RegKey]" and "BCBx[|BPL|DCP|RegKey] environment variables
 
   // Check if there is any Delphi IDE installed
   Result := False;
-  for Version := 6 to 17 do
+  for Version := 6 to LastInstalledIDEVersionNumber do
     if IsDelphiInstalled(Version) then
       Result := True;
 
@@ -462,7 +464,7 @@ end;
 
 function InitComponentUninstaller(): Boolean;
 begin
-  compinst_initUninstall;  // sets the "DELPHIx[|BPL|DCP|RegKey]" and "BCBx[|BPL|DCP|RegKey] environment variables
+  LastInstalledIDEVersionNumber := compinst_initUninstall;  // sets the "DELPHIx[|BPL|DCP|RegKey]" and "BCBx[|BPL|DCP|RegKey] environment variables
   Result := True;
 end;
 

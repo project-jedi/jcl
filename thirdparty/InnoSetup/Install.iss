@@ -384,7 +384,7 @@ var
   Version: Integer;
 begin
 {  // Uninstall from all IDEs ?
-  for Version := 6 to 17 do
+  for Version := 6 to LastInstalledIDEVersionNumber do
     UninstallExpertsPrefixed(ikDelphi, Version, 'Jcl');
   for Version := 6 to 6 do
     UninstallExpertsPrefixed(ikBCB, Version, 'Jcl');}
