@@ -2559,9 +2559,16 @@ end;
 
 procedure TJclRegion.FillGradient(Canvas: TCanvas; ColorCount: Integer;
   StartColor, EndColor: TColor; ADirection: TGradientDirection);
+var
+  DC: integer;
 begin
-  SelectClipRgn(Canvas.Handle,FHandle);
-  {$IFDEF VCL}JclGraphics{$ENDIF}.FillGradient(Canvas.Handle, Box, ColorCount, StartColor, EndColor, ADirection);
+  DC := SaveDC(Canvas.Handle);
+  try
+    SelectClipRgn(Canvas.Handle,FHandle);
+    {$IFDEF VCL}JclGraphics.{$ENDIF}FillGradient(Canvas.Handle, Box, ColorCount, StartColor, EndColor, ADirection);
+  finally
+    RestoreDC(Canvas.Handle, DC);
+  end;
 end;
 
 procedure TJclRegion.Frame(Canvas: TCanvas; FrameWidth, FrameHeight: Integer);
