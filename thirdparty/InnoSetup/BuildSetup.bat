@@ -57,7 +57,7 @@ cd /d %SETUPDIR%
 del Settings.iss >NUL 2>NUL
 dcc32 -E. "-U%JCLBUILTDIR%\lib\win32;%BDS%\lib\release;%BDS%\lib;%BDS%\lib\win32\release" GenerateSettings.dpr
 if ERRORLEVEL 1 goto Failed
-GenerateSettings.exe "%JCLROOT%"
+GenerateSettings.exe
 del GenerateSettings.exe >NUL
 
 :: ==========================================================
