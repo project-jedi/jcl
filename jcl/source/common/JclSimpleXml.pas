@@ -2224,7 +2224,6 @@ begin
         TJclSimpleXMLNamedElems(FNamedElems.SimpleItems[NamedIndex]).FItems.Remove(Elem);
     end;
     FElems.Delete(Index);
-    FreeAndNil(Elem);
   end;
 end;
 
@@ -2602,7 +2601,6 @@ procedure QuickSort(Elems: TJclSimpleXMLElems; List: TList; L, R: Integer;
   AFunction: TJclSimpleXMLElemCompare);
 var
   I, J, M: Integer;
-  T: Pointer;
 begin
   repeat
     I := L;
@@ -2615,9 +2613,7 @@ begin
         Dec(J);
       if I <= J then
       begin
-        T := List[I];
-        List[I] := List[J];
-        List[J] := T;
+        List.Exchange(I, J);
         Inc(I);
         Dec(J);
       end;
