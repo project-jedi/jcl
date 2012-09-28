@@ -2507,8 +2507,12 @@ end;
 
 function TJclSimpleXMLElems.Remove(Value: TJclSimpleXMLElem): Integer;
 begin
-  Result := FElems.IndexOfSimpleItem(Value);
-  Notify(Value, opRemove);
+  if FElems = nil
+     then Result := -1 // like TList.IndexOf(alien)
+     else begin
+        Result := FElems.IndexOfSimpleItem(Value);
+        Notify(Value, opRemove);
+     end;
 end;
 
 procedure TJclSimpleXMLElems.SaveToStringStream(StringStream: TJclStringStream;
