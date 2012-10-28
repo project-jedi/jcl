@@ -39,7 +39,7 @@ uses
   Windows, Messages, CommCtrl,
   SysUtils, Classes,
   Graphics, Forms, Controls, Dialogs, StdCtrls, ExtCtrls, Menus, Buttons, ComCtrls, ImgList,
-  JclIDEUtils, JclContainerIntf, JediInstall;
+  JclWin32, JclIDEUtils, JclContainerIntf, JediInstall;
 
 const
   WM_AFTERSHOW = WM_USER + 10;
@@ -77,7 +77,7 @@ type
     FXMLResultFileName: string;
     FIncludeLogFilesInXML: Boolean;
     FDeletePreviousLogFiles: Boolean;
-
+    FTaskBarList: ITaskbarList3;
     procedure HandleException(Sender: TObject; E: Exception);
     procedure SetFrameIcon(Sender: TObject; const FileName: string);
     procedure WMAfterShow(var Message: TMessage); Message WM_AFTERSHOW;
@@ -131,6 +131,7 @@ uses
   {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
   UITypes,
   {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
+  ActiveX, ComObj,
   FileCtrl,
   JclDebug, JclShell, JediGUIProfiles,
   JclBase, JclFileUtils, JclStrings, JclSysInfo, JclSysUtils, JclArrayLists,
@@ -186,6 +187,9 @@ begin
   {$ENDIF}
   Application.HintPause := 500;
   Application.OnShowHint := ShowFeatureHint;
+
+  CoCreateInstance(CLSID_TaskbarList, nil, CLSCTX_INPROC_SERVER, ITaskBarList3, FTaskBarList);
+  FTaskBarList.HrInit;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
@@ -263,12 +267,16 @@ begin
   ProgressBar.Visible := True;
   Screen.Cursor := crHourGlass;
   try
+    if Assigned(FTaskBarList) then
+      FTaskBarList.SetProgressState(Self.Handle, TBPF_NORMAL);
     Success := InstallCore.Install;
     if (Success and FAutoCloseOnSuccess) or (not Success and FAutoCloseOnFailure) then
       Close;
   finally
     ProgressBar.Visible := False;
     Screen.Cursor := crDefault;
+    if Assigned(FTaskBarList) then
+      FTaskBarList.SetProgressState(Self.Handle, TBPF_NOPROGRESS);
   end;
   QuitBtn.SetFocus;
 end;
@@ -281,12 +289,17 @@ begin
   ProgressBar.Visible := True;
   Screen.Cursor := crHourGlass;
   try
+    if Assigned(FTaskBarList) then
+      FTaskBarList.SetProgressState(Self.Handle, TBPF_NORMAL);
+
     Success := InstallCore.Uninstall;
     if (Success and FAutoCloseOnSuccess) or (not Success and FAutoCloseOnFailure) then
       Close;
   finally
     ProgressBar.Visible := False;
     Screen.Cursor := crDefault;
+    if Assigned(FTaskBarList) then
+      FTaskBarList.SetProgressState(Self.Handle, TBPF_NOPROGRESS);
   end;
   QuitBtn.SetFocus;
 end;
@@ -341,6 +354,14 @@ begin
   end;
   OldCursor := Screen.Cursor;
   try
+    if Assigned(FTaskBarList) then
+    begin
+      if DialogType = dtError then
+        FTaskBarList.SetProgressState(Self.Handle, TBPF_ERROR)
+      else
+        FTaskBarList.SetProgressState(Self.Handle, TBPF_PAUSED);
+    end;
+
     Screen.Cursor := crDefault;
     Buttons := [];
     for Result := Low(TDialogResponse) to High(TDialogResponse) do
@@ -350,6 +371,9 @@ begin
     for Result := Low(TDialogResponse) to High(TDialogResponse) do
       if DlgResult[Result] = Res then
         Break;
+
+    if Assigned(FTaskBarList) then
+      FTaskBarList.SetProgressState(Self.Handle, TBPF_NORMAL)
   finally
     Screen.Cursor := OldCursor;
   end;
@@ -555,6 +579,12 @@ end;
 procedure TMainForm.SetProgress(Value: Integer);
 begin
   ProgressBar.Position := Value;
+
+  if Assigned(FTaskBarList) then
+  begin
+    FTaskBarList.SetProgressState(Self.Handle, TBPF_NORMAL);
+    FTaskBarList.SetProgressValue(Self.Handle, Value,100);
+  end;
 end;
 
 procedure TMainForm.Execute;

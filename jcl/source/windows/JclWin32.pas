@@ -5828,6 +5828,133 @@ const
   {$EXTERNALSYM CSIDL_CDBURN_AREA}
   {$EXTERNALSYM CSIDL_COMPUTERSNEARME}
 
+type
+  ITaskbarList = interface(IUnknown)
+    ['{56FDF342-FD6D-11D0-958A-006097C9A090}']
+    function HrInit: HRESULT; stdcall;
+    function AddTab(hwnd: HWND): HRESULT; stdcall;
+    function DeleteTab(hwnd: HWND): HRESULT; stdcall;
+    function ActivateTab(hwnd: HWND): HRESULT; stdcall;
+    function SetActiveAlt(hwnd: HWND): HRESULT; stdcall;
+  end;
+  {$EXTERNALSYM ITaskbarList}
+
+  ITaskbarList2 = interface(ITaskbarList)
+    ['{602D4995-B13A-429B-A66E-1935E44F4317}']
+    function MarkFullscreenWindow(hwnd: HWND; fFullscreen: BOOL): HRESULT; stdcall;
+  end;
+  {$EXTERNALSYM ITaskbarList2}
+
+type
+  THUMBBUTTON = record
+    dwMask: DWORD;
+    iId: UINT;
+    iBitmap: UINT;
+    hIcon: HICON;
+    szTip: packed array[0..259] of WCHAR;
+    dwFlags: DWORD;
+  end;
+  {$EXTERNALSYM THUMBBUTTON}
+  tagTHUMBBUTTON = THUMBBUTTON;
+  {$EXTERNALSYM tagTHUMBBUTTON}
+  TThumbButton = THUMBBUTTON;
+  {$EXTERNALSYM TThumbButton}
+  PThumbButton = ^TThumbButton;
+  {$EXTERNALSYM PThumbButton}
+
+// for ThumbButtons.dwFlags
+const
+  THBF_ENABLED        = $0000;
+  {$EXTERNALSYM THBF_ENABLED}
+  THBF_DISABLED       = $0001;
+  {$EXTERNALSYM THBF_DISABLED}
+  THBF_DISMISSONCLICK = $0002;
+  {$EXTERNALSYM THBF_DISMISSONCLICK}
+  THBF_NOBACKGROUND   = $0004;
+  {$EXTERNALSYM THBF_NOBACKGROUND}
+  THBF_HIDDEN         = $0008;
+  {$EXTERNALSYM THBF_HIDDEN}
+  THBF_NONINTERACTIVE = $0010;
+  {$EXTERNALSYM THBF_NONINTERACTIVE}
+
+// for ThumbButton.dwMask
+const
+  THB_BITMAP          = $0001;
+  {$EXTERNALSYM THB_BITMAP}
+  THB_ICON            = $0002;
+  {$EXTERNALSYM THB_ICON}
+  THB_TOOLTIP         = $0004;
+  {$EXTERNALSYM THB_TOOLTIP}
+  THB_FLAGS           = $0008;
+  {$EXTERNALSYM THB_FLAGS}
+
+// wParam for WM_COMMAND message (lParam = Button ID)
+const
+  THBN_CLICKED        = $1800;
+  {$EXTERNALSYM THBN_CLICKED}
+
+// for ITaskBarList3.SetProgressState
+const
+  TBPF_NOPROGRESS     = 0;
+  {$EXTERNALSYM TBPF_NOPROGRESS}
+  TBPF_INDETERMINATE  = $1;
+  {$EXTERNALSYM TBPF_INDETERMINATE}
+  TBPF_NORMAL         = $2;
+  {$EXTERNALSYM TBPF_NORMAL}
+  TBPF_ERROR          = $4;
+  {$EXTERNALSYM TBPF_ERROR}
+  TBPF_PAUSED         = $8;
+  {$EXTERNALSYM TBPF_PAUSED}
+
+type
+  ITaskbarList3 = interface(ITaskbarList2)
+    ['{EA1AFB91-9E28-4B86-90E9-9E9F8A5EEFAF}']
+    function SetProgressValue(hwnd: HWND; ullCompleted: ULONGLONG;
+      ullTotal: ULONGLONG): HRESULT; stdcall;
+    function SetProgressState(hwnd: HWND; tbpFlags: Integer): HRESULT; stdcall;
+    function RegisterTab(hwndTab: HWND; hwndMDI: HWND): HRESULT; stdcall;
+    function UnregisterTab(hwndTab: HWND): HRESULT; stdcall;
+    function SetTabOrder(hwndTab: HWND; hwndInsertBefore: HWND): HRESULT; stdcall;
+    function SetTabActive(hwndTab: HWND; hwndMDI: HWND;
+      tbatFlags: Integer): HRESULT; stdcall;
+    function ThumbBarAddButtons(hwnd: HWND; cButtons: UINT;
+      pButton: PThumbButton): HRESULT; stdcall;
+    function ThumbBarUpdateButtons(hwnd: HWND; cButtons: UINT;
+      pButton: PThumbButton): HRESULT; stdcall;
+    function ThumbBarSetImageList(hwnd: HWND; himl: THandle): HRESULT; stdcall;
+    function SetOverlayIcon(hwnd: HWND; hIcon: HICON;
+      pszDescription: LPCWSTR): HRESULT; stdcall;
+    function SetThumbnailTooltip(hwnd: HWND; pszTip: LPCWSTR): HRESULT; stdcall;
+    function SetThumbnailClip(hwnd: HWND; var prcClip: TRect): HRESULT; stdcall;
+  end;
+  {$EXTERNALSYM ITaskbarList3}
+
+type
+  STPFLAG = Integer;
+  {$EXTERNALSYM STPFLAG}
+const
+  STPF_NONE                      = 0;
+  {$EXTERNALSYM STPF_NONE}
+  STPF_USEAPPTHUMBNAILALWAYS     = $1;
+  {$EXTERNALSYM STPF_USEAPPTHUMBNAILALWAYS}
+  STPF_USEAPPTHUMBNAILWHENACTIVE = $2;
+  {$EXTERNALSYM STPF_USEAPPTHUMBNAILWHENACTIVE}
+  STPF_USEAPPPEEKALWAYS          = $4;
+  {$EXTERNALSYM STPF_USEAPPPEEKALWAYS}
+  STPF_USEAPPPEEKWHENACTIVE      = $8;
+  {$EXTERNALSYM STPF_USEAPPPEEKWHENACTIVE}
+
+type
+  ITaskbarList4 = interface(ITaskbarList3)
+    ['{C43DC798-95D1-4BEA-9030-BB99E2983A1A}']
+    function SetTabProperties(hwndTab: HWND; stpFlags: STPFLAG): HRESULT; stdcall;
+  end;
+  {$EXTERNALSYM ITaskbarList4}
+
+const
+  CLSID_TaskbarList: TGUID                            = '{56FDF344-FD6D-11d0-958A-006097C9A090}';
+  {$EXTERNALSYM CLSID_TaskbarList}
+
 
 { TODO BCB-compatibility}
 
