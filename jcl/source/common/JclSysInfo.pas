@@ -3346,6 +3346,10 @@ var
 begin
   Result := weUnknown;
   Edition := RegReadStringDef(HKEY_LOCAL_MACHINE, ProductName, 'ProductName', '');
+
+  // remove (tm) in 'Windows (TM) Vista Ultimate'
+  Edition := StringReplace(Edition, '(TM) ', '', [rfReplaceAll, rfIgnoreCase]);
+
   if (pos('Windows XP', Edition) = 1) then
   begin
    // Windows XP Editions
