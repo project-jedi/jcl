@@ -26,6 +26,22 @@ type
   TLoadedImage = LOADED_IMAGE;
   PLoadedImage = PLOADED_IMAGE;
 
+  PIMAGE_SYMBOL = ^IMAGE_SYMBOL;
+  {$EXTERNALSYM PIMAGE_SYMBOL}
+  _IMAGE_SYMBOL = packed record  // MUST pack to obtain the right size
+    Name: array [0..7] of AnsiChar;
+    Value: ULONG;
+    SectionNumber: USHORT;
+    _Type: USHORT;
+    StorageClass: BYTE;
+    NumberOfAuxSymbols: BYTE;
+  end;
+  {$EXTERNALSYM _IMAGE_SYMBOL}
+  IMAGE_SYMBOL = _IMAGE_SYMBOL;
+  {$EXTERNALSYM IMAGE_SYMBOL}
+  TImageSymbol = IMAGE_SYMBOL;
+  PImageSymbol = PIMAGE_SYMBOL;
+
 // line 152
 
 {$IFDEF MSWINDOWS}
