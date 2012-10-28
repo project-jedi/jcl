@@ -1087,17 +1087,13 @@ asm
         {$ENDIF CPU64}
 end;
 
+{$IFDEF CPU32}
 function GetExceptionPointer: Pointer;
 asm
-        {$IFDEF CPU32}
         XOR     EAX, EAX
         MOV     EAX, FS:[EAX]
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
-        XOR     RAX, RAX
-        MOV     RAX, FS:[RAX]
-        {$ENDIF CPU64}
 end;
+{$ENDIF CPU32}
 
 // Reference: Matt Pietrek, MSJ, Under the hood, on TIBs:
 // http://www.microsoft.com/MSJ/archive/S2CE.HTM
@@ -5640,6 +5636,7 @@ begin
 end;
 
 procedure TJclExceptFrameList.TraceExceptionFrames;
+{$IFDEF CPU32}
 var
   ExceptionPointer: PExcFrame;
   Level: Integer;
@@ -5661,6 +5658,12 @@ begin
     GlobalModulesList.FreeModulesList(ModulesList);
   end;
 end;
+{$ENDIF CPU32}
+{$IFDEF CPU64}
+begin
+  // TODO: 64-bit version
+end;
+{$ENDIF CPU64}
 
 //=== Exception hooking ======================================================
 
