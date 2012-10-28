@@ -2476,7 +2476,8 @@ begin
   // Check range...
   if (EnumVal < MinEnum) or (EnumVal > MaxEnum) then
     Result := Format(LoadResString(@RsRTTIValueOutOfRange),
-      [LoadResString(@RsRTTIOrdinal) + IntToStr(EnumVal)])
+      [LoadResString(@RsRTTIOrdinal) + IntToStr(EnumVal),
+       GetEnumName(TypeInfo, MinEnum), GetEnumName(TypeInfo, MaxEnum)])
   else
     Result := GetEnumName(TypeInfo, EnumVal);
 end;
@@ -2639,7 +2640,8 @@ begin
       TmpVal := StrToInt64(Value);
       if (RangeInfo <> nil) and ((TmpVal < RangeInfo.MinValue) or
           (TmpVal > RangeInfo.MaxValue)) then
-        raise EConvertError.CreateResFmt(@SInvalidInteger, [Value]);
+        raise EConvertError.CreateResFmt(@RsRTTIValueOutOfRange,
+          [Value, IntToStr(RangeInfo.MinValue), IntToStr(RangeInfo.MaxValue)]);
       Result := Integer(TmpVal);
     end
     else

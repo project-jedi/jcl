@@ -1650,7 +1650,7 @@ resourcestring
 //=== JclRTTI ================================================================
 resourcestring
   RsRTTISetValueOutOfRange  = 'Set value over %s does not fit into a 32-bit integer.';
-  RsRTTIValueOutOfRange   = 'Value out of range (%s).';
+  RsRTTIValueOutOfRange   = 'Value %s out of range %s..%s.';
   RsRTTIUnknownIdentifier = 'Unknown identifier ''%s''.';
   RsRTTIInvalidBaseType   = 'Invalid base type (%s is of type %s).';
   RsRTTINoStringValue     = 'The property %s of type %s has no string value'; 
