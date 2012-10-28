@@ -5867,11 +5867,19 @@ var
 
 function HookedCreateThread(SecurityAttributes: Pointer; StackSize: LongWord;
   ThreadFunc: TThreadFunc; Parameter: Pointer;
-  CreationFlags: LongWord; var ThreadId: LongWord): Integer; stdcall;
+  CreationFlags: LongWord; ThreadId: PLongWord): Integer; stdcall;
+var
+  LocalThreadId: LongWord;
 begin
-  Result := Kernel32_CreateThread(SecurityAttributes, StackSize, ThreadFunc, Parameter, CreationFlags, ThreadId);
+  Result := Kernel32_CreateThread(SecurityAttributes, StackSize, ThreadFunc, Parameter, CreationFlags, LocalThreadId);
   if Result <> 0 then
-    JclDebugThreadList.RegisterThreadID(ThreadId);
+  begin
+    JclDebugThreadList.RegisterThreadID(LocalThreadId);
+    if ThreadId <> nil then
+    begin
+      ThreadId^ := LocalThreadId;
+    end;
+  end;
 end;
 
 procedure HookedExitThread(ExitCode: Integer); stdcall;
