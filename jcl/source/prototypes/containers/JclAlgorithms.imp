@@ -281,9 +281,12 @@ begin
         Dec(J);
       if I <= J then
       begin
-        Obj := AList.GETTERFUNCTIONNAME(I);
-        AList.SETTERPROCEDURENAME(I, AList.GETTERFUNCTIONNAME(J));
-        AList.SETTERPROCEDURENAME(J, Obj);
+        if I <> J then
+        begin
+          Obj := AList.GETTERFUNCTIONNAME(I);
+          AList.SETTERPROCEDURENAME(I, AList.GETTERFUNCTIONNAME(J));
+          AList.SETTERPROCEDURENAME(J, Obj);
+        end;
         if P = I then
           P := J
         else
