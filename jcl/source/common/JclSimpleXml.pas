@@ -2615,9 +2615,15 @@ begin
         Inc(I);
       while AFunction(Elems, J, M) > 0 do
         Dec(J);
-      if I <= J then
+      if I < J then
       begin
         List.Exchange(I, J);
+        Inc(I);
+        Dec(J);
+      end
+      else
+      if I = J then
+      begin
         Inc(I);
         Dec(J);
       end;
