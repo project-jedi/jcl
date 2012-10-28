@@ -2759,7 +2759,7 @@ begin
   ResBytes := (EnumMax div 8) - (EnumMin div 8) + 1;
   BitShift := EnumMin mod 8;
   if (EnumMax - EnumMin) > 32 then
-    raise EJclRTTIError.CreateResFmt(@RsRTTIValueOutOfRange,
+    raise EJclRTTIError.CreateResFmt(@RsRTTISetValueOutOfRange,
       [IntToStr(EnumMax - EnumMin) + ' ' + LoadResString(@RsRTTIBits)]);
   Result := 0;
   TmpInt64 := 0;
