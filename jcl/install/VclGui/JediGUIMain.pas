@@ -189,7 +189,8 @@ begin
   Application.OnShowHint := ShowFeatureHint;
 
   CoCreateInstance(CLSID_TaskbarList, nil, CLSCTX_INPROC_SERVER, ITaskBarList3, FTaskBarList);
-  FTaskBarList.HrInit;
+  if Assigned(FTaskBarList) then
+    FTaskBarList.HrInit;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
