@@ -178,7 +178,7 @@ type
     fsSupportsEncryption,       // The file system supports the Encrypted File System (EFS).
     fsSupportsNamedStreams,     // The file system supports named streams.
     fsVolumeIsReadOnly          // The specified volume is read-only.
-                                //   Windows 2000/NT and Windows Me/98/95:  This value is not supported.
+                                // Windows 2000/NT and Windows Me/98/95:  This value is not supported.
    );
 
   TFileSystemFlags = set of TFileSystemFlag;
@@ -259,7 +259,7 @@ type
     weWinVistaHomePremium, weWinVistaBusiness, weWinVistaBusinessN,
     weWinVistaEnterprise, weWinVistaUltimate, weWin7Starter, weWin7HomeBasic,
     weWin7HomePremium, weWin7Professional, weWin7Enterprise, weWin7Ultimate,
-    weWin8, weWin8Pro, weWin8Enterprise, weWin8Ultimate, weWin8RT);
+    weWin8, weWin8Pro, weWin8Enterprise, weWin8RT);
   TNtProductType =
    (ptUnknown, ptWorkStation, ptServer, ptAdvancedServer,
     ptPersonal, ptProfessional, ptDatacenterServer, ptEnterprise, ptWebEdition);
@@ -3446,9 +3446,6 @@ begin
    if (pos('Enterprise', Edition) > 0) then
       Result := weWin8Enterprise
    else
-   if (pos('Ultimate', Edition) > 0) then
-      Result := weWin8Ultimate
-   else
       Result := weWin8;
   end
   else
@@ -3669,6 +3666,12 @@ begin
       Result := LoadResString(@RsEditionWin7Enterprise);
     weWin7Ultimate:
       Result := LoadResString(@RsEditionWin7Ultimate);
+    weWin8Pro:
+      Result := LoadResString(@RsEditionWin8Pro);
+    weWin8Enterprise:
+      Result := LoadResString(@RsEditionWin8Enterprise);
+    weWin8RT:
+      Result := LoadResString(@RsEditionWin8RT);
   else
     Result := '';
   end;

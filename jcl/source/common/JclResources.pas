@@ -1959,6 +1959,9 @@ resourcestring
   RsEditionWin7Professional     = 'Professional';
   RsEditionWin7Enterprise       = 'Enterprise';
   RsEditionWin7Ultimate         = 'Ultimate';
+  RsEditionWin8Pro              = 'Pro';
+  RsEditionWin8Enterprise       = 'Enterprise';
+  RsEditionWin8RT               = 'RT';
 
   RsProductTypeWorkStation      = 'Workstation';
   RsProductTypeServer           = 'Server';
