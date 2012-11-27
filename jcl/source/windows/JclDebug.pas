@@ -4684,7 +4684,8 @@ procedure TJclGlobalModulesList.FreeModulesList(var ModulesList: TJclModuleInfoL
 var
   IsMultiThreaded: Boolean;
 begin
-  if FModulesList <> ModulesList then
+  if (Self <> nil) and // happens when finalization already ran but a TJclStackInfoList is still alive
+     (FModulesList <> ModulesList) then
   begin
     IsMultiThreaded := IsMultiThread;
     if IsMultiThreaded then
