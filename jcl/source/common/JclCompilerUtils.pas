@@ -781,7 +781,7 @@ begin
   LaunchCommand := Format('%s %s', [FileName, StrAnsiToOem(AnsiString(CommandLine))]);
   if Assigned(FOutputCallback) then
   begin
-    FOutputCallback(LaunchCommand);
+    OemTextHandler(LaunchCommand);
     Result := JclSysUtils.Execute(LaunchCommand, OemTextHandler) = 0;
   end
   else
