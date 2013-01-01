@@ -19,7 +19,7 @@ BEGIN
               VALUE "FileDescription", "JCL Open and Save IDE dialogs with favorite folders\0"
               VALUE "FileVersion", "2.5.0.4572\0"
               VALUE "InternalName", "JclFavoriteFoldersExpert\0"
-              VALUE "LegalCopyright", "Copyright (C) 1999, 2012 Project JEDI\0"
+              VALUE "LegalCopyright", "Copyright (C) 1999, 2013 Project JEDI\0"
               VALUE "OriginalFilename", "JclFavoriteFoldersExpertC60.bpl\0"
               VALUE "ProductName", "JEDI Code Library\0"
               VALUE "ProductVersion", "2.5 Build 4572\0"

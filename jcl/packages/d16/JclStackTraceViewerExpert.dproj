@@ -47,7 +47,7 @@
 			<VerInfo_Build>4572</VerInfo_Build>
 			<VerInfo_Release>0</VerInfo_Release>
 			<VerInfo_MinorVer>5</VerInfo_MinorVer>
-			<VerInfo_Keys>CompanyName=Project JEDI;FileDescription=JCL Stack Trace Viewer;FileVersion=2.5.0.4572;InternalName=JclStackTraceViewerExpert;LegalCopyright=Copyright (C) 1999, 2012 Project JEDI;OriginalFilename=JclStackTraceViewerExpert160.bpl;ProductName=JEDI Code Library;ProductVersion=2.5.0.4572</VerInfo_Keys>
+			<VerInfo_Keys>CompanyName=Project JEDI;FileDescription=JCL Stack Trace Viewer;FileVersion=2.5.0.4572;InternalName=JclStackTraceViewerExpert;LegalCopyright=Copyright (C) 1999, 2013 Project JEDI;OriginalFilename=JclStackTraceViewerExpert160.bpl;ProductName=JEDI Code Library;ProductVersion=2.5.0.4572</VerInfo_Keys>
 			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
 			<VerInfo_Locale>1033</VerInfo_Locale>
 			<DCC_Namespace>System;System.Win;WinApi;Vcl;Vcl.Imaging;$(DCC_Namespace)</DCC_Namespace>
@@ -167,7 +167,7 @@
 						<VersionInfoKeys Name="FileDescription">JCL Stack Trace Viewer</VersionInfoKeys>
 						<VersionInfoKeys Name="FileVersion">2.5.0.4572</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName">JclStackTraceViewerExpert</VersionInfoKeys>
-						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2012 Project JEDI</VersionInfoKeys>
+						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2013 Project JEDI</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename">JclStackTraceViewerExpert160.bpl</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>

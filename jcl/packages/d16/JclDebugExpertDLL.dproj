@@ -47,7 +47,7 @@
 			<VerInfo_Build>4572</VerInfo_Build>
 			<VerInfo_Release>0</VerInfo_Release>
 			<VerInfo_MinorVer>5</VerInfo_MinorVer>
-			<VerInfo_Keys>CompanyName=Project JEDI;FileDescription=JCL Debug IDE extension;FileVersion=2.5.0.4572;InternalName=JclDebugExpertDLL;LegalCopyright=Copyright (C) 1999, 2012 Project JEDI;OriginalFilename=JclDebugExpertDLL160.dll;ProductName=JEDI Code Library;ProductVersion=2.5.0.4572</VerInfo_Keys>
+			<VerInfo_Keys>CompanyName=Project JEDI;FileDescription=JCL Debug IDE extension;FileVersion=2.5.0.4572;InternalName=JclDebugExpertDLL;LegalCopyright=Copyright (C) 1999, 2013 Project JEDI;OriginalFilename=JclDebugExpertDLL160.dll;ProductName=JEDI Code Library;ProductVersion=2.5.0.4572</VerInfo_Keys>
 			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
 			<VerInfo_Locale>1033</VerInfo_Locale>
 			<DCC_Namespace>System;System.Win;WinApi;Vcl;Vcl.Imaging;$(DCC_Namespace)</DCC_Namespace>
@@ -156,7 +156,7 @@
 						<VersionInfoKeys Name="FileDescription">JCL Debug IDE extension</VersionInfoKeys>
 						<VersionInfoKeys Name="FileVersion">2.5.0.4572</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName">JclDebugExpertDLL</VersionInfoKeys>
-						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2012 Project JEDI</VersionInfoKeys>
+						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2013 Project JEDI</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename">JclDebugExpertDLL160.dll</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>

@@ -102,7 +102,7 @@
         <ProjectProperty name="VersionMinorNumber" value="5"/>
         <ProjectProperty name="ReleaseNumber" value="0"/>
         <ProjectProperty name="BuildNumber" value="4572"/>
-        <ProjectProperty name="Copyright" value="Copyright (C) 1999, 2012 Project JEDI"/>
+        <ProjectProperty name="Copyright" value="Copyright (C) 1999, 2013 Project JEDI"/>
       </ProjectProperties>
     </Model>
   </models>

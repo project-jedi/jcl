@@ -164,7 +164,7 @@
       <VersionInfoKeys Name="FileDescription">JCL Debug IDE extension</VersionInfoKeys>
       <VersionInfoKeys Name="FileVersion">2.5.0.4572</VersionInfoKeys>
       <VersionInfoKeys Name="InternalName">JclDebugExpertDLL</VersionInfoKeys>
-      <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2012 Project JEDI</VersionInfoKeys>
+      <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2013 Project JEDI</VersionInfoKeys>
       <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
       <VersionInfoKeys Name="OriginalFilename">JclDebugExpertDLL90.dll</VersionInfoKeys>
       <VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
