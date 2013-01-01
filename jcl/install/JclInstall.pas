@@ -2736,6 +2736,8 @@ begin
     Compiler.Options.Add('-$V+'); // strict var strings
     Compiler.Options.Add('-$J+'); // writeable constants
     Compiler.Options.Add('-$Z1'); // minimum enum size
+    Compiler.Options.Add('-$L+'); // local symbols
+    Compiler.Options.Add('-$Y+'); // symbol reference info
 
     Compiler.Options.Add('-$J+'); // writable constants
     if Debug then
@@ -2743,24 +2745,20 @@ begin
       Compiler.Options.Add('-$C+'); // assertions
       Compiler.Options.Add('-$D+'); // debug informations
       Compiler.Options.Add('-$I+'); // I/O checking
-      Compiler.Options.Add('-$L+'); // local debugging symbols
       Compiler.Options.Add('-$O-'); // optimizations
       Compiler.Options.Add('-$Q+'); // overflow checking
       Compiler.Options.Add('-$R+'); // range checking
       Compiler.Options.Add('-$W+'); // stack frames
-      Compiler.Options.Add('-$Y+'); // symbol reference info
     end
     else
     begin
       Compiler.Options.Add('-$C-'); // assertions
       Compiler.Options.Add('-$D-'); // debug informations
       Compiler.Options.Add('-$I-'); // I/O checking
-      Compiler.Options.Add('-$L-'); // local debugging symbols
       Compiler.Options.Add('-$O+'); // optimizations
       Compiler.Options.Add('-$Q-'); // overflow checking
       Compiler.Options.Add('-$R-'); // range checking
       Compiler.Options.Add('-$W-'); // stack frames
-      Compiler.Options.Add('-$Y-'); // symbol reference info
     end;
 
     if Debug then

@@ -37,6 +37,9 @@
 {$LONGSTRINGS ON}     // Long strings
 {$WRITEABLECONST OFF} // Read-only typed constants
 {$TYPEDADDRESS OFF}   // Type checked pointers off
+{$LOCALSYMBOLS ON}    // Local symbol information
+{$DEFINITIONINFO ON}  // Symbol definition information
+{$REFERENCEINFO ON}   // Symbol reference information
 
 {$I jedi\jedi.inc} // Pull in the JCL/J-VCL shared directives
 
