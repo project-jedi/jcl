@@ -2696,7 +2696,8 @@ function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
         else
         begin
           if IsWin2k or IsWinXP or IsWin2003 or IsWin2003R2 or IsWinXP64 or
-            IsWinVista or IsWinServer2008 or IsWin7 or IsWinServer2008R2 then
+            IsWinVista or IsWinServer2008 or IsWin7 or IsWinServer2008R2 or
+            IsWin8 or IsWinServer2012 then
           begin
             FileName := ProcessFileName(ProcEntry.th32ProcessID);
             if FileName = '' then
@@ -3524,7 +3525,7 @@ begin
     end;
   end
   else
-  if IsWinXP or IsWinVista or IsWin7 then // workstation
+  if IsWinXP or IsWinVista or IsWin7 or IsWin8 then // workstation
   begin
     if GetVersionEx(OSVersionInfo) then
     begin
@@ -3538,7 +3539,7 @@ begin
     end;
   end
   else
-  if IsWinServer2008 or IsWinServer2008R2 then // server
+  if IsWinServer2008 or IsWinServer2008R2 or IsWinServer2012 then // server
   begin
     if OSVersionInfo.wProductType in [VER_NT_SERVER,VER_NT_DOMAIN_CONTROLLER] then
     begin
@@ -4418,7 +4419,7 @@ function GetOSEnabledFeatures: TOSEnabledFeatures;
 var
   EnabledFeatures: Int64;
 begin
-  if IsWin7 or IsWinServer2008 or IsWinServer2008R2 then
+  if IsWin7 or IsWinServer2008 or IsWinServer2008R2 or IsWin8 or IsWinServer2012 then
   begin
     EnabledFeatures := $FFFFFFFF;
     EnabledFeatures := EnabledFeatures shl 32;
