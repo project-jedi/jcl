@@ -65,8 +65,10 @@ function GetWeeklyFileNames()
 
 if ($_GET["xml"] == "yes") {
   Header('HTTP/1.1 200 OK');
-  //Header("Access-Control-Allow-Origin: delphi-jedi.org");
-  Header("Access-Control-Allow-Origin: *");
+  Header("Access-Control-Allow-Origin: http://wiki.delphi-jedi.org");
+  Header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+  Header("Access-Control-Allow-Headers: X-PINGOTHER");
+  //Header("Access-Control-Allow-Origin: *");
   Header("content-type: application/xml");
   echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
   echo "<filelist>\n";
