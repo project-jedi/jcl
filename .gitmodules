@@ -1,0 +1,3 @@
+[submodule "jcl/source/include/jedi"]
+	path = jcl/source/include/jedi
+	url = https://github.com/project-jedi/jedi.git
