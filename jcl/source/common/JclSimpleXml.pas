@@ -1254,7 +1254,7 @@ procedure TJclSimpleXML.DoSaveProgress;
 begin
   if Assigned(FOnSaveProg) then
   begin
-    Inc(FSaveCount);
+    Inc(FSaveCurrent);
     FOnSaveProg(Self, FSaveCurrent, FSaveCount);
   end;
 end;
