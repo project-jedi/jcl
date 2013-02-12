@@ -611,12 +611,25 @@ end;
 function TJclStringList.Join(const ASeparator: string): string;
 var
   I: Integer;
+  SB: TStringBuilder; // Implemented by JclStrings, if missed in RTL
 begin
-  Result := '';
-  for I := 0 to LastIndex - 1 do
-    Result := Result + Strings[I] + ASeparator;
-  if Count > 0 then
-    Result := Result + Last;
+  if Count <= 0 then
+    Result := ''
+  else begin
+    SB := TStringBuilder.Create(First);
+    // Warming up ? Worth it ?   Capacity: Sum([Strings<i>]) + (Count-1) * [ASeparator] ?
+    try
+      for I := 1 to LastIndex do
+         SB.Append(ASeparator).Append(Strings[i]);
+      Result := SB.ToString;
+    finally
+      SB.Free;
+    end;
+  end;
+//  for I := 0 to LastIndex - 1 do
+//    Result := Result + Strings[I] + ASeparator;
+//  if Count > 0 then
+//    Result := Result + Last;
 end;
 
 function TJclStringList.Last: string;
@@ -682,8 +695,10 @@ begin
     FSelfAsInterface := nil;
   end
   else
-  if Result = 0 then
-    Destroy;
+  if Result = 0 then begin
+     pointer(FSelfAsInterface) := nil; // should work in .create / FreeAndNil scenario
+     Destroy;
+  end;
 end;
 
 {$IFDEF JCL_PCRE}
@@ -734,6 +749,10 @@ end;
 
 destructor TJclStringList.Destroy;
 begin
+  if (FRefCount = 1) and (FSelfAsInterface <> nil) then begin
+     pointer(FSelfAsInterface) := nil;
+     FRefCount := 0;  // should work in .Create -> FreeAndNil scenario
+  end;
   if CanFreeObjects then
     FreeObjects(False);
   {$IFDEF JCL_PCRE}
@@ -842,6 +861,7 @@ begin
   inherited Create;
   if QueryInterface(IJclStringList, FSelfAsInterface) <> 0 then
     System.Error(reIntfCastError);
+ // InterlockedDecrement(FRefCount); // should work w/o dangling pointers - bug #6081
 end;
 
 function TJclStringList.GetLists(Index: Integer): IJclStringList;
