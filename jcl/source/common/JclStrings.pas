@@ -171,16 +171,30 @@ function ArrayContainsChar(const Chars: array of Char; const C: Char): Boolean; 
 function ArrayContainsChar(const Chars: array of Char; const C: Char; out Index: SizeInt): Boolean; overload;
 
 // String Test Routines
+// TODO: think of some choosen N, so that:  If both string length and array length > N - then pre-sort the array
+// and use optimized (binary search) CharInArray, if not - then use linear search as now.
 function StrIsAlpha(const S: string): Boolean;
 function StrIsAlphaNum(const S: string): Boolean;
 function StrIsAlphaNumUnderscore(const S: string): Boolean;
-function StrContainsChars(const S: string; const Chars: TCharValidator; CheckAll: Boolean): Boolean; overload;
-function StrContainsChars(const S: string; const Chars: array of Char; CheckAll: Boolean): Boolean; overload;
+function StrContainsEveryChar(const S: string; const Chars: array of Char): Boolean; overload;
+function StrContainsEveryChar(const S: string; const Chars: string): Boolean; overload;
+function StrContainsSomeChar(const S: string; const Chars: TCharValidator): Boolean; overload;
+function StrContainsSomeChar(const S: string; const Chars: array of Char): Boolean; overload;
+function StrContainsSomeChar(const S: string; const Chars: string): Boolean; overload;
+function StrConsistsOfChars(const S: string; const Chars: TCharValidator; const AllowEmpty: Boolean = True): Boolean; overload;
+function StrConsistsOfChars(const S: string; const Chars: array of Char; const AllowEmpty: Boolean = True): Boolean; overload;
+function StrConsistsOfChars(const S: string; const Chars: string; const AllowEmpty: Boolean = True): Boolean; overload;
 function StrConsistsOfNumberChars(const S: string): Boolean;
-function StrIsDigit(const S: string): Boolean;
-function StrIsSubset(const S: string; const ValidChars: TCharValidator): Boolean; overload;
-function StrIsSubset(const S: string; const ValidChars: array of Char): Boolean; overload;
+function StrConsistsOfDigits(const S: string): Boolean;
 function StrSame(const S1, S2: string; CaseSensitive: Boolean = False): Boolean;
+function StrIsSubset(const S: string; const ValidChars: TCharValidator): Boolean; overload;  deprecated 'Use StrConsistsOfChars';
+function StrIsSubset(const S: string; const ValidChars: array of Char): Boolean; overload;   deprecated 'Use StrConsistsOfChars';
+
+function StrIsDigit(const S: string): Boolean; {$IfDef SUPPORTS_INLINE} inline;{$EndIf} deprecated 'Use StrConsistsOfDigits';
+// mixing two very separate goals is confusing and using CharValidator can not be implemented at all
+function StrContainsChars(const S: string; const Chars: TCharValidator; CheckAll: Boolean): Boolean; overload; {$IfDef SUPPORTS_INLINE} inline;{$EndIf} deprecated 'Use StrConsistsOfChars or StrContainsEveryChar or StrContainsSomeChar';
+function StrContainsChars(const S: string; const Chars: array of Char; CheckAll: Boolean): Boolean; overload;  deprecated 'Use StrConsistsOfChars or StrContainsEveryChar or StrContainsSomeChar';
+
 
 // String Transformation Routines
 function StrCenter(const S: string; L: SizeInt; C: Char = ' '): string;
@@ -229,7 +243,7 @@ function StrSmartCase(const S: string; const Delimiters: TCharValidator): string
 function StrSmartCase(const S: string; const Delimiters: array of Char): string; overload;
 function StrStringToEscaped(const S: string): string;
 function StrStripNonNumberChars(const S: string): string;
-function StrToHex(const Source: string): string;
+function StrToHex(const Source: string): AnsiString;
 function StrTrimCharLeft(const S: string; C: Char): string;
 function StrTrimCharsLeft(const S: string; const Chars: TCharValidator): string; overload;
 function StrTrimCharsLeft(const S: string; const Chars: array of Char): string; overload;
@@ -854,20 +868,122 @@ begin
   end;
 end;
 
-function StrConsistsofNumberChars(const S: string): Boolean;
+function StrIsDigit(const S: string): Boolean;
+begin
+  Result := StrConsistsOfDigits(S)
+end;
+
+function StrConsistsOfDigits(const S: string): Boolean;
+begin
+  Result := StrConsistsOfChars(S, CharIsDigit, False);
+end;
+
+function StrConsistsOfNumberChars(const S: string): Boolean;
+begin
+  Result := StrConsistsOfChars(S, CharIsNumberChar, False );
+end;
+
+function StrContainsEveryChar(const S: string; const Chars: string): Boolean;
 var
   I: SizeInt;
 begin
-  Result := S <> '';
+  Result := False;
+  for I := 1 to Length(Chars) do
+      if CharPos(S, Chars[I]) <= 0 then exit;
+  Result := True;
+end;
+
+function StrContainsEveryChar(const S: string; const Chars: array of Char): Boolean;
+var
+  I: SizeInt;
+begin
+  Result := False;
+  for I := Low(Chars) to High(Chars) do
+      if CharPos(S, Chars[I]) <= 0 then exit;
+  Result := True;
+end;
+
+function StrContainsSomeChar(const S: string; const Chars: TCharValidator): Boolean;
+var
+  I: SizeInt;
+begin
   for I := 1 to Length(S) do
-  begin
-    if not CharIsNumberChar(S[I]) then
-    begin
-      Result := False;
-      Exit;
-    end;
+      if Chars(S[I]) then
+      begin
+        Result := True;
+        Exit;
+      end;
+  Result := False;
+end;
+
+function StrContainsSomeChar(const S: string; const Chars: array of Char): Boolean;
+var
+  I: SizeInt;
+begin
+  for I := 1 to Length(S) do
+      if ArrayContainsChar(Chars, S[I]) then
+      begin
+        Result := True;
+        Exit;
+      end;
+  Result := False;
+end;
+
+function StrContainsSomeChar(const S: string; const Chars: string): Boolean;
+var
+  I: SizeInt;
+begin
+  for I := 1 to Length(S) do
+      if CharPos(Chars, S[I]) > 0 then
+      begin
+        Result := True;
+        Exit;
+      end;
+  Result := False;
+end;
+
+function StrConsistsOfChars(const S: string; const Chars: TCharValidator; const AllowEmpty: Boolean): Boolean;
+var
+  I: SizeInt;
+begin
+  If S = '' then
+     Result := AllowEmpty
+  else begin
+    Result := False;
+    for I := 1 to Length(S) do
+        if not Chars(S[I]) then Exit;
+    Result := True;
   end;
 end;
+
+function StrConsistsOfChars(const S: string; const Chars: array of Char; const AllowEmpty: Boolean): Boolean;
+var
+  I: SizeInt;
+begin
+  If S = '' then
+     Result := AllowEmpty
+  else begin
+    Result := False;
+    for I := 1 to Length(S) do
+        if not ArrayContainsChar(Chars, S[I]) then Exit;
+    Result := True;
+  end;
+end;
+
+function StrConsistsOfChars(const S: string; const Chars: string; const AllowEmpty: Boolean): Boolean;
+var
+  I: SizeInt;
+begin
+  If S = '' then
+     Result := AllowEmpty
+  else begin
+    Result := False;
+    for I := 1 to Length(S) do
+        if CharPos(Chars, S[I]) <= 0 then Exit;
+    Result := True;
+  end;
+end;
+
 
 function StrContainsChars(const S: string; const Chars: TCharValidator; CheckAll: Boolean): Boolean;
 var
@@ -943,47 +1059,34 @@ begin
   Result := Length(S) > 0;
 end;
 
-function StrIsDigit(const S: string): Boolean;
-var
-  I: SizeInt;
-begin
-  Result := S <> '';
-  for I := 1 to Length(S) do
-  begin
-    if not CharIsDigit(S[I]) then
-    begin
-      Result := False;
-      Exit;
-    end;
-  end;
-end;
-
 function StrIsSubset(const S: string; const ValidChars: TCharValidator): Boolean;
-var
-  I: SizeInt;
+//var
+//  I: SizeInt;
 begin
-  for I := 1 to Length(S) do
-  begin
-    Result := ValidChars(S[I]);
-    if not Result then
-      Exit;
-  end;
-
-  Result := Length(S) > 0;
+  Result := StrConsistsOfChars(S, ValidChars, False);
+//  for I := 1 to Length(S) do
+//  begin
+//    Result := ValidChars(S[I]);
+//    if not Result then
+//      Exit;
+//  end;
+//
+//  Result := Length(S) > 0;
 end;
 
 function StrIsSubset(const S: string; const ValidChars: array of Char): Boolean;
-var
-  I: SizeInt;
+//var
+//  I: SizeInt;
 begin
-  for I := 1 to Length(S) do
-  begin
-    Result := ArrayContainsChar(ValidChars, S[I]);
-    if not Result then
-      Exit;
-  end;
-
-  Result := Length(S) > 0;
+  Result := StrConsistsOfChars(S, ValidChars, False);
+//  for I := 1 to Length(S) do
+//  begin
+//    Result := ArrayContainsChar(ValidChars, S[I]);
+//    if not Result then
+//      Exit;
+//  end;
+//
+//  Result := Length(S) > 0;
 end;
 
 function StrSame(const S1, S2: string; CaseSensitive: Boolean): Boolean;
@@ -1831,7 +1934,7 @@ begin
   end;
 end;
 
-function StrToHex(const Source: string): string;
+function StrToHex(const Source: string): AnsiString;
 var
   Index: SizeInt;
   C, L, N: SizeInt;
@@ -1864,7 +1967,7 @@ begin
         Result := '';
         Exit;
       end;
-      Result[N] := Char((BH shl 4) or BL);
+      Result[N] := AnsiChar((BH shl 4) or BL);
       Inc(N);
     end;
   end;
@@ -2875,7 +2978,10 @@ end;
 
 function CharIsNumberChar(const C: Char): Boolean;
 begin
-  Result := CharIsDigit(C) or (C = '+') or (C = '-') or (C = JclFormatSettings.DecimalSeparator);
+  Result := CharIsDigit(C) or (C = '+') or (C = '-')
+         or ((C <> #0) and (C = JclFormatSettings.DecimalSeparator))
+         or ((C <> #0) and (C = JclFormatSettings.ThousandSeparator));
+   // #0 is a special value to 'disable' xxxxSeparator, semantically similar to empty string
 end;
 
 function CharIsNumber(const C: Char): Boolean;
