@@ -4381,7 +4381,7 @@ end;
 
 function TJclStringBuilder.Insert(Index: SizeInt; Obj: TObject): TJclStringBuilder;
 begin
-  Result := Insert(Index, Format('{0}', [Obj]));
+  Result := Insert(Index, DotNetFormat('{0}', [Obj]));
 end;
 
 function TJclStringBuilder.Remove(StartIndex, Length: SizeInt): TJclStringBuilder;
