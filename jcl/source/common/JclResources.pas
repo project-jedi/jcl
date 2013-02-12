@@ -1773,6 +1773,7 @@ resourcestring
   RsDotNetFormatNullFormat  = 'Format string is null';
   RsArgumentIsNull          = 'Argument %d is null';
   RsDotNetFormatArgumentNotSupported = 'Argument type of %d is not supported';
+  RsDotNetFormatObjectArgumentNotSupported = 'Argument type (%s) of %d is not supported';
   RsArgumentOutOfRange      = 'Argument out of range';
   RsTabs_DuplicatesNotAllowed = 'Duplicate tab stops are not allowed.';
   RsTabs_StopExpected = 'A tab stop was expected but not found.';
