@@ -695,8 +695,10 @@ begin
     FSelfAsInterface := nil;
   end
   else
-  if Result = 0 then
-    Destroy;
+  if Result = 0 then begin
+     pointer(FSelfAsInterface) := nil; // should work in .create / FreeAndNil scenario
+     Destroy;
+  end;
 end;
 
 {$IFDEF JCL_PCRE}
@@ -747,6 +749,10 @@ end;
 
 destructor TJclStringList.Destroy;
 begin
+  if (FRefCount = 1) and (FSelfAsInterface <> nil) then begin
+     pointer(FSelfAsInterface) := nil;
+     FRefCount := 0;  // should work in .Create -> FreeAndNil scenario
+  end;
   if CanFreeObjects then
     FreeObjects(False);
   {$IFDEF JCL_PCRE}
@@ -855,6 +861,7 @@ begin
   inherited Create;
   if QueryInterface(IJclStringList, FSelfAsInterface) <> 0 then
     System.Error(reIntfCastError);
+ // InterlockedDecrement(FRefCount); // should work w/o dangling pointers - bug #6081
 end;
 
 function TJclStringList.GetLists(Index: Integer): IJclStringList;
