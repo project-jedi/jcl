@@ -611,12 +611,13 @@ end;
 function TJclStringList.Join(const ASeparator: string): string;
 var
   I: Integer;
-  SB: TJclStringBuilder;
+  SB: TStringBuilder; // Implemented by JclStrings, if missed in RTL
 begin
   if Count <= 0 then
     Result := ''
   else begin
-    SB := TJclStringBuilder.Create(First); // Capacity: Sum([Strings<i>]) + (Count-1) * [ASeparator] ? Worth it?
+    SB := TStringBuilder.Create(First);
+    // Warming up ? Worth it ?   Capacity: Sum([Strings<i>]) + (Count-1) * [ASeparator] ?
     try
       for I := 1 to LastIndex do
          SB.Append(ASeparator).Append(Strings[i]);
