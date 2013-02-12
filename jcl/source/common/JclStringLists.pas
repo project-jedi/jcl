@@ -611,12 +611,24 @@ end;
 function TJclStringList.Join(const ASeparator: string): string;
 var
   I: Integer;
+  SB: TJclStringBuilder;
 begin
-  Result := '';
-  for I := 0 to LastIndex - 1 do
-    Result := Result + Strings[I] + ASeparator;
-  if Count > 0 then
-    Result := Result + Last;
+  if Count <= 0 then
+    Result := ''
+  else begin
+    SB := TJclStringBuilder.Create(First); // Capacity: Sum([Strings<i>]) + (Count-1) * [ASeparator] ? Worth it?
+    try
+      for I := 1 to LastIndex do
+         SB.Append(ASeparator).Append(Strings[i]);
+      Result := SB.ToString;
+    finally
+      SB.Free;
+    end;
+  end;
+//  for I := 0 to LastIndex - 1 do
+//    Result := Result + Strings[I] + ASeparator;
+//  if Count > 0 then
+//    Result := Result + Last;
 end;
 
 function TJclStringList.Last: string;
