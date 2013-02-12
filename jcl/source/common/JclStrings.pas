@@ -414,6 +414,7 @@ type
   ArgumentNullException = class(EJclError);
   ArgumentOutOfRangeException = class(EJclError);
 
+// IFomattable in .Net: http://msdn.microsoft.com/en-us/library/system.string.format.aspx
   IToString = interface
     ['{C4ABABB4-1029-46E7-B5FA-99800F130C05}']
     function ToString: string;
@@ -424,7 +425,7 @@ type
   // The TStringBuilder class is a Delphi implementation of the .NET
   // System.Text.StringBuilder.
   // It is zero based and the method that allow an TObject (Append, Insert,
-  // AppendFormat) are limited to IToString implementors.
+  // AppendFormat) are limited to IToString implementors or newer Delphi RTL.
   // This class is not threadsafe. Any instance of TStringBuilder should not
   // be used in different threads at the same time.
   TJclStringBuilder = class(TInterfacedObject, IToString)
@@ -3985,7 +3986,11 @@ var
         if InheritsFrom(V.VObject.ClassType, 'TComponent') and V.VObject.GetInterface(IToString, Intf) then
           Result := Intf.ToString
         else
-          raise ArgumentNullException.CreateResFmt(@RsDotNetFormatArgumentNotSupported, [Index]);
+{$IFDEF RTL200_UP}
+          Result := V.VObject.ToString;
+{$Else}
+          raise ArgumentNullException.CreateResFmt(V.VObject.ClassName + ': ' + @RsDotNetFormatArgumentNotSupported, [Index]);
+{$EndIf}
       vtClass:
         Result := V.VClass.ClassName;
       vtWideChar:
