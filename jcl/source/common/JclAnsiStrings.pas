@@ -360,7 +360,7 @@ procedure StrReverseInPlace(var S: AnsiString);
 function StrSingleQuote(const S: AnsiString): AnsiString;
 procedure StrSkipChars(var S: PAnsiChar; const Chars: TSysCharSet); overload;
 procedure StrSkipChars(const S: AnsiString; var Index: SizeInt; const Chars: TSysCharSet); overload;
-function StrSmartCase(const S: AnsiString; Delimiters: TSysCharSet): AnsiString;
+function StrSmartCase(const S: AnsiString; Delimiters: TSysCharSet; const LowerRest: boolean = false): AnsiString; overload; // overloading due to JclStrings "string" variants
 function StrStringToEscaped(const S: AnsiString): AnsiString;
 function StrStripNonNumberChars(const S: AnsiString): AnsiString;
 function StrToHex(const Source: AnsiString): AnsiString;
@@ -2103,7 +2103,7 @@ begin
     Inc(Index);
 end;
 
-function StrSmartCase(const S: AnsiString; Delimiters: TSysCharSet): AnsiString;
+function StrSmartCase(const S: AnsiString; Delimiters: TSysCharSet; const LowerRest: boolean): AnsiString;
 var
   Source, Dest: PAnsiChar;
   Index, Len: SizeInt;
@@ -2114,7 +2114,7 @@ begin
 
   if S <> '' then
   begin
-    Result := S;
+    if LowerRest then Result := AnsiLowerCase(S) else Result := S;
     UniqueString(Result);
 
     Len := Length(S);

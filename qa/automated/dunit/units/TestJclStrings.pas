@@ -1220,6 +1220,13 @@ begin
   CheckEquals('XxxxxAx',         StrSmartCase('xxxxxAx', [' ','x']),     'StrSmartCase6');
   // test 7: delimiters followed by the another delimiter will not force an upper case on the second delimiter
   CheckEquals('Xxx xAx',         StrSmartCase('xxx xAx', [' ','x']),     'StrSmartCase7');
+
+  CheckEquals(' Project Jedi ',  StrSmartCase(' project jedi ', nil),  'StrSmartCase8');
+  CheckEquals(' Project Jedi ',  StrSmartCase(' project jedi '),       'StrSmartCase9');
+
+  CheckEquals(' Project J.E.D.I.',  StrSmartCase(' project J.E.D.I.', [' ']),        'StrSmartCase10');
+  CheckEquals(' Project J.e.d.i.',  StrSmartCase(' project J.E.D.I.', [' '], true),  'StrSmartCase11');
+
 end;
 
 //--------------------------------------------------------------------------------------------------

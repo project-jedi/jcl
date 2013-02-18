@@ -239,8 +239,8 @@ procedure StrSkipChars(var S: PChar; const Chars: TCharValidator); overload;
 procedure StrSkipChars(var S: PChar; const Chars: array of Char); overload;
 procedure StrSkipChars(const S: string; var Index: SizeInt; const Chars: TCharValidator); overload;
 procedure StrSkipChars(const S: string; var Index: SizeInt; const Chars: array of Char); overload;
-function StrSmartCase(const S: string; const Delimiters: TCharValidator): string; overload;
-function StrSmartCase(const S: string; const Delimiters: array of Char): string; overload;
+function StrSmartCase(const S: string; const Delimiters: TCharValidator = nil; const LowerRest: boolean = false): string; overload;
+function StrSmartCase(const S: string; const Delimiters: array of Char; const LowerRest: boolean = false): string; overload;
 function StrStringToEscaped(const S: string): string;
 function StrStripNonNumberChars(const S: string): string;
 function StrToHex(const Source: string): AnsiString;
@@ -1823,7 +1823,7 @@ begin
     Inc(Index);
 end;
 
-function StrSmartCase(const S: string; const Delimiters: TCharValidator): string;
+function StrSmartCase(const S: string; const Delimiters: TCharValidator; const LowerRest: boolean): string;
 var
   Source, Dest: PChar;
   Index, Len:   SizeInt;
@@ -1837,7 +1837,7 @@ begin
 
   if S <> '' then
   begin
-    Result := S;
+    if LowerRest then Result := AnsiLowerCase(S) else Result := S;
     UniqueString(Result);
 
     Len := Length(S);
@@ -1856,7 +1856,7 @@ begin
   end;
 end;
 
-function StrSmartCase(const S: string; const Delimiters: array of Char): string;
+function StrSmartCase(const S: string; const Delimiters: array of Char; const LowerRest: boolean): string;
 var
   Source, Dest: PChar;
   Index, Len:   SizeInt;
@@ -1865,7 +1865,7 @@ begin
 
   if S <> '' then
   begin
-    Result := S;
+    if LowerRest then Result := AnsiLowerCase(S) else Result := S;
     UniqueString(Result);
 
     Len := Length(S);
