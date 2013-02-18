@@ -1867,6 +1867,7 @@ function StrSmartCase_Str(const Ch: Char; var Fr: StrSmartCase_DataFrame): boole
 begin
   Result := CharPos(Fr.Delimiters_S, Ch) > 0;
 end;
+
 function StrSmartCase_Func(const Ch: Char; var Fr: StrSmartCase_DataFrame): boolean;
 begin
   Result := Fr.Delimiters_F(Ch);
@@ -1894,36 +1895,6 @@ begin
   Fr.CharCheck := StrSmartCase_Func;
 
   Result := StrSmartCase(Fr);
-//var
-//  Source, Dest: PChar;
-//  Index, Len:   SizeInt;
-//  InternalDelimiters: TCharValidator;
-//begin
-//  Result := '';
-//  if Assigned(Delimiters) then
-//    InternalDelimiters := Delimiters
-//  else
-//    InternalDelimiters := CharIsSpace;
-//
-//  if S <> '' then
-//  begin
-//    if LowerRest then Result := AnsiLowerCase(S) else Result := S;
-//    UniqueString(Result);
-//
-//    Len := Length(S);
-//    Source := PChar(S);
-//    Dest := PChar(Result);
-//    Inc(Dest);
-//
-//    for Index := 2 to Len do
-//    begin
-//      if InternalDelimiters(Source^) and not InternalDelimiters(Dest^) then
-//        Dest^ := CharUpper(Dest^);
-//      Inc(Dest);
-//      Inc(Source);
-//    end;
-//    Result[1] := CharUpper(Result[1]);
-//  end;
 end;
 
 function StrSmartCase(const S: string; const Delimiters: array of Char; const LowerRest: boolean): string;
@@ -1938,31 +1909,6 @@ begin
   Fr.CharCheck := StrSmartCase_Str;
 
   Result := StrSmartCase(Fr);
-//var
-//  Source, Dest: PChar;
-//  Index, Len:   SizeInt;
-//begin
-//  Result := '';
-//
-//  if S <> '' then
-//  begin
-//    if LowerRest then Result := AnsiLowerCase(S) else Result := S;
-//    UniqueString(Result);
-//
-//    Len := Length(S);
-//    Source := PChar(S);
-//    Dest := PChar(Result);
-//    Inc(Dest);
-//
-//    for Index := 2 to Len do
-//    begin
-//      if ArrayContainsChar(Delimiters, Source^) and not ArrayContainsChar(Delimiters, Dest^) then
-//        Dest^ := CharUpper(Dest^);
-//      Inc(Dest);
-//      Inc(Source);
-//    end;
-//    Result[1] := CharUpper(Result[1]);
-//  end;
 end;
 
 function StrStringToEscaped(const S: string): string;
