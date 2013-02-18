@@ -241,6 +241,7 @@ procedure StrSkipChars(const S: string; var Index: SizeInt; const Chars: TCharVa
 procedure StrSkipChars(const S: string; var Index: SizeInt; const Chars: array of Char); overload;
 function StrSmartCase(const S: string; const Delimiters: TCharValidator = nil; const LowerRest: boolean = false): string; overload;
 function StrSmartCase(const S: string; const Delimiters: array of Char; const LowerRest: boolean = false): string; overload;
+function StrSmartCase(const S: string; const Delimiters: string; const LowerRest: boolean = false): string; overload;
 function StrStringToEscaped(const S: string): string;
 function StrStripNonNumberChars(const S: string): string;
 function StrToHex(const Source: string): AnsiString;
@@ -1823,19 +1824,25 @@ begin
     Inc(Index);
 end;
 
-function StrSmartCase(const S: string; const Delimiters: TCharValidator; const LowerRest: boolean): string;
+type StrSmartCase_DataFrame = record
+     S: string;
+     LowerRest: boolean;
+
+     Delimiters_S: string; // don't want variant record here, so that compiler could Finalize it
+     Delimiters_F: TCharValidator;
+
+// need var-param due to http://qc.embarcadero.com/wc/qcmain.aspx?d=112789
+     CharCheck: function (const Ch: Char; var Fr: StrSmartCase_DataFrame): boolean;
+end;
+
+function StrSmartCase(var Frame: StrSmartCase_DataFrame): string; overload;
 var
   Source, Dest: PChar;
   Index, Len:   SizeInt;
-  InternalDelimiters: TCharValidator;
 begin
   Result := '';
-  if Assigned(Delimiters) then
-    InternalDelimiters := Delimiters
-  else
-    InternalDelimiters := CharIsSpace;
 
-  if S <> '' then
+  with Frame do if S <> '' then
   begin
     if LowerRest then Result := AnsiLowerCase(S) else Result := S;
     UniqueString(Result);
@@ -1847,7 +1854,7 @@ begin
 
     for Index := 2 to Len do
     begin
-      if InternalDelimiters(Source^) and not InternalDelimiters(Dest^) then
+      if CharCheck(Source^, Frame) and not CharCheck(Dest^, Frame) then
         Dest^ := CharUpper(Dest^);
       Inc(Dest);
       Inc(Source);
@@ -1856,32 +1863,106 @@ begin
   end;
 end;
 
-function StrSmartCase(const S: string; const Delimiters: array of Char; const LowerRest: boolean): string;
-var
-  Source, Dest: PChar;
-  Index, Len:   SizeInt;
+function StrSmartCase_Str(const Ch: Char; var Fr: StrSmartCase_DataFrame): boolean;
 begin
-  Result := '';
+  Result := CharPos(Fr.Delimiters_S, Ch) > 0;
+end;
+function StrSmartCase_Func(const Ch: Char; var Fr: StrSmartCase_DataFrame): boolean;
+begin
+  Result := Fr.Delimiters_F(Ch);
+end;
 
-  if S <> '' then
-  begin
-    if LowerRest then Result := AnsiLowerCase(S) else Result := S;
-    UniqueString(Result);
+function StrSmartCase(const S: string; const Delimiters: string; const LowerRest: boolean): string;
+var Fr: StrSmartCase_DataFrame;
+begin
+  Fr.S := S;
+  Fr.LowerRest := LowerRest;
+  Fr.Delimiters_S := Delimiters;
+  Fr.CharCheck := StrSmartCase_Str;
 
-    Len := Length(S);
-    Source := PChar(S);
-    Dest := PChar(Result);
-    Inc(Dest);
+  Result := StrSmartCase(Fr);
+end;
 
-    for Index := 2 to Len do
-    begin
-      if ArrayContainsChar(Delimiters, Source^) and not ArrayContainsChar(Delimiters, Dest^) then
-        Dest^ := CharUpper(Dest^);
-      Inc(Dest);
-      Inc(Source);
-    end;
-    Result[1] := CharUpper(Result[1]);
-  end;
+function StrSmartCase(const S: string; const Delimiters: TCharValidator; const LowerRest: boolean): string;
+var Fr: StrSmartCase_DataFrame;
+begin
+  Fr.S := S;
+  Fr.LowerRest := LowerRest;
+  if Assigned(Delimiters)
+     then Fr.Delimiters_F := Delimiters
+     else Fr.Delimiters_F := CharIsSpace;
+  Fr.CharCheck := StrSmartCase_Func;
+
+  Result := StrSmartCase(Fr);
+//var
+//  Source, Dest: PChar;
+//  Index, Len:   SizeInt;
+//  InternalDelimiters: TCharValidator;
+//begin
+//  Result := '';
+//  if Assigned(Delimiters) then
+//    InternalDelimiters := Delimiters
+//  else
+//    InternalDelimiters := CharIsSpace;
+//
+//  if S <> '' then
+//  begin
+//    if LowerRest then Result := AnsiLowerCase(S) else Result := S;
+//    UniqueString(Result);
+//
+//    Len := Length(S);
+//    Source := PChar(S);
+//    Dest := PChar(Result);
+//    Inc(Dest);
+//
+//    for Index := 2 to Len do
+//    begin
+//      if InternalDelimiters(Source^) and not InternalDelimiters(Dest^) then
+//        Dest^ := CharUpper(Dest^);
+//      Inc(Dest);
+//      Inc(Source);
+//    end;
+//    Result[1] := CharUpper(Result[1]);
+//  end;
+end;
+
+function StrSmartCase(const S: string; const Delimiters: array of Char; const LowerRest: boolean): string;
+var Fr: StrSmartCase_DataFrame;
+begin
+  Fr.S := S;
+  Fr.LowerRest := LowerRest;
+//  if Length(Delimiters) = 0  // dynarray can not be assigned from open array => string
+//     then Fr.Delimiters_S := EmptyStr
+//     else SetString(Fr.Delimiters_S, @Delimiters[0], Length(Delimiters));
+  Fr.Delimiters_S := Delimiters;
+  Fr.CharCheck := StrSmartCase_Str;
+
+  Result := StrSmartCase(Fr);
+//var
+//  Source, Dest: PChar;
+//  Index, Len:   SizeInt;
+//begin
+//  Result := '';
+//
+//  if S <> '' then
+//  begin
+//    if LowerRest then Result := AnsiLowerCase(S) else Result := S;
+//    UniqueString(Result);
+//
+//    Len := Length(S);
+//    Source := PChar(S);
+//    Dest := PChar(Result);
+//    Inc(Dest);
+//
+//    for Index := 2 to Len do
+//    begin
+//      if ArrayContainsChar(Delimiters, Source^) and not ArrayContainsChar(Delimiters, Dest^) then
+//        Dest^ := CharUpper(Dest^);
+//      Inc(Dest);
+//      Inc(Source);
+//    end;
+//    Result[1] := CharUpper(Result[1]);
+//  end;
 end;
 
 function StrStringToEscaped(const S: string): string;

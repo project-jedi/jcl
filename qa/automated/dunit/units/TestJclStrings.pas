@@ -1227,6 +1227,8 @@ begin
   CheckEquals(' Project J.E.D.I.',  StrSmartCase(' project J.E.D.I.', [' ']),        'StrSmartCase10');
   CheckEquals(' Project J.e.d.i.',  StrSmartCase(' project J.E.D.I.', [' '], true),  'StrSmartCase11');
 
+  CheckEquals(' Project J.E.D.I.',  StrSmartCase(' project J.e.d.i.', [' ', '.']),  'StrSmartCase12');
+  CheckEquals(' Project J.E.D.I.',  StrSmartCase(' project J.e.d.i.', '. '),  'StrSmartCase13');
 end;
 
 //--------------------------------------------------------------------------------------------------
