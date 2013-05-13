@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
 <Configuration>
   <!-- These are the values stored by jaxStore -->
   <pgEdit/>
@@ -76,26 +77,29 @@
         <target name="d15" defines="BCB" IsBds="1"/>
         <target name="d16" defines="BCB" IsBds="1"/>
         <target name="d17" defines="BCB" IsBds="1"/>
+        <target name="d18" defines="BCB" IsBds="1"/>
       </targets>
       <aliases>
         <!-- language aliases -->
-        <alias name="Delphi" value="d6,d7,d9,d10,d11,d12,d14,d15,d16,d17"/>
-        <alias name="Bcb" value="c6,d10,d11,d12,d14,d15,d16,d17"/>
-        <alias name="Pascal" value="fpc,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17"/>
+        <alias name="Delphi" value="d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18"/>
+        <alias name="Bcb" value="c6,d10,d11,d12,d14,d15,d16,d17,d18"/>
+        <alias name="Pascal" value="fpc,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18"/>
         <!-- platform aliases -->
-        <alias name="Windows" value="help,fpc,c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17"/>
+        <alias name="Windows" value="help,fpc,c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18"/>
         <alias name="Linux" value="help,fpc"/>
         <!-- package aliases -->
-        <alias name="allv11up" value="d11,d12,d14,d15,d16,d17"/>
+        <alias name="allv11up" value="d11,d12,d14,d15,d16,d17,d18"/>
+        <alias name="allv14up" value="d14,d15,d16,d17,d18"/>
+        <alias name="allv15up" value="d15,d16,d17,d18"/>
         <!-- GUI aliases -->
         <alias name="Clx" value="help,c6,d6,d7"/>
-        <alias name="Vcl" value="help,c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17"/>
+        <alias name="Vcl" value="help,c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18"/>
         <!-- IDE aliases -->
-        <alias name="BDS" value="cs1,d8,d9,d10,d11,d12,d14,d15,d16,d17"/>
-        <alias name="runtimeBDS" value="d9,d10,d11,d12,d14,d15,d16,d17"/>
+        <alias name="BDS" value="cs1,d8,d9,d10,d11,d12,d14,d15,d16,d17,d18"/>
+        <alias name="runtimeBDS" value="d9,d10,d11,d12,d14,d15,d16,d17,d18"/>
         <alias name="OldStyleIDE" value="c6,d6,d7"/>
-        <alias name="runtimeIDE" value="c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17"/>
-        <alias name="designtimeIDE" value="c6,d6,d7,d8,d9,d10,cs1,d11,d12,d14,d15,d16,d17"/>
+        <alias name="runtimeIDE" value="c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18"/>
+        <alias name="designtimeIDE" value="c6,d6,d7,d8,d9,d10,cs1,d11,d12,d14,d15,d16,d17,d18"/>
       </aliases>
       <ProjectProperties>
         <ProjectProperty name="VersionMajorNumber" value="2"/>

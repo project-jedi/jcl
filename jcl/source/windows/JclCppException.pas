@@ -165,6 +165,9 @@ implementation
 {$IFDEF BORLAND}
 
 uses
+  {$IFDEF DEPRECATED_SYSUTILS_ANSISTRINGS}
+  System.AnsiStrings,
+  {$ENDIF DEPRECATED_SYSUTILS_ANSISTRINGS}
   JclResources, JclHookExcept;
 
 
@@ -598,7 +601,7 @@ begin
       Ptr := Pointer((PCardinal(Ptr))^); { dereference }
 
     { Is this the right base class? }
-    if StrComp(PAnsiChar(PByte(BaseType) + BaseType.tpName), BaseName) = 0 then
+    if {$IFDEF DEPRECATED_SYSUTILS_ANSISTRINGS}System.AnsiStrings.{$ENDIF}StrComp(PAnsiChar(PByte(BaseType) + BaseType.tpName), BaseName) = 0 then
     begin
       Addr := Ptr;    { Match --> return the adjusted pointer to the caller }
       Result := True;
@@ -632,7 +635,7 @@ function CppGetBase(var Obj: Pointer; TypeDesc: PCppTypeId;
 var
   BaseList, VBaseList: PCppBaseList;
 begin
-  if StrComp(PAnsiChar(PByte(TypeDesc) + TypeDesc.tpName), BaseName) = 0 then
+  if {$IFDEF DEPRECATED_SYSUTILS_ANSISTRINGS}System.AnsiStrings.{$ENDIF}StrComp(PAnsiChar(PByte(TypeDesc) + TypeDesc.tpName), BaseName) = 0 then
     { a class can be considered its own base }
     Result := True
   else if (TypeDesc.tpMask and TM_IS_CLASS) <> 0 then

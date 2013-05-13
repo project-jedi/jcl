@@ -1124,7 +1124,7 @@ begin
       Flags := LogonOptionsToFlags(ShowDialog);
       if Save then
       begin
-        StrPLCopy(MsgID, SeedMessageID, Length(MsgID) - 1);
+        StrPLCopyA(MsgID, SeedMessageID, Length(MsgID) - 1);
         Res := MapiSaveMail(FSessionHandle, ParentWND, MapiMessage, Flags, MAPI_LONG_MSGID, @MsgID[0]);
         if Res = SUCCESS_SUCCESS then
           SeedMessageID := MsgID;

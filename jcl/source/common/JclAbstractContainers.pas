@@ -2647,10 +2647,10 @@ var
 begin
   PString := PAnsiChar(AString);
   PSep := PAnsiChar(Separator);
-  PPos := StrPos(PString, PSep);
+  PPos := StrPosA(PString, PSep);
   if PPos <> nil then
   begin
-    SepLen := StrLen(PSep);
+    SepLen := StrLenA(PSep);
     repeat
       //SetLength(Item, PPos - PString + 1);
       SetLength(Item, PPos - PString);
@@ -2658,9 +2658,9 @@ begin
       //Item[PPos - PString + 1] := #0;
       Add(Item);
       PString := PPos + SepLen;
-      PPos := StrPos(PString, PSep);
+      PPos := StrPosA(PString, PSep);
     until PPos = nil;
-    if StrLen(PString) > 0 then //ex. hello#world
+    if StrLenA(PString) > 0 then //ex. hello#world
       Add(PString);
   end
   else //There isnt a Separator in AString

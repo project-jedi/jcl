@@ -545,7 +545,7 @@ begin
   if Result^ = RegKeyDelimiter then
     Inc(Result);
   for I := Low(RootKeys) to High(RootKeys) do
-    if StrPos(Key, PAnsiChar(RootKeys[I].AnsiName + RegKeyDelimiter)) = Result then
+    if StrPosA(Key, PAnsiChar(RootKeys[I].AnsiName + RegKeyDelimiter)) = Result then
     begin
       if RootKey <> RootKeys[I].Key then
         raise EJclRegistryError.CreateResFmt(@RsInconsistentPath, [Key])

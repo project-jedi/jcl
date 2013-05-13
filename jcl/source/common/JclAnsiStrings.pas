@@ -521,6 +521,35 @@ function ArrayOf(List: TJclAnsiStrings): TDynStringArray; overload;
 function AnsiCompareNaturalStr(const S1, S2: AnsiString): SizeInt;
 function AnsiCompareNaturalText(const S1, S2: AnsiString): SizeInt;
 
+// Explicit ANSI version of former/deprecated SysUtils PAnsiChar functions
+{$IFNDEF DEPRECATED_SYSUTILS_ANSISTRINGS}
+  {$IFDEF SUPPORTS_INLINE}
+    {$DEFINE ANSI_INLINE} // inline if the functions are in SysUtils but don't force the user to include System.AnsiStrings
+  {$ENDIF SUPPORTS_INLINE}
+{$ENDIF ~DEPRECATED_SYSUTILS_ANSISTRINGS}
+function StrNewA(const Str: PAnsiChar): PAnsiChar;                                           {$IFDEF ANSI_INLINE}inline;{$ENDIF}
+procedure StrDisposeA(Str: PAnsiChar);                                                       {$IFDEF ANSI_INLINE}inline;{$ENDIF}
+
+function StrLenA(S: PAnsiChar): Integer;                                                     {$IFDEF ANSI_INLINE}inline;{$ENDIF}
+function StrEndA(const Str: PAnsiChar): PAnsiChar;                                           {$IFDEF ANSI_INLINE}inline;{$ENDIF}
+function StrPosA(const Str1, Str2: PAnsiChar): PAnsiChar;                                    {$IFDEF ANSI_INLINE}inline;{$ENDIF}
+function StrPasA(const Str: PAnsiChar): AnsiString;                                          {$IFDEF ANSI_INLINE}inline;{$ENDIF}
+function StrLCopyA(Dest: PAnsiChar; const Source: PAnsiChar; MaxLen: Cardinal): PAnsiChar;   {$IFDEF ANSI_INLINE}inline;{$ENDIF}
+function StrPCopyA(Dest: PAnsiChar; const Source: AnsiString): PAnsiChar;                    {$IFDEF ANSI_INLINE}inline;{$ENDIF}
+function StrPLCopyA(Dest: PAnsiChar; const Source: AnsiString; MaxLen: Cardinal): PAnsiChar; {$IFDEF ANSI_INLINE}inline;{$ENDIF}
+function StrECopyA(Dest: PAnsiChar; const Source: PAnsiChar): PAnsiChar;                     {$IFDEF ANSI_INLINE}inline;{$ENDIF}
+function StrCompA(const Str1, Str2: PAnsiChar): Integer;                                     {$IFDEF ANSI_INLINE}inline;{$ENDIF}
+function StrLCompA(const Str1, Str2: PAnsiChar; MaxLen: Cardinal): Integer;                  {$IFDEF ANSI_INLINE}inline;{$ENDIF}
+function StrICompA(const Str1, Str2: PAnsiChar): Integer;                                    {$IFDEF ANSI_INLINE}inline;{$ENDIF}
+function StrLICompA(const Str1, Str2: PAnsiChar; MaxLen: Cardinal): Integer;                 {$IFDEF ANSI_INLINE}inline;{$ENDIF}
+
+function StrFmtA(Buffer, Format: PAnsiChar; const Args: array of const): PAnsiChar;
+
+function AnsiStrPosA(const Str1, Str2: PAnsiChar): PAnsiChar;                                {$IFDEF ANSI_INLINE}inline;{$ENDIF}
+function AnsiStrLICompA(S1, S2: PAnsiChar; MaxLen: Cardinal): Integer;                       {$IFDEF ANSI_INLINE}inline;{$ENDIF}
+function AnsiStrLCompA(S1, S2: PAnsiChar; MaxLen: Cardinal): Integer;                        {$IFDEF ANSI_INLINE}inline;{$ENDIF}
+
+
 // internal structures published to make function inlining working
 const
   AnsiCharCount   = Ord(High(AnsiChar)) + 1; // # of chars in one set
@@ -2685,7 +2714,7 @@ begin
 
   while (Current <> nil) and (Current^ <> #0) do
   begin
-    Current := AnsiStrPos(PAnsiChar(Current), PAnsiChar(SubStr));
+    Current := AnsiStrPosA(PAnsiChar(Current), PAnsiChar(SubStr));
     if Current <> nil then
     begin
       Last := Current;
@@ -2930,7 +2959,7 @@ begin
     SPI := SP;
     Inc(SPI, Index);
     Dec(SPI);
-    SPI := StrPos(SPI, SubP);
+    SPI := StrPosA(SPI, SubP);
     if SPI <> nil then
       Result := SPI - SP + 1
     else
@@ -3194,7 +3223,7 @@ begin
     {$ELSE ~SUPPORTS_UNICODE}
     List[I] := StrAlloc(Length(S) + SizeOf(AnsiChar));
     {$ENDIF ~SUPPORTS_UNICODE}
-    StrPCopy(List[I], S);
+    StrPCopyA(List[I], S);
   end;
   List[Source.Count] := nil;
   Move(List[0], Dest^, (Source.Count + 1) * SizeOf(PAnsiChar));
@@ -3245,7 +3274,7 @@ begin
     SetLength(List, Count);
     Move(Dest^, List[0], Count * SizeOf(PAnsiChar));
     for I := 0 to Count - 1 do
-      StrDispose(List[I]);
+      StrDisposeA(List[I]);
     FreeMem(Dest, (Count + 1) * SizeOf(PAnsiChar));
     Dest := nil;
   end;
@@ -3350,12 +3379,12 @@ begin
     if Source[I] = '' then
       raise EJclAnsiStringError.CreateRes(@RsInvalidEmptyStringItem)
     else
-      Inc(TotalLength, StrLen(PAnsiChar(AnsiString(Source[I]))) + 1);
+      Inc(TotalLength, StrLenA(PAnsiChar(AnsiString(Source[I]))) + 1);
   AllocateMultiSz(Dest, TotalLength);
   P := Dest;
   for I := 0 to Source.Count - 1 do
   begin
-    P := StrECopy(P, PAnsiChar(AnsiString(Source[I])));
+    P := StrECopyA(P, PAnsiChar(AnsiString(Source[I])));
     Inc(P);
   end;
   P^ := #0;
@@ -3376,7 +3405,7 @@ begin
       while P^ <> #0 do
       begin
         Dest.Add(P);
-        P := StrEnd(P);
+        P := StrEndA(P);
         Inc(P);
       end;
     end;
@@ -3394,8 +3423,8 @@ begin
   begin
     P := Source;
     repeat
-      Inc(Result, StrLen(P) + 1);
-      P := StrEnd(P);
+      Inc(Result, StrLenA(P) + 1);
+      P := StrEndA(P);
       Inc(P);
     until P^ = #0;
     Inc(Result);
@@ -4047,9 +4076,9 @@ begin
     begin
       Result := StrCompare(S1,S2);
       if CaseInsensitive then
-        Result := AnsiStrLIComp(PAnsiChar(@S1[Cur1]), PAnsiChar(@S2[Cur2]), 1)
+        Result := AnsiStrLICompA(PAnsiChar(@S1[Cur1]), PAnsiChar(@S2[Cur2]), 1)
       else
-        Result := AnsiStrLComp(PAnsiChar(@S1[Cur1]), PAnsiChar(@S2[Cur2]), 1);
+        Result := AnsiStrLCompA(PAnsiChar(@S1[Cur1]), PAnsiChar(@S2[Cur2]), 1);
       Inc(Cur1);
       Inc(Cur2);
     end;
@@ -4065,6 +4094,98 @@ function AnsiCompareNaturalText(const S1, S2: AnsiString): SizeInt; overload;
 begin
   Result := AnsiCompareNatural(S1, S2, True);
 end;
+
+
+function StrNewA(const Str: PAnsiChar): PAnsiChar;
+begin
+  Result := {$IFDEF DEPRECATED_SYSUTILS_ANSISTRINGS}System.AnsiStrings.{$ENDIF}StrNew(Str);
+end;
+
+procedure StrDisposeA(Str: PAnsiChar);
+begin
+  {$IFDEF DEPRECATED_SYSUTILS_ANSISTRINGS}System.AnsiStrings.{$ENDIF}StrDispose(Str);
+end;
+
+function StrLenA(S: PAnsiChar): Integer;
+begin
+  Result := {$IFDEF DEPRECATED_SYSUTILS_ANSISTRINGS}System.AnsiStrings.{$ENDIF}StrLen(S);
+end;
+
+function StrEndA(const Str: PAnsiChar): PAnsiChar;
+begin
+  Result := {$IFDEF DEPRECATED_SYSUTILS_ANSISTRINGS}System.AnsiStrings.{$ENDIF}StrEnd(Str);
+end;
+
+function StrPosA(const Str1, Str2: PAnsiChar): PAnsiChar;
+begin
+  Result := {$IFDEF DEPRECATED_SYSUTILS_ANSISTRINGS}System.AnsiStrings.{$ENDIF}StrPos(Str1, Str2);
+end;
+
+function StrPasA(const Str: PAnsiChar): AnsiString;
+begin
+  Result := {$IFDEF DEPRECATED_SYSUTILS_ANSISTRINGS}System.AnsiStrings.{$ENDIF}StrPas(Str);
+end;
+
+function StrLCopyA(Dest: PAnsiChar; const Source: PAnsiChar; MaxLen: Cardinal): PAnsiChar;
+begin
+  Result := {$IFDEF DEPRECATED_SYSUTILS_ANSISTRINGS}System.AnsiStrings.{$ENDIF}StrLCopy(Dest, Source, MaxLen);
+end;
+
+function StrPCopyA(Dest: PAnsiChar; const Source: AnsiString): PAnsiChar;
+begin
+  Result := {$IFDEF DEPRECATED_SYSUTILS_ANSISTRINGS}System.AnsiStrings.{$ENDIF}StrPCopy(Dest, Source);
+end;
+
+function StrPLCopyA(Dest: PAnsiChar; const Source: AnsiString; MaxLen: Cardinal): PAnsiChar;
+begin
+  Result := {$IFDEF DEPRECATED_SYSUTILS_ANSISTRINGS}System.AnsiStrings.{$ENDIF}StrPLCopy(Dest, Source, MaxLen);
+end;
+
+function StrECopyA(Dest: PAnsiChar; const Source: PAnsiChar): PAnsiChar;
+begin
+  Result := {$IFDEF DEPRECATED_SYSUTILS_ANSISTRINGS}System.AnsiStrings.{$ENDIF}StrECopy(Dest, Source);
+end;
+
+function StrCompA(const Str1, Str2: PAnsiChar): Integer;
+begin
+  Result := {$IFDEF DEPRECATED_SYSUTILS_ANSISTRINGS}System.AnsiStrings.{$ENDIF}StrComp(Str1, Str2);
+end;
+
+function StrLCompA(const Str1, Str2: PAnsiChar; MaxLen: Cardinal): Integer;
+begin
+  Result := {$IFDEF DEPRECATED_SYSUTILS_ANSISTRINGS}System.AnsiStrings.{$ENDIF}StrLComp(Str1, Str2, MaxLen);
+end;
+
+function StrICompA(const Str1, Str2: PAnsiChar): Integer;
+begin
+  Result := {$IFDEF DEPRECATED_SYSUTILS_ANSISTRINGS}System.AnsiStrings.{$ENDIF}StrIComp(Str1, Str2);
+end;
+
+function StrLICompA(const Str1, Str2: PAnsiChar; MaxLen: Cardinal): Integer;
+begin
+  Result := {$IFDEF DEPRECATED_SYSUTILS_ANSISTRINGS}System.AnsiStrings.{$ENDIF}StrIComp(Str1, Str2);
+end;
+
+function StrFmtA(Buffer, Format: PAnsiChar; const Args: array of const): PAnsiChar;
+begin
+  Result := {$IFDEF DEPRECATED_SYSUTILS_ANSISTRINGS}System.AnsiStrings.{$ENDIF}StrFmt(Buffer, Format, Args);
+end;
+
+function AnsiStrPosA(const Str1, Str2: PAnsiChar): PAnsiChar;
+begin
+  Result := {$IFDEF DEPRECATED_SYSUTILS_ANSISTRINGS}System.AnsiStrings.{$ENDIF}AnsiStrPos(Str1, Str2);
+end;
+
+function AnsiStrLICompA(S1, S2: PAnsiChar; MaxLen: Cardinal): Integer;
+begin
+  Result := {$IFDEF DEPRECATED_SYSUTILS_ANSISTRINGS}System.AnsiStrings.{$ENDIF}AnsiStrLIComp(S1, S2, MaxLen);
+end;
+
+function AnsiStrLCompA(S1, S2: PAnsiChar; MaxLen: Cardinal): Integer;
+begin
+  Result := {$IFDEF DEPRECATED_SYSUTILS_ANSISTRINGS}System.AnsiStrings.{$ENDIF}AnsiStrLComp(S1, S2, MaxLen);
+end;
+
 
 initialization
   LoadCharTypes;  // this table first

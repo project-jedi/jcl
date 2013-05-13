@@ -55,7 +55,7 @@ uses
   {$ELSE ~HAS_UNITSCOPE}
   Windows, Classes, SysUtils, TypInfo, Contnrs,
   {$ENDIF ~HAS_UNITSCOPE}
-  JclBase, JclDateTime, JclFileUtils, JclSysInfo, JclWin32;
+  JclBase, JclDateTime, JclFileUtils, JclWin32;
 
 type
   // Smart name compare function
@@ -1123,7 +1123,7 @@ uses
   Character,
   {$ENDIF HAS_UNIT_CHARACTER}
   {$ENDIF ~HAS_UNITSCOPE}
-  JclLogic, JclResources, JclSysUtils, JclStrings, JclStringConversions;
+  JclLogic, JclResources, JclSysUtils, JclAnsiStrings, JclStrings, JclStringConversions;
 
 const
   MANIFESTExtension = '.manifest';
@@ -5271,7 +5271,7 @@ function PeInsertSection(const FileName: TFileName; SectionStream: TStream; Sect
       // JCLDEBUG Section name
       if not TryStringToUTF8(SectionName, UTF8Name) then
         UTF8Name := TUTF8String(SectionName);
-      StrPLCopy(PAnsiChar(@NewSection^.Name), UTF8Name, IMAGE_SIZEOF_SHORT_NAME);
+      StrPLCopyA(PAnsiChar(@NewSection^.Name), UTF8Name, IMAGE_SIZEOF_SHORT_NAME);
       // JCLDEBUG Characteristics flags
       NewSection^.Characteristics := IMAGE_SCN_MEM_READ or IMAGE_SCN_CNT_INITIALIZED_DATA;
 
@@ -5293,7 +5293,7 @@ function PeInsertSection(const FileName: TFileName; SectionStream: TStream; Sect
       // Note: Delphi linker seems to generate incorrect (unaligned) size of
       // the executable when adding TD32 debug data so the position could be
       // behind the size of the file then.
-      ImageStream.Seek(NewSection^.PointerToRawData, soFromBeginning);
+      ImageStream.Seek(NewSection^.PointerToRawData, soBeginning);
       ImageStream.CopyFrom(SectionStream, 0);
       X := 0;
       for I := 1 to NeedFill do
@@ -5342,7 +5342,7 @@ function PeInsertSection(const FileName: TFileName; SectionStream: TStream; Sect
       // JCLDEBUG Section name
       if not TryStringToUTF8(SectionName, UTF8Name) then
         UTF8Name := TUTF8String(SectionName);
-      StrPLCopy(PAnsiChar(@NewSection^.Name), UTF8Name, IMAGE_SIZEOF_SHORT_NAME);
+      StrPLCopyA(PAnsiChar(@NewSection^.Name), UTF8Name, IMAGE_SIZEOF_SHORT_NAME);
       // JCLDEBUG Characteristics flags
       NewSection^.Characteristics := IMAGE_SCN_MEM_READ or IMAGE_SCN_CNT_INITIALIZED_DATA;
 
@@ -5364,7 +5364,7 @@ function PeInsertSection(const FileName: TFileName; SectionStream: TStream; Sect
       // Note: Delphi linker seems to generate incorrect (unaligned) size of
       // the executable when adding TD32 debug data so the position could be
       // behind the size of the file then.
-      ImageStream.Seek(NewSection^.PointerToRawData, soFromBeginning);
+      ImageStream.Seek(NewSection^.PointerToRawData, soBeginning);
       ImageStream.CopyFrom(SectionStream, 0);
       X := 0;
       for I := 1 to NeedFill do
@@ -6133,7 +6133,7 @@ begin
     P := PAnsiChar(UTF8Name);
     Header := PeMapImgSections32(NtHeaders);
     for I := 1 to NtHeaders^.FileHeader.NumberOfSections do
-      if StrLComp(PAnsiChar(@Header^.Name), P, IMAGE_SIZEOF_SHORT_NAME) = 0 then
+      if StrLCompA(PAnsiChar(@Header^.Name), P, IMAGE_SIZEOF_SHORT_NAME) = 0 then
       begin
         Result := Header;
         Break;
@@ -6159,7 +6159,7 @@ begin
     P := PAnsiChar(UTF8Name);
     Header := PeMapImgSections64(NtHeaders);
     for I := 1 to NtHeaders^.FileHeader.NumberOfSections do
-      if StrLComp(PAnsiChar(@Header^.Name), P, IMAGE_SIZEOF_SHORT_NAME) = 0 then
+      if StrLCompA(PAnsiChar(@Header^.Name), P, IMAGE_SIZEOF_SHORT_NAME) = 0 then
       begin
         Result := Header;
         Break;
@@ -6181,7 +6181,7 @@ begin
       UTF8Name := TUTF8String(SectionName);
     P := PAnsiChar(UTF8Name);
     for Result := Low(ImageSectionHeaders) to High(ImageSectionHeaders) do
-      if StrLComp(PAnsiChar(@ImageSectionHeaders[Result].Name), P, IMAGE_SIZEOF_SHORT_NAME) = 0 then
+      if StrLCompA(PAnsiChar(@ImageSectionHeaders[Result].Name), P, IMAGE_SIZEOF_SHORT_NAME) = 0 then
         Exit;
   end;
   Result := -1;
@@ -6498,7 +6498,7 @@ begin
   Result := False;
   {$IFDEF CPU32}
   FromProcDebugThunk32 := PWin9xDebugThunk32(FromProc);
-  IsThunked := not IsWinNT and IsWin9xDebugThunk(FromProcDebugThunk32);
+  IsThunked := (Win32Platform <> VER_PLATFORM_WIN32_NT) and IsWin9xDebugThunk(FromProcDebugThunk32);
   {$ENDIF CPU32}
   NtHeader32 := PeMapImgNtHeaders32(Base);
   if NtHeader32 = nil then
@@ -6513,7 +6513,7 @@ begin
   while ImportDesc^.Name <> 0 do
   begin
     CurrName := PAnsiChar(Base) + ImportDesc^.Name;
-    if StrIComp(CurrName, RefName) = 0 then
+    if StrICompA(CurrName, RefName) = 0 then
     begin
       {$IFDEF CPU32}
       ImportEntry32 := PImageThunkData32(TJclAddr(Base) + ImportDesc^.FirstThunk);
@@ -6691,7 +6691,7 @@ var
 
   procedure ReadRTTI;
   begin
-    if StrLComp(NameP, '$xp$', 4) = 0 then
+    if StrLCompA(NameP, '$xp$', 4) = 0 then
     begin
       Inc(NameP, 4);
       Description.Kind := skRTTI;
@@ -6803,7 +6803,7 @@ begin
     Result := urError;
   end;
   NameU^ := #0;
-  SetLength(UTF8Unmangled, {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.StrLen(PAnsiChar(UTF8Unmangled))); // SysUtils prefix due to compiler bug
+  SetLength(UTF8Unmangled, StrLenA(PAnsiChar(UTF8Unmangled))); // SysUtils prefix due to compiler bug
   if not TryUTF8ToString(UTF8Unmangled, Unmangled) then
     Unmangled := string(UTF8Unmangled);
 end;

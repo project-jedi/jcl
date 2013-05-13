@@ -631,7 +631,7 @@ begin
   begin
     if pch^ <> #0 then
       FStrings.AddObject(string(TUTF8String(pch)), TObject(off));
-    pch := pch + StrLen(pch) + 1;
+    pch := pch + StrLenA(pch) + 1;
     off := pch - PAnsiChar(Data);
   end;
 end;
@@ -1253,7 +1253,7 @@ constructor TJclPeMetadata.Create(const AImage: TJclPeImage);
       FStreams.Add(GetStreamClass(string(pStream.Name)).Create(Self, pStream));
 
       pStream := PClrStreamHeader(TJclAddr(@pStream.Name[0]) +
-        DWORD_PTR((StrLen(PAnsiChar(@pStream.Name[0]) + 1 + 3) and not $3)));
+        DWORD_PTR((StrLenA(PAnsiChar(@pStream.Name[0]) + 1 + 3) and not $3)));
     end;
     if FindStream(TJclClrTableStream, TJclClrStream(TableStream)) then
       TableStream.Update;
@@ -1291,8 +1291,8 @@ var
   VerStr: AnsiString;
 begin
   SetLength(VerStr, Header.Length+1);
-  StrLCopy(PAnsiChar(VerStr), @Header.Version[0], Header.Length);
-  SetLength(VerStr, StrLen(PAnsiChar(VerStr)));
+  StrLCopyA(PAnsiChar(VerStr), @Header.Version[0], Header.Length);
+  SetLength(VerStr, StrLenA(PAnsiChar(VerStr)));
   Result := UTF8ToWideString(VerStr)
 end;
 

@@ -2756,7 +2756,7 @@ end;
 
 procedure InternalExecuteReadPipe(var PipeInfo: TPipeInfo; var Overlapped: TOverlapped);
 var
-  NullDWORD: PDWORD;
+  NullDWORD: ^DWORD; // XE4 broke PDWORD
   Res: DWORD;
 begin
   NullDWORD := nil;
