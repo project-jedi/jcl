@@ -32,7 +32,7 @@ package JclBaseExpert;
 {$MINENUMSIZE 1}
 {$IMAGEBASE $58000000}
 {$DESCRIPTION 'JCL Package containing common units for JCL Experts'}
-{$LIBSUFFIX '170'}
+{$LIBSUFFIX '180'}
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 

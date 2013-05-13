@@ -31,7 +31,7 @@ Library JclFavoriteFoldersExpertDLL;
 {$MINENUMSIZE 1}
 {$IMAGEBASE $58040000}
 {$DESCRIPTION 'JCL Open and Save IDE dialogs with favorite folders'}
-{$LIBSUFFIX '170'}
+{$LIBSUFFIX '180'}
 {$IMPLICITBUILD OFF}
 
 {$DEFINE BCB}

@@ -534,10 +534,13 @@ function StrLenA(S: PAnsiChar): Integer;                                        
 function StrEndA(const Str: PAnsiChar): PAnsiChar;                                           {$IFDEF ANSI_INLINE}inline;{$ENDIF}
 function StrPosA(const Str1, Str2: PAnsiChar): PAnsiChar;                                    {$IFDEF ANSI_INLINE}inline;{$ENDIF}
 function StrPasA(const Str: PAnsiChar): AnsiString;                                          {$IFDEF ANSI_INLINE}inline;{$ENDIF}
+function StrCopyA(Dest: PAnsiChar; const Source: PAnsiChar): PAnsiChar;                      {$IFDEF ANSI_INLINE}inline;{$ENDIF}
 function StrLCopyA(Dest: PAnsiChar; const Source: PAnsiChar; MaxLen: Cardinal): PAnsiChar;   {$IFDEF ANSI_INLINE}inline;{$ENDIF}
 function StrPCopyA(Dest: PAnsiChar; const Source: AnsiString): PAnsiChar;                    {$IFDEF ANSI_INLINE}inline;{$ENDIF}
 function StrPLCopyA(Dest: PAnsiChar; const Source: AnsiString; MaxLen: Cardinal): PAnsiChar; {$IFDEF ANSI_INLINE}inline;{$ENDIF}
 function StrECopyA(Dest: PAnsiChar; const Source: PAnsiChar): PAnsiChar;                     {$IFDEF ANSI_INLINE}inline;{$ENDIF}
+function StrCatA(Dest: PAnsiChar; const Source: PAnsiChar): PAnsiChar;                       {$IFDEF ANSI_INLINE}inline;{$ENDIF}
+function StrLCatA(Dest: PAnsiChar; const Source: PAnsiChar; MaxLen: Cardinal): PAnsiChar;    {$IFDEF ANSI_INLINE}inline;{$ENDIF}
 function StrCompA(const Str1, Str2: PAnsiChar): Integer;                                     {$IFDEF ANSI_INLINE}inline;{$ENDIF}
 function StrLCompA(const Str1, Str2: PAnsiChar; MaxLen: Cardinal): Integer;                  {$IFDEF ANSI_INLINE}inline;{$ENDIF}
 function StrICompA(const Str1, Str2: PAnsiChar): Integer;                                    {$IFDEF ANSI_INLINE}inline;{$ENDIF}
@@ -4126,6 +4129,11 @@ begin
   Result := {$IFDEF DEPRECATED_SYSUTILS_ANSISTRINGS}System.AnsiStrings.{$ENDIF}StrPas(Str);
 end;
 
+function StrCopyA(Dest: PAnsiChar; const Source: PAnsiChar): PAnsiChar;
+begin
+  Result := {$IFDEF DEPRECATED_SYSUTILS_ANSISTRINGS}System.AnsiStrings.{$ENDIF}StrCopy(Dest, Source);
+end;
+
 function StrLCopyA(Dest: PAnsiChar; const Source: PAnsiChar; MaxLen: Cardinal): PAnsiChar;
 begin
   Result := {$IFDEF DEPRECATED_SYSUTILS_ANSISTRINGS}System.AnsiStrings.{$ENDIF}StrLCopy(Dest, Source, MaxLen);
@@ -4144,6 +4152,16 @@ end;
 function StrECopyA(Dest: PAnsiChar; const Source: PAnsiChar): PAnsiChar;
 begin
   Result := {$IFDEF DEPRECATED_SYSUTILS_ANSISTRINGS}System.AnsiStrings.{$ENDIF}StrECopy(Dest, Source);
+end;
+
+function StrCatA(Dest: PAnsiChar; const Source: PAnsiChar): PAnsiChar;
+begin
+  Result := {$IFDEF DEPRECATED_SYSUTILS_ANSISTRINGS}System.AnsiStrings.{$ENDIF}StrCat(Dest, Source);
+end;
+
+function StrLCatA(Dest: PAnsiChar; const Source: PAnsiChar; MaxLen: Cardinal): PAnsiChar;
+begin
+  Result := {$IFDEF DEPRECATED_SYSUTILS_ANSISTRINGS}System.AnsiStrings.{$ENDIF}StrLCat(Dest, Source, MaxLen);
 end;
 
 function StrCompA(const Str1, Str2: PAnsiChar): Integer;

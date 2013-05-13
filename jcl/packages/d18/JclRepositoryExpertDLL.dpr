@@ -31,7 +31,7 @@ Library JclRepositoryExpertDLL;
 {$MINENUMSIZE 1}
 {$IMAGEBASE $58180000}
 {$DESCRIPTION 'JCL Package containing repository wizards'}
-{$LIBSUFFIX '170'}
+{$LIBSUFFIX '180'}
 {$IMPLICITBUILD OFF}
 
 {$DEFINE BCB}

@@ -31,7 +31,7 @@ Library JclVersionControlExpertDLL;
 {$MINENUMSIZE 1}
 {$IMAGEBASE $58200000}
 {$DESCRIPTION 'JCL Integration of version control systems in the IDE'}
-{$LIBSUFFIX '170'}
+{$LIBSUFFIX '180'}
 {$IMPLICITBUILD OFF}
 
 {$DEFINE BCB}

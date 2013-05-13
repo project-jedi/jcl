@@ -32,7 +32,7 @@ package JclStackTraceViewerExpert;
 {$MINENUMSIZE 1}
 {$IMAGEBASE $58250000}
 {$DESCRIPTION 'JCL Stack Trace Viewer'}
-{$LIBSUFFIX '170'}
+{$LIBSUFFIX '180'}
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 
