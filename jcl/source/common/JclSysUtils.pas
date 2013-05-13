@@ -2756,11 +2756,15 @@ end;
 
 procedure InternalExecuteReadPipe(var PipeInfo: TPipeInfo; var Overlapped: TOverlapped);
 var
-  NullDWORD: PDWORD;
+//  {$IFDEF DELPHI18_UP}
+//  NullDWORD: ^DWORD;
+//  {$ELSE}
+  NullDWORD: Cardinal;
+//  {$ENDIF DELPHI18_UP}
   Res: DWORD;
 begin
-  NullDWORD := nil;
-  if not ReadFile(PipeInfo.PipeRead, PipeInfo.Buffer[0], BufferSize, NullDWORD^, @Overlapped) then
+//  NullDWORD := nil;
+  if not ReadFile(PipeInfo.PipeRead, PipeInfo.Buffer[0], BufferSize, NullDWORD, @Overlapped) then
   begin
     Res := GetLastError;
     case Res of

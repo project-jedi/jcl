@@ -560,6 +560,7 @@ begin
           8: Result.Name := 'Embarcadero RAD Studio XE';
           9: Result.Name := 'Embarcadero RAD Studio XE2';
          10: Result.Name := 'Embarcadero RAD Studio XE3';
+         11: Result.Name := 'Embarcadero RAD Studio XE4';		 
         end;
     end;
 
@@ -1200,7 +1201,7 @@ begin
   begin
     WriteLn;
     WriteLn('Additional options (must be specified before any dcc32 parameter):');
-    WriteLn('  --delphi-version=d17   Prefer this version, overrides environment variable');
+    WriteLn('  --delphi-version=d18   Prefer this version, overrides environment variable');
     WriteLn('  --verbose              Show warnings and errors during the compiler detection');
     WriteLn('  --use-search-paths     Use the IDE''s search paths');
     WriteLn('  --preserve-config      Keep the dcc32.cfg file and create a dcc32_command.cmd');
@@ -1212,8 +1213,8 @@ begin
     WriteLn('  --runtime-package-vcl  Link the executable against the vcl package');
     WriteLn;
     WriteLn('Environment variables:');
-    WriteLn('  DELPHIVERSION = d17    Prefer this Delphi/BCB/BDS version');
-    WriteLn('                         (d6, d7, c6, d9, d10, d11, d12, d14, d15, d16, d17, ...)');
+    WriteLn('  DELPHIVERSION = d18    Prefer this Delphi/BCB/BDS version');
+    WriteLn('                         (d6, d7, c6, d9, d10, d11, d12, d14, d15, d16, d17, d18, ...)');
   end;
 
   ExitCode := Status;

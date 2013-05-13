@@ -49,11 +49,17 @@ uses
   Winapi.Windows,
   {$ENDIF MSWINDOWS}
   System.Classes, System.SysUtils, System.Contnrs,
+  {$IFDEF HAS_UNIT_ANSISTRINGS}
+  System.AnsiStrings,
+  {$ENDIF HAS_UNIT_ANSISTRINGS}
   {$ELSE ~HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
   Classes, SysUtils, Contnrs,
+  {$IFDEF HAS_UNIT_ANSISTRINGS}
+  AnsiStrings,
+  {$ENDIF HAS_UNIT_ANSISTRINGS}
   {$ENDIF ~HAS_UNITSCOPE}
   JclBase, JclFileUtils, JclStrings, JclPeImage, JclSysUtils;
 
@@ -631,7 +637,7 @@ begin
   begin
     if pch^ <> #0 then
       FStrings.AddObject(string(TUTF8String(pch)), TObject(off));
-    pch := pch + StrLen(pch) + 1;
+    pch := pch + {$IFDEF RTL250_UP}System.AnsiStrings.{$ENDIF}StrLen(pch) + 1;
     off := pch - PAnsiChar(Data);
   end;
 end;
@@ -1253,7 +1259,7 @@ constructor TJclPeMetadata.Create(const AImage: TJclPeImage);
       FStreams.Add(GetStreamClass(string(pStream.Name)).Create(Self, pStream));
 
       pStream := PClrStreamHeader(TJclAddr(@pStream.Name[0]) +
-        DWORD_PTR((StrLen(PAnsiChar(@pStream.Name[0]) + 1 + 3) and not $3)));
+        DWORD_PTR(({$IFDEF RTL250_UP}System.AnsiStrings.{$ENDIF}StrLen(PAnsiChar(@pStream.Name[0]) + 1 + 3) and not $3)));
     end;
     if FindStream(TJclClrTableStream, TJclClrStream(TableStream)) then
       TableStream.Update;
@@ -1291,8 +1297,8 @@ var
   VerStr: AnsiString;
 begin
   SetLength(VerStr, Header.Length+1);
-  StrLCopy(PAnsiChar(VerStr), @Header.Version[0], Header.Length);
-  SetLength(VerStr, StrLen(PAnsiChar(VerStr)));
+  {$IFDEF RTL250_UP}System.AnsiStrings.{$ENDIF}StrLCopy(PAnsiChar(VerStr), @Header.Version[0], Header.Length);
+  SetLength(VerStr, {$IFDEF RTL250_UP}System.AnsiStrings.{$ENDIF}StrLen(PAnsiChar(VerStr)));
   Result := UTF8ToWideString(VerStr)
 end;
 
