@@ -52,8 +52,14 @@ uses
   {$ENDIF UNITVERSIONING}
   {$IFDEF HAS_UNITSCOPE}
   Winapi.Windows, System.Classes, System.SysUtils, System.TypInfo, System.Contnrs,
+  {$IFDEF HAS_UNIT_ANSISTRINGS}
+  System.AnsiStrings,
+  {$ENDIF HAS_UNIT_ANSISTRINGS}
   {$ELSE ~HAS_UNITSCOPE}
   Windows, Classes, SysUtils, TypInfo, Contnrs,
+  {$IFDEF HAS_UNIT_ANSISTRINGS}
+  AnsiStrings,
+  {$ENDIF HAS_UNIT_ANSISTRINGS}
   {$ENDIF ~HAS_UNITSCOPE}
   JclBase, JclDateTime, JclFileUtils, JclSysInfo, JclWin32;
 
@@ -5271,7 +5277,7 @@ function PeInsertSection(const FileName: TFileName; SectionStream: TStream; Sect
       // JCLDEBUG Section name
       if not TryStringToUTF8(SectionName, UTF8Name) then
         UTF8Name := TUTF8String(SectionName);
-      StrPLCopy(PAnsiChar(@NewSection^.Name), UTF8Name, IMAGE_SIZEOF_SHORT_NAME);
+      {$IFDEF RTL250_UP}System.AnsiStrings.{$ENDIF}StrPLCopy(PAnsiChar(@NewSection^.Name), UTF8Name, IMAGE_SIZEOF_SHORT_NAME);
       // JCLDEBUG Characteristics flags
       NewSection^.Characteristics := IMAGE_SCN_MEM_READ or IMAGE_SCN_CNT_INITIALIZED_DATA;
 
@@ -5342,7 +5348,7 @@ function PeInsertSection(const FileName: TFileName; SectionStream: TStream; Sect
       // JCLDEBUG Section name
       if not TryStringToUTF8(SectionName, UTF8Name) then
         UTF8Name := TUTF8String(SectionName);
-      StrPLCopy(PAnsiChar(@NewSection^.Name), UTF8Name, IMAGE_SIZEOF_SHORT_NAME);
+      {$IFDEF RTL250_UP}System.AnsiStrings.{$ENDIF}StrPLCopy(PAnsiChar(@NewSection^.Name), UTF8Name, IMAGE_SIZEOF_SHORT_NAME);
       // JCLDEBUG Characteristics flags
       NewSection^.Characteristics := IMAGE_SCN_MEM_READ or IMAGE_SCN_CNT_INITIALIZED_DATA;
 
@@ -6133,7 +6139,7 @@ begin
     P := PAnsiChar(UTF8Name);
     Header := PeMapImgSections32(NtHeaders);
     for I := 1 to NtHeaders^.FileHeader.NumberOfSections do
-      if StrLComp(PAnsiChar(@Header^.Name), P, IMAGE_SIZEOF_SHORT_NAME) = 0 then
+      if {$IFDEF RTL250_UP}System.AnsiStrings.{$ENDIF}StrLComp(PAnsiChar(@Header^.Name), P, IMAGE_SIZEOF_SHORT_NAME) = 0 then
       begin
         Result := Header;
         Break;
@@ -6159,7 +6165,7 @@ begin
     P := PAnsiChar(UTF8Name);
     Header := PeMapImgSections64(NtHeaders);
     for I := 1 to NtHeaders^.FileHeader.NumberOfSections do
-      if StrLComp(PAnsiChar(@Header^.Name), P, IMAGE_SIZEOF_SHORT_NAME) = 0 then
+      if {$IFDEF RTL250_UP}System.AnsiStrings.{$ENDIF}StrLComp(PAnsiChar(@Header^.Name), P, IMAGE_SIZEOF_SHORT_NAME) = 0 then
       begin
         Result := Header;
         Break;
@@ -6181,7 +6187,7 @@ begin
       UTF8Name := TUTF8String(SectionName);
     P := PAnsiChar(UTF8Name);
     for Result := Low(ImageSectionHeaders) to High(ImageSectionHeaders) do
-      if StrLComp(PAnsiChar(@ImageSectionHeaders[Result].Name), P, IMAGE_SIZEOF_SHORT_NAME) = 0 then
+      if {$IFDEF RTL250_UP}System.AnsiStrings.{$ENDIF}StrLComp(PAnsiChar(@ImageSectionHeaders[Result].Name), P, IMAGE_SIZEOF_SHORT_NAME) = 0 then
         Exit;
   end;
   Result := -1;
@@ -6513,7 +6519,7 @@ begin
   while ImportDesc^.Name <> 0 do
   begin
     CurrName := PAnsiChar(Base) + ImportDesc^.Name;
-    if StrIComp(CurrName, RefName) = 0 then
+    if {$IFDEF RTL250_UP}System.AnsiStrings.{$ENDIF}StrIComp(CurrName, RefName) = 0 then
     begin
       {$IFDEF CPU32}
       ImportEntry32 := PImageThunkData32(TJclAddr(Base) + ImportDesc^.FirstThunk);
@@ -6691,7 +6697,7 @@ var
 
   procedure ReadRTTI;
   begin
-    if StrLComp(NameP, '$xp$', 4) = 0 then
+    if {$IFDEF RTL250_UP}System.AnsiStrings.{$ENDIF}StrLComp(NameP, '$xp$', 4) = 0 then
     begin
       Inc(NameP, 4);
       Description.Kind := skRTTI;
@@ -6803,7 +6809,7 @@ begin
     Result := urError;
   end;
   NameU^ := #0;
-  SetLength(UTF8Unmangled, {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.StrLen(PAnsiChar(UTF8Unmangled))); // SysUtils prefix due to compiler bug
+  SetLength(UTF8Unmangled, {$IFDEF RTL250_UP}System.AnsiStrings.{$ENDIF}StrLen(PAnsiChar(UTF8Unmangled))); // SysUtils prefix due to compiler bug
   if not TryUTF8ToString(UTF8Unmangled, Unmangled) then
     Unmangled := string(UTF8Unmangled);
 end;

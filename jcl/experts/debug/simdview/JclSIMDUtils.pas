@@ -864,7 +864,8 @@ function GetThreadJclContext(AThread: IOTAThread; out JclContext: TJclContext): 
 var
   {$IFDEF COMPILER9_UP}
   OTAXMMRegs: TOTAXMMRegs;
-  OTAThreadContext: TOTAThreadContext;
+  OTAThreadContext: _CONTEXT;
+
   {$ELSE ~COMPILER9_UP}
   ContextMemory: Pointer;
   AlignedContext: PJclContext;
