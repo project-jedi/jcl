@@ -55,6 +55,9 @@
 #define JclLib17    JclLib
 #define   JclBpl17  JclBpl
 #define   JclHpp17  JclHpp
+#define JclLib18    JclLib
+#define   JclBpl18  JclBpl
+#define   JclHpp18  JclHpp
 #endif
 
 ;---------------------------------------------------
@@ -140,12 +143,12 @@ Source: {#JclRoot}\devtools\*; DestDir: "{app}\devtools"; Excludes: ".svn,__hist
 Source: {#JclRoot}\docs\*; DestDir: "{app}\docs"; Excludes: ".svn,__history"; Flags: ignoreversion sortfilesbyextension recursesubdirs
 Source: {#JclRoot}\experts\*; DestDir: "{app}\experts"; Excludes: ".svn,__history,*.~*,*.txt"; Flags: ignoreversion sortfilesbyextension recursesubdirs
 Source: {#JclRoot}\install\*; DestDir: "{app}\install"; Excludes: ".svn,__history,*.~*,ISS,dcc32.cfg,*.cmd,*.local,*.identcache"; Flags: ignoreversion recursesubdirs sortfilesbyextension
-Source: {#JclRoot}\lib\*; DestDir: "{app}\lib"; Excludes: ".svn,__history,*.dcu,*.obj,*.dcp,*.lib,*.bpi,*.dfm,*.res,*.txt"; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs
-Source: {#JclRoot}\packages\*; DestDir: "{app}\packages"; Excludes: ".svn,__history,*.drc,*.txt,*.identcache,*.local,*.~*,*.dcu"; Flags: ignoreversion sortfilesbyextension recursesubdirs
-Source: {#JclRoot}\source\*; DestDir: "{app}\source"; Excludes: ".svn,__history,*.~*,*.hpp,*.txt"; Flags: ignoreversion sortfilesbyextension recursesubdirs
+Source: {#JclRoot}\lib\*; DestDir: "{app}\lib"; Excludes: ".svn,__history,*.dcu,*.obj,*.dcp,*.lib,*.bpi,*.dfm,*.res,*.txt,*.a,*.o"; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs
+Source: {#JclRoot}\packages\*; DestDir: "{app}\packages"; Excludes: ".svn,__history,*.drc,*.txt,*.identcache,*.local,*.~*,*.dcu,*.a,*.o"; Flags: ignoreversion sortfilesbyextension recursesubdirs
+Source: {#JclRoot}\source\*; DestDir: "{app}\source"; Excludes: ".git,.svn,__history,*.~*,*.hpp,*.txt"; Flags: ignoreversion sortfilesbyextension recursesubdirs
 #ifdef Include_Examples
 ; SolidBreak
-Source: {#JclRoot}\examples\*; DestDir: "{app}\examples"; Excludes: ".svn,__history,*.dcu,*.obj,*.exe,*.map,*.bpl,*.dcp,*.~*,*.drc,*.local"; Components: "Examples"; Flags: ignoreversion recursesubdirs sortfilesbyextension solidbreak
+Source: {#JclRoot}\examples\*; DestDir: "{app}\examples"; Excludes: ".svn,__history,*.dcu,*.obj,*.exe,*.map,*.bpl,*.dcp,*.~*,*.drc,*.local,*.a,*.o"; Components: "Examples"; Flags: ignoreversion recursesubdirs sortfilesbyextension solidbreak
 #endif
 
 #ifdef Include_Binaries
@@ -207,6 +210,13 @@ Source: {#JclLib17}\*; DestDir: "{app}\lib\d17"; Excludes: ".svn,__history,*.txt
 Source: {#JclBpl17}\*; DestDir: "{code:GetDelphiBplDir|17}"; Components: "IDE\Delphi17"; Flags: ignoreversion sortfilesbyextension
 Source: {#JclBpl17}\Win64\*; DestDir: "{code:GetDelphiBplDir|17}\Win64"; Components: "IDE\Delphi17"; Flags: ignoreversion sortfilesbyextension
 Source: {#JclHpp17}\*; DestDir: "{app}\include\d17"; Components: "IDE\Delphi17"; Flags: ignoreversion sortfilesbyextension
+#endif
+#ifdef Include_Delphi18
+; SolidBreak;
+Source: {#JclLib18}\*; DestDir: "{app}\lib\d18"; Excludes: ".svn,__history,*.txt,*.hpp"; Components: "IDE\Delphi18"; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs solidbreak
+Source: {#JclBpl18}\*; DestDir: "{code:GetDelphiBplDir|18}"; Components: "IDE\Delphi18"; Flags: ignoreversion sortfilesbyextension
+Source: {#JclBpl18}\Win64\*; DestDir: "{code:GetDelphiBplDir|18}\Win64"; Components: "IDE\Delphi18"; Flags: ignoreversion sortfilesbyextension
+Source: {#JclHpp18}\*; DestDir: "{app}\include\d18"; Components: "IDE\Delphi18"; Flags: ignoreversion sortfilesbyextension
 #endif
 
 #endif
@@ -293,6 +303,14 @@ Root: HKCU; Subkey: "{code:GetDelphiRegKey|17}\Jedi\JCL"; ValueType: string; Val
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|17}\Jedi\JCL"; ValueType: string; ValueName: "Version"; ValueData: {#JclVersionStr}; Components: "IDE\Delphi17"; Flags: uninsdeletevalue;
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|17}\Globals"; ValueType: string; ValueName: "ForceEnvOptionsUpdate"; ValueData: "1"; Components: "IDE\Delphi17";
 #endif
+#ifdef Include_Delphi18
+; Delphi XE4
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|18}\Jedi\JCL"; ValueType: string; ValueName: "BplDir"; ValueData: {code:GetDelphiBplDir|18}; Components: "IDE\Delphi18"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|18}\Jedi\JCL"; ValueType: string; ValueName: "DcpDir"; ValueData: {app}\lib\d18; Components: "IDE\Delphi18"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|18}\Jedi\JCL"; ValueType: string; ValueName: "RootDir"; ValueData: {app}; Components: "IDE\Delphi18"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|18}\Jedi\JCL"; ValueType: string; ValueName: "Version"; ValueData: {#JclVersionStr}; Components: "IDE\Delphi18"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|18}\Globals"; ValueType: string; ValueName: "ForceEnvOptionsUpdate"; ValueData: "1"; Components: "IDE\Delphi18";
+#endif
 
 #endif
 
@@ -360,6 +378,14 @@ Type: files; Name: "{app}\lib\d17\win64\*"
 Type: files; Name: "{app}\lib\d17\win64\debug\*"
 Type: files; Name: "{app}\include\d17\*"
 Type: files; Name: "{code:GetDelphiBplDir|17}\Jcl*.~bpl";
+; lib\Delphi/C++Builder XE4
+Type: files; Name: "{app}\lib\d18\win32\*"
+Type: files; Name: "{app}\lib\d18\win32\debug\*"
+Type: files; Name: "{app}\lib\d18\win64\*"
+Type: files; Name: "{app}\lib\d18\win64\debug\*"
+Type: files; Name: "{app}\include\d18\*"
+Type: files; Name: "{code:GetDelphiBplDir|18}\Jcl*.~bpl";
+
 [Icons]
 Name: "{group}\{cm:ProgramOnTheWeb,{#MyAppName}}"; Filename: "{#MyAppURL}"
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"

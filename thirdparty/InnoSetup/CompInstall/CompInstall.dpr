@@ -1,5 +1,10 @@
 library CompInstall;
- 
+
+{$IF CompilerVersion >= 21.0} // 2010+
+  {$WEAKLINKRTTI ON}
+  {$RTTI EXPLICIT METHODS([]) PROPERTIES([]) FIELDS([])}
+{$IFEND}
+
 uses
   CompInst in 'CompInst.pas';
 

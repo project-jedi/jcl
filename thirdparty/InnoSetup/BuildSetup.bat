@@ -11,16 +11,14 @@ call rsvars.bat
 if "-%BDS%" == "-" goto Leave
 
 :RsVarsCalled
-SET JCLROOT=%SETUPDIR%\..\jcl
+SET JCLROOT=%SETUPDIR%\..\..\jcl
 SET JCLBUILTDIR=%SETUPDIR%\setupbuild
 SET InnoSetupDir=%SETUPDIR%\InnoSetup
 
 :: == Sanity checks ==
 if not exist "%SETUPDIR%\Install.iss" goto NoInstallDir
 if exist "%JCLROOT%\source\common\JclBase.pas" goto JclRootDirFound
-:: Try the "thirdparty" checkout
-SET JCLROOT=%SETUPDIR%\..\..\jcl
-if not exist "%JCLROOT%\source\common\JclBase.pas" goto NoRootDirFound
+goto NoRootDirFound
 :JclRootDirFound
 
 

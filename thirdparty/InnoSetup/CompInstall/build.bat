@@ -1,7 +1,13 @@
 @echo off
+SETLOCAL
 
-SET PATH=E:\Borland\Delphi7\Bin
+SET JCLROOT=..\..\..\jcl
 
-dcc32 -U..\..\JCL\source\Common;..\..\JCL\source\Windows -I..\..\JCL\source\Include -Q -$D- -E.. CompInstall.dpr
+SET DCC=E:\Borland\Delphi7\Bin\dcc32.exe
+if not exist "%DCC%" SET DCC=dcc32.exe
+
+"%DCC%" "-U%JCLROOT%\source\Common;%JCLROOT%\source\Windows" "-I%JCLROOT%\source\Include" -nsWinapi;System -Q -$D- -E.. CompInstall.dpr
+
+ENDLOCAL
 
 pause
