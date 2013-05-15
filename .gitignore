@@ -17,6 +17,7 @@ __history
 
 # C++ Builder Compiler output files
 *.bpi
+*.obj
 *.lib
 *.hpp
 *.i
@@ -26,6 +27,12 @@ __history
 
 # 64bit Delphi/C++Builder files
 *.[ao]
+
+# Lib directories
+jcl/lib/*/*.res
+jcl/lib/*/debug/*.res
+jcl/lib/*/win*/*.res
+jcl/lib/*/win*/debug/*.res
 
 # JCL files
 jcl/bin/*
@@ -40,3 +47,4 @@ jcl/source/include/jclwin32.inc
 
 # InnoSetup installer
 thirdparty/InnoSetup/setupbuild/*
+thirdparty/InnoSetup/Settings.iss
