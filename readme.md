@@ -29,9 +29,8 @@ Clone with GIT
 
 After cloning the JCL repository you need to initialize and update the submodules.
 
-> git clone https://github.com/projects/jcl
-> cd jcl
 > git submodule init
+>
 > git submodule update
 
 This will get you the submodule that contains the jedi.inc and kylix.inc files.
