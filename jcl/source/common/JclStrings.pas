@@ -480,6 +480,7 @@ type
 
     function Remove(StartIndex, Length: SizeInt): TJclStringBuilder;
     function EnsureCapacity(Capacity: SizeInt): SizeInt;
+    procedure Clear;
 
     { IToString }
     function ToString: string; {$IFDEF RTL200_UP} override; {$ENDIF RTL200_UP}
@@ -4107,8 +4108,7 @@ begin
   Append(Value);
 end;
 
-constructor TJclStringBuilder.Create(const Value: string; StartIndex,
-  Length, Capacity: SizeInt);
+constructor TJclStringBuilder.Create(const Value: string; StartIndex, Length, Capacity: SizeInt);
 begin
   Create(Capacity);
   Append(Value, StartIndex + 1, Length);
@@ -4127,6 +4127,11 @@ begin
   if System.Length(FChars) < Capacity then
     SetCapacity(Capacity);
   Result := System.Length(FChars);
+end;
+
+procedure TJclStringBuilder.Clear;
+begin
+  Length := 0;
 end;
 
 procedure TJclStringBuilder.SetCapacity(const Value: SizeInt);
