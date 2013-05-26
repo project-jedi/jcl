@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<?xml version="1.0" encoding="Windows-1252" standalone="no"?>
 <makedist>
   <task name="jcl-common" selected="0">
     <action classname="TLogCleaner"/>
@@ -7,28 +7,34 @@
       <configuration index="1" caption="Append" value="no"/>
     </action>
     <action classname="TCommandLineCaller">
-      <configuration index="0" caption="Application" value="%SVN%"/>
+      <configuration index="0" caption="Application" value="%GIT%"/>
       <configuration index="1" caption="Working directory" value="..\..\"/>
-      <configuration index="2" caption="Parameters" value="update"/>
+      <configuration index="2" caption="Parameters" value="pull"/>
       <configuration index="3" caption="Valid exit codes" value=""/>
       <configuration index="4" caption="Result file" value=""/>
     </action>
-    <action classname="TXmlGetter">
-      <configuration index="0" caption="Xml or command file" value="%SVN%"/>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%GIT%"/>
       <configuration index="1" caption="Working directory" value="..\..\"/>
-      <configuration index="2" caption="Arguments" value="info --xml"/>
+      <configuration index="2" caption="Parameters" value="rev-parse HEAD"/>
       <configuration index="3" caption="Valid exit codes" value=""/>
-      <configuration index="4" caption="Key" value="info\entry\\revision"/>
-      <configuration index="5" caption="Environment variable" value="VersionRevision"/>
+      <configuration index="4" caption="Result file" value="VersionRevision.txt"/>
+    </action>
+    <action classname="TVariableReader">
+      <configuration index="0" caption="Source file" value="VersionRevision.txt"/>
+      <configuration index="1" caption="Environment variable" value="VersionRevision"/>
     </action>
     <action classname="TDirectoryRemover">
       <configuration index="0" caption="Directory" value="sandbox"/>
       <configuration index="1" caption="Move to recycle bin" value="no"/>
     </action>
+    <action classname="TDirectoryCreator">
+      <configuration index="0" caption="Directory" value="sandbox"/>
+    </action>
     <action classname="TCommandLineCaller">
-      <configuration index="0" caption="Application" value="%SVN%"/>
-      <configuration index="1" caption="Working directory" value=""/>
-      <configuration index="2" caption="Parameters" value="export -rBASE --native-eol CRLF ..\..\ sandbox"/>
+      <configuration index="0" caption="Application" value="%GIT%"/>
+      <configuration index="1" caption="Working directory" value="..\..\"/>
+      <configuration index="2" caption="Parameters" value="checkout-index -a --prefix=thirdparty\makedist\sandbox\"/>
       <configuration index="3" caption="Valid exit codes" value=""/>
       <configuration index="4" caption="Result file" value=""/>
     </action>
