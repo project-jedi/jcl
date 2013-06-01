@@ -4850,65 +4850,70 @@ begin
   Result := '';
   if Window <> 0 then
   begin
+    if GetWindowsVersion < WVWin2000 then
+      raise EJclWin32Error.CreateRes(@RsEWindowsVersionNotSupported);
+
     {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.GetWindowThreadProcessId(Window, @ProcessID);
     hProcess := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.OpenProcess(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ, false, ProcessID);
     if hProcess <> 0 then
     begin
-      if GetWindowsVersion() < WVWin2000 then
-        raise EJclWin32Error.CreateRes(@RsEWindowsVersionNotSupported)
-      else if GetWindowsVersion >=WvWinVista then
-      begin
-        DllHinst := LoadLibrary('Kernel32.dll');
-        if DllHinst < HINSTANCE_ERROR then
+      try
+        if GetWindowsVersion >= WvWinVista then
         begin
-          try
-            {$IFDEF SUPPORTS_UNICODE}
-            QueryFullProcessImageNameAddress := GetProcAddress(DllHinst, 'QueryFullProcessImageNameW');
-            {$ELSE ~SUPPORTS_UNICODE}
-            QueryFullProcessImageNameAddress := GetProcAddress(DllHinst, 'QueryFullProcessImageNameA');
-            {$ENDIF ~SUPPORTS_UNICODE}
-            if Assigned(QueryFullProcessImageNameAddress) then
-            begin
-              QueryFullProcessImageNameAddress(hProcess, 0, FileName, PDWORD(sizeof(FileName)));
-              Result := FileName;
-            end
-            else
-            begin
-              raise EJclError.CreateResFmt(@RsEFunctionNotFound, ['Kernel32.dll', 'QueryFullProcessImageName']);
-            end
-          finally
-            FreeLibrary(DllHinst);
-          end;
+          DllHinst := LoadLibrary('Kernel32.dll');
+          if DllHinst < HINSTANCE_ERROR then
+          begin
+            try
+              {$IFDEF SUPPORTS_UNICODE}
+              QueryFullProcessImageNameAddress := GetProcAddress(DllHinst, 'QueryFullProcessImageNameW');
+              {$ELSE ~SUPPORTS_UNICODE}
+              QueryFullProcessImageNameAddress := GetProcAddress(DllHinst, 'QueryFullProcessImageNameA');
+              {$ENDIF ~SUPPORTS_UNICODE}
+              if Assigned(QueryFullProcessImageNameAddress) then
+              begin
+                QueryFullProcessImageNameAddress(hProcess, 0, FileName, PDWORD(sizeof(FileName)));
+                Result := FileName;
+              end
+              else
+              begin
+                raise EJclError.CreateResFmt(@RsEFunctionNotFound, ['Kernel32.dll', 'QueryFullProcessImageName']);
+              end
+            finally
+              FreeLibrary(DllHinst);
+            end;
+          end
+          else
+            raise EJclError.CreateResFmt(@RsELibraryNotFound, ['Kernel32.dll']);
         end
         else
-          raise EJclError.CreateResFmt(@RsELibraryNotFound, ['Kernel32.dll']);
-      end
-      else
-      begin
-        DllHinst := LoadLibrary('Psapi.dll');
-        if DllHinst < HINSTANCE_ERROR then
         begin
-          try
-            {$IFDEF SUPPORTS_UNICODE}
-            GetModuleFileNameExAddress := GetProcAddress(DllHinst, 'GetModuleFileNameExW');
-            {$ELSE ~SUPPORTS_UNICODE}
-            GetModuleFileNameExAddress := GetProcAddress(DllHinst, 'GetModuleFileNameExA');
-            {$ENDIF ~SUPPORTS_UNICODE}
-            if Assigned(GetModuleFileNameExAddress) then
-            begin
-              GetModuleFileNameExAddress(hProcess, 0, FileName, sizeof(FileName));
-              Result := FileName;
-            end
-            else
-            begin
-              raise EJclError.CreateResFmt(@RsEFunctionNotFound, ['Psapi.dll', 'GetModuleFileNameEx']);
-            end
-          finally
-            FreeLibrary(DllHinst);
-          end;
-        end
-        else
-          raise EJclError.CreateResFmt(@RsELibraryNotFound, ['Psapi.dll']);
+          DllHinst := LoadLibrary('Psapi.dll');
+          if DllHinst < HINSTANCE_ERROR then
+          begin
+            try
+              {$IFDEF SUPPORTS_UNICODE}
+              GetModuleFileNameExAddress := GetProcAddress(DllHinst, 'GetModuleFileNameExW');
+              {$ELSE ~SUPPORTS_UNICODE}
+              GetModuleFileNameExAddress := GetProcAddress(DllHinst, 'GetModuleFileNameExA');
+              {$ENDIF ~SUPPORTS_UNICODE}
+              if Assigned(GetModuleFileNameExAddress) then
+              begin
+                GetModuleFileNameExAddress(hProcess, 0, FileName, sizeof(FileName));
+                Result := FileName;
+              end
+              else
+              begin
+                raise EJclError.CreateResFmt(@RsEFunctionNotFound, ['Psapi.dll', 'GetModuleFileNameEx']);
+              end
+            finally
+              FreeLibrary(DllHinst);
+            end;
+          end
+          else
+            raise EJclError.CreateResFmt(@RsELibraryNotFound, ['Psapi.dll']);
+        end;
+      finally
+        CloseHandle(hProcess);
       end;
     end
     else
