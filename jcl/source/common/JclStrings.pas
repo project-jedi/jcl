@@ -171,16 +171,30 @@ function ArrayContainsChar(const Chars: array of Char; const C: Char): Boolean; 
 function ArrayContainsChar(const Chars: array of Char; const C: Char; out Index: SizeInt): Boolean; overload;
 
 // String Test Routines
+// TODO: think of some choosen N, so that:  If both string length and array length > N - then pre-sort the array
+// and use optimized (binary search) CharInArray, if not - then use linear search as now.
 function StrIsAlpha(const S: string): Boolean;
 function StrIsAlphaNum(const S: string): Boolean;
 function StrIsAlphaNumUnderscore(const S: string): Boolean;
-function StrContainsChars(const S: string; const Chars: TCharValidator; CheckAll: Boolean): Boolean; overload;
-function StrContainsChars(const S: string; const Chars: array of Char; CheckAll: Boolean): Boolean; overload;
+function StrContainsEveryChar(const S: string; const Chars: array of Char): Boolean; overload;
+function StrContainsEveryChar(const S: string; const Chars: string): Boolean; overload;
+function StrContainsSomeChar(const S: string; const Chars: TCharValidator): Boolean; overload;
+function StrContainsSomeChar(const S: string; const Chars: array of Char): Boolean; overload;
+function StrContainsSomeChar(const S: string; const Chars: string): Boolean; overload;
+function StrConsistsOfChars(const S: string; const Chars: TCharValidator; const AllowEmpty: Boolean = True): Boolean; overload;
+function StrConsistsOfChars(const S: string; const Chars: array of Char; const AllowEmpty: Boolean = True): Boolean; overload;
+function StrConsistsOfChars(const S: string; const Chars: string; const AllowEmpty: Boolean = True): Boolean; overload;
 function StrConsistsOfNumberChars(const S: string): Boolean;
-function StrIsDigit(const S: string): Boolean;
-function StrIsSubset(const S: string; const ValidChars: TCharValidator): Boolean; overload;
-function StrIsSubset(const S: string; const ValidChars: array of Char): Boolean; overload;
+function StrConsistsOfDigits(const S: string): Boolean;
 function StrSame(const S1, S2: string; CaseSensitive: Boolean = False): Boolean;
+function StrIsSubset(const S: string; const ValidChars: TCharValidator): Boolean; overload;  deprecated 'Use StrConsistsOfChars';
+function StrIsSubset(const S: string; const ValidChars: array of Char): Boolean; overload;   deprecated 'Use StrConsistsOfChars';
+
+function StrIsDigit(const S: string): Boolean; {$IfDef SUPPORTS_INLINE} inline;{$EndIf} deprecated 'Use StrConsistsOfDigits';
+// mixing two very separate goals is confusing and using CharValidator can not be implemented at all
+function StrContainsChars(const S: string; const Chars: TCharValidator; CheckAll: Boolean): Boolean; overload; {$IfDef SUPPORTS_INLINE} inline;{$EndIf} deprecated 'Use StrConsistsOfChars or StrContainsEveryChar or StrContainsSomeChar';
+function StrContainsChars(const S: string; const Chars: array of Char; CheckAll: Boolean): Boolean; overload;  deprecated 'Use StrConsistsOfChars or StrContainsEveryChar or StrContainsSomeChar';
+
 
 // String Transformation Routines
 function StrCenter(const S: string; L: SizeInt; C: Char = ' '): string;
@@ -225,11 +239,12 @@ procedure StrSkipChars(var S: PChar; const Chars: TCharValidator); overload;
 procedure StrSkipChars(var S: PChar; const Chars: array of Char); overload;
 procedure StrSkipChars(const S: string; var Index: SizeInt; const Chars: TCharValidator); overload;
 procedure StrSkipChars(const S: string; var Index: SizeInt; const Chars: array of Char); overload;
-function StrSmartCase(const S: string; const Delimiters: TCharValidator): string; overload;
-function StrSmartCase(const S: string; const Delimiters: array of Char): string; overload;
+function StrSmartCase(const S: string; const Delimiters: TCharValidator = nil; const LowerRest: boolean = false): string; overload;
+function StrSmartCase(const S: string; const Delimiters: array of Char; const LowerRest: boolean = false): string; overload;
+function StrSmartCase(const S: string; const Delimiters: string; const LowerRest: boolean = false): string; overload;
 function StrStringToEscaped(const S: string): string;
 function StrStripNonNumberChars(const S: string): string;
-function StrToHex(const Source: string): string;
+function StrToHex(const Source: string): AnsiString;
 function StrTrimCharLeft(const S: string; C: Char): string;
 function StrTrimCharsLeft(const S: string; const Chars: TCharValidator): string; overload;
 function StrTrimCharsLeft(const S: string; const Chars: array of Char): string; overload;
@@ -414,6 +429,7 @@ type
   ArgumentNullException = class(EJclError);
   ArgumentOutOfRangeException = class(EJclError);
 
+// IFomattable in .Net: http://msdn.microsoft.com/en-us/library/system.string.format.aspx
   IToString = interface
     ['{C4ABABB4-1029-46E7-B5FA-99800F130C05}']
     function ToString: string;
@@ -424,7 +440,7 @@ type
   // The TStringBuilder class is a Delphi implementation of the .NET
   // System.Text.StringBuilder.
   // It is zero based and the method that allow an TObject (Append, Insert,
-  // AppendFormat) are limited to IToString implementors.
+  // AppendFormat) are limited to IToString implementors or newer Delphi RTL.
   // This class is not threadsafe. Any instance of TStringBuilder should not
   // be used in different threads at the same time.
   TJclStringBuilder = class(TInterfacedObject, IToString)
@@ -854,20 +870,122 @@ begin
   end;
 end;
 
-function StrConsistsofNumberChars(const S: string): Boolean;
+function StrIsDigit(const S: string): Boolean;
+begin
+  Result := StrConsistsOfDigits(S)
+end;
+
+function StrConsistsOfDigits(const S: string): Boolean;
+begin
+  Result := StrConsistsOfChars(S, CharIsDigit, False);
+end;
+
+function StrConsistsOfNumberChars(const S: string): Boolean;
+begin
+  Result := StrConsistsOfChars(S, CharIsNumberChar, False );
+end;
+
+function StrContainsEveryChar(const S: string; const Chars: string): Boolean;
 var
   I: SizeInt;
 begin
-  Result := S <> '';
+  Result := False;
+  for I := 1 to Length(Chars) do
+      if CharPos(S, Chars[I]) <= 0 then exit;
+  Result := True;
+end;
+
+function StrContainsEveryChar(const S: string; const Chars: array of Char): Boolean;
+var
+  I: SizeInt;
+begin
+  Result := False;
+  for I := Low(Chars) to High(Chars) do
+      if CharPos(S, Chars[I]) <= 0 then exit;
+  Result := True;
+end;
+
+function StrContainsSomeChar(const S: string; const Chars: TCharValidator): Boolean;
+var
+  I: SizeInt;
+begin
   for I := 1 to Length(S) do
-  begin
-    if not CharIsNumberChar(S[I]) then
-    begin
-      Result := False;
-      Exit;
-    end;
+      if Chars(S[I]) then
+      begin
+        Result := True;
+        Exit;
+      end;
+  Result := False;
+end;
+
+function StrContainsSomeChar(const S: string; const Chars: array of Char): Boolean;
+var
+  I: SizeInt;
+begin
+  for I := 1 to Length(S) do
+      if ArrayContainsChar(Chars, S[I]) then
+      begin
+        Result := True;
+        Exit;
+      end;
+  Result := False;
+end;
+
+function StrContainsSomeChar(const S: string; const Chars: string): Boolean;
+var
+  I: SizeInt;
+begin
+  for I := 1 to Length(S) do
+      if CharPos(Chars, S[I]) > 0 then
+      begin
+        Result := True;
+        Exit;
+      end;
+  Result := False;
+end;
+
+function StrConsistsOfChars(const S: string; const Chars: TCharValidator; const AllowEmpty: Boolean): Boolean;
+var
+  I: SizeInt;
+begin
+  If S = '' then
+     Result := AllowEmpty
+  else begin
+    Result := False;
+    for I := 1 to Length(S) do
+        if not Chars(S[I]) then Exit;
+    Result := True;
   end;
 end;
+
+function StrConsistsOfChars(const S: string; const Chars: array of Char; const AllowEmpty: Boolean): Boolean;
+var
+  I: SizeInt;
+begin
+  If S = '' then
+     Result := AllowEmpty
+  else begin
+    Result := False;
+    for I := 1 to Length(S) do
+        if not ArrayContainsChar(Chars, S[I]) then Exit;
+    Result := True;
+  end;
+end;
+
+function StrConsistsOfChars(const S: string; const Chars: string; const AllowEmpty: Boolean): Boolean;
+var
+  I: SizeInt;
+begin
+  If S = '' then
+     Result := AllowEmpty
+  else begin
+    Result := False;
+    for I := 1 to Length(S) do
+        if CharPos(Chars, S[I]) <= 0 then Exit;
+    Result := True;
+  end;
+end;
+
 
 function StrContainsChars(const S: string; const Chars: TCharValidator; CheckAll: Boolean): Boolean;
 var
@@ -943,47 +1061,34 @@ begin
   Result := Length(S) > 0;
 end;
 
-function StrIsDigit(const S: string): Boolean;
-var
-  I: SizeInt;
-begin
-  Result := S <> '';
-  for I := 1 to Length(S) do
-  begin
-    if not CharIsDigit(S[I]) then
-    begin
-      Result := False;
-      Exit;
-    end;
-  end;
-end;
-
 function StrIsSubset(const S: string; const ValidChars: TCharValidator): Boolean;
-var
-  I: SizeInt;
+//var
+//  I: SizeInt;
 begin
-  for I := 1 to Length(S) do
-  begin
-    Result := ValidChars(S[I]);
-    if not Result then
-      Exit;
-  end;
-
-  Result := Length(S) > 0;
+  Result := StrConsistsOfChars(S, ValidChars, False);
+//  for I := 1 to Length(S) do
+//  begin
+//    Result := ValidChars(S[I]);
+//    if not Result then
+//      Exit;
+//  end;
+//
+//  Result := Length(S) > 0;
 end;
 
 function StrIsSubset(const S: string; const ValidChars: array of Char): Boolean;
-var
-  I: SizeInt;
+//var
+//  I: SizeInt;
 begin
-  for I := 1 to Length(S) do
-  begin
-    Result := ArrayContainsChar(ValidChars, S[I]);
-    if not Result then
-      Exit;
-  end;
-
-  Result := Length(S) > 0;
+  Result := StrConsistsOfChars(S, ValidChars, False);
+//  for I := 1 to Length(S) do
+//  begin
+//    Result := ArrayContainsChar(ValidChars, S[I]);
+//    if not Result then
+//      Exit;
+//  end;
+//
+//  Result := Length(S) > 0;
 end;
 
 function StrSame(const S1, S2: string; CaseSensitive: Boolean): Boolean;
@@ -1720,21 +1825,27 @@ begin
     Inc(Index);
 end;
 
-function StrSmartCase(const S: string; const Delimiters: TCharValidator): string;
+type StrSmartCase_DataFrame = record
+     S: string;
+     LowerRest: boolean;
+
+     Delimiters_S: string; // don't want variant record here, so that compiler could Finalize it
+     Delimiters_F: TCharValidator;
+
+// need var-param due to http://qc.embarcadero.com/wc/qcmain.aspx?d=112789
+     CharCheck: function (const Ch: Char; var Fr: StrSmartCase_DataFrame): boolean;
+end;
+
+function StrSmartCase(var Frame: StrSmartCase_DataFrame): string; overload;
 var
   Source, Dest: PChar;
   Index, Len:   SizeInt;
-  InternalDelimiters: TCharValidator;
 begin
   Result := '';
-  if Assigned(Delimiters) then
-    InternalDelimiters := Delimiters
-  else
-    InternalDelimiters := CharIsSpace;
 
-  if S <> '' then
+  with Frame do if S <> '' then
   begin
-    Result := S;
+    if LowerRest then Result := AnsiLowerCase(S) else Result := S;
     UniqueString(Result);
 
     Len := Length(S);
@@ -1744,7 +1855,7 @@ begin
 
     for Index := 2 to Len do
     begin
-      if InternalDelimiters(Source^) and not InternalDelimiters(Dest^) then
+      if CharCheck(Source^, Frame) and not CharCheck(Dest^, Frame) then
         Dest^ := CharUpper(Dest^);
       Inc(Dest);
       Inc(Source);
@@ -1753,32 +1864,52 @@ begin
   end;
 end;
 
-function StrSmartCase(const S: string; const Delimiters: array of Char): string;
-var
-  Source, Dest: PChar;
-  Index, Len:   SizeInt;
+function StrSmartCase_Str(const Ch: Char; var Fr: StrSmartCase_DataFrame): boolean;
 begin
-  Result := '';
+  Result := CharPos(Fr.Delimiters_S, Ch) > 0;
+end;
 
-  if S <> '' then
-  begin
-    Result := S;
-    UniqueString(Result);
+function StrSmartCase_Func(const Ch: Char; var Fr: StrSmartCase_DataFrame): boolean;
+begin
+  Result := Fr.Delimiters_F(Ch);
+end;
 
-    Len := Length(S);
-    Source := PChar(S);
-    Dest := PChar(Result);
-    Inc(Dest);
+function StrSmartCase(const S: string; const Delimiters: string; const LowerRest: boolean): string;
+var Fr: StrSmartCase_DataFrame;
+begin
+  Fr.S := S;
+  Fr.LowerRest := LowerRest;
+  Fr.Delimiters_S := Delimiters;
+  Fr.CharCheck := StrSmartCase_Str;
 
-    for Index := 2 to Len do
-    begin
-      if ArrayContainsChar(Delimiters, Source^) and not ArrayContainsChar(Delimiters, Dest^) then
-        Dest^ := CharUpper(Dest^);
-      Inc(Dest);
-      Inc(Source);
-    end;
-    Result[1] := CharUpper(Result[1]);
-  end;
+  Result := StrSmartCase(Fr);
+end;
+
+function StrSmartCase(const S: string; const Delimiters: TCharValidator; const LowerRest: boolean): string;
+var Fr: StrSmartCase_DataFrame;
+begin
+  Fr.S := S;
+  Fr.LowerRest := LowerRest;
+  if Assigned(Delimiters)
+     then Fr.Delimiters_F := Delimiters
+     else Fr.Delimiters_F := CharIsSpace;
+  Fr.CharCheck := StrSmartCase_Func;
+
+  Result := StrSmartCase(Fr);
+end;
+
+function StrSmartCase(const S: string; const Delimiters: array of Char; const LowerRest: boolean): string;
+var Fr: StrSmartCase_DataFrame;
+begin
+  Fr.S := S;
+  Fr.LowerRest := LowerRest;
+//  if Length(Delimiters) = 0  // dynarray can not be assigned from open array => string
+//     then Fr.Delimiters_S := EmptyStr
+//     else SetString(Fr.Delimiters_S, @Delimiters[0], Length(Delimiters));
+  Fr.Delimiters_S := Delimiters;
+  Fr.CharCheck := StrSmartCase_Str;
+
+  Result := StrSmartCase(Fr);
 end;
 
 function StrStringToEscaped(const S: string): string;
@@ -1831,7 +1962,7 @@ begin
   end;
 end;
 
-function StrToHex(const Source: string): string;
+function StrToHex(const Source: string): AnsiString;
 var
   Index: SizeInt;
   C, L, N: SizeInt;
@@ -1864,7 +1995,7 @@ begin
         Result := '';
         Exit;
       end;
-      Result[N] := Char((BH shl 4) or BL);
+      Result[N] := AnsiChar((BH shl 4) or BL);
       Inc(N);
     end;
   end;
@@ -2875,7 +3006,10 @@ end;
 
 function CharIsNumberChar(const C: Char): Boolean;
 begin
-  Result := CharIsDigit(C) or (C = '+') or (C = '-') or (C = JclFormatSettings.DecimalSeparator);
+  Result := CharIsDigit(C) or (C = '+') or (C = '-')
+         or ((C <> #0) and (C = JclFormatSettings.DecimalSeparator))
+         or ((C <> #0) and (C = JclFormatSettings.ThousandSeparator));
+   // #0 is a special value to 'disable' xxxxSeparator, semantically similar to empty string
 end;
 
 function CharIsNumber(const C: Char): Boolean;
@@ -3986,7 +4120,11 @@ var
         if InheritsFrom(V.VObject.ClassType, 'TComponent') and V.VObject.GetInterface(IToString, Intf) then
           Result := Intf.ToString
         else
-          raise ArgumentNullException.CreateResFmt(@RsDotNetFormatArgumentNotSupported, [Index]);
+{$IFDEF RTL200_UP}
+          Result := V.VObject.ToString;
+{$Else}
+          raise ArgumentNullException.CreateResFmt(V.VObject.ClassName + ': ' + @RsDotNetFormatArgumentNotSupported, [Index]);
+{$EndIf}
       vtClass:
         Result := V.VClass.ClassName;
       vtWideChar:
@@ -4386,7 +4524,7 @@ end;
 
 function TJclStringBuilder.Insert(Index: SizeInt; Obj: TObject): TJclStringBuilder;
 begin
-  Result := Insert(Index, Format('{0}', [Obj]));
+  Result := Insert(Index, DotNetFormat('{0}', [Obj]));
 end;
 
 function TJclStringBuilder.Remove(StartIndex, Length: SizeInt): TJclStringBuilder;

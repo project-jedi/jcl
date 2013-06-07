@@ -28,7 +28,8 @@ uses
   {$ENDIF}
   Classes,
   SysUtils,
-  JclStrings;
+  JclStrings,
+  JclStringLists;
 
 { TJclStringCharacterTestRoutines }
 
@@ -65,9 +66,10 @@ type
   published
     { String Transformation }
     procedure _StrIsAlpha_StrIsAlpaNum_StrIsAlphaNumUnderscore;
-    procedure _StrContainsChars;
+    procedure _Deprecated_StrContainsChars_StrIsSubset1;
+    procedure _StringMatchingAgainstChars;
     procedure _StrSame;
-    procedure _StrIsDigit_StrConsistsOfNumberChars_StrIsSubset;
+    procedure _StrIsDigit_StrConsistsOfNumberChars;
     procedure _StrCenter;
     procedure _StrCharPosLower;
     procedure _StrCharPosUpper;
@@ -93,7 +95,7 @@ type
     procedure _StrSingleQuote;
     procedure _StrSmartCase;
     procedure _StrStripNonNumberChars;
-    procedure _StrToHex;
+    procedure _StrToHex_Ansi;
     procedure _StrTrimCharLeft;
     procedure _StrTrimCharsLeft;
     procedure _StrTrimCharRight;
@@ -199,6 +201,26 @@ end;
     procedure _GetDelimitedTextCommaDoubleQuoteTrue;
     procedure _SetDelimitedTextFunkyFalse;
     procedure _GetDelimitedTextFunkyFalse;
+  end;
+
+  TJclStringListTest = class (TTestCase)
+  published
+    procedure _SetCommaTextCount;
+    procedure _GetCommaTextCount;
+    procedure _GetCommaTextSpacedCount;
+    procedure _SetCommaTextProperties;
+    procedure _SetCommaTextQuotedProperties;
+    procedure _SetCommaTextQuotedSpacedProperties;
+    procedure _GetCommaTextQuotedProperties;
+    procedure _SetCommaTextInnerQuotesProperties;
+    procedure _GetCommaTextInnerQuotesProperties;
+    procedure _SetDelimitedTextCommaDoubleQuoteFalse;
+    procedure _GetDelimitedTextCommaDoubleQuoteFalse;
+    procedure _SetDelimitedTextCommaDoubleQuoteTrue;
+    procedure _GetDelimitedTextCommaDoubleQuoteTrue;
+    procedure _SetDelimitedTextFunkyFalse;
+    procedure _GetDelimitedTextFunkyFalse;
+    procedure _SplitJoin;
   end;
 
 implementation
@@ -439,8 +461,11 @@ begin
   Result := (C = 'g') or (C = 'r');
 end;
 
-procedure TJclStringTransformation._StrContainsChars;
+procedure TJclStringTransformation._Deprecated_StrContainsChars_StrIsSubset1;
 begin
+  // StrIsSubset
+  CheckEquals(StrIsSubset('',[' ']), False,'StrIsSubset');  // per doc
+
   CheckEquals(True,  StrContainsChars('AbcdefghiJkl',  ['g', 'r'], False), 'array, CheckAll set to False');
   CheckEquals(False, StrContainsChars('AbcdefghiJkl',  ['g', 'r'], True),  'array, CheckAll set to True, only 1 occurring');
   CheckEquals(True,  StrContainsChars('AbcdefghiJklr', ['g', 'r'], True),  'array, CheckAll set to True, both occurring');
@@ -453,6 +478,48 @@ begin
   CheckEquals(True,  StrContainsChars('AbcdefghiJklr', ContainsValidator, True),  'validator, CheckAll set to True, both occurring');
   }
 end;
+
+procedure TJclStringTransformation._StringMatchingAgainstChars;
+begin
+  CheckTrue (StrContainsEveryChar('AbcdefghiJklr',  ['g', 'r']));
+  CheckTrue (StrContainsEveryChar('',  []));
+  CheckFalse(StrContainsEveryChar('AbcdefghiJkl',  ['g', 'r']));
+    CheckTrue (StrContainsEveryChar('AbcdefghiJklr',  'gr'));
+    CheckTrue (StrContainsEveryChar('',  ''));
+    CheckFalse(StrContainsEveryChar('AbcdefghiJkl',  'gr'));
+
+  CheckFalse(StrContainsSomeChar('AbcdefhiJkl',  ['g', 'r']));
+  CheckTrue (StrContainsSomeChar('AbcdefhiJklr',  ['r', 'g']));
+    CheckFalse(StrContainsSomeChar('AbcdefhiJkl',  'rg'));
+    CheckTrue (StrContainsSomeChar('AbcdefghiJkl',  'rg'));
+      CheckFalse(StrContainsSomeChar('AbcdefhiJkl',  ContainsValidator));
+      CheckTrue (StrContainsSomeChar('AbcdefghiJkl',  ContainsValidator));
+
+  CheckFalse(StrConsistsOfChars('AbcdefghiJklr',  ['g', 'r']));
+  CheckTrue (StrConsistsOfChars('grrrgr',  ['r', 'g']));
+  CheckTrue (StrConsistsOfChars('',  ['r', 'g']));
+  CheckFalse(StrConsistsOfChars('',  ['r', 'g'], False));
+    CheckFalse(StrConsistsOfChars('AbcdefghiJklr',  'rg'));
+    CheckTrue (StrConsistsOfChars('grrrgr',  'rg'));
+    CheckTrue (StrConsistsOfChars('',  'rg'));
+    CheckFalse (StrConsistsOfChars('',  'rg', False));
+      CheckFalse(StrConsistsOfChars('AbcdefghiJklr',  ContainsValidator));
+      CheckTrue (StrConsistsOfChars('grrrgr',  ContainsValidator));
+      CheckTrue (StrConsistsOfChars('',  ContainsValidator));
+      CheckFalse(StrConsistsOfChars('',  ContainsValidator, False));
+
+(*
+function StrContainsEveryChar(const S: string; const Chars: array of Char): Boolean; overload;
+function StrContainsEveryChar(const S: string; const Chars: string): Boolean; overload;
+function StrContainsSomeChar(const S: string; const Chars: TCharValidator): Boolean; overload;
+function StrContainsSomeChar(const S: string; const Chars: array of Char): Boolean; overload;
+function StrContainsSomeChar(const S: string; const Chars: string): Boolean; overload;
+function StrConsistsOfChars(const S: string; const Chars: TCharValidator; const AllowEmpty: Boolean = True): Boolean; overload;
+function StrConsistsOfChars(const S: string; const Chars: array of Char; const AllowEmpty: Boolean = True): Boolean; overload;
+function StrConsistsOfChars(const S: string; const Chars: string; const AllowEmpty: Boolean = True): Boolean; overload;
+ *)
+end;
+
 
 //--------------------------------------------------------------------------------------------------
 
@@ -477,16 +544,22 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransformation._StrIsDigit_StrConsistsOfNumberChars_StrIsSubset;
+procedure TJclStringTransformation._StrIsDigit_StrConsistsOfNumberChars;
+var s: string;
 begin
   // StrIsDigit
-  CheckEquals(StrIsDigit('') , False,'StrIsDigit');  // per doc
+  CheckEquals(StrIsDigit('') , False, 'StrIsDigit');  // per doc
+  CheckEquals(StrConsistsOfDigits('') , False, 'StrConsistsOfDigits');  // per doc
 
   // StrConsistsOfNumberChars
   CheckEquals(StrConsistsOfNumberChars('') , False,'StrConsistsOfNumberChars');  // per doc
 
-  // StrIsSubset
-  CheckEquals(StrIsSubset('',[' ']), False,'StrIsSubset');  // per doc
+  CheckEquals(StrConsistsOfDigits('2345') , True, 'StrConsistsOfDigits');  // per doc
+  CheckEquals(StrConsistsOfNumberChars('2345') , True,'StrConsistsOfNumberChars');  // per doc
+
+  s := FormatFloat('#,###.##', -12345.6789);
+  CheckEquals(StrConsistsOfDigits(s) , False, 'StrConsistsOfDigits');  // per doc
+  CheckEquals(StrConsistsOfNumberChars(s) , True,'StrConsistsOfNumberChars');  // per doc
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -554,7 +627,7 @@ procedure TJclStringTransformation._StrDoubleQuote;
 var
   SN, S: string;
   i: Integer;
-  
+
 begin
   SN := StrDoubleQuote('');
   CheckEquals('""', SN, 'StrDoubleQuote');
@@ -651,7 +724,7 @@ procedure TJclStringTransformation._StrEscapedToString_StrStringToEscaped;
 var
   s, sn: string;
   i: Integer;
-  
+
 
 begin
   S := StrEscapedToString('');
@@ -849,7 +922,7 @@ procedure TJclStringTransformation._StrQuote;
 var
   i: Integer;
   s: string;
-  
+
 begin
   CheckEquals(StrQuote('','#'), '','StrQuote');
   CheckEquals(StrQuote('a','#'), '#a#','StrQuote');
@@ -982,7 +1055,7 @@ end;
 procedure TJclStringTransformation._StrReplace;
 var
   s: string;
-  
+
 begin
   // test 1: Replace on an empty string with an empty search string should result in the replace string
   s := '';
@@ -1147,6 +1220,15 @@ begin
   CheckEquals('XxxxxAx',         StrSmartCase('xxxxxAx', [' ','x']),     'StrSmartCase6');
   // test 7: delimiters followed by the another delimiter will not force an upper case on the second delimiter
   CheckEquals('Xxx xAx',         StrSmartCase('xxx xAx', [' ','x']),     'StrSmartCase7');
+
+  CheckEquals(' Project Jedi ',  StrSmartCase(' project jedi ', nil),  'StrSmartCase8');
+  CheckEquals(' Project Jedi ',  StrSmartCase(' project jedi '),       'StrSmartCase9');
+
+  CheckEquals(' Project J.E.D.I.',  StrSmartCase(' project J.E.D.I.', [' ']),        'StrSmartCase10');
+  CheckEquals(' Project J.e.d.i.',  StrSmartCase(' project J.E.D.I.', [' '], true),  'StrSmartCase11');
+
+  CheckEquals(' Project J.E.D.I.',  StrSmartCase(' project J.e.d.i.', [' ', '.']),  'StrSmartCase12');
+  CheckEquals(' Project J.E.D.I.',  StrSmartCase(' project J.e.d.i.', '. '),  'StrSmartCase13');
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1173,20 +1255,20 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransformation._StrToHex;
+procedure TJclStringTransformation._StrToHex_Ansi;
 var
-  s, sn: string;
+  s, sn: AnsiString;
 
 begin
   CheckEquals(StrToHex(''),'','StrToHex');
 
   SN := '262A32543B';
   SetLength(S,20);
-  HexToBin(PChar(SN),PChar(S),20);
+  HexToBin(PAnsiChar(SN),PAnsiChar(S),20);
   CheckEquals(StrToHex(SN),Copy(S,1,Length(SN) div 2),'StrToHex');
 
   SN := 'FF2A2B2C2D1A2F';
-  HexToBin(PChar(SN),PChar(S),20);
+  HexToBin(PAnsiChar(SN),PAnsiChar(S),20);
   CheckEquals(StrToHex(SN),Copy(S,1,Length(SN) div 2),'StrToHex');
 end;
 
@@ -2851,10 +2933,6 @@ procedure TJclStringTabSet._ToString;
 var
   tabs: TJclTabSet;
 begin
-  tabs := nil;
-  CheckEquals('0 [] +2', tabs.ToString, 'nil-set, full');
-  CheckEquals('0', tabs.ToString(TabSetFormatting_Default), 'nil-set, default');
-
   tabs := TJclTabSet.Create([15, 17, 20, 30], True, 4);
   try
     CheckEquals('0 [15,17,20,30] +4', tabs.ToString, 'zero-based, full');
@@ -2865,6 +2943,10 @@ begin
   finally
     tabs.Free;
   end;
+
+  tabs := TJclTabSet.FromString(''); // nil;  ?????????????????
+  CheckEquals('0 [] +2', tabs.ToString, 'nil-set, full');
+  CheckEquals('0', tabs.ToString(TabSetFormatting_Default), 'nil-set, default');
 end;
 
 //------------------------------------------------------------------------------
@@ -3283,6 +3365,372 @@ begin
   end;
 end;
 
+{ TJclStringListTest }
+
+procedure TJclStringListTest._GetCommaTextCount;
+var slJCL: TJclStringList;
+    slRTL: TStringList;
+begin
+  slJCL := TJclStringList.Create;
+  slRTL := TStringList.Create;
+  try
+    slJCL.CommaText := 'Hello,World';
+    slRTL.CommaText := 'Hello,World';
+    CheckEquals(2, slJCL.Count, 'TJclStringList.Count');
+    CheckEquals(slRTL.Count, slJCL.Count, 'TJclStringList.Count');
+  finally
+    FreeAndNil(slJCL);
+    FreeAndNil(slRTL);
+  end;
+end;
+
+procedure TJclStringListTest._GetCommaTextInnerQuotesProperties;
+var slJCL: TJclStringList;
+    slRTL: TStringList;
+begin
+  slJCL := TJclStringList.Create;
+  slRTL := TStringList.Create;
+  try
+    slJCL.Add('Hello');
+    slJCL.Add('"World"');
+    slRTL.Add('Hello');
+    slRTL.Add('"World"');
+    CheckEquals('Hello,"""World"""', slJCL.CommaText, 'TJclStringList.CommaText');
+    CheckEquals(slRTL.CommaText, slJCL.CommaText, 'TJclStringList.CommaText');
+  finally
+    FreeAndNil(slJCL);
+    FreeAndNil(slRTL);
+  end;
+end;
+
+procedure TJclStringListTest._GetCommaTextQuotedProperties;
+var slJCL: TJclStringList;
+    slRTL: TStringList;
+begin
+  slJCL := TJclStringList.Create;
+  slRTL := TStringList.Create;
+  try
+    slJCL.Add('Hello');
+    slJCL.Add('My World');
+    slRTL.Add('Hello');
+    slRTL.Add('My World');
+    CheckEquals('Hello,"My World"', slJCL.CommaText, 'TJclStringList.CommaText');
+    CheckEquals(slRTL.CommaText, slJCL.CommaText, 'TJclStringList.CommaText');
+  finally
+    FreeAndNil(slJCL);
+    FreeAndNil(slRTL);
+  end;
+end;
+
+procedure TJclStringListTest._GetCommaTextSpacedCount;
+var slJCL: TJclStringList;
+    slRTL: TStringList;
+begin
+  slJCL := TJclStringList.Create;
+  slRTL := TStringList.Create;
+  try
+    slJCL.CommaText := 'Hello,My World,There!';
+    slRTL.CommaText := 'Hello,My World,There!';
+    CheckEquals(4, slJCL.Count, 'TJclStringList.Count');
+    CheckEquals(slRTL.Count, slJCL.Count, 'TJclStringList.Count');
+  finally
+    FreeAndNil(slJCL);
+    FreeAndNil(slRTL);
+  end;
+end;
+
+procedure TJclStringListTest._GetDelimitedTextCommaDoubleQuoteFalse;
+var slJCL: TJclStringList;
+    slRTL: TStringList;
+begin
+  slJCL := TJclStringList.Create;
+  slRTL := TStringList.Create;
+  try
+    slJCL.CommaText := 'Hello,"My World"';
+    slRTL.CommaText := 'Hello,"My World"';
+    slJCL.QuoteChar := '"';
+    slJCL.Delimiter := ',';
+    slJCL.StrictDelimiter := false;
+    slRTL.QuoteChar := '"';
+    slRTL.Delimiter := ',';
+    slRTL.StrictDelimiter := false;
+    CheckEquals('Hello,"My World"', slJCL.DelimitedText, 'TJclStringList.DelimitedText');
+    CheckEquals(slRTL.DelimitedText, slJCL.DelimitedText, 'TJclStringList.DelimitedText');
+  finally
+    FreeAndNil(slJCL);
+    FreeAndNil(slRTL);
+  end;
+end;
+
+procedure TJclStringListTest._GetDelimitedTextCommaDoubleQuoteTrue;
+var slJCL: TJclStringList;
+    slRTL: TStringList;
+begin
+  slJCL := TJclStringList.Create;
+  slRTL := TStringList.Create;
+  try
+    slJCL.CommaText := 'Hello,My World';
+    slRTL.CommaText := 'Hello,My World';
+    slJCL.QuoteChar := '"';
+    slJCL.Delimiter := ',';
+    slJCL.StrictDelimiter := true;
+    slRTL.QuoteChar := '"';
+    slRTL.Delimiter := ',';
+    slRTL.StrictDelimiter := true;
+    CheckEquals('Hello,My,World', slJCL.DelimitedText, 'TJclStringList.DelimitedText');
+    CheckEquals(slRTL.DelimitedText, slJCL.DelimitedText, 'TJclStringList.DelimitedText');
+  finally
+    FreeAndNil(slJCL);
+    FreeAndNil(slRTL);
+  end;
+end;
+
+procedure TJclStringListTest._GetDelimitedTextFunkyFalse;
+var slJCL: TJclStringList;
+    slRTL: TStringList;
+begin
+  slJCL := TJclStringList.Create;
+  slRTL := TStringList.Create;
+  try
+    slJCL.CommaText := 'Hello,"My World"';
+    slRTL.CommaText := 'Hello,"My World"';
+    slJCL.QuoteChar := '|';
+    slJCL.Delimiter := '-';
+    slJCL.StrictDelimiter := false;
+    slRTL.QuoteChar := '|';
+    slRTL.Delimiter := '-';
+    slRTL.StrictDelimiter := false;
+    CheckEquals('Hello-|My World|', slJCL.DelimitedText, 'TJclStringList.DelimitedText');
+    CheckEquals(slRTL.DelimitedText, slJCL.DelimitedText, 'TJclStringList.DelimitedText');
+  finally
+    FreeAndNil(slJCL);
+    FreeAndNil(slRTL);
+  end;
+end;
+
+procedure TJclStringListTest._SetCommaTextCount;
+var slJCL: TJclStringList;
+    slRTL: TStringList;
+begin
+  slJCL := TJclStringList.Create;
+  slRTL := TStringList.Create;
+  try
+    slJCL.CommaText := 'Hello,World';
+    slRTL.CommaText := 'Hello,World';
+    CheckEquals(2, slJCL.Count, 'TJclStringList.Count');
+    CheckEquals(slRTL.Count, slJCL.Count, 'TJclStringList.Count');
+  finally
+    FreeAndNil(slJCL);
+    FreeAndNil(slRTL);
+  end;
+end;
+
+procedure TJclStringListTest._SetCommaTextInnerQuotesProperties;
+var slJCL: TJclStringList;
+    slRTL: TStringList;
+begin
+  slJCL := TJclStringList.Create;
+  slRTL := TStringList.Create;
+  try
+    slJCL.CommaText := 'Hello,"""World"""';
+    slRTL.CommaText := 'Hello,"""World"""';
+    CheckEquals(2, slJCL.Count, 'TJclStringList.Count');
+    CheckEquals(slRTL.Count, slJCL.Count, 'TJclStringList.Count');
+    if slJCL.Count=2 then begin
+      CheckEquals('Hello', slJCL[0], 'TJclStringList[0]');
+      CheckEquals(slRTL[0], slJCL[0], 'TJclStringList[0]');
+      CheckEquals('"World"', slJCL[1], 'TJclStringList[1]');
+      CheckEquals(slRTL[1], slJCL[1], 'TJclStringList[1]');
+    end;
+  finally
+    FreeAndNil(slJCL);
+    FreeAndNil(slRTL);
+  end;
+end;
+
+procedure TJclStringListTest._SetCommaTextProperties;
+var slJCL: TJclStringList;
+    slRTL: TStringList;
+begin
+  slJCL := TJclStringList.Create;
+  slRTL := TStringList.Create;
+  try
+    slJCL.CommaText := 'Hello,World';
+    slRTL.CommaText := 'Hello,World';
+    CheckEquals(2, slJCL.Count, 'TJclStringList.Count');
+    CheckEquals(slRTL.Count, slJCL.Count, 'TJclStringList.Count');
+    if slJCL.Count=2 then begin
+      CheckEquals('Hello', slJCL[0], 'TJclStringList[0]');
+      CheckEquals(slRTL[0], slJCL[0], 'TJclStringList[0]');
+      CheckEquals('World', slJCL[1], 'TJclStringList[1]');
+      CheckEquals(slRTL[1], slJCL[1], 'TJclStringList[1]');
+    end;
+  finally
+    FreeAndNil(slJCL);
+    FreeAndNil(slRTL);
+  end;
+end;
+
+procedure TJclStringListTest._SetCommaTextQuotedProperties;
+var slJCL: TJclStringList;
+    slRTL: TStringList;
+begin
+  slJCL := TJclStringList.Create;
+  slRTL := TStringList.Create;
+  try
+    slJCL.CommaText := 'Hello,"World"';
+    slRTL.CommaText := 'Hello,"World"';
+    CheckEquals(2, slJCL.Count, 'TJclStringList.Count');
+    CheckEquals(slRTL.Count, slJCL.Count, 'TJclStringList.Count');
+    if slJCL.Count=2 then begin
+      CheckEquals('Hello', slJCL[0], 'TJclStringList[0]');
+      CheckEquals(slRTL[0], slJCL[0], 'TJclStringList[0]');
+      CheckEquals('World', slJCL[1], 'TJclStringList[1]');
+      CheckEquals(slRTL[1], slJCL[1], 'TJclStringList[1]');
+    end;
+  finally
+    FreeAndNil(slJCL);
+    FreeAndNil(slRTL);
+  end;
+end;
+
+procedure TJclStringListTest._SetCommaTextQuotedSpacedProperties;
+var slJCL: TJclStringList;
+    slRTL: TStringList;
+begin
+  slJCL := TJclStringList.Create;
+  slRTL := TStringList.Create;
+  try
+    slJCL.CommaText := 'Hello,"My World",There!';
+    slRTL.CommaText := 'Hello,"My World",There!';
+    CheckEquals(3, slJCL.Count, 'TJclStringList.Count');
+    CheckEquals(slRTL.Count, slJCL.Count, 'TJclStringList.Count');
+    if slJCL.Count=3 then begin
+      CheckEquals('Hello', slJCL[0], 'TJclStringList[0]');
+      CheckEquals(slRTL[0], slJCL[0], 'TJclStringList[0]');
+      CheckEquals('My World', slJCL[1], 'TJclStringList[1]');
+      CheckEquals(slRTL[1], slJCL[1], 'TJclStringList[1]');
+    end;
+  finally
+    FreeAndNil(slJCL);
+    FreeAndNil(slRTL);
+  end;
+end;
+
+procedure TJclStringListTest._SetDelimitedTextCommaDoubleQuoteFalse;
+var slJCL: TJclStringList;
+    slRTL: TStringList;
+begin
+  slJCL := TJclStringList.Create;
+  slRTL := TStringList.Create;
+  try
+    slJCL.QuoteChar := '"';
+    slJCL.Delimiter := ',';
+    slJCL.StrictDelimiter := false;
+    slJCL.DelimitedText := 'Hello,"My World"';
+    slRTL.QuoteChar := '"';
+    slRTL.Delimiter := ',';
+    slRTL.StrictDelimiter := false;
+    slRTL.DelimitedText := 'Hello,"My World"';
+    CheckEquals(2, slJCL.Count, 'TJclStringList.Count');
+    CheckEquals(slRTL.Count, slJCL.Count, 'TJclStringList.Count');
+    if slJCL.Count=2 then begin
+      CheckEquals('Hello', slJCL[0], 'TJclStringList[0]');
+      CheckEquals(slRTL[0], slJCL[0], 'TJclStringList[0]');
+      CheckEquals('My World', slJCL[1], 'TJclStringList[1]');
+      CheckEquals(slRTL[1], slJCL[1], 'TJclStringList[1]');
+    end;
+  finally
+    FreeAndNil(slJCL);
+    FreeAndNil(slRTL);
+  end;
+end;
+
+procedure TJclStringListTest._SetDelimitedTextCommaDoubleQuoteTrue;
+var slJCL: TJclStringList;
+    slRTL: TStringList;
+begin
+  slJCL := TJclStringList.Create;
+  slRTL := TStringList.Create;
+  try
+    slJCL.QuoteChar := '"';
+    slJCL.Delimiter := ',';
+    slJCL.StrictDelimiter := true;
+    slJCL.DelimitedText := 'Hello,My World';
+    slRTL.QuoteChar := '"';
+    slRTL.Delimiter := ',';
+    slRTL.StrictDelimiter := true;
+    slRTL.DelimitedText := 'Hello,My World';
+    CheckEquals(2, slJCL.Count, 'TJclStringList.Count');
+    CheckEquals(slRTL.Count, slJCL.Count, 'TJclStringList.Count');
+    if slJCL.Count=2 then begin
+      CheckEquals('Hello', slJCL[0], 'TJclStringList[0]');
+      CheckEquals(slRTL[0], slJCL[0], 'TJclStringList[0]');
+      CheckEquals('My World', slJCL[1], 'TJclStringList[1]');
+      CheckEquals(slRTL[1], slJCL[1], 'TJclStringList[1]');
+    end;
+  finally
+    FreeAndNil(slJCL);
+    FreeAndNil(slRTL);
+  end;
+end;
+
+procedure TJclStringListTest._SetDelimitedTextFunkyFalse;
+var slJCL: TJclStringList;
+    slRTL: TStringList;
+begin
+  slJCL := TJclStringList.Create;
+  slRTL := TStringList.Create;
+  try
+    slJCL.QuoteChar := '|';
+    slJCL.Delimiter := '-';
+    slJCL.StrictDelimiter := false;
+    slJCL.DelimitedText := 'Hello-|My World|';
+    slRTL.QuoteChar := '|';
+    slRTL.Delimiter := '-';
+    slRTL.StrictDelimiter := false;
+    slRTL.DelimitedText := 'Hello-|My World|';
+    CheckEquals(2, slJCL.Count, 'TJclStringList.Count');
+    CheckEquals(slRTL.Count, slJCL.Count, 'TJclStringList.Count');
+    if slJCL.Count=2 then begin
+      CheckEquals('Hello', slJCL[0], 'TJclStringList[0]');
+      CheckEquals(slRTL[0], slJCL[0], 'TJclStringList[0]');
+      CheckEquals('My World', slJCL[1], 'TJclStringList[1]');
+      CheckEquals(slRTL[1], slJCL[1], 'TJclStringList[1]');
+    end;
+  finally
+    FreeAndNil(slJCL);
+    FreeAndNil(slRTL);
+  end;
+end;
+
+procedure TJclStringListTest._SplitJoin;
+var slJCL: IJclStringList;
+begin
+  slJCL := TJclStringList.Create;
+
+    CheckEquals(0, slJCL.Count);
+    slJcl.Add('111');
+    slJcl.Add('222');
+    CheckEquals(2, slJCL.Count);
+    slJcl.Split('1111f2222f3333f','f');
+    CheckEquals(4, slJCL.Count);
+    CheckEquals(3, slJCL.LastIndex);
+    CheckEquals(0, Length(slJCL.Last));
+    slJcl.Split('1111f2222f3333f','f', False);
+    CheckEquals(8, slJCL.Count);
+    CheckEquals(7, slJCL.LastIndex);
+    CheckEquals(0, Length(slJCL.Last));
+    slJcl.Clear;
+    CheckEquals(0, slJCL.Count);
+    CheckEquals('', slJCL.Join('111'));
+    slJcl.Add('0000');
+    CheckEquals('0000', slJCL.Join('222'));
+    slJcl.Split('1111f2222f3333f','f', False);
+    slJCL.Delete(slJCL.LastIndex);
+    CheckEquals('0000a1111a2222a3333', slJCL.Join('a'));
+end;
+
 initialization
 
   RegisterTest('JCLStrings', TJclStringTransformation.Suite);
@@ -3292,6 +3740,7 @@ initialization
   RegisterTest('JCLStrings', TJclStringExtraction.Suite);
   RegisterTest('JCLStrings', TJclStringTabSet.Suite);
   RegisterTest('JCLStrings', TAnsiStringListTest.Suite);
+  RegisterTest('JCLStrings', TJCLStringListTest.Suite);
 
 // History:
 //
