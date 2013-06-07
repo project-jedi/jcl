@@ -342,7 +342,7 @@ type
   end;
 
   // ancestor classes for streams with checksums and encrypted streams
-  // data are stored in sectors: each BufferSize-d buffer is followed by FBlockOverHeader bytes
+  // data are stored in sectors: each BufferSize-d buffer is followed by FSectorOverHead bytes
   // containing the checksum. In case of an encrypted stream, there is no byte
   // but sector is encrypted
 
