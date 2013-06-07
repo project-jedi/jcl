@@ -225,6 +225,7 @@ type
   public
     constructor Create(AParent: TJclSimpleXMLElem);
     destructor Destroy; override;
+    procedure SortProperties(const Order: array of string);
     function Add(const Name, Value: string): TJclSimpleXMLProp; overload;
     {$IFDEF SUPPORTS_UNICODE}
     function Add(const Name: string; const Value: AnsiString): TJclSimpleXMLProp; overload;
@@ -271,10 +272,10 @@ type
     function GetCount: Integer;
     function GetItem(const Index: Integer): TJclSimpleXMLElem;
     function GetEncoding: string;
-    function GetStandAlone: Boolean;
+    function GetStandalone: Boolean;
     function GetVersion: string;
     procedure SetEncoding(const Value: string);
-    procedure SetStandAlone(const Value: Boolean);
+    procedure SetStandalone(const Value: Boolean);
     procedure SetVersion(const Value: string);
   protected
     FSimpleXML: TJclSimpleXML;
@@ -298,7 +299,7 @@ type
     property Count: Integer read GetCount;
     property Encoding: string read GetEncoding write SetEncoding;
     property SimpleXML: TJclSimpleXML read FSimpleXML;
-    property StandAlone: Boolean read GetStandAlone write SetStandAlone;
+    property Standalone: Boolean read GetStandalone write SetStandalone;
     property Version: string read GetVersion write SetVersion;
   end;
 
@@ -527,7 +528,7 @@ type
     procedure LoadFromStringStream(StringStream: TJclStringStream); override;
     procedure SaveToStringStream(StringStream: TJclStringStream; const Level: string = ''); override;
     property Version: string read GetVersion write SetVersion;
-    property StandAlone: Boolean read GetStandalone write SetStandalone;
+    property Standalone: Boolean read GetStandalone write SetStandalone;
     property Encoding: string read GetEncoding write SetEncoding;
   end;
 
@@ -3005,6 +3006,22 @@ begin
     Item[I].SaveToStringStream(StringStream);
 end;
 
+procedure TJclSimpleXMLProps.SortProperties(const Order: array of string);
+var
+  I, Index, InsertIndex: Integer;
+begin
+  InsertIndex := 0;
+  for I := 0 to High(Order) do
+  begin
+    Index := FProperties.IndexOf(Order[I]);
+    if Index <> -1 then
+    begin
+      FProperties.Move(Index, InsertIndex);
+      Inc(InsertIndex);
+    end;
+  end;
+end;
+
 function TJclSimpleXMLProps.Value(const Name, Default: string): string;
 var
   Prop: TJclSimpleXMLProp;
@@ -3726,6 +3743,7 @@ begin
   SetVersion(GetVersion);
   SetEncoding(GetEncoding);
   SetStandalone(GetStandalone);
+  Properties.SortProperties(['version', 'encoding', 'standalone']);
 
   inherited SaveToStringStream(StringStream, Level);
 end;
@@ -4281,13 +4299,13 @@ begin
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
-function TJclSimpleXMLElemsProlog.GetStandAlone: Boolean;
+function TJclSimpleXMLElemsProlog.GetStandalone: Boolean;
 var
   Elem: TJclSimpleXMLElemHeader;
 begin
   Elem := TJclSimpleXMLElemHeader(FindHeader);
   if Elem <> nil then
-    Result := Elem.StandAlone
+    Result := Elem.Standalone
   else
     Result := False;
 end;
@@ -4312,13 +4330,13 @@ begin
     Elem.Encoding := Value;
 end;
 
-procedure TJclSimpleXMLElemsProlog.SetStandAlone(const Value: Boolean);
+procedure TJclSimpleXMLElemsProlog.SetStandalone(const Value: Boolean);
 var
   Elem: TJclSimpleXMLElemHeader;
 begin
   Elem := TJclSimpleXMLElemHeader(FindHeader);
   if Elem <> nil then
-    Elem.StandAlone := Value;
+    Elem.Standalone := Value;
 end;
 
 procedure TJclSimpleXMLElemsProlog.SetVersion(const Value: string);
