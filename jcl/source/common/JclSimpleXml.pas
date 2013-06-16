@@ -1116,10 +1116,12 @@ procedure TJclSimpleItemHashedList.Notify(Ptr: Pointer; Action: TListNotificatio
 begin
   if (Action = lnDeleted) and (FNameHash <> nil) then
   begin
-    if FCaseSensitive then
-      FNameHash.Remove(TJclSimpleItem(Ptr).Name)
-    else
-      FNameHash.Remove(UpperCase(TJclSimpleItem(Ptr).Name));
+//    Mantis 0006062 Hotfix
+//    if FCaseSensitive then
+//      FNameHash.Remove(TJclSimpleItem(Ptr).Name)
+//    else
+//      FNameHash.Remove(UpperCase(TJclSimpleItem(Ptr).Name));
+    InvalidateHash;
   end;
   inherited Notify(Ptr, Action);
 end;
