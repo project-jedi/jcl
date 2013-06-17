@@ -94,6 +94,7 @@ type
     constructor Create(ACaseSensitive: Boolean);
     destructor Destroy; override;
     function Add(Item: TJclSimpleItem): Integer;
+    function Extract(Item: TJclSimpleItem): TJclSimpleItem;
     procedure Clear; override;
     function IndexOfSimpleItem(Item: TJclSimpleItem): Integer;
     function IndexOfName(const Name: string): Integer;
@@ -1048,6 +1049,12 @@ begin
   end;
 end;
 
+function TJclSimpleItemHashedList.Extract(Item: TJclSimpleItem): TJclSimpleItem;
+begin
+  Result := TJclSimpleItem(inherited Extract(Item));
+  InvalidateHash;
+end;
+
 function TJclSimpleItemHashedList.GetSimpleItem(Index: Integer): TJclSimpleItem;
 begin
   Result := TJclSimpleItem(GetItem(Index));
@@ -1116,10 +1123,12 @@ procedure TJclSimpleItemHashedList.Notify(Ptr: Pointer; Action: TListNotificatio
 begin
   if (Action = lnDeleted) and (FNameHash <> nil) then
   begin
-    if FCaseSensitive then
-      FNameHash.Remove(TJclSimpleItem(Ptr).Name)
-    else
-      FNameHash.Remove(UpperCase(TJclSimpleItem(Ptr).Name));
+//    Mantis 0006062 Hotfix
+//    if FCaseSensitive then
+//      FNameHash.Remove(TJclSimpleItem(Ptr).Name)
+//    else
+//      FNameHash.Remove(UpperCase(TJclSimpleItem(Ptr).Name));
+    InvalidateHash;
   end;
   inherited Notify(Ptr, Action);
 end;
@@ -2572,8 +2581,22 @@ begin
   CreateElems;
 
   // If there already is a container, notify it to remove the element
-  if Assigned(Value.Parent) then
-    Value.Parent.Items.Notify(Value, opRemove);
+  if Assigned(Value.Parent) then begin
+    if (value.parent<>FParent) then begin
+      if FNamedElems <> nil then begin
+        NamedIndex := FNamedElems.IndexOfName(Value.Name);
+        if NamedIndex >= 0 then
+           TJclSimpleXMLNamedElems(FNamedElems.SimpleItems[NamedIndex]).FItems.Remove(Value);
+      end;
+      Value.FParent.items.FElems.Extract(Value); //EW here is the real difference
+      Value.FParent := nil;
+      Value.FSimpleXML := nil;
+    end
+    else
+    begin
+      Value.Parent.Items.Notify(Value, opRemove);
+    end;
+  end;
 
   FElems.Insert(Index, Value);
 
