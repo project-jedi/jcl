@@ -278,25 +278,25 @@ function StrSearch(const Substr, S: string; const Index: SizeInt = 1): SizeInt;
 function StrSuffixIndex(const S: string; const Suffixes: array of string): SizeInt;
 
 // String Extraction
-// Returns the String before SubStr
-function StrAfter(const SubStr, S: string): string;
 /// Returns the string after SubStr
+function StrAfter(const SubStr, S: string): string;
+/// Returns the String before SubStr
 function StrBefore(const SubStr, S: string): string;
 /// Splits a string at SubStr, returns true when SubStr is found, Left contains the
-/// string before the SubStr and Rigth the string behind SubStr
+/// string before the SubStr and Right the string behind SubStr
 function StrSplit(const SubStr, S: string;var Left, Right : string): boolean;
 /// Returns the string between Start and Stop
 function StrBetween(const S: string; const Start, Stop: Char): string;
-/// Returns the left N characters of the string
-function StrChopRight(const S: string; N: SizeInt): string;
+/// Returns all but rightmost N characters of the string
+function StrChopRight(const S: string; N: SizeInt): string;{$IFDEF SUPPORTS_INLINE} {$IFDEF COMPILER16_UP} inline; {$ENDIF} {$ENDIF}
 /// Returns the left Count characters of the string
-function StrLeft(const S: string; Count: SizeInt): string;
+function StrLeft(const S: string; Count: SizeInt): string; {$IFDEF SUPPORTS_INLINE} {$IFDEF COMPILER16_UP} inline; {$ENDIF} {$ENDIF}
 /// Returns the string starting from position Start for the Count Characters
-function StrMid(const S: string; Start, Count: SizeInt): string;
+function StrMid(const S: string; Start, Count: SizeInt): string; {$IFDEF SUPPORTS_INLINE} {$IFDEF COMPILER16_UP} inline; {$ENDIF} {$ENDIF}
 /// Returns the string starting from position N to the end
-function StrRestOf(const S: string; N: SizeInt): string;
+function StrRestOf(const S: string; N: SizeInt): string;{$IFDEF SUPPORTS_INLINE} {$IFDEF COMPILER16_UP} inline; {$ENDIF} {$ENDIF}
 /// Returns the right Count characters of the string
-function StrRight(const S: string; Count: SizeInt): string;
+function StrRight(const S: string; Count: SizeInt): string;{$IFDEF SUPPORTS_INLINE} {$IFDEF COMPILER16_UP} inline; {$ENDIF} {$ENDIF}
 
 // Character Test Routines
 function CharEqualNoCase(const C1, C2: Char): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
