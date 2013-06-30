@@ -22,15 +22,20 @@ Download the ZIP file
 
 If you download the JCL as a ZIP file from GitHub, you have to download the jedi.inc and
 kylix.inc file from the <https://github.com/project-jedi/jedi> project and copy them to the
-jcl/jcl/source/include/jedi directory.
+jcl\jcl\source\include\jedi directory.
 
 Clone with GIT
 --------------
 
-After cloning the JCL repository you need to initialize and update the submodules.
+```
+> git clone git://github.com/project-jedi/jcl.git jcl
+> cd jcl
+> git submodule update --init
+```
 
-> git submodule init
->
-> git submodule update
+This will get you the JCL repository and initializes the submodule that contains the jedi.inc and kylix.inc files.
 
-This will get you the submodule that contains the jedi.inc and kylix.inc files.
+How to install
+--------------
+Start the **jcl\install.bat**
+
