@@ -3983,7 +3983,7 @@ var
           Dec(TInterfacedObjectAccess(V.VObject).FRefCount);
         end
         else
-        if (V.VObject is TComponent) or (V.VObject is TInterfacedPersistent) and V.VObject.GetInterface(IToString, Intf) then
+        if ((V.VObject is TComponent) or (V.VObject is TInterfacedPersistent)) and V.VObject.GetInterface(IToString, Intf) then
           Result := Intf.ToString
         {$IFDEF RTL200_UP}
         else
