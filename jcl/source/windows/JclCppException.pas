@@ -650,6 +650,9 @@ begin
     Result := False; { Don't be surprised. C++ permits to throw every type. }
 end;
 
+type
+  EOpenException = class(Exception);
+
 function CppExceptObjProc(P: PExceptionRecord): Exception;
 type
   { Function pointer to std::type_info::what().
@@ -695,6 +698,10 @@ begin
         Result := EJclCppException.CreateTypeNamed(PAnsiChar(ExcTypeName), Pointer(ExcDesc));
     end;
   end;
+  {$IFDEF COMPILER12_UP}
+  if Result <> nil then
+    EOpenException(Result).RaisingException(P);
+  {$ENDIF COMPILER12_UP}
 end;
 
 var
