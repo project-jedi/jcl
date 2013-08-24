@@ -211,6 +211,9 @@ type
     property KeyInterface[const AKey: string]: IInterface read GetKeyInterface write SetKeyInterface;
     property KeyVariant[const AKey: string]: Variant read GetKeyVariant write SetKeyVariant;
     property ObjectsMode: TJclStringListObjectsMode read GetObjectsMode;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: TStringsEnumerator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
 type
