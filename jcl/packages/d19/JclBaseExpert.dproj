@@ -77,14 +77,14 @@
 			<DCC_SymbolReferenceInfo>1</DCC_SymbolReferenceInfo>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
-			<DCC_DcuOutput>..\..\lib\d18\win32\debug</DCC_DcuOutput>
-			<DCC_ObjOutput>..\..\lib\d18\win32\debug</DCC_ObjOutput>
-			<DCC_HppOutput>..\..\lib\d18\win32\debug</DCC_HppOutput>
-			<DCC_DcpOutput>..\..\lib\d18\win32\debug</DCC_DcpOutput>
-			<DCC_UnitSearchPath>..\..\lib\d18\win32\debug;..\..\source\include;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
-			<DCC_ResourcePath>..\..\lib\d18\win32\debug;..\..\source\include;$(DCC_ResourcePath)</DCC_ResourcePath>
-			<DCC_ObjPath>..\..\lib\d18\win32\debug;..\..\source\include;$(DCC_ObjPath)</DCC_ObjPath>
-			<DCC_IncludePath>..\..\lib\d18\win32\debug;..\..\source\include;$(DCC_IncludePath)</DCC_IncludePath>
+			<DCC_DcuOutput>..\..\lib\d19\win32\debug</DCC_DcuOutput>
+			<DCC_ObjOutput>..\..\lib\d19\win32\debug</DCC_ObjOutput>
+			<DCC_HppOutput>..\..\lib\d19\win32\debug</DCC_HppOutput>
+			<DCC_DcpOutput>..\..\lib\d19\win32\debug</DCC_DcpOutput>
+			<DCC_UnitSearchPath>..\..\lib\d19\win32\debug;..\..\source\include;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+			<DCC_ResourcePath>..\..\lib\d19\win32\debug;..\..\source\include;$(DCC_ResourcePath)</DCC_ResourcePath>
+			<DCC_ObjPath>..\..\lib\d19\win32\debug;..\..\source\include;$(DCC_ObjPath)</DCC_ObjPath>
+			<DCC_IncludePath>..\..\lib\d19\win32\debug;..\..\source\include;$(DCC_IncludePath)</DCC_IncludePath>
 			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
 			<VerInfo_Locale>1033</VerInfo_Locale>
 		</PropertyGroup>
@@ -95,14 +95,14 @@
 			<DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
-			<DCC_DcuOutput>..\..\lib\d18\win32</DCC_DcuOutput>
-			<DCC_ObjOutput>..\..\lib\d18\win32</DCC_ObjOutput>
-			<DCC_HppOutput>..\..\lib\d18\win32</DCC_HppOutput>
-			<DCC_DcpOutput>..\..\lib\d18\win32</DCC_DcpOutput>
-			<DCC_UnitSearchPath>..\..\lib\d18\win32;..\..\source\include;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
-			<DCC_ResourcePath>..\..\lib\d18\win32;..\..\source\include;$(DCC_ResourcePath)</DCC_ResourcePath>
-			<DCC_ObjPath>..\..\lib\d18\win32;..\..\source\include;$(DCC_ObjPath)</DCC_ObjPath>
-			<DCC_IncludePath>..\..\lib\d18\win32;..\..\source\include;$(DCC_IncludePath)</DCC_IncludePath>
+			<DCC_DcuOutput>..\..\lib\d19\win32</DCC_DcuOutput>
+			<DCC_ObjOutput>..\..\lib\d19\win32</DCC_ObjOutput>
+			<DCC_HppOutput>..\..\lib\d19\win32</DCC_HppOutput>
+			<DCC_DcpOutput>..\..\lib\d19\win32</DCC_DcpOutput>
+			<DCC_UnitSearchPath>..\..\lib\d19\win32;..\..\source\include;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+			<DCC_ResourcePath>..\..\lib\d19\win32;..\..\source\include;$(DCC_ResourcePath)</DCC_ResourcePath>
+			<DCC_ObjPath>..\..\lib\d19\win32;..\..\source\include;$(DCC_ObjPath)</DCC_ObjPath>
+			<DCC_IncludePath>..\..\lib\d19\win32;..\..\source\include;$(DCC_IncludePath)</DCC_IncludePath>
 			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
 			<VerInfo_Locale>1033</VerInfo_Locale>
 		</PropertyGroup>
