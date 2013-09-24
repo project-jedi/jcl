@@ -242,7 +242,7 @@
 				</Delphi.Personality>
 				<Deployment/>
 				<Platforms>
-					<Platform value="Win64">%WIN64ENABLED%</Platform>
+					<Platform value="Win64">True</Platform>
 					<Platform value="OSX32">False</Platform>
 					<Platform value="Win32">True</Platform>
 				</Platforms>

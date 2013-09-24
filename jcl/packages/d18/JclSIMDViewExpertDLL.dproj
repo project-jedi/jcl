@@ -15,11 +15,6 @@
 		<PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
 			<Base>true</Base>
 		</PropertyGroup>
-		<PropertyGroup Condition="('$(Platform)'=='Win64' and '$(Base)'=='true') or '$(Base_Win64)'!=''">
-			<Base_Win64>true</Base_Win64>
-			<CfgParent>Base</CfgParent>
-			<Base>true</Base>
-		</PropertyGroup>
 		<PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Base)'=='true') or '$(Base_Win32)'!=''">
 			<Base_Win32>true</Base_Win32>
 			<CfgParent>Base</CfgParent>
@@ -28,12 +23,6 @@
 		<PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_1)'!=''">
 			<Cfg_1>true</Cfg_1>
 			<CfgParent>Base</CfgParent>
-			<Base>true</Base>
-		</PropertyGroup>
-		<PropertyGroup Condition="('$(Platform)'=='Win64' and '$(Cfg_1)'=='true') or '$(Cfg_1_Win64)'!=''">
-			<Cfg_1_Win64>true</Cfg_1_Win64>
-			<CfgParent>Cfg_1</CfgParent>
-			<Cfg_1>true</Cfg_1>
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_1)'=='true') or '$(Cfg_1_Win32)'!=''">
@@ -45,12 +34,6 @@
 		<PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_2)'!=''">
 			<Cfg_2>true</Cfg_2>
 			<CfgParent>Base</CfgParent>
-			<Base>true</Base>
-		</PropertyGroup>
-		<PropertyGroup Condition="('$(Platform)'=='Win64' and '$(Cfg_2)'=='true') or '$(Cfg_2_Win64)'!=''">
-			<Cfg_2_Win64>true</Cfg_2_Win64>
-			<CfgParent>Cfg_2</CfgParent>
-			<Cfg_2>true</Cfg_2>
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_2)'=='true') or '$(Cfg_2_Win32)'!=''">
@@ -81,12 +64,6 @@
 			<DCC_ImageBase>$58080000</DCC_ImageBase>
 			<DCC_UsePackage>rtl;vcl;designide;Jcl;JclBaseExpert;$(DCC_UsePackage)</DCC_UsePackage>
 		</PropertyGroup>
-		<PropertyGroup Condition="'$(Base_Win64)'!=''">
-			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-			<VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
-			<VerInfo_Locale>1033</VerInfo_Locale>
-			<Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
-		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base_Win32)'!=''">
 			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
 			<VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
@@ -97,18 +74,6 @@
 			<DCC_DebugInformation>True</DCC_DebugInformation>
 			<DCC_LocalDebugSymbols>True</DCC_LocalDebugSymbols>
 			<DCC_SymbolReferenceInfo>1</DCC_SymbolReferenceInfo>
-		</PropertyGroup>
-		<PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
-			<DCC_DcuOutput>..\..\lib\d18\win64\debug</DCC_DcuOutput>
-			<DCC_ObjOutput>..\..\lib\d18\win64\debug</DCC_ObjOutput>
-			<DCC_HppOutput>..\..\lib\d18\win64\debug</DCC_HppOutput>
-			<DCC_DcpOutput>..\..\lib\d18\win64\debug</DCC_DcpOutput>
-			<DCC_UnitSearchPath>..\..\lib\d18\win64\debug;..\..\source\include;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
-			<DCC_ResourcePath>..\..\lib\d18\win64\debug;..\..\source\include;$(DCC_ResourcePath)</DCC_ResourcePath>
-			<DCC_ObjPath>..\..\lib\d18\win64\debug;..\..\source\include;$(DCC_ObjPath)</DCC_ObjPath>
-			<DCC_IncludePath>..\..\lib\d18\win64\debug;..\..\source\include;$(DCC_IncludePath)</DCC_IncludePath>
-			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-			<VerInfo_Locale>1033</VerInfo_Locale>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
 			<DCC_DcuOutput>..\..\lib\d18\win32\debug</DCC_DcuOutput>
@@ -127,18 +92,6 @@
 			<DCC_DebugInformation>False</DCC_DebugInformation>
 			<DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
 			<DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
-		</PropertyGroup>
-		<PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
-			<DCC_DcuOutput>..\..\lib\d18\win64</DCC_DcuOutput>
-			<DCC_ObjOutput>..\..\lib\d18\win64</DCC_ObjOutput>
-			<DCC_HppOutput>..\..\lib\d18\win64</DCC_HppOutput>
-			<DCC_DcpOutput>..\..\lib\d18\win64</DCC_DcpOutput>
-			<DCC_UnitSearchPath>..\..\lib\d18\win64;..\..\source\include;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
-			<DCC_ResourcePath>..\..\lib\d18\win64;..\..\source\include;$(DCC_ResourcePath)</DCC_ResourcePath>
-			<DCC_ObjPath>..\..\lib\d18\win64;..\..\source\include;$(DCC_ObjPath)</DCC_ObjPath>
-			<DCC_IncludePath>..\..\lib\d18\win64;..\..\source\include;$(DCC_IncludePath)</DCC_IncludePath>
-			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-			<VerInfo_Locale>1033</VerInfo_Locale>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
 			<DCC_DcuOutput>..\..\lib\d18\win32</DCC_DcuOutput>
@@ -217,7 +170,7 @@
 				</Delphi.Personality>
 				<Deployment/>
 				<Platforms>
-					<Platform value="Win64">%WIN64ENABLED%</Platform>
+					<Platform value="Win64">False</Platform>
 					<Platform value="OSX32">False</Platform>
 					<Platform value="Win32">True</Platform>
 				</Platforms>
