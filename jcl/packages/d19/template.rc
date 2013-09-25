@@ -20,7 +20,7 @@ BEGIN
               VALUE "FileVersion", "%VERSION_MAJOR_NUMBER%.%VERSION_MINOR_NUMBER%.%RELEASE_NUMBER%.%BUILD_NUMBER%\0"
               VALUE "InternalName", "%NAME%\0"
               VALUE "LegalCopyright", "%COPYRIGHT%\0"
-              VALUE "OriginalFilename", "%NAME%180%BINEXTENSION%\0"
+              VALUE "OriginalFilename", "%NAME%190%BINEXTENSION%\0"
               VALUE "ProductName", "JEDI Code Library\0"
               VALUE "ProductVersion", "%VERSION_MAJOR_NUMBER%.%VERSION_MINOR_NUMBER%.%RELEASE_NUMBER%.%BUILD_NUMBER%\0"
          END

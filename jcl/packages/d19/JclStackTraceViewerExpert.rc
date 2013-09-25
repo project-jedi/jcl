@@ -20,7 +20,7 @@ BEGIN
               VALUE "FileVersion", "2.5.0.4572\0"
               VALUE "InternalName", "JclStackTraceViewerExpert\0"
               VALUE "LegalCopyright", "Copyright (C) 1999, 2013 Project JEDI\0"
-              VALUE "OriginalFilename", "JclStackTraceViewerExpert180.bpl\0"
+              VALUE "OriginalFilename", "JclStackTraceViewerExpert190.bpl\0"
               VALUE "ProductName", "JEDI Code Library\0"
               VALUE "ProductVersion", "2.5.0.4572\0"
          END
