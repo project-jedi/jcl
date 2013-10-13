@@ -58,6 +58,9 @@
 #define JclLib18    JclLib
 #define   JclBpl18  JclBpl
 #define   JclHpp18  JclHpp
+#define JclLib19    JclLib
+#define   JclBpl19  JclBpl
+#define   JclHpp19  JclHpp
 #endif
 
 ;---------------------------------------------------
@@ -218,6 +221,13 @@ Source: {#JclBpl18}\*; DestDir: "{code:GetDelphiBplDir|18}"; Components: "IDE\De
 Source: {#JclBpl18}\Win64\*; DestDir: "{code:GetDelphiBplDir|18}\Win64"; Components: "IDE\Delphi18"; Flags: ignoreversion sortfilesbyextension
 Source: {#JclHpp18}\*; DestDir: "{app}\include\d18"; Components: "IDE\Delphi18"; Flags: ignoreversion sortfilesbyextension
 #endif
+#ifdef Include_Delphi19
+; SolidBreak;
+Source: {#JclLib19}\*; DestDir: "{app}\lib\d19"; Excludes: ".svn,__history,*.txt,*.hpp"; Components: "IDE\Delphi19"; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs solidbreak
+Source: {#JclBpl19}\*; DestDir: "{code:GetDelphiBplDir|19}"; Components: "IDE\Delphi19"; Flags: ignoreversion sortfilesbyextension
+Source: {#JclBpl19}\Win64\*; DestDir: "{code:GetDelphiBplDir|19}\Win64"; Components: "IDE\Delphi19"; Flags: ignoreversion sortfilesbyextension
+Source: {#JclHpp19}\*; DestDir: "{app}\include\d19"; Components: "IDE\Delphi19"; Flags: ignoreversion sortfilesbyextension
+#endif
 
 #endif
 
@@ -311,6 +321,14 @@ Root: HKCU; Subkey: "{code:GetDelphiRegKey|18}\Jedi\JCL"; ValueType: string; Val
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|18}\Jedi\JCL"; ValueType: string; ValueName: "Version"; ValueData: {#JclVersionStr}; Components: "IDE\Delphi18"; Flags: uninsdeletevalue;
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|18}\Globals"; ValueType: string; ValueName: "ForceEnvOptionsUpdate"; ValueData: "1"; Components: "IDE\Delphi18";
 #endif
+#ifdef Include_Delphi19
+; Delphi XE5
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|19}\Jedi\JCL"; ValueType: string; ValueName: "BplDir"; ValueData: {code:GetDelphiBplDir|19}; Components: "IDE\Delphi19"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|19}\Jedi\JCL"; ValueType: string; ValueName: "DcpDir"; ValueData: {app}\lib\d19; Components: "IDE\Delphi19"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|19}\Jedi\JCL"; ValueType: string; ValueName: "RootDir"; ValueData: {app}; Components: "IDE\Delphi19"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|19}\Jedi\JCL"; ValueType: string; ValueName: "Version"; ValueData: {#JclVersionStr}; Components: "IDE\Delphi19"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|19}\Globals"; ValueType: string; ValueName: "ForceEnvOptionsUpdate"; ValueData: "1"; Components: "IDE\Delphi19";
+#endif
 
 #endif
 
@@ -385,6 +403,13 @@ Type: files; Name: "{app}\lib\d18\win64\*"
 Type: files; Name: "{app}\lib\d18\win64\debug\*"
 Type: files; Name: "{app}\include\d18\*"
 Type: files; Name: "{code:GetDelphiBplDir|18}\Jcl*.~bpl";
+; lib\Delphi/C++Builder XE5
+Type: files; Name: "{app}\lib\d19\win32\*"
+Type: files; Name: "{app}\lib\d19\win32\debug\*"
+Type: files; Name: "{app}\lib\d19\win64\*"
+Type: files; Name: "{app}\lib\d19\win64\debug\*"
+Type: files; Name: "{app}\include\d19\*"
+Type: files; Name: "{code:GetDelphiBplDir|19}\Jcl*.~bpl";
 
 [Icons]
 Name: "{group}\{cm:ProgramOnTheWeb,{#MyAppName}}"; Filename: "{#MyAppURL}"
