@@ -236,6 +236,8 @@ type
     FNewUnitFileName: PJclMapString;
     FProcNamesCnt: Integer;
     FSegmentCnt: Integer;
+    FLastAccessedSegementIndex: Integer;
+    function IndexOfSegment(Addr: DWORD): Integer;
   protected
     function MAPAddrToVA(const Addr: DWORD): DWORD;
     procedure ClassTableItem(const Address: TJclMapAddress; Len: Integer; SectionName, GroupName: PJclMapString); override;
@@ -1407,13 +1409,18 @@ var
 
   function Eof: Boolean;
   begin
-    Result := (CurrPos >= EndPos);
+    Result := CurrPos >= EndPos;
   end;
 
   procedure SkipWhiteSpace;
+  var
+    LCurrPos, LEndPos: PJclMapString;
   begin
-    while (CurrPos < EndPos) and (CurrPos^ <= ' ') do
-      Inc(CurrPos);
+    LCurrPos := CurrPos;
+    LEndPos := EndPos;
+    while (LCurrPos < LEndPos) and (LCurrPos^ <= ' ') do
+      Inc(LCurrPos);
+    CurrPos := LCurrPos;
   end;
 
   procedure SkipEndLine;
@@ -1433,20 +1440,25 @@ var
     P: PJclMapString;
   begin
     P := CurrPos;
-    while (CurrPos^ <> #0) and not (CurrPos^ in [#10, #13]) do
-      Inc(CurrPos);
-    SetString(Result, P, CurrPos - P);
+    while (P^ <> #0) and not (P^ in [#10, #13]) do
+      Inc(P);
+    SetString(Result, CurrPos, P - CurrPos);
+    CurrPos := P;
   end;
 
 
   function ReadDecValue: Integer;
+  var
+    P: PJclMapString;
   begin
+    P := CurrPos;
     Result := 0;
-    while CurrPos^ in ['0'..'9'] do
+    while P^ in ['0'..'9'] do
     begin
-      Result := Result * 10 + (Ord(CurrPos^) - Ord('0'));
-      Inc(CurrPos);
+      Result := Result * 10 + (Ord(P^) - Ord('0'));
+      Inc(P);
     end;
+    CurrPos := P;
   end;
 
   function ReadHexValue: DWORD;
@@ -1857,30 +1869,60 @@ begin
   FNewUnitFileName := UnitFileName;
 end;
 
+function TJclMapScanner.IndexOfSegment(Addr: DWORD): Integer;
+var
+  L, R: Integer;
+  S: PJclMapSegment;
+begin
+  R := Length(FSegments) - 1;
+  Result := FLastAccessedSegementIndex;
+  if Result <= R then
+  begin
+    S := @FSegments[Result];
+    if (S.StartVA <= Addr) and (Addr < S.EndVA) then
+      Exit;
+  end;
+
+  // binary search
+  L := 0;
+  while L <= R do
+  begin
+    Result := L + (R - L) div 2;
+    S := @FSegments[Result];
+    if Addr >= S.EndVA then
+      L := Result + 1
+    else
+    begin
+      R := Result - 1;
+      if (S.StartVA <= Addr) and (Addr < S.EndVA) then
+      begin
+        FLastAccessedSegementIndex := Result;
+        Exit;
+      end;
+    end;
+  end;
+  Result := -1;
+end;
+
 function TJclMapScanner.ModuleNameFromAddr(Addr: DWORD): string;
 var
   I: Integer;
 begin
-  Result := '';
-  for I := Length(FSegments) - 1 downto 0 do
-    if (FSegments[I].StartVA <= Addr) and (Addr < FSegments[I].EndVA) then
-    begin
-      Result := MapStringCacheToModuleName(FSegments[I].UnitName);
-      Break;
-    end;
+  I := IndexOfSegment(Addr);
+  if I <> -1 then
+    Result := MapStringCacheToModuleName(FSegments[I].UnitName)
+  else
+    Result := '';
 end;
 
 function TJclMapScanner.ModuleStartFromAddr(Addr: DWORD): DWORD;
 var
   I: Integer;
 begin
+  I := IndexOfSegment(Addr);
   Result := DWORD(-1);
-  for I := Length(FSegments) - 1 downto 0 do
-    if (FSegments[I].StartVA <= Addr) and (Addr < FSegments[I].EndVA) then
-    begin
-      Result := FSegments[I].StartVA;
-      Break;
-    end;
+  if I <> -1 then
+    Result := FSegments[I].StartVA;
 end;
 
 function TJclMapScanner.ProcNameFromAddr(Addr: DWORD): string;
@@ -1962,6 +2004,7 @@ begin
   FLineNumberErrors := 0;
   FSegmentCnt := 0;
   FProcNamesCnt := 0;
+  FLastAccessedSegementIndex := 0;
   Parse;
   SetLength(FLineNumbers, FLineNumbersCnt);
   SetLength(FProcNames, FProcNamesCnt);
@@ -2011,12 +2054,9 @@ begin
   if Result = '' then
   begin
     // try with module names (C++Builder compliance)
-    for I := Length(FSegments) - 1 downto 0 do
-      if (FSegments[I].StartVA <= Addr) and (Addr < FSegments[I].EndVA) then
-    begin
+    I := IndexOfSegment(Addr);
+    if I <> -1 then
       Result := MapStringCacheToFileName(FSegments[I].UnitName);
-      Break;
-    end;
   end;
 end;
 
