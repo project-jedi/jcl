@@ -3320,7 +3320,7 @@ begin
           Win32MinorVersionEx := Win32MinorVersion;
 
           // Workaround to differentiate Windows 8.1 and Windows Server 2012 R2 from Windows 8 and Windows Server 2012
-          if (Win32MinorVersionEx = 2) then
+          if Win32MinorVersionEx = 2 then
           begin
             ProductName := RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'ProductName', '');
             if (pos(RsOSVersionWin81, ProductName) = 1) or (pos(RsOSVersionWinServer2012R2, ProductName) = 1) then
@@ -3379,124 +3379,124 @@ begin
   Result := weUnknown;
   Edition := RegReadStringDef(HKEY_LOCAL_MACHINE, ProductName, 'ProductName', '');
 
-  // remove (tm) in 'Windows (TM) Vista Ultimate'
+  // Remove (tm) in 'Windows (TM) Vista Ultimate'
   Edition := StringReplace(Edition, '(TM) ', '', [rfReplaceAll, rfIgnoreCase]);
 
-  if (pos('Windows XP', Edition) = 1) then
+  if pos('Windows XP', Edition) = 1 then
   begin
    // Windows XP Editions
-   if (pos('Home Edition N', Edition) > 0) then
+   if pos('Home Edition N', Edition) > 0 then
       Result :=  weWinXPHomeN
    else
-   if (pos('Professional N', Edition) > 0) then
+   if pos('Professional N', Edition) > 0 then
       Result :=  weWinXPProN
    else
-   if (pos('Home Edition K', Edition) > 0) then
+   if pos('Home Edition K', Edition) > 0 then
       Result :=  weWinXPHomeK
    else
-   if (pos('Professional K', Edition) > 0) then
+   if pos('Professional K', Edition) > 0 then
       Result :=  weWinXPProK
    else
-   if (pos('Home Edition KN', Edition) > 0) then
+   if pos('Home Edition KN', Edition) > 0 then
       Result :=  weWinXPHomeKN
    else
-   if (pos('Professional KN', Edition) > 0) then
+   if pos('Professional KN', Edition) > 0 then
       Result :=  weWinXPProKN
    else
-   if (pos('Home', Edition) > 0) then
+   if pos('Home', Edition) > 0 then
       Result :=  weWinXPHome
    else
-   if (pos('Professional', Edition) > 0) then
+   if pos('Professional', Edition) > 0 then
       Result :=  weWinXPPro
    else
-   if (pos('Starter', Edition) > 0) then
+   if pos('Starter', Edition) > 0 then
       Result :=  weWinXPStarter
    else
-   if (pos('Media Center', Edition) > 0) then
+   if pos('Media Center', Edition) > 0 then
       Result :=  weWinXPMediaCenter
    else
-   if (pos('Tablet', Edition) > 0) then
+   if pos('Tablet', Edition) > 0 then
       Result :=  weWinXPTablet;
   end
   else
   if (pos('Windows Vista', Edition) = 1) then
   begin
    // Windows Vista Editions
-   if (pos('Starter', Edition) > 0) then
+   if pos('Starter', Edition) > 0 then
       Result := weWinVistaStarter
    else
-   if (pos('Home Basic N', Edition) > 0) then
+   if pos('Home Basic N', Edition) > 0 then
       Result := weWinVistaHomeBasicN
    else
-   if (pos('Home Basic', Edition) > 0) then
+   if pos('Home Basic', Edition) > 0 then
       Result := weWinVistaHomeBasic
    else
-   if (pos('Home Premium', Edition) > 0) then
+   if pos('Home Premium', Edition) > 0 then
       Result := weWinVistaHomePremium
    else
-   if (pos('Business N', Edition) > 0) then
+   if pos('Business N', Edition) > 0 then
       Result := weWinVistaBusinessN
    else
-   if (pos('Business', Edition) > 0) then
+   if pos('Business', Edition) > 0 then
       Result := weWinVistaBusiness
    else
-   if (pos('Enterprise', Edition) > 0) then
+   if pos('Enterprise', Edition) > 0 then
       Result := weWinVistaEnterprise
    else
-   if (pos('Ultimate', Edition) > 0) then
+   if pos('Ultimate', Edition) > 0 then
       Result := weWinVistaUltimate;
   end
   else
-  if (pos('Windows 7', Edition) = 1) then
+  if pos('Windows 7', Edition) = 1 then
   begin
    // Windows 7 Editions
-   if (pos('Starter', Edition) > 0) then
+   if pos('Starter', Edition) > 0 then
       Result := weWin7Starter
    else
-   if (pos('Home Basic', Edition) > 0) then
+   if pos('Home Basic', Edition) > 0 then
       Result := weWin7HomeBasic
    else
-   if (pos('Home Premium', Edition) > 0) then
+   if pos('Home Premium', Edition) > 0 then
       Result := weWin7HomePremium
    else
-   if (pos('Professional', Edition) > 0) then
+   if pos('Professional', Edition) > 0 then
       Result := weWin7Professional
    else
-   if (pos('Enterprise', Edition) > 0) then
+   if pos('Enterprise', Edition) > 0 then
       Result := weWin7Enterprise
    else
-   if (pos('Ultimate', Edition) > 0) then
+   if pos('Ultimate', Edition) > 0 then
       Result := weWin7Ultimate;
   end
   else
-  if (pos('Windows 8.1', Edition) = 1) then
+  if pos('Windows 8.1', Edition) = 1 then
   begin
    // Windows 8.1 Editions
-   if (pos('Pro', Edition) > 0) then
+   if pos('Pro', Edition) > 0 then
       Result := weWin81Pro
    else
-   if (pos('Enterprise', Edition) > 0) then
+   if pos('Enterprise', Edition) > 0 then
       Result := weWin81Enterprise
    else
       Result := weWin81;
   end
   else
-  if (pos('Windows 8', Edition) = 1) then
+  if pos('Windows 8', Edition) = 1 then
   begin
    // Windows 8 Editions
-   if (pos('Pro', Edition) > 0) then
+   if pos('Pro', Edition) > 0 then
       Result := weWin8Pro
    else
-   if (pos('Enterprise', Edition) > 0) then
+   if pos('Enterprise', Edition) > 0 then
       Result := weWin8Enterprise
    else
       Result := weWin8;
   end
   else
-  if (pos('Windows RT 8.1', Edition) = 1) then
+  if pos('Windows RT 8.1', Edition) = 1 then
     Result := weWin81RT
   else
-  if (pos('Windows RT', Edition) = 1) then
+  if pos('Windows RT', Edition) = 1 then
     Result := weWin8RT;
 end;
 
