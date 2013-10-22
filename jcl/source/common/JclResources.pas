@@ -1933,7 +1933,11 @@ resourcestring
   RsOSVersionWin7               = 'Windows 7';
   RsOSVersionWinServer2008R2    = 'Windows Server 2008 R2';
   RsOSVersionWin8               = 'Windows 8';
+  RsOSVersionWin8RT             = 'Windows RT';
   RsOSVersionWinServer2012      = 'Windows Server 2012';
+  RsOSVersionWin81              = 'Windows 8.1';
+  RsOSVersionWin81RT            = 'Windows RT 8.1';
+  RsOSVersionWinServer2012R2    = 'Windows Server 2012 R2';
 
   RsEditionWinXPHome            = 'Home Edition';
   RsEditionWinXPPro             = 'Professional';
@@ -1963,6 +1967,9 @@ resourcestring
   RsEditionWin8Pro              = 'Pro';
   RsEditionWin8Enterprise       = 'Enterprise';
   RsEditionWin8RT               = 'RT';
+  RsEditionWin81Pro             = 'Pro';
+  RsEditionWin81Enterprise      = 'Enterprise';
+  RsEditionWin81RT              = 'RT';
 
   RsProductTypeWorkStation      = 'Workstation';
   RsProductTypeServer           = 'Server';
