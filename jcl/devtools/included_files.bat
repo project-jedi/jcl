@@ -17,5 +17,7 @@ copy ..\source\include\jcl.template.inc ..\source\include\jcld17win32.inc
 copy ..\source\include\jcl.template.inc ..\source\include\jcld17win64.inc
 copy ..\source\include\jcl.template.inc ..\source\include\jcld18win32.inc
 copy ..\source\include\jcl.template.inc ..\source\include\jcld18win64.inc
+copy ..\source\include\jcl.template.inc ..\source\include\jcld19win32.inc
+copy ..\source\include\jcl.template.inc ..\source\include\jcld19win64.inc
 
 copy ..\source\include\jcl.template.inc ..\source\include\jclfpc.inc

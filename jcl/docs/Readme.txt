@@ -64,7 +64,7 @@ The JEDI Code Library packages are required by some 3rd party packages (includin
 
 The installer can generate MAP informations for each package. These informations can be linked into binaries to become JCL debug data or be converted to .jdbg files. Once linked MAP files could be deleted. These options are subnodes of the "Packages" node.
 
-For BDS 2006, RAD Studio 2007, 2009, 2010, XE, XE2, XE3 and XE4 the compiler introduced a new option to make the same packages available in C++, by checking the "Dual packages" option of the "Packages" node, you will be able to call functions of the JCL from C++ code.
+For BDS 2006, RAD Studio 2007, 2009, 2010, XE, XE2, XE3, XE4 and XE5 the compiler introduced a new option to make the same packages available in C++, by checking the "Dual packages" option of the "Packages" node, you will be able to call functions of the JCL from C++ code.
 
 
 --------------------------------------------------------------------------------
@@ -94,6 +94,7 @@ Delphi XE and C++Builder XE.
 Delphi XE2 and C++Builder XE2. 
 Delphi XE3 and C++Builder XE3. 
 Delphi XE4 and C++Builder XE4. 
+Delphi XE4 and C++Builder XE5.
 
 --------------------------------------------------------------------------------
 
@@ -144,6 +145,8 @@ For Delphi XE3 and C++Builder XE3 Win32: source\include\jcld17win32.inc
 For Delphi XE3 and C++Builder XE3 Win64: source\include\jcld17win64.inc 
 For Delphi XE4 and C++Builder XE4 Win32: source\include\jcld18win32.inc 
 For Delphi XE4 and C++Builder XE4 Win64: source\include\jcld18win64.inc 
+For Delphi XE5 and C++Builder XE5 Win32: source\include\jcld19win32.inc 
+For Delphi XE5 and C++Builder XE5 Win64: source\include\jcld19win64.inc 
 For FreePascal: source\include\jclfpc.inc 
 In the IDE, open and compile package Jcl.dpk (or Jcl.bpk for C++Builder) located in a subdirectory of the "packages" directory matching your version of the IDE. This package doesn't have to be installed since it doesn't provide any components. 
 If you want to install experts, open package JclBaseExpert.dpk and compile it, then you can install all the experts you want (packages are located in the same directory). 
