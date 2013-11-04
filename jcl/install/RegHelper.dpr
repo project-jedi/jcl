@@ -16,6 +16,7 @@
 { Portions created by Florent Ouchet are Copyright (C) of Florent Ouchet. All Rights Reserved.     }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
+{   Jean-Fabien Connault (cycocrew)                                                                }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -181,7 +182,7 @@ var
 procedure DisplayCopyright;
 begin
   WriteLn(RegHelperOutput,'HTML Help 2.0 registration helper');
-  WriteLn(RegHelperOutput,'Copyright (c) 2007 Project JEDI');
+  WriteLn(RegHelperOutput,'Copyright (c) 2007-2013 Project JEDI');
   WriteLn(RegHelperOutput,'');
 end;
 
@@ -258,7 +259,7 @@ function ParseArguments: Boolean;
         end
         else
         begin
-          WriteLn(RegHelperOutput,'Error: Number of parameter is invalid for command: ', Argument);
+          WriteLn(RegHelperOutput, 'Error: Number of parameters (' + intToStr(ParamCount) + ' found instead of ' + intToStr(CommandRecs[IndexCommand].ParamCount) + ' expected) is invalid for command: ', Argument);
           Result := False;
           Exit;
         end;

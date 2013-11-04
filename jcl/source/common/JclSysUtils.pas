@@ -3562,7 +3562,7 @@ var
 begin
   StrList := TStringList.Create;
   try
-    StrToStrings(List, Separator, StrList);
+    StrToStrings(List, Separator, StrList, False);
 
     NewItems := TStringList.Create;
     try
@@ -3589,7 +3589,7 @@ var
 begin
   StrList := TStringList.Create;
   try
-    StrToStrings(List, Separator, StrList);
+    StrToStrings(List, Separator, StrList, False);
 
     NewItems := TStringList.Create;
     try
@@ -3620,11 +3620,11 @@ var
 begin
   StrList := TStringList.Create;
   try
-    StrToStrings(List, Separator, StrList);
+    StrToStrings(List, Separator, StrList, False);
 
     RemItems := TStringList.Create;
     try
-      StrToStrings(Items, Separator, RemItems);
+      StrToStrings(Items, Separator, RemItems, False);
 
       for Index := 0 to RemItems.Count - 1 do
       begin
@@ -3652,7 +3652,7 @@ var
 begin
   StrList := TStringList.Create;
   try
-    StrToStrings(List, Separator, StrList);
+    StrToStrings(List, Separator, StrList, False);
 
     StrList.Delete(Index);
 
@@ -3669,7 +3669,7 @@ var
 begin
   StrList := TStringList.Create;
   try
-    StrToStrings(List, Separator, StrList);
+    StrToStrings(List, Separator, StrList, False);
 
     Result := StrList.Count;
   finally
@@ -3684,7 +3684,7 @@ var
 begin
   StrList := TStringList.Create;
   try
-    StrToStrings(List, Separator, StrList);
+    StrToStrings(List, Separator, StrList, False);
 
     Result := StrList.Strings[Index];
   finally
@@ -3700,7 +3700,7 @@ var
 begin
   StrList := TStringList.Create;
   try
-    StrToStrings(List, Separator, StrList);
+    StrToStrings(List, Separator, StrList, False);
 
     StrList.Strings[Index] := Value;
 
@@ -3717,7 +3717,7 @@ var
 begin
   StrList := TStringList.Create;
   try
-    StrToStrings(List, Separator, StrList);
+    StrToStrings(List, Separator, StrList, False);
 
     Result := StrList.IndexOf(Item);
   finally

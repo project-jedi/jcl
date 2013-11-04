@@ -3485,8 +3485,8 @@ begin
       Delete(S, 1, I + L - 1);
       I := Pos(Sep, S);
     end;
-    if S <> '' then
-      List.Add(S);  // Ignore empty strings at the end.
+    if (S <> '') or AllowEmptyString then
+      List.Add(S);  // Ignore empty strings at the end (only if AllowEmptyString = False).
   finally
     List.EndUpdate;
   end;
@@ -3515,8 +3515,8 @@ begin
       Delete(LowerCaseStr, 1, I + L - 1);
       I := Pos(Sep, LowerCaseStr);
     end;
-    if S <> '' then
-      List.Add(S);  // Ignore empty strings at the end.
+    if (S <> '') or AllowEmptyString then
+      List.Add(S);  // Ignore empty strings at the end (only if AllowEmptyString = False).
   finally
     List.EndUpdate;
   end;

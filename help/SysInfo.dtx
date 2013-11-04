@@ -502,6 +502,7 @@ See also:
   GetWindowsVersion
 Donator:
   Marcel van Brakel
+  Jean-Fabien Connault
 @@TWindowsVersion.wvUnknown
   Anonymous Windows version. This can happen when a new Windows version is released
   after JCL or if you are running a Windows version with a different build number
@@ -540,6 +541,18 @@ Donator:
   Windows 7
 @@TWindowsVersion.wvWinServer2008R2
   Windows Server 2008 R2
+@@TWindowsVersion.wvWin8
+  Windows 8
+@@TWindowsVersion.wvWin8RT
+  Windows RT
+@@TWindowsVersion.wvWinServer2012
+  Windows Server 2012
+@@TWindowsVersion.wvWin81
+  Windows 8.1
+@@TWindowsVersion.wvWin81RT
+  Windows RT 8.1
+@@TWindowsVersion.wvWinServer2012R2
+  Windows Server 2012 R2
 --------------------------------------------------------------------------------
 @@TWindowsEdition
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -604,6 +617,22 @@ Donator:
   Windows 7 Enterprise
 @@TWindowsEdition.weWin7Ultimate
   Windows 7 Ultimate
+@@TWindowsEdition.weWin8
+  Windows 8
+@@TWindowsEdition.weWin8Professional
+  Windows 8 Professional
+@@TWindowsEdition.weWin8Enterprise
+  Windows 8 Enterprise
+@@TWindowsEdition.weWin8RT
+  Windows RT
+@@TWindowsEdition.weWin81
+  Windows 8.1
+@@TWindowsEdition.weWin81Professional
+  Windows 8.1 Professional
+@@TWindowsEdition.weWin81Enterprise
+  Windows 8.1 Enterprise
+@@TWindowsEdition.weWin81RT
+  Windows RT 8.1
 --------------------------------------------------------------------------------
 @@GetWindowsVersion
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -633,8 +662,13 @@ See also:
   IsWinServer2008
   IsWin7
   IsWinServer2008R2
+  IsWin8
+  IsWinServer2012
+  IsWin81
+  IsWinServer2012R2
 Donator:
   Marcel van Brakel
+  Jean-Fabien Connault
 --------------------------------------------------------------------------------
 @@GetWindowsEdition
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -719,6 +753,17 @@ Result:
 See also:
   GetWindowsEditionString
   GetWindowsVersionString
+Donator:
+  Jean-Fabien Connault
+--------------------------------------------------------------------------------
+@@GetWindowsBuildNumber
+<GROUP SystemInformationRoutines.VersionInformation>
+Summary:
+  Returns the Windows build number.
+Description:
+  Returns the Windows build number.
+Result:
+  The Windows build number.
 Donator:
   Jean-Fabien Connault
 --------------------------------------------------------------------------------
@@ -1314,6 +1359,10 @@ See also:
   IsWinServer2008
   IsWin7
   IsWinServer2008R2
+  IsWin8
+  IsWinServer2012
+  IsWin81
+  IsWinServer2012R2
 Donator:
   Nick Hodges
 --------------------------------------------------------------------------------
@@ -1344,6 +1393,10 @@ See also:
   IsWinServer2008
   IsWin7
   IsWinServer2008R2
+  IsWin8
+  IsWinServer2012
+  IsWin81
+  IsWinServer2012R2
 Donator:
   Nick Hodges
 --------------------------------------------------------------------------------
@@ -1374,6 +1427,10 @@ See also:
   IsWinServer2008
   IsWin7
   IsWinServer2008R2
+  IsWin8
+  IsWinServer2012
+  IsWin81
+  IsWinServer2012R2
 Donator:
   Nick Hodges
 --------------------------------------------------------------------------------
@@ -1404,6 +1461,10 @@ See also:
   IsWinServer2008
   IsWin7
   IsWinServer2008R2
+  IsWin8
+  IsWinServer2012
+  IsWin81
+  IsWinServer2012R2
 Donator:
   Nick Hodges
 --------------------------------------------------------------------------------
@@ -1434,6 +1495,10 @@ See also:
   IsWinServer2008
   IsWin7
   IsWinServer2008R2
+  IsWin8
+  IsWinServer2012
+  IsWin81
+  IsWinServer2012R2
 Donator:
   Nick Hodges
 --------------------------------------------------------------------------------
@@ -1467,6 +1532,10 @@ See also:
   IsWinServer2008
   IsWin7
   IsWinServer2008R2
+  IsWin8
+  IsWinServer2012
+  IsWin81
+  IsWinServer2012R2
 Donator:
   Nick Hodges
 --------------------------------------------------------------------------------
@@ -1497,6 +1566,10 @@ See also:
   IsWinServer2008
   IsWin7
   IsWinServer2008R2
+  IsWin8
+  IsWinServer2012
+  IsWin81
+  IsWinServer2012R2
 Donator:
   Nick Hodges
 --------------------------------------------------------------------------------
@@ -1527,6 +1600,10 @@ See also:
   IsWinServer2008
   IsWin7
   IsWinServer2008R2
+  IsWin8
+  IsWinServer2012
+  IsWin81
+  IsWinServer2012R2
 Donator:
   Nick Hodges
 --------------------------------------------------------------------------------
@@ -1557,6 +1634,10 @@ See also:
   IsWinServer2008
   IsWin7
   IsWinServer2008R2
+  IsWin8
+  IsWinServer2012
+  IsWin81
+  IsWinServer2012R2
 Donator:
   Nick Hodges
 --------------------------------------------------------------------------------
@@ -1587,6 +1668,10 @@ See also:
   IsWinServer2008
   IsWin7
   IsWinServer2008R2
+  IsWin8
+  IsWinServer2012
+  IsWin81
+  IsWinServer2012R2
 Donator:
   Nick Hodges
 --------------------------------------------------------------------------------
@@ -1617,6 +1702,10 @@ See also:
   IsWinServer2008
   IsWin7
   IsWinServer2008R2
+  IsWin8
+  IsWinServer2012
+  IsWin81
+  IsWinServer2012R2
 Donator:
   Nick Hodges
 --------------------------------------------------------------------------------
@@ -1647,6 +1736,10 @@ See also:
   IsWinServer2008
   IsWin7
   IsWinServer2008R2
+  IsWin8
+  IsWinServer2012
+  IsWin81
+  IsWinServer2012R2
 Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -1677,6 +1770,10 @@ See also:
   IsWinServer2008
   IsWin7
   IsWinServer2008R2
+  IsWin8
+  IsWinServer2012
+  IsWin81
+  IsWinServer2012R2
 Donator:
   Petr Vones
 --------------------------------------------------------------------------------
@@ -1707,6 +1804,10 @@ See also:
   IsWinServer2008
   IsWin7
   IsWinServer2008R2
+  IsWin8
+  IsWinServer2012
+  IsWin81
+  IsWinServer2012R2
 Donator:
   Petr Vones
 --------------------------------------------------------------------------------
@@ -1737,6 +1838,10 @@ See also:
   IsWinServer2008
   IsWin7
   IsWinServer2008R2
+  IsWin8
+  IsWinServer2012
+  IsWin81
+  IsWinServer2012R2
 Donator:
   Petr Vones
 --------------------------------------------------------------------------------
@@ -1767,6 +1872,10 @@ See also:
   IsWinServer2008
   IsWin7
   IsWinServer2008R2
+  IsWin8
+  IsWinServer2012
+  IsWin81
+  IsWinServer2012R2
 Donator:
   Florent Ouchet
 --------------------------------------------------------------------------------
@@ -1775,7 +1884,7 @@ Donator:
 Summary:
   Returns whether the system is running Windows 7.
 Description:
-  IsWinVista returns whether or not the system is running Windows 7.
+  IsWin7 returns whether or not the system is running Windows 7.
 Result:
   If the system is running Windows 7 the result is True otherwise the result is False.
 See also:
@@ -1797,6 +1906,10 @@ See also:
   IsWinVista
   IsWinServer2008
   IsWinServer2008R2
+  IsWin8
+  IsWinServer2012
+  IsWin81
+  IsWinServer2012R2
 Donator:
   Jean-Fabien Connault
 --------------------------------------------------------------------------------
@@ -1827,6 +1940,10 @@ See also:
   IsWinVista
   IsWin7
   IsWinServer2008R2
+  IsWin8
+  IsWinServer2012
+  IsWin81
+  IsWinServer2012R2
 Donator:
   Florent Ouchet
 --------------------------------------------------------------------------------
@@ -1835,7 +1952,7 @@ Donator:
 Summary:
   Returns whether the system is running Windows Server 2008 R2.
 Description:
-  IsWinServer2008 returns whether or not the system is running Windows Server 2008 R2.
+  IsWinServer2008R2 returns whether or not the system is running Windows Server 2008 R2.
 Result:
   If the system is running Windows Server 2008 R2 the result is True otherwise the result is False.
 See also:
@@ -1857,6 +1974,142 @@ See also:
   IsWinVista
   IsWin7
   IsWinServer2008
+  IsWin8
+  IsWinServer2012
+  IsWin81
+  IsWinServer2012R2
+Donator:
+  Jean-Fabien Connault
+--------------------------------------------------------------------------------
+@@IsWin8
+<GROUP SystemInformationRoutines.VersionInformation>
+Summary:
+  Returns whether the system is running Windows 8.
+Description:
+  IsWin8 returns whether or not the system is running Windows 8.
+Result:
+  If the system is running Windows 8 the result is True otherwise the result is False.
+See also:
+  IsWin95
+  IsWin95OSR2
+  IsWin98
+  IsWin98SE
+  IsWinME
+  IsWinNT
+  IsWinNT3
+  IsWinNT31
+  IsWinNT35
+  IsWinNT351
+  IsWinNT4
+  IsWin2K
+  IsWinXP
+  IsWin2003
+  IsWin2003R2
+  IsWinVista
+  IsWinServer2008
+  IsWinServer2008R2
+  IsWinServer2012
+  IsWin81
+  IsWinServer2012R2
+Donator:
+  Jean-Fabien Connault
+--------------------------------------------------------------------------------
+@@IsWinServer2012
+<GROUP SystemInformationRoutines.VersionInformation>
+Summary:
+  Returns whether the system is running Windows Server 2008.
+Description:
+  IsWinServer2012 returns whether or not the system is running Windows Server 2012.
+Result:
+  If the system is running Windows Server 2012 the result is True otherwise the result is False.
+See also:
+  IsWin95
+  IsWin95OSR2
+  IsWin98
+  IsWin98SE
+  IsWinME
+  IsWinNT
+  IsWinNT3
+  IsWinNT31
+  IsWinNT35
+  IsWinNT351
+  IsWinNT4
+  IsWin2K
+  IsWinXP
+  IsWin2003
+  IsWin2003R2
+  IsWinVista
+  IsWin7
+  IsWinServer2008R2
+  IsWin8
+  IsWin81
+  IsWinServer2012R2
+Donator:
+  Jean-Fabien Connault
+--------------------------------------------------------------------------------
+@@IsWin81
+<GROUP SystemInformationRoutines.VersionInformation>
+Summary:
+  Returns whether the system is running Windows 8.1.
+Description:
+  IsWin81 returns whether or not the system is running Windows 8.1.
+Result:
+  If the system is running Windows 8.1 the result is True otherwise the result is False.
+See also:
+  IsWin95
+  IsWin95OSR2
+  IsWin98
+  IsWin98SE
+  IsWinME
+  IsWinNT
+  IsWinNT3
+  IsWinNT31
+  IsWinNT35
+  IsWinNT351
+  IsWinNT4
+  IsWin2K
+  IsWinXP
+  IsWin2003
+  IsWin2003R2
+  IsWinVista
+  IsWinServer2008
+  IsWinServer2008R2
+  IsWin8
+  IsWinServer2012
+  IsWinServer2012R2
+Donator:
+  Jean-Fabien Connault
+--------------------------------------------------------------------------------
+@@IsWinServer2012R2
+<GROUP SystemInformationRoutines.VersionInformation>
+Summary:
+  Returns whether the system is running Windows Server 2012 R2.
+Description:
+  IsWinServer2012R2 returns whether or not the system is running Windows Server 2012 R2.
+Result:
+  If the system is running Windows Server 2012 R2 the result is True otherwise the result is False.
+See also:
+  IsWin95
+  IsWin95OSR2
+  IsWin98
+  IsWin98SE
+  IsWinME
+  IsWinNT
+  IsWinNT3
+  IsWinNT31
+  IsWinNT35
+  IsWinNT351
+  IsWinNT4
+  IsWin2K
+  IsWinXP
+  IsWin2003
+  IsWin2003R2
+  IsWinVista
+  IsWin7
+  IsWinServer2008R2
+  IsWin8
+  IsWinServer2012
+  IsWin81
 Donator:
   Jean-Fabien Connault
 --------------------------------------------------------------------------------
@@ -1899,6 +2152,10 @@ See also:
   IsWinServer2008
   IsWin7
   IsWinServer2008R2
+  IsWin8
+  IsWinServer2012
+  IsWin81
+  IsWinServer2012R2
 Donator:
   Marcel van Brakel
 Contributors:

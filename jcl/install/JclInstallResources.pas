@@ -16,9 +16,9 @@
 { Copyright (C) of Petr Vones. All Rights Reserved.                                                }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
-{   - Robert Rossmair - crossplatform & BCB support, refactoring                                   }
-{   - Florent Ouchet (outchy) - New installer core                                                 }
-{                             - Resource refactorings                                              }
+{   Robert Rossmair - crossplatform & BCB support, refactoring                                     }
+{   Florent Ouchet (outchy) - New installer core, resource refactorings                            }
+{   Jean-Fabien Connault (cycocrew)                                                                }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -162,7 +162,7 @@ resourcestring
   RsCaptionHelpHlp       = 'Add help file to IDE help system';
   RsCaptionHelpChm       = 'Add HTML help to the Tools menu';
   RsCaptionHelpHxS       = 'Register help 2.0 files';
-  RsCaptionHelpHxSPlugin = 'Plug help 2.0 files in the Borland help system';
+  RsCaptionHelpHxSPlugin = 'Plug help 2.0 files in the Embarcadero help system';
 
   // demos
   RsCaptionMakeDemos = 'Make demos';
