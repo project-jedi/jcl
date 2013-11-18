@@ -12,7 +12,7 @@
 {                                                                                                  }
 { The Original Code is JclFont.pas.                                                                }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is Jean-Fabien Connault.                              }
+{ The Initial Developer of the Original Code is Jean-Fabien Connault (cycocrew).                   }
 { Portions created by these individuals are Copyright (C) of these individuals.                    }
 { All Rights Reserved.                                                                             }
 {                                                                                                  }
@@ -51,7 +51,8 @@ uses
 
 procedure SetCaptionFont(const AObjectFont: TFont);
 begin
-  if IsWinVista or IsWinServer2008 or IsWin7 or IsWinServer2008R2 then
+  if IsWinVista or IsWinServer2008 or IsWin7 or IsWinServer2008R2 or
+    IsWin8 or IsWinServer2012 or IsWin81 or IsWinServer2012R2 then
   begin
     AObjectFont.Name := 'Segoe UI';
     AObjectFont.Size := 9;
@@ -72,7 +73,8 @@ end;
 
 procedure SetContentFont(const AObjectFont: TFont);
 begin
-  if IsWinVista or IsWinServer2008 or IsWin7 or IsWinServer2008R2 then
+  if IsWinVista or IsWinServer2008 or IsWin7 or IsWinServer2008R2 or
+    IsWin8 or IsWinServer2012 or IsWin81 or IsWinServer2012R2 then
   begin
     AObjectFont.Name := 'Calibri';
     AObjectFont.Size := 9;
