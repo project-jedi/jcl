@@ -240,11 +240,11 @@ begin
   Result := 0;
   case KillLevel of
     klNoSignal:
-      if not (GetWindowsVersion in [wvUnknown, wvWin95, wvWin95OSR2, wvWin98,
+      if not (GetWindowsVersion in [wvWin95, wvWin95OSR2, wvWin98,
         wvWin98SE, wvWinME]) then
         Result := EWX_FORCE;
     klTimeOut:
-      if not (GetWindowsVersion in [wvUnknown, wvWin95, wvWin95OSR2, wvWin98,
+      if not (GetWindowsVersion in [wvWin95, wvWin95OSR2, wvWin98,
         wvWin98SE, wvWinME, wvWinNT31, wvWinNT35, wvWinNT351, wvWinNT4]) then
         Result := EWX_FORCEIFHUNG;
   end;

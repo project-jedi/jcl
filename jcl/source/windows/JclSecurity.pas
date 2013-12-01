@@ -794,7 +794,7 @@ end;
 
 function IsUACEnabled: Boolean;
 begin
-  Result := (IsWinVista or IsWinServer2008 or IsWin7 or IsWinServer2008R2) and
+  Result := JclCheckWinVersion(6, 0) and
     RegReadBoolDef(HKLM, '\Software\Microsoft\Windows\CurrentVersion\Policies\System', 'EnableLUA', False);
 end;
 
@@ -811,7 +811,7 @@ var
   ResultLength: Cardinal;
   ATokenElevation: TOKEN_ELEVATION;
 begin
-  if (IsWinVista or IsWinServer2008 or IsWin7 or IsWinServer2008R2) then
+  if JclCheckWinVersion(6, 0) then
   begin
     TokenHandle := 0;
     if OpenProcessToken(GetCurrentProcess, TOKEN_QUERY, TokenHandle) then

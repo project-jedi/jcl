@@ -175,7 +175,7 @@ var
   OLE32: HMODULE;
 begin
   { DCOM is installed by default on all but Windows 95 }
-  Result := not (GetWindowsVersion in [wvUnknown, wvWin95, wvWin95OSR2]);
+  Result := not (GetWindowsVersion in [wvWin95, wvWin95OSR2]);
   if not Result then
   begin
     OLE32 := SafeLoadLibrary(pcOLE32);
