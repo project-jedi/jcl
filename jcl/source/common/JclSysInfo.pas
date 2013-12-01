@@ -322,6 +322,7 @@ function GetOpenGLVersion(const Win: THandle; out Version, Vendor: AnsiString): 
 function GetNativeSystemInfo(var SystemInfo: TSystemInfo): Boolean;
 function GetProcessorArchitecture: TProcessorArchitecture;
 function IsWindows64: Boolean;
+function JclCheckWinVersion(Major, Minor: Integer): Boolean;
 {$ENDIF MSWINDOWS}
 
 function GetOSVersionString: string;
@@ -2683,11 +2684,13 @@ function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
     ProcEntry: TProcessEntry32;
     NextProc: Boolean;
     FileName: string;
+    Win2kOrNewer: Boolean;
   begin
     SnapProcHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
     Result := (SnapProcHandle <> INVALID_HANDLE_VALUE);
     if Result then
     try
+      Win2kOrNewer := JclCheckWinVersion(5, 0); // Win2k or newer
       ProcEntry.dwSize := SizeOf(ProcEntry);
       NextProc := Process32First(SnapProcHandle, ProcEntry);
       while NextProc do
@@ -2700,9 +2703,7 @@ function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
         end
         else
         begin
-          if IsWin2k or IsWinXP or IsWin2003 or IsWin2003R2 or IsWinXP64 or
-            IsWinVista or IsWinServer2008 or IsWin7 or IsWinServer2008R2 or
-            IsWin8 or IsWinServer2012 or IsWin81 or IsWinServer2012R2 then
+          if Win2kOrNewer then
           begin
             FileName := ProcessFileName(ProcEntry.th32ProcessID);
             if FileName = '' then
@@ -3382,121 +3383,121 @@ begin
   // Remove (tm) in 'Windows (TM) Vista Ultimate'
   Edition := StringReplace(Edition, '(TM) ', '', [rfReplaceAll, rfIgnoreCase]);
 
-  if pos('Windows XP', Edition) = 1 then
+  if Pos('Windows XP', Edition) = 1 then
   begin
    // Windows XP Editions
-   if pos('Home Edition N', Edition) > 0 then
-      Result :=  weWinXPHomeN
+   if Pos('Home Edition N', Edition) > 0 then
+      Result := weWinXPHomeN
    else
-   if pos('Professional N', Edition) > 0 then
-      Result :=  weWinXPProN
+   if Pos('Professional N', Edition) > 0 then
+      Result := weWinXPProN
    else
-   if pos('Home Edition K', Edition) > 0 then
-      Result :=  weWinXPHomeK
+   if Pos('Home Edition K', Edition) > 0 then
+      Result := weWinXPHomeK
    else
-   if pos('Professional K', Edition) > 0 then
-      Result :=  weWinXPProK
+   if Pos('Professional K', Edition) > 0 then
+      Result := weWinXPProK
    else
-   if pos('Home Edition KN', Edition) > 0 then
-      Result :=  weWinXPHomeKN
+   if Pos('Home Edition KN', Edition) > 0 then
+      Result := weWinXPHomeKN
    else
-   if pos('Professional KN', Edition) > 0 then
-      Result :=  weWinXPProKN
+   if Pos('Professional KN', Edition) > 0 then
+      Result := weWinXPProKN
    else
-   if pos('Home', Edition) > 0 then
-      Result :=  weWinXPHome
+   if Pos('Home', Edition) > 0 then
+      Result := weWinXPHome
    else
-   if pos('Professional', Edition) > 0 then
-      Result :=  weWinXPPro
+   if Pos('Professional', Edition) > 0 then
+      Result := weWinXPPro
    else
-   if pos('Starter', Edition) > 0 then
-      Result :=  weWinXPStarter
+   if Pos('Starter', Edition) > 0 then
+      Result := weWinXPStarter
    else
-   if pos('Media Center', Edition) > 0 then
-      Result :=  weWinXPMediaCenter
+   if Pos('Media Center', Edition) > 0 then
+      Result := weWinXPMediaCenter
    else
-   if pos('Tablet', Edition) > 0 then
-      Result :=  weWinXPTablet;
+   if Pos('Tablet', Edition) > 0 then
+      Result := weWinXPTablet;
   end
   else
-  if (pos('Windows Vista', Edition) = 1) then
+  if (Pos('Windows Vista', Edition) = 1) then
   begin
    // Windows Vista Editions
-   if pos('Starter', Edition) > 0 then
+   if Pos('Starter', Edition) > 0 then
       Result := weWinVistaStarter
    else
-   if pos('Home Basic N', Edition) > 0 then
+   if Pos('Home Basic N', Edition) > 0 then
       Result := weWinVistaHomeBasicN
    else
-   if pos('Home Basic', Edition) > 0 then
+   if Pos('Home Basic', Edition) > 0 then
       Result := weWinVistaHomeBasic
    else
-   if pos('Home Premium', Edition) > 0 then
+   if Pos('Home Premium', Edition) > 0 then
       Result := weWinVistaHomePremium
    else
-   if pos('Business N', Edition) > 0 then
+   if Pos('Business N', Edition) > 0 then
       Result := weWinVistaBusinessN
    else
-   if pos('Business', Edition) > 0 then
+   if Pos('Business', Edition) > 0 then
       Result := weWinVistaBusiness
    else
-   if pos('Enterprise', Edition) > 0 then
+   if Pos('Enterprise', Edition) > 0 then
       Result := weWinVistaEnterprise
    else
-   if pos('Ultimate', Edition) > 0 then
+   if Pos('Ultimate', Edition) > 0 then
       Result := weWinVistaUltimate;
   end
   else
-  if pos('Windows 7', Edition) = 1 then
+  if Pos('Windows 7', Edition) = 1 then
   begin
    // Windows 7 Editions
-   if pos('Starter', Edition) > 0 then
+   if Pos('Starter', Edition) > 0 then
       Result := weWin7Starter
    else
-   if pos('Home Basic', Edition) > 0 then
+   if Pos('Home Basic', Edition) > 0 then
       Result := weWin7HomeBasic
    else
-   if pos('Home Premium', Edition) > 0 then
+   if Pos('Home Premium', Edition) > 0 then
       Result := weWin7HomePremium
    else
-   if pos('Professional', Edition) > 0 then
+   if Pos('Professional', Edition) > 0 then
       Result := weWin7Professional
    else
-   if pos('Enterprise', Edition) > 0 then
+   if Pos('Enterprise', Edition) > 0 then
       Result := weWin7Enterprise
    else
-   if pos('Ultimate', Edition) > 0 then
+   if Pos('Ultimate', Edition) > 0 then
       Result := weWin7Ultimate;
   end
   else
-  if pos('Windows 8.1', Edition) = 1 then
+  if Pos('Windows 8.1', Edition) = 1 then
   begin
    // Windows 8.1 Editions
    if pos('Pro', Edition) > 0 then
       Result := weWin81Pro
    else
-   if pos('Enterprise', Edition) > 0 then
+   if Pos('Enterprise', Edition) > 0 then
       Result := weWin81Enterprise
    else
       Result := weWin81;
   end
   else
-  if pos('Windows 8', Edition) = 1 then
+  if Pos('Windows 8', Edition) = 1 then
   begin
    // Windows 8 Editions
-   if pos('Pro', Edition) > 0 then
+   if Pos('Pro', Edition) > 0 then
       Result := weWin8Pro
    else
-   if pos('Enterprise', Edition) > 0 then
+   if Pos('Enterprise', Edition) > 0 then
       Result := weWin8Enterprise
    else
       Result := weWin8;
   end
   else
-  if pos('Windows RT 8.1', Edition) = 1 then
+  if Pos('Windows RT 8.1', Edition) = 1 then
     Result := weWin81RT
   else
-  if pos('Windows RT', Edition) = 1 then
+  if Pos('Windows RT', Edition) = 1 then
     Result := weWin8RT;
 end;
 
@@ -3533,7 +3534,7 @@ begin
   begin
     if GetVersionEx(OSVersionInfo) then
     begin
-      if OSVersionInfo.wProductType  in [VER_NT_SERVER,VER_NT_DOMAIN_CONTROLLER] then
+      if OSVersionInfo.wProductType  in [VER_NT_SERVER, VER_NT_DOMAIN_CONTROLLER] then
       begin
         if (OSVersionInfo.wSuiteMask and VER_SUITE_DATACENTER) <> 0 then
           Result := ptDatacenterServer
@@ -3552,7 +3553,7 @@ begin
   begin
     if GetVersionEx(OSVersionInfo) then
     begin
-      if OSVersionInfo.wProductType in [VER_NT_SERVER,VER_NT_DOMAIN_CONTROLLER] then
+      if OSVersionInfo.wProductType in [VER_NT_SERVER, VER_NT_DOMAIN_CONTROLLER] then
       begin
         if (OSVersionInfo.wSuiteMask and VER_SUITE_DATACENTER) = VER_SUITE_DATACENTER then
           Result := ptDatacenterServer
@@ -3571,31 +3572,30 @@ begin
     end;
   end
   else
-  if IsWinXP or IsWinVista or IsWin7 or IsWin8 or IsWin81 then // workstation
+  if JclCheckWinVersion(5, 1) then // WinXP or newer
   begin
     if GetVersionEx(OSVersionInfo) then
     begin
-      if (OSVersionInfo.wProductType = VER_NT_WORKSTATION) then
+      //if IsWinXP or IsWinVista or IsWin7 or IsWin8 or IsWin81 then
+      if OSVersionInfo.wProductType = VER_NT_WORKSTATION then // workstation
       begin
         if (OSVersionInfo.wSuiteMask and VER_SUITE_PERSONAL) = VER_SUITE_PERSONAL then
           Result := ptPersonal
         else
           Result := ptProfessional;
+      end
+      else
+      //if IsWinServer2008 or IsWinServer2008R2 or IsWinServer2012 or IsWinServer2012R2 then
+      if OSVersionInfo.wProductType in [VER_NT_SERVER, VER_NT_DOMAIN_CONTROLLER] then // server
+      begin
+        if (OSVersionInfo.wSuiteMask and VER_SUITE_DATACENTER) = VER_SUITE_DATACENTER then
+          Result := ptDatacenterServer
+        else
+        if (OSVersionInfo.wSuiteMask and VER_SUITE_ENTERPRISE) = VER_SUITE_ENTERPRISE then
+          Result := ptEnterprise
+        else
+          Result := ptServer;
       end;
-    end;
-  end
-  else
-  if IsWinServer2008 or IsWinServer2008R2 or IsWinServer2012 or IsWinServer2012R2 then // server
-  begin
-    if OSVersionInfo.wProductType in [VER_NT_SERVER,VER_NT_DOMAIN_CONTROLLER] then
-    begin
-      if (OSVersionInfo.wSuiteMask and VER_SUITE_DATACENTER) = VER_SUITE_DATACENTER then
-        Result := ptDatacenterServer
-      else
-      if (OSVersionInfo.wSuiteMask and VER_SUITE_ENTERPRISE) = VER_SUITE_ENTERPRISE then
-        Result := ptEnterprise
-      else
-        Result := ptServer;
     end;
   end;
 
@@ -3741,29 +3741,29 @@ end;
 function GetWindowsProductString: string;
 begin
   Result := GetWindowsVersionString;
-  if (GetWindowsEditionString <> '') then
+  if GetWindowsEditionString <> '' then
     Result := Result + ' ' + GetWindowsEditionString;
 end;
 
 function NtProductTypeString: string;
 begin
   case NtProductType of
-   ptWorkStation:
-     Result := LoadResString(@RsProductTypeWorkStation);
-   ptServer:
-     Result := LoadResString(@RsProductTypeServer);
-   ptAdvancedServer:
-     Result := LoadResString(@RsProductTypeAdvancedServer);
-   ptPersonal:
-     Result := LoadResString(@RsProductTypePersonal);
-   ptProfessional:
-     Result := LoadResString(@RsProductTypeProfessional);
-   ptDatacenterServer:
-     Result := LoadResString(@RsProductTypeDatacenterServer);
-   ptEnterprise:
-     Result := LoadResString(@RsProductTypeEnterprise);
-   ptWebEdition:
-     Result := LoadResString(@RsProductTypeWebEdition);
+    ptWorkStation:
+      Result := LoadResString(@RsProductTypeWorkStation);
+    ptServer:
+      Result := LoadResString(@RsProductTypeServer);
+    ptAdvancedServer:
+      Result := LoadResString(@RsProductTypeAdvancedServer);
+    ptPersonal:
+      Result := LoadResString(@RsProductTypePersonal);
+    ptProfessional:
+      Result := LoadResString(@RsProductTypeProfessional);
+    ptDatacenterServer:
+      Result := LoadResString(@RsProductTypeDatacenterServer);
+    ptEnterprise:
+      Result := LoadResString(@RsProductTypeEnterprise);
+    ptWebEdition:
+      Result := LoadResString(@RsProductTypeWebEdition);
   else
     Result := '';
   end;
@@ -4060,6 +4060,17 @@ begin
   ASystemInfo.dwOemId := 0;
   GetNativeSystemInfo(ASystemInfo);
   Result := ASystemInfo.wProcessorArchitecture in [PROCESSOR_ARCHITECTURE_IA64,PROCESSOR_ARCHITECTURE_AMD64];
+end;
+
+function JclCheckWinVersion(Major, Minor: Integer): Boolean;
+begin
+  {$IFDEF RTL150_UP}
+  Result := CheckWin32Version(Major, Minor);
+  {$ELSE}
+  // Delphi 6 and older have a wrong implementation
+  Result := (Win32MajorVersion > Major) or
+            ((Win32MajorVersion = Major) and (Win32MinorVersion >= Minor));
+  {$ENDIF RTL150_UP}
 end;
 
 {$ENDIF MSWINDOWS}

@@ -1330,7 +1330,7 @@ begin
     RaiseLastOsError;
   CloseServiceHandle(Svc);
 
-  if (Description <> '') and (GetWindowsVersion >= wvWin2000) then
+  if (Description <> '') and JclCheckWinVersion(5, 0) then // Win2k or newer
     RegWriteString(HKEY_LOCAL_MACHINE, '\' + REGSTR_PATH_SERVICES + '\' + ServiceName,
       'Description', Description);
 
