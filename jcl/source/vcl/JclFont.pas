@@ -49,45 +49,47 @@ uses
   {$ENDIF ~HAS_UNITSCOPE}
   JclSysUtils, JclSysInfo;
 
+// Save Windows version that way we will only determine it once here.
+// Might be even better if this variable was declared in JclSysInfo since
+// it is determined there anyway at startup.
+var
+  WindowsVersion: TWindowsVersion;
+
 procedure SetCaptionFont(const AObjectFont: TFont);
 begin
-  if IsWinVista or IsWinServer2008 or IsWin7 or IsWinServer2008R2 then
-  begin
+  case WindowsVersion of
+    wvWin95..wvWinNT4:
+      begin
+        AObjectFont.Name := 'MS Sans Serif';
+        AObjectFont.Size := 8;
+      end;
+    wvWin2000..wvWin2003R2:
+      begin
+        AObjectFont.Name := 'Tahoma';
+        AObjectFont.Size := 8;
+      end;
+  else
     AObjectFont.Name := 'Segoe UI';
     AObjectFont.Size := 9;
-  end
-  else if IsWinXP or IsWin2k or IsWin2003 then
-  begin
-    // MS Shell Dlg 2
-    AObjectFont.Name := 'Tahoma';
-    AObjectFont.Size := 8;
-  end
-  else
-  begin
-    // MS Shell Dlg
-    AObjectFont.Name := 'MS Sans Serif';
-    AObjectFont.Size := 8;
   end;
 end;
 
 procedure SetContentFont(const AObjectFont: TFont);
 begin
-  if IsWinVista or IsWinServer2008 or IsWin7 or IsWinServer2008R2 then
-  begin
+  case WindowsVersion of
+    wvWin95..wvWinNT4:
+      begin
+        AObjectFont.Name := 'MS Sans Serif';
+        AObjectFont.Size := 8;
+      end;
+    wvWin2000..wvWin2003R2:
+      begin
+        AObjectFont.Name := 'Verdana';
+        AObjectFont.Size := 8;
+      end;
+  else
     AObjectFont.Name := 'Calibri';
     AObjectFont.Size := 9;
-  end
-  else if IsWinXP or IsWin2k or IsWin2003 then
-  begin
-    // MS Shell Dlg 2
-    AObjectFont.Name := 'Verdana';
-    AObjectFont.Size := 8;
-  end
-  else
-  begin
-    // MS Shell Dlg
-    AObjectFont.Name := 'MS Sans Serif';
-    AObjectFont.Size := 8;
   end;
 end;
 
@@ -121,4 +123,6 @@ begin
   end;
 end;
 
+initialization
+  WindowsVersion := GetWindowsVersion;
 end.
