@@ -1213,7 +1213,7 @@ begin
   Result := 0;
   Pointer(P) := nil;
 
-  if not CheckWin32Version(5, 0) and ((Name = '') or (Pos('\', Name) > 0)) then
+  if not JclCheckWinVersion(5, 0) and ((Name = '') or (Pos('\', Name) > 0)) then
     raise ESharedMemError.CreateResFmt(@RsInvalidMMFName, [Name]);
 
   {$IFDEF THREADSAFE}
