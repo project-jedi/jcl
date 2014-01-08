@@ -5133,6 +5133,7 @@ begin
 
   AItem := GetItemClass.Create(Self);
   try
+    AItem.Directory := True;
     AItem.PackedName := PackedName;
     AItem.FileName := DirName;
   except
