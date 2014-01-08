@@ -8804,6 +8804,8 @@ var
   OutStream: IOutStream;
   UpdateCallback: IArchiveUpdateCallback;
   SplitStream: TJclDynamicSplitStream;
+  Index: Integer;
+  Volume: TJclCompressionVolume;
 begin
   CheckNotCompressing;
   CheckNotDecompressing;
@@ -8818,7 +8820,24 @@ begin
 
     SetSevenzipArchiveCompressionProperties(Self, OutArchive);
 
-    OutArchive.UpdateItems(OutStream, ItemCount, UpdateCallback);
+    ReplaceVolumes := True;
+    try
+      OutArchive.UpdateItems(OutStream, ItemCount, UpdateCallback);
+    except
+      ReplaceVolumes := False;
+      // release reference to volume streams
+      OutStream := nil;
+      // Modifying the archive failed; reset volumes to their original state
+      for Index := 0 to FVolumes.Count - 1 do
+      begin
+        Volume := TJclCompressionVolume(FVolumes.Items[Index]);
+        Assert(Volume.OwnsTmpStream); 
+        FreeAndNil(Volume.FTmpStream);
+        FileDelete(Volume.TmpFileName);
+        Volume.FTmpFileName := '';
+      end;
+      raise
+    end;
   finally
     FCompressing := False;
     // release reference to volume streams
