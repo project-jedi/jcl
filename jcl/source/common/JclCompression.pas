@@ -599,7 +599,7 @@ type
   TJclCompressionItemProperty = (ipPackedName, ipPackedSize, ipPackedExtension,
     ipFileSize, ipFileName, ipAttributes, ipCreationTime, ipLastAccessTime,
     ipLastWriteTime, ipComment, ipHostOS, ipHostFS, ipUser, ipGroup, ipCRC,
-    ipStream, ipMethod, ipEncrypted);
+    ipStream, ipMethod, ipEncrypted, ipPosixAttrib, ipLink);
   TJclCompressionItemProperties = set of TJclCompressionItemProperty;
 
   TJclCompressionItemKind = (ikFile, ikDirectory);
@@ -642,6 +642,8 @@ type
     FCRC: Cardinal;
     FMethod: WideString;
     FEncrypted: Boolean;
+    FPosixAttrib: Cardinal;
+    FLink: WideString;
     function WideChangeFileExt(const AFileName, AExtension: WideString): WideString;
     function WideExtractFileExt(const AFileName: WideString): WideString;
     function WideExtractFileName(const AFileName: WideString): WideString;
@@ -667,12 +669,14 @@ type
     function GetItemKind: TJclCompressionItemKind;
     function GetLastAccessTime: TFileTime;
     function GetLastWriteTime: TFileTime;
+    function GetLink: WideString;
     function GetMethod: WideString;
     function GetNestedArchiveName: WideString; virtual;
     function GetNestedArchiveStream: TStream; virtual;
     function GetPackedExtension: WideString;
     function GetPackedName: WideString;
     function GetPackedSize: Int64;
+    function GetPosixAttrib: Cardinal;
     function GetStream: TStream;
     function GetUser: WideString;
     // property setters
@@ -689,10 +693,12 @@ type
     procedure SetHostOS(const Value: WideString);
     procedure SetLastAccessTime(const Value: TFileTime);
     procedure SetLastWriteTime(const Value: TFileTime);
+    procedure SetLink(const Value: WideString);
     procedure SetMethod(const Value: WideString);
     procedure SetPackedExtension(const Value: WideString);
     procedure SetPackedName(const Value: WideString);
     procedure SetPackedSize(const Value: Int64);
+    procedure SetPosixAttrib(Value: Cardinal);
     procedure SetStream(const Value: TStream);
     procedure SetUser(const Value: WideString);
   public
@@ -714,10 +720,12 @@ type
     property Kind: TJclCompressionItemKind read GetItemKind;
     property LastAccessTime: TFileTime read GetLastAccessTime write SetLastAccessTime;
     property LastWriteTime: TFileTime read GetLastWriteTime write SetLastWriteTime;
+    property Link: WideString read GetLink write SetLink;
     property Method: WideString read GetMethod write SetMethod;
     property PackedExtension: WideString read GetPackedExtension write SetPackedExtension;
     property PackedName: WideString read GetPackedName write SetPackedName;
     property PackedSize: Int64 read GetPackedSize write SetPackedSize;
+    property PosixAttrib: Cardinal read GetPosixAttrib write SetPosixAttrib;
     property User: WideString read GetUser write SetUser;
     // source or destination
     property FileName: TFileName read GetFileName write SetFileName;
@@ -3878,6 +3886,12 @@ begin
   Result := FLastWriteTime;
 end;
 
+function TJclCompressionItem.GetLink: WideString;
+begin
+  CheckGetProperty(ipLink);
+  Result := FLink;
+end;
+
 function TJclCompressionItem.GetMethod: WideString;
 begin
   CheckGetProperty(ipMethod);
@@ -3959,6 +3973,12 @@ function TJclCompressionItem.GetPackedSize: Int64;
 begin
   CheckGetProperty(ipPackedSize);
   Result := FPackedSize;
+end;
+
+function TJclCompressionItem.GetPosixAttrib: Cardinal;
+begin
+  CheckGetProperty(ipPosixAttrib);
+  Result := FPosixAttrib;
 end;
 
 function TJclCompressionItem.GetStream: TStream;
@@ -4115,6 +4135,14 @@ begin
   Include(FValidProperties, ipLastWriteTime);
 end;
 
+procedure TJclCompressionItem.SetLink(const Value: WideString);
+begin
+  CheckSetProperty(ipLink);
+  FLink := Value;
+  Include(FModifiedProperties, ipLink);
+  Include(FValidProperties, ipLink);
+end;
+
 procedure TJclCompressionItem.SetMethod(const Value: WideString);
 begin
   CheckSetProperty(ipMethod);
@@ -4168,6 +4196,14 @@ begin
   FPackedSize := Value;
   Include(FModifiedProperties, ipPackedSize);
   Include(FValidProperties, ipPackedSize);
+end;
+
+procedure TJclCompressionItem.SetPosixAttrib(Value: Cardinal);
+begin
+  CheckSetProperty(ipPosixAttrib);
+  FPosixAttrib := Value;
+  Include(FModifiedProperties, ipPosixAttrib);
+  Include(FValidProperties, ipPosixAttrib);
 end;
 
 procedure TJclCompressionItem.SetStream(const Value: TStream);
@@ -6105,6 +6141,8 @@ begin
   Get7zCardinalProp(AInArchive, ItemIndex, kpidCRC, AItem.SetCRC);
   Get7zWideStringProp(AInArchive, ItemIndex, kpidMethod, AItem.SetMethod);
   Get7zBoolProp(AInArchive, ItemIndex, kpidEncrypted, AItem.SetEncrypted);
+  Get7zCardinalProp(AInArchive, ItemIndex, kpidPosixAttrib, AItem.SetPosixAttrib);
+  Get7zWideStringProp(AInArchive, ItemIndex, kpidLink, AItem.SetLink);
 
   // reset modified flags
   AItem.ModifiedProperties := [];
@@ -6515,9 +6553,14 @@ begin
     // kpidSectorSize: ;
     kpidPosixAttrib:
       begin
-        Value.vt := VT_EMPTY;
+        Value.vt := VT_UI4;
+        Value.ulVal := AItem.PosixAttrib;
       end;
-    // kpidLink: ;
+    kpidLink:
+      begin
+        Value.vt := VT_BSTR;
+        Value.bstrVal := SysAllocString(PWideChar(AItem.Link));
+      end;
     // kpidTotalSize: ;
     // kpidFreeSpace: ;
     // kpidClusterSize: ;
