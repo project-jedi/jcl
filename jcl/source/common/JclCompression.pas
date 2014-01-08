@@ -601,6 +601,7 @@ type
     var AVolumeMaxSize: Int64) of object;
   TJclCompressionProgressEvent = procedure(Sender: TObject; const Value, MaxValue: Int64) of object;
   TJclCompressionRatioEvent = procedure(Sender: TObject; const InSize, OutSize: Int64) of object;
+  TJclCompressionGetPasswordEvent = function (Sender: TObject; var Password: WideString): Boolean of object;
 
   TJclCompressionItemProperty = (ipPackedName, ipPackedSize, ipPackedExtension,
     ipFileSize, ipFileName, ipAttributes, ipCreationTime, ipLastAccessTime,
@@ -780,6 +781,7 @@ type
   { TJclCompressionArchive is not ref-counted }
   TJclCompressionArchive = class(TJclSafecallInterfacedObject, IInterface)
   private
+    FOnOpenPassword: TJclCompressionGetPasswordEvent;
     FOnProgress: TJclCompressionProgressEvent;
     FOnRatio: TJclCompressionRatioEvent;
     FOnVolume: TJclCompressionVolumeEvent;
@@ -805,6 +807,7 @@ type
     function InternalOpenStream(const FileName: TFileName): TStream;
     function TranslateItemPath(const ItemPath, OldBase, NewBase: WideString): WideString;
 
+    function DoGetOpenPassword: Boolean;
     function DoProgress(const Value, MaxValue: Int64): Boolean;
     function DoRatio(const InSize, OutSize: Int64): Boolean;
     function NeedStream(Index: Integer): TStream;
@@ -862,6 +865,7 @@ type
     property VolumeIndexOffset: Integer read FVolumeIndexOffset write FVolumeIndexOffset;
 
     property CurrentItemIndex: Integer read FCurrentItemIndex; // valid during OnProgress
+    property OnOpenPassword: TJclCompressionGetPasswordEvent read FOnOpenPassword write FOnOpenPassword;
     property OnProgress: TJclCompressionProgressEvent read FOnProgress write FOnProgress;
     property OnRatio: TJclCompressionRatioEvent read FOnRatio write FOnRatio;
 
@@ -4923,6 +4927,14 @@ begin
   // override to customize
 end;
 
+function TJclCompressionArchive.DoGetOpenPassword: Boolean;
+begin
+  if Assigned(FOnOpenPassword) then
+    Result := FOnOpenPassword(Self, FPassword)
+  else
+    Result := True;
+end;
+
 function TJclCompressionArchive.DoProgress(const Value, MaxValue: Int64): Boolean;
 begin
   if Assigned(FOnProgress) then
@@ -7449,6 +7461,8 @@ end;
 
 procedure TJclSevenzipOpenCallback.CryptoGetTextPassword(out Password: TBStr);
 begin
+  if not FArchive.DoGetOpenPassword then
+    raise EJclCompressionCancelled.CreateRes(@RsCompressionUserAbort);
   Password := SysAllocString(PWideChar(FArchive.Password));
 end;
 
