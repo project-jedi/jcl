@@ -149,7 +149,7 @@ type
   // "23170F69-40C1-278A-0000-000300xx0000"
   ISequentialInStream = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000300010000}']
-    function Read(Data: Pointer; Size: Cardinal; ProcessedSize: PCardinal): HRESULT; stdcall;
+    procedure Read(Data: Pointer; Size: Cardinal; ProcessedSize: PCardinal); safecall;
     {Out: if size != 0, return_value = S_OK and (*processedSize == 0),
      then there are no more bytes in stream.
      if (size > 0) && there are bytes in stream,
@@ -160,7 +160,7 @@ type
 
   ISequentialOutStream = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000300020000}']
-    function Write(Data: Pointer; Size: Cardinal; ProcessedSize: PCardinal): HRESULT; stdcall;
+    procedure Write(Data: Pointer; Size: Cardinal; ProcessedSize: PCardinal); safecall;
     {if (size > 0) this function must write at least 1 byte.
      This function is allowed to write less than "size".
      You must call Write function in loop, if you need to write exact amount of data}
@@ -168,23 +168,23 @@ type
 
   IInStream = interface(ISequentialInStream)
     ['{23170F69-40C1-278A-0000-000300030000}']
-    function Seek(Offset: Int64; SeekOrigin: Cardinal; NewPosition: PInt64): HRESULT; stdcall;
+    procedure Seek(Offset: Int64; SeekOrigin: Cardinal; NewPosition: PInt64); safecall;
   end;
 
   IOutStream = interface(ISequentialOutStream)
     ['{23170F69-40C1-278A-0000-000300040000}']
-    function Seek(Offset: Int64; SeekOrigin: Cardinal; NewPosition: PInt64): HRESULT; stdcall;
-    function SetSize(NewSize: Int64): HRESULT; stdcall;
+    procedure Seek(Offset: Int64; SeekOrigin: Cardinal; NewPosition: PInt64); safecall;
+    procedure SetSize(NewSize: Int64); safecall;
   end;
 
   IStreamGetSize = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000300060000}']
-    function GetSize(Size: PInt64): HRESULT; stdcall;
+    procedure GetSize(out Size: Int64); safecall;
   end;
 
   IOutStreamFlush = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000300070000}']
-    function Flush: HRESULT; stdcall;
+    procedure Flush; safecall;
   end;
 
 // PropID.h
@@ -280,13 +280,13 @@ const
 type
   ICompressProgressInfo = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000400040000}']
-    function SetRatioInfo(InSize: PInt64; OutSize: PInt64): HRESULT; stdcall;
+    procedure SetRatioInfo(InSize: PInt64; OutSize: PInt64); safecall;
   end;
 
   ICompressCoder = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000400050000}']
-    function Code(InStream: ISequentialInStream; OutStream: ISequentialOutStream;
-      InSize, OutSize: PInt64; Progress: ICompressProgressInfo): HRESULT; stdcall;
+    procedure Code(InStream: ISequentialInStream; OutStream: ISequentialOutStream;
+      InSize, OutSize: PInt64; Progress: ICompressProgressInfo); safecall;
   end;
 
   PISequentialInStream = ^ISequentialInStream;
@@ -294,9 +294,9 @@ type
 
   ICompressCoder2 = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000400180000}']
-    function Code(InStreams: PISequentialInStream; InSizes: JclBase.PPInt64; NumInStreams: Cardinal;
+    procedure Code(InStreams: PISequentialInStream; InSizes: JclBase.PPInt64; NumInStreams: Cardinal;
       OutStreams: PISequentialOutStream; OutSizes: JclBase.PPInt64; NumOutStreams: Cardinal;
-      Progress: ICompressProgressInfo): HRESULT; stdcall;
+      Progress: ICompressProgressInfo); safecall;
   end;
 
 const
@@ -319,60 +319,60 @@ const
 type
   ICompressSetCoderProperties = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000400200000}']
-    function SetCoderProperties(PropIDs: PPropID; Properties: PPropVariant;
-      NumProperties: Cardinal): HRESULT; stdcall;
+    procedure SetCoderProperties(PropIDs: PPropID; Properties: PPropVariant;
+      NumProperties: Cardinal); safecall;
   end;
 
   ICompressSetDecoderProperties2 = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000400220000}']
-    function SetDecoderProperties2(Data: PByte; Size: Cardinal): HRESULT; stdcall;
+    procedure SetDecoderProperties2(Data: PByte; Size: Cardinal); safecall;
   end;
 
   ICompressWriteCoderProperties = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000400230000}']
-    function WriteCoderProperties(OutStream: ISequentialOutStream): HRESULT; stdcall;
+    procedure WriteCoderProperties(OutStream: ISequentialOutStream); safecall;
   end;
 
   ICompressGetInStreamProcessedSize = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000400240000}']
-    function GetInStreamProcessedSize(Value: PInt64): HRESULT; stdcall;
+    procedure GetInStreamProcessedSize(out Value: Int64); safecall;
   end;
 
   ICompressSetCoderMt = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000400250000}']
-    function SetNumberOfThreads(NumThreads: Cardinal): HRESULT; stdcall;
+    procedure SetNumberOfThreads(NumThreads: Cardinal); safecall;
   end;
 
   ICompressGetSubStreamSize = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000400300000}']
-    function GetSubStreamSize(SubStream: Int64; out Value: Int64): HRESULT; stdcall;
+    procedure GetSubStreamSize(SubStream: Int64; out Value: Int64); safecall;
   end;
 
   ICompressSetInStream = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000400310000}']
-    function SetInStream(InStream: ISequentialInStream): HRESULT; stdcall;
-    function ReleaseInStream: HRESULT; stdcall;
+    procedure SetInStream(InStream: ISequentialInStream); safecall;
+    procedure ReleaseInStream; safecall;
   end;
 
   ICompressSetOutStream = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000400320000}']
-    function SetOutStream(OutStream: ISequentialOutStream): HRESULT; stdcall;
-    function ReleaseOutStream: HRESULT; stdcall;
+    procedure SetOutStream(OutStream: ISequentialOutStream); safecall;
+    procedure ReleaseOutStream; safecall;
   end;
 
   ICompressSetInStreamSize = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000400330000}']
-    function SetInStreamSize(InSize: PInt64): HRESULT; stdcall;
+    procedure SetInStreamSize(InSize: PInt64); safecall;
   end;
 
   ICompressSetOutStreamSize = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000400340000}']
-    function SetOutStreamSize(OutSize: PInt64): HRESULT; stdcall;
+    procedure SetOutStreamSize(OutSize: PInt64); safecall;
   end;
 
   ICompressFilter = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000400400000}']
-    function Init: HRESULT; stdcall;
+    procedure Init; safecall;
     function Filter(Data: PByte; Size: Cardinal): Cardinal; stdcall;
     // Filter return outSize (UInt32)
     // if (outSize <= size): Filter have converted outSize bytes
@@ -383,31 +383,31 @@ type
 
   ICompressCodecsInfo = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000400600000}']
-    function GetNumberOfMethods(NumMethods: PCardinal): HRESULT; stdcall;
-    function GetProperty(Index: Cardinal; PropID: TPropID; out Value: TPropVariant): HRESULT; stdcall;
-    function CreateDecoder(Index: Cardinal; IID: PGUID; out Decoder): HRESULT; stdcall;
-    function CreateEncoder(Index: Cardinal; IID: PGUID; out Coder): HRESULT; stdcall;
+    procedure GetNumberOfMethods(out NumMethods: Cardinal); safecall;
+    procedure GetProperty(Index: Cardinal; PropID: TPropID; out Value: TPropVariant); safecall;
+    procedure CreateDecoder(Index: Cardinal; IID: PGUID; out Decoder); safecall;
+    procedure CreateEncoder(Index: Cardinal; IID: PGUID; out Coder); safecall;
   end;
 
   ISetCompressCodecsInfo = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000400610000}']
-    function SetCompressCodecsInfo(CompressCodecsInfo: ICompressCodecsInfo): HRESULT; stdcall;
+    procedure SetCompressCodecsInfo(CompressCodecsInfo: ICompressCodecsInfo); safecall;
   end;
 
   ICryptoProperties = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000400800000}']
-    function SetKey(Data: PByte; Size: Cardinal): HRESULT; stdcall;
-    function SetInitVector(Data: PByte; Size: Cardinal): HRESULT; stdcall;
+    procedure SetKey(Data: PByte; Size: Cardinal); safecall;
+    procedure SetInitVector(Data: PByte; Size: Cardinal); safecall;
   end;
 
   ICryptoSetPassword = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000400900000}']
-    function CryptoSetPassword(Data: PByte; Size: Cardinal): HRESULT; stdcall;
+    procedure CryptoSetPassword(Data: PByte; Size: Cardinal); safecall;
   end;
 
   ICryptoSetCRC = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000400A00000}']
-    function CryptoSetCRC(crc: Cardinal): HRESULT; stdcall;
+    procedure CryptoSetCRC(crc: Cardinal); safecall;
   end;
 
 const
@@ -425,8 +425,8 @@ const
 type
   IProgress = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000000050000}']
-    function SetTotal(Total: Int64): HRESULT; stdcall;
-    function SetCompleted(CompleteValue: PInt64): HRESULT; stdcall;
+    procedure SetTotal(Total: Int64); safecall;
+    procedure SetCompleted(CompleteValue: PInt64); safecall;
   end;
   
 // IArchive.h
@@ -464,100 +464,101 @@ type
   // "23170F69-40C1-278A-0000-000600xx0000"
   IArchiveOpenCallback = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000600100000}']
-    function SetTotal(Files: PInt64; Bytes: PInt64): HRESULT; stdcall;
-    function SetCompleted(Files: PInt64; Bytes: PInt64): HRESULT; stdcall;
+    procedure SetTotal(Files: PInt64; Bytes: PInt64); safecall;
+    procedure SetCompleted(Files: PInt64; Bytes: PInt64); safecall;
   end;
 
   IArchiveExtractCallback = interface(IProgress)
     ['{23170F69-40C1-278A-0000-000600200000}']
     function GetStream(Index: Cardinal; out OutStream: ISequentialOutStream;
       askExtractMode: Cardinal): HRESULT; stdcall;
-    // GetStream OUT: S_OK - OK, S_FALSE - skeep this file
-    function PrepareOperation(askExtractMode: Cardinal): HRESULT; stdcall;
-    function SetOperationResult(resultEOperationResult: Integer): HRESULT; stdcall;
+    // GetStream OUT: S_OK - OK, S_FALSE - skip this file
+    procedure PrepareOperation(askExtractMode: Cardinal); safecall;
+    procedure SetOperationResult(resultEOperationResult: Integer); safecall;
   end;
 
   IArchiveOpenVolumeCallback = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000600300000}']
-    function GetProperty(PropID: TPropID; out Value: TPropVariant): HRESULT; stdcall;
-    function GetStream(Name: PWideChar; out InStream: IInStream): HRESULT; stdcall;
+    procedure GetProperty(PropID: TPropID; out Value: TPropVariant); safecall;
+    procedure GetStream(Name: PWideChar; out InStream: IInStream); safecall;
   end;
 
   IInArchiveGetStream = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000600400000}']
-    function GetStream(Index: Cardinal; out Stream: ISequentialInStream): HRESULT; stdcall;
+    procedure GetStream(Index: Cardinal; out Stream: ISequentialInStream);
   end;
 
   IArchiveOpenSetSubArchiveName = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000600500000}']
-    function SetSubArchiveName(Name: PWideChar): HRESULT; stdcall;
+    procedure SetSubArchiveName(Name: PWideChar); safecall;
   end;
 
   IInArchive = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000600600000}']
-    function Open(Stream: IInStream; MaxCheckStartPosition: PInt64;
-       OpenArchiveCallback: IArchiveOpenCallback): HRESULT; stdcall;
-    function Close: HRESULT; stdcall;
-    function GetNumberOfItems(NumItems: PCardinal): HRESULT; stdcall;
-    function GetProperty(Index: Cardinal; PropID: TPropID;
-      var Value: TPropVariant): HRESULT; stdcall;
-    function Extract(Indices: PCardinal; NumItems: Cardinal;
-      TestMode: Integer; ExtractCallback: IArchiveExtractCallback): HRESULT; stdcall;
+    procedure Open(Stream: IInStream; MaxCheckStartPosition: PInt64;
+       OpenArchiveCallback: IArchiveOpenCallback); safecall;
+    procedure Close; safecall;
+    procedure GetNumberOfItems(out NumItems: Cardinal); safecall;
+    procedure GetProperty(Index: Cardinal; PropID: TPropID;
+      var Value: TPropVariant); safecall;
+    procedure Extract(Indices: PCardinal; NumItems: Cardinal;
+      TestMode: Integer; ExtractCallback: IArchiveExtractCallback); safecall;
     // indices must be sorted
     // numItems = 0xFFFFFFFF means all files
     // testMode != 0 means "test files operation"
-    function GetArchiveProperty(PropID: TPropID; out Value: TPropVariant): HRESULT; stdcall;
+    procedure GetArchiveProperty(PropID: TPropID; out Value: TPropVariant); safecall;
 
-    function GetNumberOfProperties(NumProperties: PCardinal): HRESULT; stdcall;
-    function GetPropertyInfo(Index: Cardinal; out Name: TBStr; out PropID: TPropID;
-      out VarType: TVarType): HRESULT; stdcall;
+    procedure GetNumberOfProperties(out NumProperties: Cardinal); safecall;
+    procedure GetPropertyInfo(Index: Cardinal; out Name: TBStr; out PropID: TPropID;
+      out VarType: TVarType); safecall;
 
-    function GetNumberOfArchiveProperties(NumProperties: PCardinal): HRESULT; stdcall;
-    function GetArchivePropertyInfo(Index: Cardinal; out Name: TBStr; out PropID: TPropID;
-      out VarType: TVarType): HRESULT; stdcall;
+    procedure GetNumberOfArchiveProperties(out NumProperties: Cardinal); safecall;
+    procedure GetArchivePropertyInfo(Index: Cardinal; out Name: TBStr; out PropID: TPropID;
+      out VarType: TVarType); safecall;
   end;
 
   IArchiveUpdateCallback = interface(IProgress)
     ['{23170F69-40C1-278A-0000-000600800000}']
-    function GetUpdateItemInfo(Index: Cardinal;
+    procedure GetUpdateItemInfo(Index: Cardinal;
       NewData: PInteger;        // 1 - new data, 0 - old data
       NewProperties: PInteger;  // 1 - new properties, 0 - old properties
       IndexInArchive: PCardinal // -1 if there is no in archive, or if doesn't matter
-      ): HRESULT; stdcall;
-    function GetProperty(Index: Cardinal; PropID: TPropID; out Value: TPropVariant): HRESULT; stdcall;
-    function GetStream(Index: Cardinal; out InStream: ISequentialInStream): HRESULT; stdcall;
-    function SetOperationResult(OperationResult: Integer): HRESULT; stdcall;
+      ); safecall;
+    procedure GetProperty(Index: Cardinal; PropID: TPropID; out Value: TPropVariant); safecall;
+    procedure GetStream(Index: Cardinal; out InStream: ISequentialInStream); safecall; //TODO: property
+    procedure SetOperationResult(OperationResult: Integer); safecall;
   end;
 
   IArchiveUpdateCallback2 = interface(IArchiveUpdateCallback)
     ['{23170F69-40C1-278A-0000-000600820000}']
-    function GetVolumeSize(Index: Cardinal; Size: PInt64): HRESULT; stdcall;
-    function GetVolumeStream(Index: Cardinal; out VolumeStream: ISequentialOutStream): HRESULT; stdcall;
+    function GetVolumeSize(Index: Cardinal; out Size: Int64): HRESULT;
+    // GetVolumeSize OUT: S_OK - Size is valid, S_FALSE - don't split
+    procedure GetVolumeStream(Index: Cardinal; out VolumeStream: ISequentialOutStream); safecall;
   end;
 
   IOutArchive = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000600A00000}']
-    function UpdateItems(OutStream: ISequentialOutStream; NumItems: Cardinal;
-      UpdateCallback: IArchiveUpdateCallback): HRESULT; stdcall;
-    function GetFileTimeType(Type_: PCardinal): HRESULT; stdcall;
+    procedure UpdateItems(OutStream: ISequentialOutStream; NumItems: Cardinal;
+      UpdateCallback: IArchiveUpdateCallback); safecall;
+    procedure GetFileTimeType(out Type_: Cardinal); safecall;
   end;
 
   ISetProperties = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000600030000}']
-    function SetProperties(Names: PPWideChar; Values: PPropVariant; NumProperties: Integer): HRESULT; stdcall;
+    procedure SetProperties(Names: PPWideChar; Values: PPropVariant; NumProperties: Integer); safecall;
   end;
 
 // IPassword.h
 type
   ICryptoGetTextPassword = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000500100000}']
-    function CryptoGetTextPassword(password: PBStr): HRESULT; stdcall;
+    procedure CryptoGetTextPassword(out Password: TBStr); safecall;
   end;
 
   ICryptoGetTextPassword2 = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000500110000}']
-    function CryptoGetTextPassword2(PasswordIsDefined: PInteger;
-      Password: PBStr): HRESULT; stdcall;
+    procedure CryptoGetTextPassword2(out PasswordIsDefined: LongBool;
+      out Password: TBStr); safecall;
   end;
 
 // ZipHandlerOut.cpp
