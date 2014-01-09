@@ -5059,19 +5059,21 @@ end;
 function TJclCompressionArchive.NeedStreamMaxSize(Index: Integer): Int64;
 var
   AVolume: TJclCompressionVolume;
+  LVolumeMaxSize: Int64;
 begin
   if (Index <> FVolumeIndex) then
   begin
     AVolume := nil;
-    if (Index >= 0) and (Index < FVolumes.Count) then
-    begin
+    if (Index >= 0) and (Index < FVolumes.Count) then begin
       AVolume := TJclCompressionVolume(FVolumes.Items[Index]);
-      FVolumeMaxSize := AVolume.VolumeMaxSize;
-    end;
+      LVolumeMaxSize := AVolume.VolumeMaxSize;
+    end
+    else
+      LVolumeMaxSize := FVolumeMaxSize;
     if Assigned(FOnVolumeMaxSize) then
-      FOnVolumeMaxSize(Self, Index, FVolumeMaxSize);
+      FOnVolumeMaxSize(Self, Index, LVolumeMaxSize);
     if Assigned(AVolume) then
-      AVolume.FVolumeMaxSize := FVolumeMaxSize
+      AVolume.FVolumeMaxSize := LVolumeMaxSize
     else
     begin
       while FVolumes.Count < Index do
@@ -5082,13 +5084,16 @@ begin
         AVolume.FFileName := Format(VolumeFileNameMask, [Index + VolumeIndexOffset]);
         AVolume.FStream := nil;
         AVolume.FOwnsStream := True;
-        AVolume.FVolumeMaxSize := FVolumeMaxSize;
+        AVolume.FVolumeMaxSize := LVolumeMaxSize;
       end
       else
-        FVolumes.Add(TJclCompressionVolume.Create(nil, nil, True, True, Format(VolumeFileNameMask, [Index + VolumeIndexOffset]), '', FVolumeMaxSize));
+        FVolumes.Add(TJclCompressionVolume.Create(nil, nil, True, True, Format(VolumeFileNameMask, [Index + VolumeIndexOffset]), '', LVolumeMaxSize));
     end;
   end;
-  Result := FVolumeMaxSize;
+  if (Index >= 0) and (Index < FVolumes.Count) then
+    Result := Volumes[Index].VolumeMaxSize
+  else
+    Result := FVolumeMaxSize;
 end;
 
 procedure TJclCompressionArchive.ReleaseVolumes;
