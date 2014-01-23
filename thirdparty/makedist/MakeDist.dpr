@@ -119,7 +119,10 @@ end;
 
 begin
   if (ParamPos('x') > 0) or (ParamPos('h') > 0) or (ParamPos('?') > 0) then
-    ExecuteCommandLine
+  begin
+    ExecuteCommandLine;
+    FreeConsole;
+  end
   else
   begin
     Application.Initialize;
