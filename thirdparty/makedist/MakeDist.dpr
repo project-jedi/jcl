@@ -26,6 +26,11 @@ begin
     WriteLn(Text);
 end;
 
+function AttachConsole(dwProcessId: DWORD): BOOL; stdcall; external kernel32 name 'AttachConsole';
+
+const
+  ATTACH_PARENT_PROCESS = DWORD(-1);
+
 procedure ExecuteCommandLine;
 var
   ConfigurationPos, UnselectAllPos, UnselectPos, SelectPos, Index: Integer;
@@ -33,7 +38,8 @@ var
   TaskList, ProjectFile: string;
 begin
   try
-    AllocConsole;
+    if not AttachConsole(ATTACH_PARENT_PROCESS) then
+      AllocConsole;
     if ParamPos('q') <= 0 then
     begin
       WriteLn('Distribution maker, a file distribution helper');
