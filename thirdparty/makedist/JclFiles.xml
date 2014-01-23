@@ -10,12 +10,27 @@
       <configuration index="0" caption="Directory" value="sandbox"/>
       <configuration index="1" caption="Move to recycle bin" value="no"/>
     </action>
+    <action classname="TDirectoryCreator">
+      <configuration index="0" caption="Directory" value="sandbox"/>
+    </action>
     <action classname="TCommandLineCaller">
-      <configuration index="0" caption="Application" value="%SVN%"/>
-      <configuration index="1" caption="Working directory" value=""/>
-      <configuration index="2" caption="Parameters" value="export -rBASE --native-eol CRLF ..\..\ sandbox"/>
+      <configuration index="0" caption="Application" value="%GIT%"/>
+      <configuration index="1" caption="Working directory" value="..\..\"/>
+      <configuration index="2" caption="Parameters" value="checkout-index -a --prefix=thirdparty\makedist\sandbox\"/>
       <configuration index="3" caption="Valid exit codes" value=""/>
       <configuration index="4" caption="Result file" value=""/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%GIT%"/>
+      <configuration index="1" caption="Working directory" value="..\..\jcl\source\include\jedi"/>
+      <configuration index="2" caption="Parameters" value="checkout-index -a --prefix=..\..\..\..\thirdparty\makedist\sandbox\jcl\source\include\jedi\"/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
+    </action>
+    <action classname="TVariableWriter">
+      <configuration index="0" caption="Destination file" value="sandbox\jcl\jcl-revision.txt"/>
+      <configuration index="1" caption="Expression" value="%VersionRevision%"/>
+      <configuration index="2" caption="Append" value="no"/>
     </action>
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="%ComSpec%"/>
@@ -82,6 +97,9 @@
     <action classname="TDirectoryRemover">
       <configuration index="0" caption="Directory" value="sandbox"/>
       <configuration index="1" caption="Move to recycle bin" value="no"/>
+    </action>
+    <action classname="TDelay">
+      <configuration index="0" caption="Delay" value="10"/>
     </action>
   </task>
   <task name="Jcl-win.sync" selected="0">
