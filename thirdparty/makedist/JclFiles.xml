@@ -10,6 +10,9 @@
       <configuration index="0" caption="Directory" value="sandbox"/>
       <configuration index="1" caption="Move to recycle bin" value="no"/>
     </action>
+    <action classname="TDelay">
+      <configuration index="0" caption="Delay" value="2"/>
+    </action>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox"/>
     </action>
@@ -87,19 +90,22 @@
       <configuration index="0" caption="Directory" value="files"/>
     </action>
     <action classname="TDelay">
-      <configuration index="0" caption="Delay" value="10"/>
+      <configuration index="0" caption="Delay" value="3"/>
     </action>
     <action classname="TArchiveMaker">
       <configuration index="0" caption="Directory" value="sandbox"/>
       <configuration index="1" caption="Filter" value="%PREFIX%"/>
       <configuration index="2" caption="Archive name" value="files\%PREFIX%.zip"/>
     </action>
+    <action classname="TDelay">
+      <configuration index="0" caption="Delay" value="3"/>
+    </action>
     <action classname="TDirectoryRemover">
       <configuration index="0" caption="Directory" value="sandbox"/>
       <configuration index="1" caption="Move to recycle bin" value="no"/>
     </action>
     <action classname="TDelay">
-      <configuration index="0" caption="Delay" value="10"/>
+      <configuration index="0" caption="Delay" value="3"/>
     </action>
   </task>
   <task name="Jcl-win.sync" selected="0">

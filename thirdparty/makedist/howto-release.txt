@@ -1,5 +1,5 @@
-1/  In WinSCP: create a session that connects to host web.sourceforge.net with login "username,jcl";
-2/  Save this session as "jcl.web.sourceforge.net";
+1/  In WinSCP: create a session that connects to host frs.sourceforge.net with login "username,jcl";
+2/  Save this session as "jcl.frs.sourceforge.net";
 3/  Set environment variable "DCC2006" to the compilator of Delphi 2006 or RAD Studio 2007;
 4/  Set environment variable "DMCC" to Doc-o-matic command line compiler;
 5/  Set environment variable "GIT" to up-to-date git executable;
