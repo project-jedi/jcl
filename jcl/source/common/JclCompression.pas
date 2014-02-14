@@ -564,6 +564,7 @@ type
 
   EJclCompressionError = class(EJclError);
   EJclCompressionCancelled = class(EJclCompressionError);
+  EJclCompressionFalse = class(EJclCompressionError);
 
   // callback type used in helper functions below:
   TJclCompressStreamProgressCallback = procedure(FileSize, Position: Int64; UserData: Pointer) of object;
@@ -4222,7 +4223,7 @@ begin
         try
           TJclCompressArchive(FArchive).FPackedNames.Add(Value);
         except
-          raise EJclCompressionError(Format(LoadResString(@RsCompressionDuplicate), [Value]));
+          raise EJclCompressionError.Create(Format(LoadResString(@RsCompressionDuplicate), [Value]));
         end;
       end;
     end;
@@ -5944,7 +5945,10 @@ end;
 
 procedure SevenzipCheck(Value: HRESULT);
 begin
-  if (Value <> S_OK) and (Value <> E_ABORT) then
+  if Value = S_FALSE then
+    raise EJclCompressionFalse.CreateResFmt(@RsCompression7zReturnError,
+      [S_FALSE, 'S_FALSE'])
+  else if (Value <> S_OK) and (Value <> E_ABORT) then
     raise EJclCompressionError.CreateResFmt(@RsCompression7zReturnError, [Value,
       SysErrorMessage(HResultCode(Value))]);
 end;
@@ -7805,7 +7809,7 @@ begin
     SetSevenzipArchiveCompressionProperties(Self, InArchive);
 
     MaxCheckStartPosition := 1 shl 22;
-    InArchive.Open(AInStream, @MaxCheckStartPosition, OpenCallback);
+    SevenZipCheck(InArchive.Open(AInStream, @MaxCheckStartPosition, OpenCallback));
 
     GetSevenzipArchiveCompressionProperties(Self, InArchive);
 
@@ -9070,7 +9074,7 @@ begin
     SetSevenzipArchiveCompressionProperties(Self, InArchive);
 
     MaxCheckStartPosition := 1 shl 22;
-    InArchive.Open(AInStream, @MaxCheckStartPosition, OpenCallback);
+    SevenZipCheck(InArchive.Open(AInStream, @MaxCheckStartPosition, OpenCallback));
 
     GetSevenzipArchiveCompressionProperties(Self, InArchive);
 

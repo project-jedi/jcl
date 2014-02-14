@@ -495,8 +495,8 @@ type
 
   IInArchive = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000600600000}']
-    procedure Open(Stream: IInStream; MaxCheckStartPosition: PInt64;
-       OpenArchiveCallback: IArchiveOpenCallback); safecall;
+    function Open(Stream: IInStream; MaxCheckStartPosition: PInt64;
+       OpenArchiveCallback: IArchiveOpenCallback): HRESULT; stdcall;
     procedure Close; safecall;
     procedure GetNumberOfItems(out NumItems: Cardinal); safecall;
     procedure GetProperty(Index: Cardinal; PropID: TPropID;
