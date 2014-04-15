@@ -332,10 +332,10 @@ begin
     Application.ShowException(E);
 end;
 
-function TMainForm.Dialog(const Text: string; DialogType: TDialogType = dtInformation;
+function TMainForm.Dialog(const Text: string; DialogType: JediInstall.TDialogType = dtInformation;
   Options: TDialogResponses = [drOK]): TDialogResponse;
 const
-  DlgType: array[TDialogType] of TMsgDlgType = (mtWarning, mtError, mtInformation, mtConfirmation);
+  DlgType: array[JediInstall.TDialogType] of TMsgDlgType = (mtWarning, mtError, mtInformation, mtConfirmation);
   DlgButton: array[TDialogResponse] of TMsgDlgBtn = (mbYes, mbNo, mbOK, mbCancel);
   DlgResult: array[TDialogResponse] of Word = (mrYes, mrNo, mrOK, mrCancel);
 var
