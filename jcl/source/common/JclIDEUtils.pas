@@ -86,9 +86,9 @@ type
   TJclBorRADToolPath = string;
 
 const
-  SupportedDelphiVersions = [5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19];
-  SupportedBCBVersions    = [5, 6, 10, 11, 12, 14, 15, 16, 17, 18, 19];
-  SupportedBDSVersions    = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  SupportedDelphiVersions = [5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20];
+  SupportedBCBVersions    = [5, 6, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20];
+  SupportedBDSVersions    = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14];
 
   // Object Repository
   BorRADToolRepositoryPagesSection    = 'Repository Pages';
@@ -788,8 +788,9 @@ const
   DelphiKeyName       = '\SOFTWARE\Borland\Delphi';
 
   RADStudioDirName = 'RAD Studio';
+  RADStudio14UpDirName = 'Embarcardero\Studio';
 
-  BDSVersions: array [1..12] of TBDSVersionInfo = (
+  BDSVersions: array [1..14] of TBDSVersionInfo = (
     (
       Name: @RsCSharpName;
       VersionStr: '1.0';
@@ -861,6 +862,18 @@ const
       VersionStr: 'XE5';
       Version: 19;
       CoreIdeVersion: '190';
+      Supported: True),
+    (
+      Name: nil;
+      VersionStr: '';
+      Version: 0;
+      CoreIdeVersion: '';
+      Supported: False),
+    (
+      Name: @RsRSName;
+      VersionStr: 'XE6';
+      Version: 20;
+      CoreIdeVersion: '200';
       Supported: True)
   );
   {$ENDIF MSWINDOWS}
@@ -2087,11 +2100,13 @@ const
 var
   CommonDocuments: array[0..MAX_PATH] of Char;
 begin
-  if (RadToolKind = brBorlandDevStudio) and (IDEVersionNumber >= 6) and
+  Result := GetEnvironmentVariable(EnvVariableBDSCOMDIRValueName);
+  if (RadToolKind = brBorlandDevStudio) and
      SHGetSpecialFolderPath(GetActiveWindow, CommonDocuments, CSIDL_COMMON_DOCUMENTS, False) then
-    Result := IncludeTrailingPathDelimiter(CommonDocuments) + RADStudioDirName  + PathDelim + Format('%d.0', [IDEVersionNumber])
-  else
-    Result := GetEnvironmentVariable(EnvVariableBDSCOMDIRValueName);
+    if IDEVersionNumber >= 14 then
+      Result := IncludeTrailingPathDelimiter(CommonDocuments) + RADStudio14UpDirName  + PathDelim + Format('%d.0', [IDEVersionNumber])
+    else if IDEVersionNumber >= 6 then
+      Result := IncludeTrailingPathDelimiter(CommonDocuments) + RADStudioDirName  + PathDelim + Format('%d.0', [IDEVersionNumber])
 end;
 
 function TJclBorRADToolInstallation.GetEnvironmentVariables: TStrings;
@@ -2109,7 +2124,7 @@ begin
 
     // Overwrite BDSCommonDir because it conflicts with older versions and
     // the RAD Studio 2009 setup doesn't update the environment variable anymore
-    if (RadToolKind = brBorlandDevStudio) and (IDEVersionNumber >= 6) then
+    if (RadToolKind = brBorlandDevStudio) and (IDEVersionNumber >= 6) and (IDEVersionNumber < 14) then
       FEnvironmentVariables.Values[EnvVariableBDSCOMDIRValueName] := GetDefaultBDSCommonDir;
 
     // read environment variable overrides
@@ -2546,8 +2561,8 @@ procedure TJclBorRADToolInstallation.ReadInformation;
           1:
             Result := 'cs1';
         else
-          if Num < 7 then
-            Result := Format('d%d', [Num + 6])  // BDS 2 goes to D8
+          if (Num < 7) or (Num > 12) then
+            Result := Format('d%d', [Num + 6])  // BDS 2 goes to D8 and BDS 14 goes to D20
           else
             Result := Format('d%d', [Num + 7]); // BDS 7 goes to D14
         end;
@@ -3912,7 +3927,7 @@ begin
     EnvOptions.Init;
 
     // add custom "environment" variables
-    EnvOptions.Properties.EnvironmentProperties.Assign(EnvironmentVariables);
+    EnvOptions.Properties.MergeEnvironmentProperties(EnvironmentVariables);
 
     if SupportsPlatform then
       EnvOptions.Properties.GlobalProperties.Values['Platform'] := GetBDSPlatformStr(APlatform);
