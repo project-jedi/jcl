@@ -54,6 +54,7 @@
 		<EditionDirVersion Condition=" Exists('$(BDS)\bin\dcc32170.dll') ">d17</EditionDirVersion> <!-- XE3 -->
 		<EditionDirVersion Condition=" Exists('$(BDS)\bin\dcc32180.dll') ">d18</EditionDirVersion> <!-- XE4 -->
 		<EditionDirVersion Condition=" Exists('$(BDS)\bin\dcc32190.dll') ">d19</EditionDirVersion> <!-- XE5 -->
+		<EditionDirVersion Condition=" Exists('$(BDS)\bin\dcc32200.dll') ">d20</EditionDirVersion> <!-- XE6 -->
 
 		<LibDirVersion>$(EditionDirVersion)\$(Platform)</LibDirVersion>
 		<LibDirVersion Condition=" '$(EditionDirVersion)' == 'd12' or '$(EditionDirVersion)' == 'd14' or '$(EditionDirVersion)' == 'd15' ">$(EditionDirVersion)</LibDirVersion>
