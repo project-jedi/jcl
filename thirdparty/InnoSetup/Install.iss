@@ -236,7 +236,7 @@ Source: {#JclHpp19}\*; DestDir: "{app}\include\d19"; Components: "IDE\Delphi19";
 Source: {#JclLib20}\*; DestDir: "{app}\lib\d20"; Excludes: ".svn,__history,*.txt,*.hpp"; Components: "IDE\Delphi20"; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs solidbreak
 Source: {#JclBpl20}\*; DestDir: "{code:GetDelphiBplDir|20}"; Components: "IDE\Delphi20"; Flags: ignoreversion sortfilesbyextension
 Source: {#JclBpl20}\Win64\*; DestDir: "{code:GetDelphiBplDir|20}\Win64"; Components: "IDE\Delphi20"; Flags: ignoreversion sortfilesbyextension
-;Source: {#JclHpp20}\*; DestDir: "{app}\include\d20"; Components: "IDE\Delphi20"; Flags: ignoreversion sortfilesbyextension
+Source: {#JclHpp20}\*; DestDir: "{app}\include\d20"; Components: "IDE\Delphi20"; Flags: ignoreversion sortfilesbyextension
 #endif
 
 #endif

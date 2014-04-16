@@ -68,7 +68,7 @@
 		<DCC Condition=" '$(Platform)' == 'win64' ">&quot;$(BDS)\bin\dcc64.exe&quot; --no-config -Q</DCC>
 
 		<BCBCompile>false</BCBCompile>
-		<BCBCompile Condition=" Exists('$(BDS)\bin\bccide.dll') ">true</BCBCompile>
+		<BCBCompile Condition=" Exists('$(BDS)\bin\bccide.dll') or '$(ForceBCBCompile)' == 'true' ">true</BCBCompile>
 
 		<UnitScopeRequired>true</UnitScopeRequired>
 		<UnitScopeRequired Condition=" '$(EditionDirVersion)' == 'd12' or '$(EditionDirVersion)' == 'd14' or '$(EditionDirVersion)' == 'd15' ">false</UnitScopeRequired>
