@@ -56,8 +56,8 @@ object MainForm: TMainForm
     Color = 9981440
     TabOrder = 3
     object JediImage: TImage
-      Left = 582
-      Top = 8
+      Left = 664
+      Top = 5
       Width = 116
       Height = 31
       Cursor = crHandPoint
@@ -327,6 +327,7 @@ object MainForm: TMainForm
     Images = ImageList
     MultiLine = True
     TabOrder = 4
+    OnChange = ProductsPageControlChange
   end
   object ProgressBar: TProgressBar
     Left = 380
@@ -346,6 +347,15 @@ object MainForm: TMainForm
     Caption = 'RsGUIUninstall'
     TabOrder = 1
     OnClick = UninstallBtnClick
+  end
+  object InstallSelectedOnlyCheckBox: TCheckBox
+    Left = 384
+    Top = 551
+    Width = 129
+    Height = 17
+    Caption = 'RsGUIInstallSelectedOnly'
+    TabOrder = 6
+    Visible = False
   end
   object ImageList: TImageList
     AllocBy = 1

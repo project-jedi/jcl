@@ -224,8 +224,8 @@ type
   IJediProduct = interface
     ['{CF5BE67A-4A49-43FB-8F6E-217A51023DA4}']
     procedure Init;
-    function Install: Boolean;
-    function Uninstall: Boolean;
+    function Install(InstallPage: IJediInstallPage = nil): Boolean;
+    function Uninstall(InstallPage: IJediInstallPage = nil): Boolean;
     procedure Close;
   end;
 
@@ -268,8 +268,8 @@ type
 
     function AddProduct(const AProduct: IJediProduct): Integer;
     procedure Execute;
-    function Install: Boolean;
-    function Uninstall: Boolean;
+    function Install(InstallPage: IJediInstallPage): Boolean;
+    function Uninstall(InstallPage: IJediInstallPage): Boolean;
     procedure Close;
     function AddInstallOption(const Name: string): Integer;
     function GetInstallOptionName(Id: Integer): string;
@@ -444,7 +444,7 @@ begin
   Result := FProducts.Size;
 end;
 
-function TJediInstallCore.Install: Boolean;
+function TJediInstallCore.Install(InstallPage: IJediInstallPage): Boolean;
 var
   Index: Integer;
   AInstallGUI: IJediInstallGUI;
@@ -458,7 +458,7 @@ begin
   if Result then
     for Index := FProducts.Size - 1 downto 0 do
   begin
-    Result := (FProducts.GetObject(Index) as IJediProduct).Install;
+    Result := (FProducts.GetObject(Index) as IJediProduct).Install(InstallPage);
     if not Result then
       Break;
   end;
@@ -574,7 +574,7 @@ begin
     Page.AddText(Line);
 end;
 
-function TJediInstallCore.Uninstall: Boolean;
+function TJediInstallCore.Uninstall(InstallPage: IJediInstallPage): Boolean;
 var
   Index: Integer;
   AInstallGUI: IJediInstallGUI;
@@ -587,7 +587,7 @@ begin
 
   if Result then
     for Index := FProducts.Size - 1 downto 0 do
-      Result := (FProducts.GetObject(Index) as IJediProduct).Uninstall and Result;
+      Result := (FProducts.GetObject(Index) as IJediProduct).Uninstall(InstallPage) and Result;
 
   if Assigned(AInstallGUI) then
   begin
