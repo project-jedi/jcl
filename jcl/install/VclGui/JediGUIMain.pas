@@ -58,6 +58,7 @@ type
     Bevel1: TBevel;
     ProgressBar: TProgressBar;
     ImageList: TImageList;
+    InstallSelectedOnlyCheckBox: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -65,6 +66,7 @@ type
     procedure InstallBtnClick(Sender: TObject);
     procedure UninstallBtnClick(Sender: TObject);
     procedure JediImageClick(Sender: TObject);
+    procedure ProductsPageControlChange(Sender: TObject);
   protected
     FPages: IJclIntfList;
     FAutoAcceptDialogs: TDialogTypes;
@@ -78,6 +80,9 @@ type
     FIncludeLogFilesInXML: Boolean;
     FDeletePreviousLogFiles: Boolean;
     FTaskBarList: ITaskbarList3;
+    FInstallPageCount: Integer;
+    procedure UpdateInstallSelectedOnlyCheckBoxVisibility;
+    function GetSelectedInstallPage: IJediInstallPage;
     procedure HandleException(Sender: TObject; E: Exception);
     procedure SetFrameIcon(Sender: TObject; const FileName: string);
     procedure WMAfterShow(var Message: TMessage); Message WM_AFTERSHOW;
@@ -178,6 +183,7 @@ begin
   InstallBtn.Caption := LoadResString(@RsGUIInstall);
   UninstallBtn.Caption := LoadResString(@RsGUIUninstall);
   QuitBtn.Caption := LoadResString(@RsGUIQuit);
+  InstallSelectedOnlyCheckBox.Caption := LoadResString(@RsGUIInstallSelectedOnly);
 
   JediImage.Hint := DelphiJediURL;
 
@@ -201,6 +207,11 @@ end;
 procedure TMainForm.FormShow(Sender: TObject);
 begin
   PostMessage(Handle, WM_AFTERSHOW, 0, 0);
+end;
+
+procedure TMainForm.UpdateInstallSelectedOnlyCheckBoxVisibility;
+begin
+  InstallSelectedOnlyCheckBox.Visible := (FInstallPageCount > 1) and (GetSelectedInstallPage <> nil);
 end;
 
 procedure TMainForm.ShowFeatureHint(var HintStr: string; var CanShow: Boolean; var HintInfo: THintInfo);
@@ -263,18 +274,25 @@ end;
 procedure TMainForm.InstallBtnClick(Sender: TObject);
 var
   Success: Boolean;
+  InstallPage: IJediInstallPage;
 begin
+  InstallPage := nil;
+  if InstallSelectedOnlyCheckBox.Visible and InstallSelectedOnlyCheckBox.Checked then
+    InstallPage := GetSelectedInstallPage;
+
   ProgressBar.Position := 0;
   ProgressBar.Visible := True;
+  InstallSelectedOnlyCheckBox.Visible := False;
   Screen.Cursor := crHourGlass;
   try
     if Assigned(FTaskBarList) then
       FTaskBarList.SetProgressState(Self.Handle, TBPF_NORMAL);
-    Success := InstallCore.Install;
+    Success := InstallCore.Install(InstallPage);
     if (Success and FAutoCloseOnSuccess) or (not Success and FAutoCloseOnFailure) then
       Close;
   finally
     ProgressBar.Visible := False;
+    UpdateInstallSelectedOnlyCheckBoxVisibility;
     Screen.Cursor := crDefault;
     if Assigned(FTaskBarList) then
       FTaskBarList.SetProgressState(Self.Handle, TBPF_NOPROGRESS);
@@ -285,19 +303,26 @@ end;
 procedure TMainForm.UninstallBtnClick(Sender: TObject);
 var
   Success: Boolean;
+  InstallPage: IJediInstallPage;
 begin
+  InstallPage := nil;
+  if InstallSelectedOnlyCheckBox.Visible and InstallSelectedOnlyCheckBox.Checked then
+    InstallPage := GetSelectedInstallPage;
+
   ProgressBar.Position := 0;
   ProgressBar.Visible := True;
+  InstallSelectedOnlyCheckBox.Visible := False;
   Screen.Cursor := crHourGlass;
   try
     if Assigned(FTaskBarList) then
       FTaskBarList.SetProgressState(Self.Handle, TBPF_NORMAL);
 
-    Success := InstallCore.Uninstall;
+    Success := InstallCore.Uninstall(InstallPage);
     if (Success and FAutoCloseOnSuccess) or (not Success and FAutoCloseOnFailure) then
       Close;
   finally
     ProgressBar.Visible := False;
+    UpdateInstallSelectedOnlyCheckBoxVisibility;
     Screen.Cursor := crDefault;
     if Assigned(FTaskBarList) then
       FTaskBarList.SetProgressState(Self.Handle, TBPF_NOPROGRESS);
@@ -318,6 +343,11 @@ procedure TMainForm.JediImageClick(Sender: TObject);
 begin
   { TODO : implement for Unix }
   ShellExecEx(DelphiJediURL);
+end;
+
+procedure TMainForm.ProductsPageControlChange(Sender: TObject);
+begin
+  UpdateInstallSelectedOnlyCheckBoxVisibility;
 end;
 
 procedure TMainForm.HandleException(Sender: TObject; E: Exception);
@@ -403,6 +433,8 @@ var
   AInstallFrame: TInstallFrame;
   ATabSheet: TTabSheet;
 begin
+  Inc(FInstallPageCount);
+
   ATabSheet := TTabSheet.Create(Self);
   ATabSheet.PageControl := ProductsPageControl;
   ATabSheet.ImageIndex := -1;
@@ -434,6 +466,17 @@ begin
 
   Result := AProfilesFrame;
   FPages.Add(Result);
+end;
+
+function TMainForm.GetSelectedInstallPage: IJediInstallPage;
+var
+  Tab: TTabSheet;
+begin
+  Tab := ProductsPageControl.ActivePage;
+  if (Tab <> nil) and (Tab.ControlCount > 0) and (Tab.Controls[0] is TInstallFrame) then
+    Result := TInstallFrame(Tab.Controls[0])
+  else
+    Result := nil;
 end;
 
 function TMainForm.GetPageCount: Integer;

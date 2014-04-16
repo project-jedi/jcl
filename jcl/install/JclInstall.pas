@@ -307,8 +307,8 @@ type
 
     // IJediProduct
     procedure Init;
-    function Install: Boolean;
-    function Uninstall: Boolean;
+    function Install(InstallPage: IJediInstallPage = nil): Boolean;
+    function Uninstall(InstallPage: IJediInstallPage = nil): Boolean;
     procedure Close;
 
     property JclPath: string read FJclPath;
@@ -3501,7 +3501,7 @@ begin
   InitInstallations;
 end;
 
-function TJclDistribution.Install: Boolean;
+function TJclDistribution.Install(InstallPage: IJediInstallPage): Boolean;
 var
   I: Integer;
   KeepSettings: Boolean;
@@ -3538,11 +3538,14 @@ begin
         AInstallation := TargetInstalls[I];
         if AInstallation.Enabled then
         begin
-          if Assigned(AInstallation.GUIPage) then
-            AInstallation.GUIPage.Show;
-          KeepSettings := GUI.Dialog(LoadResString(@RsKeepExpertSettings),
-            dtConfirmation, [drYes, drNo]) = drYes;
-          Break;
+          if (InstallPage = nil) or (AInstallation.GUIPage = InstallPage) then
+          begin
+            if Assigned(AInstallation.GUIPage) then
+              AInstallation.GUIPage.Show;
+            KeepSettings := GUI.Dialog(LoadResString(@RsKeepExpertSettings),
+              dtConfirmation, [drYes, drNo]) = drYes;
+            Break;
+          end;
         end;
       end;
     end;
@@ -3553,12 +3556,16 @@ begin
     FNbInstalled := 0;
 
     for I := 0 to TargetInstallCount - 1 do
-      if TargetInstalls[I].Enabled then
-        Inc(FNbEnabled);
-
-    for I := 0 to TargetInstallCount - 1 do
-      if GUI.DeletePreviousLogFiles then
-        SysUtils.DeleteFile(TargetInstalls[I].LogFileName);
+    begin
+      AInstallation := TargetInstalls[I];
+      if (InstallPage = nil) or (AInstallation.GUIPage = InstallPage) then
+      begin
+        if AInstallation.Enabled then
+          Inc(FNbEnabled);
+        if GUI.DeletePreviousLogFiles then
+          SysUtils.DeleteFile(AInstallation.LogFileName);
+      end;
+    end;
 
     Result := True;
     for I := 0 to TargetInstallCount - 1 do
@@ -3566,14 +3573,17 @@ begin
       AInstallation := TargetInstalls[I];
       if AInstallation.Enabled then
       begin
-        AInstallation.Silent := False;
-        if not KeepSettings then
-          AInstallation.RemoveSettings;
-        AInstallation.Uninstall(False);
-        Result := AInstallation.Install;
-        if not Result and (not Assigned(GUI) or not GUI.ContinueOnTargetError) then
-          Break;
-        Inc(FNbInstalled);
+        if (InstallPage = nil) or (AInstallation.GUIPage = InstallPage) then
+        begin
+          AInstallation.Silent := False;
+          if not KeepSettings then
+            AInstallation.RemoveSettings;
+          AInstallation.Uninstall(False);
+          Result := AInstallation.Install;
+          if not Result and (not Assigned(GUI) or not GUI.ContinueOnTargetError) then
+            Break;
+          Inc(FNbInstalled);
+        end;
       end;
     end;
 
@@ -3815,7 +3825,7 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-function TJclDistribution.Uninstall: Boolean;
+function TJclDistribution.Uninstall(InstallPage: IJediInstallPage): Boolean;
 var
   I: Integer;
   AInstallation: TJclInstallation;
@@ -3836,9 +3846,12 @@ begin
   for I := 0 to TargetInstallCount - 1 do
   begin
     AInstallation := TargetInstalls[I];
-    AInstallation.Silent := False;
-    if AInstallation.Enabled and ((not AInstallation.RemoveSettings) or not AInstallation.Uninstall(True)) then
-      Result := False;
+    if (InstallPage = nil) or (AInstallation.GUIPage = InstallPage) then
+    begin
+      AInstallation.Silent := False;
+      if AInstallation.Enabled and ((not AInstallation.RemoveSettings) or not AInstallation.Uninstall(True)) then
+        Result := False;
+    end;
   end;
 
   {$IFDEF MSWINDOWS}

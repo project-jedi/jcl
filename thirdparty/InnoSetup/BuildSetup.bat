@@ -41,10 +41,10 @@ del /Q /S "%JCLBUILTDIR%\*.*" 2>NUL >NUL
 SET JclLib=%JCLBUILTDIR%\lib\win32
 
 cd /d %JCLROOT%
-msbuild make.proj "/p:Platform=win32" "/p:HppOutDir=%JCLBUILTDIR%\hpp" "/p:DcuOutDir=%JCLBUILTDIR%\lib\win32" "/p:BplOutDir=%JCLBUILTDIR%\bpl"
+msbuild make.proj "/p:Platform=win32" "/p:ForceBCBCompile=true" "/p:HppOutDir=%JCLBUILTDIR%\hpp" "/p:DcuOutDir=%JCLBUILTDIR%\lib\win32" "/p:BplOutDir=%JCLBUILTDIR%\bpl"
 if ERRORLEVEL 1 goto Failed
 if not exist "%BDS%\bin\dcc64.exe" goto NoWin64
-msbuild make.proj "/p:Platform=win64" "/p:HppOutDir=%JCLBUILTDIR%\hpp64" "/p:DcuOutDir=%JCLBUILTDIR%\lib\win64" "/p:BplOutDir=%JCLBUILTDIR%\bpl\Win64"
+msbuild make.proj "/p:Platform=win64" "/p:ForceBCBCompile=true" "/p:HppOutDir=%JCLBUILTDIR%\hpp64" "/p:DcuOutDir=%JCLBUILTDIR%\lib\win64" "/p:BplOutDir=%JCLBUILTDIR%\bpl\Win64"
 if ERRORLEVEL 1 goto Failed
 :: For 64bit we have to install both win32 and lib\win64
 SET JclLib=%JCLBUILTDIR%\lib

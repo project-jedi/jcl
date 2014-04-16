@@ -76,6 +76,7 @@ resourcestring
   RsGUIQuit = '&Quit';
   RsGUIProfiles = 'Select profiles in the list below. Note that only remote profiles logged on local computer and local profiles are available.' + NativeLineBreak +
                   'If a profile has not IDE settings, the JCL won''t be installed on it.';
+  RsGUIInstallSelectedOnly = 'Install &selected only';
 
 
 implementation
