@@ -117,7 +117,7 @@ begin
       case Inst.RadToolKind of
         brDelphi:
           begin
-            VersionNum := Inst.VersionNumber;
+            VersionNum := Inst.PackageVersionNumber;
             VStr := IntToStr(VersionNum);
             SetEnvironmentVariable(PChar('DELPHI' + VStr), PChar(Inst.RootDir));
             SetEnvironmentVariable(PChar('DELPHI' + VStr + 'BPL'), PChar(Inst.BPLOutputPath[bpWin32]));
@@ -126,7 +126,7 @@ begin
           end;
         brCppBuilder:
           begin
-            VersionNum := Inst.VersionNumber;
+            VersionNum := Inst.PackageVersionNumber;
             VStr := IntToStr(VersionNum);
             SetEnvironmentVariable(PChar('BCB' + VStr), PChar(Inst.RootDir));
             SetEnvironmentVariable(PChar('BCB' + VStr + 'BPL'), PChar(Inst.BPLOutputPath[bpWin32]));
@@ -135,10 +135,7 @@ begin
           end;
         brBorlandDevStudio:
           begin
-            if Inst.VersionNumber >= 7 then
-              VersionNum := 7 + Inst.VersionNumber // Delphi 14 is RAD Studio 7
-            else
-              VersionNum := 9 - 3 + Inst.VersionNumber; // Delphi 9 is BDS 3
+            VersionNum := Inst.PackageVersionNumber;
             VStr := IntToStr(VersionNum);
             if bpDelphi32 in Inst.Personalities then
             begin
