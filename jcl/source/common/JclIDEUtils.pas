@@ -347,6 +347,7 @@ type
     FVersionNumberStr: string;
     FIDEVersionNumber: Integer; // Delphi 2005: 3   -  Delphi 7: 7 - Delphi 2007: 11
     FIDEVersionNumberStr: string;
+    FPackageVersionNumber: Integer; // Delphi 2005: 3   -  Delphi 7: 7 - Delphi 2007: 10, Delphi 2009: 12, Delphi XE6: 20
     FMapCreate: Boolean;
     {$IFDEF MSWINDOWS}
     FJdbgCreate: Boolean;
@@ -374,6 +375,7 @@ type
     function GetRepository: TJclBorRADToolRepository;
     function GetUpdateNeeded: Boolean;
     function GetDefaultBDSCommonDir: string;
+    function GetPackageVersionNumberStr: string;
     procedure SetDCC(const Value: TJclDCC32);
   protected
     function ProcessMapFile(const BinaryFileName: string): Boolean;
@@ -544,6 +546,8 @@ type
     property IDEVersionNumberStr: string read FIDEVersionNumberStr;
     property VersionNumber: Integer read FVersionNumber;
     property VersionNumberStr: string read FVersionNumberStr;
+    property PackageVersionNumber: Integer read FPackageVersionNumber;
+    property PackageVersionNumberStr: string read GetPackageVersionNumberStr;
     property Personalities: TJclBorPersonalities read FPersonalities;
     property SupportsLibSuffix: Boolean read GetSupportsLibSuffix;
     property OutputCallback: TTextHandler read FOutputCallback write SetOutputCallback;
@@ -2252,6 +2256,17 @@ begin
     Result := '';
 end;
 
+function TJclBorRADToolInstallation.GetPackageVersionNumberStr: string;
+var
+  Value: Integer;
+begin
+  Value := PackageVersionNumber;
+  if Value > 0 then
+    Result := IntToStr(Value) + '0'
+  else
+    Result := '';
+end;
+
 function TJclBorRADToolInstallation.GetPalette: TJclBorRADToolPalette;
 begin
   if not Assigned(FPalette) then
@@ -2623,6 +2638,14 @@ begin
 
   FVersionNumberStr := FormatVersionNumber(VersionNumber);
   FIDEVersionNumberStr := FormatVersionNumber(IDEVersionNumber);
+
+  if RadToolKind = brBorlandDevStudio then
+  begin
+    if IDEVersionNumber in [Low(BDSVersions)..High(BDSVersions)] then
+      FPackageVersionNumber := BDSVersions[IDEVersionNumber].Version;
+  end
+  else
+    FPackageVersionNumber := VersionNumber;
 
   FRootDir := PathRemoveSeparator(Globals.Values[RootDirValueName]);
   FBinFolderName := PathAddSeparator(RootDir) + BinDir;
