@@ -621,6 +621,7 @@ type
     function GetMsBuildEnvOption(const OptionName: string; APlatform: TJclBDSPlatform; Raw: Boolean): string;
     procedure SetMsBuildEnvOption(const OptionName, Value: string; APlatform: TJclBDSPlatform);
     function GetBDSPlatformStr(APlatform: TJclBDSPlatform): string;
+    class procedure InterpretSetVariable(const Line: string; Variables: TStrings);
   protected
     function GetDCPOutputPath(APlatform: TJclBDSPlatform): string; override;
     function GetBPLOutputPath(APlatform: TJclBDSPlatform): string; override;
@@ -3556,10 +3557,6 @@ class function TJclBDSInstallation.GetCommonProjectsDirectory(const RootDir: str
   IDEVersionNumber: Integer): string;
 var
   Variables: TStrings;
-  I: Integer;
-  S, StartS: string;
-  ps: Integer;
-  LowerEnvVariableBDSCOMDIRValueName: string;
 begin
   if IDEVersionNumber >= 5 then
   begin
@@ -3567,42 +3564,8 @@ begin
 
     Variables := TStringList.Create;
     try
-      // Try to parse the rsvars.bat what is much faster than creating a cmd.exe process.
-      try
-        Variables.LoadFromFile(GetRADStudioVarsFileName(RootDir, IDEVersionNumber));
-        LowerEnvVariableBDSCOMDIRValueName := LowerCase(EnvVariableBDSCOMDIRValueName);
-        // Find "[@]SET BDSCOMMONDIR=..."
-        for I := Variables.Count - 1 downto 0 do // the last occurrence overwrites the others
-        begin
-          S := LowerCase(Variables[I]);
-          ps := Pos(LowerEnvVariableBDSCOMDIRValueName, S);
-          if ps > 0 then
-          begin
-            StartS := Trim(Copy(S, 1, ps - 1));
-            if (StartS <> '') and (StartS[1] = '@') then
-              StartS := Trim(Copy(StartS, 2, Length(StartS)));
-            if StartS = 'set' then
-            begin
-              S := Trim(Copy(Variables[I], ps + Length(EnvVariableBDSCOMDIRValueName), Length(Variables[I])));
-              if (S <> '') and (S[1] = '=') then
-              begin
-                S := Copy(S, 2, Length(S));
-                if Pos('%', S) = 0 then // if there is a macro in the string we fall back to using cmd.exe
-                  Result := S;
-                Break;
-              end;
-            end;
-          end;
-        end;
-      except
-        Result := '';
-      end;
-
-      if Result = '' then
-      begin
-        GetRADStudioVars(RootDir, IDEVersionNumber, Variables);
-        Result := Variables.Values[EnvVariableBDSCOMDIRValueName];
-      end;
+      GetRADStudioVars(RootDir, IDEVersionNumber, Variables);
+      Result := Variables.Values[EnvVariableBDSCOMDIRValueName];
     finally
       Variables.Free;
     end;
@@ -3848,19 +3811,126 @@ begin
     Result := inherited GetLibFolderName(APlatform);
 end;
 
+class procedure TJclBDSInstallation.InterpretSetVariable(const Line: string; Variables: TStrings);
+
+  function SkipWhitespaces(P: PChar): PChar;
+  begin
+    Result := P;
+    while True do
+      case Result^ of
+        #1..#32: Inc(Result);
+      else
+        Break;
+      end;
+  end;
+
+  function SkipWhitespacesAndAtSign(P: PChar): PChar;
+  begin
+    Result := P;
+    while True do
+      case Result^ of
+        #1..#32, '@': Inc(Result);
+      else
+        Break;
+      end;
+  end;
+
+var
+  F, P: PChar;
+  VarName, VarValue: string;
+  S: string;
+begin
+  // parse "[@]set name=value"
+
+  F := SkipWhitespacesAndAtSign(PChar(Line));
+  P := F;
+  while P^ > #32 do
+    Inc(P);
+  if (P^ <> #0) and (StrLIComp('set', F, P - F) = 0) then
+  begin
+    // extract Variablen name
+    P := SkipWhitespaces(P);
+    F := P;
+    while (P^ <> #0) and (P^ <> '=') do
+      Inc(P);
+    if P^ <> #0 then // "set Variable" only outputs the variables so ignore it
+    begin
+      SetString(VarName, F, P - F); // the batch interpreter includes trailing whitespaces and so do we
+      if VarName <> '' then
+      begin
+        // extract variable value and resolve macros
+        VarValue := '';
+        F := P + 1;
+        P := F;
+        while P^ <> #0 do
+        begin
+          // fast forward
+          while True do
+          begin
+            case P^ of
+              #0, '%': Break;
+            end;
+            Inc(P);
+          end;
+
+          if P^ = #0 then
+            Break;
+
+          // append already parsed substring
+          if P - F > 0 then
+          begin
+            SetString(S, F, P - F);
+            VarValue := VarValue + S;
+          end;
+
+          // append resolved macro
+          Inc(P);
+          F := P;
+          while (P^ <> #0) and (P^ <> '%') do
+            Inc(P);
+          SetString(S, F, P - F);
+          VarValue := VarValue + Variables.Values[S];
+
+          if P^ <> #0 then
+            Inc(P);
+          F := P;
+        end;
+
+        // append remaining substring
+        if P - F > 0 then
+        begin
+          SetString(S, F, P - F);
+          VarValue := VarValue + S;
+        end;
+
+        Variables.Values[VarName] := VarValue;
+        if VarValue = '' then // empty VarValue removes the item from Variables but we must keep the overwrite for correctness
+          Variables.Add(VarName + '=');
+      end;
+    end;
+  end;
+end;
+
 class procedure TJclBDSInstallation.GetRADStudioVars(const RootDir: string; IDEVersionNumber: Integer; Variables: TStrings);
 var
-  RsVarsOutput, ComSpec, RsVarsError: string;
+  Lines: TStrings;
+  I: Integer;
 begin
   if IDEVersionNumber >= 5 then
   begin
-    RsVarsOutput := '';
-    RsVarsError := '';
-    if GetEnvironmentVar('COMSPEC', ComSpec) and (JclSysUtils.Execute(Format('%s /C " "%s" && set"',
-      [ComSpec, GetRADStudioVarsFileName(RootDir, IDEVersionNumber)]), RsVarsOutput, RsVarsError) = 0) then
-      Variables.Text := RsVarsOutput
-    else
-      raise EJclBorRADException.CreateResFmt(@RsERsVars, [RadToolName(IDEVersionNumber), IDEVersionNumber, RsVarsError]);
+    GetEnvironmentVars(Variables);
+
+    // Parse the rsvars.bat what is much faster than creating a cmd.exe process that could even fail
+    // to start leaving the user with an empty "RsVarsError" string. (Mantis #6282)
+    Lines := TStringList.Create;
+    try
+      Lines.LoadFromFile(GetRADStudioVarsFileName(RootDir, IDEVersionNumber));
+      // Interpret "[@]SET ...=..."
+      for I := 0 to Lines.Count - 1 do
+        InterpretSetVariable(Lines[I], Variables);
+    finally
+      Lines.Free;
+    end;
   end;
 end;
 
