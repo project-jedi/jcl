@@ -1645,7 +1645,7 @@ begin
           Inc(cp);
 
         { check for and read in fraction part of mantissa }
-        if (cp^ = '.') or (cp^ = JclFormatSettings.DecimalSeparator) then
+        if cp^ = '.' then
         begin
           Inc(cp);
           while CharIsDigit(cp^) do
