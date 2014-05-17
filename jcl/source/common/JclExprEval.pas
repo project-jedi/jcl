@@ -1699,7 +1699,10 @@ begin
       end;
   else
     { map character to token }
-    FCurrTok := CharToTokenMap[AnsiChar(cp^)];
+    if Word(cp^) < 256 then
+      FCurrTok := CharToTokenMap[AnsiChar(cp^)]
+    else
+      FCurrTok := etInvalid;
     Inc(cp);
   end;
 
