@@ -4032,7 +4032,7 @@ begin
         Info.Address := Addr;
         Info.BinaryFileName := FileName;
         Info.OffsetFromProcName := Displacement;
-        JclPeImage.UnDecorateSymbolName(string(WideString(SymbolW^.Name)), Info.ProcedureName, UNDNAME_NAME_ONLY or UNDNAME_NO_ARGUMENTS);
+        JclPeImage.UnDecorateSymbolName(string(PWideChar(@SymbolW^.Name[0])), Info.ProcedureName, UNDNAME_NAME_ONLY or UNDNAME_NO_ARGUMENTS);
       end;
     finally
       FreeMem(SymbolW);
@@ -4055,7 +4055,7 @@ begin
         Info.Address := Addr;
         Info.BinaryFileName := FileName;
         Info.OffsetFromProcName := Displacement;
-        JclPeImage.UnDecorateSymbolName(string(AnsiString(SymbolA^.Name)), Info.ProcedureName, UNDNAME_NAME_ONLY or UNDNAME_NO_ARGUMENTS);
+        JclPeImage.UnDecorateSymbolName(string(PAnsiChar(@SymbolA^.Name[0])), Info.ProcedureName, UNDNAME_NAME_ONLY or UNDNAME_NO_ARGUMENTS);
       end;
     finally
       FreeMem(SymbolA);

@@ -6892,7 +6892,7 @@ begin
   if Assigned(UndecorateSymbolNameW) then
   begin
     SetLength(WideBuffer, BufferSize);
-    Res := UnDecorateSymbolNameW(PWideChar(WideString(DecoratedName)), PWideChar(WideBuffer), BufferSize, Flags);
+    Res := UnDecorateSymbolNameW(PWideChar({$IFNDEF UNICODE}WideString{$ENDIF}(DecoratedName)), PWideChar(WideBuffer), BufferSize, Flags);
     if Res > 0 then
     begin
       StrResetLength(WideBuffer);
@@ -6912,6 +6912,10 @@ begin
       Result := True;
     end;
   end;
+
+  // For some functions UnDecorateSymbolName returns 'long'
+  if Result and (UnMangled = 'long') then
+    UnMangled := DecoratedName;
 end;
 
 function PeUnmangleName(const Name: string; out Unmangled: string): TJclPeUmResult;
