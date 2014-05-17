@@ -132,15 +132,16 @@ type
     FLibrarySearchPath: string;
     FLibraryDebugSearchPath: string;
     FCppSearchPath: string;
+    FOnEnvironmentVariables: TJclStringsGetterFunction;
     FSupportsNoConfig: Boolean;
     FSupportsPlatform: Boolean;
-    FOnEnvironmentVariables: TJclStringsGetterFunction;
+    FNewUnitOutputDirOption: Boolean;
   protected
     procedure AddProjectOptions(const ProjectFileName, DCPPath: string);
     function Compile(const ProjectFileName: string): Boolean;
   public
     class function GetPlatform: string; virtual;
-    constructor Create(const ABinDirectory: string; ALongPathBug: Boolean;
+    constructor Create(const ABinDirectory: string; ALongPathBug: Boolean; ANewUnitOutputDirOption: Boolean;
       ACompilerSettingsFormat: TJclCompilerSettingsFormat; ASupportsNoConfig, ASupportsPlatform: Boolean;
       const ADCPSearchPath, ALibrarySearchPath, ALibraryDebugSearchPath, ACppSearchPath: string);
     function GetExeName: string; override;
@@ -1009,7 +1010,12 @@ begin
      AddDOFOptions(ProjectFileName, ProjectOptions) then
   begin
     if ProjectOptions.UnitOutputDir <> '' then
-      AddPathOption('N', ProjectOptions.UnitOutputDir);
+    begin
+      if FNewUnitOutputDirOption then
+        AddPathOption('NU', ProjectOptions.UnitOutputDir)
+      else
+        AddPathOption('N', ProjectOptions.UnitOutputDir);
+    end;
     if ProjectOptions.SearchPath <> '' then
     begin
       AddPathOption('I', ProjectOptions.SearchPath);
@@ -1037,11 +1043,12 @@ begin
   Result := Execute(StrDoubleQuote(StrTrimQuotes(ProjectFileName)));
 end;
 
-constructor TJclDCC32.Create(const ABinDirectory: string; ALongPathBug: Boolean;
+constructor TJclDCC32.Create(const ABinDirectory: string; ALongPathBug: Boolean; ANewUnitOutputDirOption: Boolean;
   ACompilerSettingsFormat: TJclCompilerSettingsFormat; ASupportsNoConfig, ASupportsPlatform: Boolean;
   const ADCPSearchPath, ALibrarySearchPath, ALibraryDebugSearchPath, ACppSearchPath: string);
 begin
   inherited Create(ABinDirectory, ALongPathBug, ACompilerSettingsFormat);
+  FNewUnitOutputDirOption := ANewUnitOutputDirOption;
   FSupportsNoConfig := ASupportsNoConfig;
   FSupportsPlatform := ASupportsPlatform;
   FDCPSearchPath := ADCPSearchPath;

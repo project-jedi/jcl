@@ -343,11 +343,9 @@ type
     {$ENDIF MSWINDOWS}
     FPalette: TJclBorRADToolPalette;
     FRepository: TJclBorRADToolRepository;
-    FVersionNumber: Integer;    // Delphi 2005: 3   -  Delphi 7: 7 - Delphi 2007: 11
-    FVersionNumberStr: string;
-    FIDEVersionNumber: Integer; // Delphi 2005: 3   -  Delphi 7: 7 - Delphi 2007: 11
+    FIDEVersionNumber: Integer;     // Delphi 7: 7, Delphi 2006: 4, Delphi Delphi 2007: 5, Delphi 2009: 6
     FIDEVersionNumberStr: string;
-    FPackageVersionNumber: Integer; // Delphi 2005: 3   -  Delphi 7: 7 - Delphi 2007: 10, Delphi 2009: 12, Delphi XE6: 20
+    FPackageVersionNumber: Integer; // Delphi 7: 7, Dephi 2006: 10, Delphi 2007: 10 (non-breaking release), Delphi 2009: 12, Delphi XE6: 20
     FMapCreate: Boolean;
     {$IFDEF MSWINDOWS}
     FJdbgCreate: Boolean;
@@ -544,8 +542,8 @@ type
     property VclIncludeDir[APlatform: TJclBDSPlatform]: string read GetVclIncludeDir;
     property IDEVersionNumber: Integer read FIDEVersionNumber;
     property IDEVersionNumberStr: string read FIDEVersionNumberStr;
-    property VersionNumber: Integer read FVersionNumber;
-    property VersionNumberStr: string read FVersionNumberStr;
+    property VersionNumber: Integer read FIDEVersionNumber;
+    property VersionNumberStr: string read FIDEVersionNumberStr;
     property PackageVersionNumber: Integer read FPackageVersionNumber;
     property PackageVersionNumberStr: string read GetPackageVersionNumberStr;
     property Personalities: TJclBorPersonalities read FPersonalities;
@@ -704,8 +702,7 @@ type
   TJclBorRADToolInstallations = class(TObject)
   private
     FList: TObjectList;
-    function GetBDSInstallationFromVersion(
-      VersionNumber: Integer): TJclBorRADToolInstallation;
+    function GetBDSInstallationFromVersion(VersionNumber: Integer): TJclBorRADToolInstallation;
     function GetBDSVersionInstalled(VersionNumber: Integer): Boolean;
     function GetCount: Integer;
     function GetInstallations(Index: Integer): TJclBorRADToolInstallation;
@@ -869,7 +866,7 @@ const
       CoreIdeVersion: '190';
       Supported: True),
     (
-      Name: nil;
+      Name: nil; // "Appmethod"
       VersionStr: '';
       Version: 0;
       CoreIdeVersion: '';
@@ -2044,7 +2041,7 @@ begin
   begin
     if not (clDcc32 in CommandLineTools) then
       raise EJclBorRadException.CreateResFmt(@RsENotFound, [Dcc32ExeName]);
-    FDCC32 := TJclDCC32.Create(BinFolderName, LongPathBug, CompilerSettingsFormat,
+    FDCC32 := TJclDCC32.Create(BinFolderName, LongPathBug, {XE3+}(RadToolKind = brBorlandDevStudio) and (VersionNumber >= 10), CompilerSettingsFormat,
                                SupportsNoConfig, SupportsPlatform, DCPOutputPath[bpWin32], LibFolderName[bpWin32], LibDebugFolderName[bpWin32], ObjFolderName[bpWin32]);
     FDCC32.OnEnvironmentVariables := GetEnvironmentVariables;
   end;
@@ -2108,9 +2105,9 @@ begin
   Result := GetEnvironmentVariable(EnvVariableBDSCOMDIRValueName);
   if (RadToolKind = brBorlandDevStudio) and
      SHGetSpecialFolderPath(GetActiveWindow, CommonDocuments, CSIDL_COMMON_DOCUMENTS, False) then
-    if IDEVersionNumber >= 14 then
+    if IDEVersionNumber >= 14 then // XE6+
       Result := IncludeTrailingPathDelimiter(CommonDocuments) + RADStudio14UpDirName  + PathDelim + Format('%d.0', [IDEVersionNumber])
-    else if IDEVersionNumber >= 6 then
+    else if IDEVersionNumber >= 6 then // Delphi 2009+
       Result := IncludeTrailingPathDelimiter(CommonDocuments) + RADStudioDirName  + PathDelim + Format('%d.0', [IDEVersionNumber])
 end;
 
@@ -2624,21 +2621,7 @@ begin
   else
     FIDEVersionNumber := 0;
 
- // If this is Spacely, then consider the version is equal to 4 (BDS2006)
- // as it is a non breaking version (dcu wise)
-
- { ahuser: Delphi 2007 is a non breaking version in the case that you can use
-   BDS 2006 compiled units in Delphi 2007. But it completely breaks the BDS 2006
-   installation because if BDS 2006 uses the Delphi 2007 compile DCUs the
-   resulting executable is broken and will do strange things. So treat Delphi 2007
-   as version 11 what it actually is. }
- {if (FIDEVersionNumber = 5) and (RadToolKind = brBorlandDevStudio) then
-    FVersionNumber := 4
-  else}
-    FVersionNumber := FIDEVersionNumber;
-
-  FVersionNumberStr := FormatVersionNumber(VersionNumber);
-  FIDEVersionNumberStr := FormatVersionNumber(IDEVersionNumber);
+  FIDEVersionNumberStr := FormatVersionNumber(VersionNumber);
 
   if RadToolKind = brBorlandDevStudio then
   begin
@@ -2646,7 +2629,7 @@ begin
       FPackageVersionNumber := BDSVersions[IDEVersionNumber].Version;
   end
   else
-    FPackageVersionNumber := VersionNumber;
+    FPackageVersionNumber := IDEVersionNumber;
 
   FRootDir := PathRemoveSeparator(Globals.Values[RootDirValueName]);
   FBinFolderName := PathAddSeparator(RootDir) + BinDir;
@@ -3634,7 +3617,7 @@ begin
   begin
     if not (clDcc64 in CommandLineTools) then
       raise EJclBorRadException.CreateResFmt(@RsENotFound, [Dcc64ExeName]);
-    FDCC64 := TJclDCC64.Create(BinFolderName, LongPathBug, CompilerSettingsFormat,
+    FDCC64 := TJclDCC64.Create(BinFolderName, LongPathBug, {XE3+}(RadToolKind = brBorlandDevStudio) and (VersionNumber >= 10), CompilerSettingsFormat,
                                SupportsNoConfig, SupportsPlatform, DCPOutputPath[bpWin64], LibFolderName[bpWin64],
                                LibDebugFolderName[bpWin64], ObjFolderName[bpWin64]);
   end;
@@ -3647,7 +3630,7 @@ begin
   begin
     if not (clDccOSX32 in CommandLineTools) then
       raise EJclBorRadException.CreateResFmt(@RsENotFound, [DccOSX32ExeName]);
-    FDCCOSX32 := TJclDCCOSX32.Create(BinFolderName, LongPathBug, CompilerSettingsFormat,
+    FDCCOSX32 := TJclDCCOSX32.Create(BinFolderName, LongPathBug, {XE3+}(RadToolKind = brBorlandDevStudio) and (VersionNumber >= 10), CompilerSettingsFormat,
                                      SupportsNoConfig, SupportsPlatform, DCPOutputPath[bpOSX32], LibFolderName[bpOSX32],
                                      LibDebugFolderName[bpOSX32], ObjFolderName[bpOSX32]);
   end;
@@ -3673,7 +3656,7 @@ begin
   begin
     if not (clDccIL in CommandLineTools) then
       raise EJclBorRadException.CreateResFmt(@RsENotFound, [DccILExeName]);
-    FDCCIL := TJclDCCIL.Create(BinFolderName, LongPathBug, CompilerSettingsFormat,
+    FDCCIL := TJclDCCIL.Create(BinFolderName, LongPathBug, {XE3+}(RadToolKind = brBorlandDevStudio) and (VersionNumber >= 10), CompilerSettingsFormat,
                                SupportsNoConfig, SupportsPlatform, DCPOutputPath[bpWin32], LibFolderName[bpWin32], LibDebugFolderName[bpWin32], ObjFolderName[bpWin32]);
   end;
   Result := FDCCIL;
