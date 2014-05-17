@@ -135,13 +135,13 @@ type
     FOnEnvironmentVariables: TJclStringsGetterFunction;
     FSupportsNoConfig: Boolean;
     FSupportsPlatform: Boolean;
-    FNewUnitOutputDirOption: Boolean;
+    FDCCVersion: Single;
   protected
     procedure AddProjectOptions(const ProjectFileName, DCPPath: string);
     function Compile(const ProjectFileName: string): Boolean;
   public
     class function GetPlatform: string; virtual;
-    constructor Create(const ABinDirectory: string; ALongPathBug: Boolean; ANewUnitOutputDirOption: Boolean;
+    constructor Create(const ABinDirectory: string; ALongPathBug: Boolean; ADCCVersion: Single;
       ACompilerSettingsFormat: TJclCompilerSettingsFormat; ASupportsNoConfig, ASupportsPlatform: Boolean;
       const ADCPSearchPath, ALibrarySearchPath, ALibraryDebugSearchPath, ACppSearchPath: string);
     function GetExeName: string; override;
@@ -161,6 +161,7 @@ type
     property OnEnvironmentVariables: TJclStringsGetterFunction read FOnEnvironmentVariables write FOnEnvironmentVariables;
     property SupportsNoConfig: Boolean read FSupportsNoConfig;
     property SupportsPlatform: Boolean read FSupportsPlatform;
+    property DCCVersion: Single read FDCCVersion;
   end;
 
   TJclDCC64 = class(TJclDCC32)
@@ -1011,7 +1012,7 @@ begin
   begin
     if ProjectOptions.UnitOutputDir <> '' then
     begin
-      if FNewUnitOutputDirOption then
+      if DCCVersion >= 24.0 then // XE3+
         AddPathOption('NU', ProjectOptions.UnitOutputDir)
       else
         AddPathOption('N', ProjectOptions.UnitOutputDir);
@@ -1043,12 +1044,12 @@ begin
   Result := Execute(StrDoubleQuote(StrTrimQuotes(ProjectFileName)));
 end;
 
-constructor TJclDCC32.Create(const ABinDirectory: string; ALongPathBug: Boolean; ANewUnitOutputDirOption: Boolean;
+constructor TJclDCC32.Create(const ABinDirectory: string; ALongPathBug: Boolean; ADCCVersion: Single;
   ACompilerSettingsFormat: TJclCompilerSettingsFormat; ASupportsNoConfig, ASupportsPlatform: Boolean;
   const ADCPSearchPath, ALibrarySearchPath, ALibraryDebugSearchPath, ACppSearchPath: string);
 begin
   inherited Create(ABinDirectory, ALongPathBug, ACompilerSettingsFormat);
-  FNewUnitOutputDirOption := ANewUnitOutputDirOption;
+  FDCCVersion := ADCCVersion;
   FSupportsNoConfig := ASupportsNoConfig;
   FSupportsPlatform := ASupportsPlatform;
   FDCPSearchPath := ADCPSearchPath;
@@ -1059,6 +1060,7 @@ begin
 end;
 
 function TJclDCC32.Execute(const CommandLine: string): Boolean;
+
   function IsPathOption(const S: string; out Len: Integer): Boolean;
   begin
     Result := False;
@@ -1084,12 +1086,22 @@ function TJclDCC32.Execute(const CommandLine: string): Boolean;
         'N':
           begin
             Result := True;
-            if (Length(S) >= 3) then
+            if Length(S) >= 3 then
             begin
               case Upcase(S[3]) of
+                'U', 'X': // -NU<dcupath> -NX<xmlpath>
+                  if DCCVersion >= 24.0 then // XE3+
+                    Len := 3
+                  else
+                    Len := 2;
                 '0'..'9',
                 'H', 'O', 'B':
                   Len := 3;
+                'S': // -NS<namespace>
+                  if DCCVersion >= 23.0 then // XE2+
+                    Len := 3
+                  else
+                    Len := 2;
               else
                 Len := 2;
               end;
@@ -1097,6 +1109,7 @@ function TJclDCC32.Execute(const CommandLine: string): Boolean;
           end;
       end;
   end;
+
 var
   OptionIndex, PathIndex, SwitchLen: Integer;
   PathList: TStrings;
