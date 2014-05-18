@@ -61,7 +61,7 @@ uses
   Winapi.Windows, Sevenzip, Winapi.ActiveX,
   {$ENDIF MSWINDOWS}
   System.Types,
-  System.SysUtils, System.Classes, System.Contnrs, System.StrUtils,
+  System.SysUtils, System.Classes, System.Contnrs,
   {$IFDEF ZLIB_RTL}
   System.ZLib,
   {$ENDIF ZLIB_RTL}
@@ -70,7 +70,7 @@ uses
   Windows, Sevenzip, ActiveX,
   {$ENDIF MSWINDOWS}
   Types,
-  SysUtils, Classes, Contnrs, StrUtils,
+  SysUtils, Classes, Contnrs,
   {$IFDEF ZLIB_RTL}
   ZLib,
   {$ENDIF ZLIB_RTL}
@@ -2226,6 +2226,11 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.StrUtils,
+  {$ELSE}
+  StrUtils,
+  {$ENDIF HAS_UNITSCOPE}
   JclUnicode, // WideSameText
   JclDateTime, JclFileUtils, JclResources, JclStrings, JclSysUtils;
 
