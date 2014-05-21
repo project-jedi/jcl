@@ -3802,12 +3802,16 @@ end;
 function TJclSafecallInterfacedObject.SafeCallException(ExceptObject: TObject;
   ExceptAddr: Pointer): HResult;
 begin
+  {$IFDEF HAS_ENOTIMPLEMENTED}
   if ExceptObject is ENotImplemented then
     Result := E_NOTIMPL
   else
+  {$ENDIF HAS_ENOTIMPLEMENTED}
+  {$IFDEF HAS_EARGUMENTEXCEPTION}
   if ExceptObject is EArgumentException then
     Result := E_INVALIDARG
   else
+  {$ENDIF HAS_EARGUMENTEXCEPTION}
   if ExceptObject is EOutOfMemory then
     Result := E_OUTOFMEMORY
   else
@@ -6642,9 +6646,19 @@ end;
 
 procedure TJclSevenzipUpdateCallback.GetVolumeStream(Index: Cardinal;
   out VolumeStream: ISequentialOutStream);
+{$IFNDEF HAS_ENOTIMPLEMENTED}
+var
+  OSError: EOSError;
+{$ENDIF ~HAS_ENOTIMPLEMENTED}
 begin
   VolumeStream := nil;
+  {$IFDEF HAS_ENOTIMPLEMENTED}
   raise ENotImplemented.Create('');
+  {$ELSE}
+  OSError := EOSError.Create('GetVolumeStream is not implemented');
+  OSError.ErrorCode := ERROR_CALL_NOT_IMPLEMENTED;
+  raise OSError;
+  {$ENDIF HAS_ENOTIMPLEMENTED}
 end;
 
 procedure TJclSevenzipUpdateCallback.SetCompleted(
