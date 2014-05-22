@@ -793,7 +793,7 @@ const
   DelphiKeyName       = '\SOFTWARE\Borland\Delphi';
 
   RADStudioDirName = 'RAD Studio';
-  RADStudio14UpDirName = 'Embarcardero\Studio';
+  RADStudio14UpDirName = 'Embarcadero\Studio';
 
   BDSVersions: array [1..14] of TBDSVersionInfo = (
     (
@@ -2143,7 +2143,7 @@ begin
 
     // Overwrite BDSCommonDir because it conflicts with older versions and
     // the RAD Studio 2009 setup doesn't update the environment variable anymore
-    if (RadToolKind = brBorlandDevStudio) and (IDEVersionNumber >= 6) and (IDEVersionNumber < 14) then
+    if (RadToolKind = brBorlandDevStudio) and (IDEVersionNumber >= 6) then
       FEnvironmentVariables.Values[EnvVariableBDSCOMDIRValueName] := GetDefaultBDSCommonDir;
 
     // read environment variable overrides
