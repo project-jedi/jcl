@@ -586,10 +586,11 @@ uses
   JclLogic;
 
 type
-  TRGBInt = record
+  TBGRAInt = record
     R: Integer;
     G: Integer;
     B: Integer;
+    A: Integer;
   end;
 
   PBGRA = ^TBGRA;
@@ -636,6 +637,7 @@ threadvar
   CurrentLineR: array of Integer;
   CurrentLineG: array of Integer;
   CurrentLineB: array of Integer;
+  CurrentLineA: array of Integer;
 
 //=== Helper functions =======================================================
 
@@ -871,6 +873,7 @@ begin
     CurrentLineR[I] := Run.R;
     CurrentLineG[I] := Run.G;
     CurrentLineB[I] := Run.B;
+    CurrentLineA[I] := Run.A;
     Inc(PByte(Run), Delta);
   end;
 end;
@@ -878,7 +881,7 @@ end;
 function ApplyContributors(N: Integer; Contributors: TContributors): TBGRA;
 var
   J: Integer;
-  RGB: TRGBInt;
+  RGB: TBGRAInt;
   Total,
   Weight: Integer;
   Pixel: Cardinal;
@@ -887,6 +890,7 @@ begin
   RGB.R := 0;
   RGB.G := 0;
   RGB.B := 0;
+  RGB.A := 0;
   Total := 0;
   Contr := @Contributors[0];
   for J := 0 to N - 1 do
@@ -897,6 +901,7 @@ begin
     Inc(RGB.R, CurrentLineR[Pixel] * Weight);
     Inc(RGB.G, CurrentLineG[Pixel] * Weight);
     Inc(RGB.B, CurrentLineB[Pixel] * Weight);
+    Inc(RGB.A, CurrentLineA[Pixel] * Weight);
     Inc(Contr);
   end;
 
@@ -905,12 +910,14 @@ begin
     Result.R := IntToByte(RGB.R shr 8);
     Result.G := IntToByte(RGB.G shr 8);
     Result.B := IntToByte(RGB.B shr 8);
+    Result.A := IntToByte(RGB.A shr 8);
   end
   else
   begin
     Result.R := IntToByte(RGB.R div Total);
     Result.G := IntToByte(RGB.G div Total);
     Result.B := IntToByte(RGB.B div Total);
+    Result.A := IntToByte(RGB.A div Total);
   end;
 end;
 
@@ -1025,6 +1032,7 @@ begin
     SetLength(CurrentLineR, SourceWidth);
     SetLength(CurrentLineG, SourceWidth);
     SetLength(CurrentLineB, SourceWidth);
+    SetLength(CurrentLineA, SourceWidth);
     for K := 0 to SourceHeight - 1 do
     begin
       SourceLine := Source.ScanLine[K];
@@ -1115,6 +1123,7 @@ begin
     SetLength(CurrentLineR, SourceHeight);
     SetLength(CurrentLineG, SourceHeight);
     SetLength(CurrentLineB, SourceHeight);
+    SetLength(CurrentLineA, SourceHeight);
 
     SourceLine := Work.ScanLine[0];
     Delta := Integer(Work.ScanLine[1]) - Integer(SourceLine);
@@ -1145,6 +1154,7 @@ begin
     CurrentLineR := nil;
     CurrentLineG := nil;
     CurrentLineB := nil;
+    CurrentLineA := nil;
     Target.Modified := True;
   end;
 end;

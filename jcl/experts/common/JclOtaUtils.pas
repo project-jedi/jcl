@@ -631,16 +631,16 @@ begin
           PropLocations := InternalLocateProperties(AReader, PropIDs);
           for PropIndex := 0 to PropCount - 1 do
             if PropLocations[PropIndex] > 0 then
-          begin
-            SetLength(Result[PropIndex], BufferSize);
-            SetLength(Result[PropIndex], AReader.GetText(PropLocations[PropIndex], PAnsiChar(Result[PropIndex]), BufferSize));
-            for BufferIndex := 1 to Length(Result[PropIndex]) do
-              if CharIsWhiteSpace(Char(Result[PropIndex][BufferIndex])) then
             begin
-              SetLength(Result[PropIndex], BufferIndex - 1);
-              Break;
+              SetLength(Result[PropIndex], BufferSize);
+              SetLength(Result[PropIndex], AReader.GetText(PropLocations[PropIndex], PAnsiChar(Result[PropIndex]), BufferSize));
+              for BufferIndex := 1 to Length(Result[PropIndex]) do
+                if CharIsWhiteSpace(Char(Result[PropIndex][BufferIndex])) then
+                begin
+                  SetLength(Result[PropIndex], BufferIndex - 1);
+                  Break;
+                end;
             end;
-          end;
         finally
           AReader := nil;
         end;
@@ -691,10 +691,10 @@ begin
               SetLength(Buffer, AReader.GetText(PropLocations[0], PAnsiChar(Buffer), BufferSize));
               for BufferIndex := 1 to Length(Buffer) do
                 if CharIsWhiteSpace(Char(Buffer[BufferIndex])) then
-              begin
-                PropSize := BufferIndex - 1;
-                Break;
-              end;
+                begin
+                  PropSize := BufferIndex - 1;
+                  Break;
+                end;
             end;
           finally
             // release the reader before allocating the writer

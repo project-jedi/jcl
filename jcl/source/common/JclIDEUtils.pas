@@ -343,11 +343,10 @@ type
     {$ENDIF MSWINDOWS}
     FPalette: TJclBorRADToolPalette;
     FRepository: TJclBorRADToolRepository;
-    FVersionNumber: Integer;    // Delphi 2005: 3   -  Delphi 7: 7 - Delphi 2007: 11
-    FVersionNumberStr: string;
-    FIDEVersionNumber: Integer; // Delphi 2005: 3   -  Delphi 7: 7 - Delphi 2007: 11
+    FIDEVersionNumber: Integer;     // Delphi 7: 7, Delphi 2006: 4, Delphi Delphi 2007: 5, Delphi 2009: 6
     FIDEVersionNumberStr: string;
-    FPackageVersionNumber: Integer; // Delphi 2005: 3   -  Delphi 7: 7 - Delphi 2007: 10, Delphi 2009: 12, Delphi XE6: 20
+    FPackageVersionNumber: Integer; // Delphi 7: 7, Dephi 2006: 10, Delphi 2007: 10 (non-breaking release), Delphi 2009: 12, Delphi XE6: 20
+    FDCCVersion: Single;
     FMapCreate: Boolean;
     {$IFDEF MSWINDOWS}
     FJdbgCreate: Boolean;
@@ -544,8 +543,9 @@ type
     property VclIncludeDir[APlatform: TJclBDSPlatform]: string read GetVclIncludeDir;
     property IDEVersionNumber: Integer read FIDEVersionNumber;
     property IDEVersionNumberStr: string read FIDEVersionNumberStr;
-    property VersionNumber: Integer read FVersionNumber;
-    property VersionNumberStr: string read FVersionNumberStr;
+    property VersionNumber: Integer read FIDEVersionNumber;
+    property VersionNumberStr: string read FIDEVersionNumberStr;
+    property DCCVersion: Single read FDCCVersion;
     property PackageVersionNumber: Integer read FPackageVersionNumber;
     property PackageVersionNumberStr: string read GetPackageVersionNumberStr;
     property Personalities: TJclBorPersonalities read FPersonalities;
@@ -621,6 +621,7 @@ type
     function GetMsBuildEnvOption(const OptionName: string; APlatform: TJclBDSPlatform; Raw: Boolean): string;
     procedure SetMsBuildEnvOption(const OptionName, Value: string; APlatform: TJclBDSPlatform);
     function GetBDSPlatformStr(APlatform: TJclBDSPlatform): string;
+    class procedure InterpretSetVariable(const Line: string; Variables: TStrings);
   protected
     function GetDCPOutputPath(APlatform: TJclBDSPlatform): string; override;
     function GetBPLOutputPath(APlatform: TJclBDSPlatform): string; override;
@@ -703,8 +704,7 @@ type
   TJclBorRADToolInstallations = class(TObject)
   private
     FList: TObjectList;
-    function GetBDSInstallationFromVersion(
-      VersionNumber: Integer): TJclBorRADToolInstallation;
+    function GetBDSInstallationFromVersion(VersionNumber: Integer): TJclBorRADToolInstallation;
     function GetBDSVersionInstalled(VersionNumber: Integer): Boolean;
     function GetCount: Integer;
     function GetInstallations(Index: Integer): TJclBorRADToolInstallation;
@@ -777,7 +777,8 @@ type
   TBDSVersionInfo = record
     Name: PResStringRec;
     VersionStr: string;
-    Version: Integer;
+    DCCVersion: Single;
+    PkgVersion: Integer;
     CoreIdeVersion: string;
     Supported: Boolean;
   end;
@@ -792,91 +793,105 @@ const
   DelphiKeyName       = '\SOFTWARE\Borland\Delphi';
 
   RADStudioDirName = 'RAD Studio';
-  RADStudio14UpDirName = 'Embarcardero\Studio';
+  RADStudio14UpDirName = 'Embarcadero\Studio';
 
   BDSVersions: array [1..14] of TBDSVersionInfo = (
     (
       Name: @RsCSharpName;
       VersionStr: '1.0';
-      Version: 1;
+      DCCVersion: 0.0;
+      PkgVersion: 1;
       CoreIdeVersion: '71';
       Supported: True),
     (
       Name: @RsDelphiName;
       VersionStr: '8';
-      Version: 8;
+      DCCVersion: 15.0; // Delphi 8 used the Delphi 7 compiler
+      PkgVersion: 8;
       CoreIdeVersion: '71';
       Supported: True),
     (
       Name: @RsDelphiName;
       VersionStr: '2005';
-      Version: 9;
+      DCCVersion: 17.0;
+      PkgVersion: 9;
       CoreIdeVersion: '90';
       Supported: True),
     (
       Name: @RsBDSName;
       VersionStr: '2006';
-      Version: 10;
+      DCCVersion: 18.0;
+      PkgVersion: 10;
       CoreIdeVersion: '100';
       Supported: True),
     (
       Name: @RsRSName;
       VersionStr: '2007';
-      Version: 11;
+      DCCVersion: 18.5;
+      PkgVersion: 10;
       CoreIdeVersion: '100';
       Supported: True),
     (
       Name: @RsRSName;
       VersionStr: '2009';
-      Version: 12;
+      DCCVersion: 20.0; // Delphi.NET 2009 is 19.0
+      PkgVersion: 12;
       CoreIdeVersion: '120';
       Supported: True),
     (
       Name: @RsRSName;
       VersionStr: '2010';
-      Version: 14;
+      DCCVersion: 21.0;
+      PkgVersion: 14;
       CoreIdeVersion: '140';
       Supported: True),
     (
       Name: @RsRSName;
       VersionStr: 'XE';
-      Version: 15;
+      DCCVersion: 22.0;
+      PkgVersion: 15;
       CoreIdeVersion: '150';
       Supported: True),
     (
       Name: @RsRSName;
       VersionStr: 'XE2';
-      Version: 16;
+      DCCVersion: 23.0;
+      PkgVersion: 16;
       CoreIdeVersion: '160';
       Supported: True),
     (
       Name: @RsRSName;
       VersionStr: 'XE3';
-      Version: 17;
+      DCCVersion: 24.0;
+      PkgVersion: 17;
       CoreIdeVersion: '170';
       Supported: True),
     (
       Name: @RsRSName;
       VersionStr: 'XE4';
-      Version: 18;
+      DCCVersion: 25.0;
+      PkgVersion: 18;
       CoreIdeVersion: '180';
       Supported: True),
     (
       Name: @RsRSName;
       VersionStr: 'XE5';
-      Version: 19;
+      DCCVersion: 26.0;
+      PkgVersion: 19;
       CoreIdeVersion: '190';
       Supported: True),
     (
-      Name: nil;
+      Name: nil; // "Appmethod"
       VersionStr: '';
-      Version: 0;
+      DCCVersion: 0.0;
+      PkgVersion: 0;
       CoreIdeVersion: '';
       Supported: False),
     (
       Name: @RsRSName;
       VersionStr: 'XE6';
-      Version: 20;
+      DCCVersion: 27.0;
+      PkgVersion: 20;
       CoreIdeVersion: '200';
       Supported: True)
   );
@@ -2043,7 +2058,7 @@ begin
   begin
     if not (clDcc32 in CommandLineTools) then
       raise EJclBorRadException.CreateResFmt(@RsENotFound, [Dcc32ExeName]);
-    FDCC32 := TJclDCC32.Create(BinFolderName, LongPathBug, CompilerSettingsFormat,
+    FDCC32 := TJclDCC32.Create(BinFolderName, LongPathBug, DCCVersion, CompilerSettingsFormat,
                                SupportsNoConfig, SupportsPlatform, DCPOutputPath[bpWin32], LibFolderName[bpWin32], LibDebugFolderName[bpWin32], ObjFolderName[bpWin32]);
     FDCC32.OnEnvironmentVariables := GetEnvironmentVariables;
   end;
@@ -2107,9 +2122,9 @@ begin
   Result := GetEnvironmentVariable(EnvVariableBDSCOMDIRValueName);
   if (RadToolKind = brBorlandDevStudio) and
      SHGetSpecialFolderPath(GetActiveWindow, CommonDocuments, CSIDL_COMMON_DOCUMENTS, False) then
-    if IDEVersionNumber >= 14 then
+    if IDEVersionNumber >= 14 then // XE6+
       Result := IncludeTrailingPathDelimiter(CommonDocuments) + RADStudio14UpDirName  + PathDelim + Format('%d.0', [IDEVersionNumber])
-    else if IDEVersionNumber >= 6 then
+    else if IDEVersionNumber >= 6 then // Delphi 2009+
       Result := IncludeTrailingPathDelimiter(CommonDocuments) + RADStudioDirName  + PathDelim + Format('%d.0', [IDEVersionNumber])
 end;
 
@@ -2128,7 +2143,7 @@ begin
 
     // Overwrite BDSCommonDir because it conflicts with older versions and
     // the RAD Studio 2009 setup doesn't update the environment variable anymore
-    if (RadToolKind = brBorlandDevStudio) and (IDEVersionNumber >= 6) and (IDEVersionNumber < 14) then
+    if (RadToolKind = brBorlandDevStudio) and (IDEVersionNumber >= 6) then
       FEnvironmentVariables.Values[EnvVariableBDSCOMDIRValueName] := GetDefaultBDSCommonDir;
 
     // read environment variable overrides
@@ -2623,29 +2638,21 @@ begin
   else
     FIDEVersionNumber := 0;
 
- // If this is Spacely, then consider the version is equal to 4 (BDS2006)
- // as it is a non breaking version (dcu wise)
-
- { ahuser: Delphi 2007 is a non breaking version in the case that you can use
-   BDS 2006 compiled units in Delphi 2007. But it completely breaks the BDS 2006
-   installation because if BDS 2006 uses the Delphi 2007 compile DCUs the
-   resulting executable is broken and will do strange things. So treat Delphi 2007
-   as version 11 what it actually is. }
- {if (FIDEVersionNumber = 5) and (RadToolKind = brBorlandDevStudio) then
-    FVersionNumber := 4
-  else}
-    FVersionNumber := FIDEVersionNumber;
-
-  FVersionNumberStr := FormatVersionNumber(VersionNumber);
-  FIDEVersionNumberStr := FormatVersionNumber(IDEVersionNumber);
+  FIDEVersionNumberStr := FormatVersionNumber(VersionNumber);
 
   if RadToolKind = brBorlandDevStudio then
   begin
     if IDEVersionNumber in [Low(BDSVersions)..High(BDSVersions)] then
-      FPackageVersionNumber := BDSVersions[IDEVersionNumber].Version;
+    begin
+      FPackageVersionNumber := BDSVersions[IDEVersionNumber].PkgVersion;
+      FDCCVersion := BDSVersions[IDEVersionNumber].DCCVersion;
+    end;
   end
   else
-    FPackageVersionNumber := VersionNumber;
+  begin
+    FPackageVersionNumber := IDEVersionNumber;
+    FDCCVersion := 8 + IDEVersionNumber; // Delphi 1.0 = Compiler 8.0
+  end;
 
   FRootDir := PathRemoveSeparator(Globals.Values[RootDirValueName]);
   FBinFolderName := PathAddSeparator(RootDir) + BinDir;
@@ -3556,10 +3563,6 @@ class function TJclBDSInstallation.GetCommonProjectsDirectory(const RootDir: str
   IDEVersionNumber: Integer): string;
 var
   Variables: TStrings;
-  I: Integer;
-  S, StartS: string;
-  ps: Integer;
-  LowerEnvVariableBDSCOMDIRValueName: string;
 begin
   if IDEVersionNumber >= 5 then
   begin
@@ -3567,42 +3570,8 @@ begin
 
     Variables := TStringList.Create;
     try
-      // Try to parse the rsvars.bat what is much faster than creating a cmd.exe process.
-      try
-        Variables.LoadFromFile(GetRADStudioVarsFileName(RootDir, IDEVersionNumber));
-        LowerEnvVariableBDSCOMDIRValueName := LowerCase(EnvVariableBDSCOMDIRValueName);
-        // Find "[@]SET BDSCOMMONDIR=..."
-        for I := Variables.Count - 1 downto 0 do // the last occurrence overwrites the others
-        begin
-          S := LowerCase(Variables[I]);
-          ps := Pos(LowerEnvVariableBDSCOMDIRValueName, S);
-          if ps > 0 then
-          begin
-            StartS := Trim(Copy(S, 1, ps - 1));
-            if (StartS <> '') and (StartS[1] = '@') then
-              StartS := Trim(Copy(StartS, 2, Length(StartS)));
-            if StartS = 'set' then
-            begin
-              S := Trim(Copy(Variables[I], ps + Length(EnvVariableBDSCOMDIRValueName), Length(Variables[I])));
-              if (S <> '') and (S[1] = '=') then
-              begin
-                S := Copy(S, 2, Length(S));
-                if Pos('%', S) = 0 then // if there is a macro in the string we fall back to using cmd.exe
-                  Result := S;
-                Break;
-              end;
-            end;
-          end;
-        end;
-      except
-        Result := '';
-      end;
-
-      if Result = '' then
-      begin
-        GetRADStudioVars(RootDir, IDEVersionNumber, Variables);
-        Result := Variables.Values[EnvVariableBDSCOMDIRValueName];
-      end;
+      GetRADStudioVars(RootDir, IDEVersionNumber, Variables);
+      Result := Variables.Values[EnvVariableBDSCOMDIRValueName];
     finally
       Variables.Free;
     end;
@@ -3671,7 +3640,7 @@ begin
   begin
     if not (clDcc64 in CommandLineTools) then
       raise EJclBorRadException.CreateResFmt(@RsENotFound, [Dcc64ExeName]);
-    FDCC64 := TJclDCC64.Create(BinFolderName, LongPathBug, CompilerSettingsFormat,
+    FDCC64 := TJclDCC64.Create(BinFolderName, LongPathBug, DCCVersion, CompilerSettingsFormat,
                                SupportsNoConfig, SupportsPlatform, DCPOutputPath[bpWin64], LibFolderName[bpWin64],
                                LibDebugFolderName[bpWin64], ObjFolderName[bpWin64]);
   end;
@@ -3684,7 +3653,7 @@ begin
   begin
     if not (clDccOSX32 in CommandLineTools) then
       raise EJclBorRadException.CreateResFmt(@RsENotFound, [DccOSX32ExeName]);
-    FDCCOSX32 := TJclDCCOSX32.Create(BinFolderName, LongPathBug, CompilerSettingsFormat,
+    FDCCOSX32 := TJclDCCOSX32.Create(BinFolderName, LongPathBug, DCCVersion, CompilerSettingsFormat,
                                      SupportsNoConfig, SupportsPlatform, DCPOutputPath[bpOSX32], LibFolderName[bpOSX32],
                                      LibDebugFolderName[bpOSX32], ObjFolderName[bpOSX32]);
   end;
@@ -3710,7 +3679,7 @@ begin
   begin
     if not (clDccIL in CommandLineTools) then
       raise EJclBorRadException.CreateResFmt(@RsENotFound, [DccILExeName]);
-    FDCCIL := TJclDCCIL.Create(BinFolderName, LongPathBug, CompilerSettingsFormat,
+    FDCCIL := TJclDCCIL.Create(BinFolderName, LongPathBug, DCCVersion, CompilerSettingsFormat,
                                SupportsNoConfig, SupportsPlatform, DCPOutputPath[bpWin32], LibFolderName[bpWin32], LibDebugFolderName[bpWin32], ObjFolderName[bpWin32]);
   end;
   Result := FDCCIL;
@@ -3848,19 +3817,126 @@ begin
     Result := inherited GetLibFolderName(APlatform);
 end;
 
+class procedure TJclBDSInstallation.InterpretSetVariable(const Line: string; Variables: TStrings);
+
+  function SkipWhitespaces(P: PChar): PChar;
+  begin
+    Result := P;
+    while True do
+      case Result^ of
+        #1..#32: Inc(Result);
+      else
+        Break;
+      end;
+  end;
+
+  function SkipWhitespacesAndAtSign(P: PChar): PChar;
+  begin
+    Result := P;
+    while True do
+      case Result^ of
+        #1..#32, '@': Inc(Result);
+      else
+        Break;
+      end;
+  end;
+
+var
+  F, P: PChar;
+  VarName, VarValue: string;
+  S: string;
+begin
+  // parse "[@]set name=value"
+
+  F := SkipWhitespacesAndAtSign(PChar(Line));
+  P := F;
+  while P^ > #32 do
+    Inc(P);
+  if (P^ <> #0) and (StrLIComp('set', F, P - F) = 0) then
+  begin
+    // extract Variablen name
+    P := SkipWhitespaces(P);
+    F := P;
+    while (P^ <> #0) and (P^ <> '=') do
+      Inc(P);
+    if P^ <> #0 then // "set Variable" only outputs the variables so ignore it
+    begin
+      SetString(VarName, F, P - F); // the batch interpreter includes trailing whitespaces and so do we
+      if VarName <> '' then
+      begin
+        // extract variable value and resolve macros
+        VarValue := '';
+        F := P + 1;
+        P := F;
+        while P^ <> #0 do
+        begin
+          // fast forward
+          while True do
+          begin
+            case P^ of
+              #0, '%': Break;
+            end;
+            Inc(P);
+          end;
+
+          if P^ = #0 then
+            Break;
+
+          // append already parsed substring
+          if P - F > 0 then
+          begin
+            SetString(S, F, P - F);
+            VarValue := VarValue + S;
+          end;
+
+          // append resolved macro
+          Inc(P);
+          F := P;
+          while (P^ <> #0) and (P^ <> '%') do
+            Inc(P);
+          SetString(S, F, P - F);
+          VarValue := VarValue + Variables.Values[S];
+
+          if P^ <> #0 then
+            Inc(P);
+          F := P;
+        end;
+
+        // append remaining substring
+        if P - F > 0 then
+        begin
+          SetString(S, F, P - F);
+          VarValue := VarValue + S;
+        end;
+
+        Variables.Values[VarName] := VarValue;
+        if VarValue = '' then // empty VarValue removes the item from Variables but we must keep the overwrite for correctness
+          Variables.Add(VarName + '=');
+      end;
+    end;
+  end;
+end;
+
 class procedure TJclBDSInstallation.GetRADStudioVars(const RootDir: string; IDEVersionNumber: Integer; Variables: TStrings);
 var
-  RsVarsOutput, ComSpec, RsVarsError: string;
+  Lines: TStrings;
+  I: Integer;
 begin
   if IDEVersionNumber >= 5 then
   begin
-    RsVarsOutput := '';
-    RsVarsError := '';
-    if GetEnvironmentVar('COMSPEC', ComSpec) and (JclSysUtils.Execute(Format('%s /C " "%s" && set"',
-      [ComSpec, GetRADStudioVarsFileName(RootDir, IDEVersionNumber)]), RsVarsOutput, RsVarsError) = 0) then
-      Variables.Text := RsVarsOutput
-    else
-      raise EJclBorRADException.CreateResFmt(@RsERsVars, [RadToolName(IDEVersionNumber), IDEVersionNumber, RsVarsError]);
+    GetEnvironmentVars(Variables);
+
+    // Parse the rsvars.bat what is much faster than creating a cmd.exe process that could even fail
+    // to start leaving the user with an empty "RsVarsError" string. (Mantis #6282)
+    Lines := TStringList.Create;
+    try
+      Lines.LoadFromFile(GetRADStudioVarsFileName(RootDir, IDEVersionNumber));
+      // Interpret "[@]SET ...=..."
+      for I := 0 to Lines.Count - 1 do
+        InterpretSetVariable(Lines[I], Variables);
+    finally
+      Lines.Free;
+    end;
   end;
 end;
 

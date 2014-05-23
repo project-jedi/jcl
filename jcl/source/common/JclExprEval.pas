@@ -1645,7 +1645,7 @@ begin
           Inc(cp);
 
         { check for and read in fraction part of mantissa }
-        if (cp^ = '.') or (cp^ = JclFormatSettings.DecimalSeparator) then
+        if cp^ = '.' then
         begin
           Inc(cp);
           while CharIsDigit(cp^) do
@@ -1699,7 +1699,10 @@ begin
       end;
   else
     { map character to token }
-    FCurrTok := CharToTokenMap[AnsiChar(cp^)];
+    if Word(cp^) < 256 then
+      FCurrTok := CharToTokenMap[AnsiChar(cp^)]
+    else
+      FCurrTok := etInvalid;
     Inc(cp);
   end;
 
