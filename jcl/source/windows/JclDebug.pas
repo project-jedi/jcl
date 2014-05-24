@@ -3251,7 +3251,7 @@ begin
           FUnitVersionRevision := UnitVersion.Revision;
           FValues := FValues + [lievUnitVersionInfo];
           Break;
-        end;
+end;
       end;
       if lievUnitVersionInfo in FValues then
         Break;
@@ -5099,23 +5099,33 @@ end;
 
 {$IFDEF CPU64}
 procedure TJclStackInfoList.CaptureBackTrace;
+const
+  InternalSkipFrames = 1; // skip this method
 var
-  CapturedFramesCount: Word;
-  BackTrace: array [0..62] of Pointer;
+  BackTrace: array [0..127] of Pointer;
+  MaxFrames: Integer;
   Hash: DWORD;
   I: Integer;
   StackInfo: TStackInfo;
+  CapturedFramesCount: Word;
 begin
+  if JclCheckWinVersion(6, 0) then
+    MaxFrames := Length(BackTrace)
+  else
+  begin
+    // For XP and 2003 sum of FramesToSkip and FramesToCapture must be lower than 63
+    MaxFrames := 62 - InternalSkipFrames;
+  end;
+
   ResetMemory(BackTrace, SizeOf(BackTrace));
-  //TODO: For XP and 2003 sum of FramesToSkip and FramesToCapture must be lower
-  // than 63, but we could use higher values for newer OS versions
-  CapturedFramesCount := CaptureStackBackTrace(10, 52, @BackTrace, Hash);
+  CapturedFramesCount := CaptureStackBackTrace(InternalSkipFrames, MaxFrames, @BackTrace, Hash);
+
+  ResetMemory(StackInfo, SizeOf(StackInfo));
   for I := 0 to CapturedFramesCount - 1 do
   begin
-    ResetMemory(StackInfo, SizeOf(StackInfo));
     StackInfo.CallerAddr := TJclAddr(BackTrace[I]);
     StackInfo.Level := I;
-    StoreToList(StackInfo);
+    StoreToList(StackInfo); // skips all frames with a level less than "IgnoreLevels"
   end;
 end;
 {$ENDIF CPU64}
