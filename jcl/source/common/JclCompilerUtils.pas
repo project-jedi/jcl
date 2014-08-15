@@ -77,6 +77,10 @@ type
     procedure CheckOutputValid;
     function GetFileName: string;
     function InternalExecute(const CommandLine: string): Boolean;
+
+    function InternalNeedToUseOem: Boolean;
+    function InternalAnsiToOemIfNeeded(const aText: string): string;
+    function InternalOemToAnsiIfNeeded(const aText: string): string;
   public
     constructor Create(const ABinDirectory: string; ALongPathBug: Boolean;
       ACompilerSettingsFormat: TJclCompilerSettingsFormat);
@@ -775,12 +779,22 @@ begin
   Result := FOutputCallback;
 end;
 
+function TJclBorlandCommandLineTool.InternalAnsiToOemIfNeeded(const aText: string): string;
+begin
+  if InternalNeedToUseOem then
+    Result := StrAnsiToOem(AnsiString(aText))
+  else
+    Result := aText;
+end;
+
 function TJclBorlandCommandLineTool.InternalExecute(
   const CommandLine: string): Boolean;
 var
   LaunchCommand: string;
+  tmpCommandLine: string;
 begin
-  LaunchCommand := Format('%s %s', [FileName, StrAnsiToOem(AnsiString(CommandLine))]);
+  tmpCommandLine := InternalAnsiToOemIfNeeded(CommandLine);
+  LaunchCommand := Format('%s %s', [FileName, tmpCommandLine]);
   if Assigned(FOutputCallback) then
   begin
     OemTextHandler(LaunchCommand);
@@ -790,9 +804,39 @@ begin
   begin
     Result := JclSysUtils.Execute(LaunchCommand, FOutput) = 0;
     {$IFDEF MSWINDOWS}
-    FOutput := string(StrOemToAnsi(AnsiString(FOutput)));
+    FOutput := InternalOemToAnsiIfNeeded(FOutput);
     {$ENDIF MSWINDOWS}
   end;
+end;
+
+function TJclBorlandCommandLineTool.InternalNeedToUseOem: Boolean;
+begin
+  { TODO : Probably D2007 also may have MsBuild format }
+  result := CompilerSettingsFormat <> csfMsBuild;
+end;
+
+function TJclBorlandCommandLineTool.InternalOemToAnsiIfNeeded(const aText: string): string;
+begin
+  {$IFDEF MSWINDOWS}
+  if InternalNeedToUseOem then
+  begin
+    // Text is OEM under Windows
+    // Code below seems to crash older compilers at times, so we only do
+    // the casts when it's absolutely necessary, that is when compiling
+    // with a unicode compiler.
+    {$IFDEF UNICODE}
+    Result := string(StrOemToAnsi(AnsiString(aText)));
+    {$ELSE}
+    Result := StrOemToAnsi(aText);
+    {$ENDIF UNICODE}
+  end
+  else
+  begin
+    Result := aText;
+  end;
+  {$ELSE ~MSWINDOWS}
+  Result := aText;
+  {$ENDIF ~MSWINDOWS}
 end;
 
 procedure TJclBorlandCommandLineTool.OemTextHandler(const Text: string);
@@ -801,19 +845,7 @@ var
 begin
   if Assigned(FOutputCallback) then
   begin
-    {$IFDEF MSWINDOWS}
-    // Text is OEM under Windows
-    // Code below seems to crash older compilers at times, so we only do
-    // the casts when it's absolutely necessary, that is when compiling
-    // with a unicode compiler.
-    {$IFDEF UNICODE}
-    AnsiText := string(StrOemToAnsi(AnsiString(Text)));
-    {$ELSE}
-    AnsiText := StrOemToAnsi(Text);
-    {$ENDIF UNICODE}
-    {$ELSE ~MSWINDOWS}
-    AnsiText := Text;
-    {$ENDIF ~MSWINDOWS}
+    AnsiText := InternalOemToAnsiIfNeeded(Text);
     FOutputCallback(AnsiText);
   end;
 end;
