@@ -59,6 +59,8 @@ type
 
   TJclCompilerSettingsFormat = (csfDOF, csfBDSProj, csfMsBuild);
 
+
+  TJclOnBeforeRunCommandLineTool = procedure (var ExeName, CommandLine:string; var DoExecute:Boolean) of object;
   TJclBorlandCommandLineTool = class;
   TJclBorlandCommandLineToolEvent = procedure(Sender:TJclBorlandCommandLineTool) of object;
 
@@ -72,6 +74,7 @@ type
     FOutput: string;
     FOnAfterExecute: TJclBorlandCommandLineToolEvent;
     FOnBeforeExecute: TJclBorlandCommandLineToolEvent;
+    FOnBeforeRun: TJclOnBeforeRunCommandLineTool;
     procedure OemTextHandler(const Text: string);
   protected
     procedure CheckOutputValid;
@@ -104,6 +107,7 @@ type
     property FileName: string read GetFileName;
     property OnAfterExecute: TJclBorlandCommandLineToolEvent read FOnAfterExecute write FOnAfterExecute;
     property OnBeforeExecute: TJclBorlandCommandLineToolEvent read FOnBeforeExecute write FOnBeforeExecute;
+    property OnBeforeRun: TJclOnBeforeRunCommandLineTool read FOnBeforeRun write FOnBeforeRun;
   end;
 
   TJclBCC32 = class(TJclBorlandCommandLineTool)
@@ -817,10 +821,23 @@ function TJclBorlandCommandLineTool.InternalExecute(
   const CommandLine: string): Boolean;
 var
   LaunchCommand: string;
-  tmpCommandLine: string;
+  tmpDoExecute: Boolean;
+  tmpFileName, tmpCommandLine: string;
 begin
-  tmpCommandLine := InternalAnsiToOemIfNeeded(CommandLine);
-  LaunchCommand := Format('%s %s', [FileName, tmpCommandLine]);
+  tmpDoExecute := True;
+  tmpFileName := FileName;
+  tmpCommandLine := CommandLine;
+  if Assigned(FOnBeforeRun) then
+    FOnBeforeRun(tmpFileName, tmpCommandLine, tmpDoExecute);
+
+  if not tmpDoExecute then
+  begin
+    Result := False;
+    exit;
+  end;
+
+  tmpCommandLine := InternalAnsiToOemIfNeeded(tmpCommandLine);
+  LaunchCommand := Format('%s %s', [tmpFileName, tmpCommandLine]);
   if Assigned(FOutputCallback) then
   begin
     OemTextHandler(LaunchCommand);
