@@ -246,6 +246,7 @@ type
     function GetPackageFileNames(Index: Integer): string;
     function GetIDEPackageFileNames(Index: Integer): string;
     function GetExpertFileNames(Index: Integer): string;
+    procedure SetPackageDisabledEnabled(aIndex: integer; aEnabled: Boolean);
   protected
     function PackageEntryToFileName(const Entry: string): string;
     procedure ReadPackages;
@@ -268,7 +269,7 @@ type
     property PackageFileNames[Index: Integer]: string read GetPackageFileNames;
     property IDEPackageFileNames[Index: Integer]: string read GetIDEPackageFileNames;
     property ExpertFileNames[Index: Integer]: string read GetExpertFileNames;
-    property PackageDisabled[Index: Integer]: Boolean read GetPackageDisabled;
+    property PackageDisabled[Index: Integer]: Boolean read GetPackageDisabled write SetPackageDisabledEnabled;
   end;
 
   TJclBorRADToolPalette = class(TJclBorRADToolInstallationObject)
@@ -1405,6 +1406,29 @@ begin
       Result := True;
       Break;
     end;
+  end;
+end;
+
+procedure TJclBorRADToolIdePackages.SetPackageDisabledEnabled(aIndex: integer; aEnabled: Boolean);
+const
+  cNonExistingValue = '?;)';
+var
+  tmpPackageName: string;
+  tmpPackageData: string;
+begin
+  tmpPackageName := FKnownPackages.Names[aIndex];
+  tmpPackageData := Installation.ConfigData.ReadString(KnownPackagesKeyName, tmpPackageName, cNonExistingValue);
+  if tmpPackageData<>cNonExistingValue then
+  begin
+    if aEnabled then
+    begin
+      Installation.ConfigData.WriteString(DisabledPackagesKeyName, tmpPackageName, tmpPackageData);
+    end
+    else
+    begin
+      Installation.ConfigData.DeleteKey(DisabledPackagesKeyName, tmpPackageName);
+    end;
+    ReadPackages;
   end;
 end;
 
