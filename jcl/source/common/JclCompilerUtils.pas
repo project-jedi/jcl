@@ -139,6 +139,7 @@ type
     FOnEnvironmentVariables: TJclStringsGetterFunction;
     FSupportsNoConfig: Boolean;
     FSupportsPlatform: Boolean;
+    FIgnoreConfigFiles: Boolean;
     FDCCVersion: Single;
   protected
     procedure AddProjectOptions(const ProjectFileName, DCPPath: string);
@@ -160,6 +161,7 @@ type
     function AddDProjOptions(const ProjectFileName: string; var ProjectOptions: TProjectOptions): Boolean;
     property CppSearchPath: string read FCppSearchPath;
     property DCPSearchPath: string read FDCPSearchPath;
+    property IgnoreConfigFiles: Boolean read FIgnoreConfigFiles write FIgnoreConfigFiles;
     property LibrarySearchPath: string read FLibrarySearchPath;
     property LibraryDebugSearchPath: string read FLibraryDebugSearchPath;
     property OnEnvironmentVariables: TJclStringsGetterFunction read FOnEnvironmentVariables write FOnEnvironmentVariables;
@@ -1038,6 +1040,9 @@ begin
   ProjectOptions.Conditionals := '';
   ProjectOptions.Namespace := '';
 
+  if FIgnoreConfigFiles then
+    exit;
+
   if AddDProjOptions(ProjectFileName, ProjectOptions) or
      AddBDSProjOptions(ProjectFileName, ProjectOptions) or
      AddDOFOptions(ProjectFileName, ProjectOptions) then
@@ -1088,6 +1093,7 @@ begin
   FLibrarySearchPath := ALibrarySearchPath;
   FLibraryDebugSearchPath := ALibraryDebugSearchPath;
   FCppSearchPath := ACppSearchPath;
+  FIgnoreConfigFiles := False;
   SetDefaultOptions(False); // in case $(DELPHI)\bin\dcc32.cfg (replace as appropriate) is invalid
 end;
 
