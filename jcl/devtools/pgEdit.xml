@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
-<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
 <Configuration>
   <!-- These are the values stored by jaxStore -->
   <pgEdit/>
@@ -80,35 +79,36 @@
         <target name="d18" defines="BCB" IsBds="1"/>
         <target name="d19" defines="BCB" IsBds="1"/>
         <target name="d20" defines="BCB" IsBds="1"/>	
+        <target name="d21" defines="BCB" IsBds="1"/>
       </targets>
       <aliases>
         <!-- language aliases -->
-        <alias name="Delphi" value="d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20"/>
-        <alias name="Bcb" value="c6,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20"/>
-        <alias name="Pascal" value="fpc,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20"/>
+        <alias name="Delphi" value="d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21"/>
+        <alias name="Bcb" value="c6,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21"/>
+        <alias name="Pascal" value="fpc,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21"/>
         <!-- platform aliases -->
-        <alias name="Windows" value="help,fpc,c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20"/>
+        <alias name="Windows" value="help,fpc,c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21"/>
         <alias name="Linux" value="help,fpc"/>
         <!-- package aliases -->
-        <alias name="allv11up" value="d11,d12,d14,d15,d16,d17,d18,d19,d20"/>
-        <alias name="allv14up" value="d14,d15,d16,d17,d18,d19,d20"/>
-        <alias name="allv15up" value="d15,d16,d17,d18,d19,d20"/>
+        <alias name="allv11up" value="d11,d12,d14,d15,d16,d17,d18,d19,d20,d21"/>
+        <alias name="allv14up" value="d14,d15,d16,d17,d18,d19,d20,d21"/>
+        <alias name="allv15up" value="d15,d16,d17,d18,d19,d20,d21"/>
         <!-- GUI aliases -->
         <alias name="Clx" value="help,c6,d6,d7"/>
-        <alias name="Vcl" value="help,c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20"/>
+        <alias name="Vcl" value="help,c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21"/>
         <!-- IDE aliases -->
-        <alias name="BDS" value="cs1,d8,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20"/>
-        <alias name="runtimeBDS" value="d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20"/>
+        <alias name="BDS" value="cs1,d8,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21"/>
+        <alias name="runtimeBDS" value="d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21"/>
         <alias name="OldStyleIDE" value="c6,d6,d7"/>
-        <alias name="runtimeIDE" value="c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20"/>
-        <alias name="designtimeIDE" value="c6,d6,d7,d8,d9,d10,cs1,d11,d12,d14,d15,d16,d17,d18,d19,d20"/>
+        <alias name="runtimeIDE" value="c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21"/>
+        <alias name="designtimeIDE" value="c6,d6,d7,d8,d9,d10,cs1,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21"/>
       </aliases>
       <ProjectProperties>
         <ProjectProperty name="VersionMajorNumber" value="2"/>
         <ProjectProperty name="VersionMinorNumber" value="5"/>
         <ProjectProperty name="ReleaseNumber" value="0"/>
         <ProjectProperty name="BuildNumber" value="4572"/>
-        <ProjectProperty name="Copyright" value="Copyright (C) 1999, 2013 Project JEDI"/>
+        <ProjectProperty name="Copyright" value="Copyright (C) 1999, 2014 Project JEDI"/>
       </ProjectProperties>
     </Model>
   </models>
