@@ -54,9 +54,9 @@ File18=..\..\..\help\JclContainers.dtx
 File19=..\..\..\help\StrHashMap.dtx
 
 [General]
-Copyright=Copyright (C) 1999, 2013 Project JEDI
+Copyright=Copyright (C) 1999, 2014 Project JEDI
 Summary=Documentation of the JEDI Code Library Containers package
 Title=JEDI Code Library Containers package
-VersionBuild=4572
+VersionBuild=5300
 VersionMajor=2
-VersionMinor=5
+VersionMinor=7

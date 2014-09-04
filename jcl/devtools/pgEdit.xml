@@ -78,7 +78,7 @@
         <target name="d17" defines="BCB" IsBds="1"/>
         <target name="d18" defines="BCB" IsBds="1"/>
         <target name="d19" defines="BCB" IsBds="1"/>
-        <target name="d20" defines="BCB" IsBds="1"/>	
+        <target name="d20" defines="BCB" IsBds="1"/>
         <target name="d21" defines="BCB" IsBds="1"/>
       </targets>
       <aliases>
@@ -105,9 +105,9 @@
       </aliases>
       <ProjectProperties>
         <ProjectProperty name="VersionMajorNumber" value="2"/>
-        <ProjectProperty name="VersionMinorNumber" value="5"/>
+        <ProjectProperty name="VersionMinorNumber" value="7"/>
         <ProjectProperty name="ReleaseNumber" value="0"/>
-        <ProjectProperty name="BuildNumber" value="4572"/>
+        <ProjectProperty name="BuildNumber" value="5300"/>
         <ProjectProperty name="Copyright" value="Copyright (C) 1999, 2014 Project JEDI"/>
       </ProjectProperties>
     </Model>

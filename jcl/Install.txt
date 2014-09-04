@@ -1,4 +1,4 @@
-JEDI Code Library v 2.5 Installation
+JEDI Code Library v 2.7 Installation
 
 Supported development tools versions:
 
