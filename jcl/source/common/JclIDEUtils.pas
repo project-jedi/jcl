@@ -346,6 +346,7 @@ type
     FRepository: TJclBorRADToolRepository;
     FIDEVersionNumber: Integer;     // Delphi 7: 7, Delphi 2006: 4, Delphi Delphi 2007: 5, Delphi 2009: 6
     FIDEVersionNumberStr: string;
+    FIDEPackageVersionNumber: Integer; // Delphi 7: 7, Delphi 2006: 10; Delphi 2007: 11, Delphi 2009: 12, Delphi XE6: 20
     FPackageVersionNumber: Integer; // Delphi 7: 7, Dephi 2006: 10, Delphi 2007: 10 (non-breaking release), Delphi 2009: 12, Delphi XE6: 20
     FDCCVersion: Single;
     FMapCreate: Boolean;
@@ -376,6 +377,7 @@ type
     function GetRepository: TJclBorRADToolRepository;
     function GetUpdateNeeded: Boolean;
     function GetDefaultBDSCommonDir: string;
+    function GetIDEPackageVersionNumberStr: string;
     function GetPackageVersionNumberStr: string;
     procedure SetBCC(const Value: TJclBCC32);
     procedure SetDCC(const Value: TJclDCC32);
@@ -550,6 +552,8 @@ type
     property VersionNumber: Integer read FIDEVersionNumber;
     property VersionNumberStr: string read FIDEVersionNumberStr;
     property DCCVersion: Single read FDCCVersion;
+    property IDEPackageVersionNumber: Integer read FIDEPackageVersionNumber;
+    property IDEPackageVersionNumberStr: string read GetIDEPackageVersionNumberStr;
     property PackageVersionNumber: Integer read FPackageVersionNumber;
     property PackageVersionNumberStr: string read GetPackageVersionNumberStr;
     property Personalities: TJclBorPersonalities read FPersonalities;
@@ -782,6 +786,7 @@ type
     Name: PResStringRec;
     VersionStr: string;
     DCCVersion: Single;
+    IDEPkgVersion: Integer;
     PkgVersion: Integer;
     CoreIdeVersion: string;
     Supported: Boolean;
@@ -804,6 +809,7 @@ const
       Name: @RsCSharpName;
       VersionStr: '1.0';
       DCCVersion: 0.0;
+      IDEPkgVersion: 1;
       PkgVersion: 1;
       CoreIdeVersion: '71';
       Supported: True),
@@ -811,13 +817,15 @@ const
       Name: @RsDelphiName;
       VersionStr: '8';
       DCCVersion: 15.0; // Delphi 8 used the Delphi 7 compiler
-      PkgVersion: 8;
+      IDEPkgVersion: 8;
+      PkgVersion: 7;
       CoreIdeVersion: '71';
       Supported: True),
     (
       Name: @RsDelphiName;
       VersionStr: '2005';
       DCCVersion: 17.0;
+      IDEPkgVersion: 9;
       PkgVersion: 9;
       CoreIdeVersion: '90';
       Supported: True),
@@ -825,6 +833,7 @@ const
       Name: @RsBDSName;
       VersionStr: '2006';
       DCCVersion: 18.0;
+      IDEPkgVersion: 10;
       PkgVersion: 10;
       CoreIdeVersion: '100';
       Supported: True),
@@ -832,6 +841,7 @@ const
       Name: @RsRSName;
       VersionStr: '2007';
       DCCVersion: 18.5;
+      IDEPkgVersion: 11; // Delphi 2007 IDE is 11 but runtime are 10
       PkgVersion: 10;
       CoreIdeVersion: '100';
       Supported: True),
@@ -839,6 +849,7 @@ const
       Name: @RsRSName;
       VersionStr: '2009';
       DCCVersion: 20.0; // Delphi.NET 2009 is 19.0
+      IDEPkgVersion: 12;
       PkgVersion: 12;
       CoreIdeVersion: '120';
       Supported: True),
@@ -846,6 +857,7 @@ const
       Name: @RsRSName;
       VersionStr: '2010';
       DCCVersion: 21.0;
+      IDEPkgVersion: 14;
       PkgVersion: 14;
       CoreIdeVersion: '140';
       Supported: True),
@@ -853,6 +865,7 @@ const
       Name: @RsRSName;
       VersionStr: 'XE';
       DCCVersion: 22.0;
+      IDEPkgVersion: 15;
       PkgVersion: 15;
       CoreIdeVersion: '150';
       Supported: True),
@@ -860,6 +873,7 @@ const
       Name: @RsRSName;
       VersionStr: 'XE2';
       DCCVersion: 23.0;
+      IDEPkgVersion: 16;
       PkgVersion: 16;
       CoreIdeVersion: '160';
       Supported: True),
@@ -867,6 +881,7 @@ const
       Name: @RsRSName;
       VersionStr: 'XE3';
       DCCVersion: 24.0;
+      IDEPkgVersion: 17;
       PkgVersion: 17;
       CoreIdeVersion: '170';
       Supported: True),
@@ -874,6 +889,7 @@ const
       Name: @RsRSName;
       VersionStr: 'XE4';
       DCCVersion: 25.0;
+      IDEPkgVersion: 18;
       PkgVersion: 18;
       CoreIdeVersion: '180';
       Supported: True),
@@ -881,6 +897,7 @@ const
       Name: @RsRSName;
       VersionStr: 'XE5';
       DCCVersion: 26.0;
+      IDEPkgVersion: 19;
       PkgVersion: 19;
       CoreIdeVersion: '190';
       Supported: True),
@@ -888,6 +905,7 @@ const
       Name: nil; // "Appmethod"
       VersionStr: '';
       DCCVersion: 0.0;
+      IDEPkgVersion: 0;
       PkgVersion: 0;
       CoreIdeVersion: '';
       Supported: False),
@@ -895,6 +913,7 @@ const
       Name: @RsRSName;
       VersionStr: 'XE6';
       DCCVersion: 27.0;
+      IDEPkgVersion: 20;
       PkgVersion: 20;
       CoreIdeVersion: '200';
       Supported: True),
@@ -902,6 +921,7 @@ const
       Name: @RsRSName;
       VersionStr: 'XE7';
       DCCVersion: 28.0;
+      IDEPkgVersion: 21;
       PkgVersion: 21;
       CoreIdeVersion: '210';
       Supported: True)
@@ -2144,7 +2164,7 @@ begin
     if IDEVersionNumber >= 14 then // XE6+
       Result := IncludeTrailingPathDelimiter(CommonDocuments) + RADStudio14UpDirName  + PathDelim + Format('%d.0', [IDEVersionNumber])
     else if IDEVersionNumber >= 6 then // Delphi 2009+
-      Result := IncludeTrailingPathDelimiter(CommonDocuments) + RADStudioDirName  + PathDelim + Format('%d.0', [IDEVersionNumber])
+      Result := IncludeTrailingPathDelimiter(CommonDocuments) + RADStudioDirName  + PathDelim + Format('%d.0', [IDEVersionNumber]);
 end;
 
 function TJclBorRADToolInstallation.GetEnvironmentVariables: TStrings;
@@ -2287,6 +2307,17 @@ begin
   CheckPlatform(APlatform);
   Result := LibFolderName[APlatform] + PathAddSeparator('obj');
   if not DirectoryExists(Result) then
+    Result := '';
+end;
+
+function TJclBorRADToolInstallation.GetIDEPackageVersionNumberStr: string;
+var
+  Value: Integer;
+begin
+  Value := IDEPackageVersionNumber;
+  if Value > 0 then
+    Result := IntToStr(Value) + '0'
+  else
     Result := '';
 end;
 
@@ -2664,11 +2695,13 @@ begin
     if IDEVersionNumber in [Low(BDSVersions)..High(BDSVersions)] then
     begin
       FPackageVersionNumber := BDSVersions[IDEVersionNumber].PkgVersion;
+      FIDEPackageVersionNumber := BDSVersions[IDEVersionNumber].IDEPkgVersion;
       FDCCVersion := BDSVersions[IDEVersionNumber].DCCVersion;
     end;
   end
   else
   begin
+    FIDEPackageVersionNumber := IDEVersionNumber;
     FPackageVersionNumber := IDEVersionNumber;
     FDCCVersion := 8 + IDEVersionNumber; // Delphi 1.0 = Compiler 8.0
   end;
@@ -4550,8 +4583,7 @@ begin
           Break;
         end;
       brBorlandDevStudio:
-        if ((VersionNumber >= 14) and (Installations[I].IDEVersionNumber = (VersionNumber - 7))) or
-          ((VersionNumber >= 10) and (Installations[I].IDEVersionNumber = (VersionNumber - 6))) then
+        if Installations[I].IDEPackageVersionNumber = VersionNumber then
         begin
           Result := Installations[I];
           Break;
@@ -4574,8 +4606,7 @@ begin
           Break;
         end;
       brBorlandDevStudio:
-        if ((VersionNumber >= 14) and (Installations[I].IDEVersionNumber = (VersionNumber - 7))) or
-          ((VersionNumber >= 8) and (Installations[I].IDEVersionNumber = (VersionNumber - 6))) then
+        if Installations[I].IDEPackageVersionNumber = VersionNumber then
         begin
           Result := Installations[I];
           Break;
