@@ -336,9 +336,15 @@ const
   NegInfinity = -Infinity;
   {$EXTERNALSYM NegInfinity}
 
+{$IFDEF WIN64}
+{$HPPEMIT 'static const double Infinity    =  1.0 / 0.0;'}
+{$HPPEMIT 'static const double NaN         =  0.0 / 0.0;'}
+{$HPPEMIT 'static const double NegInfinity = -1.0 / 0.0;'}
+{$ELSE}
 {$HPPEMIT 'static const Infinity    =  1.0 / 0.0;'}
 {$HPPEMIT 'static const NaN         =  0.0 / 0.0;'}
 {$HPPEMIT 'static const NegInfinity = -1.0 / 0.0;'}
+{$ENDIF WIN64}
 
 {$IFDEF CPU32}
 
