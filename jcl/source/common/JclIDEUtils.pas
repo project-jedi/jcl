@@ -327,6 +327,7 @@ type
     FGlobals: TStringList;
     FRootDir: string;
     FBinFolderName: string;
+    FBCC: TJclBCC32;
     FBCC32: TJclBCC32;
     FDCC: TJclDCC32;
     FDCC32: TJclDCC32;
@@ -357,6 +358,7 @@ type
     FPersonalities: TJclBorPersonalities;
     FOutputCallback: TTextHandler;
     function GetSupportsLibSuffix: Boolean;
+    function GetBCC: TJclBCC32;
     function GetBCC32: TJclBCC32;
     function GetDCC: TJclDCC32;
     function GetDCC32: TJclDCC32;
@@ -375,6 +377,7 @@ type
     function GetUpdateNeeded: Boolean;
     function GetDefaultBDSCommonDir: string;
     function GetPackageVersionNumberStr: string;
+    procedure SetBCC(const Value: TJclBCC32);
     procedure SetDCC(const Value: TJclDCC32);
   protected
     function ProcessMapFile(const BinaryFileName: string): Boolean;
@@ -494,6 +497,7 @@ type
     property LibDebugFolderName[APlatform: TJclBDSPlatform]: string read GetLibDebugFolderName;
     // Command line tools
     property CommandLineTools: TCommandLineTools read FCommandLineTools;
+    property BCC: TJclBCC32 read GetBCC write SetBCC;
     property BCC32: TJclBCC32 read GetBCC32;
     property DCC: TJclDCC32 read GetDCC write SetDCC;
     property DCC32: TJclDCC32 read GetDCC32;
@@ -2024,6 +2028,14 @@ begin
   Result := FBpr2Mak;
 end;
 
+function TJclBorRADToolInstallation.GetBCC: TJclBCC32;
+begin
+  if Assigned(FBCC) then
+    Result := FBCC
+  else
+    Result := BCC32;
+end;
+
 function TJclBorRADToolInstallation.GetBCC32: TJclBCC32;
 begin
   if not Assigned(FBCC32) then
@@ -2815,6 +2827,11 @@ begin
     PathItems.Free;
     RemoveItems.Free;
   end;
+end;
+
+procedure TJclBorRADToolInstallation.SetBCC(const Value: TJclBCC32);
+begin
+  FBCC := Value;
 end;
 
 procedure TJclBorRADToolInstallation.SetDCC(const Value: TJclDCC32);
