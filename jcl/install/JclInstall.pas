@@ -1707,10 +1707,15 @@ var
   var
     I: Integer;                                        
   begin
-    if (Target is TJclBDSInstallation) and (Target.IDEVersionNumber >= 11) and (FTargetPlatform = bpWin64) then
-      Target.BCC := (Target as TJclBDSInstallation).BCC64
-    else if clBcc32 in Target.CommandLineTools then
+    if FTargetPlatform = bpWin64 then
+    begin
+      if (Target is TJclBDSInstallation) and (Target.IDEVersionNumber >= 11) then  // BCC64 appeared with XE3
+        Target.BCC := (Target as TJclBDSInstallation).BCC64
+    end
+    else if clBcc32 in Target.CommandLineTools then  // false for Delphi 6/7 for instance
+    begin
       Target.BCC := Target.BCC32;
+    end;
 
     Result := True;
     if OptionChecked[joJCLMake] then
