@@ -185,9 +185,9 @@ File150=..\..\..\help\WideStrings.dtx
 File151=..\..\..\help\Win32.dtx
 
 [General]
-Copyright=Copyright (C) 1999, 2013 Project JEDI
+Copyright=Copyright (C) 1999, 2014 Project JEDI
 Summary=Documentation of the JEDI Code Library RTL package
 Title=JEDI Code Library RTL package
-VersionBuild=4572
+VersionBuild=5300
 VersionMajor=2
-VersionMinor=5
+VersionMinor=7

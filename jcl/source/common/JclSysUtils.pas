@@ -3031,7 +3031,7 @@ begin
         end;
         if {$IFDEF FPC}Boolean({$ENDIF}AbortPtr^{$IFDEF FPC}){$ENDIF} then
           TerminateProcess(ProcessEvent.Handle, Cardinal(ABORT_EXIT_CODE));
-        if (ProcessEvent.WaitForever = wrSignaled) and not GetExitCodeProcess(ProcessEvent.Handle, Result) then
+        if (ProcessEvent.WaitForever = {$IFDEF DELPHI21_UP}TJclWaitResult.{$ENDIF}wrSignaled) and not GetExitCodeProcess(ProcessEvent.Handle, Result) then
           Result := $FFFFFFFF;
         CloseHandle(ProcessInfo.hThread);
         ProcessInfo.hThread := 0;

@@ -332,6 +332,9 @@ function GetOSVersionString: string;
 function GetMacAddresses(const Machine: string; const Addresses: TStrings): Integer;
 {$ENDIF MSWINDOWS}
 function ReadTimeStampCounter: Int64;
+{$IFDEF WIN64}
+{$EXTERNALSYM ReadTimeStampCounter}
+{$ENDIF WIN64}
 
 type
   TTLBInformation = (tiEntries, tiAssociativity);

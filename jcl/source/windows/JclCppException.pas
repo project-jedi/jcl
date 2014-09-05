@@ -87,8 +87,10 @@ type
 
     {$IFDEF COMPILER15_UP}
     { These are only accessible from C++ }
+    {$IFNDEF WIN64}
     function IsCppClass<TCppClass: TInaccessibleType>: Boolean; overload;
     function AsCppClass<TCppClass: TInaccessibleType>: TPointerType<TCppClass>.TPointer; overload;
+    {$ENDIF ~WIN64}
     {$ENDIF COMPILER15_UP}
 
     destructor Destroy; override;
@@ -118,6 +120,7 @@ type
   (*$HPPEMIT '} /* namespace Jclcppexception */'*)
 
   {$IFDEF COMPILER15_UP}
+  {$IFNDEF WIN64}
   (*$HPPEMIT END 'namespace Jclcppexception'*)
   (*$HPPEMIT END '{'*)
   (*$HPPEMIT END ''*)
@@ -133,6 +136,7 @@ type
   (*$HPPEMIT END '}'*)
   (*$HPPEMIT END ''*)
   (*$HPPEMIT END '} /* namespace Jclcppexception */'*)
+  {$ENDIF ~WIN64}
   {$ENDIF COMPILER15_UP}
 
 
@@ -307,6 +311,7 @@ function CppGetBase(var Obj: Pointer; TypeDesc: PCppTypeId;
   BaseName: PAnsiChar): Boolean; forward;
 
 {$IFDEF COMPILER15_UP}
+{$IFNDEF WIN64}
 function EJclCppException.AsCppClass<TCppClass>: TPointerType<TCppClass>.TPointer;
 begin
   Assert(False);
@@ -315,6 +320,7 @@ function EJclCppException.IsCppClass<TCppClass>: Boolean;
 begin
   Assert(False);
 end;
+{$ENDIF ~WIN64}
 {$ENDIF COMPILER15_UP}
 
 constructor EJclCppException.CreateTypeNamed(ATypeName: PAnsiChar; ExcDesc: Pointer);
