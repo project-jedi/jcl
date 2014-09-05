@@ -1709,7 +1709,7 @@ var
   begin
     if (Target is TJclBDSInstallation) and (Target.IDEVersionNumber >= 9) and (FTargetPlatform = bpWin64) then
       Target.BCC := (Target as TJclBDSInstallation).BCC64
-    else if clBcc32 in CommandLineTools then
+    else if clBcc32 in Target.CommandLineTools then
       Target.BCC := Target.BCC32;
 
     Result := True;
