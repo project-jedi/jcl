@@ -194,7 +194,7 @@ type
     {$IFDEF MSWINDOWS}
     function CompileExpert(const Name: string): Boolean;
     {$ENDIF MSWINDOWS}
-    
+
     function GetBplPath: string;
     function GetDcpPath: string;
     function GetHppPath: string;
@@ -698,7 +698,7 @@ begin
 
   FProfilesTargets := TObjectList.Create;
   FProfilesTargets.Count := InstallCore.ProfilesManager.ProfileCount;
-  FProfilesTargets.OwnsObjects := False; 
+  FProfilesTargets.OwnsObjects := False;
 end;
 
 destructor TJclInstallation.Destroy;
@@ -1316,7 +1316,7 @@ end;
 function TJclInstallation.Install: Boolean;
 var
   AProfilesManager: IJediProfilesManager;
-  
+
   procedure WriteIntroduction;
   var
     Personality: TJclBorPersonality;
@@ -1403,7 +1403,7 @@ var
         try
           IncludeFile.LoadFromFile(Distribution.JclIncludeTemplate);
           WriteLog(Format(LoadResString(@RsLogLoadTemplate), [Distribution.JclIncludeTemplate]));
-    
+
           for IndexLine := 0 to IncludeFile.Count - 1 do
           begin
             IncludeLine := IncludeFile.Strings[IndexLine];
@@ -1427,7 +1427,7 @@ var
                   IncludeLine := StringReplace(IncludeLine, NotDefineText, DefineText, [rfIgnoreCase]);
                 if (DefinePos < 0) and Defined then
                   IncludeLine := StringReplace(IncludeLine, DefineText, NotDefineText, [rfIgnoreCase]);
-    
+
                 IncludeFile.Strings[IndexLine] := IncludeLine;
               end;
             end;
@@ -1524,7 +1524,7 @@ var
     if OptionChecked[joJCLEnvironment] then
     begin
       MarkOptionBegin(joJCLEnvironment);
-  
+
       if OptionChecked[joJCLEnvLibPath] then
       begin
         MarkOptionBegin(joJCLEnvLibPath);
@@ -1707,10 +1707,15 @@ var
   var
     I: Integer;
   begin
-    if (Target is TJclBDSInstallation) and (Target.IDEVersionNumber >= 9) and (FTargetPlatform = bpWin64) then
-      Target.BCC := (Target as TJclBDSInstallation).BCC64
-    else
+    if FTargetPlatform = bpWin64 then
+    begin
+      if (Target is TJclBDSInstallation) and (Target.IDEVersionNumber >= 11) then  // BCC64 appeared with XE3
+        Target.BCC := (Target as TJclBDSInstallation).BCC64
+    end
+    else if clBcc32 in Target.CommandLineTools then  // false for Delphi 6/7 for instance
+    begin
       Target.BCC := Target.BCC32;
+    end;
 
     Result := True;
     if OptionChecked[joJCLMake] then
@@ -2696,7 +2701,7 @@ function TJclInstallation.CompileLibraryUnits(const SubDir: string; Debug: Boole
         // will clutter the source folder and might even prevent compilation
         // when multiple versions of C++ Builder are installed on the same
         // computer. The easiest way to see this is when checking HPP files.
-        FileDelete(FileName);        
+        FileDelete(FileName);
       end;
       if (CompareText(UnitList[I], 'zlibh') = 0) and (Target.RadToolKind = brCppBuilder) and (Target.VersionNumber = 6) then
       begin
@@ -3246,7 +3251,7 @@ begin
   Settings := InstallCore.Configuration;
   if Assigned(Settings) and Assigned(FProfilesPage) then
     for I := 0 to InstallCore.ProfilesManager.ProfileCount - 1 do
-      Settings.OptionAsBoolByName[ProfilesSectionName, InstallCore.ProfilesManager.ProfileNames[I]] := FProfilesPage.IsProfileEnabled[I]; 
+      Settings.OptionAsBoolByName[ProfilesSectionName, InstallCore.ProfilesManager.ProfileNames[I]] := FProfilesPage.IsProfileEnabled[I];
   for I := 0 to TargetInstallCount - 1 do
     TargetInstalls[I].Close;
   FGUI := nil;
