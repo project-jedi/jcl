@@ -1707,12 +1707,13 @@ var
   var
     I: Integer;
   begin
+    // As people may only buy Delphi (without C++ Builder), we must make sure that bcc(32-64) is available before accessing the property
     if FTargetPlatform = bpWin64 then
     begin
-      if (Target is TJclBDSInstallation) and (Target.IDEVersionNumber >= 11) then  // BCC64 appeared with XE3
+      if clBcc64 in Target.CommandLineTools then 
         Target.BCC := (Target as TJclBDSInstallation).BCC64
     end
-    else if clBcc32 in Target.CommandLineTools then  // false for Delphi 6/7 for instance
+    else if clBcc32 in Target.CommandLineTools then 
     begin
       Target.BCC := Target.BCC32;
     end;
