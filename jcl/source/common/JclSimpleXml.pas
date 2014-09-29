@@ -2504,8 +2504,6 @@ begin
             TJclSimpleXMLNamedElems(FNamedElems.SimpleItems[NamedIndex]).FItems.Remove(Value);
         end;
         FElems.Remove(Value);
-        Value.FParent := nil;
-        Value.FSimpleXML := nil;
       end;
     opInsert:
       begin
