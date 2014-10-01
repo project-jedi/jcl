@@ -399,7 +399,7 @@ type
     function Add(const Name, Value: string): TJclSimpleXMLElemClassic; overload;
     function Add(const Name: string; const Value: Int64): TJclSimpleXMLElemClassic; overload;
     function Add(const Name: string; const Value: Boolean): TJclSimpleXMLElemClassic; overload;
-    function Add(const Name: string; Value: TStream): TJclSimpleXMLElemClassic; overload;
+    function Add(const Name: string; Value: TStream; BufferSize: Integer = 0): TJclSimpleXMLElemClassic; overload;
     function Add(Value: TJclSimpleXMLElem): TJclSimpleXMLElem; overload;
     function AddFirst(Value: TJclSimpleXMLElem): TJclSimpleXMLElem; overload;
     function AddFirst(const Name: string): TJclSimpleXMLElemClassic; overload;
@@ -465,7 +465,7 @@ type
       abstract;
     procedure LoadFromString(const Value: string);
     function SaveToString: string;
-    procedure GetBinaryValue(Stream: TStream);
+    procedure GetBinaryValue(Stream: TStream; BufferSize: Integer = 0);
     function GetChildIndex(const AChild: TJclSimpleXMLElem): Integer;
     function GetNamedIndex(const AChild: TJclSimpleXMLElem): Integer;
 
@@ -1660,10 +1660,10 @@ begin
   Error(Format(S, Args));
 end;
 
-procedure TJclSimpleXMLElem.GetBinaryValue(Stream: TStream);
+procedure TJclSimpleXMLElem.GetBinaryValue(Stream: TStream; BufferSize: Integer = 0);
 var
   I, J, ValueLength, RequiredStreamSize: Integer;
-  Buf: array [0..cBufferSize - 1] of Byte;
+  Buf: array of Byte;
   N1, N2: Byte;
 
   function NibbleCharToNibble(const AChar: Char): Byte;
@@ -1705,6 +1705,10 @@ var
 var
   CurrentStreamPosition: Integer;
 begin
+  if BufferSize = 0 then
+    BufferSize := cBufferSize;
+
+  SetLength(Buf, BufferSize);
   PrepareNibbleCharMapping;
   I := 1;
   J := 0;
@@ -1727,13 +1731,13 @@ begin
     else
       Buf[J] := (N1 shl 4) or N2;
     Inc(J);
-    if J = cBufferSize - 1 then //Buffered write to speed up the process a little
+    if J = Length(Buf) - 1 then //Buffered write to speed up the process a little
     begin
-      Stream.Write(Buf, J);
+      Stream.Write(Buf[0], J);
       J := 0;
     end;
   end;
-  Stream.Write(Buf, J);
+  Stream.Write(Buf[0], J);
 end;
 
 function TJclSimpleXMLElem.GetChildIndex(const AChild: TJclSimpleXMLElem): Integer;
@@ -2069,18 +2073,22 @@ begin
   AddChild(Result);
 end;
 
-function TJclSimpleXMLElems.Add(const Name: string; Value: TStream): TJclSimpleXMLElemClassic;
+function TJclSimpleXMLElems.Add(const Name: string; Value: TStream; BufferSize: Integer): TJclSimpleXMLElemClassic;
 var
   Stream: TStringStream;
-  Buf: array [0..cBufferSize - 1] of Byte;
+  Buf: array of Byte;
   St: string;
   I, Count: Integer;
 begin
   Stream := TStringStream.Create('');
   try
+    if BufferSize = 0 then
+      BufferSize := cBufferSize;
+
+    SetLength(Buf, BufferSize);
     Buf[0] := 0;
     repeat
-      Count := Value.Read(Buf, Length(Buf));
+      Count := Value.Read(Buf[0], Length(Buf));
       St := '';
       for I := 0 to Count - 1 do
         St := St + IntToHex(Buf[I], 2);
