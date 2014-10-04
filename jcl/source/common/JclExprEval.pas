@@ -982,6 +982,11 @@ uses
   {$ENDIF SUPPORTS_INLINE}
   JclStrings;
 
+{$IFDEF RTL150_UP}
+var
+  FFormatSettings: TFormatSettings;
+{$ENDIF RTL150_UP}
+
 //=== { TExprHashContext } ===================================================
 
 constructor TExprHashContext.Create(ACaseSensitive: Boolean; AHashSize: Integer);
@@ -1616,6 +1621,9 @@ var
   { register variable optimization }
   cp: PChar;
   start: PChar;
+  {$IFNDEF RTL150_UP}
+  OldSep: Char;
+  {$ENDIF !RTL150_UP}
 begin
   cp := FCurrPos;
 
@@ -1664,7 +1672,18 @@ begin
 
         { evaluate number }
         SetString(FTokenAsString, start, cp - start);
-        FTokenAsNumber := StrToFloat(FTokenAsString);
+        {$IFNDEF RTL150_UP}
+        OldSep := DecimalSeparator;
+        try
+          DecimalSeparator := '.';
+        {$ENDIF ~RTL150_UP}
+
+          FTokenAsNumber := StrToFloat(FTokenAsString{$IFDEF RTL150_UP}, FFormatSettings{$ENDIF RTL150_UP});
+        {$IFNDEF RTL150_UP}
+        finally
+          DecimalSeparator := OldSep;
+        end;
+        {$ENDIF ~RTL150_UP}
 
         FCurrTok := etNumber;
       end;
@@ -4593,8 +4612,12 @@ begin
   inherited Clear;
 end;
 
-{$IFDEF UNITVERSIONING}
 initialization
+  {$IFDEF RTL150_UP}
+  FFormatSettings.DecimalSeparator := '.';
+  {$ENDIF RTL150_UP}
+
+{$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
 
 finalization
