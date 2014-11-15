@@ -17,6 +17,8 @@ Source code files included in the JCL have a header which explicitly states this
 however, unless noted otherwise, all files including those without an MPL header, are subject
 to the MPL license.
 
+This fork aims to keep JCL compatible with freepascal
+
 Download the ZIP file
 ---------------------
 If you download the JCL as a ZIP file from GitHub, you also have to download the jedi.inc and
@@ -26,7 +28,7 @@ jcl\jcl\source\include\jedi directory.
 Clone with GIT
 --------------
 ```
-> git clone git://github.com/project-jedi/jcl.git jcl
+> git clone git://github.com/blikblum/jcl.git jcl
 > cd jcl
 > git submodule update --init
 ```
