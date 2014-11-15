@@ -23,6 +23,3 @@ copy ..\source\include\jcl.template.inc ..\source\include\jcld20win32.inc
 copy ..\source\include\jcl.template.inc ..\source\include\jcld20win64.inc
 copy ..\source\include\jcl.template.inc ..\source\include\jcld21win32.inc
 copy ..\source\include\jcl.template.inc ..\source\include\jcld21win64.inc
-
-
-copy ..\source\include\jcl.template.inc ..\source\include\jclfpc.inc
