@@ -1,112 +1,115 @@
 object ExprEvalForm: TExprEvalForm
   Left = 222
+  Height = 321
   Top = 107
+  Width = 479
   Caption = 'JclExprEval Example'
   ClientHeight = 321
   ClientWidth = 479
   Color = clBtnFace
-  Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
-  Font.Style = []
-  OldCreateOrder = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  PixelsPerInch = 96
-  TextHeight = 13
+  Position = poScreenCenter
+  LCLVersion = '1.3'
   object Label1: TLabel
     Left = 8
+    Height = 13
     Top = 37
     Width = 54
-    Height = 13
     Caption = 'E&xpression:'
     FocusControl = ExpressionInput
+    ParentColor = False
   end
   object Label2: TLabel
     Left = 8
+    Height = 13
     Top = 64
     Width = 49
-    Height = 13
     Caption = 'Functions:'
+    ParentColor = False
   end
   object Label3: TLabel
     Left = 8
+    Height = 13
     Top = 11
     Width = 46
-    Height = 13
     Caption = 'Variables:'
+    ParentColor = False
   end
   object ExpressionInput: TEdit
     Left = 80
+    Height = 21
     Top = 34
     Width = 305
-    Height = 21
-    Anchors = [akLeft, akTop, akRight]
+    Anchors = [akTop, akLeft, akRight]
     TabOrder = 3
   end
   object Memo1: TMemo
     Left = 0
+    Height = 242
     Top = 88
     Width = 479
-    Height = 242
-    Anchors = [akLeft, akTop, akRight, akBottom]
+    Anchors = [akTop, akLeft, akRight, akBottom]
     TabOrder = 6
   end
   object EnterButton: TButton
     Left = 396
+    Height = 25
     Top = 34
     Width = 75
-    Height = 25
     Anchors = [akTop, akRight]
     Caption = 'Evaluate'
     Default = True
-    TabOrder = 5
     OnClick = EnterButtonClick
+    TabOrder = 5
   end
   object FuncList: TComboBox
     Left = 80
+    Height = 21
     Top = 61
     Width = 145
-    Height = 21
-    Style = csDropDownList
     ItemHeight = 13
-    Sorted = True
-    TabOrder = 4
     OnChange = FuncListChange
+    Sorted = True
+    Style = csDropDownList
+    TabOrder = 4
   end
   object ValueEdit: TEdit
     Left = 271
+    Height = 21
     Top = 8
     Width = 114
-    Height = 21
+    OnChange = ValueEditChange
     TabOrder = 2
     Text = '0'
-    OnChange = ValueEditChange
   end
   object VarComboBox: TComboBox
     Left = 80
+    Height = 21
     Top = 8
     Width = 145
-    Height = 21
-    Style = csDropDownList
     ItemHeight = 13
     ItemIndex = 0
-    TabOrder = 0
-    Text = 'x'
-    OnChange = VarComboBoxChange
     Items.Strings = (
       'x'
       'y'
-      'z')
+      'z'
+    )
+    OnChange = VarComboBoxChange
+    Style = csDropDownList
+    TabOrder = 0
+    Text = 'x'
   end
   object AssignButton: TButton
     Left = 231
+    Height = 21
     Top = 8
     Width = 34
-    Height = 21
     Caption = ':='
-    TabOrder = 1
     OnClick = AssignButtonClick
+    TabOrder = 1
   end
 end

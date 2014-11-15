@@ -3,10 +3,13 @@ unit ExprEvalExampleMain;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
+  SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
   JclExprEval;
 
 type
+
+  { TExprEvalForm }
+
   TExprEvalForm = class(TForm)
     ExpressionInput: TEdit;
     Memo1: TMemo;
@@ -21,8 +24,8 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure EnterButtonClick(Sender: TObject);
-    procedure FuncListClick(Sender: TObject);
     procedure AssignButtonClick(Sender: TObject);
+    procedure FuncListChange(Sender: TObject);
     procedure ValueEditChange(Sender: TObject);
     procedure VarComboBoxChange(Sender: TObject);
   private
@@ -40,7 +43,11 @@ var
 
 implementation
 
+{$IFDEF FPC}
+{$R *.LFM}
+{$ELSE}
 {$R *.DFM}
+{$ENDIF}
 
 uses
   ExprEvalExampleLogic;
@@ -74,16 +81,16 @@ begin
     ValueEdit.Font.Color := clRed;
 end;
 
-procedure TExprEvalForm.EnterButtonClick(Sender: TObject);
-begin
-  Memo1.Lines.Add(ResultAsText(FEvaluator as TEvaluator, ExpressionInput.Text));
-end;
-
-procedure TExprEvalForm.FuncListClick(Sender: TObject);
+procedure TExprEvalForm.FuncListChange(Sender: TObject);
 begin
   ExpressionInput.Text := ExpressionInput.Text + FuncList.Text;
   ActiveControl := ExpressionInput;
   ExpressionInput.SelStart := Length(ExpressionInput.Text);
+end;
+
+procedure TExprEvalForm.EnterButtonClick(Sender: TObject);
+begin
+  Memo1.Lines.Add(ResultAsText(FEvaluator as TEvaluator, ExpressionInput.Text));
 end;
 
 procedure TExprEvalForm.ValueEditChange(Sender: TObject);
