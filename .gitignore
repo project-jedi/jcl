@@ -30,9 +30,11 @@ __history
 *.ppu
 *.res
 *.rst
+*.or
 
 # Lazarus files
 *.compiled
+*.lps
 
 # 64bit Delphi/C++Builder files
 *.[ao]

@@ -4,13 +4,12 @@
     <PathDelim Value="\"/>
     <Name Value="Jcl"/>
     <Author Value="Project JEDI"/>
-    <AutoUpdate Value="OnRebuildingAll"/>
     <CompilerOptions>
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
         <IncludeFiles Value="..\..\source\include"/>
-        <OtherUnitFiles Value="..\..\source\common;..\..\source\windows;..\..\lib\fpc\$(TargetCPU)-$(TargetOS);..\..\source\fpc"/>
+        <OtherUnitFiles Value="..\..\source\common;..\..\source\windows;..\..\source\fpc"/>
         <UnitOutputDirectory Value="..\..\lib\fpc\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Parsing>
@@ -27,17 +26,11 @@
           <VariablesInRegisters Value="True"/>
         </Optimizations>
       </CodeGeneration>
-      <Linking>
-        <Debugging>
-          <GenerateDebugInfo Value="False"/>
-          <UseLineInfoUnit Value="False"/>
-        </Debugging>
-      </Linking>
     </CompilerOptions>
     <Description Value="JEDI Code Library RTL package"/>
     <License Value="Copyright (C) 1999, 2014 Project JEDI"/>
     <Version Major="2" Minor="7" Build="5300"/>
-    <Files Count="75">
+    <Files Count="76">
       <Item1>
         <Filename Value="..\..\source\common\bzip2.pas"/>
         <UnitName Value="bzip2"/>
@@ -338,6 +331,10 @@
         <Filename Value="..\..\source\fpc\fpstringhash.pas"/>
         <UnitName Value="FpStringHash"/>
       </Item75>
+      <Item76>
+        <Filename Value="..\..\source\common\JclExprEval.pas"/>
+        <UnitName Value="JclExprEval"/>
+      </Item76>
     </Files>
     <RequiredPkgs Count="1">
       <Item1>
@@ -346,8 +343,6 @@
     </RequiredPkgs>
     <UsageOptions>
       <IncludePath Value="..\..\source\include"/>
-      <LibraryPath Value="$(PkgOutDir)"/>
-      <ObjectPath Value="..\..\lib\fpc\$(TargetCPU)-$(TargetOS)"/>
       <UnitPath Value="$(PkgOutDir)"/>
     </UsageOptions>
     <PublishOptions>
