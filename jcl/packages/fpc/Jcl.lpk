@@ -1,17 +1,16 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="3">
+  <Package Version="4">
     <PathDelim Value="\"/>
     <Name Value="Jcl"/>
-    <AddToProjectUsesSection Value="False"/>
     <Author Value="Project JEDI"/>
     <AutoUpdate Value="OnRebuildingAll"/>
     <CompilerOptions>
-      <Version Value="9"/>
+      <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <IncludeFiles Value="..\..\source\include\"/>
-        <OtherUnitFiles Value=".;..\..\source\common;..\..\source\windows;;..\..\lib\fpc\$(TargetCPU)-$(TargetOS)"/>
+        <IncludeFiles Value="..\..\source\include"/>
+        <OtherUnitFiles Value="..\..\source\common;..\..\source\windows;..\..\lib\fpc\$(TargetCPU)-$(TargetOS);..\..\source\fpc"/>
         <UnitOutputDirectory Value="..\..\lib\fpc\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Parsing>
@@ -24,23 +23,21 @@
       </Parsing>
       <CodeGeneration>
         <Optimizations>
-          <VariablesInRegisters Value="True"/>
           <OptimizationLevel Value="3"/>
+          <VariablesInRegisters Value="True"/>
         </Optimizations>
       </CodeGeneration>
       <Linking>
         <Debugging>
+          <GenerateDebugInfo Value="False"/>
           <UseLineInfoUnit Value="False"/>
         </Debugging>
       </Linking>
-      <Other>
-        <CompilerPath Value="$(CompPath)"/>
-      </Other>
     </CompilerOptions>
     <Description Value="JEDI Code Library RTL package"/>
     <License Value="Copyright (C) 1999, 2014 Project JEDI"/>
-    <Version Major="2" Minor="7" Release="0" Build="5300"/>
-    <Files Count="74">
+    <Version Major="2" Minor="7" Build="5300"/>
+    <Files Count="75">
       <Item1>
         <Filename Value="..\..\source\common\bzip2.pas"/>
         <UnitName Value="bzip2"/>
@@ -337,6 +334,10 @@
         <Filename Value="..\..\source\windows\Snmp.pas"/>
         <UnitName Value="Snmp"/>
       </Item74>
+      <Item75>
+        <Filename Value="..\..\source\fpc\fpstringhash.pas"/>
+        <UnitName Value="FpStringHash"/>
+      </Item75>
     </Files>
     <RequiredPkgs Count="1">
       <Item1>
@@ -344,10 +345,10 @@
       </Item1>
     </RequiredPkgs>
     <UsageOptions>
-      <IncludePath Value="..\..\source\include\"/>
-      <LibraryPath Value="$(PkgOutDir)\"/>
-      <ObjectPath Value="..\..\lib\fpc\$(TargetCPU)-$(TargetOS)\"/>
-      <UnitPath Value="$(PkgOutDir)\"/>
+      <IncludePath Value="..\..\source\include"/>
+      <LibraryPath Value="$(PkgOutDir)"/>
+      <ObjectPath Value="..\..\lib\fpc\$(TargetCPU)-$(TargetOS)"/>
+      <UnitPath Value="$(PkgOutDir)"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>

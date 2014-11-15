@@ -518,8 +518,8 @@ procedure StrNormIndex(const StrLen: SizeInt; var Index: SizeInt; var Count: Siz
 
 function ArrayOf(List: TJclAnsiStrings): TDynStringArray; overload;
 
-function AnsiCompareNaturalStr(const S1, S2: AnsiString): SizeInt;
-function AnsiCompareNaturalText(const S1, S2: AnsiString): SizeInt;
+function AnsiCompareNaturalStr(const S1, S2: AnsiString): SizeInt; overload;
+function AnsiCompareNaturalText(const S1, S2: AnsiString): SizeInt; overload;
 
 // Explicit ANSI version of former/deprecated SysUtils PAnsiChar functions
 {$IFNDEF DEPRECATED_SYSUTILS_ANSISTRINGS}

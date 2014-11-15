@@ -604,8 +604,8 @@ procedure StrResetLength(var S: UnicodeString); overload;
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
 // natural comparison functions
-function CompareNaturalStr(const S1, S2: string): SizeInt;
-function CompareNaturalText(const S1, S2: string): SizeInt;
+function CompareNaturalStr(const S1, S2: string): SizeInt; overload;
+function CompareNaturalText(const S1, S2: string): SizeInt; overload;
 
 {$IFNDEF UNICODE_RTL_DATABASE}
 // internal structures published to make function inlining working

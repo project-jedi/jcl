@@ -25,6 +25,15 @@ __history
 *.#??
 *.pbi
 
+# FPC Compiler output files
+*.o
+*.ppu
+*.res
+*.rst
+
+# Lazarus files
+*.compiled
+
 # 64bit Delphi/C++Builder files
 *.[ao]
 

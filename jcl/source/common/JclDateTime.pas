@@ -87,7 +87,7 @@ const
 
 { Encode / Decode functions }
 
-function EncodeDate(const Year: Integer; Month, Day: Word): TDateTime;
+function EncodeDate(const Year: Integer; Month, Day: Word): TDateTime; overload;
 procedure DecodeDate(Date: TDateTime; out Year, Month, Day: Word); overload;
 procedure DecodeDate(Date: TDateTime; out Year: Integer; out Month, Day: Word); overload;
 procedure DecodeDate(Date: TDateTime; out Year, Month, Day: Integer); overload;
