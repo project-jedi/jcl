@@ -703,9 +703,9 @@ type
     procedure AppendToStrings(Strings: TJclWideStrings);
     procedure AppendFromStrings(Strings: TJclWideStrings);
     function GetAsStrings: TJclWideStrings;
-    function GetAsDelimited(const Separator: WideString = WideLineBreak): WideString;
-    procedure AppendDelimited(const AString: WideString; const Separator: WideString = WideLineBreak);
-    procedure LoadDelimited(const AString: WideString; const Separator: WideString = WideLineBreak);
+    function GetAsDelimited(const Separator: WideString {$IFNDEF FPC} = WideLineBreak{$ENDIF}): WideString;
+    procedure AppendDelimited(const AString: WideString; const Separator: WideString {$IFNDEF FPC} = WideLineBreak{$ENDIF});
+    procedure LoadDelimited(const AString: WideString; const Separator: WideString {$IFNDEF FPC} = WideLineBreak{$ENDIF});
   end;
 
   {$IFDEF SUPPORTS_UNICODE_STRING}

@@ -22,7 +22,7 @@
       </Parsing>
       <CodeGeneration>
         <Optimizations>
-          <OptimizationLevel Value="3"/>
+          <OptimizationLevel Value="2"/>
           <VariablesInRegisters Value="True"/>
         </Optimizations>
       </CodeGeneration>
@@ -30,7 +30,7 @@
     <Description Value="JEDI Code Library RTL package"/>
     <License Value="Copyright (C) 1999, 2014 Project JEDI"/>
     <Version Major="2" Minor="7" Build="5300"/>
-    <Files Count="76">
+    <Files Count="91">
       <Item1>
         <Filename Value="..\..\source\common\bzip2.pas"/>
         <UnitName Value="bzip2"/>
@@ -335,6 +335,66 @@
         <Filename Value="..\..\source\common\JclExprEval.pas"/>
         <UnitName Value="JclExprEval"/>
       </Item76>
+      <Item77>
+        <Filename Value="..\..\source\common\JclAbstractContainers.pas"/>
+        <UnitName Value="JclAbstractContainers"/>
+      </Item77>
+      <Item78>
+        <Filename Value="..\..\source\common\JclAlgorithms.pas"/>
+        <UnitName Value="JclAlgorithms"/>
+      </Item78>
+      <Item79>
+        <Filename Value="..\..\source\common\JclArrayLists.pas"/>
+        <UnitName Value="JclArrayLists"/>
+      </Item79>
+      <Item80>
+        <Filename Value="..\..\source\common\JclArraySets.pas"/>
+        <UnitName Value="JclArraySets"/>
+      </Item80>
+      <Item81>
+        <Filename Value="..\..\source\common\JclBinaryTrees.pas"/>
+        <UnitName Value="JclBinaryTrees"/>
+      </Item81>
+      <Item82>
+        <Filename Value="..\..\source\common\JclContainerIntf.pas"/>
+        <UnitName Value="JclContainerIntf"/>
+      </Item82>
+      <Item83>
+        <Filename Value="..\..\source\common\JclHashMaps.pas"/>
+        <UnitName Value="JclHashMaps"/>
+      </Item83>
+      <Item84>
+        <Filename Value="..\..\source\common\JclHashSets.pas"/>
+        <UnitName Value="JclHashSets"/>
+      </Item84>
+      <Item85>
+        <Filename Value="..\..\source\common\JclLinkedLists.pas"/>
+        <UnitName Value="JclLinkedLists"/>
+      </Item85>
+      <Item86>
+        <Filename Value="..\..\source\common\JclQueues.pas"/>
+        <UnitName Value="JclQueues"/>
+      </Item86>
+      <Item87>
+        <Filename Value="..\..\source\common\JclSortedMaps.pas"/>
+        <UnitName Value="JclSortedMaps"/>
+      </Item87>
+      <Item88>
+        <Filename Value="..\..\source\common\JclStacks.pas"/>
+        <UnitName Value="JclStacks"/>
+      </Item88>
+      <Item89>
+        <Filename Value="..\..\source\common\JclStrHashMap.pas"/>
+        <UnitName Value="JclStrHashMap"/>
+      </Item89>
+      <Item90>
+        <Filename Value="..\..\source\common\JclTrees.pas"/>
+        <UnitName Value="JclTrees"/>
+      </Item90>
+      <Item91>
+        <Filename Value="..\..\source\common\JclVectors.pas"/>
+        <UnitName Value="JclVectors"/>
+      </Item91>
     </Files>
     <RequiredPkgs Count="1">
       <Item1>

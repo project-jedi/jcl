@@ -20,7 +20,10 @@ uses
   JclMetadata, JclMiscel, JclMsdosSys, JclMultimedia, JclNTFS, JclPeImage, 
   JclRegistry, JclSecurity, JclShell, JclStructStorage, JclSvcCtrl, JclTask, 
   JclTD32, JclTimeZones, JclWin32, JclWin32Ex, JclWinMIDI, mscoree_TLB, 
-  mscorlib_TLB, MSTask, sevenzip, Snmp, FpStringHash, JclExprEval;
+  mscorlib_TLB, MSTask, sevenzip, Snmp, FpStringHash, JclExprEval, 
+  JclAbstractContainers, JclAlgorithms, JclArrayLists, JclArraySets, 
+  JclBinaryTrees, JclContainerIntf, JclHashMaps, JclHashSets, JclLinkedLists, 
+  JclQueues, JclSortedMaps, JclStacks, JclStrHashMap, JclTrees, JclVectors;
 
 implementation
 
