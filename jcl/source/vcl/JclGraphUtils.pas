@@ -48,7 +48,13 @@ uses
   {$IFDEF HAS_UNITSCOPE}
   System.Types, Winapi.Windows, System.SysUtils, Vcl.Graphics,
   {$ELSE ~HAS_UNITSCOPE}
-  Types, Windows, SysUtils, Graphics,
+  Types,
+  {$IFDEF FPC}
+  LCLIntf, LCLType,
+  {$ELSE ~FPC}
+  Windows,
+  {$ENDIF ~FPC}
+  SysUtils, Graphics,
   {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
@@ -134,11 +140,13 @@ const
 
 procedure EMMS;
 
+{$IFNDEF FPC}
 // Dialog Functions
 function DialogUnitsToPixelsX(const DialogUnits: Word): Word;
 function DialogUnitsToPixelsY(const DialogUnits: Word): Word;
 function PixelsToDialogUnitsX(const PixelUnits: Word): Word;
 function PixelsToDialogUnitsY(const PixelUnits: Word): Word;
+{$ENDIF ~FPC}
 
 // Points
 function NullPoint: TPoint;
@@ -249,13 +257,17 @@ function RGBToHLS(const RGBColor: TColorRef): THLSVector; overload;
 function HSLToRGB(const H, S, L: Single): TColor32; overload;
 procedure RGBToHSL(const RGB: TColor32; out H, S, L: Single); overload;
 
+{$IFNDEF FPC}
 function SetBitmapColors(Bmp: TBitmap; const Colors: array of TColor; StartIndex: Integer): Integer;
+{$ENDIF}
 
 // Misc
 function ColorToHTML(const Color: TColor): string;
 
 // Petr Vones
+{$IFNDEF FPC}
 function DottedLineTo(const Canvas: TCanvas; const X, Y: Integer): Boolean; overload;
+{$ENDIF ~FPC}
 function ShortenString(const DC: HDC; const S: WideString; const Width: Integer; const RTL: Boolean;
   EllipsisWidth: Integer = 0): WideString;
 
@@ -373,6 +385,18 @@ begin
   raise EOutOfResources.CreateRes(@SOutOfResources);
 end;
 
+{$IFDEF FPC}
+procedure GDIError;
+var
+  ErrorCode: Integer;
+begin
+  ErrorCode := GetLastOSError;
+  if ErrorCode <> 0 then
+    raise EOutOfResources.Create(SysErrorMessage(ErrorCode))
+  else
+    OutOfResources;
+end;
+{$ELSE ~FPC}
 procedure GDIError;
 var
   ErrorCode: Integer;
@@ -385,6 +409,7 @@ begin
   else
     OutOfResources;
 end;
+{$ENDIF ~FPC}
 
 function GDICheck(Value: Integer): Integer;
 begin
@@ -964,6 +989,7 @@ begin
   end;
 end;
 
+{$IFNDEF FPC}
 //=== Dialog functions =======================================================
 
 function DialogUnitsToPixelsX(const DialogUnits: Word): Word;
@@ -985,6 +1011,7 @@ function PixelsToDialogUnitsY(const PixelUnits: Word): Word;
 begin
   Result := PixelUnits * 8 div HiWord(GetDialogBaseUnits);
 end;
+{$ENDIF ~FPC}
 
 //=== Points =================================================================
 
@@ -2226,6 +2253,7 @@ begin
   Result :=  RGB(R, G, B);
 end;
 
+{$IFNDEF FPC}
 function SetBitmapColors(Bmp: TBitmap; const Colors: array of TColor; StartIndex: Integer): Integer;
 type
   TRGBQuadArray = array [Byte] of TRGBQuad;
@@ -2253,6 +2281,7 @@ begin
     FreeMem(ColorTable);
   end;
 end;
+{$ENDIF ~FPC}
 
 //=== Misc ===================================================================
 
@@ -2264,6 +2293,7 @@ begin
   Result := Format('#%.2x%.2x%.2x', [Temp.R, Temp.G, Temp.B]);
 end;
 
+{$IFNDEF FPC}
 function DottedLineTo(const Canvas: TCanvas; const X, Y: Integer): Boolean;
 const
   DotBits: array [0..7] of Word = ($AA, $55, $AA, $55, $AA, $55, $AA, $55);
@@ -2297,6 +2327,7 @@ begin
   DeleteObject(Bitmap);
   Result := True;
 end;
+{$ENDIF ~FPC}
 
 // Adjusts the given string S so that it fits into the given width. EllipsisWidth gives the width of
 // the three points to be added to the shorted string. If this value is 0 then it will be determined implicitely.
@@ -2310,6 +2341,9 @@ var
   Size: TSize;
   Len: Integer;
   L, H, N, W: Integer;
+  {$IFDEF FPC}
+  Str: String;
+  {$ENDIF}
 begin
   Len := Length(S);
   if (Len = 0) or (Width <= 0) then
@@ -2319,7 +2353,11 @@ begin
     // Determine width of triple point using the current DC settings (if not already done).
     if EllipsisWidth = 0 then
     begin
+      {$IFNDEF FPC}
       GetTextExtentPoint32W(DC, '...', 3, Size);
+      {$ELSE ~FPC}
+      GetTextExtentPoint32(DC, '...', 3, Size);
+      {$ENDIF ~FPC}
       EllipsisWidth := Size.cx;
     end;
 
@@ -2328,13 +2366,21 @@ begin
     else
     begin
       // Do a binary search for the optimal string length which fits into the given width.
+      {$IFDEF FPC}
+      Str := UTF8Encode(S);
+      Len := Length(Str);
+      {$ENDIF ~FPC}
       L := 0;
       H := Len;
       N := 0;
       while L <= H do
       begin
         N := (L + H) shr 1;
+        {$IFNDEF FPC}
         GetTextExtentPoint32W(DC, PWideChar(S), N, Size);
+        {$ELSE ~FPC}
+        GetTextExtentPoint32(DC, PChar(Str), N, Size);
+        {$ENDIF ~FPC}
         W := Size.cx + EllipsisWidth;
         if W < Width then
           L := N + 1

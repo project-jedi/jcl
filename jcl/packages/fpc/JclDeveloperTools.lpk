@@ -1,17 +1,16 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="3">
+  <Package Version="4">
     <PathDelim Value="\"/>
     <Name Value="JclDeveloperTools"/>
-    <AddToProjectUsesSection Value="False"/>
     <Author Value="Project JEDI"/>
     <AutoUpdate Value="OnRebuildingAll"/>
     <CompilerOptions>
-      <Version Value="9"/>
+      <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <IncludeFiles Value="..\..\source\include\"/>
-        <OtherUnitFiles Value=".;..\..\source\common;..\..\source\windows;;..\..\lib\fpc\$(TargetCPU)-$(TargetOS)"/>
+        <IncludeFiles Value="..\..\source\include"/>
+        <OtherUnitFiles Value=".;..\..\source\common;..\..\source\windows;..\..\lib\fpc\$(TargetCPU)-$(TargetOS)"/>
         <UnitOutputDirectory Value="..\..\lib\fpc\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Parsing>
@@ -24,23 +23,21 @@
       </Parsing>
       <CodeGeneration>
         <Optimizations>
-          <VariablesInRegisters Value="True"/>
           <OptimizationLevel Value="3"/>
+          <VariablesInRegisters Value="True"/>
         </Optimizations>
       </CodeGeneration>
       <Linking>
         <Debugging>
+          <GenerateDebugInfo Value="False"/>
           <UseLineInfoUnit Value="False"/>
         </Debugging>
       </Linking>
-      <Other>
-        <CompilerPath Value="$(CompPath)"/>
-      </Other>
     </CompilerOptions>
     <Description Value="JEDI Code Library Developer Tools package"/>
     <License Value="Copyright (C) 1999, 2014 Project JEDI"/>
-    <Version Major="2" Minor="7" Release="0" Build="5300"/>
-    <Files Count="8">
+    <Version Major="2" Minor="7" Build="5300"/>
+    <Files Count="7">
       <Item1>
         <Filename Value="..\..\source\common\JclCompilerUtils.pas"/>
         <UnitName Value="JclCompilerUtils"/>
@@ -50,40 +47,33 @@
         <UnitName Value="JclDevToolsResources"/>
       </Item2>
       <Item3>
-        <Filename Value="..\..\source\common\JclExprEval.pas"/>
-        <UnitName Value="JclExprEval"/>
-      </Item3>
-      <Item4>
         <Filename Value="..\..\source\common\JclIDEUtils.pas"/>
         <UnitName Value="JclIDEUtils"/>
-      </Item4>
-      <Item5>
+      </Item3>
+      <Item4>
         <Filename Value="..\..\source\common\JclUsesUtils.pas"/>
         <UnitName Value="JclUsesUtils"/>
-      </Item5>
-      <Item6>
+      </Item4>
+      <Item5>
         <Filename Value="..\..\source\windows\JclHelpUtils.pas"/>
         <UnitName Value="JclHelpUtils"/>
-      </Item6>
-      <Item7>
+      </Item5>
+      <Item6>
         <Filename Value="..\..\source\windows\JclMsBuild.pas"/>
         <UnitName Value="JclMsBuild"/>
-      </Item7>
-      <Item8>
+      </Item6>
+      <Item7>
         <Filename Value="..\..\source\windows\MSHelpServices_TLB.pas"/>
         <UnitName Value="MSHelpServices_TLB"/>
-      </Item8>
+      </Item7>
     </Files>
-    <RequiredPkgs Count="3">
+    <RequiredPkgs Count="2">
       <Item1>
         <PackageName Value="FCL"/>
       </Item1>
       <Item2>
         <PackageName Value="Jcl"/>
       </Item2>
-      <Item3>
-        <PackageName Value="JclContainers"/>
-      </Item3>
     </RequiredPkgs>
     <UsageOptions>
       <IncludePath Value="..\..\source\include\"/>
