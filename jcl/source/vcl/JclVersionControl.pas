@@ -132,27 +132,34 @@ type
 
   TJclVersionControlCache = class (TObject)
   private
-    FSandboxList: TList;
+    FActions: TJclVersionControlActionTypes;
+    FCacheStartTime: TDateTime;
+    FCacheValidityLength: Float;
     FFileName: TFileName;
     FPlugin: TJclVersionControlPlugin;
-    FActions: TJclVersionControlActionTypes;
-    FValidityTime: TDateTime;
+    FSandboxList: TList;
     FSupported: Boolean;
+    FValidityLengthInt: Float;
     function GetSandBox(Index: Integer): TFileName;
     function GetSandboxAction(Index: Integer): TJclVersionControlActionTypes;
     function GetSandboxCount: Integer;
+    function GetValidityTime: tDateTime;
+    procedure SetCacheValidityLength(const Value: Float);
+  protected
+    property CacheStartTime: TDateTime read FCacheStartTime;
   public
     constructor Create(APlugin: TJclVersionControlPlugin; const AFileName: TFileName);
     destructor Destroy; override;
-    function GetValid(const ATime: TDateTime): Boolean;
-    property Plugin: TJclVersionControlPlugin read FPlugin;
-    property FileName: TFileName read FFileName;
+    function GetValid(const ATime: TDateTime): Boolean; 
     property Actions: TJclVersionControlActionTypes read FActions;
-    property SandBoxes[Index: Integer]: TFileName read GetSandBox;
+    property CacheValidityLength: Float read FCacheValidityLength write SetCacheValidityLength;
+    property FileName: TFileName read FFileName;
+    property Plugin: TJclVersionControlPlugin read FPlugin;
     property SandBoxActions[Index: Integer]: TJclVersionControlActionTypes read GetSandboxAction;
     property SandBoxCount: Integer read GetSandboxCount;
+    property SandBoxes[Index: Integer]: TFileName read GetSandBox;
     property Supported: Boolean read FSupported;
-    property ValidityTime: TDateTime read FValidityTime;
+    property ValidityTime: tDateTime read GetValidityTime;
   end;
 
   TJclVersionControlSystemPlugin = class (TJclVersionControlPlugin)
@@ -169,10 +176,12 @@ type
 
   TJclVersionControlPluginList = class (TObject)
   private
+    FCacheValidityLength: Float;
     FFileCache: TList;
     FPluginList: TObjectList;
     procedure ClearFileCache;
     function GetPlugin(Index: Integer): TJclVersionControlPlugin;
+    procedure SetCacheValidityLength(const Value: Float);
   public
     constructor Create;
     destructor Destroy; override;
@@ -182,6 +191,7 @@ type
     function NumberOfEnabledPlugins: Integer;
     procedure RegisterPluginClass(const APluginClass: TJclVersionControlPluginClass);
     procedure UnregisterPluginClass(const APluginClass: TJclVersionControlPluginClass);
+    property CacheValidityLength: Float read FCacheValidityLength write SetCacheValidityLength;
     property Plugins[Index: Integer]: TJclVersionControlPlugin read GetPlugin;
   end;
 
@@ -592,8 +602,9 @@ begin
   FSandboxList := TList.Create;
   FFileName := AFileName;
   FPlugin := APlugin;
-  // TODO: cache time validity customization
-  FValidityTime := Now + 5.0 / SecsPerDay;
+  FCacheStartTime := Now;
+  CacheValidityLength := 5.0;
+
   FActions := APlugin.FileActions[FileName];
 
   SandboxNames := TStringList.Create;
@@ -636,7 +647,20 @@ end;
 
 function TJclVersionControlCache.GetValid(const ATime: TDateTime): Boolean;
 begin
-  Result := (ATime - FValidityTime) > 0;
+  Result := (ValidityTime - ATime) > 0;
+end;
+
+function TJclVersionControlCache.GetValidityTime: tDateTime;
+begin
+  Result := CacheStartTime+FValidityLengthInt;
+end;
+
+procedure TJclVersionControlCache.SetCacheValidityLength(const Value: Float);
+begin
+  FCacheValidityLength := Value;
+  if FCacheValidityLength < 0 then
+    FCacheValidityLength := 5.0 ;
+  FValidityLengthInt := FCacheValidityLength / SecsPerDay;
 end;
 
 //=== TJclVersionControlSystemPlugin =========================================
@@ -708,6 +732,7 @@ begin
   inherited Create;
   FFileCache := TList.Create;
   FPluginList := TObjectList.Create(True);
+  CacheValidityLength := 5;
 end;
 
 destructor TJclVersionControlPluginList.Destroy;
@@ -745,7 +770,7 @@ begin
   for Index := FFileCache.Count - 1 downto 0 do
   begin
     AFileCache := TJclVersionControlCache(FFileCache.Items[Index]);
-    if AFileCache.GetValid(ATime) then
+    if not AFileCache.GetValid(ATime) then
     begin
       AFileCache.Free;
       FFileCache.Delete(Index);
@@ -760,8 +785,15 @@ begin
   if not Assigned(Result) then
   begin
     Result := TJclVersionControlCache.Create(Plugin, FileName);
+    Result.CacheValidityLength := CacheValidityLength;
     FFileCache.Add(Result);
   end;
+end;
+
+function TJclVersionControlPluginList.GetPlugin(Index: Integer):
+    TJclVersionControlPlugin;
+begin
+  Result := TJclVersionControlPlugin(FPluginList[Index]);
 end;
 
 function TJclVersionControlPluginList.NumberOfEnabledPlugins: Integer;
@@ -775,16 +807,17 @@ begin
       Inc(Result);
 end;
 
-function TJclVersionControlPluginList.GetPlugin(Index: Integer):
-    TJclVersionControlPlugin;
-begin
-  Result := TJclVersionControlPlugin(FPluginList[Index]);
-end;
-
 procedure TJclVersionControlPluginList.RegisterPluginClass(
   const APluginClass: TJclVersionControlPluginClass);
 begin
   FPluginList.Add(APluginClass.Create);
+end;
+
+procedure TJclVersionControlPluginList.SetCacheValidityLength(const Value: Float);
+begin
+  FCacheValidityLength := Value;
+  if FCacheValidityLength < 0 then
+    FCacheValidityLength := 5.0 ;
 end;
 
 procedure TJclVersionControlPluginList.UnregisterPluginClass(
@@ -810,7 +843,6 @@ begin
       FPluginList.Delete(Index);
   end;
 end;
-
 
 initialization
   {$IFDEF UNITVERSIONING}
