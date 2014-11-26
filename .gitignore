@@ -25,6 +25,17 @@ __history
 *.#??
 *.pbi
 
+# FPC Compiler output files
+*.o
+*.ppu
+**/lib/i386-*/
+*.rst
+*.or
+
+# Lazarus files
+*.compiled
+*.lps
+
 # 64bit Delphi/C++Builder files
 *.[ao]
 
@@ -33,6 +44,7 @@ jcl/lib/*/*.res
 jcl/lib/*/debug/*.res
 jcl/lib/*/win*/*.res
 jcl/lib/*/win*/debug/*.res
+jcl/lib/fpc/*/*.res
 
 # JCL files
 jcl/bin/*
@@ -42,9 +54,9 @@ jcl/install/dcc32.cfg
 # Auto generated compiler version include files
 jcl/source/include/jcld*.inc
 jcl/source/include/jclc*.inc
-jcl/source/include/jclfpc.inc
 jcl/source/include/jclwin32.inc
 
 # InnoSetup installer
 thirdparty/InnoSetup/setupbuild/*
 thirdparty/InnoSetup/Settings.iss
+
