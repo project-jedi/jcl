@@ -48,3 +48,4 @@ jcl/source/include/jclwin32.inc
 # InnoSetup installer
 thirdparty/InnoSetup/setupbuild/*
 thirdparty/InnoSetup/Settings.iss
+/thirdparty/makedist/*.log
