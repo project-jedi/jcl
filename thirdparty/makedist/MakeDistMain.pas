@@ -425,8 +425,8 @@ begin
   FLogFileName := '';
   FLogAppend := False;
   FLog.Clear;
-  
-  OutputMessage('starting task: ' + CurrentTask.Name);
+
+  OutputMessage('### ' + TimeToStr(Now) + ' starting task: ' + CurrentTask.Name);
 
   if Assigned(FOnProgress) then
     FOnProgress(Index, -1, False, Result);
@@ -435,7 +435,7 @@ begin
   begin
     CurrentAction := CurrentTask.Actions[ActionIndex];
 
-    OutputMessage('starting action: ' + CurrentAction.Caption);
+    OutputMessage('### ' + TimeToStr(Now) + ' starting action: ' + CurrentAction.Caption);
     if Assigned(FOnProgress) then
       FOnProgress(Index, ActionIndex, False, Result);
 
@@ -445,15 +445,15 @@ begin
     except
       on E: Exception do
       begin
-        OutputMessage('Action raised an exception of class ' + E.ClassName + ' with message ' + E.Message);
+        OutputMessage('### ' + TimeToStr(Now) + ' action raised an exception of class ' + E.ClassName + ' with message ' + E.Message);
         Result := False;
       end;
     end;
 
     if Result then
-      OutputMessage('action success.')
+      OutputMessage('### ' + TimeToStr(Now) + ' action success.')
     else
-      OutputMessage('action failure.');
+      OutputMessage('### ' + TimeToStr(Now) + ' action failure.');
     if Assigned(FOnProgress) then
       FOnProgress(Index, ActionIndex, True, Result);
 
