@@ -251,7 +251,7 @@ type
    (wvUnknown, wvWin95, wvWin95OSR2, wvWin98, wvWin98SE, wvWinME,
     wvWinNT31, wvWinNT35, wvWinNT351, wvWinNT4, wvWin2000, wvWinXP,
     wvWin2003, wvWinXP64, wvWin2003R2, wvWinVista, wvWinServer2008,
-    wvWin7, wvWinServer2008R2, wvWin8, wvWin8RT, wvWinServer2012, wvWin81, wvWin81RT, wvWinServer2012R2);
+    wvWin7, wvWinServer2008R2, wvWin8, wvWin8RT, wvWinServer2012, wvWin81, wvWin81RT, wvWinServer2012R2, wvWin10);
   TWindowsEdition =
    (weUnknown, weWinXPHome, weWinXPPro, weWinXPHomeN, weWinXPProN, weWinXPHomeK,
     weWinXPProK, weWinXPHomeKN, weWinXPProKN, weWinXPStarter, weWinXPMediaCenter,
@@ -259,7 +259,7 @@ type
     weWinVistaHomePremium, weWinVistaBusiness, weWinVistaBusinessN,
     weWinVistaEnterprise, weWinVistaUltimate, weWin7Starter, weWin7HomeBasic,
     weWin7HomePremium, weWin7Professional, weWin7Enterprise, weWin7Ultimate,
-    weWin8, weWin8Pro, weWin8Enterprise, weWin8RT, weWin81, weWin81Pro, weWin81Enterprise, weWin81RT);
+    weWin8, weWin8Pro, weWin8Enterprise, weWin8RT, weWin81, weWin81Pro, weWin81Enterprise, weWin81RT, weWin10, weWin10Enterprise);
   TNtProductType =
    (ptUnknown, ptWorkStation, ptServer, ptAdvancedServer,
     ptPersonal, ptProfessional, ptDatacenterServer, ptEnterprise, ptWebEdition);
@@ -297,6 +297,7 @@ var
   IsWin81: Boolean = False;
   IsWin81RT: Boolean = False;
   IsWinServer2012R2: Boolean = False;
+  IsWin10: Boolean = False;
 
 const
   PROCESSOR_ARCHITECTURE_INTEL = 0;
@@ -3368,8 +3369,13 @@ begin
                 else
                   Result := wvWinServer2012R2;
               end;
+          end;
         end;
-        end;
+        10:
+          case Win32MinorVersion of
+            0:
+              Result := wvWin10; // Windows 10
+          end;
       end;
   end;
 end;
@@ -3476,7 +3482,7 @@ begin
   if Pos('Windows 8.1', Edition) = 1 then
   begin
    // Windows 8.1 Editions
-   if pos('Pro', Edition) > 0 then
+   if Pos('Pro', Edition) > 0 then
       Result := weWin81Pro
    else
    if Pos('Enterprise', Edition) > 0 then
@@ -3501,7 +3507,17 @@ begin
     Result := weWin81RT
   else
   if Pos('Windows RT', Edition) = 1 then
-    Result := weWin8RT;
+    Result := weWin8RT
+  else
+  if Pos('Windows 10', Edition) = 1 then
+  begin
+   // Windows 10 Editions
+   if Pos('Enterprise', Edition) > 0 then
+      Result := weWin10Enterprise
+   else
+      Result := weWin10;
+  end
+
 end;
 
 function NtProductType: TNtProductType;
@@ -3579,7 +3595,7 @@ begin
   begin
     if GetVersionEx(OSVersionInfo) then
     begin
-      //if IsWinXP or IsWinVista or IsWin7 or IsWin8 or IsWin81 then
+      //if IsWinXP or IsWinVista or IsWin7 or IsWin8 or IsWin81 or IsWin10 then
       if OSVersionInfo.wProductType = VER_NT_WORKSTATION then // workstation
       begin
         if (OSVersionInfo.wSuiteMask and VER_SUITE_PERSONAL) = VER_SUITE_PERSONAL then
@@ -3666,6 +3682,8 @@ begin
       Result := LoadResString(@RsOSVersionWin81RT);
     wvWinServer2012R2:
       Result := LoadResString(@RsOSVersionWinServer2012R2);
+    wvWin10:
+      Result := LoadResString(@RsOSVersionWin10);
   else
     Result := '';
   end;
@@ -3736,6 +3754,8 @@ begin
       Result := LoadResString(@RsEditionWin81Enterprise);
     weWin81RT:
       Result := LoadResString(@RsEditionWin81RT);
+    weWin10Enterprise:
+      Result := LoadResString(@RsEditionWin10Enterprise);
   else
     Result := '';
   end;
@@ -4502,7 +4522,7 @@ function GetOSEnabledFeatures: TOSEnabledFeatures;
 var
   EnabledFeatures: Int64;
 begin
-  if IsWin7 or IsWinServer2008 or IsWinServer2008R2 or IsWin8 or IsWinServer2012 or IsWin81 or IsWinServer2012R2 then
+  if IsWin7 or IsWinServer2008 or IsWinServer2008R2 or IsWin8 or IsWinServer2012 or IsWin81 or IsWinServer2012R2 or IsWin10 then
   begin
     EnabledFeatures := $FFFFFFFF;
     EnabledFeatures := EnabledFeatures shl 32;
@@ -5920,6 +5940,8 @@ begin
       IsWin81RT := True;
     wvWinServer2012R2:
       IsWinServer2012R2 := True;
+    wvWin10:
+      IsWin10 := True;
   end;
 end;
 
