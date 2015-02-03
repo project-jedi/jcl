@@ -3762,9 +3762,8 @@ begin
   if Assigned(GUI) and not IsElevated then
     GUI.Dialog(LoadResString(@RsHTMLHelp2Credentials), dtInformation, [drOK]);
 
-  // RegHelper.exe manifest requires elevation on Windows Vista/7/8/8.1 and Windows Server 2008/2008R2/2012/2012R2
-  if IsAdministrator or IsWinVista or IsWinServer2008 or IsWin7 or IsWinServer2008R2 or
-    IsWin8 or IsWinServer2012 or IsWin81 or IsWinServer2012R2 or IsWin10 then
+  // RegHelper.exe manifest requires elevation on Windows Vista or newer
+  if IsAdministrator or JclCheckWinVersion(6, 0) then
     Verb := 'open'
   else
     Verb := 'runas';

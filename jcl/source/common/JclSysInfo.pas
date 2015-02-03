@@ -3331,7 +3331,10 @@ begin
           begin
             ProductName := RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'ProductName', '');
             if (pos(RsOSVersionWin81, ProductName) = 1) or (pos(RsOSVersionWinServer2012R2, ProductName) = 1) then
-              Win32MinorVersionEx := 3;
+              Win32MinorVersionEx := 3
+            else
+            if (pos(RsOSVersionWin10, ProductName) = 1) then
+              Win32MinorVersionEx := 4;
           end;
 
           case Win32MinorVersionEx of
@@ -3371,13 +3374,22 @@ begin
                 else
                   Result := wvWinServer2012R2;
               end;
+            4:
+              begin
+                // Windows 10 early builds (<9926)
+                OSVersionInfoEx.dwOSVersionInfoSize := SizeOf(OSVersionInfoEx);
+                if GetVersionEx(OSVersionInfoEx) and (OSVersionInfoEx.wProductType = VER_NT_WORKSTATION) then
+                  Result := wvWin10;
+              end;
           end;
         end;
         10:
+        begin
           case Win32MinorVersion of
             0:
               Result := wvWin10; // Windows 10
           end;
+        end;
       end;
   end;
 end;
@@ -3596,7 +3608,7 @@ begin
     end;
   end
   else
-  if JclCheckWinVersion(5, 1) then // WinXP or newer
+  if JclCheckWinVersion(5, 1) then // Windows XP or newer
   begin
     if GetVersionEx(OSVersionInfo) then
     begin
@@ -4529,7 +4541,8 @@ function GetOSEnabledFeatures: TOSEnabledFeatures;
 var
   EnabledFeatures: Int64;
 begin
-  if IsWin7 or IsWinServer2008 or IsWinServer2008R2 or IsWin8 or IsWinServer2012 or IsWin81 or IsWinServer2012R2 or IsWin10 then
+  // Windows 7 or newer
+  if JclCheckWinVersion(6, 1) then
   begin
     EnabledFeatures := $FFFFFFFF;
     EnabledFeatures := EnabledFeatures shl 32;
