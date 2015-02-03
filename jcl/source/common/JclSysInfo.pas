@@ -3326,7 +3326,7 @@ begin
         begin
           Win32MinorVersionEx := Win32MinorVersion;
 
-          // Workaround to differentiate Windows 8.1 and Windows Server 2012 R2 from Windows 8 and Windows Server 2012
+          // Workaround to differentiate Windows 10, Windows 8.1 and Windows Server 2012 R2 from Windows 8 and Windows Server 2012
           if Win32MinorVersionEx = 2 then
           begin
             ProductName := RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'ProductName', '');
