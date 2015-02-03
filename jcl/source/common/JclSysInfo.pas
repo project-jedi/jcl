@@ -251,7 +251,8 @@ type
    (wvUnknown, wvWin95, wvWin95OSR2, wvWin98, wvWin98SE, wvWinME,
     wvWinNT31, wvWinNT35, wvWinNT351, wvWinNT4, wvWin2000, wvWinXP,
     wvWin2003, wvWinXP64, wvWin2003R2, wvWinVista, wvWinServer2008,
-    wvWin7, wvWinServer2008R2, wvWin8, wvWin8RT, wvWinServer2012, wvWin81, wvWin81RT, wvWinServer2012R2, wvWin10);
+    wvWin7, wvWinServer2008R2, wvWin8, wvWin8RT, wvWinServer2012,
+    wvWin81, wvWin81RT, wvWinServer2012R2, wvWin10);
   TWindowsEdition =
    (weUnknown, weWinXPHome, weWinXPPro, weWinXPHomeN, weWinXPProN, weWinXPHomeK,
     weWinXPProK, weWinXPHomeKN, weWinXPProKN, weWinXPStarter, weWinXPMediaCenter,
@@ -259,7 +260,8 @@ type
     weWinVistaHomePremium, weWinVistaBusiness, weWinVistaBusinessN,
     weWinVistaEnterprise, weWinVistaUltimate, weWin7Starter, weWin7HomeBasic,
     weWin7HomePremium, weWin7Professional, weWin7Enterprise, weWin7Ultimate,
-    weWin8, weWin8Pro, weWin8Enterprise, weWin8RT, weWin81, weWin81Pro, weWin81Enterprise, weWin81RT, weWin10, weWin10Enterprise);
+    weWin8, weWin8Pro, weWin8Enterprise, weWin8RT, weWin81, weWin81Pro,
+    weWin81Enterprise, weWin81RT, weWin10, weWin10Pro, weWin10Enterprise);
   TNtProductType =
    (ptUnknown, ptWorkStation, ptServer, ptAdvancedServer,
     ptPersonal, ptProfessional, ptDatacenterServer, ptEnterprise, ptWebEdition);
@@ -3512,6 +3514,9 @@ begin
   if Pos('Windows 10', Edition) = 1 then
   begin
    // Windows 10 Editions
+   if Pos('Pro', Edition) > 0 then
+      Result := weWin10Pro
+   else
    if Pos('Enterprise', Edition) > 0 then
       Result := weWin10Enterprise
    else
@@ -3754,6 +3759,8 @@ begin
       Result := LoadResString(@RsEditionWin81Enterprise);
     weWin81RT:
       Result := LoadResString(@RsEditionWin81RT);
+    weWin10Pro:
+      Result := LoadResString(@RsEditionWin10Pro);
     weWin10Enterprise:
       Result := LoadResString(@RsEditionWin10Enterprise);
   else

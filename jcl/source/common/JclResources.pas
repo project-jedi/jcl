@@ -1973,6 +1973,7 @@ resourcestring
   RsEditionWin81Pro             = 'Pro';
   RsEditionWin81Enterprise      = 'Enterprise';
   RsEditionWin81RT              = 'RT';
+  RsEditionWin10Pro             = 'Pro';
   RsEditionWin10Enterprise      = 'Enterprise';
 
   RsProductTypeWorkStation      = 'Workstation';
