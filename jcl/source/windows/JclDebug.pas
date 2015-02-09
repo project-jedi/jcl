@@ -5923,7 +5923,7 @@ begin
    tracking count is set back to 0. If the current tracking count is > 1 it is simply decremented.}
   if TrackingActiveCount = 1 then
   begin
-    Result := JclRemoveExceptNotifier(DoExceptNotify);
+    Result := JclRemoveExceptNotifier(DoExceptNotify) and JclUnhookExceptions;
     if Result then
       Dec(TrackingActiveCount);
   end
