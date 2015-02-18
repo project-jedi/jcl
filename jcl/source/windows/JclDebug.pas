@@ -6796,6 +6796,73 @@ end;
 
 {$ENDIF MSWINDOWS}
 
+{$IFDEF HAS_EXCEPTION_STACKTRACE}
+function GetExceptionStackInfo(P: PExceptionRecord): Pointer;
+const
+  cDelphiException = $0EEDFADE;
+var
+  Stack: TJclStackInfoList;
+  Str: TStringList;
+  Trace: String;
+  Sz: Integer;
+begin
+  if P^.ExceptionCode = cDelphiException then
+    Stack := JclCreateStackList(False, 3, P^.ExceptAddr)
+  else
+    Stack := JclCreateStackList(False, 3, P^.ExceptionAddress);
+  try
+    Str := TStringList.Create;
+    try
+      Stack.AddToStrings(Str, True, True, True, True);
+      Trace := Str.Text;
+    finally
+      FreeAndNil(Str);
+    end;
+  finally
+    FreeAndNil(Stack);
+  end;
+
+  if Trace <> '' then
+  begin
+    Sz := (Length(Trace) + 1) * SizeOf(Char);
+    GetMem(Result, Sz);
+    Move(Pointer(Trace)^, Result^, Sz);
+  end
+  else
+    Result := nil;
+end;
+
+function GetStackInfoString(Info: Pointer): string;
+begin
+  Result := PChar(Info);
+end;
+
+procedure CleanUpStackInfo(Info: Pointer);
+begin
+  FreeMem(Info);
+end;
+
+procedure SetupExceptionProcs;
+begin
+  if not Assigned(Exception.GetExceptionStackInfoProc) then
+  begin
+    Exception.GetExceptionStackInfoProc := GetExceptionStackInfo;
+    Exception.GetStackInfoStringProc := GetStackInfoString;
+    Exception.CleanUpStackInfoProc := CleanUpStackInfo;
+  end;
+end;
+
+procedure ResetExceptionProcs;
+begin
+  if @Exception.GetExceptionStackInfoProc = @GetExceptionStackInfo then
+  begin
+    Exception.GetExceptionStackInfoProc := nil;
+    Exception.GetStackInfoStringProc := nil;
+    Exception.CleanUpStackInfoProc := nil;
+  end;
+end;
+{$ENDIF HAS_EXCEPTION_STACKTRACE}
+
 initialization
   DebugInfoCritSect := TJclCriticalSection.Create;
   GlobalModulesList := TJclGlobalModulesList.Create;
@@ -6804,8 +6871,14 @@ initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_EXCEPTION_STACKTRACE}
+  SetupExceptionProcs;
+  {$ENDIF HAS_EXCEPTION_STACKTRACE}
 
 finalization
+  {$IFDEF HAS_EXCEPTION_STACKTRACE}
+  ResetExceptionProcs;
+  {$ENDIF HAS_EXCEPTION_STACKTRACE}
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
