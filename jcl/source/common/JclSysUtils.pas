@@ -2947,7 +2947,7 @@ begin
   else
     StartupInfo.hStdError := ErrorPipeInfo.PipeWrite;
   UniqueString(CommandLine); // CommandLine must be in a writable memory block
-  ProcessInfo.dwProcessId := 0;
+  ResetMemory(ProcessInfo, SizeOf(ProcessInfo));
   ProcessEvent := nil;
   try
     if CreateProcess(nil, PChar(CommandLine), nil, nil, True, ProcessPriorities[ProcessPriority],
