@@ -1120,7 +1120,7 @@ begin
 
   FOutput := '';
   Arguments := '';
-  CurrentFolder := GetCurrentFolder;
+  CurrentFolder := PathGetShortName(GetCurrentFolder); // used if LongPathBug is True
 
   PathList := TStringList.Create;
   try
