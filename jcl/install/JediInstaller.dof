@@ -1,3 +1,5 @@
+[Compiler]
+O=0
 [Directories]
 OutputDir=..\bin
 UnitOutputDir=.
