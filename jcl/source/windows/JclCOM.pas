@@ -486,7 +486,7 @@ end;
 
 function ResetIStreamToStart(Stream: IStream): Boolean;
 var
-  i64Pos: Largeint;
+  i64Pos: {$IFDEF RTL290_UP}LargeUInt{$ELSE}Largeint{$ENDIF RTL290_UP};
   hrSeek: HRESULT;
 begin
   { TODO -cTest : D4 (CBx ??) }
