@@ -1805,6 +1805,16 @@ begin
     Result := BoolToStr(FileExists(FileOrDirectory) or DirectoryExists(FileOrDirectory), True);
     while (Position <= Len) and CharIsWhiteSpace(Condition[Position]) do
       Inc(Position);
+    // skip inner $(xxxx) inside an outer Exists( )  - Necessary, starting with XE8.
+    if (Position <= Len) and (Condition[Position] = '$') then
+       Inc(Position);
+    if (Position <= Len) and (Condition[Position] = '(') then
+      while (Position <= Len) do
+      begin
+        Inc(Position);
+        if Condition[Position-1] = ')' then
+          Break;
+      end;
     // skip closing parenthesis
     if Condition[Position] <> ')' then
       raise EJclMsBuildError.CreateResFmt(@RsEMissingParenthesis, [Condition]);
