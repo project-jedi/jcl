@@ -1805,13 +1805,12 @@ var
   First, Second, Third: Byte;
   J, K: Integer;
 begin
-  // Data already loaded?
-  if not CategoriesLoaded then
-  begin
-    // make sure no other code is currently modifying the global data area
-    LoadInProgress.Enter;
-    try
-      CategoriesLoaded := True;
+  // make sure no other code is currently modifying the global data area
+  LoadInProgress.Enter;
+  try
+    // Data already loaded?
+    if not CategoriesLoaded then
+    begin
       Stream := OpenResourceStream('CATEGORIES');
       try
         while Stream.Position < Stream.Size do
@@ -1855,10 +1854,11 @@ begin
         // Assert(Stream.Position = Stream.Size);
       finally
         Stream.Free;
+        CategoriesLoaded := True;
       end;
-    finally
-      LoadInProgress.Leave;
     end;
+  finally
+    LoadInProgress.Leave;
   end;
 end;
 
@@ -1901,13 +1901,11 @@ var
   I, J, Code, Size: Integer;
   First, Second, Third: Byte;
 begin
-  if not CaseDataLoaded then
-  begin
-    // make sure no other code is currently modifying the global data area
-    LoadInProgress.Enter;
-
-    try
-      CaseDataLoaded := True;
+  // make sure no other code is currently modifying the global data area
+  LoadInProgress.Enter;
+  try
+    if not CaseDataLoaded then
+    begin
       Stream := OpenResourceStream('CASE');
       try
         // the first entry in the stream is the number of entries in the case mapping table
@@ -1963,10 +1961,11 @@ begin
         Assert(Stream.Position = Stream.Size);
       finally
         Stream.Free;
+        CaseDataLoaded := True;
       end;
-    finally
-      LoadInProgress.Leave;
     end;
+  finally
+    LoadInProgress.Leave;
   end;
 end;
 
@@ -2095,13 +2094,11 @@ var
   I, J, Code, Size: Integer;
   First, Second, Third: Byte;
 begin
-  if not DecompositionsLoaded then
-  begin
-    // make sure no other code is currently modifying the global data area
-    LoadInProgress.Enter;
-
-    try
-      DecompositionsLoaded := True;
+  // make sure no other code is currently modifying the global data area
+  LoadInProgress.Enter;
+  try
+    if not DecompositionsLoaded then
+    begin
       Stream := OpenResourceStream('DECOMPOSITION');
       try
         // determine how many decomposition entries we have
@@ -2134,10 +2131,11 @@ begin
         Assert(Stream.Position = Stream.Size);
       finally
         Stream.Free;
+        DecompositionsLoaded := True;
       end;
-    finally
-      LoadInProgress.Leave;
     end;
+  finally
+    LoadInProgress.Leave;
   end;
 end;
 
@@ -2237,11 +2235,9 @@ var
 begin
   // make sure no other code is currently modifying the global data area
   LoadInProgress.Enter;
-
   try
     if not CCCsLoaded then
     begin
-      CCCsLoaded := True;
       Stream := OpenResourceStream('COMBINING');
       try
         while Stream.Position < Stream.Size do
@@ -2281,6 +2277,7 @@ begin
         // Assert(Stream.Position = Stream.Size);
       finally
         Stream.Free;
+        CCCsLoaded := True;
       end;
     end;
   finally
@@ -2318,6 +2315,7 @@ type
 
 var
   // array to hold the number equivalents for specific codes
+  NumberCodesLoaded: Boolean;
   NumberCodes: array of TCodeIndex;
   // array of numbers used in NumberCodes
   Numbers: array of TUcNumber;
@@ -2329,9 +2327,8 @@ var
 begin
   // make sure no other code is currently modifying the global data area
   LoadInProgress.Enter;
-
   try
-    if NumberCodes = nil then
+    if not NumberCodesLoaded then
     begin
       Stream := OpenResourceStream('NUMBERS');
       try
@@ -2360,6 +2357,7 @@ begin
         Assert(Stream.Position = Stream.Size);
       finally
         Stream.Free;
+        NumberCodesLoaded := True;
       end;
     end;
   finally
@@ -2375,7 +2373,7 @@ var
   L, R, M: Integer;
 begin
   // load number data if not already done
-  if NumberCodes = nil then
+  if not NumberCodesLoaded then
     LoadNumberData;
 
   Result := False;
@@ -2414,6 +2412,7 @@ type
 
 var
   // list of composition mappings
+  CompositionsLoaded: Boolean;
   Compositions: array of TComposition;
   MaxCompositionSize: Integer;
 
@@ -2424,9 +2423,8 @@ var
 begin
   // make sure no other code is currently modifying the global data area
   LoadInProgress.Enter;
-
   try
-    if Compositions = nil then
+    if not CompositionsLoaded then
     begin
       Stream := OpenResourceStream('COMPOSITION');
       try
@@ -2449,6 +2447,7 @@ begin
         Assert(Stream.Position = Stream.Size);
       finally
         Stream.Free;
+        CompositionsLoaded := True;
       end;
     end;
   finally
@@ -2462,7 +2461,7 @@ function UnicodeCompose(const Codes: array of UCS4; out Composite: UCS4; Compati
 var
   L, R, M, I, HighCodes, HighNext: Integer;
 begin
-  if Compositions = nil then
+  if not CompositionsLoaded then
     LoadCompositionData;
 
   Result := 0;
@@ -2531,7 +2530,7 @@ function UnicodeCompose(const Codes: array of UCS4; out Composite: UCS4; Tags: T
 var
   L, R, M, I, HighCodes, HighNext: Integer;
 begin
-  if Compositions = nil then
+  if not CompositionsLoaded then
     LoadCompositionData;
 
   Result := 0;
@@ -6550,7 +6549,7 @@ begin
   if Result = '' then
     Exit;
 
-  if Compositions = nil then
+  if not CompositionsLoaded then
     LoadCompositionData;
 
   LastInPos := Length(Result);
@@ -6610,7 +6609,7 @@ begin
   if Result = '' then
     Exit;
 
-  if Compositions = nil then
+  if not CompositionsLoaded then
     LoadCompositionData;
 
   LastInPos := Length(Result);
