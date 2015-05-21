@@ -506,10 +506,12 @@ begin
               PropInfo := GetPropInfo(InterfaceParams, AMacro.Strings[Index]);
               if Assigned(PropInfo) then
                 {$IFDEF COMPILER8_UP}
-                AMacroParams[Index] := GetPropValue(InterfaceParams, PropInfo);
+                AMacroParams[Index] := GetPropValue(InterfaceParams, PropInfo)
                 {$ELSE ~COMPILER8_UP}
-                AMacroParams[Index] := GetPropValue(InterfaceParams, AMacro.Strings[Index]);
+                AMacroParams[Index] := GetPropValue(InterfaceParams, AMacro.Strings[Index])
                 {$ENDIF ~COMPILER8_UP}
+              else
+                Beep;
             end;
           end;
           Params[Index].VType := vtPWideChar;

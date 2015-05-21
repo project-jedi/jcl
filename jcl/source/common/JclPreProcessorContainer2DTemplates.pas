@@ -133,10 +133,12 @@ type
   TJclMapClassImplementationParams = class(TJclMapImplementationParams)
   protected
     FCreateKeySet: string;
+    FCreateKeyCollection: string;
     FCreateValueCollection: string;
     FMacroFooter: string;
     FOwnershipAssignments: string;
     function GetCreateKeySet: string;
+    function GetCreateKeyCollection: string;
     function GetCreateValueCollection: string;
     function GetOwnershipAssignment: string;
     function GetSelfClassName: string; virtual; abstract;
@@ -148,11 +150,13 @@ type
     property KeyTypeName: string index kaKeyTypeName read GetKeyAttribute write SetKeyAttribute stored False;
     property KeyDefault: string index kaKeyDefaultValue read GetKeyAttribute write SetKeyAttribute stored False;
     property KeyArraySetClassName: string index kaKeyArraySetClassName read GetKeyAttribute write SetKeyAttribute stored False;
+    property KeyArrayListClassName: string index kaKeyArrayListClassName read GetKeyAttribute write SetKeyAttribute stored False;
     property ValueTypeName: string index vaValueTypeName read GetValueAttribute write SetValueAttribute stored False;
     property ValueDefault: string index vaValueDefaultValue read GetValueAttribute write SetValueAttribute stored False;
     property ValueArrayListClassName: string index vaValueArrayListClassName read GetValueAttribute write SetValueAttribute stored False;
     property OwnershipAssignments: string read GetOwnershipAssignment write FOwnershipAssignments;
     property CreateKeySet: string read GetCreateKeySet write FCreateKeySet;
+    property CreateKeyCollection: string read GetCreateKeyCollection write FCreateKeyCollection;
     property CreateValueCollection: string read GetCreateValueCollection write FCreateValueCollection;
   end;
 
@@ -579,6 +583,21 @@ begin
     else
       Ownership := '';
     Result := Format('%s.Create(FSize%s)', [KeyArraySetClassName, Ownership]);
+  end;
+end;
+
+function TJclMapClassImplementationParams.GetCreateKeyCollection: string;
+var
+  Ownership: string;
+begin
+  Result := FCreateKeyCollection;
+  if Result = '' then
+  begin
+    if MapInfo.KeyTypeInfo.TypeAttributes[taOwnershipParameterName] <> '' then
+      Ownership := ', False'
+    else
+      Ownership := '';
+    Result := Format('%s.Create(FSize%s)', [KeyArrayListClassName, Ownership]);
   end;
 end;
 

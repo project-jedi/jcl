@@ -58,7 +58,7 @@ type
 (*$JPPLOOP ALLMAPINDEX ALLMAPCOUNT
   {$JPPEXPANDMACRO JCLHASHMAPTYPESINT(,,,,)}
 
-  {$JPPEXPANDMACRO JCLHASHMAPINT(,,,,,,,,,,,,,)}
+  {$JPPEXPANDMACRO JCLHASHMAPINT(,,,,,,,,,,,,,,)}
 
 *)
   {$IFDEF SUPPORTS_GENERICS}
@@ -79,7 +79,7 @@ type
     {$JPPUNDEF GENERIC}{$JPPDEFINE REFCOUNTED}{$JPPEXPANDMACRO MOVEARRAYINT(MoveArray,THashEntryArray,)}
   end;
 
-  (*$JPPEXPANDMACRO JCLHASHMAPINT(TBucket,TJclHashMap<TKey\,TValue>,TJclAbstractContainerBase,IJclMap<TKey\,TValue>,IJclSet<TKey>,IJclCollection<TValue>, IJclPairOwner<TKey\, TValue>\,,
+  (*$JPPEXPANDMACRO JCLHASHMAPINT(TBucket,TJclHashMap<TKey\,TValue>,TJclAbstractContainerBase,IJclMap<TKey\,TValue>,IJclSet<TKey>,IJclCollection<TKey>,IJclCollection<TValue>, IJclPairOwner<TKey\, TValue>\,,
 protected
   type
     TBucket = TJclBucket<TKey\,TValue>;
@@ -92,6 +92,7 @@ protected
   function ValuesEqual(const A\, B: TValue): Boolean; virtual; abstract;
   function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; virtual; abstract;
   function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; virtual; abstract;
+  function CreateEmptyKeyList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TKey>; virtual; abstract;
 public
   { IJclPairOwner }
   function FreeKey(var Key: TKey): TKey;
@@ -111,6 +112,7 @@ public
     type
       TArrayList = TJclArrayListE<TValue>;
       TArraySet = TJclArraySetE<TKey>;
+      TArrayKeyList = TJclArrayListE<TKey>;
   private
     FKeyEqualityComparer: IJclEqualityComparer<TKey>;
     FKeyHashConverter: IJclHashConverter<TKey>;
@@ -124,6 +126,7 @@ public
     function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; override;
+    function CreateEmptyKeyList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TKey>; override;
   public
     constructor Create(const AKeyEqualityComparer: IJclEqualityComparer<TKey>;
       const AKeyHashConverter: IJclHashConverter<TKey>; const AValueEqualityComparer: IJclEqualityComparer<TValue>;
@@ -143,6 +146,7 @@ public
     type
       TArrayList = TJclArrayListF<TValue>;
       TArraySet = TJclArraySetF<TKey>;
+      TArrayKeyList = TJclArrayListF<TKey>;
   private
     FKeyEqualityCompare: TEqualityCompare<TKey>;
     FKeyHash: THashConvert<TKey>;
@@ -156,6 +160,7 @@ public
     function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; override;
+    function CreateEmptyKeyList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TKey>; override;
   public
     constructor Create(AKeyEqualityCompare: TEqualityCompare<TKey>; AKeyHash: THashConvert<TKey>;
       AValueEqualityCompare: TEqualityCompare<TValue>; AKeyCompare: TCompare<TKey>;
@@ -175,6 +180,7 @@ public
     type
       TArrayList = TJclArrayListI<TValue>;
       TArraySet = TJclArraySetI<TKey>;
+      TArrayKeyList = TJclArrayListI<TKey>;
   protected
     function Hash(const AKey: TKey): Integer; override;
     function KeysEqual(const A, B: TKey): Boolean; override;
@@ -182,6 +188,7 @@ public
     function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; override;
+    function CreateEmptyKeyList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TKey>; override;
   end;
 
   //DOM-IGNORE-END
@@ -226,7 +233,7 @@ uses
 (*$JPPLOOP TRUEMAPINDEX TRUEMAPCOUNT
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(,,,)}
 
-{$JPPEXPANDMACRO JCLHASHMAPIMP(,,,,,,,,,,,,,,,,)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(,,,,,,,,,,,,,,,,,,)}
 
 *)
 {$IFDEF SUPPORTS_GENERICS}
@@ -236,10 +243,10 @@ uses
 
 {$JPPUNDEF GENERIC}{$JPPDEFINE REFCOUNTED}{$JPPEXPANDMACRO MOVEARRAYIMP(MoveArray,THashEntryArray,,TJclBucket<TKey\, TValue>.,)}
 
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclHashMap<TKey\, TValue>,TBucket,IJclMap<TKey\, TValue>,IJclSet<TKey>,IJclIterator<TKey>,IJclCollection<TValue>,; AOwnsKeys: Boolean,; AOwnsValues: Boolean,
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclHashMap<TKey\, TValue>,TBucket,IJclMap<TKey\, TValue>,IJclSet<TKey>,IJclCollection<TKey>,IJclIterator<TKey>,IJclCollection<TValue>,; AOwnsKeys: Boolean,; AOwnsValues: Boolean,
 
   FOwnsKeys := AOwnsKeys;
-  FOwnsValues := AOwnsValues;,const ,TKey,Default(TKey),const ,TValue,Default(TValue),CreateEmptyArraySet(FSize, False),CreateEmptyArrayList(FSize, False))}
+  FOwnsValues := AOwnsValues;,const ,TKey,Default(TKey),const ,TValue,Default(TValue),CreateEmptyArraySet(FSize, False),CreateEmptyKeyList(FSize, False),CreateEmptyArrayList(FSize, False))}
 
 function TJclHashMap<TKey, TValue>.FreeKey(var Key: TKey): TKey;
 begin
@@ -317,6 +324,11 @@ begin
   Result := TArraySet.Create(KeyComparer, ACapacity, AOwnsObjects);
 end;
 
+function TJclHashMapE<TKey, TValue>.CreateEmptyKeyList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TKey>;
+begin
+  Result := TArrayKeyList.Create(KeyEqualityComparer, ACapacity, AOwnsObjects);
+end;
+
 function TJclHashMapE<TKey, TValue>.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclHashMapE<TKey, TValue>.Create(KeyEqualityComparer, KeyHashConverter, ValueEqualityComparer,
@@ -383,6 +395,11 @@ begin
   Result := TArraySet.Create(KeyCompare, ACapacity, AOwnsObjects);
 end;
 
+function TJclHashMapF<TKey, TValue>.CreateEmptyKeyList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TKey>;
+begin
+  Result := TArrayKeyList.Create(KeyEqualityCompare, ACapacity, AOwnsObjects);
+end;
+
 function TJclHashMapF<TKey, TValue>.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclHashMapF<TKey, TValue>.Create(KeyEqualityCompare, KeyHash, ValueEqualityCompare, KeyCompare, FCapacity,
@@ -421,6 +438,11 @@ end;
 function TJclHashMapI<TKey, TValue>.CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>;
 begin
   Result := TArraySet.Create(ACapacity, AOwnsObjects);
+end;
+
+function TJclHashMapI<TKey, TValue>.CreateEmptyKeyList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TKey>;
+begin
+  Result := TArrayKeyList.Create(ACapacity, AOwnsObjects);
 end;
 
 function TJclHashMapI<TKey, TValue>.CreateEmptyContainer: TJclAbstractContainerBase;

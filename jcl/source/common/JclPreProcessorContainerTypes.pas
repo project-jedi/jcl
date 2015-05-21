@@ -153,6 +153,8 @@ type
     kaKeyBaseContainerClassName,
     kaKeyIteratorInterfaceName,
     kaKeySetInterfaceName,
+    kaKeyCollectionInterfaceName,
+    kaKeyArrayListClassName,
     kaKeyArraySetClassName,
     vaValueTypeName,
     vaValueOwnershipParameterName,
@@ -325,6 +327,8 @@ const
       {KeyBaseContainerClassName} taBaseContainerClassName,
       {KeyIteratorInterfaceName} taIteratorInterfaceName,
       {KeySetInterfaceName} taSetInterfaceName,
+      {KeyCollectionInterfaceName} taCollectionInterfaceName,
+      {KeyArrayListClassName} taArrayListClassName,
       {KeyArraySetClassName} taArraySetClassName);
 
   ValueAttributeInfos: array [TValueAttributeID] of TTypeAttributeID =

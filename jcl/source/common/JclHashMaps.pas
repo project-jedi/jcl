@@ -108,6 +108,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): IInterface;
     function KeySet: IJclIntfSet;
+    function Keys: IJclIntfCollection;
     function MapEquals(const AMap: IJclIntfIntfMap): Boolean;
     procedure PutAll(const AMap: IJclIntfIntfMap);
     procedure PutValue(const Key: IInterface; const Value: IInterface);
@@ -168,6 +169,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): AnsiString;
     function KeySet: IJclAnsiStrSet;
+    function Keys: IJclAnsiStrCollection;
     function MapEquals(const AMap: IJclAnsiStrIntfMap): Boolean;
     procedure PutAll(const AMap: IJclAnsiStrIntfMap);
     procedure PutValue(const Key: AnsiString; const Value: IInterface);
@@ -229,6 +231,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: AnsiString): IInterface;
     function KeySet: IJclIntfSet;
+    function Keys: IJclIntfCollection;
     function MapEquals(const AMap: IJclIntfAnsiStrMap): Boolean;
     procedure PutAll(const AMap: IJclIntfAnsiStrMap);
     procedure PutValue(const Key: IInterface; const Value: AnsiString);
@@ -289,6 +292,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: AnsiString): AnsiString;
     function KeySet: IJclAnsiStrSet;
+    function Keys: IJclAnsiStrCollection;
     function MapEquals(const AMap: IJclAnsiStrAnsiStrMap): Boolean;
     procedure PutAll(const AMap: IJclAnsiStrAnsiStrMap);
     procedure PutValue(const Key: AnsiString; const Value: AnsiString);
@@ -349,6 +353,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): WideString;
     function KeySet: IJclWideStrSet;
+    function Keys: IJclWideStrCollection;
     function MapEquals(const AMap: IJclWideStrIntfMap): Boolean;
     procedure PutAll(const AMap: IJclWideStrIntfMap);
     procedure PutValue(const Key: WideString; const Value: IInterface);
@@ -410,6 +415,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: WideString): IInterface;
     function KeySet: IJclIntfSet;
+    function Keys: IJclIntfCollection;
     function MapEquals(const AMap: IJclIntfWideStrMap): Boolean;
     procedure PutAll(const AMap: IJclIntfWideStrMap);
     procedure PutValue(const Key: IInterface; const Value: WideString);
@@ -470,6 +476,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: WideString): WideString;
     function KeySet: IJclWideStrSet;
+    function Keys: IJclWideStrCollection;
     function MapEquals(const AMap: IJclWideStrWideStrMap): Boolean;
     procedure PutAll(const AMap: IJclWideStrWideStrMap);
     procedure PutValue(const Key: WideString; const Value: WideString);
@@ -533,6 +540,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): UnicodeString;
     function KeySet: IJclUnicodeStrSet;
+    function Keys: IJclUnicodeStrCollection;
     function MapEquals(const AMap: IJclUnicodeStrIntfMap): Boolean;
     procedure PutAll(const AMap: IJclUnicodeStrIntfMap);
     procedure PutValue(const Key: UnicodeString; const Value: IInterface);
@@ -598,6 +606,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: UnicodeString): IInterface;
     function KeySet: IJclIntfSet;
+    function Keys: IJclIntfCollection;
     function MapEquals(const AMap: IJclIntfUnicodeStrMap): Boolean;
     procedure PutAll(const AMap: IJclIntfUnicodeStrMap);
     procedure PutValue(const Key: IInterface; const Value: UnicodeString);
@@ -662,6 +671,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: UnicodeString): UnicodeString;
     function KeySet: IJclUnicodeStrSet;
+    function Keys: IJclUnicodeStrCollection;
     function MapEquals(const AMap: IJclUnicodeStrUnicodeStrMap): Boolean;
     procedure PutAll(const AMap: IJclUnicodeStrUnicodeStrMap);
     procedure PutValue(const Key: UnicodeString; const Value: UnicodeString);
@@ -792,6 +802,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Single;
     function KeySet: IJclSingleSet;
+    function Keys: IJclSingleCollection;
     function MapEquals(const AMap: IJclSingleIntfMap): Boolean;
     procedure PutAll(const AMap: IJclSingleIntfMap);
     procedure PutValue(const Key: Single; const Value: IInterface);
@@ -853,6 +864,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Single): IInterface;
     function KeySet: IJclIntfSet;
+    function Keys: IJclIntfCollection;
     function MapEquals(const AMap: IJclIntfSingleMap): Boolean;
     procedure PutAll(const AMap: IJclIntfSingleMap);
     procedure PutValue(const Key: IInterface; const Value: Single);
@@ -908,6 +920,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Single): Single;
     function KeySet: IJclSingleSet;
+    function Keys: IJclSingleCollection;
     function MapEquals(const AMap: IJclSingleSingleMap): Boolean;
     procedure PutAll(const AMap: IJclSingleSingleMap);
     procedure PutValue(const Key: Single; const Value: Single);
@@ -968,6 +981,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Double;
     function KeySet: IJclDoubleSet;
+    function Keys: IJclDoubleCollection;
     function MapEquals(const AMap: IJclDoubleIntfMap): Boolean;
     procedure PutAll(const AMap: IJclDoubleIntfMap);
     procedure PutValue(const Key: Double; const Value: IInterface);
@@ -1029,6 +1043,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Double): IInterface;
     function KeySet: IJclIntfSet;
+    function Keys: IJclIntfCollection;
     function MapEquals(const AMap: IJclIntfDoubleMap): Boolean;
     procedure PutAll(const AMap: IJclIntfDoubleMap);
     procedure PutValue(const Key: IInterface; const Value: Double);
@@ -1084,6 +1099,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Double): Double;
     function KeySet: IJclDoubleSet;
+    function Keys: IJclDoubleCollection;
     function MapEquals(const AMap: IJclDoubleDoubleMap): Boolean;
     procedure PutAll(const AMap: IJclDoubleDoubleMap);
     procedure PutValue(const Key: Double; const Value: Double);
@@ -1144,6 +1160,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Extended;
     function KeySet: IJclExtendedSet;
+    function Keys: IJclExtendedCollection;
     function MapEquals(const AMap: IJclExtendedIntfMap): Boolean;
     procedure PutAll(const AMap: IJclExtendedIntfMap);
     procedure PutValue(const Key: Extended; const Value: IInterface);
@@ -1205,6 +1222,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Extended): IInterface;
     function KeySet: IJclIntfSet;
+    function Keys: IJclIntfCollection;
     function MapEquals(const AMap: IJclIntfExtendedMap): Boolean;
     procedure PutAll(const AMap: IJclIntfExtendedMap);
     procedure PutValue(const Key: IInterface; const Value: Extended);
@@ -1260,6 +1278,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Extended): Extended;
     function KeySet: IJclExtendedSet;
+    function Keys: IJclExtendedCollection;
     function MapEquals(const AMap: IJclExtendedExtendedMap): Boolean;
     procedure PutAll(const AMap: IJclExtendedExtendedMap);
     procedure PutValue(const Key: Extended; const Value: Extended);
@@ -1389,6 +1408,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Integer;
     function KeySet: IJclIntegerSet;
+    function Keys: IJclIntegerCollection;
     function MapEquals(const AMap: IJclIntegerIntfMap): Boolean;
     procedure PutAll(const AMap: IJclIntegerIntfMap);
     procedure PutValue(Key: Integer; const Value: IInterface);
@@ -1450,6 +1470,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Integer): IInterface;
     function KeySet: IJclIntfSet;
+    function Keys: IJclIntfCollection;
     function MapEquals(const AMap: IJclIntfIntegerMap): Boolean;
     procedure PutAll(const AMap: IJclIntfIntegerMap);
     procedure PutValue(const Key: IInterface; Value: Integer);
@@ -1505,6 +1526,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Integer): Integer;
     function KeySet: IJclIntegerSet;
+    function Keys: IJclIntegerCollection;
     function MapEquals(const AMap: IJclIntegerIntegerMap): Boolean;
     procedure PutAll(const AMap: IJclIntegerIntegerMap);
     procedure PutValue(Key: Integer; Value: Integer);
@@ -1565,6 +1587,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Cardinal;
     function KeySet: IJclCardinalSet;
+    function Keys: IJclCardinalCollection;
     function MapEquals(const AMap: IJclCardinalIntfMap): Boolean;
     procedure PutAll(const AMap: IJclCardinalIntfMap);
     procedure PutValue(Key: Cardinal; const Value: IInterface);
@@ -1626,6 +1649,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Cardinal): IInterface;
     function KeySet: IJclIntfSet;
+    function Keys: IJclIntfCollection;
     function MapEquals(const AMap: IJclIntfCardinalMap): Boolean;
     procedure PutAll(const AMap: IJclIntfCardinalMap);
     procedure PutValue(const Key: IInterface; Value: Cardinal);
@@ -1681,6 +1705,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Cardinal): Cardinal;
     function KeySet: IJclCardinalSet;
+    function Keys: IJclCardinalCollection;
     function MapEquals(const AMap: IJclCardinalCardinalMap): Boolean;
     procedure PutAll(const AMap: IJclCardinalCardinalMap);
     procedure PutValue(Key: Cardinal; Value: Cardinal);
@@ -1741,6 +1766,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Int64;
     function KeySet: IJclInt64Set;
+    function Keys: IJclInt64Collection;
     function MapEquals(const AMap: IJclInt64IntfMap): Boolean;
     procedure PutAll(const AMap: IJclInt64IntfMap);
     procedure PutValue(const Key: Int64; const Value: IInterface);
@@ -1802,6 +1828,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Int64): IInterface;
     function KeySet: IJclIntfSet;
+    function Keys: IJclIntfCollection;
     function MapEquals(const AMap: IJclIntfInt64Map): Boolean;
     procedure PutAll(const AMap: IJclIntfInt64Map);
     procedure PutValue(const Key: IInterface; const Value: Int64);
@@ -1857,6 +1884,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Int64): Int64;
     function KeySet: IJclInt64Set;
+    function Keys: IJclInt64Collection;
     function MapEquals(const AMap: IJclInt64Int64Map): Boolean;
     procedure PutAll(const AMap: IJclInt64Int64Map);
     procedure PutValue(const Key: Int64; const Value: Int64);
@@ -1917,6 +1945,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Pointer;
     function KeySet: IJclPtrSet;
+    function Keys: IJclPtrCollection;
     function MapEquals(const AMap: IJclPtrIntfMap): Boolean;
     procedure PutAll(const AMap: IJclPtrIntfMap);
     procedure PutValue(Key: Pointer; const Value: IInterface);
@@ -1978,6 +2007,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Pointer): IInterface;
     function KeySet: IJclIntfSet;
+    function Keys: IJclIntfCollection;
     function MapEquals(const AMap: IJclIntfPtrMap): Boolean;
     procedure PutAll(const AMap: IJclIntfPtrMap);
     procedure PutValue(const Key: IInterface; Value: Pointer);
@@ -2033,6 +2063,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Pointer): Pointer;
     function KeySet: IJclPtrSet;
+    function Keys: IJclPtrCollection;
     function MapEquals(const AMap: IJclPtrPtrMap): Boolean;
     procedure PutAll(const AMap: IJclPtrPtrMap);
     procedure PutValue(Key: Pointer; Value: Pointer);
@@ -2099,6 +2130,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): IInterface;
     function KeySet: IJclIntfSet;
+    function Keys: IJclIntfCollection;
     function MapEquals(const AMap: IJclIntfMap): Boolean;
     procedure PutAll(const AMap: IJclIntfMap);
     procedure PutValue(const Key: IInterface; Value: TObject);
@@ -2165,6 +2197,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): AnsiString;
     function KeySet: IJclAnsiStrSet;
+    function Keys: IJclAnsiStrCollection;
     function MapEquals(const AMap: IJclAnsiStrMap): Boolean;
     procedure PutAll(const AMap: IJclAnsiStrMap);
     procedure PutValue(const Key: AnsiString; Value: TObject);
@@ -2231,6 +2264,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): WideString;
     function KeySet: IJclWideStrSet;
+    function Keys: IJclWideStrCollection;
     function MapEquals(const AMap: IJclWideStrMap): Boolean;
     procedure PutAll(const AMap: IJclWideStrMap);
     procedure PutValue(const Key: WideString; Value: TObject);
@@ -2300,6 +2334,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): UnicodeString;
     function KeySet: IJclUnicodeStrSet;
+    function Keys: IJclUnicodeStrCollection;
     function MapEquals(const AMap: IJclUnicodeStrMap): Boolean;
     procedure PutAll(const AMap: IJclUnicodeStrMap);
     procedure PutValue(const Key: UnicodeString; Value: TObject);
@@ -2385,6 +2420,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Single;
     function KeySet: IJclSingleSet;
+    function Keys: IJclSingleCollection;
     function MapEquals(const AMap: IJclSingleMap): Boolean;
     procedure PutAll(const AMap: IJclSingleMap);
     procedure PutValue(const Key: Single; Value: TObject);
@@ -2446,6 +2482,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Double;
     function KeySet: IJclDoubleSet;
+    function Keys: IJclDoubleCollection;
     function MapEquals(const AMap: IJclDoubleMap): Boolean;
     procedure PutAll(const AMap: IJclDoubleMap);
     procedure PutValue(const Key: Double; Value: TObject);
@@ -2507,6 +2544,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Extended;
     function KeySet: IJclExtendedSet;
+    function Keys: IJclExtendedCollection;
     function MapEquals(const AMap: IJclExtendedMap): Boolean;
     procedure PutAll(const AMap: IJclExtendedMap);
     procedure PutValue(const Key: Extended; Value: TObject);
@@ -2591,6 +2629,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Integer;
     function KeySet: IJclIntegerSet;
+    function Keys: IJclIntegerCollection;
     function MapEquals(const AMap: IJclIntegerMap): Boolean;
     procedure PutAll(const AMap: IJclIntegerMap);
     procedure PutValue(Key: Integer; Value: TObject);
@@ -2652,6 +2691,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Cardinal;
     function KeySet: IJclCardinalSet;
+    function Keys: IJclCardinalCollection;
     function MapEquals(const AMap: IJclCardinalMap): Boolean;
     procedure PutAll(const AMap: IJclCardinalMap);
     procedure PutValue(Key: Cardinal; Value: TObject);
@@ -2713,6 +2753,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Int64;
     function KeySet: IJclInt64Set;
+    function Keys: IJclInt64Collection;
     function MapEquals(const AMap: IJclInt64Map): Boolean;
     procedure PutAll(const AMap: IJclInt64Map);
     procedure PutValue(const Key: Int64; Value: TObject);
@@ -2774,6 +2815,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Pointer;
     function KeySet: IJclPtrSet;
+    function Keys: IJclPtrCollection;
     function MapEquals(const AMap: IJclPtrMap): Boolean;
     procedure PutAll(const AMap: IJclPtrMap);
     procedure PutValue(Key: Pointer; Value: TObject);
@@ -2840,6 +2882,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): TObject;
     function KeySet: IJclSet;
+    function Keys: IJclCollection;
     function MapEquals(const AMap: IJclMap): Boolean;
     procedure PutAll(const AMap: IJclMap);
     procedure PutValue(Key: TObject; Value: TObject);
@@ -2889,6 +2932,7 @@ type
     function ValuesEqual(const A, B: TValue): Boolean; virtual; abstract;
     function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; virtual; abstract;
     function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; virtual; abstract;
+    function CreateEmptyKeyList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TKey>; virtual; abstract;
   public
     { IJclPairOwner }
     function FreeKey(var Key: TKey): TKey;
@@ -2919,6 +2963,7 @@ type
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: TValue): TKey;
     function KeySet: IJclSet<TKey>;
+    function Keys: IJclCollection<TKey>;
     function MapEquals(const AMap: IJclMap<TKey,TValue>): Boolean;
     procedure PutAll(const AMap: IJclMap<TKey,TValue>);
     procedure PutValue(const Key: TKey; const Value: TValue);
@@ -2937,6 +2982,7 @@ type
     type
       TArrayList = TJclArrayListE<TValue>;
       TArraySet = TJclArraySetE<TKey>;
+      TArrayKeyList = TJclArrayListE<TKey>;
   private
     FKeyEqualityComparer: IJclEqualityComparer<TKey>;
     FKeyHashConverter: IJclHashConverter<TKey>;
@@ -2950,6 +2996,7 @@ type
     function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; override;
+    function CreateEmptyKeyList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TKey>; override;
   public
     constructor Create(const AKeyEqualityComparer: IJclEqualityComparer<TKey>;
       const AKeyHashConverter: IJclHashConverter<TKey>; const AValueEqualityComparer: IJclEqualityComparer<TValue>;
@@ -2969,6 +3016,7 @@ type
     type
       TArrayList = TJclArrayListF<TValue>;
       TArraySet = TJclArraySetF<TKey>;
+      TArrayKeyList = TJclArrayListF<TKey>;
   private
     FKeyEqualityCompare: TEqualityCompare<TKey>;
     FKeyHash: THashConvert<TKey>;
@@ -2982,6 +3030,7 @@ type
     function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; override;
+    function CreateEmptyKeyList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TKey>; override;
   public
     constructor Create(AKeyEqualityCompare: TEqualityCompare<TKey>; AKeyHash: THashConvert<TKey>;
       AValueEqualityCompare: TEqualityCompare<TValue>; AKeyCompare: TCompare<TKey>;
@@ -3001,6 +3050,7 @@ type
     type
       TArrayList = TJclArrayListI<TValue>;
       TArraySet = TJclArraySetI<TKey>;
+      TArrayKeyList = TJclArrayListI<TKey>;
   protected
     function Hash(const AKey: TKey): Integer; override;
     function KeysEqual(const A, B: TKey): Boolean; override;
@@ -3008,6 +3058,7 @@ type
     function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; override;
+    function CreateEmptyKeyList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TKey>; override;
   end;
 
   //DOM-IGNORE-END
@@ -3399,6 +3450,32 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := TJclIntfArraySet.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfIntfHashMap.Keys: IJclIntfCollection;
+var
+  I, J: Integer;
+  Bucket: TJclIntfIntfHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclIntfArrayList.Create(FSize);
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
@@ -4030,6 +4107,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclAnsiStrIntfHashMap.Keys: IJclAnsiStrCollection;
+var
+  I, J: Integer;
+  Bucket: TJclAnsiStrIntfHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclAnsiStrArrayList.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclAnsiStrIntfHashMap.MapEquals(const AMap: IJclAnsiStrIntfMap): Boolean;
 var
   I, J: Integer;
@@ -4631,6 +4734,32 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := TJclIntfArraySet.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfAnsiStrHashMap.Keys: IJclIntfCollection;
+var
+  I, J: Integer;
+  Bucket: TJclIntfAnsiStrHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclIntfArrayList.Create(FSize);
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
@@ -5267,6 +5396,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclAnsiStrAnsiStrHashMap.Keys: IJclAnsiStrCollection;
+var
+  I, J: Integer;
+  Bucket: TJclAnsiStrAnsiStrHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclAnsiStrArrayList.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclAnsiStrAnsiStrHashMap.MapEquals(const AMap: IJclAnsiStrAnsiStrMap): Boolean;
 var
   I, J: Integer;
@@ -5883,6 +6038,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclWideStrIntfHashMap.Keys: IJclWideStrCollection;
+var
+  I, J: Integer;
+  Bucket: TJclWideStrIntfHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclWideStrArrayList.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclWideStrIntfHashMap.MapEquals(const AMap: IJclWideStrIntfMap): Boolean;
 var
   I, J: Integer;
@@ -6484,6 +6665,32 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := TJclIntfArraySet.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfWideStrHashMap.Keys: IJclIntfCollection;
+var
+  I, J: Integer;
+  Bucket: TJclIntfWideStrHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclIntfArrayList.Create(FSize);
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
@@ -7120,6 +7327,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclWideStrWideStrHashMap.Keys: IJclWideStrCollection;
+var
+  I, J: Integer;
+  Bucket: TJclWideStrWideStrHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclWideStrArrayList.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclWideStrWideStrHashMap.MapEquals(const AMap: IJclWideStrWideStrMap): Boolean;
 var
   I, J: Integer;
@@ -7726,6 +7959,32 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := TJclUnicodeStrArraySet.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrIntfHashMap.Keys: IJclUnicodeStrCollection;
+var
+  I, J: Integer;
+  Bucket: TJclUnicodeStrIntfHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclUnicodeStrArrayList.Create(FSize);
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
@@ -8349,6 +8608,32 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := TJclIntfArraySet.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfUnicodeStrHashMap.Keys: IJclIntfCollection;
+var
+  I, J: Integer;
+  Bucket: TJclIntfUnicodeStrHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclIntfArrayList.Create(FSize);
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
@@ -8992,6 +9277,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclUnicodeStrUnicodeStrHashMap.Keys: IJclUnicodeStrCollection;
+var
+  I, J: Integer;
+  Bucket: TJclUnicodeStrUnicodeStrHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclUnicodeStrArrayList.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclUnicodeStrUnicodeStrHashMap.MapEquals(const AMap: IJclUnicodeStrUnicodeStrMap): Boolean;
 var
   I, J: Integer;
@@ -9595,6 +9906,32 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := TJclSingleArraySet.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleIntfHashMap.Keys: IJclSingleCollection;
+var
+  I, J: Integer;
+  Bucket: TJclSingleIntfHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclSingleArrayList.Create(FSize);
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
@@ -10226,6 +10563,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntfSingleHashMap.Keys: IJclIntfCollection;
+var
+  I, J: Integer;
+  Bucket: TJclIntfSingleHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclIntfArrayList.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclIntfSingleHashMap.MapEquals(const AMap: IJclIntfSingleMap): Boolean;
 var
   I, J: Integer;
@@ -10798,6 +11161,32 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := TJclSingleArraySet.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleSingleHashMap.Keys: IJclSingleCollection;
+var
+  I, J: Integer;
+  Bucket: TJclSingleSingleHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclSingleArrayList.Create(FSize);
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
@@ -11429,6 +11818,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclDoubleIntfHashMap.Keys: IJclDoubleCollection;
+var
+  I, J: Integer;
+  Bucket: TJclDoubleIntfHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclDoubleArrayList.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclDoubleIntfHashMap.MapEquals(const AMap: IJclDoubleIntfMap): Boolean;
 var
   I, J: Integer;
@@ -12045,6 +12460,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntfDoubleHashMap.Keys: IJclIntfCollection;
+var
+  I, J: Integer;
+  Bucket: TJclIntfDoubleHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclIntfArrayList.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclIntfDoubleHashMap.MapEquals(const AMap: IJclIntfDoubleMap): Boolean;
 var
   I, J: Integer;
@@ -12617,6 +13058,32 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := TJclDoubleArraySet.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleDoubleHashMap.Keys: IJclDoubleCollection;
+var
+  I, J: Integer;
+  Bucket: TJclDoubleDoubleHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclDoubleArrayList.Create(FSize);
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
@@ -13248,6 +13715,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclExtendedIntfHashMap.Keys: IJclExtendedCollection;
+var
+  I, J: Integer;
+  Bucket: TJclExtendedIntfHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclExtendedArrayList.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclExtendedIntfHashMap.MapEquals(const AMap: IJclExtendedIntfMap): Boolean;
 var
   I, J: Integer;
@@ -13864,6 +14357,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntfExtendedHashMap.Keys: IJclIntfCollection;
+var
+  I, J: Integer;
+  Bucket: TJclIntfExtendedHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclIntfArrayList.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclIntfExtendedHashMap.MapEquals(const AMap: IJclIntfExtendedMap): Boolean;
 var
   I, J: Integer;
@@ -14436,6 +14955,32 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := TJclExtendedArraySet.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedExtendedHashMap.Keys: IJclExtendedCollection;
+var
+  I, J: Integer;
+  Bucket: TJclExtendedExtendedHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclExtendedArrayList.Create(FSize);
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
@@ -15067,6 +15612,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntegerIntfHashMap.Keys: IJclIntegerCollection;
+var
+  I, J: Integer;
+  Bucket: TJclIntegerIntfHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclIntegerArrayList.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclIntegerIntfHashMap.MapEquals(const AMap: IJclIntegerIntfMap): Boolean;
 var
   I, J: Integer;
@@ -15683,6 +16254,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntfIntegerHashMap.Keys: IJclIntfCollection;
+var
+  I, J: Integer;
+  Bucket: TJclIntfIntegerHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclIntfArrayList.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclIntfIntegerHashMap.MapEquals(const AMap: IJclIntfIntegerMap): Boolean;
 var
   I, J: Integer;
@@ -16255,6 +16852,32 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := TJclIntegerArraySet.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerIntegerHashMap.Keys: IJclIntegerCollection;
+var
+  I, J: Integer;
+  Bucket: TJclIntegerIntegerHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclIntegerArrayList.Create(FSize);
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
@@ -16886,6 +17509,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclCardinalIntfHashMap.Keys: IJclCardinalCollection;
+var
+  I, J: Integer;
+  Bucket: TJclCardinalIntfHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclCardinalArrayList.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclCardinalIntfHashMap.MapEquals(const AMap: IJclCardinalIntfMap): Boolean;
 var
   I, J: Integer;
@@ -17502,6 +18151,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntfCardinalHashMap.Keys: IJclIntfCollection;
+var
+  I, J: Integer;
+  Bucket: TJclIntfCardinalHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclIntfArrayList.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclIntfCardinalHashMap.MapEquals(const AMap: IJclIntfCardinalMap): Boolean;
 var
   I, J: Integer;
@@ -18074,6 +18749,32 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := TJclCardinalArraySet.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalCardinalHashMap.Keys: IJclCardinalCollection;
+var
+  I, J: Integer;
+  Bucket: TJclCardinalCardinalHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclCardinalArrayList.Create(FSize);
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
@@ -18705,6 +19406,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclInt64IntfHashMap.Keys: IJclInt64Collection;
+var
+  I, J: Integer;
+  Bucket: TJclInt64IntfHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclInt64ArrayList.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclInt64IntfHashMap.MapEquals(const AMap: IJclInt64IntfMap): Boolean;
 var
   I, J: Integer;
@@ -19321,6 +20048,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntfInt64HashMap.Keys: IJclIntfCollection;
+var
+  I, J: Integer;
+  Bucket: TJclIntfInt64HashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclIntfArrayList.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclIntfInt64HashMap.MapEquals(const AMap: IJclIntfInt64Map): Boolean;
 var
   I, J: Integer;
@@ -19893,6 +20646,32 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := TJclInt64ArraySet.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64Int64HashMap.Keys: IJclInt64Collection;
+var
+  I, J: Integer;
+  Bucket: TJclInt64Int64HashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclInt64ArrayList.Create(FSize);
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
@@ -20524,6 +21303,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclPtrIntfHashMap.Keys: IJclPtrCollection;
+var
+  I, J: Integer;
+  Bucket: TJclPtrIntfHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclPtrArrayList.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclPtrIntfHashMap.MapEquals(const AMap: IJclPtrIntfMap): Boolean;
 var
   I, J: Integer;
@@ -21140,6 +21945,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntfPtrHashMap.Keys: IJclIntfCollection;
+var
+  I, J: Integer;
+  Bucket: TJclIntfPtrHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclIntfArrayList.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclIntfPtrHashMap.MapEquals(const AMap: IJclIntfPtrMap): Boolean;
 var
   I, J: Integer;
@@ -21712,6 +22543,32 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := TJclPtrArraySet.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrPtrHashMap.Keys: IJclPtrCollection;
+var
+  I, J: Integer;
+  Bucket: TJclPtrPtrHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclPtrArrayList.Create(FSize);
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
@@ -22329,6 +23186,32 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := TJclIntfArraySet.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfHashMap.Keys: IJclIntfCollection;
+var
+  I, J: Integer;
+  Bucket: TJclIntfHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclIntfArrayList.Create(FSize);
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
@@ -22974,6 +23857,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclAnsiStrHashMap.Keys: IJclAnsiStrCollection;
+var
+  I, J: Integer;
+  Bucket: TJclAnsiStrHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclAnsiStrArrayList.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclAnsiStrHashMap.MapEquals(const AMap: IJclAnsiStrMap): Boolean;
 var
   I, J: Integer;
@@ -23589,6 +24498,32 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := TJclWideStrArraySet.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrHashMap.Keys: IJclWideStrCollection;
+var
+  I, J: Integer;
+  Bucket: TJclWideStrHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclWideStrArrayList.Create(FSize);
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
@@ -24239,6 +25174,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclUnicodeStrHashMap.Keys: IJclUnicodeStrCollection;
+var
+  I, J: Integer;
+  Bucket: TJclUnicodeStrHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclUnicodeStrArrayList.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclUnicodeStrHashMap.MapEquals(const AMap: IJclUnicodeStrMap): Boolean;
 var
   I, J: Integer;
@@ -24822,6 +25783,32 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := TJclSingleArraySet.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleHashMap.Keys: IJclSingleCollection;
+var
+  I, J: Integer;
+  Bucket: TJclSingleHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclSingleArrayList.Create(FSize);
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
@@ -25433,6 +26420,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclDoubleHashMap.Keys: IJclDoubleCollection;
+var
+  I, J: Integer;
+  Bucket: TJclDoubleHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclDoubleArrayList.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclDoubleHashMap.MapEquals(const AMap: IJclDoubleMap): Boolean;
 var
   I, J: Integer;
@@ -26014,6 +27027,32 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := TJclExtendedArraySet.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedHashMap.Keys: IJclExtendedCollection;
+var
+  I, J: Integer;
+  Bucket: TJclExtendedHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclExtendedArrayList.Create(FSize);
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
@@ -26625,6 +27664,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntegerHashMap.Keys: IJclIntegerCollection;
+var
+  I, J: Integer;
+  Bucket: TJclIntegerHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclIntegerArrayList.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclIntegerHashMap.MapEquals(const AMap: IJclIntegerMap): Boolean;
 var
   I, J: Integer;
@@ -27206,6 +28271,32 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := TJclCardinalArraySet.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalHashMap.Keys: IJclCardinalCollection;
+var
+  I, J: Integer;
+  Bucket: TJclCardinalHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclCardinalArrayList.Create(FSize);
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
@@ -27817,6 +28908,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclInt64HashMap.Keys: IJclInt64Collection;
+var
+  I, J: Integer;
+  Bucket: TJclInt64HashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclInt64ArrayList.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclInt64HashMap.MapEquals(const AMap: IJclInt64Map): Boolean;
 var
   I, J: Integer;
@@ -28398,6 +29515,32 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := TJclPtrArraySet.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrHashMap.Keys: IJclPtrCollection;
+var
+  I, J: Integer;
+  Bucket: TJclPtrHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclPtrArrayList.Create(FSize);
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
@@ -28995,6 +30138,32 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := TJclArraySet.Create(FSize, False);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclHashMap.Keys: IJclCollection;
+var
+  I, J: Integer;
+  Bucket: TJclHashMapBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclArrayList.Create(FSize, False);
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
@@ -29664,6 +30833,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclHashMap<TKey, TValue>.Keys: IJclCollection<TKey>;
+var
+  I, J: Integer;
+  Bucket: TBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := CreateEmptyKeyList(FSize, False);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclHashMap<TKey, TValue>.MapEquals(const AMap: IJclMap<TKey, TValue>): Boolean;
 var
   I, J: Integer;
@@ -29963,6 +31158,11 @@ begin
   Result := TArraySet.Create(KeyComparer, ACapacity, AOwnsObjects);
 end;
 
+function TJclHashMapE<TKey, TValue>.CreateEmptyKeyList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TKey>;
+begin
+  Result := TArrayKeyList.Create(KeyEqualityComparer, ACapacity, AOwnsObjects);
+end;
+
 function TJclHashMapE<TKey, TValue>.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclHashMapE<TKey, TValue>.Create(KeyEqualityComparer, KeyHashConverter, ValueEqualityComparer,
@@ -30029,6 +31229,11 @@ begin
   Result := TArraySet.Create(KeyCompare, ACapacity, AOwnsObjects);
 end;
 
+function TJclHashMapF<TKey, TValue>.CreateEmptyKeyList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TKey>;
+begin
+  Result := TArrayKeyList.Create(KeyEqualityCompare, ACapacity, AOwnsObjects);
+end;
+
 function TJclHashMapF<TKey, TValue>.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclHashMapF<TKey, TValue>.Create(KeyEqualityCompare, KeyHash, ValueEqualityCompare, KeyCompare, FCapacity,
@@ -30067,6 +31272,11 @@ end;
 function TJclHashMapI<TKey, TValue>.CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>;
 begin
   Result := TArraySet.Create(ACapacity, AOwnsObjects);
+end;
+
+function TJclHashMapI<TKey, TValue>.CreateEmptyKeyList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TKey>;
+begin
+  Result := TArrayKeyList.Create(ACapacity, AOwnsObjects);
 end;
 
 function TJclHashMapI<TKey, TValue>.CreateEmptyContainer: TJclAbstractContainerBase;

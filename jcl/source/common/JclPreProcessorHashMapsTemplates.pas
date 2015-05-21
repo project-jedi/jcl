@@ -54,6 +54,7 @@ type
   end;
 
   (* JCLHASHMAPINT(BUCKETTYPENAME, SELFCLASSNAME, ANCESTORNAME, MAPINTERFACENAME, KEYSETINTERFACENAME,
+                   KEYCOLLECTIONINTERFACENAME,
                    VALUECOLLECTIONINTERFACENAME, INTERFACEADDITIONAL, SECTIONADDITIONAL,
                    KEYOWNERSHIPDECLARATION, VALUEOWNERSHIPDECLARATION, KEYCONSTKEYWORD,
                    KEYTYPENAME, VALUECONSTKEYWORD, VALUETYPENAME) *)
@@ -69,6 +70,7 @@ type
     property AncestorName: string index maMapAncestorClassName read GetMapAttribute write SetMapAttribute stored False;
     property MapInterfaceName: string index maMapInterfaceName read GetMapAttribute write SetMapAttribute stored False;
     property KeySetInterfaceName: string index kaKeySetInterfaceName read GetKeyAttribute write SetKeyAttribute stored False;
+    property KeyCollectionInterfaceName: string index kaKeyCollectionInterfaceName read GetKeyAttribute write SetKeyAttribute stored False;
     property ValueCollectionInterfaceName: string index vaValueCollectionInterfaceName read GetValueAttribute write SetValueAttribute stored False;
     property InterfaceAdditional;
     property SectionAdditional;
@@ -90,10 +92,10 @@ type
   end;
 
   (* JCLHASHMAPIMP(SELFCLASSNAME, BUCKETTYPENAME,
-                   MAPINTERFACENAME, KEYSETINTERFACENAME, KEYITRINTERFACENAME, VALUECOLLECTIONINTERFACENAME,
+                   MAPINTERFACENAME, KEYSETINTERFACENAME, KEYCOLLECTIONINTERFACENAME, KEYITRINTERFACENAME, VALUECOLLECTIONINTERFACENAME,
                    KEYOWNERSHIPDECLARATION, VALUEOWNERSHIPDECLARATION, OWNERSHIPASSIGNMENTS,
                    KEYCONSTKEYWORD, KEYTYPENAME, KEYDEFAULT, VALUECONSTKEYWORD, VALUETYPENAME, VALUEDEFAULT,
-                   CREATEKEYSET, CREATEVALUECOLLECTION) *)
+                   CREATEKEYSET, CREATEKEYCOLLECTION, CREATEVALUECOLLECTION) *)
   TJclHashMapImpParams = class(TJclMapClassImplementationParams)
   protected
     // function CodeUnit: string; override;
@@ -107,6 +109,7 @@ type
     property BucketTypeName: string index maHashMapBucketTypeName read GetMapAttribute write SetMapAttribute stored False;
     property MapInterfaceName: string index maMapInterfaceName read GetMapAttribute write SetMapAttribute stored False;
     property KeySetInterfaceName: string index kaKeySetInterfaceName read GetKeyAttribute write SetKeyAttribute stored False;
+    property KeyCollectionInterfaceName: string index kaKeyCollectionInterfaceName read GetKeyAttribute write SetKeyAttribute stored False;
     property KeyArraySetClassName;
     property KeyItrInterfaceName: string index kaKeyIteratorInterfaceName read GetKeyAttribute write SetKeyAttribute stored False;
     property ValueCollectionInterfaceName: string index vaValueCollectionInterfaceName read GetValueAttribute write SetValueAttribute stored False;
@@ -127,6 +130,7 @@ type
     property ValueSimpleEqualityCompareFunctionName: string index vaValueSimpleEqualityCompareFunctionName read GetValueAttribute write SetValueAttribute stored False;
     property ValueBaseContainerClassName: string index vaValueBaseContainerClassName read GetValueAttribute write SetValueAttribute stored False;
     property CreateKeySet;
+    property CreateKeyCollection;
     property CreateValueCollection;
     property MacroFooter;
   end;
