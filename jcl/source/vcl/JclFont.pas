@@ -51,12 +51,12 @@ uses
 
 procedure SetCaptionFont(const AObjectFont: TFont);
 begin
-  if JclCheckWinVersion(6, 0) then // WinVista or newer
+  if JclCheckWinVersion(6, 0) then // Windows Vista or newer
   begin
     AObjectFont.Name := 'Segoe UI';
     AObjectFont.Size := 9;
   end
-  else if JclCheckWinVersion(5, 0) then // Win2k or newer
+  else if JclCheckWinVersion(5, 0) then // Windows 2000 or newer
   begin
      AObjectFont.Name := 'Tahoma';
      AObjectFont.Size := 8;
@@ -70,17 +70,17 @@ end;
 
 procedure SetContentFont(const AObjectFont: TFont);
 begin
-  if JclCheckWinVersion(6, 0) then // WinVista or newer
+  if JclCheckWinVersion(6, 0) then // Windows Vista or newer
   begin
     AObjectFont.Name := 'Calibri';
     AObjectFont.Size := 9;
   end
-  else if JclCheckWinVersion(5, 0) then // Win2k or newer
+  else if JclCheckWinVersion(5, 0) then // Windows 2000 or newer
   begin
     AObjectFont.Name := 'Verdana';
     AObjectFont.Size := 8;
   end
-  else // Win95..WinME/NT4
+  else // Windows 95 to Windows ME/NT4
   begin
     AObjectFont.Name := 'MS Sans Serif';
     AObjectFont.Size := 8;
