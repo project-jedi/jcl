@@ -3320,55 +3320,55 @@ begin
               end;
           end;
         6:
-        begin
-          Win32MinorVersionEx := Win32MinorVersion;
-
-          // Workaround to differentiate Windows 8.1 and Windows Server 2012 R2 from Windows 8 and Windows Server 2012
-          if Win32MinorVersionEx = 2 then
           begin
-            ProductName := RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'ProductName', '');
-            if (pos(RsOSVersionWin81, ProductName) = 1) or (pos(RsOSVersionWinServer2012R2, ProductName) = 1) then
-              Win32MinorVersionEx := 3;
-          end;
+            Win32MinorVersionEx := Win32MinorVersion;
 
-          case Win32MinorVersionEx of
-            0:
-              begin
-                // Windows Vista and Windows Server 2008
-                OSVersionInfoEx.dwOSVersionInfoSize := SizeOf(OSVersionInfoEx);
-                if GetVersionEx(OSVersionInfoEx) and (OSVersionInfoEx.wProductType = VER_NT_WORKSTATION) then
-                  Result := wvWinVista
-                else
-                  Result := wvWinServer2008;
-              end;
-            1:
-              begin
-                // Windows 7 and Windows Server 2008 R2
-                OSVersionInfoEx.dwOSVersionInfoSize := SizeOf(OSVersionInfoEx);
-                if GetVersionEx(OSVersionInfoEx) and (OSVersionInfoEx.wProductType = VER_NT_WORKSTATION) then
-                  Result := wvWin7
-                else
-                  Result := wvWinServer2008R2;
-              end;
-            2:
-              begin
-                // Windows 8 and Windows Server 2012
-                OSVersionInfoEx.dwOSVersionInfoSize := SizeOf(OSVersionInfoEx);
-                if GetVersionEx(OSVersionInfoEx) and (OSVersionInfoEx.wProductType = VER_NT_WORKSTATION) then
-                  Result := wvWin8
-                else
-                  Result := wvWinServer2012;
-              end;
-            3:
-              begin
-                // Windows 8.1 and Windows Server 2012 R2
-                OSVersionInfoEx.dwOSVersionInfoSize := SizeOf(OSVersionInfoEx);
-                if GetVersionEx(OSVersionInfoEx) and (OSVersionInfoEx.wProductType = VER_NT_WORKSTATION) then
-                  Result := wvWin81
-                else
-                  Result := wvWinServer2012R2;
-              end;
-        end;
+            // Workaround to differentiate Windows 8.1 and Windows Server 2012 R2 from Windows 8 and Windows Server 2012
+            if Win32MinorVersionEx = 2 then
+            begin
+              ProductName := RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'ProductName', '');
+              if (pos(RsOSVersionWin81, ProductName) = 1) or (pos(RsOSVersionWinServer2012R2, ProductName) = 1) then
+                Win32MinorVersionEx := 3;
+            end;
+
+            case Win32MinorVersionEx of
+              0:
+                begin
+                  // Windows Vista and Windows Server 2008
+                  OSVersionInfoEx.dwOSVersionInfoSize := SizeOf(OSVersionInfoEx);
+                  if GetVersionEx(OSVersionInfoEx) and (OSVersionInfoEx.wProductType = VER_NT_WORKSTATION) then
+                    Result := wvWinVista
+                  else
+                    Result := wvWinServer2008;
+                end;
+              1:
+                begin
+                  // Windows 7 and Windows Server 2008 R2
+                  OSVersionInfoEx.dwOSVersionInfoSize := SizeOf(OSVersionInfoEx);
+                  if GetVersionEx(OSVersionInfoEx) and (OSVersionInfoEx.wProductType = VER_NT_WORKSTATION) then
+                    Result := wvWin7
+                  else
+                    Result := wvWinServer2008R2;
+                end;
+              2:
+                begin
+                  // Windows 8 and Windows Server 2012
+                  OSVersionInfoEx.dwOSVersionInfoSize := SizeOf(OSVersionInfoEx);
+                  if GetVersionEx(OSVersionInfoEx) and (OSVersionInfoEx.wProductType = VER_NT_WORKSTATION) then
+                    Result := wvWin8
+                  else
+                    Result := wvWinServer2012;
+                end;
+              3:
+                begin
+                  // Windows 8.1 and Windows Server 2012 R2
+                  OSVersionInfoEx.dwOSVersionInfoSize := SizeOf(OSVersionInfoEx);
+                  if GetVersionEx(OSVersionInfoEx) and (OSVersionInfoEx.wProductType = VER_NT_WORKSTATION) then
+                    Result := wvWin81
+                  else
+                    Result := wvWinServer2012R2;
+                end;
+            end;
         end;
       end;
   end;
@@ -4025,7 +4025,7 @@ begin
 
   if LibraryHandle <> 0 then
   begin
-    _GetNativeSystemInfo := GetProcAddress(LibraryHandle,'GetNativeSystemInfo');
+    _GetNativeSystemInfo := GetProcAddress(LibraryHandle, PAnsiChar('GetNativeSystemInfo'));
     if Assigned(_GetNativeSystemInfo) then
     begin
       _GetNativeSystemInfo(SystemInfo);
@@ -4141,7 +4141,7 @@ function GetMacAddresses(const Machine: string; const Addresses: TStrings): Inte
       Result := NetBiosLib <> 0;
       if Result then
       begin
-        @_NetBios := GetProcAddress(NetBiosLib, PChar('Netbios'));
+        @_NetBios := GetProcAddress(NetBiosLib, PAnsiChar('Netbios'));
         Result := @_NetBios <> nil;
         if not Result then
           ExitNetbios;
@@ -5725,7 +5725,7 @@ function IsSystemResourcesMeterPresent: Boolean;
     ResmeterLibHandle := SafeLoadLibrary('rsrc32.dll', SEM_FAILCRITICALERRORS);
     if ResmeterLibHandle <> 0 then
     begin
-      @MyGetFreeSystemResources := GetProcAddress(ResmeterLibHandle, '_MyGetFreeSystemResources32@4');
+      @MyGetFreeSystemResources := GetProcAddress(ResmeterLibHandle, PAnsiChar('_MyGetFreeSystemResources32@4'));
       if not Assigned(MyGetFreeSystemResources) then
         UnloadSystemResourcesMeterLib;
     end;
