@@ -4285,7 +4285,7 @@ function TJclCompressionItem.UpdateFileTimes: Boolean;
 const
   FILE_WRITE_ATTRIBUTES = $00000100;
 var
-  FileHandle: HFILE;
+  FileHandle: THandle;
   ACreationTime, ALastAccessTime, ALastWriteTime: PFileTime;
 begin
   ReleaseStream;
