@@ -878,7 +878,7 @@ procedure TJclInstallation.Init;
     AddOption(joJCLDefDropObsoleteCode, [goChecked], Parent);
     if (Target.RadToolKind <> brBorlandDevStudio) or (Target.IDEVersionNumber <> 3) then
       // Delphi 2005 has a compiler internal failure when compiling the JCL with UNITVERSIONING enabled
-      AddOption(joJCLDefUnitVersioning, [goChecked], Parent);
+      AddOption(joJCLDefUnitVersioning, [{goChecked}], Parent); // UnitVersioning isn't threadsafe and causes crashes in COM-Servers
 
     AddOption(joJCLDefMath, [goChecked], Parent);
     AddOption(joJCLDefMathPrecSingle, [goRadioButton], joJCLDefMath);
