@@ -252,7 +252,7 @@ type
     wvWinNT31, wvWinNT35, wvWinNT351, wvWinNT4, wvWin2000, wvWinXP,
     wvWin2003, wvWinXP64, wvWin2003R2, wvWinVista, wvWinServer2008,
     wvWin7, wvWinServer2008R2, wvWin8, wvWin8RT, wvWinServer2012,
-    wvWin81, wvWin81RT, wvWinServer2012R2, wvWin10);
+    wvWin81, wvWin81RT, wvWinServer2012R2, wvWin10, wvWinServer2016);
   TWindowsEdition =
    (weUnknown, weWinXPHome, weWinXPPro, weWinXPHomeN, weWinXPProN, weWinXPHomeK,
     weWinXPProK, weWinXPHomeKN, weWinXPProKN, weWinXPStarter, weWinXPMediaCenter,
@@ -301,6 +301,7 @@ var
   IsWin81RT: Boolean = False;
   IsWinServer2012R2: Boolean = False;
   IsWin10: Boolean = False;
+  IsWinServer2016: Boolean = False;
 
 const
   PROCESSOR_ARCHITECTURE_INTEL = 0;
@@ -3328,7 +3329,6 @@ begin
               end;
           end;
         6:
-<<<<<<< HEAD
         begin
           // Starting with Windows 8.1, the GetVersion(Ex) API is deprecated and will detect the
           // application as Windows 8 (kernel version 6.2) until an application manifest is included
@@ -3396,10 +3396,12 @@ begin
               end;
             4:
               begin
-                // Windows 10 (builds < 9926)
-                //OSVersionInfoEx.dwOSVersionInfoSize := SizeOf(OSVersionInfoEx);
-                //if GetVersionEx(OSVersionInfoEx) and (OSVersionInfoEx.wProductType = VER_NT_WORKSTATION) then
-                Result := wvWin10;
+                // Windows 10 (builds < 9926) and Windows Server 2016 (builds < 10074 or so)
+                OSVersionInfoEx.dwOSVersionInfoSize := SizeOf(OSVersionInfoEx);
+                if GetVersionEx(OSVersionInfoEx) and (OSVersionInfoEx.wProductType = VER_NT_WORKSTATION) then
+                  Result := wvWin10
+                else
+                  Result := wvWinServer2016;
               end;
           end;
         end;
@@ -3408,7 +3410,7 @@ begin
       end;
   end;
 
-  // This part will only be hit with Windows 10 and newer where an application manifest is not included
+  // This part will only be hit with Windows 10 and Windows Server 2016 (and newer) where an application manifest is not included
   if (Win32MajorVersionEx >= 10) then
   begin
     case Win32MajorVersionEx of
@@ -3418,60 +3420,12 @@ begin
         case Win32MinorVersionEx of
           0:
             begin
-              // Windows 10 (builds >= 9926)
-              //OSVersionInfoEx.dwOSVersionInfoSize := SizeOf(OSVersionInfoEx);
-              //if GetVersionEx(OSVersionInfoEx) and (OSVersionInfoEx.wProductType = VER_NT_WORKSTATION) then
-              Result := wvWin10;
-=======
-          begin
-            Win32MinorVersionEx := Win32MinorVersion;
-
-            // Workaround to differentiate Windows 8.1 and Windows Server 2012 R2 from Windows 8 and Windows Server 2012
-            if Win32MinorVersionEx = 2 then
-            begin
-              ProductName := RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'ProductName', '');
-              if (pos(RsOSVersionWin81, ProductName) = 1) or (pos(RsOSVersionWinServer2012R2, ProductName) = 1) then
-                Win32MinorVersionEx := 3;
-            end;
-
-            case Win32MinorVersionEx of
-              0:
-                begin
-                  // Windows Vista and Windows Server 2008
-                  OSVersionInfoEx.dwOSVersionInfoSize := SizeOf(OSVersionInfoEx);
-                  if GetVersionEx(OSVersionInfoEx) and (OSVersionInfoEx.wProductType = VER_NT_WORKSTATION) then
-                    Result := wvWinVista
-                  else
-                    Result := wvWinServer2008;
-                end;
-              1:
-                begin
-                  // Windows 7 and Windows Server 2008 R2
-                  OSVersionInfoEx.dwOSVersionInfoSize := SizeOf(OSVersionInfoEx);
-                  if GetVersionEx(OSVersionInfoEx) and (OSVersionInfoEx.wProductType = VER_NT_WORKSTATION) then
-                    Result := wvWin7
-                  else
-                    Result := wvWinServer2008R2;
-                end;
-              2:
-                begin
-                  // Windows 8 and Windows Server 2012
-                  OSVersionInfoEx.dwOSVersionInfoSize := SizeOf(OSVersionInfoEx);
-                  if GetVersionEx(OSVersionInfoEx) and (OSVersionInfoEx.wProductType = VER_NT_WORKSTATION) then
-                    Result := wvWin8
-                  else
-                    Result := wvWinServer2012;
-                end;
-              3:
-                begin
-                  // Windows 8.1 and Windows Server 2012 R2
-                  OSVersionInfoEx.dwOSVersionInfoSize := SizeOf(OSVersionInfoEx);
-                  if GetVersionEx(OSVersionInfoEx) and (OSVersionInfoEx.wProductType = VER_NT_WORKSTATION) then
-                    Result := wvWin81
-                  else
-                    Result := wvWinServer2012R2;
-                end;
->>>>>>> 74abdde099e1a322ad58b4111d83b30e9fa3c83c
+              // Windows 10 (builds >= 9926) and Windows Server 2016 (builds >= 10074 or so)
+              OSVersionInfoEx.dwOSVersionInfoSize := SizeOf(OSVersionInfoEx);
+              if GetVersionEx(OSVersionInfoEx) and (OSVersionInfoEx.wProductType = VER_NT_WORKSTATION) then
+                Result := wvWin10
+              else
+                Result := wvWinServer2016;
             end;
         end;
       end;
@@ -3793,6 +3747,8 @@ begin
       Result := LoadResString(@RsOSVersionWinServer2012R2);
     wvWin10:
       Result := LoadResString(@RsOSVersionWin10);
+    wvWinServer2016:
+      Result := LoadResString(@RsOSVersionWinServer2016);
   else
     Result := '';
   end;
@@ -6100,6 +6056,8 @@ begin
       IsWinServer2012R2 := True;
     wvWin10:
       IsWin10 := True;
+    wvWinServer2016:
+      IsWinServer2016 := True;
   end;
 end;
 
