@@ -3338,18 +3338,18 @@ begin
           begin
             ProductName := RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'ProductName', '');
             if (pos(RsOSVersionWin81, ProductName) = 1) or (pos(RsOSVersionWinServer2012R2, ProductName) = 1) then
-              Win32MinorVersionEx := 3 // Windows 8.1 or Windows Server 2012R2
+              Win32MinorVersionEx := 3 // Windows 8.1 and Windows Server 2012R2
             else
             if (pos(RsOSVersionWin8, ProductName) = 1) or (pos(RsOSVersionWinServer2012, ProductName) = 1) then
-              Win32MinorVersionEx := 2 // Windows 8 or Windows Server 2012
+              Win32MinorVersionEx := 2 // Windows 8 and Windows Server 2012
             else
             begin
               Win32MajorVersionEx := GetWindowsMajorVersionNumber;
               if Win32MajorVersionEx = 6 then
-                 Win32MinorVersionEx := 4 // Windows 10 (builds < 9926)
+                 Win32MinorVersionEx := 4 // Windows 10 (builds < 9926) and Windows Server 2016 (builds < 10074)
               else
               if Win32MajorVersionEx = 10 then
-                 Win32MinorVersionEx := -1 // Windows 10 (builds >= 9926), set to -1 to escape case block
+                 Win32MinorVersionEx := -1 // Windows 10 (builds >= 9926) and Windows Server 2016 (builds >= 10074), set to -1 to escape case block
               else
                  Win32MinorVersionEx := Win32MinorVersion;
             end;
@@ -3396,7 +3396,7 @@ begin
               end;
             4:
               begin
-                // Windows 10 (builds < 9926) and Windows Server 2016 (builds < 10074 or so)
+                // Windows 10 (builds < 9926) and Windows Server 2016 (builds < 10074)
                 OSVersionInfoEx.dwOSVersionInfoSize := SizeOf(OSVersionInfoEx);
                 if GetVersionEx(OSVersionInfoEx) and (OSVersionInfoEx.wProductType = VER_NT_WORKSTATION) then
                   Result := wvWin10
@@ -3420,7 +3420,7 @@ begin
         case Win32MinorVersionEx of
           0:
             begin
-              // Windows 10 (builds >= 9926) and Windows Server 2016 (builds >= 10074 or so)
+              // Windows 10 (builds >= 9926) and Windows Server 2016 (builds >= 10074)
               OSVersionInfoEx.dwOSVersionInfoSize := SizeOf(OSVersionInfoEx);
               if GetVersionEx(OSVersionInfoEx) and (OSVersionInfoEx.wProductType = VER_NT_WORKSTATION) then
                 Result := wvWin10
