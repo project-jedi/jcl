@@ -1940,6 +1940,8 @@ resourcestring
   RsOSVersionWin81              = 'Windows 8.1';
   RsOSVersionWin81RT            = 'Windows RT 8.1';
   RsOSVersionWinServer2012R2    = 'Windows Server 2012 R2';
+  RsOSVersionWin10              = 'Windows 10';
+  RsOSVersionWinServer2016      = 'Windows Server 2016';
 
   RsEditionWinXPHome            = 'Home Edition';
   RsEditionWinXPPro             = 'Professional';
@@ -1972,6 +1974,10 @@ resourcestring
   RsEditionWin81Pro             = 'Pro';
   RsEditionWin81Enterprise      = 'Enterprise';
   RsEditionWin81RT              = 'RT';
+  RsEditionWin10Home            = 'Home';
+  RsEditionWin10Pro             = 'Pro';
+  RsEditionWin10Enterprise      = 'Enterprise';
+  RsEditionWin10Education       = 'Education';
 
   RsProductTypeWorkStation      = 'Workstation';
   RsProductTypeServer           = 'Server';
