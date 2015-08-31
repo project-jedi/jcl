@@ -63,7 +63,12 @@ uses
   {$IFDEF UNITVERSIONING}
     {$WEAKPACKAGEUNIT OFF}
   {$ELSE ~UNITVERSIONING}
-    {$WEAKPACKAGEUNIT ON}
+    // d6 and d7 consider initialized variables to be initialization parts which goes against the "weakpackageunit" requirement
+    {$IF Defined(PCRE_LINKONREQUEST) and not Defined(COMPILER8_UP)}
+      {$WEAKPACKAGEUNIT OFF}
+    {$ELSE}
+      {$WEAKPACKAGEUNIT ON}
+    {$IFEND}
   {$ENDIF ~UNITVERSIONING}
 {$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
