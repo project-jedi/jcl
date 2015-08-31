@@ -2,6 +2,7 @@ JEDI Code Library v 2.7 Installation
 
 Supported development tools versions:
 
+- Delphi XE10 (Win32 and Win64) and C++Builder XE10 (Win32 and Win64)
 - Delphi XE8 (Win32 and Win64) and C++Builder XE8 (Win32 and Win64)
 - Delphi XE7 (Win32 and Win64) and C++Builder XE7 (Win32 and Win64)
 - Delphi XE6 (Win32 and Win64) and C++Builder XE6 (Win32 and Win64)
@@ -69,4 +70,4 @@ To execute for
         >install d6
 
 --------------------------------
-Document last updated 2012-08-31
+Document last updated 2015-08-31

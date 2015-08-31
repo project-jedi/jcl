@@ -86,9 +86,9 @@ type
   TJclBorRADToolPath = string;
 
 const
-  SupportedDelphiVersions = [5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22];
-  SupportedBCBVersions    = [5, 6, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22];
-  SupportedBDSVersions    = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16];
+  SupportedDelphiVersions = [5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
+  SupportedBCBVersions    = [5, 6, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
+  SupportedBDSVersions    = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17];
 
   // Object Repository
   BorRADToolRepositoryPagesSection    = 'Repository Pages';
@@ -804,7 +804,7 @@ const
   RADStudioDirName = 'RAD Studio';
   RADStudio14UpDirName = 'Embarcadero\Studio';
 
-  BDSVersions: array [1..16] of TBDSVersionInfo = (
+  BDSVersions: array [1..17] of TBDSVersionInfo = (
     (
       Name: @RsCSharpName;
       VersionStr: '1.0';
@@ -932,6 +932,14 @@ const
       IDEPkgVersion: 22;
       PkgVersion: 22;
       CoreIdeVersion: '220';
+      Supported: True),
+    (
+      Name: @RsRSName;
+      VersionStr: 'XE10';
+      DCCVersion: 30.0;
+      IDEPkgVersion: 23;
+      PkgVersion: 23;
+      CoreIdeVersion: '230';
       Supported: True)
   );
   {$ENDIF MSWINDOWS}
