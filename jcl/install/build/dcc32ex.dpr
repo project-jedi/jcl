@@ -520,8 +520,10 @@ begin
           end;
           if IDEVersion < 7 then
             Inc(Result.Version, 6)  // 3.0 => 9
+          else if IDEVersion < 14 then
+            Inc(Result.Version, 7) // 7.0 => 14
           else
-            Inc(Result.Version, 7); // 7.0 => 14
+            Inc(Result.Version, 6) // 14.0 => 20  // there is no 13.0
         end;
       ttDelphi,
       ttBCB:
@@ -558,8 +560,11 @@ begin
           6: Result.Name := 'CodeGear RAD Studio 2009';
           7: Result.Name := 'Embarcadero RAD Studio 2010';
           8: Result.Name := 'Embarcadero RAD Studio XE';
+         17: Result.Name := 'Embarcadero RAD Studio 10 Seattle';
        else
-         if Result.IDEVersion > 13  then
+         if Result.IDEVersion > 17 then
+           Result.Name := 'Embarcadero RAD Studio 10.' + IntToStr(Result.IDEVersion - 17) // just a guess
+         else if Result.IDEVersion > 13 then
            Result.Name := 'Embarcadero RAD Studio XE' + IntToStr(2 + (Result.IDEVersion - 10))
          else
            Result.Name := 'Embarcadero RAD Studio XE' + IntToStr(2 + (Result.IDEVersion - 9));
@@ -874,7 +879,7 @@ begin
   InvalidFound := False;
   for Typ := ttFirst to High(TTargetType) do
   begin
-    for IDEVersion := 1 to 20 do
+    for IDEVersion := 1 to 40 do
     begin
       Target := ReadTargetInfo(Typ, IDEVersion);
       if (Target.Typ <> ttNone) and (Target.Version >= 5) then
