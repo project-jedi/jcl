@@ -20,7 +20,7 @@ BEGIN
               VALUE "FileVersion", "2.7.0.5300\0"
               VALUE "InternalName", "JclDebugExpert\0"
               VALUE "LegalCopyright", "Copyright (C) 1999, 2014 Project JEDI\0"
-              VALUE "OriginalFilename", "JclDebugExpert210.bpl\0"
+              VALUE "OriginalFilename", "JclDebugExpert220.bpl\0"
               VALUE "ProductName", "JEDI Code Library\0"
               VALUE "ProductVersion", "2.7.0.5300\0"
          END

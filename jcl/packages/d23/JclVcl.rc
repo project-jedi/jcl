@@ -20,7 +20,7 @@ BEGIN
               VALUE "FileVersion", "2.7.0.5300\0"
               VALUE "InternalName", "JclVcl\0"
               VALUE "LegalCopyright", "Copyright (C) 1999, 2014 Project JEDI\0"
-              VALUE "OriginalFilename", "JclVcl210.bpl\0"
+              VALUE "OriginalFilename", "JclVcl230.bpl\0"
               VALUE "ProductName", "JEDI Code Library\0"
               VALUE "ProductVersion", "2.7.0.5300\0"
          END

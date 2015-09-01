@@ -1,11 +1,11 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <ProjectGuid>{44DB645B-C167-410D-9334-38AF9F0C7913}</ProjectGuid>
         <MainSource>Jcl.dpk</MainSource>
         <ProjectVersion>16.0</ProjectVersion>
         <Config Condition="'$(Config)'==''">Release</Config>
         <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-        <DCC_Define>BCB;WIN32;CONDITIONALEXPRESSIONS;RELEASE</DCC_Define>
+        <DCC_Define>BCB;WIN32;CONDITIONALEXPRESSIONS;VER280;RELEASE</DCC_Define>
         <Base>True</Base>
         <AppType>Package</AppType>
         <FrameworkType>None</FrameworkType>
@@ -74,7 +74,7 @@
         <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
         <DCC_Description>JEDI Code Library RTL package</DCC_Description>
-        <DCC_Define>BCB;BCB;WIN32;CONDITIONALEXPRESSIONS;RELEASE;$(DCC_Define)</DCC_Define>
+        <DCC_Define>BCB;BCB;WIN32;CONDITIONALEXPRESSIONS;VER280;RELEASE;$(DCC_Define)</DCC_Define>
         <DCC_WriteableConstants>true</DCC_WriteableConstants>
         <DCC_OutputNeverBuildDcps>true</DCC_OutputNeverBuildDcps>
         <DllSuffix>210</DllSuffix>

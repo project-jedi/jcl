@@ -5,7 +5,7 @@
         <ProjectVersion>17.2</ProjectVersion>
         <Config Condition="'$(Config)'==''">Release</Config>
         <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-        <DCC_Define>BCB;WIN32;CONDITIONALEXPRESSIONS;RELEASE</DCC_Define>
+        <DCC_Define>BCB;WIN32;CONDITIONALEXPRESSIONS;VER290;RELEASE</DCC_Define>
         <Base>True</Base>
         <AppType>Package</AppType>
         <FrameworkType>None</FrameworkType>
@@ -57,7 +57,7 @@
         <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
         <DCC_Description>JCL Debug IDE extension</DCC_Description>
-        <DCC_Define>BCB;BCB;WIN32;CONDITIONALEXPRESSIONS;RELEASE;$(DCC_Define)</DCC_Define>
+        <DCC_Define>BCB;BCB;WIN32;CONDITIONALEXPRESSIONS;VER290;RELEASE;$(DCC_Define)</DCC_Define>
         <DCC_WriteableConstants>true</DCC_WriteableConstants>
         <DCC_OutputNeverBuildDcps>true</DCC_OutputNeverBuildDcps>
         <DllSuffix>220</DllSuffix>
