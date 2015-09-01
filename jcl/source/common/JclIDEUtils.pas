@@ -935,7 +935,7 @@ const
       Supported: True),
     (
       Name: @RsRSName;
-      VersionStr: 'XE10';
+      VersionStr: '10';
       DCCVersion: 30.0;
       IDEPkgVersion: 23;
       PkgVersion: 23;
