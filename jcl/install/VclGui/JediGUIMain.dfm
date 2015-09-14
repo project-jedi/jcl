@@ -353,6 +353,7 @@ object MainForm: TMainForm
     Top = 551
     Width = 129
     Height = 17
+    Anchors = [akRight, akBottom]
     Caption = 'RsGUIInstallSelectedOnly'
     TabOrder = 6
     Visible = False
