@@ -3549,7 +3549,7 @@ begin
   try
     KeepSettings := True;
 
-    if RadToolInstallations.AnyInstanceRunning {$IFDEF MSWINDOWS} and not IsDebuggerAttached {$ENDIF} then
+    if RadToolInstallations.AnyInstanceRunning and (not Assigned(GUI) or not GUI.IgnoreRunningIDE) {$IFDEF MSWINDOWS} and not IsDebuggerAttached {$ENDIF} then
     begin
       if Assigned(GUI) then
         GUI.Dialog(LoadResString(@RsCloseRADTool), dtError, [drCancel]);
@@ -3866,7 +3866,7 @@ var
   I: Integer;
   AInstallation: TJclInstallation;
 begin
-  if RadToolInstallations.AnyInstanceRunning {$IFDEF MSWINDOWS} and not IsDebuggerAttached {$ENDIF} then
+  if RadToolInstallations.AnyInstanceRunning and (not Assigned(GUI) or not GUI.IgnoreRunningIDE) {$IFDEF MSWINDOWS} and not IsDebuggerAttached {$ENDIF} then
   begin
     if Assigned(GUI) then
       GUI.Dialog(LoadResString(@RsCloseRADTool), dtError, [drCancel]);

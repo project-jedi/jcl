@@ -202,6 +202,8 @@ type
     procedure SetDeletePreviousLogFiles(Value: Boolean);
     function GetIncludeLogFilesInXML: Boolean;
     procedure SetIncludeLogFilesInXML(Value: Boolean);
+    function GetIgnoreRunningIDE: Boolean;
+    procedure SetIgnoreRunningIDE(Value: Boolean);
     procedure Execute;
 
     property AutoAcceptDialogs: TDialogTypes read GetAutoAcceptDialogs write SetAutoAcceptDialogs;
@@ -214,6 +216,7 @@ type
     property XMLResultFileName: string read GetXMLResultFileName write SetXMLResultFileName;  
     property DeletePreviousLogFiles: Boolean read GetDeletePreviousLogFiles write SetDeletePreviousLogFiles;
     property IncludeLogFilesInXML: Boolean read GetIncludeLogFilesInXML write SetIncludeLogFilesInXML;
+    property IgnoreRunningIDE: Boolean read GetIgnoreRunningIDE write SetIgnoreRunningIDE;
     property PageCount: Integer read GetPageCount;
     property Pages[Index: Integer]: IJediPage read GetPage;
     property Status: string read GetStatus write SetStatus;
@@ -420,6 +423,7 @@ begin
     FInstallGUI.ContinueOnTargetError := ParamPos('ContinueOnTargetError') >= 1;
     FInstallGUI.XMLResultFileName := ParamValue('XMLResult');
     FInstallGUI.IncludeLogFilesInXML := ParamPos('IncludeLogFilesInXML') >= 1;
+    FInstallGUI.IgnoreRunningIDE := ParamPos('IgnoreRunningIDE') >= 1;
   end;
   Result := FInstallGUI;
 end;

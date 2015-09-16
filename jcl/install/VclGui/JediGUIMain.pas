@@ -79,6 +79,7 @@ type
     FXMLResultFileName: string;
     FIncludeLogFilesInXML: Boolean;
     FDeletePreviousLogFiles: Boolean;
+    FIgnoreRunningIDE: Boolean;
     FTaskBarList: ITaskbarList3;
     FInstallPageCount: Integer;
     procedure UpdateInstallSelectedOnlyCheckBoxVisibility;
@@ -125,6 +126,8 @@ type
     procedure SetDeletePreviousLogFiles(Value: Boolean);
     function GetIncludeLogFilesInXML: Boolean;
     procedure SetIncludeLogFilesInXML(Value: Boolean);
+    function GetIgnoreRunningIDE: Boolean;
+    procedure SetIgnoreRunningIDE(Value: Boolean);
     procedure Execute;
   end;
 
@@ -639,6 +642,16 @@ end;
 procedure TMainForm.Execute;
 begin
   Application.Run;
+end;
+
+function TMainForm.GetIgnoreRunningIDE: Boolean;
+begin
+  Result := FIgnoreRunningIDE;
+end;
+
+procedure TMainForm.SetIgnoreRunningIDE(Value: Boolean);
+begin
+  FIgnoreRunningIDE := Value;
 end;
 
 initialization
