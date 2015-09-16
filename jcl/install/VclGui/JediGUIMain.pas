@@ -333,10 +333,15 @@ end;
 procedure TMainForm.WMAfterShow(var Message: TMessage);
 begin
   if FAutoInstall then
+  begin
+    UninstallBtn.Visible := False;
     InstallBtnClick(InstallBtn)
-  else
-  if FAutoUninstall then
+  end
+  else if FAutoUninstall then
+  begin
+    InstallBtn.Visible := False;
     UninstallBtnClick(UninstallBtn);
+  end;
 end;
 
 procedure TMainForm.JediImageClick(Sender: TObject);
