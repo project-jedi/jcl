@@ -463,6 +463,9 @@ begin
       Break;
   end;
 
+  if Result then
+    ExitCode := 0;
+
   if Assigned(AInstallGUI) then
   begin
     if Result then
@@ -588,6 +591,9 @@ begin
   if Result then
     for Index := FProducts.Size - 1 downto 0 do
       Result := (FProducts.GetObject(Index) as IJediProduct).Uninstall(InstallPage) and Result;
+
+  if Result then
+    ExitCode := 0;
 
   if Assigned(AInstallGUI) then
   begin
