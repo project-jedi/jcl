@@ -49,3 +49,6 @@ Name: "IDE\Delphi21"; Description: "Install for RAD Studio XE7"; Types: full pre
 #ifdef Include_Delphi22
 Name: "IDE\Delphi22"; Description: "Install for RAD Studio XE8"; Types: full prefered; Check: IsDelphiInstalled(22)
 #endif
+#ifdef Include_Delphi23
+Name: "IDE\Delphi23"; Description: "Install for RAD Studio 10 Seattle"; Types: full prefered; Check: IsDelphiInstalled(23)
+#endif
