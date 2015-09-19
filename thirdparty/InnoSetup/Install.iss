@@ -70,6 +70,9 @@
 #define JclLib22    JclLib
 #define   JclBpl22  JclBpl
 #define   JclHpp22  JclHpp
+#define JclLib23    JclLib
+#define   JclBpl23  JclBpl
+#define   JclHpp23  JclHpp
 #endif
 
 ;---------------------------------------------------
