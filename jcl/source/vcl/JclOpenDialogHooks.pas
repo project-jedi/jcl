@@ -402,7 +402,7 @@ function TJclOpenDialogHook.GetCurrentFolder: string;
 var
   Path: array [0..MAX_PATH] of Char;
 begin
-  SetString(Result, Path, SendMessage(FParentWnd, CDM_GETFOLDERPATH, SizeOf(Path), Integer(@Path)));
+  SetString(Result, Path, SendMessage(FParentWnd, CDM_GETFOLDERPATH, SizeOf(Path), LPARAM(@Path)));
   StrResetLength(Result);
 end;
 
