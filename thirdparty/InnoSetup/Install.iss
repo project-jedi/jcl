@@ -4,7 +4,7 @@
 ;    Include_Binaries    Create an installer that can install a precompiled JCL
 ;    Include_Examples    Add the Examples directory to the installer (user can then select the component)
 ;    DEBUGGING           Development. Uses fast compression (script debugging)
-;    Include_DelphiX     Include the binaries for Delphi X (X in 6..22)
+;    Include_DelphiX     Include the binaries for Delphi X (X in 6..23)
 
 #ifndef CmdLineBuild
 #define JclRoot "..\Jcl"
@@ -254,12 +254,19 @@ Source: {#JclBpl21}\*; DestDir: "{code:GetDelphiBplDir|21}"; Components: "IDE\De
 Source: {#JclBpl21}\Win64\*; DestDir: "{code:GetDelphiBplDir|21}\Win64"; Components: "IDE\Delphi21"; Flags: ignoreversion sortfilesbyextension
 Source: {#JclHpp21}\*; DestDir: "{app}\include\d21"; Components: "IDE\Delphi21"; Flags: ignoreversion sortfilesbyextension
 #endif
-#ifdef Include_Delphi21
+#ifdef Include_Delphi22
 ; SolidBreak;
 Source: {#JclLib22}\*; DestDir: "{app}\lib\d22"; Excludes: ".svn,__history,*.txt,*.hpp"; Components: "IDE\Delphi22"; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs solidbreak
 Source: {#JclBpl22}\*; DestDir: "{code:GetDelphiBplDir|22}"; Components: "IDE\Delphi22"; Flags: ignoreversion sortfilesbyextension
 Source: {#JclBpl22}\Win64\*; DestDir: "{code:GetDelphiBplDir|22}\Win64"; Components: "IDE\Delphi22"; Flags: ignoreversion sortfilesbyextension
 Source: {#JclHpp22}\*; DestDir: "{app}\include\d22"; Components: "IDE\Delphi22"; Flags: ignoreversion sortfilesbyextension
+#endif
+#ifdef Include_Delphi23
+; SolidBreak;
+Source: {#JclLib23}\*; DestDir: "{app}\lib\d23"; Excludes: ".svn,__history,*.txt,*.hpp"; Components: "IDE\Delphi23"; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs solidbreak
+Source: {#JclBpl23}\*; DestDir: "{code:GetDelphiBplDir|23}"; Components: "IDE\Delphi23"; Flags: ignoreversion sortfilesbyextension
+Source: {#JclBpl23}\Win64\*; DestDir: "{code:GetDelphiBplDir|23}\Win64"; Components: "IDE\Delphi23"; Flags: ignoreversion sortfilesbyextension
+Source: {#JclHpp23}\*; DestDir: "{app}\include\d23"; Components: "IDE\Delphi23"; Flags: ignoreversion sortfilesbyextension
 #endif
 
 #endif
@@ -386,6 +393,14 @@ Root: HKCU; Subkey: "{code:GetDelphiRegKey|22}\Jedi\JCL"; ValueType: string; Val
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|22}\Jedi\JCL"; ValueType: string; ValueName: "Version"; ValueData: {#JclVersionStr}; Components: "IDE\Delphi22"; Flags: uninsdeletevalue;
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|22}\Globals"; ValueType: string; ValueName: "ForceEnvOptionsUpdate"; ValueData: "1"; Components: "IDE\Delphi22";
 #endif
+#ifdef Include_Delphi23
+; Delphi 10 Seattle
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|23}\Jedi\JCL"; ValueType: string; ValueName: "BplDir"; ValueData: {code:GetDelphiBplDir|23}; Components: "IDE\Delphi23"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|23}\Jedi\JCL"; ValueType: string; ValueName: "DcpDir"; ValueData: {app}\lib\d23; Components: "IDE\Delphi23"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|23}\Jedi\JCL"; ValueType: string; ValueName: "RootDir"; ValueData: {app}; Components: "IDE\Delphi23"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|23}\Jedi\JCL"; ValueType: string; ValueName: "Version"; ValueData: {#JclVersionStr}; Components: "IDE\Delphi23"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|23}\Globals"; ValueType: string; ValueName: "ForceEnvOptionsUpdate"; ValueData: "1"; Components: "IDE\Delphi23";
+#endif
 
 #endif
 
@@ -488,6 +503,13 @@ Type: files; Name: "{app}\lib\d22\win64\*"
 Type: files; Name: "{app}\lib\d22\win64\debug\*"
 Type: files; Name: "{app}\include\d22\*"
 Type: files; Name: "{code:GetDelphiBplDir|22}\Jcl*.~bpl";
+; lib\Delphi/C++Builder 10 Seattle
+Type: files; Name: "{app}\lib\d23\win32\*"
+Type: files; Name: "{app}\lib\d23\win32\debug\*"
+Type: files; Name: "{app}\lib\d23\win64\*"
+Type: files; Name: "{app}\lib\d23\win64\debug\*"
+Type: files; Name: "{app}\include\d23\*"
+Type: files; Name: "{code:GetDelphiBplDir|23}\Jcl*.~bpl";
 
 [Icons]
 Name: "{group}\{cm:ProgramOnTheWeb,{#MyAppName}}"; Filename: "{#MyAppURL}"
