@@ -2972,7 +2972,7 @@ begin
   if IsWindowVisible(Wnd) then
   begin
     ParentWnd := THandle(GetWindowLongPtr(Wnd, GWLP_HWNDPARENT));
-    ExStyle := GetWindowLongPtr(Wnd, GWL_EXSTYLE);
+    ExStyle := GetWindowLong(Wnd, GWL_EXSTYLE);
     Result := ((ParentWnd = 0) or (ParentWnd = GetDesktopWindow)) and
       ((ExStyle and WS_EX_TOOLWINDOW = 0) or (ExStyle and WS_EX_APPWINDOW <> 0));
   end

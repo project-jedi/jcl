@@ -38,7 +38,7 @@ interface
 uses
   SysUtils, Classes,
   Graphics, Forms, Controls, StdCtrls, ComCtrls, ExtCtrls, FrmCompile,
-  JclIDEUtils, JediInstall;
+  JclBase, JclWin32, JclIDEUtils, JediInstall;
 
 type
   TSetIconEvent = procedure(Sender: TObject; const FileName: string) of object;
@@ -439,7 +439,7 @@ begin
   if not Assigned(FFormCompile) then
   begin
     FFormCompile := TFormCompile.Create(Self, FInstallGUI);
-    SetWindowLong(FFormCompile.Handle, GWL_HWNDPARENT, Handle);
+    SetWindowLongPtr(FFormCompile.Handle, GWL_HWNDPARENT, LONG_PTR(Handle));
     FFormCompile.Init(Caption, True);
     FFormCompile.Show;
     Application.ProcessMessages;
