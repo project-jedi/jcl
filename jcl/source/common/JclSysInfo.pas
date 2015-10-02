@@ -3270,8 +3270,10 @@ const
   SM_SERVERR2 = 89;
 begin
   Win32MajorVersionEx := -1;
+  Win32MinorVersionEx := -1;
   Result := wvUnknown;
   TrimmedWin32CSDVersion := Trim(Win32CSDVersion);
+
   case Win32Platform of
     VER_PLATFORM_WIN32_WINDOWS:
       case Win32MinorVersion of
