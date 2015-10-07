@@ -3270,8 +3270,10 @@ const
   SM_SERVERR2 = 89;
 begin
   Win32MajorVersionEx := -1;
+  Win32MinorVersionEx := -1;
   Result := wvUnknown;
   TrimmedWin32CSDVersion := Trim(Win32CSDVersion);
+
   case Win32Platform of
     VER_PLATFORM_WIN32_WINDOWS:
       case Win32MinorVersion of
@@ -3406,7 +3408,11 @@ begin
           end;
         end;
         10:
-           Win32MajorVersionEx := Win32MajorVersion;
+        begin
+          // Windows 10 if manifest is present
+          Win32MajorVersionEx := Win32MajorVersion;
+          Win32MinorVersionEx := Win32MinorVersion;
+        end;
       end;
   end;
 
@@ -3416,7 +3422,8 @@ begin
     case Win32MajorVersionEx of
       10:
       begin
-        Win32MinorVersionEx := GetWindowsMinorVersionNumber;
+        if (Win32MinorVersionEx = -1) then
+          Win32MinorVersionEx := GetWindowsMinorVersionNumber;
         case Win32MinorVersionEx of
           0:
             begin
@@ -3431,7 +3438,6 @@ begin
       end;
     end;
   end;
-
 end;
 
 function GetWindowsEdition: TWindowsEdition;
@@ -3905,7 +3911,7 @@ begin
       Result := strToInt(StrAfter('.', RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'CurrentVersion', intToStr(Win32MajorVersion) + '.' + intToStr(Win32MinorVersion))));
   end
   else
-    Result := Win32MajorVersion;
+    Result := Win32MinorVersion;
 end;
 
 function GetWindowsVersionNumber: string;
