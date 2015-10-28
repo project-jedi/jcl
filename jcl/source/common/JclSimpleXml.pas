@@ -2274,6 +2274,7 @@ begin
     if NamedIndex >= 0 then
       TJclSimpleXMLNamedElems(FNamedElems.SimpleItems[NamedIndex]).FItems.Add(Value);
   end;
+  FElems.InvalidateHash;
 end;
 
 function TJclSimpleXMLElems.FloatValue(const Name: string;
