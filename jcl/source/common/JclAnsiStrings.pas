@@ -593,8 +593,8 @@ uses
 
 type
   TAnsiStrRec = packed record
-    RefCount: SizeInt;
-    Length: SizeInt;
+    RefCount: Integer;
+    Length: Integer;
   end;
   PAnsiStrRec = ^TAnsiStrRec;
 
