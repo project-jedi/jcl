@@ -1512,10 +1512,10 @@ begin
   Properties.ReservedProperties.Values['MSBuildProjectDirectoryNoRoot'] := Path;
 
   // MSBuildThisFile
-  Properties.ReservedProperties.Values['MSBuildProjectDirectoryNoRoot'] := CurrentFileName;
+  Properties.ReservedProperties.Values['MSBuildThisFile'] := CurrentFileName;
 
   // MSBuildThisFileDirectory
-  Properties.ReservedProperties.Values['MSBuildProjectDirectoryNoRoot'] := PathRemoveSeparator(ExtractFilePath(CurrentFileName));
+  Properties.ReservedProperties.Values['MSBuildThisFileDirectory'] := PathRemoveSeparator(ExtractFilePath(CurrentFileName));
 end;
 
 procedure TJclMsBuildParser.Parse;
