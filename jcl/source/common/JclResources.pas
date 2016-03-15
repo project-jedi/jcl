@@ -1129,6 +1129,22 @@ resourcestring
   RsCompressionSquashFSExtensions    = '*.squashfs';
   RsCompressionCramFSName            = 'CramFS archive';
   RsCompressionCramFSExtensions      = '*.cramfs';
+  RsCompressionExtName               = 'Ext filesystem archive';
+  RsCompressionExtExtensions         = '*.ext;*.ext2;*.ext3;*.ext4;*.img';
+  RsCompressionVMDKName              = 'Virtual Machine Disk archive';
+  RsCompressionVMDKExtensions        = '*.vmdk';
+  RsCompressionVDIName               = 'Virtual Disk Image archive';
+  RsCompressionVDIExtensions         = '*.vdi';
+  RsCompressionQcowName              = 'QEMU Copy On Write archive';
+  RsCompressionQcowExtensions        = '*.qcow;*.qcow2;*.qcow2c';
+  RsCompressionGPTName               = 'GUID Partition Table archive';
+  RsCompressionGPTExtensions         = '*.gpt;*.mbr';
+  RsCompressionRar5Name              = 'RAR v5 archive';
+  RsCompressionRar5Extensions        = '*.rar;*.r00';
+  RsCompressionIHexName              = 'IHex archive';
+  RsCompressionIHexExtensions        = '*.ihex';
+  RsCompressionHxsName               = 'Help 2.0 archive';
+  RsCompressionHxsExtensions         = '*.hxs;*.hxi;*.hxr;*.hxq;*.hxw;*.lit';
   RsCompressionDuplicate             = 'The file %s already exists in the archive';
   RsCompressionReplaceError          = 'At least one compression volume could not be replaced after an archive out-of-place update';
 

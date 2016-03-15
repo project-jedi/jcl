@@ -513,11 +513,7 @@ function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
   RegionBitmapMode: TJclRegionBitmapMode; UseAlphaChannel: Boolean = False): HRGN;
 procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer; Window: THandle = HWND_DESKTOP); overload;
 procedure ScreenShot(bm: TBitmap; IncludeTaskBar: Boolean = True); overload;
-procedure ScreenShot(bm: TBitmap; ControlToPrint: TWinControl); overload;
-procedure ScreenShot(bm: TBitmap; ControlToPrint: string); overload;
-procedure ScreenShot(bm: TBitmap; FormToPrint: TCustomForm; ControlToPrint: TWinControl); overload;
 procedure ScreenShot(bm: TBitmap; FormToPrint: TCustomForm); overload;
-procedure ScreenShot(bm: TBitmap; FormToPrint: TCustomForm; ControlToPrint: String); overload;
 function MapWindowRect(hWndFrom, hWndTo: THandle; ARect: TRect):TRect;
 
 // PolyLines and Polygons
@@ -2129,23 +2125,24 @@ begin
   WinDC := GetDC(Window);
   if WinDC = 0 then
     raise EJclGraphicsError.CreateRes(@RsNoDeviceContextForWindow);
+  try
+    // Palette-device?
+    if (GetDeviceCaps(WinDC, RASTERCAPS) and RC_PALETTE) = RC_PALETTE then
+    begin
+      ResetMemory(Pal, SizeOf(TMaxLogPalette));  // fill the structure with zeros
+      Pal.palVersion := $300;                     // fill in the palette version
 
-  // Palette-device?
-  if (GetDeviceCaps(WinDC, RASTERCAPS) and RC_PALETTE) = RC_PALETTE then
-  begin
-    ResetMemory(Pal, SizeOf(TMaxLogPalette));  // fill the structure with zeros
-    Pal.palVersion := $300;                     // fill in the palette version
+      // grab the system palette entries...
+      Pal.palNumEntries := GetSystemPaletteEntries(WinDC, 0, 256, Pal.palPalEntry);
+      if Pal.PalNumEntries <> 0 then
+        bm.Palette := CreatePalette(PLogPalette(@Pal)^);
+    end;
 
-    // grab the system palette entries...
-    Pal.palNumEntries := GetSystemPaletteEntries(WinDC, 0, 256, Pal.palPalEntry);
-    if Pal.PalNumEntries <> 0 then
-      bm.Palette := CreatePalette(PLogPalette(@Pal)^);
+    // copy from the screen to our bitmap...
+    BitBlt(bm.Canvas.Handle, 0, 0, Width, Height, WinDC, Left, Top, SRCCOPY);
+  finally
+    ReleaseDC(Window, WinDC);        // finally, relase the DC of the window
   end;
-
-  // copy from the screen to our bitmap...
-  BitBlt(bm.Canvas.Handle, 0, 0, Width, Height, WinDC, Left, Top, SRCCOPY);
-
-  ReleaseDC(Window, WinDC);        // finally, relase the DC of the window
 end;
 
 procedure ScreenShot(bm: TBitmap; IncludeTaskBar: Boolean = True); overload;
@@ -2164,72 +2161,11 @@ begin
   ScreenShot(bm, R.Left, R.Top, R.Right, R.Bottom, HWND_DESKTOP);
 end;
 
-procedure ScreenShot(bm: TBitmap; ControlToPrint: TWinControl); overload;
-begin
-  //uses the ActiveForm property of TScreen to determine on which form the control will be searched for.
-  if ControlToPrint <> nil then
-    ScreenShot(bm, Screen.ActiveForm, ControlToPrint)
-  else
-    raise EJclGraphicsError.CreateResFmt(@RSInvalidFormOrComponent, ['form'])
-end;
-
-procedure ScreenShot(bm: TBitmap; ControlToPrint: string); overload;
-begin
-  //uses the ActiveForm property of TScreen to determine on which form the control will be searched for.
-  if Length(ControlToPrint) > 0 then
-    ScreenShot(bm, Screen.ActiveForm, ControlToPrint)
-  else
-    raise EJclGraphicsError.CreateResFmt(@RSInvalidFormOrComponent, ['Component'])
-end;
-
-procedure ScreenShot(bm: TBitmap; FormToPrint: TCustomForm; ControlToPrint: TWinControl); overload;
-begin
-  if FormToPrint <> nil then
-  begin
-    if (ControlToPrint is TWinControl) then
-      ScreenShot(bm, FormToPrint, ControlToPrint.Name)
-    else
-      raise EJclGraphicsError.CreateResFmt(@RSInvalidControlType,[ControlToPrint.Name])
-  end
-  else
-  if ControlToPrint <> nil then
-    raise EJclGraphicsError.CreateResFmt(@RSInvalidFormOrComponent, ['form'])
-  else
-    raise EJclGraphicsError.CreateResFmt(@RSInvalidFormOrComponent, ['form'])
-end;
-
 procedure ScreenShot(bm: TBitmap; FormToPrint: TCustomForm); overload;
 begin
   //Prints the entire forms area.
   if FormToPrint <> nil then
     ScreenShot(bm, FormToPrint.Left, FormToPrint.Top, FormToPrint.Width, FormToPrint.Height, FormToPrint.Handle)
-  else
-    raise EJclGraphicsError.CreateResFmt(@RSInvalidFormOrComponent, ['form'])
-end;
-
-procedure ScreenShot(bm: TBitmap; FormToPrint: TCustomForm; ControlToPrint: String); overload;
-var
-  Component: TComponent;
-begin
-  if FormToPrint <> nil then
-  begin
-    if Length(ControlToPrint) =0 then
-      raise EJclGraphicsError.CreateResFmt(@RSInvalidFormOrComponent, ['component'])
-    else
-    begin
-      Component :=nil;
-      FormToPrint.FindComponent(ControlToPrint);
-      if Component =nil then
-        raise EJclGraphicsError.CreateResFmt(@RsComponentDoesNotExist,[ControlToPrint, FormToPrint.Name])
-      else
-      begin
-        if Component is TWinControl then
-          ScreenShot(bm, TWinControl(Component).Left, TWinControl(Component).Top, TWinControl(Component).Width, TWinControl(Component).Height, TWinControl(Component).Handle)
-        else
-          raise EJclGraphicsError.CreateResFmt(@RSInvalidControlType,[ControlToPrint]);
-      end;
-    end;
-  end
   else
     raise EJclGraphicsError.CreateResFmt(@RSInvalidFormOrComponent, ['form'])
 end;

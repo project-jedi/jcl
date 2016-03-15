@@ -3043,7 +3043,7 @@ begin
           InternalExecuteFlushPipe(ErrorPipeInfo, ErrorOverlapped);
       except
         // always terminate process in case of an exception.
-        // This is especially useful when an exception occured in one of
+        // This is especially useful when an exception occurred in one of
         // the texthandler but only do it if the process actually started,
         // this prevents eating up the last error value by calling those
         // three functions with an invalid handle

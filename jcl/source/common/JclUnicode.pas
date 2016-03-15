@@ -4729,7 +4729,7 @@ begin
     if Casefold then
       FUREBuffer.Flags := FUREBuffer.Flags or _URE_DFA_CASEFOLD;
 
-    // Construct the NFA. If this stage returns a 0, then an error occured or an
+    // Construct the NFA. If this stage returns a 0, then an error occurred or an
     // empty expression was passed.
     State := ConvertRegExpToNFA(RE, RELength);
     if State <> _URE_NOOP then

@@ -6255,7 +6255,12 @@ type
   PPackageThunk = ^TPackageThunk;
   TPackageThunk = packed record
     JmpInstruction: Word;
+  {$IFDEF CPU32}
     JmpAddress: PPointer;
+  {$ENDIF CPU32}
+  {$IFDEF CPU64}
+    JmpOffset: Int32;
+  {$ENDIF CPU64}
   end;
 begin
   if not IsCompiledWithPackages then
@@ -6263,7 +6268,13 @@ begin
   else
   if not IsBadReadPtr(Address, SizeOf(TPackageThunk)) and
     (PPackageThunk(Address)^.JmpInstruction = JmpInstructionCode) then
+  {$IFDEF CPU32}
     Result := PPackageThunk(Address)^.JmpAddress^
+  {$ENDIF CPU32}
+  {$IFDEF CPU64}
+    Result := PPointer(PByte(Address) + SizeOf(TPackageThunk) +
+      PPackageThunk(Address)^.JmpOffset)^
+  {$ENDIF CPU64}
   else
     Result := nil;
 end;
