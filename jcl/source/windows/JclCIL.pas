@@ -170,7 +170,7 @@ type
     constructor Create(AOwner: TJclClrILGenerator; AOpCode: TJclOpCode);
     procedure Load(Stream: TStream); virtual;
     procedure Save(Stream: TStream); virtual;
-    function DumpIL(Options: TJclInstructionDumpILOptions = [doIL]): string;
+    function DumpIL(aOptions: TJclInstructionDumpILOptions = [doIL]): string;
     property Owner: TJclClrILGenerator read FOwner;
     property OpCode: TJclOpCode read FOpCode;
     property WideOpCode: Boolean read GetWideOpCode;
@@ -616,7 +616,7 @@ begin
   inherited Destroy;
 end;
 
-function TJclClrILGenerator.DumpIL(Options: TJclInstructionDumpILOptions): string;
+function TJclClrILGenerator.DumpIL(aOptions: TJclInstructionDumpILOptions): string;
 var
   I, J, Indent: Integer;
 
@@ -671,7 +671,7 @@ begin
           Add(IndentStr + '}  // end ' + FlagsToName(Flags));
         end;
       end;
-      Add(IndentStr + Instructions[I].DumpIL(Options));
+      Add(IndentStr + Instructions[I].DumpIL(aOptions));
     end;
     Result := Text;
   finally
