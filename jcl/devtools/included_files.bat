@@ -27,6 +27,8 @@ copy ..\source\include\jcl.template.inc ..\source\include\jcld22win32.inc
 copy ..\source\include\jcl.template.inc ..\source\include\jcld22win64.inc
 copy ..\source\include\jcl.template.inc ..\source\include\jcld23win32.inc
 copy ..\source\include\jcl.template.inc ..\source\include\jcld23win64.inc
+copy ..\source\include\jcl.template.inc ..\source\include\jcld24win32.inc
+copy ..\source\include\jcl.template.inc ..\source\include\jcld24win64.inc
 
 
 copy ..\source\include\jcl.template.inc ..\source\include\jclfpc.inc
