@@ -1672,6 +1672,7 @@ var
           Target.BCC.Options.Add('-w-par'); // warning
           Target.BCC.Options.Add('-w-aus'); // warning
           Target.BCC.AddPathOption('I', Format('%s%s%s%sinclude%s%s', [Distribution.JclSourcePath, DirSeparator, Target.RootDir, DirDelimiter, DirSeparator, Target.VclIncludeDir[FTargetPlatform]]));
+          Target.BCC.AddPathOption('I', ExcludeTrailingPathDelimiter(GetHppPath));
         end
         else
         begin
@@ -1693,6 +1694,7 @@ var
 
           Target.BCC.Options.Add('-I "' + Distribution.JclSourcePath + '"');
           Target.BCC.Options.Add('-I "' + Target.RootDir + '"');
+          Target.BCC.Options.Add('-I "' + ExcludeTrailingPathDelimiter(GetHppPath) + '"');
           Target.BCC.Options.Add('-isystem "' + Target.VclIncludeDir[FTargetPlatform] + '"');
         end;
         Options := StringsToStr(Target.BCC.Options, NativeSpace);
