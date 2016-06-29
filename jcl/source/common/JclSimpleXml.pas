@@ -2431,9 +2431,9 @@ begin
                 begin
                   lElem := TJclSimpleXMLElemText.Create;
                   CreateElems;
-                  Notify(lElem,opInsert);
-                  lElem.LoadFromStringStream(StringStream);
                   FElems.Add(lElem);
+                  Notify(lElem, opInsert);
+                  lElem.LoadFromStringStream(StringStream);
                 end;
                 Break;
               end
@@ -2489,9 +2489,9 @@ begin
           if lElem <> nil then
           begin
             CreateElems;
+            FElems.Add(lElem);
             Notify(lElem, opInsert);
             lElem.LoadFromStringStream(StringStream);
-            FElems.Add(lElem);
           end;
         end;
     end;
