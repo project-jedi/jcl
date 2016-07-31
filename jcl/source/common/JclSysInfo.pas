@@ -2105,8 +2105,8 @@ begin
   try
     Flags := 0;
     MaximumComponentLength := 0;
-    if GetVolumeInformation(PChar(DriveStr), Name, SizeOf(Name), @VolumeSerialNumber,
-      MaximumComponentLength, Flags, FileSystem, SizeOf(FileSystem)) then
+    if GetVolumeInformation(PChar(DriveStr), Name, Length(Name), @VolumeSerialNumber,
+      MaximumComponentLength, Flags, FileSystem, Length(FileSystem)) then
     case InfoKind of
       vikName:
         Result := StrPas(Name);
@@ -2456,8 +2456,8 @@ var
   snu: SID_NAME_USE;
 begin
   InfoBufferSize := 1000;
-  AccountSize := SizeOf(AccountName);
-  DomainSize := SizeOf(DomainName);
+  AccountSize := Length(AccountName);
+  DomainSize := Length(DomainName);
 
   hProcess := GetCurrentProcess;
   if OpenProcessToken(hProcess, TOKEN_READ, hAccessToken) then
@@ -2808,7 +2808,7 @@ function LoadedModulesList(const List: TStrings; ProcessID: DWORD; HandlesOnly: 
       if HandlesOnly then
         List.AddObject('', Pointer(ModuleInfo.lpBaseOfDll))
       else
-      if GetModuleFileNameEx(ProcessHandle, Module, Filename, SizeOf(Filename)) > 0 then
+      if GetModuleFileNameEx(ProcessHandle, Module, Filename, Length(Filename)) > 0 then
         List.AddObject(FileName, Pointer(ModuleInfo.lpBaseOfDll));
     end;
   end;
@@ -2914,7 +2914,7 @@ function EnumTaskWindowsProc(Wnd: THandle; List: TStrings): Boolean; stdcall;
 var
   Caption: array [0..1024] of Char;
 begin
-  if IsMainAppWindow(Wnd) and (GetWindowText(Wnd, Caption, SizeOf(Caption)) > 0) then
+  if IsMainAppWindow(Wnd) and (GetWindowText(Wnd, Caption, Length(Caption)) > 0) then
     List.AddObject(Caption, Pointer(Wnd));
   Result := True;
 end;

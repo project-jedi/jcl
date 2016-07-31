@@ -1116,7 +1116,7 @@ begin
   FileName := '';
 
   ResetMemory(LocaleName, SizeOf(LocaleName));
-  GetLocaleInfo(GetThreadLocale, LOCALE_SABBREVLANGNAME, LocaleName, SizeOf(LocaleName));
+  GetLocaleInfo(GetThreadLocale, LOCALE_SABBREVLANGNAME, LocaleName, Length(LocaleName));
   if LocaleName[0] <> #0 then
   begin
     FileName := BaseBinName;

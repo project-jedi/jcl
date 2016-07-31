@@ -275,7 +275,7 @@ begin
   // We need to sort the values first
   SortedList := Copy(X);
   // type cast to Pointer for the sake of FPC
-  SortDynArray(Pointer(SortedList), SizeOf(Float),DynArrayCompareFloat);
+  SortDynArray(Pointer(SortedList), SizeOf(Float), DynArrayCompareFloat);
 
   // and call the median function afterwards
   Result := Median(SortedList);
