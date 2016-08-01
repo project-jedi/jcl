@@ -1000,15 +1000,34 @@ const
 type
   TJclStackTrackingOption =
     (stStack, stExceptFrame, stRawMode, stAllModules, stStaticModuleList,
-     stDelayedTrace, stTraceAllExceptions, stMainThreadOnly, stDisableIfDebuggerAttached);
+     stDelayedTrace, stTraceAllExceptions, stMainThreadOnly, stDisableIfDebuggerAttached
+     {$IFDEF HAS_EXCEPTION_STACKTRACE}
+     // Resolves the Exception.Stacktrace string when the exception is raised. This is more
+     // exact if modules are unloaded before the delayed resolving happens, but it slows down
+     // the exception handling if no stacktrace is needed for the exception.
+     , stImmediateExceptionStacktraceResolving
+     {$ENDIF HAS_EXCEPTION_STACKTRACE}
+    );
   TJclStackTrackingOptions = set of TJclStackTrackingOption;
 
-//const
-  // replaced by RemoveIgnoredException(EAbort)
-  // stTraceEAbort = stTraceAllExceptions;
+  {$IFDEF HAS_EXCEPTION_STACKTRACE}
+  TJclExceptionStacktraceOption = (
+    estoIncludeModuleName,
+    estoIncludeAdressOffset,
+    estoIncludeStartProcLineOffset,
+    estoIncludeVAddress
+    );
+  TJclExceptionStacktraceOptions = set of TJclExceptionStacktraceOption;
+  {$ENDIF HAS_EXCEPTION_STACKTRACE}
 
 var
   JclStackTrackingOptions: TJclStackTrackingOptions = [stStack];
+
+  {$IFDEF HAS_EXCEPTION_STACKTRACE}
+  // JclExceptionStacktraceOptions controls the Exception.Stacktrace string's format
+  JclExceptionStacktraceOptions: TJclExceptionStacktraceOptions =
+    [estoIncludeModuleName, estoIncludeAdressOffset, estoIncludeStartProcLineOffset, estoIncludeVAddress];
+  {$ENDIF HAS_EXCEPTION_STACKTRACE}
 
   { JclDebugInfoSymbolPaths specifies a list of paths, separated by ';', in
     which the DebugInfoSymbol scanner should look for symbol information. }
@@ -6796,49 +6815,98 @@ end;
 {$ENDIF MSWINDOWS}
 
 {$IFDEF HAS_EXCEPTION_STACKTRACE}
+type
+  PJclStackInfoRec = ^TJclStackInfoRec;
+  TJclStackInfoRec = record
+    Stack: TJclStackInfoList;
+    Stacktrace: string;
+  end;
+
+procedure ResolveStackInfoRec(Info: PJclStackInfoRec);
+var
+  Str: TStringList;
+begin
+  if (Info <> nil) and (Info.Stack <> nil) then
+  begin
+    Str := TStringList.Create;
+    try
+      Info.Stack.AddToStrings(Str,
+        estoIncludeModuleName in JclExceptionStacktraceOptions,
+        estoIncludeAdressOffset in JclExceptionStacktraceOptions,
+        estoIncludeStartProcLineOffset in JclExceptionStacktraceOptions,
+        estoIncludeVAddress in JclExceptionStacktraceOptions
+      );
+      FreeAndNil(Info.Stack);
+      Info.Stacktrace := Str.Text;
+    finally
+      FreeAndNil(Str);
+    end;
+  end;
+end;
+
+procedure CleanUpStackInfo(Info: Pointer);
+begin
+  if Info <> nil then
+  begin
+    PJclStackInfoRec(Info).Stack.Free;
+    Dispose(PJclStackInfoRec(Info));
+  end;
+end;
+
 function GetExceptionStackInfo(P: PExceptionRecord): Pointer;
 const
   cDelphiException = $0EEDFADE;
 var
   Stack: TJclStackInfoList;
-  Str: TStringList;
-  Trace: String;
-  Sz: Integer;
+  Info: PJclStackInfoRec;
+  RawMode: Boolean;
+  Delayed: Boolean;
+  IgnoreLevel: Integer;
 begin
-  if P^.ExceptionCode = cDelphiException then
-    Stack := JclCreateStackList(False, 3, P^.ExceptAddr)
-  else
-    Stack := JclCreateStackList(False, 3, P^.ExceptionAddress);
-  try
-    Str := TStringList.Create;
-    try
-      Stack.AddToStrings(Str, True, True, True, True);
-      Trace := Str.Text;
-    finally
-      FreeAndNil(Str);
-    end;
-  finally
-    FreeAndNil(Stack);
-  end;
+  RawMode := stRawMode in JclStackTrackingOptions;
+  Delayed := stDelayedTrace in JclStackTrackingOptions;
 
-  if Trace <> '' then
+  IgnoreLevel := 3;
+  if RawMode then
+    Inc(IgnoreLevel, 3);
+
+  if P^.ExceptionCode = cDelphiException then
   begin
-    Sz := (Length(Trace) + 1) * SizeOf(Char);
-    GetMem(Result, Sz);
-    Move(Pointer(Trace)^, Result^, Sz);
+    if (P^.ExceptObject <> nil) and
+       not (stTraceAllExceptions in JclStackTrackingOptions) and
+       IsIgnoredException(TObject(P^.ExceptObject).ClassType) then
+    begin
+      Result := nil;
+      Exit;
+    end;
+    Stack := JclCreateStackList(RawMode, IgnoreLevel, P^.ExceptAddr, Delayed);
   end
   else
-    Result := nil;
+    Stack := JclCreateStackList(RawMode, IgnoreLevel, P^.ExceptionAddress, Delayed);
+
+  New(Info);
+  Info.Stack := Stack;
+  if stImmediateExceptionStacktraceResolving in JclStackTrackingOptions then
+  begin
+    try
+      ResolveStackInfoRec(Info);
+    except
+      CleanUpStackInfo(Info);
+      Info := nil;
+    end;
+  end;
+
+  Result := Info;
 end;
 
 function GetStackInfoString(Info: Pointer): string;
+var
+  Rec: PJclStackInfoRec;
 begin
-  Result := PChar(Info);
-end;
-
-procedure CleanUpStackInfo(Info: Pointer);
-begin
-  FreeMem(Info);
+  Rec := Info;
+  if (Rec <> nil) and (Rec.Stack <> nil) then
+    ResolveStackInfoRec(Rec);
+  Result := Rec.Stacktrace;
 end;
 
 procedure SetupExceptionProcs;
