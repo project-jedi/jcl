@@ -3251,7 +3251,7 @@ begin
           FUnitVersionRevision := UnitVersion.Revision;
           FValues := FValues + [lievUnitVersionInfo];
           Break;
-end;
+        end;
       end;
       if lievUnitVersionInfo in FValues then
         Break;
@@ -5223,11 +5223,11 @@ begin
       else
         StackInfo.CallerAddr := StackFrameCallerAddr;
       // the stack may be messed up in big projects, avoid overflow in arithmetics
-      if StackFrameCallerFrame < TJclAddr(StackFrame) then
+      if StackFrameCallerFrame + FStackOffset < TJclAddr(StackFrame) then
         Break;
-      StackInfo.DumpSize := StackFrameCallerFrame - TJclAddr(StackFrame);
+      StackInfo.DumpSize := StackFrameCallerFrame + FStackOffset - TJclAddr(StackFrame);
       StackInfo.ParamSize := (StackInfo.DumpSize - SizeOf(TStackFrame)) div 4;
-      if PStackFrame(StackFrame^.CallerFrame) = StackFrame then
+      if PStackFrame(StackFrame^.CallerFrame + FStackOffset) = StackFrame then
         Break;
       // Step to the next stack frame by following the frame pointer
       StackFrame := PStackFrame(StackFrameCallerFrame + FStackOffset);
@@ -5416,7 +5416,6 @@ begin
     StackDataSize := TopOfStack - TJclAddr(StackPtr);
     GetMem(FStackData, StackDataSize);
     System.Move(StackPtr^, FStackData^, StackDataSize);
-    //CopyMemory(FStackData, StackPtr, StackDataSize);
   end;
 
   FStackOffset := Int64(FStackData) - Int64(StackPtr);
