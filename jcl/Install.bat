@@ -35,6 +35,8 @@ cd install
 build\dcc32ex.exe --runtime-package-rtl --runtime-package-vcl --preserve-config -q -w -$O- -dJCLINSTALL -E..\bin -I..\source\include -U..\source\common;..\source\windows JediInstaller.dpr
 if ERRORLEVEL 1 goto FailedCompile
 
+if not exist ..\bin\JediInstaller.exe goto FailedCompile
+
 echo.
 echo Launching JCL installer...
 
