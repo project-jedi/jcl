@@ -3339,10 +3339,10 @@ begin
           if Win32MinorVersion = 2 then
           begin
             ProductName := RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'ProductName', '');
-            if (pos(RsOSVersionWin81, ProductName) = 1) or (pos(RsOSVersionWinServer2012R2, ProductName) = 1) then
+            if (Pos(RsOSVersionWin81, ProductName) = 1) or (Pos(RsOSVersionWinServer2012R2, ProductName) = 1) then
               Win32MinorVersionEx := 3 // Windows 8.1 and Windows Server 2012R2
             else
-            if (pos(RsOSVersionWin8, ProductName) = 1) or (pos(RsOSVersionWinServer2012, ProductName) = 1) then
+            if (Pos(RsOSVersionWin8, ProductName) = 1) or (Pos(RsOSVersionWinServer2012, ProductName) = 1) then
               Win32MinorVersionEx := 2 // Windows 8 and Windows Server 2012
             else
             begin
@@ -3875,12 +3875,14 @@ begin
   // application as Windows 8 (kernel version 6.2) until an application manifest is included
   // See https://msdn.microsoft.com/en-us/library/windows/desktop/dn302074.aspx
   if (Win32MajorVersion = 6) and (Win32MinorVersion = 2) then
-    Result := strToInt(RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'CurrentBuildNumber', intToStr(Win32BuildNumber)))
+    Result := StrToInt(RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'CurrentBuildNumber', IntToStr(Win32BuildNumber)))
   else
     Result := Win32BuildNumber;
 end;
 
 function GetWindowsMajorVersionNumber: Integer;
+var
+  Ver: string;
 begin
   // Starting with Windows 8.1, the GetVersion(Ex) API is deprecated and will detect the
   // application as Windows 8 (kernel version 6.2) until an application manifest is included
@@ -3891,13 +3893,18 @@ begin
     // If CurrentMajorVersionNumber not present in registry then use CurrentVersion
     Result := RegReadIntegerDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'CurrentMajorVersionNumber', -1);
     if Result = -1 then
-      Result := strToInt(StrBefore('.', RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'CurrentVersion', intToStr(Win32MajorVersion) + '.' + intToStr(Win32MinorVersion))));
+    begin
+      Ver := RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'CurrentVersion', IntToStr(Win32MajorVersion) + '.' + IntToStr(Win32MinorVersion));
+      Result := StrToIntDef(Copy(Ver, 1, Pos('.', Ver) - 1), 2); // don't use StrBefore because it uses StrCaseMap that may not be initialized yet
+    end;
   end
   else
     Result := Win32MajorVersion;
 end;
 
 function GetWindowsMinorVersionNumber: Integer;
+var
+  Ver: string;
 begin
   // Starting with Windows 8.1, the GetVersion(Ex) API is deprecated and will detect the
   // application as Windows 8 (kernel version 6.2) until an application manifest is included
@@ -3908,7 +3915,10 @@ begin
     // If CurrentMinorVersionNumber not present then use CurrentVersion
     Result := RegReadIntegerDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'CurrentMinorVersionNumber', -1);
     if Result = -1 then
-      Result := strToInt(StrAfter('.', RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'CurrentVersion', intToStr(Win32MajorVersion) + '.' + intToStr(Win32MinorVersion))));
+    begin
+      Ver := RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'CurrentVersion', IntToStr(Win32MajorVersion) + '.' + IntToStr(Win32MinorVersion));
+      Result := StrToIntDef(Copy(Ver, Pos('.', Ver) + 1, Length(Ver)), 2);  // don't use StrAfter because it uses StrCaseMap that may not be initialized yet
+    end;
   end
   else
     Result := Win32MinorVersion;
@@ -3917,7 +3927,7 @@ end;
 function GetWindowsVersionNumber: string;
 begin
   // Returns version number as MajorVersionNumber.MinorVersionNumber (string type)
-  Result := intToStr(GetWindowsMajorVersionNumber) + '.' + intToStr(GetWindowsMinorVersionNumber);
+  Result := IntToStr(GetWindowsMajorVersionNumber) + '.' + IntToStr(GetWindowsMinorVersionNumber);
 end;
 
 function GetWindowsServicePackVersion: Integer;
