@@ -303,7 +303,7 @@ end;
 procedure TJclDebugExtension.AfterCompile(const Project: IOTAProject; Succeeded: Boolean);
 var
   ProjectFileName, MapFileName, DrcFileName, ExecutableFileName, JdbgFileName: TFileName;
-  OutputDirectory, LinkerBugUnit: string;
+  OutputDirectory, LinkerBugUnit, ErrorMsg: string;
   Succ: Boolean;
   MapFileSize, JclDebugDataSize, LineNumberErrors, C: Integer;
   EnabledActions: TDebugExpertActions;
@@ -387,10 +387,18 @@ begin
           end
           else
             OutputToolMessage(Format(LoadResString(@RsEFailedToDeleteMapFile), ['MAP', MapFileName]));
+
+          if not FileExists(DrcFileName) then // Mantis #6488
+            DrcFileName := ChangeFileExt(MapFileName, CompilerExtensionDRC);
+
           if DeleteFile(DrcFileName) then
             OutputToolMessage(Format(LoadResString(@RsDeletedMapFile), ['DRC', DrcFileName]))
           else
+          begin
+            ErrorMsg := SysErrorMessage(GetLastError);
             OutputToolMessage(Format(LoadResString(@RsEFailedToDeleteMapFile), ['DRC', DrcFileName]));
+            OutputToolMessage(ErrorMsg);
+          end;
         end;
 
         Screen.Cursor := crDefault;
