@@ -53,7 +53,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-unit JclAnsiStrings; // former JclStrings
+unit JclAnsiStrings;
 
 {$I jcl.inc}
 
@@ -2435,8 +2435,8 @@ procedure StrResetLength(var S: AnsiString);
 var
   I: SizeInt;
 begin
-  for I := 1 to Length(S) do
-    if S[I] = #0 then
+  for I := 0 to Length(S) - 1 do
+    if S[I + 1] = #0 then
     begin
       SetLength(S, I);
       Exit;
