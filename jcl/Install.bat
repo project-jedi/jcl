@@ -3,8 +3,7 @@
 SETLOCAL
 pushd "%~dp0"
 
-if not exist "..\.git" goto StartInstall
-::if exist "source\include\jedi\jedi.inc" goto StartInstall
+if not exist "..\.git" goto CheckJediIncNotFound
 
 :: Check if git if available
 call git --version 2>NUL >NUL
@@ -16,12 +15,21 @@ cd ..
 call git submodule update --init
 if ERRORLEVEL 1 goto CannotInitializeSubModules
 popd
-goto StartInstall
+goto CheckJediIncNotFound
 
 :CannotInitializeSubModules
 if exist "source\include\jedi\jedi.inc" goto StartInstall
 echo.
-echo The jcl\source\include\jedi git submodule can't be initialized. jedi.inc not found.
+echo The "jcl\source\include\jedi" git submodule can't be initialized. jedi.inc not found.
+echo You can download the required files from https://github.com/project-jedi/jedi
+echo.
+goto FailedCompile
+
+:CheckJediIncNotFound
+if exist "source\include\jedi\jedi.inc" goto StartInstall
+echo.
+echo Include file "source\include\jedi\jedi.inc" not found.
+echo You can download the required files from https://github.com/project-jedi/jedi
 echo.
 goto FailedCompile
 
@@ -30,14 +38,28 @@ SET DELPHIVERSION=%1
 
 cd install
 
-:: compile installer
-
-build\dcc32ex.exe --runtime-package-rtl --runtime-package-vcl --preserve-config -q -w -$O- -dJCLINSTALL -E..\bin -I..\source\include -U..\source\common;..\source\windows JediInstaller.dpr
+echo.
+echo ===================================================================
+echo Compiling JediIncCheck...
+build\dcc32ex.exe -q -w -E..\bin -I..\source\include JediIncCheck.dpr
 if ERRORLEVEL 1 goto FailedCompile
+:: New Delphi versions output "This product doesn't support command line compiling" and then exit with ERRORLEVEL 0
+if not exist ..\bin\JediIncCheck.exe goto FailedCompile
 
+..\bin\JediIncCheck.exe
+if ERRORLEVEL 1 goto OutdatedJediInc
+
+:: compile installer
+echo.
+echo ===================================================================
+echo Compiling JediInstaller...
+build\dcc32ex.exe --runtime-package-rtl --runtime-package-vcl -q -w -dJCLINSTALL -E..\bin -I..\source\include -U..\source\common;..\source\windows JediInstaller.dpr
+if ERRORLEVEL 1 goto FailedCompile
+:: New Delphi versions output "This product doesn't support command line compiling" and then exit with ERRORLEVEL 0
 if not exist ..\bin\JediInstaller.exe goto FailedCompile
 
 echo.
+echo ===================================================================
 echo Launching JCL installer...
 
 start ..\bin\JediInstaller.exe %*
@@ -47,6 +69,12 @@ goto FINI
 :FailStart
 ..\bin\JediInstaller.exe %*
 goto FINI
+
+:OutdatedJediInc
+echo.
+echo The "source\include\jedi\jedi.inc" include file is outdated.
+echo You can download the newest version from https://github.com/project-jedi/jedi
+echo.
 
 :FailedCompile
 echo.
