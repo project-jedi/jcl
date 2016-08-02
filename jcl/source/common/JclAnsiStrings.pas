@@ -1277,20 +1277,21 @@ begin
 end;
 
 function TJclAnsiStringList.AddObject(const S: AnsiString; AObject: TObject): Integer;
+var
+  Found: Boolean;
 begin
   if not Sorted then
-  begin
-    Result := Count;
-  end
+    Result := Count
   else
   begin
+    Found := Find(S, Result);
     case Duplicates of
       dupAccept: ;
       dupIgnore:
-        if Find(S, Result) then
+        if Found then
           Exit;
       dupError:
-        if Find(S, Result) then
+        if Found then
           Error(@SDuplicateString, 0);
     end;
   end;
@@ -1308,7 +1309,7 @@ begin
   for I := Index to Count - 2 do
     FStrings[I] := FStrings[I + 1];
     
-  SetLength(FStrings[FCount - 1].Str, 0);  // the last string is no longer useful
+  FStrings[FCount - 1].Str := '';  // the last string is no longer useful
     
   Dec(FCount);
 end;
