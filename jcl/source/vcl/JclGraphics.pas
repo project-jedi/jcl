@@ -933,7 +933,7 @@ var
   ContributorList: TContributorList;
   SourceLine, DestLine: PPixelArray;
   DestPixel: PBGRA;
-  Delta, DestDelta: Integer;
+  Delta, DestDelta: TJclAddr;
   SourceHeight, SourceWidth: Integer;
   TargetHeight, TargetWidth: Integer;
 begin
@@ -1122,9 +1122,9 @@ begin
     SetLength(CurrentLineA, SourceHeight);
 
     SourceLine := Work.ScanLine[0];
-    Delta := Integer(Work.ScanLine[1]) - Integer(SourceLine);
+    Delta := TJclAddr(Work.ScanLine[1]) - TJclAddr(SourceLine);
     DestLine := Target.ScanLine[0];
-    DestDelta := Integer(Target.ScanLine[1]) - Integer(DestLine);
+    DestDelta := TJclAddr(Target.ScanLine[1]) - TJclAddr(DestLine);
     for K := 0 to TargetWidth - 1 do
     begin
       DestPixel := Pointer(DestLine);
