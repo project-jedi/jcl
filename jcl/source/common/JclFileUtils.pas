@@ -877,7 +877,7 @@ type
   TJclMappedTextReaderIndex = (tiNoIndex, tiFull);
 
   PPAnsiCharArray = ^TPAnsiCharArray;
-  TPAnsiCharArray = array [0..0] of PAnsiChar;
+  TPAnsiCharArray = array [0..MaxInt div SizeOf(PAnsiChar) - 1] of PAnsiChar;
 
   TJclAnsiMappedTextReader = class(TPersistent)
   private
@@ -928,7 +928,7 @@ type
   end;
 
   PPWideCharArray = ^TPWideCharArray;
-  TPWideCharArray = array [0..0] of PWideChar;
+  TPWideCharArray = array [0..MaxInt div SizeOf(PWideChar) - 1] of PWideChar;
 
   TJclWideMappedTextReader = class(TPersistent)
   private

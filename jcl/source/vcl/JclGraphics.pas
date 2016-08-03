@@ -598,7 +598,7 @@ type
   end;
 
   PPixelArray = ^TPixelArray;
-  TPixelArray = array [0..0] of TBGRA;
+  TPixelArray = array [0..MaxInt div SizeOf(TBGRA) - 1] of TBGRA;
 
   TBitmapFilterFunction = function(Value: Single): Single;
 

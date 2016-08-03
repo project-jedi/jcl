@@ -911,7 +911,7 @@ end;
 constructor TJclTD32SourceModuleInfo.Create(pSrcFile: PSourceFileEntry; Base: TJclAddr);
 type
   PArrayOfWord = ^TArrayOfWord;
-  TArrayOfWord = array [0..0] of Word;
+  TArrayOfWord = array [0..MaxInt div SizeOf(Word) - 1] of Word;
 var
   I, J: Integer;
   pLineEntry: PLineMappingEntry;
