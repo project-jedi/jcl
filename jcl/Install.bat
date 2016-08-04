@@ -41,7 +41,7 @@ cd install
 echo.
 echo ===================================================================
 echo Compiling JediIncCheck...
-build\dcc32ex.exe -q -w -E..\bin -I..\source\include JediIncCheck.dpr
+build\dcc32ex.exe %INSTALL_VERBOSE% -q -w -E..\bin -I..\source\include JediIncCheck.dpr
 if ERRORLEVEL 1 goto FailedCompile
 :: New Delphi versions output "This product doesn't support command line compiling" and then exit with ERRORLEVEL 0
 if not exist ..\bin\JediIncCheck.exe goto FailedCompile
@@ -53,7 +53,7 @@ if ERRORLEVEL 1 goto OutdatedJediInc
 echo.
 echo ===================================================================
 echo Compiling JediInstaller...
-build\dcc32ex.exe --runtime-package-rtl --runtime-package-vcl -q -w -dJCLINSTALL -E..\bin -I..\source\include -U..\source\common;..\source\windows JediInstaller.dpr
+build\dcc32ex.exe %INSTALL_VERBOSE% --runtime-package-rtl --runtime-package-vcl -q -w -dJCLINSTALL -E..\bin -I..\source\include -U..\source\common;..\source\windows JediInstaller.dpr
 if ERRORLEVEL 1 goto FailedCompile
 :: New Delphi versions output "This product doesn't support command line compiling" and then exit with ERRORLEVEL 0
 if not exist ..\bin\JediInstaller.exe goto FailedCompile
