@@ -49,6 +49,13 @@ if not exist ..\bin\JediIncCheck.exe goto FailedCompile
 ..\bin\JediIncCheck.exe
 if ERRORLEVEL 1 goto OutdatedJediInc
 
+
+:: Build installer start helper
+if exist ..\bin\JCLCmdStarter.exe goto SkipCmdStarter
+build\dcc32ex.exe -Q -B -E..\bin build\JCLCmdStarter.dpr >NUL 2>NUL
+::if ERRORLEVEL 1 goto FailedCompile
+:SkipCmdStarter
+
 :: compile installer
 echo.
 echo ===================================================================
@@ -62,7 +69,9 @@ echo.
 echo ===================================================================
 echo Launching JCL installer...
 
-start ..\bin\JediInstaller.exe %*
+::start ..\bin\JediInstaller.exe %*
+if not exist ..\bin\JCLCmdStarter.exe goto FailStart
+..\bin\JCLCmdStarter.exe ..\bin\JediInstaller.exe %*
 if ERRORLEVEL 1 goto FailStart
 goto FINI
 
