@@ -905,13 +905,13 @@ begin
               WriteLn('Missing dependencies for ', Target.Name);
 
               if RequireJcl and not Target.InstalledJcl then
-                WriteLn(' - JCL  is required but not installed. (http://jcl.sourceforge.net)')
+                WriteLn(' - JCL  is required but not installed. (https://github.com/project-jedi/jcl)')
               else if RequireJcl and Target.InstalledJcl and
                       not IsVersionCompatible(RequireJclVersion, Target.JclVersion) then
                 WriteLn(' - JCL  version ', Target.JclVersion, ' is too old. Version ', RequireJclVersion, ' is required.');
 
               if RequireJvcl and not Target.InstalledJvcl then
-                WriteLn(' - JVCL is required but not installed. (http://jvcl.sourceforge.net)')
+                WriteLn(' - JVCL is required but not installed. (https://github.com/project-jedi/jcl)')
               else if RequireJvcl and Target.InstalledJvcl and
                       not IsVersionCompatible(RequireJvclVersion, Target.JvclVersion) then
                 WriteLn(' - JVCL version ', Target.JvclVersion, ' is too old. Version ', RequireJvclVersion, ' is required.');

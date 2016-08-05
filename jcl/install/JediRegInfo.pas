@@ -18,7 +18,7 @@
 { Contributor(s):                                                                                  }
 {                                                                                                  }
 { You may retrieve the latest version of this file at the Project JEDI's JCL / JVCL                }
-{ home page, located at http://jcl.sourceforge.net / http://jvcl.sourceforge.net                   }
+{ home page, located at https://github.com/project-jedi/jcl / https://github.com/project-jedi/jvcl }
 {                                                                                                  }
 { Known Issues:                                                                                    }
 {                                                                                                  }

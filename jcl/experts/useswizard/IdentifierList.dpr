@@ -26,10 +26,8 @@
 {**************************************************************************************************}
 
 // note: this program converts the xml output of Doc-o-matic <http://www.doc-o-matic.com/>
-// running on the JCL help files http://jcl.svn.sourceforge.net/viewvc/jcl/trunk/help/
+// running on the JCL help files https://github.com/project-jedi/jcl/tree/master/help
 // to text files for the JCL uses expert
-
-// this program requires TJvSimpleXml from the JVCL <http://jvcl.sf.net/>
 
 program IdentifierList;
 

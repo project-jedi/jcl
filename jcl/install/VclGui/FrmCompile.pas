@@ -19,7 +19,7 @@ Contributor(s): -
   Florent Ouchet (outchy) - New installer core
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL
-home page, located at http://jvcl.sourceforge.net
+home page, located at https://github.com/project-jedi/jcl
 
 Known Issues:
 -----------------------------------------------------------------------------}

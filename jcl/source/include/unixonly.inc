@@ -14,7 +14,7 @@
 {  The Original Code is: unixonly.inc, released on 2004-06-21.                                     }
 {                                                                                                  }
 {  You may retrieve the latest version of this file at the JCL home page,                          }
-{  located at http://jcl.sourceforge.net/                                                          }
+{  located at https://github.com/project-jedi/jcl                                                  }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
