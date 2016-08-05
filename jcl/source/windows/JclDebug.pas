@@ -2334,12 +2334,94 @@ var
   JclDebugSection: TImageSectionHeader;
   LastSection: PImageSectionHeader;
   VirtualAlignedSize: DWORD;
-  I, X, NeedFill: Integer;
+  NeedFill: Integer;
 
   procedure RoundUpToAlignment(var Value: DWORD; Alignment: DWORD);
   begin
     if (Value mod Alignment) <> 0 then
       Value := ((Value div Alignment) + 1) * Alignment;
+  end;
+
+  procedure MovePointerToRawData(AOffset: DWORD);
+  var
+    I: Integer;
+  begin
+    for I := Low(ImageSectionHeaders) to High(ImageSectionHeaders) do
+      ImageSectionHeaders[I].PointerToRawData := ImageSectionHeaders[I].PointerToRawData + AOffset;
+  end;
+
+  procedure FillZeros(AStream: TStream; ACount: Integer);
+  var
+    I: Integer;
+    X: array[0..511] of Byte;
+  begin
+    if ACount > 0 then
+    begin
+      if ACount > Length(X) then
+        FillChar(X, SizeOf(X), 0)
+      else
+        FillChar(X, ACount, 0);
+
+      while ACount > 0 do
+      begin
+        I := ACount;
+        if I > SizeOf(X) then
+          I := SizeOf(X);
+        AStream.WriteBuffer(X, I);
+        Dec(ACount, I);
+      end;
+    end;
+  end;
+
+  procedure WriteSectionHeaders(AStream: TStream; APosition: Integer);
+  var
+    HeaderSize: Integer;
+  begin
+    HeaderSize := SizeOf(TImageSectionHeader) * Length(ImageSectionHeaders);
+    if (AStream.Seek(APosition, soFromBeginning) <> APosition) or
+       (AStream.Write(ImageSectionHeaders[0], HeaderSize) <> HeaderSize) then
+      raise EJclPeImageError.CreateRes(@SWriteError);
+    FillZeros(AStream, ImageSectionHeaders[0].PointerToRawData - AStream.Position);
+  end;
+
+  procedure MoveData(AStream: TStream; AStart, AOffset: Integer);
+  var
+    CurPos: Integer;
+    CurSize: Integer;
+    Buffer: array of Byte;
+    StartPos: Integer;
+  begin
+    SetLength(Buffer, 1024 * 1024);
+    CurPos := AStream.Size - Length(Buffer);
+    StartPos := ImageSectionHeaders[0].PointerToRawData;
+    while CurPos > StartPos do
+    begin
+      if (AStream.Seek(CurPos, soBeginning) <> CurPos) or
+         (AStream.Read(Buffer[0], Length(Buffer)) <> Length(Buffer)) then
+        raise EJclPeImageError.CreateRes(@SReadError);
+      if (AStream.Seek(CurPos + AOffset, soBeginning) <> CurPos + AOffset) or
+         (AStream.Write(Buffer[0], Length(Buffer)) <> Length(Buffer)) then
+        raise EJclPeImageError.CreateRes(@SWriteError);
+      Dec(CurPos, Length(Buffer));
+    end;
+    CurSize := Length(Buffer) + CurPos - StartPos;
+    if (AStream.Seek(StartPos, soBeginning) <> StartPos) or
+       (AStream.Read(Buffer[0], CurSize) <> CurSize) then
+      raise EJclPeImageError.CreateRes(@SReadError);
+    if (AStream.Seek(StartPos + AOffset, soBeginning) <> StartPos + AOffset) or
+       (AStream.Write(Buffer[0], CurSize) <> CurSize) then
+      raise EJclPeImageError.CreateRes(@SWriteError);
+  end;
+
+  procedure CheckHeadersSpace(AStream: TStream);
+  begin
+    if ImageSectionHeaders[0].PointerToRawData < ImageSectionHeadersPosition +
+       (SizeOf(TImageSectionHeader) * (Length(ImageSectionHeaders) + 1)) then
+    begin
+      MoveData(AStream, ImageSectionHeaders[0].PointerToRawData, NtHeaders64.OptionalHeader.FileAlignment);
+      MovePointerToRawData(NtHeaders64.OptionalHeader.FileAlignment);
+      WriteSectionHeaders(AStream, ImageSectionHeadersPosition);
+    end;
   end;
 
 begin
@@ -2435,6 +2517,9 @@ begin
               Exit;
             end;
 
+            // Check if there is enough space for additional header
+            CheckHeadersSpace(ImageStream);
+
             JclDebugSectionPosition := ImageSectionHeadersPosition + (SizeOf(ImageSectionHeaders[0]) * Length(ImageSectionHeaders));
             LastSection := @ImageSectionHeaders[High(ImageSectionHeaders)];
 
@@ -2481,9 +2566,7 @@ begin
       // behind the size of the file then.
       ImageStream.Seek({0 +} JclDebugSection.PointerToRawData, soBeginning);
       ImageStream.CopyFrom(BinDebug.DataStream, 0);
-      X := 0;
-      for I := 1 to NeedFill do
-        ImageStream.WriteBuffer(X, 1);
+      FillZeros(ImageStream, NeedFill);
     except
       Result := False;
     end;
