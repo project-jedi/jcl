@@ -6861,14 +6861,14 @@ var
   Info: PJclStackInfoRec;
   RawMode: Boolean;
   Delayed: Boolean;
-  IgnoreLevel: Integer;
+  IgnoreLevels: Integer;
 begin
   RawMode := stRawMode in JclStackTrackingOptions;
   Delayed := stDelayedTrace in JclStackTrackingOptions;
 
-  IgnoreLevel := 3;
+  IgnoreLevels := 3;
   if RawMode then
-    Inc(IgnoreLevel, 3);
+    Inc(IgnoreLevels, 3);
 
   if P^.ExceptionCode = cDelphiException then
   begin
@@ -6879,10 +6879,10 @@ begin
       Result := nil;
       Exit;
     end;
-    Stack := JclCreateStackList(RawMode, IgnoreLevel, P^.ExceptAddr, Delayed);
+    Stack := TJclStackInfoList.Create(RawMode, IgnoreLevels, P^.ExceptAddr, Delayed); // Don't add it to the GlobalStackList
   end
   else
-    Stack := JclCreateStackList(RawMode, IgnoreLevel, P^.ExceptionAddress, Delayed);
+    Stack := TJclStackInfoList.Create(RawMode, IgnoreLevels, P^.ExceptionAddress, Delayed); // Don't add it to the GlobalStackList
 
   New(Info);
   Info.Stack := Stack;
