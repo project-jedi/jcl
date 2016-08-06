@@ -16,7 +16,11 @@ var
   Ps: Integer;
 begin
   Str(CompilerVersion:1:1, S);
+  {$IFDEF UNICODE}
   CompIfdefVersion := UTF8ToString(S);
+  {$ELSE}
+  CompIfdefVersion := S;
+  {$ENDIF UNICODE}
   Ps := Pos('.', CompIfdefVersion);
   if Ps > 0 then
     Delete(CompIfdefVersion, Ps, 1)
