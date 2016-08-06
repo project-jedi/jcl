@@ -36,9 +36,11 @@ interface
 
 uses
   {$IFDEF HAS_UNITSCOPE}
-  Winapi.Windows, Winapi.Messages, Winapi.ShlObj, System.Classes, System.SysUtils, Vcl.Controls, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Dialogs,
+  Winapi.Windows, Winapi.Messages, Winapi.ShlObj, System.Classes, System.SysUtils,
+  Vcl.Controls, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Dialogs, Vcl.Forms,
   {$ELSE ~HAS_UNITSCOPE}
-  Windows, Messages, ShlObj, Classes, SysUtils, Controls, StdCtrls, ExtCtrls, Dialogs,
+  Windows, Messages, ShlObj, Classes, SysUtils, Controls, StdCtrls, ExtCtrls,
+  Dialogs, Forms,
   {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
@@ -171,7 +173,7 @@ type
 var
   OldGetOpenFileName: TGetOpenFileName;
   OldGetSaveFileName: TGetOpenFileName;
-  OldExplorerHook: function(Wnd: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): {$IFDEF RTL230_UP}UINT_PTR{$ELSE}UINT{$ENDIF RTL230_UP} stdcall;
+  OldExplorerHook: function(Wnd: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): {$IFDEF RTL230_UP}UINT_PTR{$ELSE}UINT{$ENDIF RTL230_UP}; stdcall;
 
 function NewExplorerHook(Wnd: HWnd; Msg: UINT; WParam: WPARAM; LParam: LPARAM): {$IFDEF RTL230_UP}UINT_PTR{$ELSE}UINT{$ENDIF RTL230_UP}; stdcall;
 begin
@@ -263,13 +265,47 @@ begin
 end;
 
 class procedure TJclFileOpenDialogHook.InstallHook(out OldHandler: Pointer);
+
+  function GetActualAddr(Proc: Pointer): Pointer;
+  type
+    {$IFDEF CPUX64}
+    PAbsoluteIndirectJmp64 = ^TAbsoluteIndirectJmp64;
+    TAbsoluteIndirectJmp64 = packed record
+      OpCode: Word;   //$FF25(Jmp, FF /4)
+      Rel: Integer;
+    end;
+    {$ELSE}
+    PAbsoluteIndirectJmp32 = ^TAbsoluteIndirectJmp32;
+    TAbsoluteIndirectJmp32 = packed record
+      OpCode: Word;   //$FF25(Jmp, FF /4)
+      Addr: ^Pointer;
+    end;
+    {$ENDIF CPUX64}
+  begin
+    Result := Proc;
+    if Result <> nil then
+    begin
+      {$IFDEF CPUX64}
+      if PAbsoluteIndirectJmp64(Result).OpCode = $25FF then
+        Result := PPointer(PByte(@PAbsoluteIndirectJmp64(Result).OpCode) +
+          SizeOf(TAbsoluteIndirectJmp64) + PAbsoluteIndirectJmp64(Result).Rel)^;
+      {$ELSE}
+      if (Win32Platform = VER_PLATFORM_WIN32_NT) then
+        if PAbsoluteIndirectJmp32(Result).OpCode = $25FF then
+          Result := PAbsoluteIndirectJmp32(Result).Addr^;
+      {$ENDIF CPUX64}
+    end;
+  end;
+
 var
   I: Integer;
+  P: Pointer;
 begin
+  P := GetActualAddr(@TFileOpenDialog.CreateFileDialog);
   for I := 0 to GetVirtualMethodCount(TFileOpenDialog) - 1 do
   begin
-    OldHandler := GetVirtualMethod(TFileOpenDialog, I);
-    if OldHandler = @TFileOpenDialog.CreateFileDialog then
+    OldHandler := GetActualAddr(GetVirtualMethod(TFileOpenDialog, I));
+    if OldHandler = P then
     begin
       SetVirtualMethod(TFileOpenDialog, I, @TJclFileOpenDialogHook.CreateFileDialog);
       Exit;
@@ -437,26 +473,30 @@ var
   HookedModule: LongWord;
 {$ENDIF OLDSTYLE}
 begin
-  {$IFDEF OLDSTYLE}
-  { TODO : Hook all loaded modules }
-  Pe := TJclPeImage.Create(True);
   try
-    HookedModule := FindClassHInstance(ClassType);
-    Pe.AttachLoadedModule(HookedModule);
-    if Pe.StatusOK then
-    begin
-      HookImportsForModule(Pointer(HookedModule));
-      for I := 0 to Pe.ImportList.UniqueLibItemCount - 1 do
-        HookImportsForModule(Pointer(GetModuleHandle(PChar(Pe.ImportList.UniqueLibItems[I].FileName))));
+    {$IFDEF OLDSTYLE}
+    { TODO : Hook all loaded modules }
+    Pe := TJclPeImage.Create(True);
+    try
+      HookedModule := FindClassHInstance(ClassType);
+      Pe.AttachLoadedModule(HookedModule);
+      if Pe.StatusOK then
+      begin
+        HookImportsForModule(Pointer(HookedModule));
+        for I := 0 to Pe.ImportList.UniqueLibItemCount - 1 do
+          HookImportsForModule(Pointer(GetModuleHandle(PChar(Pe.ImportList.UniqueLibItems[I].FileName))));
+      end;
+    finally
+      Pe.Free;
     end;
-  finally
-    Pe.Free;
+    {$ENDIF OLDSTYLE}
+    {$IFDEF NEWSTYLE}
+    TJclFileOpenDialogHook.InstallHook(FOldFileOpenCreateFileDialog);
+    TJclFileSaveDialogHook.InstallHook(FOldFileSaveCreateFileDialog);
+    {$ENDIF NEWSTYLE}
+  except
+    Application.HandleException(Self);
   end;
-  {$ENDIF OLDSTYLE}
-  {$IFDEF NEWSTYLE}
-  TJclFileOpenDialogHook.InstallHook(FOldFileOpenCreateFileDialog);
-  TJclFileSaveDialogHook.InstallHook(FOldFileSaveCreateFileDialog);
-  {$ENDIF NEWSTYLE}
 end;
 
 {$IFDEF OLDSTYLE}
