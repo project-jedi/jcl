@@ -4451,7 +4451,11 @@ begin
     Module := ModuleFromAddr(Addr);
     if IncludeVAddress then
     begin
-      OffsetStr :=  Format('(%p) ', [Pointer(TJclAddr(Addr) - Module - ModuleCodeOffset)]);
+{$OVERFLOWCHECKS OFF} // Mantis #6104
+      OffsetStr := Format('(%p) ', [Pointer(TJclAddr(Addr) - Module - ModuleCodeOffset)]);
+{$IFDEF OVERFLOWCHECKS_ON}
+{$OVERFLOWCHECKS ON}
+{$ENDIF OVERFLOWCHECKS_OFF}
       Result := OffsetStr + Result;
     end;
     if IncludeModuleName then
