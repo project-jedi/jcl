@@ -1806,11 +1806,16 @@ begin
     DelayImportDesc := DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT);
     if DelayImportDesc <> nil then
     begin
-      case Target of
-        taWin32:
-          CreateDelayImportList32(DelayImportDesc);
-        taWin64:
-          CreateDelayImportList64(DelayImportDesc);
+      try
+        case Target of
+          taWin32:
+            CreateDelayImportList32(DelayImportDesc);
+          taWin64:
+            CreateDelayImportList64(DelayImportDesc);
+        end;
+      except
+        on E: EAccessViolation do // Mantis #6177. Some users seem to have module loaded that is broken
+          ; // ignore
       end;
     end;
     BoundImports := DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT);
