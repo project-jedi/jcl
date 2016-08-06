@@ -544,13 +544,13 @@ begin
       FSaveBuildAllProjectsActionExecute(Sender);
       DisplayResults;
     except
+      on EAbort do
+        raise;
+      on EFOpenError do // when ".ridl" files are not found by IDE, reraise the exception
+        raise;
       on ExceptionObj: TObject do
       begin
-        if ExceptionObj is EFOpenError then
-          // when ".ridl" files are not found by IDE, reraise the exception
-          raise
-        else
-          JclExpertShowExceptionDialog(ExceptionObj);
+        JclExpertShowExceptionDialog(ExceptionObj);
       end;
     end;
   finally
@@ -566,13 +566,13 @@ begin
       FSaveBuildProjectActionExecute(Sender);
       DisplayResults;
     except
+      on EAbort do
+        raise;
+      on EFOpenError do // when ".ridl" files are not found by IDE, reraise the exception
+        raise;
       on ExceptionObj: TObject do
       begin
-        if ExceptionObj is EFOpenError then
-          // when ".ridl" files are not found by IDE, reraise the exception
-          raise
-        else
-          JclExpertShowExceptionDialog(ExceptionObj);
+        JclExpertShowExceptionDialog(ExceptionObj);
       end;
     end;
   finally
@@ -1480,6 +1480,8 @@ begin
       FCurrentProject := nil;
     end;
   except
+    on EAbort do
+      raise;
     on ExceptionObj: Exception do
       JclExpertShowExceptionDialog(ExceptionObj);
   end;
@@ -1492,6 +1494,8 @@ begin
     if not IsCodeInsight then
       FDebugExtension.AfterCompile(Project, Succeeded);
   except
+    on EAbort do
+      raise;
     on ExceptionObj: Exception do
       JclExpertShowExceptionDialog(ExceptionObj);
   end;
@@ -1508,6 +1512,8 @@ begin
       FDebugExtension.BeforeCompile(Project, Cancel);
     end;
   except
+    on EAbort do
+      raise;
     on ExceptionObj: TObject do
       JclExpertShowExceptionDialog(ExceptionObj);
   end;
