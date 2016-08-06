@@ -1701,9 +1701,13 @@ var
         Result := Target.BCC.Execute(Options + ' "jcl_a2z.cpp"')
           and Target.BCC.Execute(Options + ' "jcl_z2a.cpp"');
       finally
+        DeleteFile('jcl_a2z.cpp');
+        DeleteFile('jcl_a2z.obj');
+        DeleteFile('jcl_z2a.cpp');
+        DeleteFile('jcl_z2a.obj');
         SetCurrentDir(SaveDir);
       end;
-      if (not Result) and Assigned(GUI) then
+      if not Result and Assigned(GUI) then
         Result := GUI.Dialog(LoadResString(@RsHppCheckFailure), dtWarning, [drYes, drNo]) = drYes;
     end;
   var
