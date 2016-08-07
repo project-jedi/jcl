@@ -775,15 +775,14 @@ begin
   Result := FOutputCallback;
 end;
 
-function TJclBorlandCommandLineTool.InternalExecute(
-  const CommandLine: string): Boolean;
+function TJclBorlandCommandLineTool.InternalExecute(const CommandLine: string): Boolean;
 var
   LaunchCommand: string;
 begin
-  LaunchCommand := Format('%s %s', [FileName, StrAnsiToOem(AnsiString(CommandLine))]);
+  LaunchCommand := Format('%s %s', [FileName, CommandLine]);
   if Assigned(FOutputCallback) then
   begin
-    OemTextHandler(LaunchCommand);
+    FOutputCallback(LaunchCommand);
     Result := JclSysUtils.Execute(LaunchCommand, OemTextHandler) = 0;
   end
   else
