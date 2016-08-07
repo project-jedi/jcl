@@ -1634,6 +1634,12 @@ var
           UnitList.Delete(UnitList.IndexOf('JclDotNet.pas'));
           UnitList.Delete(UnitList.IndexOf('JclNTFS.pas'));
           UnitList.Delete(UnitList.IndexOf('mscorlib_TLB.pas'));
+          if FTargetPlatform = bpWin64 then
+          begin
+            UnitList.Delete(UnitList.IndexOf('pcre.pas')); // compiler: 'PCRE not supported on WIN64: use standard header'
+            UnitList.Delete(UnitList.IndexOf('JclPCRE.pas')); // uses pcre.pas => same "not supported" error
+            UnitList.Delete(UnitList.IndexOf('JclStringLists.pas')); // uses JclPCRE.pas => same "not supported" error
+          end;
 
           SetCurrentDir(Format('%sinstall%sHeaderTest', [Distribution.JclPath, DirDelimiter]));
 
