@@ -72,7 +72,6 @@ type
     FOutput: string;
     FOnAfterExecute: TJclBorlandCommandLineToolEvent;
     FOnBeforeExecute: TJclBorlandCommandLineToolEvent;
-    procedure OemTextHandler(const Text: string);
   protected
     procedure CheckOutputValid;
     function GetFileName: string;
@@ -778,42 +777,25 @@ end;
 function TJclBorlandCommandLineTool.InternalExecute(const CommandLine: string): Boolean;
 var
   LaunchCommand: string;
+  Options: TJclExecuteCmdProcessOptions;
 begin
   LaunchCommand := Format('%s %s', [FileName, CommandLine]);
-  if Assigned(FOutputCallback) then
-  begin
-    FOutputCallback(LaunchCommand);
-    Result := JclSysUtils.Execute(LaunchCommand, OemTextHandler) = 0;
-  end
-  else
-  begin
-    Result := JclSysUtils.Execute(LaunchCommand, FOutput) = 0;
-    {$IFDEF MSWINDOWS}
-    FOutput := string(StrOemToAnsi(AnsiString(FOutput)));
-    {$ENDIF MSWINDOWS}
-  end;
-end;
 
-procedure TJclBorlandCommandLineTool.OemTextHandler(const Text: string);
-var
-  AnsiText: string;
-begin
-  if Assigned(FOutputCallback) then
-  begin
-    {$IFDEF MSWINDOWS}
-    // Text is OEM under Windows
-    // Code below seems to crash older compilers at times, so we only do
-    // the casts when it's absolutely necessary, that is when compiling
-    // with a unicode compiler.
-    {$IFDEF UNICODE}
-    AnsiText := string(StrOemToAnsi(AnsiString(Text)));
-    {$ELSE}
-    AnsiText := StrOemToAnsi(Text);
-    {$ENDIF UNICODE}
-    {$ELSE ~MSWINDOWS}
-    AnsiText := Text;
-    {$ENDIF ~MSWINDOWS}
-    FOutputCallback(AnsiText);
+  Options := TJclExecuteCmdProcessOptions.Create(LaunchCommand);
+  try
+    if Assigned(FOutputCallback) then
+    begin
+      Options.OutputLineCallback := FOutputCallback;
+      FOutputCallback(LaunchCommand);
+      Result := ExecuteCmdProcess(Options) and (Options.ExitCode = 0);
+    end
+    else
+    begin
+      Result := ExecuteCmdProcess(Options) and (Options.ExitCode = 0);
+      FOutput := FOutput + Options.Output;
+    end;
+  finally
+    Options.Free;
   end;
 end;
 
