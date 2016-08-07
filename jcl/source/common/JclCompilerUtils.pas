@@ -59,6 +59,8 @@ type
 
   TJclCompilerSettingsFormat = (csfDOF, csfBDSProj, csfMsBuild);
 
+
+  TJclOnBeforeRunCommandLineTool = procedure (var ExeName, CommandLine:string; var DoExecute:Boolean) of object;
   TJclBorlandCommandLineTool = class;
   TJclBorlandCommandLineToolEvent = procedure(Sender:TJclBorlandCommandLineTool) of object;
 
@@ -72,11 +74,16 @@ type
     FOutput: string;
     FOnAfterExecute: TJclBorlandCommandLineToolEvent;
     FOnBeforeExecute: TJclBorlandCommandLineToolEvent;
+    FOnBeforeRun: TJclOnBeforeRunCommandLineTool;
     procedure OemTextHandler(const Text: string);
   protected
     procedure CheckOutputValid;
     function GetFileName: string;
     function InternalExecute(const CommandLine: string): Boolean;
+
+    function InternalNeedToUseOem: Boolean;
+    function InternalAnsiToOemIfNeeded(const aText: string): string;
+    function InternalOemToAnsiIfNeeded(const aText: string): string;
   public
     constructor Create(const ABinDirectory: string; ALongPathBug: Boolean;
       ACompilerSettingsFormat: TJclCompilerSettingsFormat);
@@ -100,6 +107,7 @@ type
     property FileName: string read GetFileName;
     property OnAfterExecute: TJclBorlandCommandLineToolEvent read FOnAfterExecute write FOnAfterExecute;
     property OnBeforeExecute: TJclBorlandCommandLineToolEvent read FOnBeforeExecute write FOnBeforeExecute;
+    property OnBeforeRun: TJclOnBeforeRunCommandLineTool read FOnBeforeRun write FOnBeforeRun;
   end;
 
   TJclBCC32 = class(TJclBorlandCommandLineTool)
@@ -135,6 +143,7 @@ type
     FOnEnvironmentVariables: TJclStringsGetterFunction;
     FSupportsNoConfig: Boolean;
     FSupportsPlatform: Boolean;
+    FIgnoreConfigFiles: Boolean;
     FDCCVersion: Single;
   protected
     procedure AddProjectOptions(const ProjectFileName, DCPPath: string);
@@ -151,11 +160,9 @@ type
     function MakeProject(const ProjectName, OutputDir, DcpSearchPath: string;
       ExtraOptions: string = ''; ADebug: Boolean = False): Boolean;
     procedure SetDefaultOptions(ADebug: Boolean); virtual;
-    function AddBDSProjOptions(const ProjectFileName: string; var ProjectOptions: TProjectOptions): Boolean;
-    function AddDOFOptions(const ProjectFileName: string; var ProjectOptions: TProjectOptions): Boolean;
-    function AddDProjOptions(const ProjectFileName: string; var ProjectOptions: TProjectOptions): Boolean;
     property CppSearchPath: string read FCppSearchPath;
     property DCPSearchPath: string read FDCPSearchPath;
+    property IgnoreConfigFiles: Boolean read FIgnoreConfigFiles write FIgnoreConfigFiles;
     property LibrarySearchPath: string read FLibrarySearchPath;
     property LibraryDebugSearchPath: string read FLibraryDebugSearchPath;
     property OnEnvironmentVariables: TJclStringsGetterFunction read FOnEnvironmentVariables write FOnEnvironmentVariables;
@@ -174,6 +181,26 @@ type
   public
     class function GetPlatform: string; override;
     function GetExeName: string; override;
+  end;
+
+  TJclProjectOptionsReader = class
+  private
+    FDcc32: TJclDCC32;
+  public
+    function AddBDSProjOptions(const ProjectFileName: string; var ProjectOptions:
+        TProjectOptions): Boolean;
+    function AddDOFOptions(const ProjectFileName: string; var ProjectOptions:
+        TProjectOptions): Boolean;
+    function AddDProjOptions(const ProjectFileName: string; var ProjectOptions:
+        TProjectOptions): Boolean;
+
+    function LoadProjOptionsFromDProjFile(const OptionsFileName: string; var
+        ProjectOptions: TProjectOptions): Boolean;
+
+    function ReadOptions(const ProjectFileName: string; var ProjectOptions:
+        TProjectOptions): Boolean;
+
+    constructor Create(const aDcc32: TJclDCC32); virtual;
   end;
 
   {$IFDEF MSWINDOWS}
@@ -301,14 +328,21 @@ const
   BDSProjDirectoriesNodeName = 'Directories';
 
   // DProj options
+  DProjProjectExtensionsNodeName = 'ProjectExtensions';
   DProjPersonalityNodeName = 'Borland.Personality';
   DProjDelphiPersonalityValue = 'Delphi.Personality';
   DProjDelphiDotNetPersonalityValue = 'DelphiDotNet.Personality';
+  DProjPropertyGroupNodeName = 'PropertyGroup';
+  DProjConditionValueName = 'Condition';
   DProjUsePackageNodeName = 'DCC_UsePackage';
   DProjDcuOutputDirNodeName = 'DCC_DcuOutput';
   DProjUnitSearchPathNodeName = 'DCC_UnitSearchPath';
   DProjDefineNodeName = 'DCC_Define';
   DProjNamespaceNodeName = 'DCC_Namespace';
+  DProjConfigurationNodeName = 'Configuration';
+  DProjPlatformNodeName = 'Platform';
+  DProjProjectVersionNodeName = 'ProjectVersion';
+  DProjConfigNodeName = 'Config';
 
   DelphiLibSuffixOption   = '{$LIBSUFFIX ''';
   DelphiDescriptionOption = '{$DESCRIPTION ''';
@@ -775,12 +809,35 @@ begin
   Result := FOutputCallback;
 end;
 
+function TJclBorlandCommandLineTool.InternalAnsiToOemIfNeeded(const aText: string): string;
+begin
+  if InternalNeedToUseOem then
+    Result := StrAnsiToOem(AnsiString(aText))
+  else
+    Result := aText;
+end;
+
 function TJclBorlandCommandLineTool.InternalExecute(
   const CommandLine: string): Boolean;
 var
   LaunchCommand: string;
+  tmpDoExecute: Boolean;
+  tmpFileName, tmpCommandLine: string;
 begin
-  LaunchCommand := Format('%s %s', [FileName, StrAnsiToOem(AnsiString(CommandLine))]);
+  tmpDoExecute := True;
+  tmpFileName := FileName;
+  tmpCommandLine := CommandLine;
+  if Assigned(FOnBeforeRun) then
+    FOnBeforeRun(tmpFileName, tmpCommandLine, tmpDoExecute);
+
+  if not tmpDoExecute then
+  begin
+    Result := False;
+    exit;
+  end;
+
+  tmpCommandLine := InternalAnsiToOemIfNeeded(tmpCommandLine);
+  LaunchCommand := Format('%s %s', [tmpFileName, tmpCommandLine]);
   if Assigned(FOutputCallback) then
   begin
     OemTextHandler(LaunchCommand);
@@ -790,9 +847,39 @@ begin
   begin
     Result := JclSysUtils.Execute(LaunchCommand, FOutput) = 0;
     {$IFDEF MSWINDOWS}
-    FOutput := string(StrOemToAnsi(AnsiString(FOutput)));
+    FOutput := InternalOemToAnsiIfNeeded(FOutput);
     {$ENDIF MSWINDOWS}
   end;
+end;
+
+function TJclBorlandCommandLineTool.InternalNeedToUseOem: Boolean;
+begin
+  { TODO : Probably D2007 also may have MsBuild format }
+  result := CompilerSettingsFormat <> csfMsBuild;
+end;
+
+function TJclBorlandCommandLineTool.InternalOemToAnsiIfNeeded(const aText: string): string;
+begin
+  {$IFDEF MSWINDOWS}
+  if InternalNeedToUseOem then
+  begin
+    // Text is OEM under Windows
+    // Code below seems to crash older compilers at times, so we only do
+    // the casts when it's absolutely necessary, that is when compiling
+    // with a unicode compiler.
+    {$IFDEF UNICODE}
+    Result := string(StrOemToAnsi(AnsiString(aText)));
+    {$ELSE}
+    Result := StrOemToAnsi(aText);
+    {$ENDIF UNICODE}
+  end
+  else
+  begin
+    Result := aText;
+  end;
+  {$ELSE ~MSWINDOWS}
+  Result := aText;
+  {$ENDIF ~MSWINDOWS}
 end;
 
 procedure TJclBorlandCommandLineTool.OemTextHandler(const Text: string);
@@ -801,19 +888,7 @@ var
 begin
   if Assigned(FOutputCallback) then
   begin
-    {$IFDEF MSWINDOWS}
-    // Text is OEM under Windows
-    // Code below seems to crash older compilers at times, so we only do
-    // the casts when it's absolutely necessary, that is when compiling
-    // with a unicode compiler.
-    {$IFDEF UNICODE}
-    AnsiText := string(StrOemToAnsi(AnsiString(Text)));
-    {$ELSE}
-    AnsiText := StrOemToAnsi(Text);
-    {$ENDIF UNICODE}
-    {$ELSE ~MSWINDOWS}
-    AnsiText := Text;
-    {$ENDIF ~MSWINDOWS}
+    AnsiText := InternalOemToAnsiIfNeeded(Text);
     FOutputCallback(AnsiText);
   end;
 end;
@@ -847,27 +922,38 @@ begin
   Result := BDSPlatformWin64;
 end;
 
-//=== { TJclDCC32 } ============================================================
+//=== { TJclProjectOptionsReader } ============================================================
 
-function TJclDCC32.AddDProjOptions(const ProjectFileName: string; var ProjectOptions: TProjectOptions): Boolean;
+function TJclProjectOptionsReader.AddDProjOptions(const ProjectFileName: string;
+  var ProjectOptions: TProjectOptions): Boolean;
+var
+  DProjFileName: string;
+begin
+  DProjFileName := ChangeFileExt(ProjectFileName, SourceExtensionDProject);
+  Result := FileExists(DProjFileName) and (FDcc32.CompilerSettingsFormat = csfMsBuild);
+  if Result then
+    Result := LoadProjOptionsFromDProjFile(DProjFileName, ProjectOptions);
+end;
+
+function TJclProjectOptionsReader.LoadProjOptionsFromDProjFile(const OptionsFileName:
+    string; var ProjectOptions: TProjectOptions): Boolean;
 var
   DProjFileName, PersonalityName: string;
   MsBuildOptions: TJclMsBuildParser;
   ProjectExtensionsNode, PersonalityNode: TJclSimpleXMLElem;
 begin
-  DProjFileName := ChangeFileExt(ProjectFileName, SourceExtensionDProject);
-  Result := FileExists(DProjFileName) and (CompilerSettingsFormat = csfMsBuild);
-  if Result then
-  begin
-    MsBuildOptions := TJclMsBuildParser.Create(DProjFileName);
+  //Version := '';
+  Result := FileExists(OptionsFileName);
+    MsBuildOptions := TJclMsBuildParser.Create(OptionsFileName);
     try
       MsBuildOptions.Init;
-      if SupportsPlatform then
-        MsBuildOptions.Properties.GlobalProperties.Values['Platform'] := GetPlatform;
+      if FDcc32.SupportsPlatform then
+        MsBuildOptions.Properties.GlobalProperties.Values['Platform'] := FDcc32.GetPlatform;
 
-      if Assigned(FOnEnvironmentVariables) then
-        MsBuildOptions.Properties.EnvironmentProperties.Assign(FOnEnvironmentVariables);
+      if Assigned(FDcc32.OnEnvironmentVariables) then
+        MsBuildOptions.Properties.EnvironmentProperties.Assign(FDcc32.OnEnvironmentVariables);
 
+      // active configuration is used here
       MsBuildOptions.Parse;
 
       PersonalityName := '';
@@ -891,10 +977,12 @@ begin
     finally
       MsBuildOptions.Free;
     end;
-  end;
+
 end;
 
-function TJclDCC32.AddBDSProjOptions(const ProjectFileName: string; var ProjectOptions: TProjectOptions): Boolean;
+
+function TJclProjectOptionsReader.AddBDSProjOptions(const ProjectFileName:
+    string; var ProjectOptions: TProjectOptions): Boolean;
 var
   BDSProjFileName, PersonalityName: string;
   OptionsXmlFile: TJclSimpleXML;
@@ -971,7 +1059,8 @@ begin
   end;
 end;
 
-function TJclDCC32.AddDOFOptions(const ProjectFileName: string; var ProjectOptions: TProjectOptions): Boolean;
+function TJclProjectOptionsReader.AddDOFOptions(const ProjectFileName: string;
+    var ProjectOptions: TProjectOptions): Boolean;
 var
   DOFFileName: string;
   OptionsFile: TIniFile;
@@ -994,9 +1083,24 @@ begin
   end;
 end;
 
+
+constructor TJclProjectOptionsReader.Create(const aDcc32: TJclDCC32);
+begin
+  FDcc32 := aDcc32;
+end;
+
+function TJclProjectOptionsReader.ReadOptions(const ProjectFileName: string;
+  var ProjectOptions: TProjectOptions): Boolean;
+begin
+  Result := AddDProjOptions(ProjectFileName, ProjectOptions) or
+     AddBDSProjOptions(ProjectFileName, ProjectOptions) or
+     AddDOFOptions(ProjectFileName, ProjectOptions);
+end;
+
 procedure TJclDCC32.AddProjectOptions(const ProjectFileName, DCPPath: string);
 var
   ProjectOptions: TProjectOptions;
+  tmpOptionsReader: TJclProjectOptionsReader;
 begin
   ProjectOptions.UsePackages := False;
   ProjectOptions.UnitOutputDir := '';
@@ -1006,9 +1110,12 @@ begin
   ProjectOptions.Conditionals := '';
   ProjectOptions.Namespace := '';
 
-  if AddDProjOptions(ProjectFileName, ProjectOptions) or
-     AddBDSProjOptions(ProjectFileName, ProjectOptions) or
-     AddDOFOptions(ProjectFileName, ProjectOptions) then
+  if FIgnoreConfigFiles then
+    exit;
+
+  tmpOptionsReader := TJclProjectOptionsReader.Create(self);
+  try
+    if tmpOptionsReader.ReadOptions(ProjectFileName, ProjectOptions) then
   begin
     if ProjectOptions.UnitOutputDir <> '' then
     begin
@@ -1034,6 +1141,9 @@ begin
     if ProjectOptions.Namespace <> '' then
     Options.Add('-ns' + ProjectOptions.Namespace);
   end;
+  finally
+    tmpOptionsReader.Free;
+  end;
 end;
 
 function TJclDCC32.Compile(const ProjectFileName: string): Boolean;
@@ -1056,6 +1166,7 @@ begin
   FLibrarySearchPath := ALibrarySearchPath;
   FLibraryDebugSearchPath := ALibraryDebugSearchPath;
   FCppSearchPath := ACppSearchPath;
+  FIgnoreConfigFiles := False;
   SetDefaultOptions(False); // in case $(DELPHI)\bin\dcc32.cfg (replace as appropriate) is invalid
 end;
 
