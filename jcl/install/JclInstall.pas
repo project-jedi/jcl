@@ -1753,10 +1753,14 @@ var
 
       if Result and OptionChecked[joJCLCheckHppFiles] then
       begin
-        MarkOptionBegin(joJCLCheckHppFiles);
-        WriteLog('Checking .hpp files');
-        Result := Result and CheckHppFiles;
-        MarkOptionEnd(joJCLCheckHppFiles, Result);
+        // Only check the HPP files if we have a C++ Compiler
+        if FileExists(Target.BCC.BinDirectory + Target.BCC.GetExeName) then
+        begin
+          MarkOptionBegin(joJCLCheckHppFiles);
+          WriteLog('Checking .hpp files');
+          Result := Result and CheckHppFiles;
+          MarkOptionEnd(joJCLCheckHppFiles, Result);
+        end;
       end;
 
       MarkOptionEnd(joJCLMake, Result);
