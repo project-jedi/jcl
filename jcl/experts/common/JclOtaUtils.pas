@@ -596,8 +596,8 @@ begin
     end;
     Inc(Position);
   until (BufferCount = 0) or (PropMatches = PropCount);
-  if InsideLineComment or InsideComment or InsideBrace then
-    raise EJclExpertException.CreateRes(@RsEUnterminatedComment);
+//  if InsideLineComment or InsideComment or InsideBrace then
+//    raise EJclExpertException.CreateRes(@RsEUnterminatedComment);  Don't throw an exception if the source isn't correct (Mantis #6425)
   for PropIndex := 0 to PropCount - 1 do
     if Result[PropIndex] = -1 then
       Result[PropIndex] := -Position;
