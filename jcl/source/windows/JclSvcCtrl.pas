@@ -196,6 +196,7 @@ type
     FDescription: string;
     FFileName: TFileName;
     FServiceStartName: string;
+    FPassword: string;
     FDependentServices: TList;
     FDependentGroups: TList;
     FDependentByServices: TList;
@@ -209,6 +210,8 @@ type
     FCommitNeeded:Boolean;
     function GetActive: Boolean;
     procedure SetActive(const Value: Boolean);
+    procedure SetServiceStartName(const Value: string);
+    procedure SetPassword(const Value: string);
     function GetDependentService(const Idx: Integer): TJclNtService;
     function GetDependentServiceCount: Integer;
     function GetDependentGroup(const Idx: Integer): TJclServiceGroup;
@@ -246,7 +249,8 @@ type
     property DesiredAccess: DWORD read FDesiredAccess;
     property Description: string read FDescription; // Win2K or later
     property FileName: TFileName read FFileName;
-    property ServiceStartName: string read FServiceStartName;
+    property ServiceStartName: string read FServiceStartName write SetServiceStartName;
+    property Password: string read FPassword write SetPassword; // Write-Only!
     property DependentServices[const Idx: Integer]: TJclNtService read GetDependentService;
     property DependentServiceCount: Integer read GetDependentServiceCount;
     property DependentGroups[const Idx: Integer]: TJclServiceGroup read GetDependentGroup;
@@ -481,6 +485,24 @@ begin
   end;
 end;
 
+procedure TJclNtService.SetServiceStartName(const Value: string);
+begin
+  if Value <> FServiceStartName then
+  begin
+    FServiceStartName := Value;
+    FCommitNeeded := True;
+  end;
+end;
+
+procedure TJclNtService.SetPassword(const Value: string);
+begin
+  if Value <> FPassword then
+  begin
+    FPassword := Value;
+    FCommitNeeded := True;
+  end;
+end;
+
 procedure TJclNtService.UpdateDependents;
 var
   I: Integer;
@@ -623,6 +645,7 @@ begin
     FFileName := lpBinaryPathName;
     FStartType := TJclServiceStartType(dwStartType);
     FServiceStartName := lpServiceStartName;
+    FPassword := ''; // Write-Only!
     FErrorControlType := TJclServiceErrorControlType(dwErrorControl);
     UpdateLoadOrderGroup;
     UpdateDependencies;
@@ -691,10 +714,12 @@ var
   Ret: BOOL;
   BytesNeeded: DWORD;
   PQrySvcCnfg: {$IFDEF RTL230_UP}LPQUERY_SERVICE_CONFIG{$ELSE}PQueryServiceConfig{$ENDIF RTL230_UP};
+  ServiceStartNamePtr: PChar;
+  PasswordPtr: PChar;
 begin
- if not FCommitNeeded then
-   Exit;
- FCommitNeeded := False;
+  if not FCommitNeeded then
+    Exit;
+  FCommitNeeded := False;
 
   Open(SERVICE_CHANGE_CONFIG or SERVICE_QUERY_STATUS or SERVICE_QUERY_CONFIG);
   try
@@ -710,6 +735,20 @@ begin
       Win32Check(Ret);
 
       CommitConfig(PQrySvcCnfg^);
+
+      // If the ServiceStartName was set/changed then into ChangeServiceConfig
+      if (FServiceStartName <> '')
+      and (FServiceStartName <> PQrySvcCnfg^.lpServiceStartName) then
+        ServiceStartNamePtr := PChar(FServiceStartName)
+      else
+        ServiceStartNamePtr := nil;
+
+      // If a Password was set then pass it into ChangeServiceConfig
+      if (FServiceStartName <> '') and (FPassword <> '') then
+        PasswordPtr := PChar(FPassword)
+      else
+        PasswordPtr := nil;
+
       Win32Check(ChangeServiceConfig(Handle,
         PQrySvcCnfg^.dwServiceType,
         PQrySvcCnfg^.dwStartType,
@@ -718,8 +757,8 @@ begin
         nil, {PQrySvcCnfg^.lpLoadOrderGroup,}
         nil, {PQrySvcCnfg^.dwTagId,}
         nil, {PQrySvcCnfg^.lpDependencies,}
-        nil, {PQrySvcCnfg^.lpServiceStartName,}
-        nil, {password-write only-not readable}
+        ServiceStartNamePtr,
+        PasswordPtr,
         PQrySvcCnfg^.lpDisplayName));
     finally
       FreeMem(PQrySvcCnfg);
