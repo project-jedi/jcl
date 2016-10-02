@@ -4024,7 +4024,7 @@ end;
 class function TJclBDSInstallation.GetRADStudioVarsFileName(const RootDir: string; IDEVersionNumber: Integer): TFileName;
 begin
   if IDEVersionNumber >= 5 then
-    Result := Format('%s%sbin%srsvars.bat', [ExtractShortPathName(RootDir), DirDelimiter, DirDelimiter])
+    Result := Format('%s%sbin%srsvars.bat', [RootDir, DirDelimiter, DirDelimiter])
   else
     raise EJclBorRADException.CreateResFmt(@RsERsVars, [RadToolName(IDEVersionNumber), IDEVersionNumber, LoadResString(@RsMsBuildNotSupported)]);
 end;
