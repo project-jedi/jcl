@@ -612,23 +612,20 @@ type
     A: Byte;
   end;
 
-  PPixelArray = ^TPixelArray;
-  TPixelArray = array [0..MaxInt div SizeOf(TBGRA) - 1] of TBGRA;
-
   TBitmapFilterFunction = function(Value: Single): Single;
 
   PContributor = ^TContributor;
   TContributor = record
-   Weight: Integer; // Pixel Weight
-   Pixel: Integer;  // Source Pixel
+    Weight: Integer; // Pixel Weight
+    Pixel: Integer;  // Source Pixel
   end;
 
   TContributors = array of TContributor;
 
   // list of source pixels contributing to a destination pixel
   TContributorEntry = record
-   N: Integer;
-   Contributors: TContributors;
+    N: Integer;
+    Contributors: TContributors;
   end;
 
   TContributorList = array of TContributorEntry;
@@ -876,17 +873,25 @@ const
    );
 
 procedure FillLineCache(N, Delta: Integer; Line: Pointer);
+type
+  PIntArray = ^TIntArray;
+  TIntArray = array[0..MaxInt div SizeOf(Integer) - 1] of Integer;
 var
   I: Integer;
   Run: PBGRA;
+  R, G, B, A: PIntegerArray;
 begin
   Run := Line;
+  R := @CurrentLineR[0];
+  G := @CurrentLineG[0];
+  B := @CurrentLineB[0];
+  A := @CurrentLineA[0];
   for I := 0 to N - 1 do
   begin
-    CurrentLineR[I] := Run.R;
-    CurrentLineG[I] := Run.G;
-    CurrentLineB[I] := Run.B;
-    CurrentLineA[I] := Run.A;
+    R[I] := Run.R;
+    G[I] := Run.G;
+    B[I] := Run.B;
+    A[I] := Run.A;
     Inc(PByte(Run), Delta);
   end;
 end;
@@ -948,9 +953,9 @@ var
   Left, Right: Integer;   // Filter calculation variables
   Work: TBitmap;
   ContributorList: TContributorList;
-  SourceLine, DestLine: PPixelArray;
+  SourceLine, DestLine: PBGRA;
   DestPixel: PBGRA;
-  Delta, DestDelta: TJclAddr;
+  Delta, DestDelta: Integer;
   SourceHeight, SourceWidth: Integer;
   TargetHeight, TargetWidth: Integer;
 begin
@@ -1139,9 +1144,9 @@ begin
     SetLength(CurrentLineA, SourceHeight);
 
     SourceLine := Work.ScanLine[0];
-    Delta := TJclAddr(Work.ScanLine[1]) - TJclAddr(SourceLine);
+    Delta := PAnsiChar(Work.ScanLine[1]) - PAnsiChar(SourceLine); // don't use TJclAddr here because of IntOverflow
     DestLine := Target.ScanLine[0];
-    DestDelta := TJclAddr(Target.ScanLine[1]) - TJclAddr(DestLine);
+    DestDelta := PAnsiChar(Target.ScanLine[1]) - PAnsiChar(DestLine); // don't use TJclAddr here because of IntOverflow
     for K := 0 to TargetWidth - 1 do
     begin
       DestPixel := Pointer(DestLine);
