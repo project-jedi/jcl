@@ -326,6 +326,10 @@ function GetWindowsMinorVersionNumber: Integer;
 function GetWindowsVersionNumber: string;
 function GetWindowsServicePackVersion: Integer;
 function GetWindowsServicePackVersionString: string;
+function GetWindows10ReleaseId: Integer;
+function GetWindows10ReleaseName: String;
+function GetWindows10ReleaseCodeName: String;
+function GetWindows10ReleaseVersion: String;
 function GetOpenGLVersion(const Win: THandle; out Version, Vendor: AnsiString): Boolean;
 function GetNativeSystemInfo(var SystemInfo: TSystemInfo): Boolean;
 function GetProcessorArchitecture: TProcessorArchitecture;
@@ -3874,7 +3878,7 @@ begin
   // Starting with Windows 8.1, the GetVersion(Ex) API is deprecated and will detect the
   // application as Windows 8 (kernel version 6.2) until an application manifest is included
   // See https://msdn.microsoft.com/en-us/library/windows/desktop/dn302074.aspx
-  if (Win32MajorVersion = 6) and (Win32MinorVersion = 2) then
+  if ((Win32MajorVersion = 6) and (Win32MinorVersion = 2)) or (Win32MajorVersion = 10) then
     Result := StrToInt(RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'CurrentBuildNumber', IntToStr(Win32BuildNumber)))
   else
     Result := Win32BuildNumber;
@@ -3887,7 +3891,7 @@ begin
   // Starting with Windows 8.1, the GetVersion(Ex) API is deprecated and will detect the
   // application as Windows 8 (kernel version 6.2) until an application manifest is included
   // See https://msdn.microsoft.com/en-us/library/windows/desktop/dn302074.aspx
-  if (Win32MajorVersion = 6) and (Win32MinorVersion = 2) then
+  if ((Win32MajorVersion = 6) and (Win32MinorVersion = 2)) or (Win32MajorVersion = 10) then
   begin
     // CurrentMajorVersionNumber present in registry starting with Windows 10
     // If CurrentMajorVersionNumber not present in registry then use CurrentVersion
@@ -3909,7 +3913,7 @@ begin
   // Starting with Windows 8.1, the GetVersion(Ex) API is deprecated and will detect the
   // application as Windows 8 (kernel version 6.2) until an application manifest is included
   // See https://msdn.microsoft.com/en-us/library/windows/desktop/dn302074.aspx
-  if (Win32MajorVersion = 6) and (Win32MinorVersion = 2) then
+  if ((Win32MajorVersion = 6) and (Win32MinorVersion = 2)) or (Win32MajorVersion = 10) then
   begin
     // CurrentMinorVersionNumber present in registry starting with Windows 10
     // If CurrentMinorVersionNumber not present then use CurrentVersion
@@ -3959,6 +3963,68 @@ begin
   SP := GetWindowsServicePackVersion;
   if SP > 0 then
     Result := Format(LoadResString(@RsSPInfo), [SP])
+  else
+    Result := '';
+end;
+
+function GetWindows10ReleaseId: Integer;
+begin
+if IsWin10 then
+  Result := StrToInt(RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'ReleaseId', '0'))
+else
+  Result := -1;
+end;
+
+function GetWindows10ReleaseName: String;
+begin
+  if IsWin10 then
+  begin
+    case GetWindows10ReleaseId of
+       1507:
+          Result := 'Windows 10';
+       1511:
+          Result := 'Windows 10 November Update';
+       1607:
+          Result := 'Windows 10 Anniversary Update';
+    else
+      Result := '';
+    end;
+  end
+  else
+    Result := '';
+end;
+
+function GetWindows10ReleaseCodeName: String;
+begin
+  if IsWin10 then
+  begin
+    case GetWindows10ReleaseId of
+       1507:
+          Result := 'Threshold 1';
+       1511:
+          Result := 'Threshold 2';
+       1607:
+          Result := 'Redstone 1';
+    else
+      Result := '';
+    end;
+  end
+  else
+    Result := '';
+end;
+
+function GetWindows10ReleaseVersion: String;
+var
+  WindowsReleaseId: Integer;
+begin
+  if IsWin10 then
+  begin
+    WindowsReleaseId := GetWindows10ReleaseId;
+    if WindowsReleaseId > 0 then
+      Result := 'Windows 10 Version ' + IntToStr(WindowsReleaseId)
+    else
+      Result := '';
+  end
   else
     Result := '';
 end;
