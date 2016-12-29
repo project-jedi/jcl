@@ -3280,7 +3280,7 @@ begin
   if liloAutoGetAddressInfo in AOptions then
   begin
     Module := ModuleFromAddr(FAddress);
-    FVAddress := Pointer(TJclAddr(FAddress) - Module - ModuleCodeOffset);
+    FVAddress := Pointer(TJclAddr(FAddress) - TJclAddr(Module) - ModuleCodeOffset);
     FModuleName := ExtractFileName(GetModulePath(Module));
   end
   else
@@ -3521,7 +3521,7 @@ end;
 
 function TJclDebugInfoSource.VAFromAddr(const Addr: Pointer): DWORD;
 begin
-  Result := DWORD(TJclAddr(Addr) - FModule - ModuleCodeOffset);
+  Result := DWORD(TJclAddr(Addr) - TJclAddr(FModule) - ModuleCodeOffset);
 end;
 
 //=== { TJclDebugInfoList } ==================================================
@@ -3795,7 +3795,7 @@ var
   RawName: Boolean;
 begin
   Result := False;
-  VA := DWORD(TJclAddr(Addr) - FModule);
+  VA := DWORD(TJclAddr(Addr) - TJclAddr(FModule));
   {$IFDEF BORLAND}
   RawName := not FImage.IsPackage;
   {$ENDIF BORLAND}
@@ -4452,7 +4452,7 @@ begin
     if IncludeVAddress then
     begin
 {$OVERFLOWCHECKS OFF} // Mantis #6104
-      OffsetStr := Format('(%p) ', [Pointer(TJclAddr(Addr) - Module - ModuleCodeOffset)]);
+      OffsetStr := Format('(%p) ', [Pointer(TJclAddr(Addr) - TJclAddr(Module) - ModuleCodeOffset)]);
 {$IFDEF OVERFLOWCHECKS_ON}
 {$OVERFLOWCHECKS ON}
 {$ENDIF OVERFLOWCHECKS_OFF}
