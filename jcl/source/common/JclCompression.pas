@@ -6480,7 +6480,9 @@ var
   Found: Boolean;
   Data: PAnsiChar;
 begin
+  {$IFNDEF COMPILER25_UP}
   Found := False;
+  {$ENDIF ~COMPILER25_UP}
   SetLength(Result, 0);
   SevenzipCheck(Sevenzip.GetNumberOfFormats(@NumberOfFormats));
   for I := 0 to NumberOfFormats - 1 do

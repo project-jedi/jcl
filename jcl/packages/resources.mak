@@ -297,6 +297,25 @@ RESFILES = c6\Jcl.res                               \
            d24\JclVcl.res                           \
            d24\JclVersionControlExpert.res          \
            d24\JclVersionControlExpertDLL.res       \
+           d25\Jcl.res                              \
+           d25\JclBaseExpert.res                    \
+           d25\JclContainers.res                    \
+           d25\JclDebugExpert.res                   \
+           d25\JclDebugExpertDLL.res                \
+           d25\JclFavoriteFoldersExpert.res         \
+           d25\JclFavoriteFoldersExpertDLL.res      \
+           d25\JclProjectAnalysisExpert.res         \
+           d25\JclProjectAnalysisExpertDLL.res      \
+           d25\JclRepositoryExpert.res              \
+           d25\JclRepositoryExpertDLL.res           \
+           d25\JclSIMDViewExpert.res                \
+           d25\JclSIMDViewExpertDLL.res             \
+           d25\JclDeveloperTools.res                \
+           d25\JclStackTraceViewerExpert.res        \
+           d25\JclStackTraceViewerExpertDLL.res     \
+           d25\JclVcl.res                           \
+           d25\JclVersionControlExpert.res          \
+           d25\JclVersionControlExpertDLL.res       \
            d6\Jcl.res                               \
            d6\JclBaseExpert.res                     \
            d6\JclContainers.res                     \

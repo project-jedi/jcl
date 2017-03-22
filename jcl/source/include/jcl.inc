@@ -353,6 +353,24 @@ ALERT_jedi_inc_incompatible
       {$ENDIF MSWINDOWS}
     {$ENDIF BDS18}
     {----------------------------}
+    {$IFDEF BDS19}
+      {$IFDEF MSWINDOWS}
+      {$IFDEF CPUX86}
+      // This file should be located in directory jcl/source/include
+      // It is automatically created by the JCL installer
+      // For manual installations, copy and adjust jcl/source/include/jcl.template.inc
+      {$I jcld25win32.inc}
+      {$ENDIF CPUX86}
+      {$IFDEF CPUX64}
+      // This file should be located in directory jcl/source/include
+      // It is automatically created by the JCL installer
+      // For manual installations, copy and adjust jcl/source/include/jcl.template.inc
+      {$I jcld25win64.inc}
+      {$ENDIF CPUX64}
+      {$DEFINE JCL_CONFIGURED}
+      {$ENDIF MSWINDOWS}
+    {$ENDIF BDS19}
+    {----------------------------}
     {$IFDEF FPC}
       // This file should be located in directory jcl/source/include
       // It is automatically created by the JCL installer
