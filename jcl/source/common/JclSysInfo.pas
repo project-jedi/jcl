@@ -3986,6 +3986,8 @@ begin
           Result := 'Windows 10 November Update';
        1607:
           Result := 'Windows 10 Anniversary Update';
+       1703:
+          Result := 'Windows 10 Creators Update';
     else
       Result := '';
     end;
@@ -4005,6 +4007,8 @@ begin
           Result := 'Threshold 2';
        1607:
           Result := 'Redstone 1';
+       1703:
+          Result := 'Redstone 2';
     else
       Result := '';
     end;
