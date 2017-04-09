@@ -76,8 +76,10 @@
 #define JclLib24    JclLib
 #define   JclBpl24  JclBpl
 #define   JclHpp24  JclHpp
+#define JclLib25    JclLib
+#define   JclBpl25  JclBpl
+#define   JclHpp25  JclHpp
 #endif
-
 ;---------------------------------------------------
 
 [Setup]
@@ -278,6 +280,13 @@ Source: {#JclBpl24}\*; DestDir: "{code:GetDelphiBplDir|24}"; Components: "IDE\De
 Source: {#JclBpl24}\Win64\*; DestDir: "{code:GetDelphiBplDir|24}\Win64"; Components: "IDE\Delphi24"; Flags: ignoreversion sortfilesbyextension
 Source: {#JclHpp24}\*; DestDir: "{app}\include\d24"; Components: "IDE\Delphi24"; Flags: ignoreversion sortfilesbyextension
 #endif
+#ifdef Include_Delphi25
+; SolidBreak;
+Source: {#JclLib25}\*; DestDir: "{app}\lib\d25"; Excludes: ".svn,__history,*.txt,*.hpp"; Components: "IDE\Delphi25"; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs solidbreak
+Source: {#JclBpl25}\*; DestDir: "{code:GetDelphiBplDir|25}"; Components: "IDE\Delphi25"; Flags: ignoreversion sortfilesbyextension
+Source: {#JclBpl25}\Win64\*; DestDir: "{code:GetDelphiBplDir|25}\Win64"; Components: "IDE\Delphi25"; Flags: ignoreversion sortfilesbyextension
+Source: {#JclHpp25}\*; DestDir: "{app}\include\d25"; Components: "IDE\Delphi25"; Flags: ignoreversion sortfilesbyextension
+#endif
 
 #endif
 
@@ -419,6 +428,14 @@ Root: HKCU; Subkey: "{code:GetDelphiRegKey|24}\Jedi\JCL"; ValueType: string; Val
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|24}\Jedi\JCL"; ValueType: string; ValueName: "Version"; ValueData: {#JclVersionStr}; Components: "IDE\Delphi24"; Flags: uninsdeletevalue;
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|24}\Globals"; ValueType: string; ValueName: "ForceEnvOptionsUpdate"; ValueData: "1"; Components: "IDE\Delphi24";
 #endif
+#ifdef Include_Delphi25
+; Delphi 10.2
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|25}\Jedi\JCL"; ValueType: string; ValueName: "BplDir"; ValueData: {code:GetDelphiBplDir|25}; Components: "IDE\Delphi25"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|25}\Jedi\JCL"; ValueType: string; ValueName: "DcpDir"; ValueData: {app}\lib\d25; Components: "IDE\Delphi25"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|25}\Jedi\JCL"; ValueType: string; ValueName: "RootDir"; ValueData: {app}; Components: "IDE\Delphi25"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|25}\Jedi\JCL"; ValueType: string; ValueName: "Version"; ValueData: {#JclVersionStr}; Components: "IDE\Delphi25"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|25}\Globals"; ValueType: string; ValueName: "ForceEnvOptionsUpdate"; ValueData: "1"; Components: "IDE\Delphi25";
+#endif
 
 #endif
 
@@ -535,6 +552,13 @@ Type: files; Name: "{app}\lib\d24\win64\*"
 Type: files; Name: "{app}\lib\d24\win64\debug\*"
 Type: files; Name: "{app}\include\d24\*"
 Type: files; Name: "{code:GetDelphiBplDir|24}\Jcl*.~bpl";
+; lib\Delphi/C++Builder 10.2
+Type: files; Name: "{app}\lib\d25\win32\*"
+Type: files; Name: "{app}\lib\d25\win32\debug\*"
+Type: files; Name: "{app}\lib\d25\win64\*"
+Type: files; Name: "{app}\lib\d25\win64\debug\*"
+Type: files; Name: "{app}\include\d25\*"
+Type: files; Name: "{code:GetDelphiBplDir|25}\Jcl*.~bpl";
 
 [Icons]
 Name: "{group}\{cm:ProgramOnTheWeb,{#MyAppName}}"; Filename: "{#MyAppURL}"
