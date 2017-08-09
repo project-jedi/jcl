@@ -1519,7 +1519,12 @@ var
   privDataExtraSize: Integer;
   DevModeDriverName: string;
   DevModeDriverVersion: Word;
+  NewHandle: THandle;
 begin
+  // added to fix error when switching between printers with conflicting extra details
+  Printer.GetPrinter(FDevice, FDriver, FPort, NewHandle);
+  Printer.SetPrinter(FDevice, FDriver, FPort, 0);
+
   PrinterName := PrIniFile.ReadString(Section, PrintIniPrinterName, PrinterName);
   PrinterPort := PrIniFile.ReadString(Section, PrintIniPrinterPort, PrinterPort);
   Orientation := PrIniFile.ReadInteger(Section, PrintIniOrientation, Orientation);
