@@ -7073,6 +7073,7 @@ end;
 function GetExceptionStackInfo(P: PExceptionRecord): Pointer;
 const
   cDelphiException = $0EEDFADE;
+  cSetThreadNameException = $406D1388;
 var
   Stack: TJclStackInfoList;
   Info: PJclStackInfoRec;
@@ -7080,6 +7081,12 @@ var
   Delayed: Boolean;
   IgnoreLevels: Integer;
 begin
+  if P^.ExceptionCode = cSetThreadNameException then
+  begin
+    Result := nil;
+    Exit;
+  end;
+
   RawMode := stRawMode in JclStackTrackingOptions;
   Delayed := stDelayedTrace in JclStackTrackingOptions;
 
@@ -7089,6 +7096,15 @@ begin
 
   if P^.ExceptionCode = cDelphiException then
   begin
+    if Exception(P.ExceptObject).StackInfo <> nil then
+    begin
+      // This method is called twice for the same exception object if the user calls
+      // AcquireExceptionObject and then throws this exception again. In this case the
+      // StackInfo is already allocated and by overwriting it we produce a memory leak.
+      // Example: "E := AcquireExceptionObject; raise E;"
+      Result := Exception(P.ExceptObject).StackInfo;
+      Exit;
+    end;
     if (P^.ExceptObject <> nil) and
        not (stTraceAllExceptions in JclStackTrackingOptions) and
        IsIgnoredException(TObject(P^.ExceptObject).ClassType) then
