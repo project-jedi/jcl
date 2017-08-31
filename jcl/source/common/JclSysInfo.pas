@@ -2383,15 +2383,31 @@ end;
 
 {$IFDEF MSWINDOWS}
 function GetRegisteredCompany: string;
+var
+  LastAccessMode: TJclRegWOW64Access;
 begin
   { TODO : check for MSDN documentation }
-  Result := RegReadStringDef(HKEY_LOCAL_MACHINE, REG_CURRENT_VERSION, 'RegisteredOrganization', '');
+  LastAccessMode := RegGetWOW64AccessMode;
+  try
+    RegSetWOW64AccessMode(raNative);
+    Result := RegReadStringDef(HKEY_LOCAL_MACHINE, REG_CURRENT_VERSION, 'RegisteredOrganization', '');
+  finally
+    RegSetWOW64AccessMode(LastAccessMode);
+  end;
 end;
 
 function GetRegisteredOwner: string;
+var
+  LastAccessMode: TJclRegWOW64Access;
 begin
   { TODO : check for MSDN documentation }
-  Result := RegReadStringDef(HKEY_LOCAL_MACHINE, REG_CURRENT_VERSION, 'RegisteredOwner', '');
+  LastAccessMode := RegGetWOW64AccessMode;
+  try
+    RegSetWOW64AccessMode(raNative);
+    Result := RegReadStringDef(HKEY_LOCAL_MACHINE, REG_CURRENT_VERSION, 'RegisteredOwner', '');
+  finally
+    RegSetWOW64AccessMode(LastAccessMode);
+  end;
 end;
 
 { TODO: Check supported platforms, maybe complete rewrite }
@@ -3931,7 +3947,7 @@ end;
 function GetWindowsVersionNumber: string;
 begin
   // Returns version number as MajorVersionNumber.MinorVersionNumber (string type)
-  Result := IntToStr(GetWindowsMajorVersionNumber) + '.' + IntToStr(GetWindowsMinorVersionNumber);
+  Result := Format('%d.%d', [GetWindowsMajorVersionNumber, GetWindowsMinorVersionNumber]);
 end;
 
 function GetWindowsServicePackVersion: Integer;
@@ -3969,10 +3985,10 @@ end;
 
 function GetWindows10ReleaseId: Integer;
 begin
-if IsWin10 then
-  Result := StrToInt(RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'ReleaseId', '0'))
-else
-  Result := -1;
+  if IsWin10 then
+    Result := StrToIntDef(RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'ReleaseId', '0'), -1)
+  else
+    Result := -1;
 end;
 
 function GetWindows10ReleaseName: String;
@@ -4257,13 +4273,20 @@ begin
     GetSystemInfo(SystemInfo);
 end;
 
+var
+  CachedGetProcessorArchitecture: DWORD = DWORD(-1);
+
 function GetProcessorArchitecture: TProcessorArchitecture;
 var
   ASystemInfo: TSystemInfo;
 begin
-  ASystemInfo.dwOemId := 0;
-  GetNativeSystemInfo(ASystemInfo);
-  case ASystemInfo.wProcessorArchitecture of
+  if CachedGetProcessorArchitecture = DWORD(-1) then
+  begin
+    ASystemInfo.dwOemId := 0;
+    GetNativeSystemInfo(ASystemInfo);
+    CachedGetProcessorArchitecture := ASystemInfo.wProcessorArchitecture;
+  end;
+  case CachedGetProcessorArchitecture of
     PROCESSOR_ARCHITECTURE_INTEL:
       Result := pax8632;
     PROCESSOR_ARCHITECTURE_IA64:
@@ -4276,12 +4299,8 @@ begin
 end;
 
 function IsWindows64: Boolean;
-var
-  ASystemInfo: TSystemInfo;
 begin
-  ASystemInfo.dwOemId := 0;
-  GetNativeSystemInfo(ASystemInfo);
-  Result := ASystemInfo.wProcessorArchitecture in [PROCESSOR_ARCHITECTURE_IA64,PROCESSOR_ARCHITECTURE_AMD64];
+  Result := GetProcessorArchitecture in [paIA64, pax8664];
 end;
 
 function JclCheckWinVersion(Major, Minor: Integer): Boolean;
