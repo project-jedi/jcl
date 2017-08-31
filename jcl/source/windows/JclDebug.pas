@@ -2157,9 +2157,11 @@ begin
   SetLength(FProcNames, FProcNamesCnt);
   SetLength(FSegments, FSegmentCnt);
   //SortDynArray(FLineNumbers, SizeOf(FLineNumbers[0]), Sort_MapLineNumber);
-  SortLineNumbers(PJclMapLineNumberArray(FLineNumbers), 0, Length(FLineNumbers) - 1);
+  if FLineNumbers <> nil then
+    SortLineNumbers(PJclMapLineNumberArray(FLineNumbers), 0, Length(FLineNumbers) - 1);
   //SortDynArray(FProcNames, SizeOf(FProcNames[0]), Sort_MapProcName);
-  SortProcNames(PJclMapProcNameArray(FProcNames), 0, Length(FProcNames) - 1);
+  if FProcNames <> nil then
+    SortProcNames(PJclMapProcNameArray(FProcNames), 0, Length(FProcNames) - 1);
   SortDynArray(FSegments, SizeOf(FSegments[0]), Sort_MapSegment);
   SortDynArray(FSourceNames, SizeOf(FSourceNames[0]), Sort_MapProcName);
 end;
