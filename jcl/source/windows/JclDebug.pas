@@ -7200,9 +7200,14 @@ var
   Rec: PJclStackInfoRec;
 begin
   Rec := Info;
-  if (Rec <> nil) and (Rec.Stack <> nil) then
-    ResolveStackInfoRec(Rec);
-  Result := Rec.Stacktrace;
+  if Rec <> nil then
+  begin
+    if Rec.Stack <> nil then
+      ResolveStackInfoRec(Rec);
+    Result := Rec.Stacktrace;
+  end
+  else
+    Result := '';
 end;
 
 procedure SetupExceptionProcs;
