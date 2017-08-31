@@ -1505,12 +1505,6 @@ procedure SortDynArray(const ArrayPtr: Pointer; ElementSize: Cardinal; SortFunc:
 var
   TempBuf: TDynByteArray;
 
-  function ArrayItemPointer(Item: SizeInt): Pointer;
-  begin
-    Assert(Item >= 0);
-    Result := Pointer(TJclAddr(ArrayPtr) + TJclAddr(Item * SizeInt(ElementSize)));
-  end;
-
   procedure QuickSort(L, R: SizeInt);
   var
     I, J, T: SizeInt;
@@ -1521,10 +1515,10 @@ var
     repeat
       I := L;
       J := R;
-      P := ArrayItemPointer((L + R) shr 1);
+      P := Pointer(TJclAddr(ArrayPtr) + TJclAddr(((L + R) shr 1) * SizeInt(ElementSize)));
       repeat
-        IPtr := ArrayItemPointer(I);
-        JPtr := ArrayItemPointer(J);
+        IPtr := Pointer(TJclAddr(ArrayPtr) + TJclAddr(I * SizeInt(ElementSize)));
+        JPtr := Pointer(TJclAddr(ArrayPtr) + TJclAddr(J * SizeInt(ElementSize)));
         while SortFunc(IPtr, P) < 0 do
         begin
           Inc(I);
