@@ -137,6 +137,8 @@ type
     FLastUnitFileName: PJclMapString;
     procedure ClassTableItem(const Address: TJclMapAddress; Len: Integer; SectionName, GroupName: PJclMapString); virtual; abstract;
     procedure SegmentItem(const Address: TJclMapAddress; Len: Integer; GroupName, UnitName: PJclMapString); virtual; abstract;
+    function CanHandlePublicsByName: Boolean; virtual; abstract;
+    function CanHandlePublicsByValue: Boolean; virtual; abstract;
     procedure PublicsByNameItem(const Address: TJclMapAddress; Name: PJclMapString); virtual; abstract;
     procedure PublicsByValueItem(const Address: TJclMapAddress; Name: PJclMapString); virtual; abstract;
     procedure LineNumberUnitItem(UnitName, UnitFileName: PJclMapString); virtual; abstract;
@@ -172,6 +174,8 @@ type
   protected
     procedure ClassTableItem(const Address: TJclMapAddress; Len: Integer; SectionName, GroupName: PJclMapString); override;
     procedure SegmentItem(const Address: TJclMapAddress; Len: Integer; GroupName, UnitName: PJclMapString); override;
+    function CanHandlePublicsByName: Boolean; override;
+    function CanHandlePublicsByValue: Boolean; override;
     procedure PublicsByNameItem(const Address: TJclMapAddress; Name: PJclMapString); override;
     procedure PublicsByValueItem(const Address: TJclMapAddress; Name: PJclMapString); override;
     procedure LineNumberUnitItem(UnitName, UnitFileName: PJclMapString); override;
@@ -243,6 +247,8 @@ type
     function MAPAddrToVA(const Addr: DWORD): DWORD;
     procedure ClassTableItem(const Address: TJclMapAddress; Len: Integer; SectionName, GroupName: PJclMapString); override;
     procedure SegmentItem(const Address: TJclMapAddress; Len: Integer; GroupName, UnitName: PJclMapString); override;
+    function CanHandlePublicsByName: Boolean; override;
+    function CanHandlePublicsByValue: Boolean; override;
     procedure PublicsByNameItem(const Address: TJclMapAddress; Name: PJclMapString); override;
     procedure PublicsByValueItem(const Address: TJclMapAddress; Name: PJclMapString); override;
     procedure LineNumbersItem(LineNumber: Integer; const Address: TJclMapAddress); override;
@@ -1414,12 +1420,36 @@ begin
   SetString(Result, MapString, P - MapString);
 end;
 
-function IsDecDigit(P: PJclMapString): Boolean;
+function IsDecDigit(P: PJclMapString): Boolean; {$IFDEF SUPPORTS_INLINE}inline{$ENDIF}
 begin
   Result := False;
   case P^ of
     '0'..'9':
       Result := True;
+  end;
+end;
+
+function SkipMapBlock(P, EndPos: PJclMapString): PJclMapString;
+begin
+  Result := P;
+  while Result < EndPos do
+  begin
+    if not IsDecDigit(Result) then
+      Break;
+    Inc(Result);
+
+    // Skip to the end of the line
+    while Result < EndPos do
+    begin
+      case Result^ of
+        #10, #13:
+          Break;
+      end;
+      Inc(Result);
+    end;
+    // Skip WhiteSpaces
+    while (Result < EndPos) and (Result^ <= ' ') do
+      Inc(Result);
   end;
 end;
 
@@ -1662,20 +1692,32 @@ begin
         SegmentItem(A, L, P1, P2);
       end;
     if SyncToHeader(PublicsByNameHeader) then
-      while IsDecDigit(CurrPos) do
+    begin
+      if not CanHandlePublicsByName then
+        CurrPos := SkipMapBlock(CurrPos, EndPos)
+      else
       begin
-        ReadAddress(A);
-        P1 := ReadString;
-        SkipEndLine; // compatibility with C++Builder MAP files
-        PublicsByNameItem(A, P1);
+        while IsDecDigit(CurrPos) do
+        begin
+          ReadAddress(A);
+          P1 := ReadString;
+          SkipEndLine; // compatibility with C++Builder MAP files
+          PublicsByNameItem(A, P1);
+        end;
       end;
+    end;
     if SyncToHeader(PublicsByValueHeader) then
-      while not Eof and IsDecDigit(CurrPos) do
+      if not CanHandlePublicsByValue then
+        CurrPos := SkipMapBlock(CurrPos, EndPos)
+      else
       begin
-        ReadAddress(A);
-        P1 := ReadString;
-        SkipEndLine; // compatibility with C++Builder MAP files
-        PublicsByValueItem(A, P1);
+        while not Eof and IsDecDigit(CurrPos) do
+        begin
+          ReadAddress(A);
+          P1 := ReadString;
+          SkipEndLine; // compatibility with C++Builder MAP files
+          PublicsByValueItem(A, P1);
+        end;
       end;
     while SyncToPrefix(LineNumbersPrefix) do
     begin
@@ -1693,7 +1735,7 @@ begin
         SkipWhiteSpace;
         LineNumbersItem(L, A);
 {$IFNDEF COMPILER9_UP}
-        if (not FLinkerBug) and (A.Offset < PreviousA.Offset) then
+        if not FLinkerBug and (A.Offset < PreviousA.Offset) then
         begin
           FLinkerBugUnitName := FLastUnitName;
           FLinkerBug := True;
@@ -1705,7 +1747,7 @@ begin
   end;
 end;
 
-//=== { TJclMapParser 0 ======================================================
+//=== { TJclMapParser } ======================================================
 
 procedure TJclMapParser.ClassTableItem(const Address: TJclMapAddress;
   Len: Integer; SectionName, GroupName: PJclMapString);
@@ -1724,6 +1766,16 @@ procedure TJclMapParser.LineNumberUnitItem(UnitName, UnitFileName: PJclMapString
 begin
   if Assigned(FOnLineNumberUnit) then
     FOnLineNumberUnit(Self, MapStringToStr(UnitName), MapStringToStr(UnitFileName));
+end;
+
+function TJclMapParser.CanHandlePublicsByName: Boolean;
+begin
+  Result := Assigned(FOnPublicsByName);
+end;
+
+function TJclMapParser.CanHandlePublicsByValue: Boolean;
+begin
+  Result := Assigned(FOnPublicsByValue);
 end;
 
 procedure TJclMapParser.PublicsByNameItem(const Address: TJclMapAddress;
@@ -2014,9 +2066,18 @@ begin
   end;
 end;
 
+function TJclMapScanner.CanHandlePublicsByName: Boolean;
+begin
+  Result := False;
+end;
+
+function TJclMapScanner.CanHandlePublicsByValue: Boolean;
+begin
+  Result := True;
+end;
+
 procedure TJclMapScanner.PublicsByNameItem(const Address: TJclMapAddress;  Name: PJclMapString);
 begin
-  { TODO : What to do? }
 end;
 
 procedure TJclMapScanner.PublicsByValueItem(const Address: TJclMapAddress; Name: PJclMapString);
@@ -2833,7 +2894,7 @@ var
     SegIndex: Integer;
     GroupName: string;
   begin
-    if (SegID <> LastSegmentID) then
+    if SegID <> LastSegmentID then
     begin
       LastSegmentID := $FFFF;
       LastSegmentStored := False;
