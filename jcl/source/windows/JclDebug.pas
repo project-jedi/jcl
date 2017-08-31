@@ -2118,7 +2118,9 @@ end;
 
 function Sort_MapSegment(Item1, Item2: Pointer): Integer;
 begin
-  Result := Integer(PJclMapSegment(Item1)^.StartVA) - Integer(PJclMapSegment(Item2)^.StartVA);
+  Result := Integer(PJclMapSegment(Item1)^.EndVA) - Integer(PJclMapSegment(Item2)^.EndVA);
+  if Result = 0 then
+    Result := Integer(PJclMapSegment(Item1)^.StartVA) - Integer(PJclMapSegment(Item2)^.StartVA);
 end;
 
 type
