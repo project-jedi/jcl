@@ -188,6 +188,7 @@ type
   TJclMapStringCache = record
     CachedValue: string;
     RawValue: PJclMapString;
+    TLS: Boolean;
   end;
 
   // MAP file scanner
@@ -1085,7 +1086,10 @@ uses
 
 const
   ModuleCodeOffset = $1000;
-
+  
+var
+  HexMap: array[AnsiChar] of Byte;
+  
 {$STACKFRAMES OFF}
 
 function GetFramePointer: Pointer;
@@ -1410,6 +1414,15 @@ begin
   SetString(Result, MapString, P - MapString);
 end;
 
+function IsDecDigit(P: PJclMapString): Boolean;
+begin
+  Result := False;
+  case P^ of
+    '0'..'9':
+      Result := True;
+  end;
+end;
+
 procedure TJclAbstractMapParser.Parse;
 const
   TableHeader          : array [0..3] of string = ('Start', 'Length', 'Name', 'Class');
@@ -1431,40 +1444,57 @@ var
     Result := CurrPos >= EndPos;
   end;
 
-  procedure SkipWhiteSpace;
+  function SkipWhiteSpace: PJclMapString;
   var
-    LCurrPos, LEndPos: PJclMapString;
+    LEndPos: PJclMapString;
   begin
-    LCurrPos := CurrPos;
+    Result := CurrPos;
     LEndPos := EndPos;
-    while (LCurrPos < LEndPos) and (LCurrPos^ <= ' ') do
-      Inc(LCurrPos);
-    CurrPos := LCurrPos;
+    while (Result < LEndPos) and (Result^ <= ' ') do
+      Inc(Result);
+    CurrPos := Result;
   end;
 
   procedure SkipEndLine;
-  begin
-    while not Eof and not CharIsReturn(Char(CurrPos^)) do
-      Inc(CurrPos);
-    SkipWhiteSpace;
-  end;
-
-  function IsDecDigit: Boolean;
-  begin
-    Result := CharIsDigit(Char(CurrPos^));
-  end;
-
-  function ReadTextLine: string;
   var
-    P: PJclMapString;
+    P, LEndPos: PJclMapString;
   begin
     P := CurrPos;
-    while (P^ <> #0) and not (P^ in [#10, #13]) do
+    LEndPos := EndPos;
+    while P < LEndPos do
+    begin
+      case P^ of
+        #10, #13:
+          Break;
+      end;
       Inc(P);
-    SetString(Result, CurrPos, P - CurrPos);
+    end;
+    // Skip WhiteSpaces
+    while (P < LEndPos) and (P^ <= ' ') do
+      Inc(P);
     CurrPos := P;
   end;
 
+  function ReadTrimmedTextLine: string;
+  var
+    Start, P: PJclMapString;
+  begin
+    Start := CurrPos;
+    P := Start;
+    while (P^ <> #0) and not (P^ in [#10, #13]) do
+      Inc(P);
+    CurrPos := P;
+
+    // Trim
+    while (Start^ <> #0) and (Start^ <= ' ') do
+      Inc(Start);
+    Dec(P);
+    while (P > Start) and (P^ <= ' ') do
+      Dec(P);
+    Inc(P);
+
+    SetString(Result, Start, P - Start);
+  end;
 
   function ReadDecValue: Integer;
   var
@@ -1483,30 +1513,25 @@ var
   function ReadHexValue: DWORD;
   var
     C: AnsiChar;
+    V: Byte;
+    P: PJclMapString;
   begin
+    P := CurrPos;
     Result := 0;
     repeat
-      C := CurrPos^;
-      case C of
-        '0'..'9':
-          Result := (Result shl 4) or DWORD(Ord(C) - Ord('0'));
-        'A'..'F':
-          Result := (Result shl 4) or DWORD(Ord(C) - Ord('A') + 10);
-        'a'..'f':
-          Result := (Result shl 4) or DWORD(Ord(C) - Ord('a') + 10);
-        'H', 'h':
-          begin
-            Inc(CurrPos);
-            Break;
-          end;
-      else
+      C := P^;
+      V := HexMap[C];
+      if V and $80 <> 0 then
         Break;
-      end;
-      Inc(CurrPos);
+      Result := (Result shl 4) or V;
+      Inc(P);
     until False;
+    if (C = 'H') or (C = 'h') then
+      Inc(P);
+    CurrPos := P;
   end;
 
-  function ReadAddress: TJclMapAddress;
+  procedure ReadAddress(var Result: TJclMapAddress);
   begin
     Result.Segment := ReadHexValue;
     if CurrPos^ = ':' then
@@ -1519,18 +1544,29 @@ var
   end;
 
   function ReadString: PJclMapString;
+  var
+    P, LEndPos: PJclMapString;
   begin
-    SkipWhiteSpace;
-    Result := CurrPos;
-    while {(CurrPos^ <> #0) and} (CurrPos^ > ' ') do
-      Inc(CurrPos);
+    // Skip WhiteSpaces
+    LEndPos := EndPos;
+    P := CurrPos;
+    while (P < LEndPos) and (P^ <= ' ') do
+      Inc(P);
+
+    Result := P;
+    while {(P^ <> #0) and} (P^ > ' ') do
+      Inc(P);
+    CurrPos := P;
   end;
 
   procedure FindParam(Param: AnsiChar);
+  var
+    P: PJclMapString;
   begin
-    while not ((CurrPos^ = Param) and ((CurrPos + 1)^ = '=')) do
-      Inc(CurrPos);
-    Inc(CurrPos, 2);
+    P := CurrPos;
+    while not ((P^ = Param) and (P[1] = '=')) do
+      Inc(P);
+    CurrPos := P + 2;
   end;
 
   function SyncToHeader(const Header: array of string): Boolean;
@@ -1541,7 +1577,7 @@ var
     Result := False;
     while not Eof do
     begin
-      S := Trim(ReadTextLine);
+      S := ReadTrimmedTextLine;
       TokenIndex := Low(Header);
       CurrentPosition := 0;
       OldPosition := 0;
@@ -1577,8 +1613,8 @@ var
       Exit;
     end;
     SkipWhiteSpace;
-    I := Length(Prefix);
     P := CurrPos;
+    I := Length(Prefix);
     while not Eof and (P^ <> #13) and (P^ <> #0) and (I > 0) do
     begin
       Inc(P);
@@ -1602,9 +1638,9 @@ begin
     CurrPos := FStream.Memory;
     EndPos := CurrPos + FStream.Size;
     if SyncToHeader(TableHeader) then
-      while IsDecDigit do
+      while IsDecDigit(CurrPos) do
       begin
-        A := ReadAddress;
+        ReadAddress(A);
         SkipWhiteSpace;
         L := ReadHexValue;
         P1 := ReadString;
@@ -1613,9 +1649,9 @@ begin
         ClassTableItem(A, L, P1, P2);
       end;
     if SyncToHeader(SegmentsHeader) then
-      while IsDecDigit do
+      while IsDecDigit(CurrPos) do
       begin
-        A := ReadAddress;
+        ReadAddress(A);
         SkipWhiteSpace;
         L := ReadHexValue;
         FindParam('C');
@@ -1626,17 +1662,17 @@ begin
         SegmentItem(A, L, P1, P2);
       end;
     if SyncToHeader(PublicsByNameHeader) then
-      while IsDecDigit do
+      while IsDecDigit(CurrPos) do
       begin
-        A := ReadAddress;
+        ReadAddress(A);
         P1 := ReadString;
         SkipEndLine; // compatibility with C++Builder MAP files
         PublicsByNameItem(A, P1);
       end;
     if SyncToHeader(PublicsByValueHeader) then
-      while not Eof and IsDecDigit do
+      while not Eof and IsDecDigit(CurrPos) do
       begin
-        A := ReadAddress;
+        ReadAddress(A);
         P1 := ReadString;
         SkipEndLine; // compatibility with C++Builder MAP files
         PublicsByValueItem(A, P1);
@@ -1653,7 +1689,7 @@ begin
         SkipWhiteSpace;
         L := ReadDecValue;
         SkipWhiteSpace;
-        A := ReadAddress;
+        ReadAddress(A);
         SkipWhiteSpace;
         LineNumbersItem(L, A);
 {$IFNDEF COMPILER9_UP}
@@ -1664,7 +1700,7 @@ begin
         end;
         PreviousA := A;
 {$ENDIF COMPILER9_UP}
-      until not IsDecDigit;
+      until not IsDecDigit(CurrPos);
     end;
   end;
 end;
@@ -1783,9 +1819,15 @@ begin
   FSegmentClasses[C].Addr := Address.Offset; // will be fixed below while considering module mapped address
   // test GroupName because SectionName = '.tls' in Delphi and '_tls' in BCB
   if StrLICompA(GroupName, 'TLS', 3) = 0 then
-    FSegmentClasses[C].VA := FSegmentClasses[C].Start
+  begin
+    FSegmentClasses[C].VA := FSegmentClasses[C].Start;
+    FSegmentClasses[C].GroupName.TLS := True;
+  end
   else
+  begin
     FSegmentClasses[C].VA := MAPAddrToVA(FSegmentClasses[C].Start);
+    FSegmentClasses[C].GroupName.TLS := False;
+  end;
   FSegmentClasses[C].Len := Len;
   FSegmentClasses[C].SectionName.RawValue := SectionName;
   FSegmentClasses[C].GroupName.RawValue := GroupName;
@@ -1845,7 +1887,7 @@ begin
     if (FSegmentClasses[SegIndex].Segment = Address.Segment)
       and (DWORD(Address.Offset) < FSegmentClasses[SegIndex].Len) then
   begin
-    if StrLICompA(FSegmentClasses[SegIndex].GroupName.RawValue, 'TLS', 3) = 0 then
+    if FSegmentClasses[SegIndex].GroupName.TLS then
       Va := Address.Offset
     else
       VA := MAPAddrToVA(Address.Offset + FSegmentClasses[SegIndex].Start);
@@ -1993,7 +2035,7 @@ begin
         SetLength(FProcNames, FProcNamesCnt * 2);
     end;
     FProcNames[FProcNamesCnt].Segment := FSegmentClasses[SegIndex].Segment;
-    if StrLICompA(FSegmentClasses[SegIndex].GroupName.RawValue, 'TLS', 3) = 0 then
+    if FSegmentClasses[SegIndex].GroupName.TLS then
       FProcNames[FProcNamesCnt].VA := Address.Offset
     else
       FProcNames[FProcNamesCnt].VA := MAPAddrToVA(Address.Offset + FSegmentClasses[SegIndex].Start);
@@ -2003,10 +2045,10 @@ begin
   end;
 end;
 
-function Sort_MapLineNumber(Item1, Item2: Pointer): Integer;
+{function Sort_MapLineNumber(Item1, Item2: Pointer): Integer;
 begin
   Result := Integer(PJclMapLineNumber(Item1)^.VA) - Integer(PJclMapLineNumber(Item2)^.VA);
-end;
+end;}
 
 function Sort_MapProcName(Item1, Item2: Pointer): Integer;
 begin
@@ -2016,6 +2058,92 @@ end;
 function Sort_MapSegment(Item1, Item2: Pointer): Integer;
 begin
   Result := Integer(PJclMapSegment(Item1)^.StartVA) - Integer(PJclMapSegment(Item2)^.StartVA);
+end;
+
+type
+  PJclMapLineNumberArray = ^TJclMapLineNumberArray;
+  TJclMapLineNumberArray = array[0..MaxInt div SizeOf(TJclMapLineNumber) - 1] of TJclMapLineNumber;
+
+  PJclMapProcNameArray = ^TJclMapProcNameArray;
+  TJclMapProcNameArray = array[0..MaxInt div SizeOf(TJclMapProcName) - 1] of TJclMapProcName;
+
+// specialized quicksort functions
+procedure SortLineNumbers(ArrayVar: PJclMapLineNumberArray; L, R: Integer);
+var
+  I, J, P: Integer;
+  Temp: TJclMapLineNumber;
+  AV: PJclMapLineNumber;
+  V: Integer;
+begin
+  repeat
+    I := L;
+    J := R;
+    P := (L + R) shr 1;
+    repeat
+      V := Integer(ArrayVar[P].VA);
+      AV := @ArrayVar[I];
+      while Integer(AV.VA) - V < 0 do begin Inc(I); Inc(AV); end;
+      AV := @ArrayVar[J];
+      while Integer(AV.VA) - V > 0 do begin Dec(J); Dec(AV); end;
+      if I <= J then
+      begin
+        if I <> J then
+        begin
+          Temp := ArrayVar[I];
+          ArrayVar[I] := ArrayVar[J];
+          ArrayVar[J] := Temp;
+        end;
+        if P = I then
+          P := J
+        else if P = J then
+          P := I;
+        Inc(I);
+        Dec(J);
+      end;
+    until I > J;
+    if L < J then
+      SortLineNumbers(ArrayVar, L, J);
+    L := I;
+  until I >= R;
+end;
+
+procedure SortProcNames(ArrayVar: PJclMapProcNameArray; L, R: Integer);
+var
+  I, J, P: Integer;
+  Temp: TJclMapProcName;
+  V: Integer;
+  AV: PJclMapProcName;
+begin
+  repeat
+    I := L;
+    J := R;
+    P := (L + R) shr 1;
+    repeat
+      V := Integer(ArrayVar[P].VA);
+      AV := @ArrayVar[I];
+      while Integer(AV.VA) - V < 0 do begin Inc(I); Inc(AV); end;
+      AV := @ArrayVar[J];
+      while Integer(AV.VA) - V > 0 do begin Dec(J); Dec(AV); end;
+      if I <= J then
+      begin
+        if I <> J then
+        begin
+          Temp := ArrayVar[I];
+          ArrayVar[I] := ArrayVar[J];
+          ArrayVar[J] := Temp;
+        end;
+        if P = I then
+          P := J
+        else if P = J then
+          P := I;
+        Inc(I);
+        Dec(J);
+      end;
+    until I > J;
+    if L < J then
+      SortProcNames(ArrayVar, L, J);
+    L := I;
+  until I >= R;
 end;
 
 procedure TJclMapScanner.Scan;
@@ -2028,8 +2156,10 @@ begin
   SetLength(FLineNumbers, FLineNumbersCnt);
   SetLength(FProcNames, FProcNamesCnt);
   SetLength(FSegments, FSegmentCnt);
-  SortDynArray(FLineNumbers, SizeOf(FLineNumbers[0]), Sort_MapLineNumber);
-  SortDynArray(FProcNames, SizeOf(FProcNames[0]), Sort_MapProcName);
+  //SortDynArray(FLineNumbers, SizeOf(FLineNumbers[0]), Sort_MapLineNumber);
+  SortLineNumbers(PJclMapLineNumberArray(FLineNumbers), 0, Length(FLineNumbers) - 1);
+  //SortDynArray(FProcNames, SizeOf(FProcNames[0]), Sort_MapProcName);
+  SortProcNames(PJclMapProcNameArray(FProcNames), 0, Length(FProcNames) - 1);
   SortDynArray(FSegments, SizeOf(FSegments[0]), Sort_MapSegment);
   SortDynArray(FSourceNames, SizeOf(FSourceNames[0]), Sort_MapProcName);
 end;
@@ -2044,7 +2174,7 @@ begin
     if (FSegmentClasses[SegIndex].Segment = Address.Segment)
       and (DWORD(Address.Offset) < FSegmentClasses[SegIndex].Len) then
   begin
-    if StrLICompA(FSegmentClasses[SegIndex].GroupName.RawValue, 'TLS', 3) = 0 then
+    if FSegmentClasses[SegIndex].GroupName.TLS then
       VA := Address.Offset
     else
       VA := MAPAddrToVA(Address.Offset + FSegmentClasses[SegIndex].Start);
@@ -2653,7 +2783,7 @@ var
     begin
       Result := WordStream.Position;
       E := EncodeNameString(S);
-      WordStream.WriteBuffer(E[1], Length(E));
+      WordStream.Write(E[1], Length(E));
       WordList.Add(LowerS, Result);
     end;
     {$ELSE} // for large map files this is very slow
@@ -2662,7 +2792,7 @@ var
     begin
       Result := WordStream.Position;
       E := EncodeNameString(S);
-      WordStream.WriteBuffer(E[1], Length(E));
+      WordStream.Write(E[1], Length(E));
       WordList.AddObject(S, TObject(Result));
     end
     else
@@ -2687,7 +2817,7 @@ var
     end;
     Inc(L);
     P[L] := (D and $7F);
-    FDataStream.WriteBuffer(P, L);
+    FDataStream.Write(P, L);
   end;
 
   procedure WriteValueOfs(Value: Integer; var LastValue: Integer);
@@ -7017,7 +7147,21 @@ begin
 end;
 {$ENDIF HAS_EXCEPTION_STACKTRACE}
 
+procedure InitHexMap;
+var
+  Ch: AnsiChar;
+begin
+  FillChar(HexMap, SizeOf(HexMap), $80);
+  for Ch := '0' to '9' do
+    HexMap[Ch] := Ord(Ch) - Ord('0');
+  for Ch := 'a' to 'f' do
+    HexMap[Ch] := Ord(Ch) - (Ord('a') - 10);
+  for Ch := 'A' to 'F' do
+    HexMap[Ch] := Ord(Ch) - (Ord('A') - 10);
+end;
+
 initialization
+  InitHexMap;
   DebugInfoCritSect := TJclCriticalSection.Create;
   GlobalModulesList := TJclGlobalModulesList.Create;
   GlobalStackList := TJclGlobalStackList.Create;
