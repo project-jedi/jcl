@@ -7135,6 +7135,8 @@ begin
   end;
 end;
 
+{$STACKFRAMES ON}
+// We use the StackFrame's Base-Pointer to skip all local variables from this function
 function GetExceptionStackInfo(P: PExceptionRecord): Pointer;
 const
   cDelphiException = $0EEDFADE;
@@ -7155,9 +7157,16 @@ begin
   RawMode := stRawMode in JclStackTrackingOptions;
   Delayed := stDelayedTrace in JclStackTrackingOptions;
 
-  IgnoreLevels := 3;
+  IgnoreLevels := 0;
   if RawMode then
-    Inc(IgnoreLevels, 3);
+  begin
+    // Skip RaiseExceptionObject, System.@RaiseExcept and the function causing the exception.
+    // The causing function is added again as the first stack item through P.ExceptionAddress.
+    if P.ExceptionAddress <> nil then
+      Inc(IgnoreLevels, 3)
+    else
+      Inc(IgnoreLevels, 2);
+  end;
 
   if P^.ExceptionCode = cDelphiException then
   begin
@@ -7177,10 +7186,10 @@ begin
       Result := nil;
       Exit;
     end;
-    Stack := TJclStackInfoList.Create(RawMode, IgnoreLevels, P^.ExceptAddr, Delayed); // Don't add it to the GlobalStackList
+    Stack := TJclStackInfoList.Create(RawMode, IgnoreLevels, P^.ExceptAddr, Delayed, GetFramePointer); // Don't add it to the GlobalStackList
   end
   else
-    Stack := TJclStackInfoList.Create(RawMode, IgnoreLevels, P^.ExceptionAddress, Delayed); // Don't add it to the GlobalStackList
+    Stack := TJclStackInfoList.Create(RawMode, IgnoreLevels, P^.ExceptionAddress, Delayed, GetFramePointer); // Don't add it to the GlobalStackList
 
   New(Info);
   Info.Stack := Stack;
@@ -7196,6 +7205,9 @@ begin
 
   Result := Info;
 end;
+{$IFDEF STACKFRAMES_ON}
+  {$STACKFRAMES ON}
+{$ENDIF STACKFRAMES_ON}
 
 function GetStackInfoString(Info: Pointer): string;
 var
