@@ -7162,7 +7162,7 @@ begin
   begin
     // Skip RaiseExceptionObject, System.@RaiseExcept and the function causing the exception.
     // The causing function is added again as the first stack item through P.ExceptionAddress.
-    if P.ExceptionAddress <> nil then
+    if (P.ExceptionAddress <> nil) and (P^.ExceptionCode = cDelphiException) then
       Inc(IgnoreLevels, 3)
     else
       Inc(IgnoreLevels, 2);
@@ -7170,7 +7170,7 @@ begin
 
   if P^.ExceptionCode = cDelphiException then
   begin
-    if Exception(P.ExceptObject).StackInfo <> nil then
+    if (P^.ExceptObject <> nil) and (Exception(P.ExceptObject).StackInfo <> nil) then
     begin
       // This method is called twice for the same exception object if the user calls
       // AcquireExceptionObject and then throws this exception again. In this case the
