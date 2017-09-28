@@ -556,6 +556,9 @@ type
 // Source location functions
 function Caller(Level: Integer = 0; FastStackWalk: Boolean = False): Pointer;
 
+procedure BeginGetLocationInfoCache;
+procedure EndGetLocationInfoCache;
+
 function GetLocationInfo(const Addr: Pointer): TJclLocationInfo; overload;
 function GetLocationInfo(const Addr: Pointer; out Info: TJclLocationInfo): Boolean; overload;
 function GetLocationInfoStr(const Addr: Pointer; IncludeModuleName: Boolean = False;
@@ -3789,7 +3792,7 @@ var
   Item: TJclDebugInfoSource;
 begin
   ResetMemory(Info, SizeOf(Info));
-  Item := ItemFromModule[ModuleFromAddr(Addr)];
+  Item := ItemFromModule[CachedModuleFromAddr(Addr)];
   if Item <> nil then
     Result := Item.GetLocationInfo(Addr, Info)
   else
@@ -4555,6 +4558,16 @@ end;
 {$STACKFRAMES OFF}
 {$ENDIF ~STACKFRAMES_ON}
 
+procedure BeginGetLocationInfoCache;
+begin
+  BeginModuleFromAddrCache;
+end;
+
+procedure EndGetLocationInfoCache;
+begin
+  EndModuleFromAddrCache;
+end;
+
 function GetLocationInfo(const Addr: Pointer): TJclLocationInfo;
 begin
   try
@@ -4702,7 +4715,7 @@ begin
   end;
 end;
 
-  function LineByLevel(const Level: Integer): Integer;
+function LineByLevel(const Level: Integer): Integer;
 begin
   Result := GetLocationInfo(Caller(Level + 1)).LineNumber;
 end;
@@ -5470,9 +5483,14 @@ begin
   ForceStackTracing;
   Strings.BeginUpdate;
   try
-    for I := 0 to Count - 1 do
-      Strings.Add(GetLocationInfoStr(Items[I].CallerAddr, IncludeModuleName, IncludeAddressOffset,
-        IncludeStartProcLineOffset, IncludeVAddress));
+    BeginGetLocationInfoCache;
+    try
+      for I := 0 to Count - 1 do
+        Strings.Add(GetLocationInfoStr(Items[I].CallerAddr, IncludeModuleName, IncludeAddressOffset,
+          IncludeStartProcLineOffset, IncludeVAddress));
+    finally
+      EndGetLocationInfoCache;
+    end;
   finally
     Strings.EndUpdate;
   end;
