@@ -1092,10 +1092,10 @@ uses
 
 const
   ModuleCodeOffset = $1000;
-  
+
 var
   HexMap: array[AnsiChar] of Byte;
-  
+
 {$STACKFRAMES OFF}
 
 function GetFramePointer: Pointer;
