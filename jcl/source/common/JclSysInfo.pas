@@ -4162,6 +4162,8 @@ begin
           Result := 'Windows 10 Anniversary Update';
        1703:
           Result := 'Windows 10 Creators Update';
+       1709:
+          Result := 'Windows 10 Fall Creators Update';
     else
       Result := '';
     end;
@@ -4183,6 +4185,8 @@ begin
           Result := 'Redstone 1';
        1703:
           Result := 'Redstone 2';
+       1709:
+          Result := 'Redstone 3';
     else
       Result := '';
     end;
