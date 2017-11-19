@@ -37,10 +37,6 @@ How to install
 --------------
 Start the **jcl\install.bat**
 
-Release version
----------------
-You can download the latest released version from <https://sourceforge.net/projects/jcl/files/>
-
 Daily snapshots
 ---------------
 You can download daily snapshots from <http://jcl.sourceforge.net/daily>
