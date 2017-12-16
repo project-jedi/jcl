@@ -803,12 +803,30 @@ function TJclInstallation.GetTargetSupportsCBuilder: Boolean;
 begin
   Result := ((bpBCBuilder32 in Target.Personalities) and (TargetPlatform = bpWin32)) or
             ((bpBCBuilder64 in Target.Personalities) and (TargetPlatform = bpWin64));
+  if Result then
+  begin
+    // If we don't have a command line C++ compiler we can't compile
+    // (fake BCB Personality from the Web Installer)
+    if TargetPlatform = bpWin32 then
+      Result := clBcc32 in Target.CommandLineTools
+    else if TargetPlatform = bpWin64 then
+      Result := clBcc64 in Target.CommandLineTools;
+  end;
 end;
 
 function TJclInstallation.GetTargetSupportsDelphi: Boolean;
 begin
   Result := ((bpDelphi32 in Target.Personalities) and (TargetPlatform = bpWin32)) or
             ((bpDelphi64 in Target.Personalities) and (TargetPlatform = bpWin64));
+  if Result then
+  begin
+    // If we don't have a command line C++ compiler we can't compile
+    // (fake Delphi Personality from the Web Installer)
+    if TargetPlatform = bpWin32 then
+      Result := clDcc32 in Target.CommandLineTools
+    else if TargetPlatform = bpWin64 then
+      Result := clDcc64 in Target.CommandLineTools;
+  end;
 end;
 
 procedure TJclInstallation.MarkOptionBegin(Id: Integer);
