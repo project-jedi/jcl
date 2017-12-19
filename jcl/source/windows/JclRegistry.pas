@@ -339,7 +339,7 @@ type
   TRootKey = record
     Key: DelphiHKEY;
     AnsiName: AnsiString;
-    WideName: WideString;
+    WideName: TUTF16String;
   end;
 
 const
@@ -624,7 +624,7 @@ begin
   end;
 end;
 
-function InternalGetData(const RootKey: DelphiHKEY; const Key, Name: WideString;
+function InternalGetData(const RootKey: DelphiHKEY; const Key, Name: TUTF16String;
   RegKinds: TRegKinds; ExpectedSize: DWORD;
   out DataType: DWORD; Data: Pointer; out DataSize: DWORD; RaiseException: Boolean): Boolean;
 var
