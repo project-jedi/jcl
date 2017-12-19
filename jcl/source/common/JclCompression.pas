@@ -3888,7 +3888,7 @@ begin
     // EFCreateError/EFOpenError don't save the error code, so access denied
     // and the like become generic "Unknown error" HRESULTs.  If GetLastError
     // matches the error message, use it.
-    if AnsiEndsStr(EStreamError(ExceptObject).Message, SysErrorMessage(GetLastError)) then
+    if AnsiEndsStr(SysErrorMessage(GetLastError), EStreamError(ExceptObject).Message) then
         Result := HResultFromWin32(GetLastError)
     else
         Result := E_FAIL
