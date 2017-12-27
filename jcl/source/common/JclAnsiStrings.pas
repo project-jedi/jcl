@@ -948,7 +948,7 @@ begin
       QuoteCharCount := 0;
       LastStart := Index + 1;
     end;
-    if (Index = ValueLength) and (LastStart < ValueLength) then
+    if (Index = ValueLength) and (LastStart <= ValueLength) then
     begin
       if StrictDelimiter then
         Add(Copy(Value, LastStart, ValueLength - LastStart + 1))
