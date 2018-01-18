@@ -597,6 +597,7 @@ uses
   JclLogic;
 
 type
+  PBGRAInt = ^TBGRAInt;
   TBGRAInt = record
     R: Integer;
     G: Integer;
@@ -623,6 +624,7 @@ type
   TContributors = array of TContributor;
 
   // list of source pixels contributing to a destination pixel
+  PContributorEntry = ^TContributorEntry;
   TContributorEntry = record
     N: Integer;
     Contributors: TContributors;
@@ -640,18 +642,21 @@ var
   { Gamma bias for line/pixel antialiasing/shape correction }
   GAMMA_TABLE: TGamma;
 
-threadvar
-  // globally used cache for current image (speeds up resampling about 10%)
-  CurrentLineR: array of Integer;
-  CurrentLineG: array of Integer;
-  CurrentLineB: array of Integer;
-  CurrentLineA: array of Integer;
+type
+  TBGRAIntArray = array of TBGRAInt;
 
 //=== Helper functions =======================================================
 
-function IntToByte(Value: Integer): Byte;
+function IntToByte(Value: Integer): Byte; {$IFDEF SUPPORTS_INLINE} inline;{$ENDIF}
 begin
-  Result := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}Math.Max(0, {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}Math.Min(255, Value));
+  Result := 255;
+  if Value >= 0 then
+  begin
+    if Value <= 255 then
+      Result := Value;
+  end
+  else
+    Result := 0;
 end;
 
 {$IFDEF Bitmap32}
@@ -809,6 +814,8 @@ begin
 end;
 
 function BitmapLanczos3Filter(Value: Single): Single;
+const
+  OneThird = 1.0 / 3.0;
 
   function SinC(Value: Single): Single;
   begin
@@ -825,7 +832,7 @@ begin
   if Value < 0.0 then
     Value := -Value;
   if Value < 3.0 then
-    Result := SinC(Value) * SinC(Value / 3.0)
+    Result := SinC(Value) * SinC(Value * OneThird)
   else
     Result := 0.0;
 end;
@@ -834,6 +841,7 @@ function BitmapMitchellFilter(Value: Single): Single;
 const
   B = 1.0 / 3.0;
   C = 1.0 / 3.0;
+  OneSixth = 1.0 / 6.0;
 var
   Temp: Single;
 begin
@@ -845,7 +853,7 @@ begin
     Value := (((12.0 - 9.0 * B - 6.0 * C) * (Value * Temp)) +
       ((-18.0 + 12.0 * B + 6.0 * C) * Temp) +
       (6.0 - 2.0 * B));
-    Result := Value / 6.0;
+    Result := Value * OneSixth;
   end
   else
   if Value < 2.0 then
@@ -854,7 +862,7 @@ begin
       ((6.0 * B + 30.0 * C) * Temp) +
       ((-12.0 * B - 48.0 * C) * Value) +
       (8.0 * B + 24.0 * C));
-    Result := Value / 6.0;
+    Result := Value * OneSixth;
   end
   else
     Result := 0.0;
@@ -872,70 +880,85 @@ const
     BitmapMitchellFilter
    );
 
-procedure FillLineCache(N, Delta: Integer; Line: Pointer);
-type
-  PIntArray = ^TIntArray;
-  TIntArray = array[0..MaxInt div SizeOf(Integer) - 1] of Integer;
+procedure FillLineCacheHorz(N: Integer; Line: Pointer; const ACurrentLine: TBGRAIntArray);
 var
-  I: Integer;
   Run: PBGRA;
-  R, G, B, A: PIntegerArray;
+  Data: PBGRAInt;
 begin
   Run := Line;
-  R := @CurrentLineR[0];
-  G := @CurrentLineG[0];
-  B := @CurrentLineB[0];
-  A := @CurrentLineA[0];
-  for I := 0 to N - 1 do
+  Data := @ACurrentLine[0];
+  Dec(N);
+  while N >= 0 do
   begin
-    R[I] := Run.R;
-    G[I] := Run.G;
-    B[I] := Run.B;
-    A[I] := Run.A;
-    Inc(PByte(Run), Delta);
+    Data.B := Run.B;
+    Data.G := Run.G;
+    Data.R := Run.R;
+    Data.A := Run.A;
+    Inc(Run);
+    Inc(Data);
+    Dec(N);
   end;
 end;
 
-function ApplyContributors(N: Integer; Contributors: TContributors): TBGRA;
+procedure FillLineCacheVert(N, Delta: Integer; Line: Pointer; const ACurrentLine: TBGRAIntArray);
+var
+  Run: PBGRA;
+  Data: PBGRAInt;
+begin
+  Run := Line;
+  Data := @ACurrentLine[0];
+  Dec(N);
+  while N >= 0 do
+  begin
+    Data.B := Run.B;
+    Data.G := Run.G;
+    Data.R := Run.R;
+    Data.A := Run.A;
+    Inc(PByte(Run), Delta);
+    Inc(Data);
+    Dec(N);
+  end;
+end;
+
+function ApplyContributors(Contributor: PContributorEntry; const ACurrentLine: TBGRAIntArray): TBGRA;
 var
   J: Integer;
   RGB: TBGRAInt;
-  Total,
-  Weight: Integer;
-  Pixel: Cardinal;
+  Total, Weight: Integer;
   Contr: PContributor;
+  Data: PBGRAInt;
 begin
-  RGB.R := 0;
-  RGB.G := 0;
-  RGB.B := 0;
-  RGB.A := 0;
   Total := 0;
-  Contr := @Contributors[0];
-  for J := 0 to N - 1 do
+  RGB.B := Total; // trick compiler into generating better code
+  RGB.G := Total;
+  RGB.R := Total;
+  RGB.A := Total;
+  Contr := @Contributor.Contributors[0];
+  for J := 0 to Contributor.N - 1 do
   begin
     Weight := Contr.Weight;
     Inc(Total, Weight);
-    Pixel := Contr.Pixel;
-    Inc(RGB.R, CurrentLineR[Pixel] * Weight);
-    Inc(RGB.G, CurrentLineG[Pixel] * Weight);
-    Inc(RGB.B, CurrentLineB[Pixel] * Weight);
-    Inc(RGB.A, CurrentLineA[Pixel] * Weight);
+    Data := @ACurrentLine[Contr.Pixel];
+    Inc(RGB.R, Data.R * Weight);
+    Inc(RGB.G, Data.G * Weight);
+    Inc(RGB.B, Data.B * Weight);
+    Inc(RGB.A, Data.A * Weight);
     Inc(Contr);
   end;
 
-  if Total = 0 then
+  if Total <> 0 then
   begin
-    Result.R := IntToByte(RGB.R shr 8);
-    Result.G := IntToByte(RGB.G shr 8);
-    Result.B := IntToByte(RGB.B shr 8);
-    Result.A := IntToByte(RGB.A shr 8);
+    Result.B := IntToByte(RGB.B div Total);
+    Result.G := IntToByte(RGB.G div Total);
+    Result.R := IntToByte(RGB.R div Total);
+    Result.A := IntToByte(RGB.A div Total);
   end
   else
   begin
-    Result.R := IntToByte(RGB.R div Total);
-    Result.G := IntToByte(RGB.G div Total);
-    Result.B := IntToByte(RGB.B div Total);
-    Result.A := IntToByte(RGB.A div Total);
+    Result.B := IntToByte(RGB.B shr 8);
+    Result.G := IntToByte(RGB.G shr 8);
+    Result.R := IntToByte(RGB.R shr 8);
+    Result.A := IntToByte(RGB.A shr 8);
   end;
 end;
 
@@ -958,6 +981,7 @@ var
   Delta, DestDelta: Integer;
   SourceHeight, SourceWidth: Integer;
   TargetHeight, TargetWidth: Integer;
+  CurrentLine: TBGRAIntArray;
 begin
   // shortcut variables
   SourceHeight := Source.Height;
@@ -1045,24 +1069,23 @@ begin
       end;
     end;
 
-    // now apply filter to sample horizontally from Src to Work
+    if SourceWidth > SourceHeight then
+      SetLength(CurrentLine, SourceWidth)
+    else
+      SetLength(CurrentLine, SourceHeight);
 
-    SetLength(CurrentLineR, SourceWidth);
-    SetLength(CurrentLineG, SourceWidth);
-    SetLength(CurrentLineB, SourceWidth);
-    SetLength(CurrentLineA, SourceWidth);
+    // now apply filter to sample horizontally from Src to Work
     for K := 0 to SourceHeight - 1 do
     begin
       SourceLine := Source.ScanLine[K];
-      FillLineCache(SourceWidth, SizeOf(TBGRA), SourceLine);
+      FillLineCacheHorz(SourceWidth, SourceLine, CurrentLine);
       DestPixel := Work.ScanLine[K];
       for I := 0 to TargetWidth - 1 do
-        with ContributorList[I] do
-        begin
-          DestPixel^ := ApplyContributors(N, ContributorList[I].Contributors);
-          // move on to next column
-          Inc(DestPixel);
-        end;
+      begin
+        DestPixel^ := ApplyContributors(@ContributorList[I], CurrentLine);
+        // move on to next column
+        Inc(DestPixel);
+      end;
     end;
 
     // free the memory allocated for horizontal filter weights, since we need
@@ -1138,11 +1161,6 @@ begin
     end;
 
     // apply filter to sample vertically from Work to Target
-    SetLength(CurrentLineR, SourceHeight);
-    SetLength(CurrentLineG, SourceHeight);
-    SetLength(CurrentLineB, SourceHeight);
-    SetLength(CurrentLineA, SourceHeight);
-
     SourceLine := Work.ScanLine[0];
     Delta := PAnsiChar(Work.ScanLine[1]) - PAnsiChar(SourceLine); // don't use TJclAddr here because of IntOverflow
     DestLine := Target.ScanLine[0];
@@ -1150,13 +1168,13 @@ begin
     for K := 0 to TargetWidth - 1 do
     begin
       DestPixel := Pointer(DestLine);
-      FillLineCache(SourceHeight, Delta, SourceLine);
+      FillLineCacheVert(SourceHeight, Delta, SourceLine, CurrentLine);
       for I := 0 to TargetHeight - 1 do
-        with ContributorList[I] do
-        begin
-          DestPixel^ := ApplyContributors(N, ContributorList[I].Contributors);
-          Inc(INT_PTR(DestPixel), DestDelta);
-        end;
+      begin
+        DestPixel^ := ApplyContributors(@ContributorList[I], CurrentLine);
+        // move on to next row
+        Inc(INT_PTR(DestPixel), DestDelta);
+      end;
       Inc(SourceLine);
       Inc(DestLine);
     end;
@@ -1169,10 +1187,6 @@ begin
 
   finally
     Work.Free;
-    CurrentLineR := nil;
-    CurrentLineG := nil;
-    CurrentLineB := nil;
-    CurrentLineA := nil;
     Target.Modified := True;
   end;
 end;
