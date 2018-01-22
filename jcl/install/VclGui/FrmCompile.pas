@@ -272,8 +272,11 @@ end;
 procedure TFormCompile.CompilationProgress(const FileName: string;
   LineNumber: Integer);
 begin
-  Compiling(FileName);
-  CurrentLine := LineNumber;
+  if not SameText('.inc', ExtractFileExt(FileName)) then
+  begin
+    Compiling(FileName);
+    CurrentLine := LineNumber;
+  end;
 end;
 
 procedure TFormCompile.SetCurrentLine(Line: Cardinal);
