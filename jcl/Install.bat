@@ -5,7 +5,7 @@ pushd "%~dp0"
 
 if not exist "..\.git" goto CheckJediIncNotFound
 
-:: Check if git if available
+:: Check if git is available
 call git --version 2>NUL >NUL
 if ERRORLEVEL 1 goto CannotInitializeSubModules
 :: Initialize git submodules
