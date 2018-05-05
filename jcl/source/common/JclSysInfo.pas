@@ -4165,7 +4165,7 @@ begin
        1709:
           Result := 'Windows 10 Fall Creators Update';
        1803:
-          Result := 'Windows 10 Spring Creators Update';
+          Result := 'Windows 10 April 2018 Update';
     else
       Result := '';
     end;
