@@ -527,6 +527,7 @@ function Execute(const CommandLine: string; AbortEvent: TJclEvent;
 type
   {$IFDEF MSWINDOWS}
   TJclExecuteCmdProcessOptionBeforeResumeEvent = procedure(const ProcessInfo: TProcessInformation) of object;
+  TStartupVisibility = (svHide, svShow, svNotSet);
   {$ENDIF MSWINDOWS}
 
   TJclExecuteCmdProcessOptions = {record} class(TObject)
@@ -545,6 +546,7 @@ type
     FAutoConvertOem: Boolean;
     {$IFDEF MSWINDOWS}
     FCreateProcessFlags: DWORD;
+    FStartupVisibility: TStartupVisibility;
     FBeforeResume: TJclExecuteCmdProcessOptionBeforeResumeEvent;
     {$ENDIF MSWINDOWS}
 
@@ -569,6 +571,7 @@ type
     property AutoConvertOem: Boolean read FAutoConvertOem write FAutoConvertOem default True;
     {$IFDEF MSWINDOWS}
     property CreateProcessFlags: DWORD read FCreateProcessFlags write FCreateProcessFlags;
+    property StartupVisibility: TStartupVisibility read FStartupVisibility write FStartupVisibility;
     property BeforeResume: TJclExecuteCmdProcessOptionBeforeResumeEvent read FBeforeResume write FBeforeResume;
     {$ENDIF MSWINDOWS}
 
@@ -2992,6 +2995,8 @@ var
   OutPipeInfo, ErrorPipeInfo: TPipeInfo;
   Index: Cardinal;
 {$IFDEF MSWINDOWS}
+const
+  StartupVisibilityFlags: array[TStartupVisibility] of DWORD = (SW_HIDE, SW_SHOW, SW_SHOWDEFAULT);
 var
   StartupInfo: TStartupInfo;
   ProcessInfo: TProcessInformation;
@@ -3043,8 +3048,12 @@ begin
 
   ResetMemory(StartupInfo, SizeOf(TStartupInfo));
   StartupInfo.cb := SizeOf(TStartupInfo);
-  StartupInfo.dwFlags := STARTF_USESHOWWINDOW or STARTF_USESTDHANDLES;
-  StartupInfo.wShowWindow := SW_HIDE;
+  StartupInfo.dwFlags := STARTF_USESTDHANDLES;
+  if Options.StartupVisibility <> svNotSet then
+  begin
+    StartupInfo.dwFlags := StartupInfo.dwFlags or STARTF_USESHOWWINDOW;
+    StartupInfo.wShowWindow := StartupVisibilityFlags[Options.StartupVisibility];
+  end;
   StartupInfo.hStdInput := GetStdHandle(STD_INPUT_HANDLE);
   StartupInfo.hStdOutput := OutPipeInfo.PipeWrite;
   if Options.MergeError then
