@@ -40,6 +40,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  JclBase,
   JclSysInfo,
   JclOtaResources;
 
@@ -938,8 +939,9 @@ begin
   begin
     GetMem(ContextMemory, SizeOf(TJclContext) + 15);
     try
-      if (Cardinal(ContextMemory) and 15) <> 0 then
-        AlignedContext := PJclContext((Cardinal(ContextMemory) + 16) and $FFFFFFF0)
+      if (TJclAddr(ContextMemory) and 15) <> 0 then
+        // PAnsiChar: TJclAddr is signed and would cause an int overflow for half the address space
+        AlignedContext := PContext(TJclAddr(PAnsiChar(ContextMemory) + 16) and -16)
       else
         AlignedContext := ContextMemory;
       AlignedContext^.ScalarContext.ContextFlags := CONTEXT_EXTENDED_REGISTERS;

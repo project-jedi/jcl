@@ -5292,13 +5292,13 @@ var
   AlignedContext: PContext;
 begin
   Result := nil;
-  GetMem(ContextMemory, SizeOf(TContext) + 15);
+  ContextMemory := AllocMem(SizeOf(TContext) + 15);
   try
-    if (Cardinal(ContextMemory) and 15) <> 0 then
-      AlignedContext := PContext((Cardinal(ContextMemory) + 16) and $FFFFFFF0)
+    if (TJclAddr(ContextMemory) and 15) <> 0 then
+      // PAnsiChar: TJclAddr is signed and would cause an int overflow for half the address space
+      AlignedContext := PContext(TJclAddr(PAnsiChar(ContextMemory) + 16) and -16)
     else
       AlignedContext := ContextMemory;
-    ResetMemory(AlignedContext^, SizeOf(AlignedContext^));
     AlignedContext^.ContextFlags := CONTEXT_FULL;
     {$IFDEF CPU32}
     if GetThreadContext(ThreadHandle, AlignedContext^) then
