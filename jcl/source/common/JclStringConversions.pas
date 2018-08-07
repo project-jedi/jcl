@@ -304,6 +304,9 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   {$ENDIF ~HAS_UNITSCOPE}
+  {$IFDEF FPCNONWINDOWS}
+  FpWinAPICompatibility,
+  {$ENDIF ~FPCNONWINDOWS}
   JclResources;
 
 const MB_ERR_INVALID_CHARS = 8;

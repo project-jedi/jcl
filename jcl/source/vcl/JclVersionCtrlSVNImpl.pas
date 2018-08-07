@@ -80,6 +80,9 @@ implementation
 
 uses
   JclVclResources,
+  {$IFDEF FPC}
+  JclWin32Process,
+  {$ENDIF}
   JclFileUtils, JclSysInfo, JclSysUtils, JclRegistry, JclStrings, JclSimpleXml;
 
 const

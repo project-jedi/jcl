@@ -65,7 +65,14 @@ uses
   {$ENDIF MSWINDOWS}
   SysUtils, Classes,
   Variants,
+  {$IFNDEF FPC}
   IniFiles,
+  {$ELSE}
+  FpStringHash,
+  {$ENDIF FPC}
+  {$IFDEF FPCNONWINDOWS}
+  FpWinAPICompatibility,
+  {$ENDIF FPCNONWINDOWS}
   Contnrs,
   {$ENDIF ~HAS_UNITSCOPE}
   JclBase, JclStreams;
@@ -629,7 +636,7 @@ type
       const Name: string; const Arguments: TVarDataArray): Boolean; override;
     function GetProperty(var Dest: TVarData; const V: TVarData;
       const Name: string): Boolean; override;
-    function SetProperty(const V: TVarData; const Name: string;
+    function SetProperty({$IFDEF FPC}var{$ELSE}const{$ENDIF FPC} V: TVarData; const Name: string;
       const Value: TVarData): Boolean; override;
   end;
 
@@ -4244,7 +4251,7 @@ begin
   Result := (VXML = nil) or (not VXML.HasItems);
 end;
 
-function TXMLVariant.SetProperty(const V: TVarData; const Name: string;
+function TXMLVariant.SetProperty({$IFDEF FPC}var{$ELSE}const{$ENDIF FPC} V: TVarData; const Name: string;
   const Value: TVarData): Boolean;
 
   function GetStrValue: string;

@@ -709,7 +709,7 @@ var
   UnitVersioning: TUnitVersioning;
 begin
   UnitVersioning := GetUnitVersioning;
-  if Assigned(UnitVersioning) then
+  if Assigned(UnitVersioning) and not IsLibrary then
     UnitVersioning.UnregisterModule(Instance);
 end;
 

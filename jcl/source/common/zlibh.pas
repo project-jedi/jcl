@@ -69,7 +69,11 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   {$IFDEF HAS_UNIT_LIBC}
+  {$IFNDEF FPC}
   Libc,
+  {$ELSE}
+  libclite,
+  {$ENDIF ~FPC}
   {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
@@ -2376,12 +2380,14 @@ end;
 
 {$ENDIF ~LINK_TO_MSVCRT}
 
+{$IFNDEF FPC}
 {$IFDEF CPU32}
 procedure __llmod; cdecl;
 asm
   jmp System.@_llmod;
 end;
 {$ENDIF CPU32}
+{$ENDIF FPC}
 
 {$ENDIF ZLIB_STATICLINK}
 {$ENDIF ~ZLIB_RTL}

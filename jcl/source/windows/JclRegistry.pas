@@ -62,7 +62,7 @@ uses
   JclBase, JclStrings;
 
 type
-  DelphiHKEY = {$IFDEF CPUX64}type Winapi.Windows.HKEY{$ELSE}Longword{$ENDIF CPUX64};
+  DelphiHKEY = {$IFDEF CPUX64}type {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.HKEY{$ELSE}Longword{$ENDIF CPUX64};
   {$HPPEMIT '// BCB users must typecast the HKEY values to DelphiHKEY or use the HK-values below.'}
 
   TExecKind = (ekMachineRun, ekMachineRunOnce, ekUserRun, ekUserRunOnce,

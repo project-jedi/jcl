@@ -73,7 +73,8 @@ resourcestring
   RsInvalidHandleForRegion    = 'Invalid handle for region';
   RsInvalidRegionInfo         = 'Invalid RegionInfo';
   RsInvalidControlType        = '%s is not descended from TWinControl';
-  RsInvalidFormOrComponent    = 'A %s with a nil reference has been passed to the method';
+  RsComponentDoesNotExist     = '%s does not exist on form %s';
+  RsInvalidFormOrComponent    = 'A %s with a nil reference has been pass to the routine';
 
   RsBitmapExtension           = '.bmp';
   RsJpegExtension             = '.jpg';

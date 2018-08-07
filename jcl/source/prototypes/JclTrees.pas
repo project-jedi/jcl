@@ -48,7 +48,10 @@ uses
   {$IFDEF SUPPORTS_GENERICS}
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
-  JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
+  JclBase, JclAbstractContainers, JclContainerIntf
+  {$IFDEF THREADSAFE}
+  , JclSynch
+  {$ENDIF THREADSAFE};
 {$I containers\JclContainerCommon.imp}
 {$I containers\JclTrees.imp}
 {$I containers\JclTrees.int}

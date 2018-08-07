@@ -44,14 +44,22 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF HAS_UNIT_LIBC}
+  {$IFNDEF FPC}
   Libc,
+  {$ELSE FPC}
+  libclite,
+  {$ENDIF ~FPC}
   {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF HAS_UNITSCOPE}
   System.Classes,
   {$ELSE ~HAS_UNITSCOPE}
   Classes,
   {$ENDIF ~HAS_UNITSCOPE}
-  JclBase, JclContainerIntf, JclSynch, JclSysUtils,
+  JclBase, JclContainerIntf,
+  {$IFDEF THREADSAFE}
+  JclSynch,
+  {$ENDIF THREADSAFE}
+  JclSysUtils,
   JclWideStrings,
   JclAnsiStrings;
 
@@ -703,9 +711,9 @@ type
     procedure AppendToStrings(Strings: TJclWideStrings);
     procedure AppendFromStrings(Strings: TJclWideStrings);
     function GetAsStrings: TJclWideStrings;
-    function GetAsDelimited(const Separator: WideString = WideLineBreak): WideString;
-    procedure AppendDelimited(const AString: WideString; const Separator: WideString = WideLineBreak);
-    procedure LoadDelimited(const AString: WideString; const Separator: WideString = WideLineBreak);
+    function GetAsDelimited(const Separator: WideString {$IFNDEF FPC} = WideLineBreak{$ENDIF}): WideString;
+    procedure AppendDelimited(const AString: WideString; const Separator: WideString {$IFNDEF FPC} = WideLineBreak{$ENDIF});
+    procedure LoadDelimited(const AString: WideString; const Separator: WideString {$IFNDEF FPC} = WideLineBreak{$ENDIF});
   end;
 
   {$IFDEF SUPPORTS_UNICODE_STRING}
@@ -1374,12 +1382,12 @@ begin
   else
   begin
     case FEncoding of
-      seISO:
+      TJclAnsiStrEncoding.seISO:
         if FCaseSensitive then
           Result := AnsiStrSimpleHashConvert(AString)
         else
           Result := AnsiStrSimpleHashConvertI(AString);
-      seUTF8:
+      TJclAnsiStrEncoding.seUTF8:
         if FCaseSensitive then
           Result := AnsiStrSimpleHashConvertU(AString)
         else
@@ -1397,7 +1405,7 @@ begin
   else
   begin
     case FEncoding of
-      seISO, seUTF8:
+      TJclAnsiStrEncoding.seISO, TJclAnsiStrEncoding.seUTF8:
         if FCaseSensitive then
           Result := AnsiStrSimpleCompare(A, B)
         else
@@ -1418,7 +1426,7 @@ begin
   else
   begin
     case FEncoding of
-      seISO, seUTF8:
+      TJclAnsiStrEncoding.seISO, TJclAnsiStrEncoding.seUTF8:
         if FCaseSensitive then
           Result := AnsiStrSimpleEqualityCompare(A, B)
         else

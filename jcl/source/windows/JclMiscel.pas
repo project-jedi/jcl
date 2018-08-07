@@ -125,6 +125,9 @@ uses
   {$ELSE ~HAS_UNITSCOPE}
   SysUtils,
   {$ENDIF ~HAS_UNITSCOPE}
+  {$IFDEF FPC}
+  JclWin32Process,
+  {$ENDIF ~FPC}
   JclResources, JclSecurity, JclStrings, JclSysUtils, JclSysInfo;
 
 function SetDisplayResolution(const XRes, YRes: DWORD): Longint;

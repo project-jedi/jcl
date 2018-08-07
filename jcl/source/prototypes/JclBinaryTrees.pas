@@ -46,7 +46,10 @@ uses
   {$ELSE ~HAS_UNITSCOPE}
   Classes,
   {$ENDIF ~HAS_UNITSCOPE}
-  JclBase, JclAbstractContainers, JclAlgorithms, JclContainerIntf, JclSynch;
+  JclBase, JclAbstractContainers, JclAlgorithms, JclContainerIntf
+  {$IFDEF THREADSAFE}
+  ,JclSynch
+  {$ENDIF THREADSAFE};
 {$I containers\JclContainerCommon.imp}
 {$I containers\JclBinaryTrees.imp}
 {$I containers\JclBinaryTrees.int}

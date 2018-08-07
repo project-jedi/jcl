@@ -54,7 +54,11 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF HAS_UNIT_LIBC}
+  {$IFNDEF FPC}
   Libc,
+  {$ELSE FPC}
+  libclite,
+  {$ENDIF ~FPC}
   {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
@@ -75,7 +79,10 @@ uses
   ZLib,
   {$ENDIF ZLIB_RTL}
   {$ENDIF ~HAS_UNITSCOPE}
-  zlibh, bzip2, JclWideStrings, JclBase, JclStreams;
+  {$IFNDEF FPC}
+  zlibh, bzip2,
+  {$ENDIF FPC}
+  JclWideStrings, JclBase, JclStreams;
 
 {$IFDEF RTL230_UP}
 {$HPPEMIT '// To avoid ambiguity with System::Zlib::z_stream_s we force using ours'}
@@ -232,6 +239,7 @@ type
 
   TJclDecompressStreamClass = class of TJclDecompressStream;
 
+  {$IFNDEF FPC}
   TJclCompressionStreamFormats = class
   private
     FCompressFormats: TList;
@@ -299,6 +307,7 @@ type
     property Strategy: Integer read FStrategy write SetStrategy;
     property CompressionLevel: Integer read FCompressionLevel write SetCompressionLevel;
   end;
+  {$ENDIF FPC}
 
 {$IFDEF ZLIB_RTL}
 const
@@ -312,6 +321,7 @@ type
   {$EXTERNALSYM PBytef}
 {$ENDIF ZLIB_RTL}
 
+{$IFNDEF FPC}
 type
   TJclZLibDecompressStream = class(TJclDecompressStream)
   private
@@ -334,6 +344,7 @@ type
 
     property WindowBits: Integer read FWindowBits write SetWindowBits;
   end;
+  {$ENDIF FPC}
 
   // GZIP Support
 
@@ -423,6 +434,7 @@ type
     gfsMac, gfsZ, gfsCPM, gfsTOPS, gfsNTFS, gfsQDOS, gfsAcorn, gfsOther, gfsUnknown);
 
   // Format is described in RFC 1952, http://www.faqs.org/rfcs/rfc1952.html
+  {$IFNDEF FPC}
   TJclGZIPCompressionStream = class(TJclCompressStream)
   private
     FFlags: TJclGZIPFlags;
@@ -569,6 +581,7 @@ type
     function Read(var Buffer; Count: Longint): Longint; override;
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
   end;
+  {$ENDIF FPC}
 
   EJclCompressionError = class(EJclError);
   EJclCompressionCancelled = class(EJclCompressionError);
@@ -577,6 +590,7 @@ type
   // callback type used in helper functions below:
   TJclCompressStreamProgressCallback = procedure(FileSize, Position: Int64; UserData: Pointer) of object;
 
+{$IFNDEF FPC}
 {helper functions - one liners by wpostma}
 function GZipFile(SourceFile, DestinationFile: TFileName; CompressionLevel: Integer = Z_DEFAULT_COMPRESSION;
   ProgressCallback: TJclCompressStreamProgressCallback = nil; UserData: Pointer = nil): Boolean;
@@ -595,6 +609,7 @@ procedure BZip2Stream(SourceStream, DestinationStream: TStream; CompressionLevel
   ProgressCallback: TJclCompressStreamProgressCallback = nil; UserData: Pointer = nil);
 procedure UnBZip2Stream(SourceStream, DestinationStream: TStream;
   ProgressCallback: TJclCompressStreamProgressCallback = nil; UserData: Pointer = nil);
+{$ENDIF FPC}
 
 // archive ancestor classes
 {$IFDEF MSWINDOWS}
@@ -2401,6 +2416,7 @@ begin
   inherited Destroy;
 end;
 
+{$IFNDEF FPC}
 //=== { TJclCompressionStreamFormats } =======================================
 
 constructor TJclCompressionStreamFormats.Create;
@@ -3591,6 +3607,8 @@ begin
     ProgressCallback(SourceStreamSize, SourceStreamPosition, UserData);
 end;
 
+{$ENDIF FPC}
+
 procedure InternalDecompress(SourceStream, DestStream: TStream;
   DecompressStream: TJclDecompressStream;
   ProgressCallback: TJclCompressStreamProgressCallback; UserData: Pointer);
@@ -3628,6 +3646,8 @@ begin
 end;
 
 { Compress to a .gz file - one liner - NEW MARCH 2007  }
+
+{$IFNDEF FPC}
 
 function GZipFile(SourceFile, DestinationFile: TFileName; CompressionLevel: Integer;
   ProgressCallback: TJclCompressStreamProgressCallback; UserData: Pointer): Boolean;
@@ -3831,6 +3851,8 @@ begin
     BZip2Stream.Free;
   end;
 end;
+
+{$ENDIF FPC}
 
 {$IFDEF MSWINDOWS}
 

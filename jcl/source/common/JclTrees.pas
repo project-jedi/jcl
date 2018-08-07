@@ -52,7 +52,7 @@ uses
   {$IFDEF SUPPORTS_GENERICS}
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
-  JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
+  JclBase, JclAbstractContainers, JclContainerIntf {$IFDEF THREADSAFE}, JclSynch{$ENDIF THREADSAFE};
 
 
 type

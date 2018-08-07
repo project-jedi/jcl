@@ -242,8 +242,10 @@ procedure StrUpperInPlace(var S: string);
 procedure StrUpperBuff(S: PChar);
 
 // String Management
+{$IFNDEF FPC}
 procedure StrAddRef(var S: string);
 procedure StrDecRef(var S: string);
+{$ENDIF ~FPC}
 function StrLength(const S: string): SizeInt;
 function StrRefCount(const S: string): SizeInt;
 
@@ -483,7 +485,7 @@ type
     procedure Clear;
 
     { IToString }
-    function ToString: string; {$IFDEF RTL200_UP} override; {$ENDIF RTL200_UP}
+    function ToString: string; {$IFDEF HAS_TOSTRING} override; {$ENDIF HAS_TOSTRING}
 
     property __Chars__[Index: SizeInt]: Char read GetChars write SetChars; default;
     property Chars: TCharDynArray read FChars;
@@ -550,7 +552,7 @@ type
     function UpdatePosition(const S: string; var Column, Line: SizeInt): SizeInt; overload;
 
     { IToString }
-    function ToString: string; overload; {$IFDEF RTL200_UP} override; {$ENDIF RTL200_UP}
+    function ToString: string; overload; {$IFDEF HAS_TOSTRING} override; {$ENDIF HAS_TOSTRING}
     // Conversions
     function ToString(FormattingOptions: SizeInt): string; {$IFDEF RTL200_UP} reintroduce; {$ENDIF RTL200_UP} overload;
     class function FromString(const S: string): TJclTabSet; {$IFDEF SUPPORTS_STATIC} static; {$ENDIF SUPPORTS_STATIC}
@@ -604,8 +606,8 @@ procedure StrResetLength(var S: UnicodeString); overload;
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
 // natural comparison functions
-function CompareNaturalStr(const S1, S2: string): SizeInt;
-function CompareNaturalText(const S1, S2: string): SizeInt;
+function CompareNaturalStr(const S1, S2: string): SizeInt; overload;
+function CompareNaturalText(const S1, S2: string): SizeInt; overload;
 
 {$IFNDEF UNICODE_RTL_DATABASE}
 // internal structures published to make function inlining working
@@ -638,7 +640,11 @@ implementation
 
 uses
   {$IFDEF HAS_UNIT_LIBC}
+  {$IFNDEF FPC}
   Libc,
+  {$ELSE}
+  libclite,
+  {$ENDIF ~FPC}
   {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF SUPPORTS_UNICODE}
   {$IFDEF HAS_UNITSCOPE}
@@ -647,7 +653,11 @@ uses
   StrUtils,
   {$ENDIF ~HAS_UNITSCOPE}
   {$ENDIF SUPPORTS_UNICODE}
-  JclLogic, JclResources, JclStreams, JclSynch, JclSysUtils;
+  JclLogic, JclResources, JclStreams,
+  {$IFNDEF FPC}
+  JclSynch,
+  {$ENDIF ~FPC}
+  JclSysUtils;
 
 //=== Internal ===============================================================
 
@@ -1999,6 +2009,7 @@ end;
 
 //=== String Management ======================================================
 
+{$IFNDEF FPC}
 procedure StrAddRef(var S: string);
 var
   P: PStrRec;
@@ -2034,6 +2045,7 @@ begin
     end;
   end;
 end;
+{$ENDIF}
 
 function StrLength(const S: string): SizeInt;
 var
@@ -4588,7 +4600,15 @@ end;
 
 function TTabSetData.AddRef: SizeInt;
 begin
+  {$IFNDEF FPC}
   Result := LockedInc(FRefCount);
+  {$ELSE ~FPC}
+  {$ifdef CPU64}
+  Result := InterLockedIncrement64(FRefCount);
+  {$ELSE ~CPU64}
+  Result := InterLockedIncrement(FRefCount);
+  {$ENDIF}
+  {$ENDIF FPC}
 end;
 
 procedure TTabSetData.CalcRealWidth;
@@ -4618,7 +4638,15 @@ end;
 
 function TTabSetData.ReleaseRef: SizeInt;
 begin
+  {$IFNDEF FPC}
   Result := LockedDec(FRefCount);
+  {$ELSE ~FPC}
+  {$ifdef CPU64}
+  Result := InterLockedDecrement64(FRefCount);
+  {$ELSE ~CPU64}
+  Result := InterLockedDecrement(FRefCount);
+  {$ENDIF}
+  {$ENDIF FPC}
   if Result <= 0 then
     Destroy;
 end;

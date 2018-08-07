@@ -51,7 +51,10 @@ uses
   Classes,
   {$ENDIF ~HAS_UNITSCOPE}
   JclAlgorithms,
-  JclBase, JclSynch,
+  JclBase,
+  {$IFDEF THREADSAFE}
+  JclSynch,
+  {$ENDIF THREADSAFE}
   JclContainerIntf, JclAbstractContainers, JclArrayLists, JclArraySets;
 
 

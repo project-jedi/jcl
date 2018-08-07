@@ -53,7 +53,10 @@ uses
   {$IFDEF SUPPORTS_GENERICS}
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
-  JclBase, JclAbstractContainers, JclContainerIntf, JclArrayLists, JclSynch;
+  JclBase, JclAbstractContainers, JclContainerIntf, JclArrayLists
+  {$IFDEF THREADSAFE}
+  , JclSynch
+  {$ENDIF THREADSAFE};
 
 type
   TJclIntfArraySet = class(TJclIntfArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}

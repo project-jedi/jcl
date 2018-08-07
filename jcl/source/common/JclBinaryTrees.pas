@@ -50,7 +50,7 @@ uses
   {$ELSE ~HAS_UNITSCOPE}
   Classes,
   {$ENDIF ~HAS_UNITSCOPE}
-  JclBase, JclAbstractContainers, JclAlgorithms, JclContainerIntf, JclSynch;
+  JclBase, JclAbstractContainers, JclAlgorithms, JclContainerIntf {$IFDEF THREADSAFE}, JclSynch{$ENDIF THREADSAFE};
 
 type
   TItrStart = (isFirst, isLast, isRoot);

@@ -50,7 +50,7 @@ uses
   Classes,
   {$ENDIF ~HAS_UNITSCOPE}
   JclAlgorithms,
-  JclBase, JclSynch,
+  JclBase{$IFDEF THREADSAFE}, JclSynch{$ENDIF THREADSAFE},
   JclAbstractContainers, JclContainerIntf, JclArrayLists, JclArraySets;
 
 type

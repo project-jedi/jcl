@@ -47,7 +47,10 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   JclAlgorithms,
-  JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
+  JclBase, JclAbstractContainers, JclContainerIntf
+  {$IFDEF THREADSAFE}
+  ,JclSynch
+  {$ENDIF THREADSAFE};
 {$I containers\JclContainerCommon.imp}
 {$I containers\JclArrayLists.int}
 {$I containers\JclArrayLists.imp}

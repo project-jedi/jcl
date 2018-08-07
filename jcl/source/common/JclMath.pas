@@ -61,6 +61,12 @@ uses
 
 { Mathematical constants }
 
+{$IFDEF FPC}
+ {$IFDEF CPUX64}
+   {$UNDEF SUPPORTS_EXTENDED}
+ {$ENDIF CPUX64}
+{$ENDIF FPC}
+
 const
   Bernstein: Float = 0.2801694990238691330364364912307;  // Bernstein constant
   Cbrt2: Float     = 1.2599210498948731647672106072782;  // CubeRoot(2)
@@ -869,8 +875,12 @@ uses
   System.Math,
   {$ENDIF USE_MATH_UNIT}
   Jcl8087,
-  JclResources,
-  JclSynch;
+  JclResources
+  {$IFDEF THREADSAFE}
+  {$IFNDEF FPC}
+  ,JclSynch
+  {$ENDIF ~FPC}
+  {$ENDIF THREADSAFE};
 
 // Note (rrossmair): Usage of the "assembler" directive seems to be an Free Pascal requirement
 // (it's obsolete in Delphi since v. 2 I believe).
@@ -962,6 +972,7 @@ end;
 // ST(0) := ST(0) * PI / 180
 procedure FastDegToRad; assembler;
 asm
+        {$IFDEF MSWINDOWS}
         {$IFDEF PIC}
         CALL    GetGOT
         {$IFDEF CPU32}
@@ -975,6 +986,7 @@ asm
         {$ENDIF ~PIC}
         FMULP
         FWAIT
+        {$ENDIF MSWINDOWS}
 end;
 
 // Converts radians to degrees.
@@ -1000,6 +1012,7 @@ end;
 // ST(0) := ST(0) * (180 / PI);
 procedure FastRadToDeg; assembler;
 asm
+        {$IFDEF MSWINDOWS}
         {$IFDEF PIC}
         CALL    GetGOT
         {$IFDEF CPU32}
@@ -1013,6 +1026,7 @@ asm
         {$ENDIF ~PIC}
         FMULP
         FWAIT
+        {$ENDIF MSWINDOWS}
 end;
 
 // Converts grads to radians.
@@ -1038,6 +1052,7 @@ end;
 // ST(0) := ST(0) * PI / 200
 procedure FastGradToRad; assembler;
 asm
+        {$IFDEF MSWINDOWS}
         {$IFDEF PIC}
         CALL    GetGOT
         {$IFDEF CPU32}
@@ -1051,6 +1066,7 @@ asm
         {$ENDIF ~PIC}
         FMULP
         FWAIT
+        {$ENDIF MSWINDOWS}
 end;
 
 // Converts radians to grads.
@@ -1076,6 +1092,7 @@ end;
 // ST(0) := ST(0) * (200 / PI);
 procedure FastRadToGrad; assembler;
 asm
+        {$IFDEF MSWINDOWS}
         {$IFDEF PIC}
         CALL    GetGOT
         {$IFDEF CPU32}
@@ -1089,6 +1106,7 @@ asm
         {$ENDIF ~PIC}
         FMULP
         FWAIT
+        {$ENDIF MSWINDOWS}
 end;
 
 // Converts degrees to grads.
@@ -1114,6 +1132,7 @@ end;
 // ST(0) := ST(0) * (200 / 180);
 procedure FastDegToGrad; assembler;
 asm
+        {$IFDEF MSWINDOWS}
         {$IFDEF PIC}
         CALL    GetGOT
         {$IFDEF CPU32}
@@ -1127,6 +1146,7 @@ asm
         {$ENDIF ~PIC}
         FMULP
         FWAIT
+        {$ENDIF MSWINDOWS}
 end;
 
 // Converts grads to degrees.
@@ -1152,6 +1172,7 @@ end;
 // ST(0) := ST(0) * PI / 200
 procedure FastGradToDeg; assembler;
 asm
+        {$IFDEF MSWINDOWS}
         {$IFDEF PIC}
         CALL    GetGOT
         {$IFDEF CPU32}
@@ -1165,6 +1186,7 @@ asm
         {$ENDIF ~PIC}
         FMULP
         FWAIT
+        {$ENDIF MSWINDOWS}
 end;
 
 procedure DomainCheck(Err: Boolean);
@@ -3301,11 +3323,11 @@ procedure InitExceptObjProc;
 begin
   if LockedExchange(ExceptObjProcInitialized, 1) = 0 then
     if Win32Platform = VER_PLATFORM_WIN32_NT then
-      {$IFDEF RTL200_UP} // Delphi 2009+
-      PrevExceptObjProc := InterlockedExchangePointer(ExceptObjProc, @GetExceptionObject);
-      {$ELSE}
+      {$IFDEF FPC}
+      PrevExceptObjProc := Pointer(InterlockedExchange(TJclAddr(ExceptObjProc), TJclAddr(@GetExceptionObject)));
+      {$ELSE ~FPC}
       PrevExceptObjProc := Pointer(InterlockedExchange(Integer(ExceptObjProc), Integer(@GetExceptionObject)));
-      {$ENDIF RTL200_UP}
+      {$ENDIF ~FPC}
 end;
 {$ENDIF ~FPC}
 {$ENDIF MSWINDOWS}

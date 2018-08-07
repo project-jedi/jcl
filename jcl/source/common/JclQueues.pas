@@ -46,7 +46,10 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   JclAlgorithms,
-  JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
+  JclBase, JclAbstractContainers, JclContainerIntf
+  {$IFDEF THREADSAFE}
+  , JclSynch
+  {$ENDIF THREADSAFE};
 
 
 type
