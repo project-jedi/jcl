@@ -17,25 +17,28 @@ Source code files included in the JCL have a header which explicitly states this
 however, unless noted otherwise, all files including those without an MPL header, are subject
 to the MPL license.
 
+This fork is attempt to solve the issue of assembling JCL in the FPC/Lazarus.
+The original repository can be found here: https://github.com/project-jedi/jcl
+
 Download the ZIP file
 ---------------------
-If you download the JCL as a ZIP file from GitHub, you also have to download the jedi.inc and
-kylix.inc files from the <https://github.com/project-jedi/jedi> project and copy them to the
+If you download the JCL as a ZIP file from GitHub, you have to move the jedi.inc and
+kylix.inc files from the jcl\jcl\source\include to the
 jcl\jcl\source\include\jedi directory.
 
 Clone with GIT
 --------------
 ```
-> git clone git://github.com/project-jedi/jcl.git jcl
-> cd jcl
-> git submodule update --init
+> git clone git://github.com/Makhaon/jcl.git jcl
+
 ```
 
 This will get you the JCL repository and initializes the submodule that contains the jedi.inc and kylix.inc files.
 
 How to install
 --------------
-Start the **jcl\install.bat**
+Under Windows start the **jcl\install.bat**
+Under Linux just unpack archive to a folder
 
 Daily snapshots
 ---------------
