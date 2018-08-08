@@ -30,10 +30,9 @@ Clone with GIT
 --------------
 ```
 > git clone git://github.com/Makhaon/jcl.git jcl
-
 ```
 
-This will get you the JCL repository and initializes the submodule that contains the jedi.inc and kylix.inc files.
+This will get you the JCL repository.
 
 How to install
 --------------
