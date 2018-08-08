@@ -82,30 +82,30 @@ Note that we also like to hear about you if everything is fine, as this will let
 
 Fixes are made
 -------
-List of main fixes are made in the jcl to be patially comitible with fpc/Windows/Linux.
-    - PathUncPrefix const added in JclFileUtils
-    - All Libc uses are changed to libclite
-    - JclSynch are surrounded with IFDEFs as totally incompatible with Linux
-    - Fixes for fpc mode:
-    - StrAddRef StrDecRef are removed from JclAnsiStrings
-    - PULARGE_INTEGER are redefined in JclBase
-    - TJclAddr redefined in common way as NativeUInt in JclBase
-    - HWND redefined as System.THandle
-    - GetMem removed as unnecessary and incompatible with current fpc versions
-    - Uses of zlibh, bzip2 and formats are removed as incompatible from JclCompression
-    - Uses of BaseUnix, dateutils are added in the Linux mode in JclDateTime unit
-    - LocalDateTimeToDateTime, DateTimeToLocalDateTime are fixed to work in Linux
-    - DeleteDirectory, CopyDirectory, MoveDirectory are surrounded with IFDEFs as worked under Windows (shell)
-    - FileExists is removed as already existed and intefered with rtl library
-    - FileGetTempName is fixed to work in Linux
-    - GetSizeOfFile is fixed to work in Linux
-    - $UNDEF SUPPORTS_EXTENDED added in fpc/CPUX64 mode in JclMath unit
-    - FastDegToRad, FastRadToDeg, FastGradToRad, FastRadToGrad, FastDegToGrad, FastGradToDeg are surrounded with IFDEFs as worked under Windows
-    - InitExceptObjProc is fixed to work in Windows
-    - TJclHandleStream is fixed to work in Linux
-    - Uses of FpWinAPICompatibility is added to JclStringConversions
-    - _AddRef and _Release are changed in TJclInterfacedStringList and TJclStringList 
-    - TTabSetData.AddRef and TTabSetData.ReleaseRef are fixed
-    - GetIPAddress, GetCurrentFolder, SetEnvironmentVar and DelEnvironmentVar are fixed to work in Linux
-    - GetAccessToHandleList is fixed
-    - SystemTObjectInstance and IsCompiledWithPackages are surrounded with IFDEFs as worked under Windows
+- List of main fixes are made in the jcl to be patially comitible with fpc/Windows/Linux.
+- PathUncPrefix const added in JclFileUtils
+- All Libc uses are changed to libclite
+- JclSynch are surrounded with IFDEFs as totally incompatible with Linux
+- Fixes for fpc mode:
+- StrAddRef StrDecRef are removed from JclAnsiStrings
+- PULARGE_INTEGER are redefined in JclBase
+- TJclAddr redefined in common way as NativeUInt in JclBase
+- HWND redefined as System.THandle
+- GetMem removed as unnecessary and incompatible with current fpc versions
+- Uses of zlibh, bzip2 and formats are removed as incompatible from JclCompression
+- Uses of BaseUnix, dateutils are added in the Linux mode in JclDateTime unit
+- LocalDateTimeToDateTime, DateTimeToLocalDateTime are fixed to work in Linux
+- DeleteDirectory, CopyDirectory, MoveDirectory are surrounded with IFDEFs as worked under Windows (shell)
+- FileExists is removed as already existed and intefered with rtl library
+- FileGetTempName is fixed to work in Linux
+- GetSizeOfFile is fixed to work in Linux
+- $UNDEF SUPPORTS_EXTENDED added in fpc/CPUX64 mode in JclMath unit
+- FastDegToRad, FastRadToDeg, FastGradToRad, FastRadToGrad, FastDegToGrad, FastGradToDeg are surrounded with IFDEFs as worked under Windows
+- InitExceptObjProc is fixed to work in Windows
+- TJclHandleStream is fixed to work in Linux
+- Uses of FpWinAPICompatibility is added to JclStringConversions
+- _AddRef and _Release are changed in TJclInterfacedStringList and TJclStringList 
+- TTabSetData.AddRef and TTabSetData.ReleaseRef are fixed
+- GetIPAddress, GetCurrentFolder, SetEnvironmentVar and DelEnvironmentVar are fixed to work in Linux
+- GetAccessToHandleList is fixed
+- SystemTObjectInstance and IsCompiledWithPackages are surrounded with IFDEFs as worked under Windows
