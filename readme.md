@@ -85,10 +85,10 @@ Fixes are made
 List of main fixes are made in the jcl to be patially comitible with fpc/Windows/Linux.
 - PathUncPrefix const added in JclFileUtils
 - All Libc uses are changed to libclite
-- JclSynch are surrounded with IFDEFs as totally incompatible with Linux
+- JclSynch is surrounded with IFDEFs as totally incompatible with Linux
 - Fixes for fpc mode:
 - StrAddRef StrDecRef are removed from JclAnsiStrings
-- PULARGE_INTEGER are redefined in JclBase
+- PULARGE_INTEGER is redefined in JclBase
 - TJclAddr redefined in common way as NativeUInt in JclBase
 - HWND redefined as System.THandle
 - GetMem removed as unnecessary and incompatible with current fpc versions
