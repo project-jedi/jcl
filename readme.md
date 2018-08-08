@@ -36,8 +36,8 @@ This will get you the JCL repository.
 
 How to install
 --------------
-Under Windows start the **jcl\install.bat**
-Under Linux just unpack archive to a folder
+For install on Delphi start the **jcl\install.bat**
+For install on FPC under Linux or Windows just unpack archive to a folder
 
 Daily snapshots
 ---------------
@@ -86,7 +86,7 @@ List of main fixes are made in the jcl to be patially comitible with fpc/Windows
 - PathUncPrefix const added in JclFileUtils
 - All Libc uses are changed to libclite
 - JclSynch is surrounded with IFDEFs as totally incompatible with Linux
-- Fixes for fpc mode:
+Fixes for fpc mode:
 - StrAddRef StrDecRef are removed from JclAnsiStrings
 - PULARGE_INTEGER is redefined in JclBase
 - TJclAddr redefined in common way as NativeUInt in JclBase
