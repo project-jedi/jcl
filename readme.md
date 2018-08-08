@@ -82,7 +82,7 @@ Note that we also like to hear about you if everything is fine, as this will let
 
 Fixes are made
 -------
-- List of main fixes are made in the jcl to be patially comitible with fpc/Windows/Linux.
+List of main fixes are made in the jcl to be patially comitible with fpc/Windows/Linux.
 - PathUncPrefix const added in JclFileUtils
 - All Libc uses are changed to libclite
 - JclSynch are surrounded with IFDEFs as totally incompatible with Linux
