@@ -36,8 +36,8 @@ This will get you the JCL repository.
 
 How to install
 --------------
-For install on Delphi start the **jcl\install.bat**
-For install on FPC under Linux or Windows just unpack archive to a folder
+- For install on Delphi start the **jcl\install.bat**
+- For install on FPC under Linux or Windows just unpack archive to a folder
 
 Daily snapshots
 ---------------
