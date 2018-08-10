@@ -22,8 +22,7 @@ The original repository can be found here: https://github.com/project-jedi/jcl
 
 Download the ZIP file
 ---------------------
-If you download the JCL as a ZIP file from GitHub, you have to move the jedi.inc and
-kylix.inc files from the jcl\jcl\source\include to the
+you have to move the jedi.inc and kylix.inc files from the jcl\jcl\source\include to the
 jcl\jcl\source\include\jedi directory.
 
 Clone with GIT
@@ -31,13 +30,14 @@ Clone with GIT
 ```
 > git clone git://github.com/Makhaon/jcl.git jcl
 ```
-
 This will get you the JCL repository.
+you have to move the jedi.inc and kylix.inc files from the jcl\jcl\source\include to the
+jcl\jcl\source\include\jedi directory.
 
 How to install
 --------------
-Under Windows start the **jcl\install.bat**
-Under Linux just unpack archive to a folder
+- For install on Delphi start the **jcl\install.bat**
+- For install on FPC under Linux or Windows just unpack archive to a folder
 
 Daily snapshots
 ---------------
@@ -85,10 +85,10 @@ Fixes are made
 List of main fixes are made in the jcl to be patially comitible with fpc/Windows/Linux.
 - PathUncPrefix const added in JclFileUtils
 - All Libc uses are changed to libclite
-- JclSynch are surrounded with IFDEFs as totally incompatible with Linux
-- Fixes for fpc mode:
+- JclSynch is surrounded with IFDEFs as totally incompatible with Linux
+Fixes for fpc mode:
 - StrAddRef StrDecRef are removed from JclAnsiStrings
-- PULARGE_INTEGER are redefined in JclBase
+- PULARGE_INTEGER is redefined in JclBase
 - TJclAddr redefined in common way as NativeUInt in JclBase
 - HWND redefined as System.THandle
 - GetMem removed as unnecessary and incompatible with current fpc versions
