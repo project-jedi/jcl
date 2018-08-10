@@ -335,22 +335,21 @@ type
   {$IFDEF FPC}
   TJclAddr64 = QWord;
   {$IFDEF CPU64}
-  //TJclAddr = QWord;
+  TJclAddr = QWord;
   {$ENDIF CPU64}
   {$IFDEF CPU32}
-  //TJclAddr = Cardinal;
+  TJclAddr = Cardinal;
   {$ENDIF CPU32}
   {$ENDIF FPC}
   {$IFDEF BORLAND}
   TJclAddr64 = Int64;
   {$IFDEF CPU64}
-  //TJclAddr = TJclAddr64;
+  TJclAddr = TJclAddr64;
   {$ENDIF CPU64}
   {$IFDEF CPU32}
-  //TJclAddr = TJclAddr32;
+  TJclAddr = TJclAddr32;
   {$ENDIF CPU32}
   {$ENDIF BORLAND}
-  TJclAddr = NativeUInt;
   PJclAddr = ^TJclAddr;
 
   EJclAddr64Exception = class(EJclError);
