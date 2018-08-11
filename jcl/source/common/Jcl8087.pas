@@ -171,7 +171,12 @@ function Set8087ControlWord(const Control: Word): Word;
 var
   StackControl: Word;
 asm
-          MOV     StackControl, Control
+          {$IFDEF UNIX}
+          MOV     AX, Control word ptr
+          MOV     StackControl, AX
+          {$ELSE}
+          MOV StackControl, Control
+          {$ENDIF}
           FNCLEX
           FSTCW   Result         // save the old control word
           FLDCW   StackControl   // load the new control word
@@ -273,7 +278,12 @@ function SetMasked8087Exceptions(Exceptions: T8087Exceptions; ClearBefore: Boole
   asm
         FSTCW   Result
         FWAIT
-        MOV     StackNewCW, NewCW
+        {$IFDEF UNIX}
+        MOV     AX, NewCW word ptr
+        MOV     StackNewCW, AX
+        {$ELSE}
+        MOV StackNewCW, NewCW
+        {$ENDIF}
         MOV     AX, Result
         AND     AX, NOT X87ExceptBits  // mask exception mask bits 0..5
         OR      StackNewCW, AX

@@ -46,10 +46,10 @@
 unit JclRegistry;
 
 {$I jcl.inc}
-{$I windowsonly.inc}
 
 interface
 
+{$IFDEF MSWINDOWS}
 uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
@@ -389,9 +389,11 @@ const
     Data: nil
     );
 {$ENDIF UNITVERSIONING}
+{$ENDIF MSWINDOWS}
 
 implementation
 
+{$IFDEF MSWINDOWS}
 uses
   {$IFDEF HAS_UNITSCOPE}
   System.SysUtils,
@@ -2150,6 +2152,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+{$ENDIF MSWINDOWS}
 
 end.
 

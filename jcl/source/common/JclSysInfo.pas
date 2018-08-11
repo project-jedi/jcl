@@ -1,4 +1,4 @@
-{**************************************************************************************************}
+Ôªø{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -880,7 +880,7 @@ const
   EAMD2_LAHF          = BIT_0;  // LAHF/SAHF available in 64-bit mode
   EAMD2_CMPLEGACY     = BIT_1;  // core multi-processing legacy mode
   EAMD2_SVM           = BIT_2;  // Secure Virtual Machine
-  EAMD2_EXTAPICSPACE  = BIT_3;  // This bit indicates the presence of extended APIC register space starting at offset 400h from the ìAPIC Base Address Register,î as specified in the BKDG.
+  EAMD2_EXTAPICSPACE  = BIT_3;  // This bit indicates the presence of extended APIC register space starting at offset 400h from the ‚ÄúAPIC Base Address Register,‚Äù as specified in the BKDG.
   EAMD2_ALTMOVCR8     = BIT_4;  // LOCK MOV CR0 means MOV CR8
   EAMD2_ABM           = BIT_5;  // ABM: Advanced bit manipulation. LZCNT instruction support.
   EAMD2_SSE4A         = BIT_6;  // EXTRQ, INSERTQ, MOVNTSS, and MOVNTSD instruction support.
@@ -5408,34 +5408,34 @@ function CPUID: TCpuInfo;
             3:
               CPUInfo.CpuName := 'AMD-K5 (Model 3)';
             6:
-              CPUInfo.CpuName := 'AMD-K6Æ (Model 6)';
+              CPUInfo.CpuName := 'AMD-K6¬Æ (Model 6)';
             7:
-              CPUInfo.CpuName := 'AMD-K6Æ (Model 7)';
+              CPUInfo.CpuName := 'AMD-K6¬Æ (Model 7)';
             8:
-              CPUInfo.CpuName := 'AMD-K6Æ-2 (Model 8)';
+              CPUInfo.CpuName := 'AMD-K6¬Æ-2 (Model 8)';
             9:
-              CPUInfo.CpuName := 'AMD-K6Æ-III (Model 9)';
+              CPUInfo.CpuName := 'AMD-K6¬Æ-III (Model 9)';
             else
               StrFmtA(CPUInfo.CpuName, PAnsiChar(AnsiString(LoadResString(@RsUnknownAMDModel))), [CPUInfo.Model]);
           end;
         6:
           case CPUInfo.Model of
             1:
-              CPUInfo.CpuName := 'AMD Athlonô (Model 1)';
+              CPUInfo.CpuName := 'AMD Athlon‚Ñ¢ (Model 1)';
             2:
-              CPUInfo.CpuName := 'AMD Athlonô (Model 2)';
+              CPUInfo.CpuName := 'AMD Athlon‚Ñ¢ (Model 2)';
             3:
-              CPUInfo.CpuName := 'AMD Duronô (Model 3)';
+              CPUInfo.CpuName := 'AMD Duron‚Ñ¢ (Model 3)';
             4:
-              CPUInfo.CpuName := 'AMD Athlonô (Model 4)';
+              CPUInfo.CpuName := 'AMD Athlon‚Ñ¢ (Model 4)';
             6:
-              CPUInfo.CpuName := 'AMD Athlonô XP (Model 6)';
+              CPUInfo.CpuName := 'AMD Athlon‚Ñ¢ XP (Model 6)';
             7:
-              CPUInfo.CpuName := 'AMD Duronô (Model 7)';
+              CPUInfo.CpuName := 'AMD Duron‚Ñ¢ (Model 7)';
             8:
-              CPUInfo.CpuName := 'AMD Athlonô XP (Model 8)';
+              CPUInfo.CpuName := 'AMD Athlon‚Ñ¢ XP (Model 8)';
             10:
-              CPUInfo.CpuName := 'AMD Athlonô XP (Model 10)';
+              CPUInfo.CpuName := 'AMD Athlon‚Ñ¢ XP (Model 10)';
             else
               StrFmtA(CPUInfo.CpuName, PAnsiChar(AnsiString(LoadResString(@RsUnknownAMDModel))), [CPUInfo.Model]);
           end;

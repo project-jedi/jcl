@@ -54,6 +54,8 @@ uses
   {$ELSE ~HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
   Windows, JclWin32,
+  {$ELSE}
+  libclite,
   {$ENDIF MSWINDOWS}
   {$ENDIF ~HAS_UNITSCOPE}
   JclBase;
@@ -100,6 +102,7 @@ type
 
   TJclWaitHandle = THandle;
 
+  {$IFDEF MSWINDOWS}
   TJclDispatcherObject = class(TObject)
   private
     FExisted: Boolean;
@@ -128,6 +131,7 @@ function WaitForMultipleObjects(const Objects: array of TJclDispatcherObject;
   WaitAll: Boolean; TimeOut: Cardinal): Cardinal;
 function WaitAlertableForMultipleObjects(const Objects: array of TJclDispatcherObject;
   WaitAll: Boolean; TimeOut: Cardinal): Cardinal;
+{$ENDIF MSWINDOWS}
 
 type
   TJclCriticalSection = class(TObject)
@@ -141,6 +145,7 @@ type
     procedure Leave;
   end;
 
+  {$IFDEF MSWINDOWS}
   TJclCriticalSectionEx = class(TJclCriticalSection)
   private
     FSpinCount: Cardinal;
@@ -191,6 +196,7 @@ type
     function Acquire(const TimeOut: Cardinal = INFINITE): Boolean;
     function Release: Boolean;
   end;
+  {$ENDIF MSWINDOWS}
 
   POptexSharedInfo = ^TOptexSharedInfo;
   TOptexSharedInfo = record
@@ -201,6 +207,7 @@ type
     RecursionCount: Integer; // number of times the optex is owned, 0 if free
   end;
 
+  {$IFDEF MSWINDOWS}
   TJclOptex = class(TObject)
   private
     FEvent: TJclEvent;
@@ -222,6 +229,7 @@ type
     property SpinCount: Integer read GetSpinCount write SetSpinCount;
     property UniProcess: Boolean read GetUniProcess;
   end;
+  {$ENDIF MSWINDOWS}
 
   TMrewPreferred = (mpReaders, mpWriters, mpEqual);
 
@@ -232,6 +240,7 @@ type
   end;
   TMrewThreadInfoArray = array of TMrewThreadInfo;
 
+  {$IFDEF MSWINDOWS}
   TJclMultiReadExclusiveWrite = class(TObject)
   private
     FLock: TJclCriticalSection;
@@ -257,6 +266,7 @@ type
     procedure EndRead;
     procedure EndWrite;
   end;
+  {$ENDIF MSWINDOWS}
 
   PMetSectSharedInfo = ^TMetSectSharedInfo;
   TMetSectSharedInfo = record
@@ -274,6 +284,7 @@ type
     SharedInfo: PMetSectSharedInfo;
   end;
 
+  {$IFDEF MSWINDOWS}
   TJclMeteredSection = class(TObject)
   private
     FMetSect: PMeteredSection;
@@ -292,6 +303,7 @@ type
     function Leave(ReleaseCount: Longint): Boolean; overload;
     function Leave(ReleaseCount: Longint; out PrevCount: Longint): Boolean; overload;
   end;
+  {$ENDIF MSWINDOWS}
 
 // Debugging
 //
@@ -317,19 +329,24 @@ type
   end;
 
   TTimerInfo = record
-    Remaining: TLargeInteger; // 100ns intervals until signaled
+    Remaining: Int64; // 100ns intervals until signaled
     Signaled: ByteBool;       // is signaled?
   end;
 
 function QueryCriticalSection(CS: TJclCriticalSection; var Info: TRTLCriticalSection): Boolean;
 { TODO -cTest : Test these 4 functions }
+{$IFDEF MSWINDOWS}
 function QueryEvent(Handle: THandle; var Info: TEventInfo): Boolean;
 function QueryMutex(Handle: THandle; var Info: TMutexInfo): Boolean;
 function QuerySemaphore(Handle: THandle; var Info: TSemaphoreCounts): Boolean;
 function QueryTimer(Handle: THandle; var Info: TTimerInfo): Boolean;
+{$ENDIF MSWINDOWS}
 
 type
   // Exceptions
+  {$IFDEF UNIX}
+  EJclWin32Error =  EJclError;
+  {$ENDIF}
   EJclWin32HandleObjectError = class(EJclWin32Error);
   EJclDispatcherObjectError = class(EJclWin32Error);
   EJclCriticalSectionError = class(EJclWin32Error);
@@ -757,6 +774,7 @@ end;
 
 //=== { TJclDispatcherObject } ===============================================
 
+{$IFDEF WINDOWS}
 function MapSignalResult(const Ret: DWORD): TJclWaitResult;
 begin
   case Ret of
@@ -839,18 +857,19 @@ begin
     Handles[I] := Objects[I].Handle;
   Result := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.WaitForMultipleObjectsEx(Count, @Handles[0], WaitAll, TimeOut, True);
 end;
+{$ENDIF WINDOWS}
 
 //=== { TJclCriticalSection } ================================================
 
 constructor TJclCriticalSection.Create;
 begin
   inherited Create;
-  {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.InitializeCriticalSection(FCriticalSection);
+  {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}{$IFDEF MSWINDOWS}Windows.{$ENDIF WINDOWS}InitializeCriticalSection(FCriticalSection);
 end;
 
 destructor TJclCriticalSection.Destroy;
 begin
-  {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.DeleteCriticalSection(FCriticalSection);
+  {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}{$IFDEF MSWINDOWS}Windows.{$ENDIF WINDOWS}DeleteCriticalSection(FCriticalSection);
   inherited Destroy;
 end;
 
@@ -869,16 +888,17 @@ end;
 
 procedure TJclCriticalSection.Enter;
 begin
-  {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.EnterCriticalSection(FCriticalSection);
+  {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}{$IFDEF MSWINDOWS}Windows.{$ENDIF WINDOWS}EnterCriticalSection(FCriticalSection);
 end;
 
 procedure TJclCriticalSection.Leave;
 begin
-  {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.LeaveCriticalSection(FCriticalSection);
+  {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}{$IFDEF MSWINDOWS}Windows.{$ENDIF WINDOWS}LeaveCriticalSection(FCriticalSection);
 end;
 
 //== { TJclCriticalSectionEx } ===============================================
 
+{$IFDEF MSWINDOWS}
 const
   DefaultCritSectSpinCount = 4000;
 
@@ -1684,6 +1704,7 @@ procedure TJclMeteredSection.ReleaseLock;
 begin
   {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.InterlockedExchange(FMetSect^.SharedInfo^.SpinLock, 0);
 end;
+{$ENDIF WINDOWS}
 
 //=== Debugging ==============================================================
 
@@ -1699,6 +1720,7 @@ end;
 
 { TODO: RTLD version }
 
+{$IFDEF WINDOWS}
 type
  TNtQueryProc = function (Handle: THandle; InfoClass: Byte; Info: Pointer;
      Len: Longint; ResLen: PLongint): Longint; stdcall;
@@ -1748,6 +1770,7 @@ function QueryTimer(Handle: THandle; var Info: TTimerInfo): Boolean;
 begin
   Result := CallQueryProc(_QueryTimer, 'NtQueryTimer', Handle, @Info, SizeOf(Info));
 end;
+{$ENDIF WINDOWS}
 
 function ValidateMutexName(const aName: string): string;
 const cMutexMaxName = 200;
@@ -1758,8 +1781,6 @@ begin
     Result := aName;
   Result := StrReplaceChar(Result, '\', '_');
 end;
-
-
 
 {$IFDEF UNITVERSIONING}
 initialization

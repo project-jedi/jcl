@@ -2,7 +2,7 @@
   This source is only used to compile and install the package.
  }
 
-unit Jcl;
+unit JclCommon;
 
 interface
 
@@ -14,14 +14,7 @@ uses
   JclStringConversions, JclStringLists, JclStrings, JclSynch, JclSysInfo, 
   JclSysUtils, JclUnicode, JclUnitConv, JclUnitVersioning, 
   JclUnitVersioningProviders, JclValidation, JclWideStrings, pcre, zlibh, 
-  Hardlinks, JclAppInst, JclCIL, JclCLR, JclCOM, JclConsole, JclCppException, 
-  JclDebug, JclDebugSerialization, JclDebugXMLDeserializer, 
-  JclDebugXMLSerializer, JclDotNet, JclHookExcept, JclLANMan, JclLocales, 
-  JclMetadata, JclMiscel, JclMsdosSys, JclMultimedia, JclNTFS, JclPeImage, 
-  JclRegistry, JclSecurity, JclShell, JclStructStorage, JclSvcCtrl, JclTask, 
-  JclTD32, JclTimeZones, JclWin32, JclWin32Ex, JclWinMIDI, mscoree_TLB, 
-  mscorlib_TLB, MSTask, sevenzip, Snmp, FpLibcCompatibility, FpStringHash, 
-  FpWinAPICompatibility;
+  FpLibcCompatibility, FpStringHash, FpWinAPICompatibility, libclite;
 
 implementation
 
