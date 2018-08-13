@@ -31,6 +31,7 @@ unit JclVersionCtrlGITImpl;
 
 interface
 
+{$IFDEF MSWINDOWS}
 uses
 {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
@@ -68,9 +69,11 @@ const
     Revision: '$Revision$'; Date: '$Date$';
     LogPath: 'JCL\source\vcl'; Extra: ''; Data: nil);
 {$ENDIF UNITVERSIONING}
+{$ENDIF MSWINDOWS}
 
 implementation
 
+{$IFDEF MSWINDOWS}
 uses
   JclVclResources,
   JclFileUtils, JclSysInfo, JclSysUtils, JclRegistry, JclStrings;
@@ -382,5 +385,6 @@ UnregisterVersionControlPluginClass(TJclVersionControlGIT);
 {$IFDEF UNITVERSIONING}
 UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+{$ENDIF MSWINDOWS}
 
 end.

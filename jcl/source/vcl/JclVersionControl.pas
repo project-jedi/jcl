@@ -228,9 +228,16 @@ uses
   {$IFDEF HAS_UNITSCOPE}
   Winapi.Windows, Vcl.Forms, System.TypInfo,
   {$ELSE ~HAS_UNITSCOPE}
-  Windows, Forms, TypInfo,
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF}
+  Forms, TypInfo,
   {$ENDIF ~HAS_UNITSCOPE}
-  JclVclResources, JclFileUtils, JclRegistry, JclShell, JclStrings;
+  JclVclResources, JclFileUtils, JclRegistry,
+  {$IFDEF MSWINDOWS}
+  JclShell,
+  {$ENDIF}
+  JclStrings;
 
 //=== JclVersionControl.pas ===================================================
 const
@@ -672,6 +679,7 @@ var
 begin
   AppHandle := {$IFDEF BORLAND}Application.Handle{$ELSE}0{$ENDIF};
 
+  {$IFDEF MSWINDOWS}
   case Action of
     vcaContextMenu:
       Result := DisplayContextMenu(0, FileName, Mouse.CursorPos);
@@ -685,6 +693,9 @@ begin
     else
       Result := inherited ExecuteAction(FileName, Action);
   end;
+  {$ELSE}
+  Result := inherited ExecuteAction(FileName, Action);
+  {$ENDIF}
 end;
 
 function TJclVersionControlSystemPlugin.GetEnabled: Boolean;

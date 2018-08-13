@@ -1,4 +1,8 @@
 {**************************************************************************************************}
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
+{**************************************************************************************************}
+
+{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -44,7 +48,13 @@ uses
   {$IFDEF HAS_UNITSCOPE}
   System.Types, Winapi.Windows, System.SysUtils, Vcl.Graphics,
   {$ELSE ~HAS_UNITSCOPE}
-  Types, Windows, SysUtils, Graphics,
+  Types,
+  {$IFDEF FPC}
+  LCLIntf, LCLType,
+  {$ELSE ~FPC}
+  Windows,
+  {$ENDIF ~FPC}
+  SysUtils, Graphics,
   {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
@@ -76,9 +86,7 @@ type
       0: (Value: Longint);
       1: (Red, Green, Blue: Byte);
       2: (R, G, B, Flag: Byte);
-      {$IFDEF MSWINDOWS}
       3: (Index: Word); // GetSysColor, PaletteIndex
-      {$ENDIF MSWINDOWS}
   end;
 
   TColorVector = record
@@ -95,10 +103,8 @@ type
     Saturation: THLSValue;
   end;
 
-  {$IFDEF VCL}
   TPointArray = array of TPoint;
   PPointArray = ^TPointArray;
-  {$ENDIF VCL}
 
   { position codes for clipping algorithm }
   TClipCode = (ccLeft, ccRight, ccAbove, ccBelow);
@@ -134,13 +140,13 @@ const
 
 procedure EMMS;
 
+{$IFNDEF FPC}
 // Dialog Functions
-{$IFDEF MSWINDOWS}
 function DialogUnitsToPixelsX(const DialogUnits: Word): Word;
 function DialogUnitsToPixelsY(const DialogUnits: Word): Word;
 function PixelsToDialogUnitsX(const PixelUnits: Word): Word;
 function PixelsToDialogUnitsY(const PixelUnits: Word): Word;
-{$ENDIF MSWINDOWS}
+{$ENDIF ~FPC}
 
 // Points
 function NullPoint: TPoint;
@@ -251,21 +257,19 @@ function RGBToHLS(const RGBColor: TColorRef): THLSVector; overload;
 function HSLToRGB(const H, S, L: Single): TColor32; overload;
 procedure RGBToHSL(const RGB: TColor32; out H, S, L: Single); overload;
 
-{$IFDEF VCL}
+{$IFNDEF FPC}
 function SetBitmapColors(Bmp: TBitmap; const Colors: array of TColor; StartIndex: Integer): Integer;
-{$ENDIF VCL}
+{$ENDIF}
 
 // Misc
 function ColorToHTML(const Color: TColor): string;
 
 // Petr Vones
-{$IFDEF VCL}
+{$IFNDEF FPC}
 function DottedLineTo(const Canvas: TCanvas; const X, Y: Integer): Boolean; overload;
-{$ENDIF VCL}
-{$IFDEF MSWINDOWS}
+{$ENDIF ~FPC}
 function ShortenString(const DC: HDC; const S: WideString; const Width: Integer; const RTL: Boolean;
   EllipsisWidth: Integer = 0): WideString;
-{$ENDIF MSWINDOWS}
 
 var
   { Blending Function Variables }
@@ -375,13 +379,24 @@ const
 var
   MMX_ACTIVE: Boolean;
 
-{$IFDEF VCL}
 
 procedure OutOfResources;
 begin
   raise EOutOfResources.CreateRes(@SOutOfResources);
 end;
 
+{$IFDEF FPC}
+procedure GDIError;
+var
+  ErrorCode: Integer;
+begin
+  ErrorCode := GetLastOSError;
+  if ErrorCode <> 0 then
+    raise EOutOfResources.Create(SysErrorMessage(ErrorCode))
+  else
+    OutOfResources;
+end;
+{$ELSE ~FPC}
 procedure GDIError;
 var
   ErrorCode: Integer;
@@ -389,11 +404,12 @@ var
 begin
   ErrorCode := GetLastError;
   if (ErrorCode <> 0) and (FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, nil,
-    ErrorCode, LOCALE_USER_DEFAULT, Buf, Length(Buf), nil) <> 0) then
+    ErrorCode, LOCALE_USER_DEFAULT, Buf, SizeOf(Buf), nil) <> 0) then
     raise EOutOfResources.Create(Buf)
   else
     OutOfResources;
 end;
+{$ENDIF ~FPC}
 
 function GDICheck(Value: Integer): Integer;
 begin
@@ -401,7 +417,6 @@ begin
   Result := Value;
 end;
 
-{$ENDIF VCL}
 
 //=== Internal LowLevel ======================================================
 
@@ -974,9 +989,9 @@ begin
   end;
 end;
 
+{$IFNDEF FPC}
 //=== Dialog functions =======================================================
 
-{$IFDEF MSWINDOWS}
 function DialogUnitsToPixelsX(const DialogUnits: Word): Word;
 begin
   Result := (DialogUnits * LoWord(GetDialogBaseUnits)) div 4;
@@ -996,7 +1011,7 @@ function PixelsToDialogUnitsY(const PixelUnits: Word): Word;
 begin
   Result := PixelUnits * 8 div HiWord(GetDialogBaseUnits);
 end;
-{$ENDIF MSWINDOWS}
+{$ENDIF ~FPC}
 
 //=== Points =================================================================
 
@@ -1082,12 +1097,9 @@ var
   X, Y: Integer;
   Delta: Integer;
 begin
-  {$IFDEF MSWINDOWS}
   X := GetSystemMetrics(SM_CXSCREEN);
   Y := GetSystemMetrics(SM_CYSCREEN);
-  {$ELSE ~MSWINDOWS}
-  TODO: find a solution for other systems
-  {$ENDIF ~MSWINDOWS}
+
   with R do
   begin
     if Right > X then
@@ -2241,7 +2253,7 @@ begin
   Result :=  RGB(R, G, B);
 end;
 
-{$IFDEF VCL}
+{$IFNDEF FPC}
 function SetBitmapColors(Bmp: TBitmap; const Colors: array of TColor; StartIndex: Integer): Integer;
 type
   TRGBQuadArray = array [Byte] of TRGBQuad;
@@ -2269,7 +2281,7 @@ begin
     FreeMem(ColorTable);
   end;
 end;
-{$ENDIF VCL}
+{$ENDIF ~FPC}
 
 //=== Misc ===================================================================
 
@@ -2281,7 +2293,7 @@ begin
   Result := Format('#%.2x%.2x%.2x', [Temp.R, Temp.G, Temp.B]);
 end;
 
-{$IFDEF VCL}
+{$IFNDEF FPC}
 function DottedLineTo(const Canvas: TCanvas; const X, Y: Integer): Boolean;
 const
   DotBits: array [0..7] of Word = ($AA, $55, $AA, $55, $AA, $55, $AA, $55);
@@ -2315,9 +2327,8 @@ begin
   DeleteObject(Bitmap);
   Result := True;
 end;
-{$ENDIF VCL}
+{$ENDIF ~FPC}
 
-{$IFDEF MSWINDOWS}
 // Adjusts the given string S so that it fits into the given width. EllipsisWidth gives the width of
 // the three points to be added to the shorted string. If this value is 0 then it will be determined implicitely.
 // For higher speed (and multiple entries to be shorted) specify this value explicitely.
@@ -2330,6 +2341,9 @@ var
   Size: TSize;
   Len: Integer;
   L, H, N, W: Integer;
+  {$IFDEF FPC}
+  Str: String;
+  {$ENDIF}
 begin
   Len := Length(S);
   if (Len = 0) or (Width <= 0) then
@@ -2339,7 +2353,11 @@ begin
     // Determine width of triple point using the current DC settings (if not already done).
     if EllipsisWidth = 0 then
     begin
+      {$IFNDEF FPC}
       GetTextExtentPoint32W(DC, '...', 3, Size);
+      {$ELSE ~FPC}
+      GetTextExtentPoint32(DC, '...', 3, Size);
+      {$ENDIF ~FPC}
       EllipsisWidth := Size.cx;
     end;
 
@@ -2348,13 +2366,21 @@ begin
     else
     begin
       // Do a binary search for the optimal string length which fits into the given width.
+      {$IFDEF FPC}
+      Str := UTF8Encode(S);
+      Len := Length(Str);
+      {$ENDIF ~FPC}
       L := 0;
       H := Len;
       N := 0;
       while L <= H do
       begin
         N := (L + H) shr 1;
+        {$IFNDEF FPC}
         GetTextExtentPoint32W(DC, PWideChar(S), N, Size);
+        {$ELSE ~FPC}
+        GetTextExtentPoint32(DC, PChar(Str), N, Size);
+        {$ENDIF ~FPC}
         W := Size.cx + EllipsisWidth;
         if W < Width then
           L := N + 1
@@ -2374,7 +2400,6 @@ begin
     end;
   end;
 end;
-{$ENDIF MSWINDOWS}
 
 //=== Clipping ===============================================================
 
@@ -2545,11 +2570,9 @@ begin
       X := Round(X2);
       Y := Round(Y2);
       Canvas.LineTo(X, Y);
-      {$IFDEF VCL}
       if Codes2 <> [] then
         // Draw end point if neccessary
         Canvas.LineTo(X + 1, Y);
-      {$ENDIF VCL}
     end;
     with Points[I] do
     begin
