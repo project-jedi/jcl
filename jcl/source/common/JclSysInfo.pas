@@ -3191,7 +3191,7 @@ var
   Res: DWORD;
 begin
   Res := 0;
-  Result := SendMessageTimeout(Wnd, WM_NULL, 0, 0, SMTO_ABORTIFHUNG, Timeout, {$IFDEF RTL230_UP}@{$ENDIF}Res) <> 0;
+  Result := SendMessageTimeout(Wnd, WM_NULL, 0, 0, SMTO_ABORTIFHUNG, Timeout, {$IFDEF RTL230_UP}@{$ENDIF}{$IFDEF FPC}@{$ENDIF}Res) <> 0;
 end;
 
 function GetWindowIcon(Wnd: THandle; LargeIcon: Boolean): HICON;

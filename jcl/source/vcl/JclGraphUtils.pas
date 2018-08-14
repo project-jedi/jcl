@@ -575,7 +575,7 @@ asm
 @4:     RET
   {$ENDIF CPU32}
   {$IFDEF CPU64}
-  TODO
+  //TODO
   {$ENDIF CPU64}
 end;
 {$ENDIF ~DELPHI64_TEMPORARY}
@@ -876,7 +876,7 @@ asm
 @4:     RET
   {$ENDIF CPU32}
   {$IFDEF CPU64}
-  TODO
+  //TODO
   {$ENDIF CPU64}
 end;
 {$ENDIF ~DELPHI64_TEMPORARY}
@@ -949,7 +949,7 @@ asm
 @4:
   {$ENDIF CPU32}
   {$IFDEF CPU64}
-  TODO
+  //TODO
   {$ENDIF CPU64}
 end;
 {$ENDIF ~DELPHI64_TEMPORARY}

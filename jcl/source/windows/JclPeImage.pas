@@ -6634,7 +6634,7 @@ var
 function InternalReadProcMem(ProcessHandle: THandle; Address: DWORD;
   Buffer: Pointer; Size: Integer): Boolean;
 var
-  BR: DWORD;
+  BR: {$IFDEF CPU64} QWord {$ELSE} DWORD {$ENDIF};
 {$ENDIF}
 begin
   BR := 0;
