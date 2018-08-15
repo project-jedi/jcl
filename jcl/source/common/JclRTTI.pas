@@ -2503,7 +2503,11 @@ begin
       Name := TypeName;
     end;
     TypeData := GetTypeData(Result);
+    {$if (FPC_VERSION = 3) and (FPC_RELEASE = 1) and (FPC_PATCH = 1)}
+    TypeData^.BaseTypeRef := AllocMem(SizeOf(Pointer));
+    {$else}
     TypeData^.BaseType := AllocMem(SizeOf(Pointer));
+    {$endif}
     if Length(Literals) < 256 then
       TypeData^.OrdType := otUByte
     else
@@ -2513,7 +2517,11 @@ begin
       TypeData^.OrdType := otULong;
     TypeData^.MinValue := 0;
     TypeData^.MaxValue := Length(Literals)-1;
+    {$if (FPC_VERSION = 3) and (FPC_RELEASE = 1) and (FPC_PATCH = 1)}
+    TypeData^.BaseTypeRef^ := Result;   // No sub-range: basetype points to itself
+    {$else}
     TypeData^.BaseType{$IFDEF BORLAND}^{$ENDIF} := Result;   // No sub-range: basetype points to itself
+    {$endif}
     CurName := @TypeData^.NameList;
     for I := Low(Literals) to High(Literals) do
     begin
@@ -2600,8 +2608,13 @@ begin
     TypeData^.OrdType := GetTypeData(BaseType)^.OrdType;
     TypeData^.MinValue := MinValue;
     TypeData^.MaxValue := MaxValue;
+    {$if (FPC_VERSION = 3) and (FPC_RELEASE = 1) and (FPC_PATCH = 1)}
+    TypeData^.BaseTypeRef := AllocMem(SizeOf(Pointer));
+    TypeData^.BaseTypeRef^ := BaseType;
+    {$else}
     TypeData^.BaseType := AllocMem(SizeOf(Pointer));
     TypeData^.BaseType{$IFDEF BORLAND}^{$ENDIF} := BaseType;
+    {$endif}
     AddType(Result);
   except
     try
@@ -2807,7 +2820,11 @@ begin
     TypeData^.CompType^ := BaseType;
     {$ENDIF BORLAND}
     {$IFDEF FPC}
+    {$if (FPC_VERSION > 3) and (FPC_RELEASE = 1) and (FPC_PATCH = 1)}
+    TypeData^.CompTypeRef^ := BaseType;
+    {$else}
     TypeData^.CompType := BaseType;
+    {$endif}
     {$ENDIF FPC}
     AddType(Result);
   except
