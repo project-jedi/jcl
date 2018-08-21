@@ -39,6 +39,10 @@ How to install
 - For install on Delphi start the **jcl\install.bat**
 - For install on FPC under Linux or Windows just unpack archive to a folder
 
+FPC/Lazarus compatibility
+---------------
+Version are compatible with current stable (1.8.4+3.0.4) and trunk (1.9.0+3.1.1) versions 
+
 Daily snapshots
 ---------------
 You can download daily snapshots from <http://jcl.sourceforge.net/daily>
@@ -108,3 +112,4 @@ List of main fixes are made in the jcl to be patially comitible with fpc/Windows
 - GetIPAddress, GetCurrentFolder, SetEnvironmentVar and DelEnvironmentVar are fixed to work in Linux
 - GetAccessToHandleList is fixed
 - SystemTObjectInstance and IsCompiledWithPackages are surrounded with IFDEFs as worked under Windows
+- Fixes in the JclRTTI unit for compatibilty with trunk version
