@@ -256,7 +256,8 @@ type
     wvWinNT31, wvWinNT35, wvWinNT351, wvWinNT4, wvWin2000, wvWinXP,
     wvWin2003, wvWinXP64, wvWin2003R2, wvWinVista, wvWinServer2008,
     wvWin7, wvWinServer2008R2, wvWin8, wvWin8RT, wvWinServer2012,
-    wvWin81, wvWin81RT, wvWinServer2012R2, wvWin10, wvWinServer2016);
+    wvWin81, wvWin81RT, wvWinServer2012R2, wvWin10, wvWinServer2016,
+    wvWinServerVersion1709, wvWinServerVersion1803, wvWinServer2019);
   TWindowsEdition =
    (weUnknown, weWinXPHome, weWinXPPro, weWinXPHomeN, weWinXPProN, weWinXPHomeK,
     weWinXPProK, weWinXPHomeKN, weWinXPProKN, weWinXPStarter, weWinXPMediaCenter,
@@ -306,6 +307,9 @@ var
   IsWinServer2012R2: Boolean = False;
   IsWin10: Boolean = False;
   IsWinServer2016: Boolean = False;
+  IsWinServerVersion1709: Boolean = False;
+  IsWinServerVersion1803: Boolean = False;
+  IsWinServer2019: Boolean = False;
 
 const
   PROCESSOR_ARCHITECTURE_INTEL = 0;
@@ -3442,7 +3446,7 @@ var
   TrimmedWin32CSDVersion: string;
   SystemInfo: TSystemInfo;
   OSVersionInfoEx: TOSVersionInfoEx;
-  Win32MajorVersionEx, Win32MinorVersionEx: integer;
+  Win32MajorVersionEx, Win32MinorVersionEx, WindowsReleaseId: integer;
   ProductName: string;
 const
   SM_SERVERR2 = 89;
@@ -3529,7 +3533,7 @@ begin
                  Win32MinorVersionEx := 4 // Windows 10 (builds < 9926) and Windows Server 2016 (builds < 10074)
               else
               if Win32MajorVersionEx = 10 then
-                 Win32MinorVersionEx := -1 // Windows 10 (builds >= 9926) and Windows Server 2016 (builds >= 10074), set to -1 to escape case block
+                 Win32MinorVersionEx := -1 // Windows 10 (builds >= 9926) and Windows Server 2016/2019 (builds >= 10074), set to -1 to escape case block
               else
                  Win32MinorVersionEx := Win32MinorVersion;
             end;
@@ -3594,7 +3598,7 @@ begin
       end;
   end;
 
-  // This part will only be hit with Windows 10 and Windows Server 2016 (and newer) where an application manifest is not included
+  // This part will only be hit with Windows 10, Windows Server 2016 and beyond where an application manifest is not included
   if (Win32MajorVersionEx >= 10) then
   begin
     case Win32MajorVersionEx of
@@ -3605,12 +3609,24 @@ begin
         case Win32MinorVersionEx of
           0:
             begin
-              // Windows 10 (builds >= 9926) and Windows Server 2016 (builds >= 10074)
+              // Windows 10 (builds >= 9926), Windows Server 2016 (builds >= 10074) and beyond
               OSVersionInfoEx.dwOSVersionInfoSize := SizeOf(OSVersionInfoEx);
               if GetVersionEx(OSVersionInfoEx) and (OSVersionInfoEx.wProductType = VER_NT_WORKSTATION) then
                 Result := wvWin10
               else
-                Result := wvWinServer2016;
+              begin
+               WindowsReleaseId := StrToIntDef(RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'ReleaseId', '0'), -1);
+               case WindowsReleaseId of
+                  1607:
+                    Result := wvWinServer2016;
+                  1709:
+                    Result := wvWinServerVersion1709;
+                  1803:
+                    Result := wvWinServerVersion1803;
+                  1809:
+                    Result := wvWinServer2019;
+                end;
+              end;
             end;
         end;
       end;
@@ -3933,6 +3949,12 @@ begin
       Result := LoadResString(@RsOSVersionWin10);
     wvWinServer2016:
       Result := LoadResString(@RsOSVersionWinServer2016);
+    wvWinServerVersion1709:
+      Result := LoadResString(@RsOSVersionWinServerVersion1709);
+    wvWinServerVersion1803:
+      Result := LoadResString(@RsOSVersionWinServerVersion1803);
+    wvWinServer2019:
+      Result := LoadResString(@RsOSVersionWinServer2019);
   else
     Result := '';
   end;
@@ -4166,6 +4188,8 @@ begin
           Result := 'Windows 10 Fall Creators Update';
        1803:
           Result := 'Windows 10 April 2018 Update';
+       1809:
+          Result := 'Windows 10 October 2018 Update';
     else
       Result := '';
     end;
@@ -4191,6 +4215,8 @@ begin
           Result := 'Redstone 3';
        1803:
           Result := 'Redstone 4';
+       1809:
+          Result := 'Redstone 5';
     else
       Result := '';
     end;
@@ -4207,7 +4233,7 @@ begin
   begin
     WindowsReleaseId := GetWindows10ReleaseId;
     if WindowsReleaseId > 0 then
-      Result := 'Windows 10 Version ' + IntToStr(WindowsReleaseId)
+      Result := 'Windows 10, version ' + IntToStr(WindowsReleaseId)
     else
       Result := '';
   end
@@ -6329,6 +6355,12 @@ begin
       IsWin10 := True;
     wvWinServer2016:
       IsWinServer2016 := True;
+    wvWinServerVersion1709:
+      IsWinServerVersion1709 := True;
+    wvWinServerVersion1803:
+      IsWinServerVersion1803 := True;
+    wvWinServer2019:
+      IsWinServer2019 := True;
   end;
 end;
 
