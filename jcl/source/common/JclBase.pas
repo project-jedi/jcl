@@ -145,8 +145,8 @@ type
 
 // Redefinition of ULARGE_INTEGER to relieve dependency on Windows.pas
 type
-  {$IFNDEF FPC}
   PULARGE_INTEGER = ^ULARGE_INTEGER;
+  {$IFDEF FPC}
   {$EXTERNALSYM PULARGE_INTEGER}
   ULARGE_INTEGER = record
     case Integer of
@@ -222,6 +222,10 @@ const
   {$ENDIF CPU64}
 
   HexFmt = HexPrefix + HexDigitFmt;
+
+  {$ifdef FPC}
+  ERROR_SUCCESS = 0;
+  {$endif}
 
 const
   BOM_UTF16_LSB: array [0..1] of Byte = ($FF,$FE);
@@ -355,7 +359,7 @@ function Addr32ToAddr64(const Value: TJclAddr32): TJclAddr64;
 
 {$IFDEF FPC}
 type
-  HWND = type Windows.HWND;
+  HWND = type System.THandle;
 {$ENDIF FPC}
 
  {$IFDEF SUPPORTS_GENERICS}
@@ -392,12 +396,6 @@ const
   {$ELSE ~SUPPORTS_UNICODE}
   AWSuffix = 'A';
   {$ENDIF ~SUPPORTS_UNICODE}
-
-{$IFDEF FPC}
-// FPC emits a lot of warning because the first parameter of its internal
-// GetMem is a var parameter, which is not initialized before the call to GetMem
-procedure GetMem(out P; Size: Longint);
-{$ENDIF FPC}
 
 {$IFDEF UNITVERSIONING}
 const
@@ -612,16 +610,6 @@ begin
   AnsiReplacementCharacter := '?';
 end;
 {$ENDIF ~MSWINDOWS}
-
-{$IFDEF FPC}
-// FPC emits a lot of warning because the first parameter of its internal
-// GetMem is a var parameter, which is not initialized before the call to GetMem
-procedure GetMem(out P; Size: Longint);
-begin
-  Pointer(P) := nil;
-  GetMem(Pointer(P), Size);
-end;
-{$ENDIF FPC}
 
 initialization
 

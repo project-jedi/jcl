@@ -52,7 +52,7 @@ uses
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   {$ENDIF ~HAS_UNITSCOPE}
-  JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
+  JclBase, JclAbstractContainers, JclContainerIntf {$IFDEF THREADSAFE}, JclSynch{$ENDIF THREADSAFE};
 {$I containers\JclContainerCommon.imp}
 {$I containers\JclStacks.imp}
 {$I containers\JclStacks.int}

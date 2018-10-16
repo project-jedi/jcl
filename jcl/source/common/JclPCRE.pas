@@ -46,7 +46,11 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF HAS_UNIT_LIBC}
+  {$IFNDEF FPC}
   Libc,
+  {$ELSE FPC}
+  libclite,
+  {$ENDIF ~FPC}
   {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF HAS_UNITSCOPE}
   System.Classes, System.SysUtils,

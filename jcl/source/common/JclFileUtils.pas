@@ -69,7 +69,11 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF HAS_UNIT_LIBC}
+  {$IFNDEF FPC}
   Libc,
+  {$ELSE}
+  libclite,
+  {$ENDIF ~FPC}
   {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
@@ -95,6 +99,7 @@ const
   // PathSeparator    = '/';
   DirDelimiter = '/';
   DirSeparator = ':';
+  PathUncPrefix = '';
   {$ENDIF UNIX}
   {$IFDEF MSWINDOWS}
   PathDevicePrefix = '\\.\';
@@ -203,11 +208,9 @@ procedure EnumDirectories(const Root: string; const HandleDirectory: TFileHandle
 {$IFDEF MSWINDOWS}
 procedure CreateEmptyFile(const FileName: string);
 function CloseVolume(var Volume: THandle): Boolean;
-{$IFNDEF FPC}
 function DeleteDirectory(const DirectoryName: string; MoveToRecycleBin: Boolean): Boolean;
 function CopyDirectory(ExistingDirectoryName, NewDirectoryName: string): Boolean;
 function MoveDirectory(ExistingDirectoryName, NewDirectoryName: string): Boolean;
-{$ENDIF ~FPC}
 function DelTree(const Path: string): Boolean;
 function DelTreeEx(const Path: string; AbortOnFailure: Boolean; Progress: TDelTreeProgress): Boolean;
 function DiskInDrive(Drive: Char): Boolean;
@@ -218,7 +221,7 @@ function FileBackup(const FileName: string; Move: Boolean = False): Boolean;
 function FileCopy(const ExistingFileName, NewFileName: string; ReplaceExisting: Boolean = False): Boolean;
 function FileDateTime(const FileName: string): TDateTime;
 function FileDelete(const FileName: string; MoveToRecycleBin: Boolean = False): Boolean;
-function FileExists(const FileName: string): Boolean;
+//function FileExists(const FileName: string): Boolean;
 /// <summary>procedure FileHistory Creates a list of history files of a specified
 /// source file. Each version of the file get's an extention .~<Nr>~ The file with
 /// the lowest number is the youngest file.
@@ -241,10 +244,11 @@ function FileRestore(const FileName: string): Boolean;
 function GetBackupFileName(const FileName: string): string;
 function IsBackupFileName(const FileName: string): Boolean;
 function FileGetDisplayName(const FileName: string): string;
-function FileGetGroupName(const FileName: string {$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF}): string;
-function FileGetOwnerName(const FileName: string {$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF}): string;
+function FileGetGroupName(const FileName: string {$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF}): string; overload;
+function FileGetOwnerName(const FileName: string {$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF}): string; overload;
 function FileGetSize(const FileName: string): Int64;
-function FileGetTempName(const Prefix: string): string;
+function FileGetTempName(const Prefix: string): string; overload;
+function FileGetTempName(const Folder, Prefix: string): string; overload;
 {$IFDEF MSWINDOWS}
 function FileGetTypeName(const FileName: string): string;
 {$ENDIF MSWINDOWS}
@@ -2706,7 +2710,7 @@ end;
 {$ENDIF MSWINDOWS}
 {$IFDEF UNIX}
 begin
-  Result := GetEnvironmentVariable('TMPDIR');
+  Result := {GetEnvironmentVariable('TMPDIR')}GetTempDir;
 end;
 {$ENDIF UNIX}
 
@@ -2787,7 +2791,7 @@ function PathIsDiskDevice(const Path: string): Boolean;
 var
   FullPath: string;
   F: PIOFile;
-  Buffer: array [0..255] of AnsiChar;
+  Buffer: array [0..255] of Char;
   MountEntry: TMountEntry;
   FsTypes: TStringList;
 
@@ -3263,7 +3267,7 @@ begin
   end;
 end;
 
-{$IFNDEF FPC}  // needs JclShell
+{$IFDEF MSWINDOWS}  // needs JclShell
 
 function DeleteDirectory(const DirectoryName: string; MoveToRecycleBin: Boolean): Boolean;
 begin
@@ -3299,7 +3303,7 @@ begin
   Result := SHFileOperation(SH) = 0;
 end;
 
-{$ENDIF ~FPC}
+{$ENDIF MSWINDOWS}
 
 function DelTree(const Path: string): Boolean;
 begin
@@ -3542,7 +3546,7 @@ begin
 end;
 {$ENDIF UNIX}
 
-function FileExists(const FileName: string): Boolean;
+(*function FileExists(const FileName: string): Boolean;
 {$IFDEF MSWINDOWS}
 var
   Attr: Cardinal;
@@ -3561,7 +3565,7 @@ begin
   end
   else
     Result := False;
-end;
+end;*)
 
 procedure FileHistory(const FileName: string; HistoryPath: string = ''; MaxHistoryCount: Integer = 100; MinFileDate:
     TDateTime = 0; ReplaceExtention: Boolean = true);
@@ -3833,12 +3837,38 @@ end;
 // leading to a possible security hole. The implementation generates names which
 // can hardly be predicted, but when opening the file you should use the O_EXCL
 // flag. Using tmpfile or mkstemp is a safe way to avoid this problem.
-var
-  P: PChar;
 begin
-  P := tempnam(PChar(PathGetTempPath), PChar(Prefix));
-  Result := P;
-  Libc.free(P);
+  Result := GetTempFileName(PathGetTempPath, Prefix);
+end;
+{$ENDIF UNIX}
+
+function FileGetTempName(const Folder, Prefix: string): string;
+{$IFDEF MSWINDOWS}
+var
+  TempFile: string;
+  R: Cardinal;
+begin
+  Result := '';
+  if Folder <> '' then
+  begin
+    SetLength(TempFile, MAX_PATH);
+    R := GetTempFileName(PChar(Folder), PChar(Prefix), 0, PChar(TempFile));
+    if R <> 0 then
+    begin
+      StrResetLength(TempFile);
+      Result := TempFile;
+    end;
+  end;
+end;
+{$ENDIF MSWINDOWS}
+{$IFDEF UNIX}
+// Warning: Between the time the pathname is constructed and the file is created
+// another process might have created a file with the same name using tmpnam,
+// leading to a possible security hole. The implementation generates names which
+// can hardly be predicted, but when opening the file you should use the O_EXCL
+// flag. Using tmpfile or mkstemp is a safe way to avoid this problem.
+begin
+  Result := GetTempFileName(Folder, Prefix);
 end;
 {$ENDIF UNIX}
 
@@ -4324,7 +4354,7 @@ begin
   // rr: Note that SysUtils.FindFirst/Next ignore files >= 2 GB under Linux,
   //     thus the following code is rather pointless at the moment of this writing.
   //     We apparently need to write our own set of Findxxx functions to overcome this limitation.
-  if GetFileStatus(FileInfo.PathOnly + FileInfo.Name, Buf, True) <> 0 then
+  if GetFileStatus({$IFNDEF UNIX}FileInfo.PathOnly + {$ENDIF UNIX}FileInfo.Name, Buf, True) <> 0 then
     Result := -1
   else
     Result := Buf.st_size
@@ -5032,7 +5062,6 @@ begin
   ExtractData;
 end;
 
-{$IFDEF MSWINDOWS}
 {$IFDEF FPC}
 constructor TJclFileVersionInfo.Create(const Window: HWND; Dummy: Pointer = nil);
 {$ELSE}
@@ -5049,7 +5078,7 @@ begin
   else
     raise EJclError.CreateResFmt(@RsEModuleNotValid, [Module]);
 end;
-{$ENDIF MSWINDOWS}
+
 
 destructor TJclFileVersionInfo.Destroy;
 begin

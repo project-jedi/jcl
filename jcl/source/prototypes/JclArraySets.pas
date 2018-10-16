@@ -49,7 +49,7 @@ uses
   {$IFDEF SUPPORTS_GENERICS}
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
-  JclBase, JclAbstractContainers, JclContainerIntf, JclArrayLists, JclSynch;
+  JclBase, JclAbstractContainers, JclContainerIntf, JclArrayLists, {$IFDEF THREADSAFE}, JclSynch{$ENDIF THREADSAFE};
 {$I containers\JclContainerCommon.imp}
 {$I containers\JclArraySets.int}
 {$I containers\JclArraySets.imp}

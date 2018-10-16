@@ -2104,7 +2104,7 @@ end;
 
 function TJclWideStringList.GetP(Index: Integer): PWideString;
 begin
-  Result := Addr(GetItem(Index).FString);
+  Result := PWideString(GetItem(Index).FString);
 end;
 
 function TJclWideStringList.IndexOf(const S: WideString): Integer;

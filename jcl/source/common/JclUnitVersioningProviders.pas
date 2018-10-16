@@ -81,6 +81,7 @@ type
     property Items[AIndex: Integer]: PUnitVersionInfo read GetItems; default;
   end;
 
+  {$IFDEF MSWINDOWS}
   TJclUnitVersioningProviderModule = class(TObject)
   private
     FInfoList: TJclUnitVersioningList;
@@ -102,6 +103,7 @@ type
     procedure LoadModuleUnitVersioningInfo(Instance: THandle); override;
     procedure ReleaseModuleUnitVersioningInfo(Instance: THandle); override;
   end;
+  {$ENDIF MSWINDOWS}
 
 {$IFDEF MSWINDOWS}
 function InsertUnitVersioningSection(const ExecutableFileName: TFileName;
@@ -369,7 +371,6 @@ begin
     SectionStream.Free;
   end;
 end;
-{$ENDIF MSWINDOWS}
 
 constructor TJclUnitVersioningProviderModule.Create(Instance: THandle);
 var
@@ -388,9 +389,11 @@ begin
   FInfoList.Free;
   inherited Destroy;
 end;
+{$ENDIF MSWINDOWS}
 
 //=== { TJclDefaultUnitVersioningProvider } ==================================
 
+{$IFDEF MSWINDOWS}
 constructor TJclDefaultUnitVersioningProvider.Create;
 begin
   inherited Create;
@@ -430,11 +433,14 @@ begin
   if Idx <> -1 then
     FModules.Delete(Idx);
 end;
+{$ENDIF MSWINDOWS}
 
+{$IFDEF MSWINDOWS}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
 finalization
   UnregisterUnitVersion(HInstance);
+{$ENDIF MSWINDOWS}
 
 end.

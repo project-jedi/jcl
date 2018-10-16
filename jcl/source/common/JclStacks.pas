@@ -56,7 +56,10 @@ uses
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   {$ENDIF ~HAS_UNITSCOPE}
-  JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
+  JclBase, JclAbstractContainers, JclContainerIntf
+  {$IFDEF THREADSAFE}
+  , JclSynch
+  {$ENDIF THREADSAFE};
 
 type
   TJclIntfStack = class(TJclIntfAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}

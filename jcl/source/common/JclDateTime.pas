@@ -70,15 +70,23 @@ uses
   SysUtils,
   {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF HAS_UNIT_LIBC}
+  {$IFNDEF FPC}
   Libc,
-  {$ENDIF HAS_UNIT_LIBC}
-  {$IFDEF FPC}
+  {$ELSE FPC}
+  libclite,
+  {$ENDIF ~FPC}
+  {$ELSE ~HAS_UNIT_LIBC}
   {$IFDEF UNIX}
+  BaseUnix,
+  dateutils,
   {$IFNDEF LINUX}
   Unix,
   {$ENDIF ~LINUX}
-  {$ENDIF FPC}
-  {$ENDIF}
+  {$ENDIF ~UNIX}
+  {$ENDIF HAS_UNIT_LIBC}
+  {$IFDEF FPC}
+  types,
+  {$ENDIF ~FPC}
   JclBase, JclResources;
 
 const
@@ -87,7 +95,7 @@ const
 
 { Encode / Decode functions }
 
-function EncodeDate(const Year: Integer; Month, Day: Word): TDateTime;
+function EncodeDate(const Year: Integer; Month, Day: Word): TDateTime; overload;
 procedure DecodeDate(Date: TDateTime; out Year, Month, Day: Word); overload;
 procedure DecodeDate(Date: TDateTime; out Year: Integer; out Month, Day: Word); overload;
 procedure DecodeDate(Date: TDateTime; out Year, Month, Day: Integer); overload;
@@ -678,6 +686,7 @@ end;
 {$ENDIF MSWINDOWS}
 
 {$IFDEF UNIX}
+{$IFDEF HAS_UNIT_LIBC}
 function DateTimeToLocalDateTime(DateTime: TDateTime): TDateTime;
 var
   {$IFDEF LINUX}
@@ -696,6 +705,12 @@ begin
   {$ENDIF ~LINUX}
   Result  := ((DateTime * SecsPerDay) - Offset) / SecsPerDay;
 end;
+{$ELSE HAS_UNIT_LIBC}
+function DateTimeToLocalDateTime(DateTime: TDateTime): TDateTime;
+begin
+  Result := UniversalTimeToLocal(DateTime);
+end;
+{$ENDIF HAS_UNIT_LIBC}
 {$ENDIF UNIX}
 
 {$IFDEF MSWINDOWS}
@@ -716,6 +731,7 @@ end;
 {$ENDIF MSWINDOWS}
 
 {$IFDEF UNIX}
+{$IFDEF HAS_UNIT_LIBC}
 function LocalDateTimeToDateTime(DateTime: TDateTime): TDateTime;
 var
   {$IFDEF LINUX}
@@ -734,6 +750,12 @@ begin
   {$ENDIF ~LINUX}
   Result  := ((DateTime * SecsPerDay) + Offset) / SecsPerDay;
 end;
+{$ELSE HAS_UNIT_LIBC}
+function LocalDateTimeToDateTime(DateTime: TDateTime): TDateTime;
+begin
+  Result := LocalTimeToUniversal(DateTime);
+end;
+{$ENDIF HAS_UNIT_LIBC}
 {$ENDIF UNIX}
 
 function HoursToMSecs(Hours: Integer): Integer;

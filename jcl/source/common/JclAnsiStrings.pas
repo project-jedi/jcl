@@ -380,8 +380,10 @@ function StrAnsiToOem(const S: AnsiString): AnsiString;
 {$ENDIF MSWINDOWS}
 
 // String Management
+{$IFNDEF FPC}
 procedure StrAddRef(var S: AnsiString);
 procedure StrDecRef(var S: AnsiString);
+{$ENDIF ~FPC}
 function StrLength(const S: AnsiString): Longint;
 function StrRefCount(const S: AnsiString): Longint;
 procedure StrResetLength(var S: AnsiString);
@@ -518,8 +520,8 @@ procedure StrNormIndex(const StrLen: SizeInt; var Index: SizeInt; var Count: Siz
 
 function ArrayOf(List: TJclAnsiStrings): TDynStringArray; overload;
 
-function AnsiCompareNaturalStr(const S1, S2: AnsiString): SizeInt;
-function AnsiCompareNaturalText(const S1, S2: AnsiString): SizeInt;
+function AnsiCompareNaturalStr(const S1, S2: AnsiString): SizeInt; overload;
+function AnsiCompareNaturalText(const S1, S2: AnsiString): SizeInt; overload;
 
 // Explicit ANSI version of former/deprecated SysUtils PAnsiChar functions
 {$IFNDEF DEPRECATED_SYSUTILS_ANSISTRINGS}
@@ -582,7 +584,11 @@ implementation
 
 uses
   {$IFDEF HAS_UNIT_LIBC}
+  {$IFNDEF FPC}
   Libc,
+  {$ELSE}
+  libclite,
+  {$ENDIF ~FPC}
   {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF SUPPORTS_UNICODE}
   {$IFDEF HAS_UNIT_RTLCONSTS}
@@ -593,7 +599,11 @@ uses
   {$ENDIF}
   {$ENDIF HAS_UNIT_RTLCONSTS}
   {$ENDIF SUPPORTS_UNICODE}
-  JclLogic, JclResources, JclStreams, JclSynch, JclSysUtils;
+  JclLogic, JclResources, JclStreams,
+  {$IFNDEF FPC}
+  JclSynch,
+  {$ENDIF ~ENDIF}
+  JclSysUtils;
 
 //=== Internal ===============================================================
 
@@ -2375,6 +2385,7 @@ end;
 
 //=== String Management ======================================================
 
+{$IFNDEF FPC}
 procedure StrAddRef(var S: AnsiString);
 var
   P: PAnsiStrRec;
@@ -2411,6 +2422,7 @@ begin
     end;
   end;
 end;
+{$ENDIF ~FPC}
 
 function StrLength(const S: AnsiString): Longint;
 var

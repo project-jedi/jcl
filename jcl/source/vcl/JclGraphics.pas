@@ -56,7 +56,14 @@ uses
   {$IFDEF HAS_UNITSCOPE}
   Winapi.Windows, System.Classes, System.SysUtils, Vcl.Graphics, Vcl.Controls, Vcl.Forms,
   {$ELSE ~HAS_UNITSCOPE}
-  Windows, Classes, SysUtils, Graphics, Controls, Forms,
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ELSE MSWINDOWS}
+  LCLType,
+  Types,
+  LCLIntf,
+  {$ENDIF MSWINDOWS}
+  Classes, SysUtils, Graphics, Controls, Forms,
   {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
@@ -138,6 +145,7 @@ type
     destructor Destroy; override;
   end;
 
+  {$IFDEF MSWINDOWS}
   TJclRegion = class;
 
   TJclRegionInfo = class(TObject)
@@ -205,14 +213,18 @@ type
     property Handle: HRGN read GetHandle;
     property RegionType: TJclRegionKind read GetRegionType;
   end;
+  {$ENDIF}
 
   { TJclThreadPersistent }
   { TJclThreadPersistent is an ancestor for TJclBitmap32 object. In addition to
     TPersistent methods, it provides thread-safe locking and change notification }
   TJclThreadPersistent = class(TPersistent)
   private
+    {$IFDEF MSWINDOWS}
     FLock: TRTLCriticalSection;
-
+    {$ELSE MSWINDOWS}
+    FLock: TCriticalSection;
+    {$ENDIF VCL}
     FLockCount: Integer;
     FUpdateCount: Integer;
     FOnChanging: TNotifyEvent;
@@ -471,9 +483,12 @@ procedure Stretch(NewWidth, NewHeight: Cardinal; Filter: TResamplingFilter;
 
 procedure DrawBitmap(DC: HDC; Bitmap: HBITMAP; X, Y, Width, Height: Integer);
 
+{$IFDEF MSWINDOWS}
 function ExtractIconCount(const FileName: string): Integer;
 function BitmapToIcon(Bitmap: HBITMAP; cx, cy: Integer): HICON; overload;
 function BitmapToIcon(Bitmap, Mask: HBITMAP; cx, cy: Integer): HICON; overload;
+{$ENDIF}
+
 function IconToBitmap(Icon: HICON): HBITMAP;
 
 procedure BitmapToJPeg(const FileName: string);
@@ -489,10 +504,12 @@ procedure BitmapToPng(const FileName: string);
 procedure PngToBitmap(const FileName: string);
 {$ENDIF HAS_UNIT_PNGIMAGE}
 
+{$IFNDEF FPC}
 procedure SaveIconToFile(Icon: HICON; const FileName: string);
 procedure WriteIcon(Stream: TStream; ColorBitmap, MaskBitmap: HBITMAP;
   WriteLength: Boolean = False); overload;
 procedure WriteIcon(Stream: TStream; Icon: HICON; WriteLength: Boolean = False); overload;
+{$ENDIF}
 procedure GetIconFromBitmap(Icon: TIcon; Bitmap: TBitmap);
 
 function GetAntialiasedBitmap(const Bitmap: TBitmap): TBitmap;
@@ -511,10 +528,16 @@ function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
 
 function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
   RegionBitmapMode: TJclRegionBitmapMode; UseAlphaChannel: Boolean = False): HRGN;
+{$IFDEF MSWINDOWS}
 procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer; Window: THandle = HWND_DESKTOP); overload;
 procedure ScreenShot(bm: TBitmap; IncludeTaskBar: Boolean = True); overload;
+procedure ScreenShot(bm: TBitmap; ControlToPrint: TWinControl); overload;
+procedure ScreenShot(bm: TBitmap; ControlToPrint: string); overload;
+procedure ScreenShot(bm: TBitmap; FormToPrint: TCustomForm; ControlToPrint: TWinControl); overload;
 procedure ScreenShot(bm: TBitmap; FormToPrint: TCustomForm); overload;
+procedure ScreenShot(bm: TBitmap; FormToPrint: TCustomForm; ControlToPrint: String); overload;
 function MapWindowRect(hWndFrom, hWndTo: THandle; ARect: TRect):TRect;
+{$ENDIF MSWINDOWS}
 
 // PolyLines and Polygons
 procedure PolyLineTS(Bitmap: TJclBitmap32; const Points: TDynPointArray; Color: TColor32);
@@ -568,14 +591,19 @@ uses
   Vcl.ClipBrd, Vcl.Imaging.JPeg, System.TypInfo,
   {$ELSE ~HAS_UNITSCOPE}
   Math,
+  {$IFDEF MSWINDOWS}
   CommCtrl, ShellApi,
+  {$ENDIF}
   {$IFDEF HAS_UNIT_GIFIMG}
   GifImg,
   {$ENDIF HAS_UNIT_GIFIMG}
   {$IFDEF HAS_UNIT_PNGIMAGE}
   PngImage,
   {$ENDIF HAS_UNIT_PNGIMAGE}
-  ClipBrd, JPeg, TypInfo,
+  ClipBrd, TypInfo,
+  {$IFNDEF FPC}
+  jpeg,
+  {$ENDIF FPC}
   {$ENDIF ~HAS_UNITSCOPE}
   JclVclResources,
   JclSysUtils,
@@ -1156,7 +1184,7 @@ begin
       begin
         DestPixel^ := ApplyContributors(@ContributorList[I], CurrentLine);
         // move on to next row
-        Inc(INT_PTR(DestPixel), DestDelta);
+        Inc({$IFDEF MSWINDOWS} INT_PTR {$ENDIF}(DestPixel), DestDelta);
       end;
       Inc(SourceLine);
       Inc(DestLine);
@@ -1732,6 +1760,7 @@ begin
 end;
 {$ENDIF HAS_UNIT_PNGIMAGE}
 
+{$IFDEF MSWINDOWS}
 function ExtractIconCount(const FileName: string): Integer;
 begin
   Result := ExtractIcon(HInstance, PChar(FileName), $FFFFFFFF);
@@ -1764,10 +1793,11 @@ begin
     ImageList_Destroy(ImgList);
   end;
 end;
+{$ENDIF}
 
 function IconToBitmap(Icon: HICON): HBITMAP;
 var
-  IconInfo: TIconInfo;
+  IconInfo: {$IFDEF MSWINDOWS} TIconInfo {$ELSE} PIconInfo {$ENDIF};
 begin
   Result := 0;
   if GetIconInfo(Icon, IconInfo) then
@@ -1779,7 +1809,7 @@ end;
 
 procedure GetIconFromBitmap(Icon: TIcon; Bitmap: TBitmap);
 var
-  IconInfo: TIconInfo;
+  IconInfo: {$IFDEF MSWINDOWS} TIconInfo {$ELSE} PIconInfo {$ENDIF};
 begin
   with TBitmap.Create do
   try
@@ -1817,6 +1847,7 @@ type
     DIBOffset: Longint;
   end;
 
+{$IFNDEF FPC}
 procedure WriteIcon(Stream: TStream; ColorBitmap, MaskBitmap: HBITMAP; WriteLength: Boolean = False);
 var
   MonoInfoSize, ColorInfoSize: DWORD;
@@ -1903,6 +1934,7 @@ begin
     Stream.Free;
   end;
 end;
+{$ENDIF FPC}
 
 procedure Transform(Dst, Src: TJclBitmap32; SrcRect: TRect;
   Transformation: TJclTransformation);
@@ -2132,6 +2164,7 @@ begin
   end;
 end;
 
+{$IFDEF MSWINDOWS}
 procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer; Window: THandle); overload;
 var
   WinDC: HDC;
@@ -2180,6 +2213,40 @@ begin
   ScreenShot(bm, R.Left, R.Top, R.Right, R.Bottom, HWND_DESKTOP);
 end;
 
+procedure ScreenShot(bm: TBitmap; ControlToPrint: TWinControl); overload;
+begin
+  //uses the ActiveForm property of TScreen to determine on which form the control will be searched for.
+  if ControlToPrint <> nil then
+    ScreenShot(bm, Screen.ActiveForm, ControlToPrint)
+  else
+    raise EJclGraphicsError.CreateResFmt(@RSInvalidFormOrComponent, ['form'])
+end;
+
+procedure ScreenShot(bm: TBitmap; ControlToPrint: string); overload;
+begin
+  //uses the ActiveForm property of TScreen to determine on which form the control will be searched for.
+  if Length(ControlToPrint) > 0 then
+    ScreenShot(bm, Screen.ActiveForm, ControlToPrint)
+  else
+    raise EJclGraphicsError.CreateResFmt(@RSInvalidFormOrComponent, ['Component'])
+end;
+
+procedure ScreenShot(bm: TBitmap; FormToPrint: TCustomForm; ControlToPrint: TWinControl); overload;
+begin
+  if FormToPrint <> nil then
+  begin
+    if (ControlToPrint is TWinControl) then
+      ScreenShot(bm, FormToPrint, ControlToPrint.Name)
+    else
+      raise EJclGraphicsError.CreateResFmt(@RSInvalidControlType,[ControlToPrint.Name])
+  end
+  else
+  if ControlToPrint <> nil then
+    raise EJclGraphicsError.CreateResFmt(@RSInvalidFormOrComponent, ['form'])
+  else
+    raise EJclGraphicsError.CreateResFmt(@RSInvalidFormOrComponent, ['form'])
+end;
+
 procedure ScreenShot(bm: TBitmap; FormToPrint: TCustomForm); overload;
 begin
   //Prints the entire forms area.
@@ -2189,11 +2256,39 @@ begin
     raise EJclGraphicsError.CreateResFmt(@RSInvalidFormOrComponent, ['form'])
 end;
 
+procedure ScreenShot(bm: TBitmap; FormToPrint: TCustomForm; ControlToPrint: String); overload;
+var
+  Component: TComponent;
+begin
+  if FormToPrint <> nil then
+  begin
+    if Length(ControlToPrint) =0 then
+      raise EJclGraphicsError.CreateResFmt(@RSInvalidFormOrComponent, ['component'])
+    else
+    begin
+      Component :=nil;
+      FormToPrint.FindComponent(ControlToPrint);
+      if Component =nil then
+        raise EJclGraphicsError.CreateResFmt(@RsComponentDoesNotExist,[ControlToPrint, FormToPrint.Name])
+      else
+      begin
+        if Component is TWinControl then
+          ScreenShot(bm, TWinControl(Component).Left, TWinControl(Component).Top, TWinControl(Component).Width, TWinControl(Component).Height, TWinControl(Component).Handle)
+        else
+          raise EJclGraphicsError.CreateResFmt(@RSInvalidControlType,[ControlToPrint]);
+      end;
+    end;
+  end
+  else
+    raise EJclGraphicsError.CreateResFmt(@RSInvalidFormOrComponent, ['form'])
+end;
+
 function MapWindowRect(hWndFrom, hWndTo: THandle; ARect:TRect):TRect;
 begin
   MapWindowPoints(hWndFrom, hWndTo, ARect, 2);
   Result := ARect;
 end;
+{$ENDIF}
 
 function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
   StartColor, EndColor: TColor; ADirection: TGradientDirection): Boolean;
@@ -2262,6 +2357,7 @@ end;
 
 //=== { TJclRegionInfo } =====================================================
 
+{$IFDEF MSWINDOWS}
 constructor TJclRegionInfo.Create(Region: TJclRegion);
 begin
   inherited Create;
@@ -2587,6 +2683,7 @@ function TJclRegion.GetRegionInfo: TJclRegionInfo;
 begin
   Result := TJclRegionInfo.Create(Self);
 end;
+{$ENDIF}
 
 //=== { TJclThreadPersistent } ===============================================
 
@@ -2594,13 +2691,11 @@ constructor TJclThreadPersistent.Create;
 begin
   inherited Create;
   InitializeCriticalSection(FLock);
-
 end;
 
 destructor TJclThreadPersistent.Destroy;
 begin
   DeleteCriticalSection(FLock);
-
   inherited Destroy;
 end;
 
@@ -2711,7 +2806,9 @@ begin
   FOuterColor := $00000000;  // by default as full transparency black
   FFont := TFont.Create;
   FFont.OnChange := FontChanged;
+  {$IFNDEF FPC}
   FFont.OwnerCriticalSection := @FLock;
+  {$ENDIF FPC}
   FMasterAlpha := $FF;
   FPenColor := clWhite32;
   FStippleStep := 1;
@@ -3848,7 +3945,7 @@ begin
         A := Value shr 24;
         hyp := hyp - N shl 16;
         A := A * Longword(hyp) shl 8 and $FF000000;
-        SET_TS256(Sar(px + ex - nx,9), Sar(py + ey - ny,9), Value and _RGB + A);
+        SET_TS256(Sar(Integer(px + ex - nx),9), Sar(Integer(py + ey - ny),9), Value and _RGB + A);
       finally
         EMMS;
         Changed;
@@ -3943,7 +4040,7 @@ begin
         A := C shr 24;
         hyp := hyp - N shl 16;
         A := A * Longword(hyp) shl 8 and $FF000000;
-        SET_TS256(Sar(px + ex - nx,9), Sar(py + ey - ny,9), C and _RGB + A);
+        SET_TS256(Sar(Integer(px + ex - nx),9), Sar(Integer(py + ey - ny),9), C and _RGB + A);
         EMMS;
       finally
         Changed;
@@ -4334,7 +4431,7 @@ begin
   begin
     SelectObject(Handle, Font.Handle);
     SetTextColor(Handle, ColorToRGB(Font.Color));
-    SetBkMode(Handle, {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.TRANSPARENT);
+    SetBkMode(Handle, {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}{$IFDEF MSWINDOWS} Windows.{$ENDIF}TRANSPARENT);
   end;
 end;
 
@@ -4373,7 +4470,7 @@ begin
   UpdateFont;
   Result.cX := 0;
   Result.cY := 0;
-  {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.GetTextExtentPoint32(Handle, PChar(Text), Length(Text), Result);
+  {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}{$IFDEF MSWINDOWS} Windows.{$ENDIF}GetTextExtentPoint32(Handle, PChar(Text), Length(Text), Result);
 end;
 
 procedure TJclBitmap32.TextOut(X, Y: Integer; const Text: string);
@@ -4946,15 +5043,15 @@ end;
 procedure TJclLinearTransformation.Transform(DstX, DstY: Integer;
   out SrcX, SrcY: Integer);
 begin
-  SrcX := Sar(DstX * A + DstY * B + C, 12);
-  SrcY := Sar(DstX * D + DstY * E + F, 12);
+  SrcX := Sar(Integer(DstX * A + DstY * B + C), 12);
+  SrcY := Sar(Integer(DstX * D + DstY * E + F), 12);
 end;
 
 procedure TJclLinearTransformation.Transform256(DstX, DstY: Integer;
   out SrcX256, SrcY256: Integer);
 begin
-  SrcX256 := Sar(DstX * A + DstY * B + C, 4);
-  SrcY256 := Sar(DstX * D + DstY * E + F, 4);
+  SrcX256 := Sar(Integer(DstX * A + DstY * B + C), 4);
+  SrcY256 := Sar(Integer(DstX * D + DstY * E + F), 4);
 end;
 
 procedure TJclLinearTransformation.Translate(Dx, Dy: Extended);

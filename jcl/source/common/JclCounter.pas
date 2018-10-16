@@ -55,7 +55,11 @@ uses
   {$ENDIF MSWINDOWS}
   {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF HAS_UNIT_LIBC}
+  {$IFNDEF FPC}
   Libc,
+  {$ELSE FPC}
+  libclite,
+  {$ENDIF ~FPC}
   {$ENDIF HAS_UNIT_LIBC}
   JclBase;
 

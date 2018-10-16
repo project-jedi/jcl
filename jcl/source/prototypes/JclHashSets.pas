@@ -47,7 +47,10 @@ uses
   SysUtils, Classes,
   {$ENDIF ~HAS_UNITSCOPE}
   JclAlgorithms,
-  JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
+  JclBase, JclAbstractContainers, JclContainerIntf
+  {$IFDEF THREADSAFE}
+  ,JclSynch
+  {$ENDIF THREADSAFE};
 {$I containers\JclContainerCommon.imp}
 {$I containers\JclHashSets.imp}
 {$I containers\JclHashSets.int}

@@ -45,12 +45,16 @@ uses
   {$IFDEF HAS_UNITSCOPE}
   WinApi.Windows, System.SysUtils, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.Graphics, System.TypInfo,
   {$ELSE ~HAS_UNITSCOPE}
-  Windows, SysUtils, StdCtrls, ComCtrls, Graphics, TypInfo,
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF}
+  SysUtils, StdCtrls, ComCtrls, Graphics, TypInfo,
   {$ENDIF ~HAS_UNITSCOPE}
   JclSysUtils, JclSysInfo;
 
 procedure SetCaptionFont(const AObjectFont: TFont);
 begin
+  {$IFDEF MSWINDOWS}
   if JclCheckWinVersion(6, 0) then // WinVista or newer
   begin
     AObjectFont.Name := 'Segoe UI';
@@ -66,10 +70,15 @@ begin
     AObjectFont.Name := 'MS Sans Serif';
     AObjectFont.Size := 8;
   end;
+  {$ELSE}
+   AObjectFont.Name := 'default';
+   AObjectFont.Size := 9;
+  {$ENDIF}
 end;
 
 procedure SetContentFont(const AObjectFont: TFont);
 begin
+  {$IFDEF MSWINDOWS}
   if JclCheckWinVersion(6, 0) then // WinVista or newer
   begin
     AObjectFont.Name := 'Calibri';
@@ -85,6 +94,10 @@ begin
     AObjectFont.Name := 'MS Sans Serif';
     AObjectFont.Size := 8;
   end;
+  {$ELSE}
+  AObjectFont.Name := 'default';
+  AObjectFont.Size := 9;
+  {$ENDIF}
 end;
 
 procedure SetObjectFontToSystemFont(const AObject: TObject; const FontType: TFontType);

@@ -1022,7 +1022,7 @@ begin
   case StrRet.uType of
     STRRET_WSTR:
       begin
-        Result := WideCharToString(StrRet.pOleStr);
+        Result := string(WideCharToString(StrRet.pOleStr));
         if Free then
           SHFreeMem(Pointer(StrRet.pOleStr));
       end;
@@ -1278,7 +1278,7 @@ begin
     InfoTip := nil;
     if Succeeded(QueryInfo.GetInfoTip(0, InfoTip)) then
     begin
-      Result := WideCharToString(InfoTip);
+      Result := string(WideCharToString(InfoTip));
       SHFreeMem(Pointer(InfoTip));
     end;
   end;

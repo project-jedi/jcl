@@ -39,7 +39,11 @@ interface
 
 uses
   {$IFDEF HAS_UNIT_LIBC}
+  {$IFNDEF FPC}
   Libc,
+  {$ELSE}
+  libclite,
+  {$ENDIF ~FPC}
   {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
@@ -146,12 +150,14 @@ type
     property Items[Index: Integer]: TUnitVersion read GetItem; default;
   end;
 
+{$IFDEF MSWINDOWS}
 procedure RegisterUnitVersion(Instance: THandle; const Info: TUnitVersionInfo);
 procedure UnregisterUnitVersion(Instance: THandle);
 
 function GetUnitVersioning: TUnitVersioning;
 
 procedure ExportUnitVersioningToFile(iFileName : string);
+{$ENDIF MSWINDOWS}
 
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -535,7 +541,7 @@ end;
 {$UNDEF FPCUNIX}   // Temporary, will move to .inc's in time.
 {$IFDEF FPC}
  {$IFDEF UNIX}
- {$DEFIN FPCUNIX}
+ {$DEFINE FPCUNIX}
 {$ENDIF}
 {$ENDIF}
 
@@ -627,9 +633,12 @@ var
   UnitVersioningOwner: Boolean = False;
   GlobalUnitVersioning: TUnitVersioning = nil;
   UnitVersioningNPA: PUnitVersioning = nil;
+  {$IFDEF MSWINDOWS}
   UnitVersioningMutex: TJclMutex;
+  {$ENDIF MSWINDOWS}
   UnitVersioningFinalized: Boolean = False;
 
+{$IFDEF MSWINDOWS}
 function GetUnitVersioning: TUnitVersioning;
 begin
   if UnitVersioningFinalized then
@@ -709,7 +718,7 @@ var
   UnitVersioning: TUnitVersioning;
 begin
   UnitVersioning := GetUnitVersioning;
-  if Assigned(UnitVersioning) then
+  if Assigned(UnitVersioning) and not IsLibrary then
     UnitVersioning.UnregisterModule(Instance);
 end;
 
@@ -728,6 +737,7 @@ begin
     sl.Free;
   end;
 end;
+{$ENDIF MSWINDOWS}
 
 initialization
 {$IFDEF UNITVERSIONING}
@@ -738,7 +748,9 @@ finalization
 {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+{$IFDEF MSWINDOWS}
   FinalizeUnitVersioning;
+{$ENDIF MSWINDOWS}
 
 end.
 

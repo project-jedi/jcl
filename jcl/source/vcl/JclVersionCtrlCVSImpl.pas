@@ -30,6 +30,7 @@ unit JclVersionCtrlCVSImpl;
 
 interface
 
+{$IFDEF MSWINDOWS}
 uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
@@ -69,9 +70,11 @@ const
     Data: nil
     );
 {$ENDIF UNITVERSIONING}
+{$ENDIF MSWINDOWS}
 
 implementation
 
+{$IFDEF MSWINDOWS}
 uses
   JclVclResources,
   JclFileUtils, JclSysUtils, JclRegistry, JclStrings;
@@ -323,5 +326,6 @@ finalization
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
+{$ENDIF MSWINDOWS}
 
 end.

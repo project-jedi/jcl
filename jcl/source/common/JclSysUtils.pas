@@ -66,9 +66,17 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
+  {$IFDEF FPCNONWINDOWS}
+  FpWinAPICompatibility,
+  {$ENDIF -FPCNONWINDOWS}
   SysUtils, Classes, TypInfo, SyncObjs,
   {$ENDIF ~HAS_UNITSCOPE}
-  JclBase, JclSynch;
+  JclBase
+  {$IFDEF THREADSAFE}
+  {$IFNDEF FPC}
+  ,JclSynch
+  {$ENDIF ~FPC}
+  {$ENDIF THREADSAFE};
 
 // memory initialization
 // first parameter is "out" to make FPC happy with uninitialized values
@@ -489,6 +497,7 @@ type
 
 function IntToStrZeroPad(Value, Count: Integer): string;
 
+{$IFNDEF FPC}
 // Child processes
 type
   // e.g. TStrings.Append
@@ -633,6 +642,7 @@ type
     property OutputCallback: TTextHandler read GetOutputCallback write SetOutputCallback;
     property Output: string read GetOutput;
   end;
+{$ENDIF FPC}
 
 // Console Utilities
 function ReadKey: Char;
@@ -700,8 +710,10 @@ procedure ListSetItem(var List: string; const Separator: string;
 function ListItemIndex(const List, Separator, Item: string): Integer;
 
 // RTL package information
+{$IFDEF MSWINDOWS}
 function SystemTObjectInstance: TJclAddr;
 function IsCompiledWithPackages: Boolean;
+{$ENDIF}
 
 // GUID
 function JclGUIDToString(const GUID: TGUID): string;
@@ -868,7 +880,11 @@ implementation
 
 uses
   {$IFDEF HAS_UNIT_LIBC}
+  {$IFNDEF FPC}
   Libc,
+  {$ELSE}
+  libclite,
+  {$ENDIF ~FPC}
   {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF MSWINDOWS}
   JclConsole,
@@ -885,7 +901,11 @@ uses
   {$ENDIF HAS_UNIT_ANSISTRINGS}
   {$ENDIF ~HAS_UNITSCOPE}
   JclFileUtils, JclMath, JclResources, JclStrings,
-  JclStringConversions, JclSysInfo, JclWin32;
+  JclStringConversions
+  {$IFDEF MSWINDOWS}
+  ,JclSysInfo, JclWin32
+  {$ENDIF ~MSWINDOWS}
+  ;
 
 // memory initialization
 procedure ResetMemory(out P; Size: Longint);
@@ -1257,7 +1277,9 @@ begin
       {$IFDEF RTL160_UP} // Delphi 7-2007
     OldValue := Pointer(InterlockedCompareExchange(Longint(GlobalMMFHandleListCS), Longint(CS), 0));
       {$ELSE} // Delphi 5, 6
+    {$IFNDEF FPC}
     OldValue := InterlockedCompareExchange(Pointer(GlobalMMFHandleListCS), Pointer(CS), nil);
+    {$ENDIF FPC}
       {$ENDIF RTL180_UP}
     {$ENDIF RTL185_UP}
     if OldValue <> nil then
@@ -1508,6 +1530,12 @@ procedure SortDynArray(const ArrayPtr: Pointer; ElementSize: Cardinal; SortFunc:
 var
   TempBuf: TDynByteArray;
 
+  function ArrayItemPointer(Item: SizeInt): Pointer;
+  begin
+    Assert(Item >= 0);
+    Result := Pointer(TJclAddr(ArrayPtr) + TJclAddr(Item * SizeInt(ElementSize)));
+  end;
+
   procedure QuickSort(L, R: SizeInt);
   var
     I, J, T: SizeInt;
@@ -1518,10 +1546,10 @@ var
     repeat
       I := L;
       J := R;
-      P := Pointer(TJclAddr(ArrayPtr) + TJclAddr(((L + R) shr 1) * SizeInt(ElementSize)));
+      P := ArrayItemPointer((L + R) shr 1);
       repeat
-        IPtr := Pointer(TJclAddr(ArrayPtr) + TJclAddr(I * SizeInt(ElementSize)));
-        JPtr := Pointer(TJclAddr(ArrayPtr) + TJclAddr(J * SizeInt(ElementSize)));
+        IPtr := ArrayItemPointer(I);
+        JPtr := ArrayItemPointer(J);
         while SortFunc(IPtr, P) < 0 do
         begin
           Inc(I);
@@ -2366,7 +2394,7 @@ begin
   FSignChars[False] := '-';
   FSignChars[True] := '+';
   FPaddingChar := ' ';
-  FMultiplier := '×';
+  FMultiplier := 'x';
   FFractionalPartSeparator := JclFormatSettings.DecimalSeparator;
   FDigitBlockSeparator := JclFormatSettings.ThousandSeparator;
 end;
@@ -2734,6 +2762,7 @@ begin
   FSignChars[True] := Value;
 end;
 
+{$IFNDEF FPC}
 //=== Child processes ========================================================
 
 const
@@ -3451,6 +3480,8 @@ begin
   FOutputCallback := CallbackMethod;
 end;
 
+{$ENDIF FPC}
+
 //=== Console Utilities ======================================================
 
 function ReadKey: Char;
@@ -3685,7 +3716,7 @@ begin
 end;
 
 //=== RTL package information ================================================
-
+{$IFDEF MSWINDOWS}
 function SystemTObjectInstance: TJclAddr;
 begin
   Result := ModuleFromAddr(Pointer(System.TObject));
@@ -3695,7 +3726,7 @@ function IsCompiledWithPackages: Boolean;
 begin
   Result := SystemTObjectInstance <> HInstance;
 end;
-
+{$ENDIF MSWINDOWS}
 //=== GUID ===================================================================
 
 function JclGUIDToString(const GUID: TGUID): string;

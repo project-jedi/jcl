@@ -46,10 +46,10 @@
 unit JclRegistry;
 
 {$I jcl.inc}
-{$I windowsonly.inc}
 
 interface
 
+{$IFDEF MSWINDOWS}
 uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
@@ -62,7 +62,7 @@ uses
   JclBase, JclStrings;
 
 type
-  DelphiHKEY = {$IFDEF CPUX64}type Winapi.Windows.HKEY{$ELSE}Longword{$ENDIF CPUX64};
+  DelphiHKEY = {$IFDEF CPUX64}type {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.HKEY{$ELSE}Longword{$ENDIF CPUX64};
   {$HPPEMIT '// BCB users must typecast the HKEY values to DelphiHKEY or use the HK-values below.'}
 
   TExecKind = (ekMachineRun, ekMachineRunOnce, ekUserRun, ekUserRunOnce,
@@ -389,9 +389,11 @@ const
     Data: nil
     );
 {$ENDIF UNITVERSIONING}
+{$ENDIF MSWINDOWS}
 
 implementation
 
+{$IFDEF MSWINDOWS}
 uses
   {$IFDEF HAS_UNITSCOPE}
   System.SysUtils,
@@ -2151,6 +2153,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+{$ENDIF MSWINDOWS}
 
 end.
 

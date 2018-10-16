@@ -37,6 +37,9 @@ unit JclNotify;
 interface
 
 uses
+  {$IFDEF FPC}
+  {$UNDEF THREADSAFE}
+  {$ENDIF FPC}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
