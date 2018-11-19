@@ -4169,8 +4169,10 @@ begin
           Result := 'Windows 10 Fall Creators Update';
        1803:
           Result := 'Windows 10 April 2018 Update';
+       1809:
+          Result := 'Windows 10 October 2018 Update';
     else
-      Result := '';
+      Result := 'Windows 10 ' + IntToStr(GetWindows10ReleaseId) + ' Update';
     end;
   end
   else
@@ -4194,6 +4196,8 @@ begin
           Result := 'Redstone 3';
        1803:
           Result := 'Redstone 4';
+       1809:
+          Result := 'Redstone 5';
     else
       Result := '';
     end;
