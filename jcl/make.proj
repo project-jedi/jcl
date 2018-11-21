@@ -59,7 +59,8 @@
 		<EditionDirVersion Condition=" Exists('$(BDS)\bin\dcc32220.dll') ">d22</EditionDirVersion> <!-- XE8 -->
 		<EditionDirVersion Condition=" Exists('$(BDS)\bin\dcc32230.dll') ">d23</EditionDirVersion> <!-- 10 Seattle -->
 		<EditionDirVersion Condition=" Exists('$(BDS)\bin\dcc32240.dll') ">d24</EditionDirVersion> <!-- 10.1 Berlin -->
-		<EditionDirVersion Condition=" Exists('$(BDS)\bin\dcc32250.dll') ">d25</EditionDirVersion> <!-- 10.2 ? -->
+		<EditionDirVersion Condition=" Exists('$(BDS)\bin\dcc32250.dll') ">d25</EditionDirVersion> <!-- 10.2 Tokyo -->
+		<EditionDirVersion Condition=" Exists('$(BDS)\bin\dcc32260.dll') ">d26</EditionDirVersion> <!-- 10.3 ? -->
 
 		<LibDirVersion>$(EditionDirVersion)\$(Platform)</LibDirVersion>
 		<LibDirVersion Condition=" '$(EditionDirVersion)' == 'd12' or '$(EditionDirVersion)' == 'd14' or '$(EditionDirVersion)' == 'd15' ">$(EditionDirVersion)</LibDirVersion>
