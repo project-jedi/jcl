@@ -2366,7 +2366,7 @@ begin
   FSignChars[False] := '-';
   FSignChars[True] := '+';
   FPaddingChar := ' ';
-  FMultiplier := '×';
+  FMultiplier := 'Ã—';
   FFractionalPartSeparator := JclFormatSettings.DecimalSeparator;
   FDigitBlockSeparator := JclFormatSettings.ThousandSeparator;
 end;
@@ -3009,6 +3009,9 @@ var
   CommandLine: string;
   AbortPtr: PBoolean;
   Flags: DWORD;
+  // for stdin
+  StdInSA:TSecurityAttributes;
+  hReadHandle, hWriteHandle: THandle;
 begin
   Result := False;
 
@@ -3054,7 +3057,16 @@ begin
     StartupInfo.dwFlags := StartupInfo.dwFlags or STARTF_USESHOWWINDOW;
     StartupInfo.wShowWindow := StartupVisibilityFlags[Options.StartupVisibility];
   end;
-  StartupInfo.hStdInput := GetStdHandle(STD_INPUT_HANDLE);
+  hWriteHandle := 0;  // initialize so that we know whether it was created
+  hReadHandle := GetStdHandle(STD_INPUT_HANDLE);
+  if (hReadHandle=INVALID_HANDLE_VALUE) or (hReadHandle=0) then
+  begin
+    StdInSA.lpSecurityDescriptor := nil;
+    StdInSA.nLength := sizeof(SECURITY_ATTRIBUTES);
+    StdInSA.bInheritHandle := true;
+    CreatePipe(hReadHandle, hWriteHandle, @StdInSA,0);
+  end;
+  StartupInfo.hStdInput :=  hReadHandle;
   StartupInfo.hStdOutput := OutPipeInfo.PipeWrite;
   if Options.MergeError then
     StartupInfo.hStdError := OutPipeInfo.PipeWrite
@@ -3194,6 +3206,10 @@ begin
   finally
     LastError := GetLastError;
     try
+      if hWriteHandle <>0  then begin
+        CloseHandle(hReadHandle);
+        CloseHandle(hWriteHandle);
+      end;
       if OutPipeInfo.PipeRead <> 0 then
         CloseHandle(OutPipeInfo.PipeRead);
       if OutPipeInfo.PipeWrite <> 0 then
