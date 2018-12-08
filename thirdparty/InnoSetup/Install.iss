@@ -4,7 +4,7 @@
 ;    Include_Binaries    Create an installer that can install a precompiled JCL
 ;    Include_Examples    Add the Examples directory to the installer (user can then select the component)
 ;    DEBUGGING           Development. Uses fast compression (script debugging)
-;    Include_DelphiX     Include the binaries for Delphi X (X in 6..24)
+;    Include_DelphiX     Include the binaries for Delphi X (X in 6..26)
 
 #ifndef CmdLineBuild
 #define JclRoot "..\Jcl"
@@ -79,6 +79,9 @@
 #define JclLib25    JclLib
 #define   JclBpl25  JclBpl
 #define   JclHpp25  JclHpp
+#define JclLib26    JclLib
+#define   JclBpl26  JclBpl
+#define   JclHpp26  JclHpp
 #endif
 ;---------------------------------------------------
 
@@ -287,6 +290,13 @@ Source: {#JclBpl25}\*; DestDir: "{code:GetDelphiBplDir|25}"; Components: "IDE\De
 Source: {#JclBpl25}\Win64\*; DestDir: "{code:GetDelphiBplDir|25}\Win64"; Components: "IDE\Delphi25"; Flags: ignoreversion sortfilesbyextension
 Source: {#JclHpp25}\*; DestDir: "{app}\include\d25"; Components: "IDE\Delphi25"; Flags: ignoreversion sortfilesbyextension
 #endif
+#ifdef Include_Delphi26
+; SolidBreak;
+Source: {#JclLib26}\*; DestDir: "{app}\lib\d26"; Excludes: ".svn,__history,*.txt,*.hpp"; Components: "IDE\Delphi26"; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs solidbreak
+Source: {#JclBpl26}\*; DestDir: "{code:GetDelphiBplDir|26}"; Components: "IDE\Delphi26"; Flags: ignoreversion sortfilesbyextension
+Source: {#JclBpl26}\Win64\*; DestDir: "{code:GetDelphiBplDir|26}\Win64"; Components: "IDE\Delphi26"; Flags: ignoreversion sortfilesbyextension
+Source: {#JclHpp26}\*; DestDir: "{app}\include\d26"; Components: "IDE\Delphi26"; Flags: ignoreversion sortfilesbyextension
+#endif
 
 #endif
 
@@ -436,6 +446,14 @@ Root: HKCU; Subkey: "{code:GetDelphiRegKey|25}\Jedi\JCL"; ValueType: string; Val
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|25}\Jedi\JCL"; ValueType: string; ValueName: "Version"; ValueData: {#JclVersionStr}; Components: "IDE\Delphi25"; Flags: uninsdeletevalue;
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|25}\Globals"; ValueType: string; ValueName: "ForceEnvOptionsUpdate"; ValueData: "1"; Components: "IDE\Delphi25";
 #endif
+#ifdef Include_Delphi26
+; Delphi 10.3
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|26}\Jedi\JCL"; ValueType: string; ValueName: "BplDir"; ValueData: {code:GetDelphiBplDir|26}; Components: "IDE\Delphi26"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|26}\Jedi\JCL"; ValueType: string; ValueName: "DcpDir"; ValueData: {app}\lib\d26; Components: "IDE\Delphi26"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|26}\Jedi\JCL"; ValueType: string; ValueName: "RootDir"; ValueData: {app}; Components: "IDE\Delphi26"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|26}\Jedi\JCL"; ValueType: string; ValueName: "Version"; ValueData: {#JclVersionStr}; Components: "IDE\Delphi26"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|26}\Globals"; ValueType: string; ValueName: "ForceEnvOptionsUpdate"; ValueData: "1"; Components: "IDE\Delphi26";
+#endif
 
 #endif
 
@@ -559,6 +577,13 @@ Type: files; Name: "{app}\lib\d25\win64\*"
 Type: files; Name: "{app}\lib\d25\win64\debug\*"
 Type: files; Name: "{app}\include\d25\*"
 Type: files; Name: "{code:GetDelphiBplDir|25}\Jcl*.~bpl";
+; lib\Delphi/C++Builder 10.3
+Type: files; Name: "{app}\lib\d26\win32\*"
+Type: files; Name: "{app}\lib\d26\win32\debug\*"
+Type: files; Name: "{app}\lib\d26\win64\*"
+Type: files; Name: "{app}\lib\d26\win64\debug\*"
+Type: files; Name: "{app}\include\d26\*"
+Type: files; Name: "{code:GetDelphiBplDir|26}\Jcl*.~bpl";
 
 [Icons]
 Name: "{group}\{cm:ProgramOnTheWeb,{#MyAppName}}"; Filename: "{#MyAppURL}"
