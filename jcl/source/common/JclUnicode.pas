@@ -1251,7 +1251,7 @@ type
     procedure EndUpdate;
     function Equals(Strings: TWideStrings): Boolean; {$IFDEF RTL200_UP} reintroduce; {$ENDIF RTL200_UP}
     procedure Exchange(Index1, Index2: Integer); virtual;
-    function GetSeparatedText(Separators: WideString): WideString; virtual;
+    function GetSeparatedText(const Separators: WideString): WideString; virtual;
     function GetText: PWideChar; virtual;
     function IndexOf(const S: WideString): Integer; virtual;
     function IndexOfName(const Name: WideString): Integer;
@@ -1630,7 +1630,9 @@ uses
   {$IFDEF HAS_UNITSCOPE}
   System.RtlConsts,
   {$ELSE ~HAS_UNITSCOPE}
+  {$IFNDEF FPC}
   RtlConsts,
+  {$ENDIF}
   {$ENDIF ~HAS_UNITSCOPE}
   {$ENDIF HAS_UNIT_RTLCONSTS}
   {$IFNDEF UNICODE_RTL_DATABASE}
@@ -4727,7 +4729,7 @@ var
   Run: PUcState;
   TP: SizeInt;
 
-  procedure UREError(Text: string; RE: PWideChar);
+  procedure UREError(const Text: string; RE: PWideChar);
   var
     S: string;
   begin
@@ -5469,7 +5471,7 @@ begin
   Result := nil;
 end;
 
-function TWideStrings.GetSeparatedText(Separators: WideString): WideString;
+function TWideStrings.GetSeparatedText(const Separators: WideString): WideString;
 // Same as GetText but with customizable separator characters.
 var
   I, L,

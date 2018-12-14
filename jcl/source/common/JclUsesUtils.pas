@@ -35,7 +35,7 @@ uses
   {$IFDEF HAS_UNITSCOPE}
   System.Classes, System.SysUtils, Winapi.Windows,
   {$ELSE ~HAS_UNITSCOPE}
-  Classes, SysUtils, Windows,
+  Classes, SysUtils, {Windows,}
   {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,

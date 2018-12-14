@@ -167,15 +167,21 @@ begin
   Set8087ControlWord((CW and $F3FF) or (Word(Rounding) shl 10));
 end;
 
+{$IFDEF FPC}
+{$IFDEF FPC_FULLVERSION>=30101}
+ {$DEFINE NEW_FPC}
+{$ENDIF}
+{$ENDIF}
+
 function Set8087ControlWord(const Control: Word): Word;
 var
   StackControl: Word;
 asm
-          {$IFDEF UNIX}
+          {$IFDEF NEW_FPC}
           MOV     AX, Control word ptr
           MOV     StackControl, AX
           {$ELSE}
-          MOV StackControl, Control
+          MOV     StackControl, Control
           {$ENDIF}
           FNCLEX
           FSTCW   Result         // save the old control word
@@ -278,11 +284,11 @@ function SetMasked8087Exceptions(Exceptions: T8087Exceptions; ClearBefore: Boole
   asm
         FSTCW   Result
         FWAIT
-        {$IFDEF UNIX}
+        {$IFDEF NEW_FPC}
         MOV     AX, NewCW word ptr
         MOV     StackNewCW, AX
         {$ELSE}
-        MOV StackNewCW, NewCW
+        MOV     StackNewCW, NewCW
         {$ENDIF}
         MOV     AX, Result
         AND     AX, NOT X87ExceptBits  // mask exception mask bits 0..5

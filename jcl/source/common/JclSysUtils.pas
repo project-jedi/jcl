@@ -57,6 +57,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF THREADSAFE}
+  JclSynch,
+  {$ENDIF THREADSAFE}
   {$IFDEF HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
   Winapi.Windows,
@@ -71,12 +74,7 @@ uses
   {$ENDIF -FPCNONWINDOWS}
   SysUtils, Classes, TypInfo, SyncObjs,
   {$ENDIF ~HAS_UNITSCOPE}
-  JclBase
-  {$IFDEF THREADSAFE}
-  {$IFNDEF FPC}
-  ,JclSynch
-  {$ENDIF ~FPC}
-  {$ENDIF THREADSAFE};
+  JclBase;
 
 // memory initialization
 // first parameter is "out" to make FPC happy with uninitialized values
@@ -497,12 +495,14 @@ type
 
 function IntToStrZeroPad(Value, Count: Integer): string;
 
-{$IFNDEF FPC}
 // Child processes
 type
   // e.g. TStrings.Append
   TTextHandler = procedure(const Text: string) of object;
   TJclProcessPriority = (ppIdle, ppNormal, ppHigh, ppRealTime, ppBelowNormal, ppAboveNormal);
+  {$IFNDEF MSWINDOWS}
+  TJclEvent = TEvent
+  {$ENDIF MSWINDOWS}
 
 const
   ABORT_EXIT_CODE = {$IFDEF MSWINDOWS} ERROR_CANCELLED {$ELSE} 1223 {$ENDIF};
@@ -642,7 +642,6 @@ type
     property OutputCallback: TTextHandler read GetOutputCallback write SetOutputCallback;
     property Output: string read GetOutput;
   end;
-{$ENDIF FPC}
 
 // Console Utilities
 function ReadKey: Char;
@@ -659,13 +658,13 @@ type
 const
   INVALID_MODULEHANDLE_VALUE = TModuleHandle(0);
 
-function LoadModule(var Module: TModuleHandle; FileName: string): Boolean;
-function LoadModuleEx(var Module: TModuleHandle; FileName: string; Flags: Cardinal): Boolean;
+function LoadModule(var Module: TModuleHandle; const FileName: string): Boolean;
+function LoadModuleEx(var Module: TModuleHandle; const FileName: string; Flags: Cardinal): Boolean;
 procedure UnloadModule(var Module: TModuleHandle);
-function GetModuleSymbol(Module: TModuleHandle; SymbolName: string): Pointer;
-function GetModuleSymbolEx(Module: TModuleHandle; SymbolName: string; var Accu: Boolean): Pointer;
-function ReadModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; Size: Cardinal): Boolean;
-function WriteModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; Size: Cardinal): Boolean;
+function GetModuleSymbol(Module: TModuleHandle; const SymbolName: string): Pointer;
+function GetModuleSymbolEx(Module: TModuleHandle; const SymbolName: string; var Accu: Boolean): Pointer;
+function ReadModuleData(Module: TModuleHandle; const SymbolName: string; var Buffer; Size: Cardinal): Boolean;
+function WriteModuleData(Module: TModuleHandle; const SymbolName: string; var Buffer; Size: Cardinal): Boolean;
 
 // Conversion Utilities
 type
@@ -805,14 +804,14 @@ type
     function GetTwoDigitYearCenturyWindow: Word; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
     procedure SetCurrencyDecimals(AValue: Byte); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
     procedure SetCurrencyFormat(const AValue: Byte); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure SetCurrencyString(AValue: string); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure SetCurrencyString(const AValue: string); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
     procedure SetDateSeparator(const AValue: Char); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
     procedure SetDecimalSeparator(AValue: Char); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
     procedure SetListSeparator(const AValue: Char); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
     procedure SetLongDateFormat(const AValue: string); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
     procedure SetLongTimeFormat(const AValue: string); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
     procedure SetNegCurrFormat(const AValue: Byte); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure SetShortDateFormat(AValue: string); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure SetShortDateFormat(const AValue: string); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
     procedure SetShortTimeFormat(const AValue: string); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
     procedure SetThousandSeparator(AValue: Char); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
     procedure SetTimeAMString(const AValue: string); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
@@ -1297,9 +1296,9 @@ var
   FileMappingHandle: THandle;
   Iterate, NewListItem: PMMFHandleListItem;
   Protect: Cardinal;
-  {$IFDEF THREADSAFE}
-  HandleListAccess: IInterface;
-  {$ENDIF THREADSAFE}
+  //{$IFDEF THREADSAFE}
+  //HandleListAccess: IInterface;
+  //{$ENDIF THREADSAFE}
 begin
   Result := 0;
   Pointer(P) := nil;
@@ -1307,9 +1306,9 @@ begin
   if not JclCheckWinVersion(5, 0) and ((Name = '') or (Pos('\', Name) > 0)) then
     raise ESharedMemError.CreateResFmt(@RsInvalidMMFName, [Name]);
 
-  {$IFDEF THREADSAFE}
-  HandleListAccess := GetAccessToHandleList;
-  {$ENDIF THREADSAFE}
+  //{$IFDEF THREADSAFE}
+  //HandleListAccess := GetAccessToHandleList;
+  //{$ENDIF THREADSAFE}
 
   // search for same name
   Iterate := MMFHandleList;
@@ -1386,16 +1385,16 @@ end;
 function SharedFreeMem(var P{: Pointer}): Boolean;
 var
   N, Iterate: PMMFHandleListItem;
-  {$IFDEF THREADSAFE}
-  HandleListAccess: IInterface;
-  {$ENDIF THREADSAFE}
+  //{$IFDEF THREADSAFE}
+  //HandleListAccess: IInterface;
+  //{$ENDIF THREADSAFE}
 begin
   if Pointer(P) <> nil then
   begin
     Result := False;
-    {$IFDEF THREADSAFE}
-    HandleListAccess := GetAccessToHandleList;
-    {$ENDIF THREADSAFE}
+    //{$IFDEF THREADSAFE}
+    //HandleListAccess := GetAccessToHandleList;
+    //{$ENDIF THREADSAFE}
     Iterate := MMFHandleList;
     N := nil;
     while Iterate <> nil do
@@ -2762,7 +2761,6 @@ begin
   FSignChars[True] := Value;
 end;
 
-{$IFNDEF FPC}
 //=== Child processes ========================================================
 
 const
@@ -2882,6 +2880,7 @@ begin
     until LF = 0;
 end;
 
+{$IFDEF MSWINDOWS}
 procedure InternalExecuteReadPipe(var PipeInfo: TPipeInfo; var Overlapped: TOverlapped);
 var
   NullDWORD: ^DWORD; // XE4 broke PDWORD
@@ -3008,6 +3007,7 @@ const
   ProcessPriorities: array [TJclProcessPriority] of DWORD =
     (IDLE_PRIORITY_CLASS, NORMAL_PRIORITY_CLASS, HIGH_PRIORITY_CLASS, REALTIME_PRIORITY_CLASS,
      BELOW_NORMAL_PRIORITY_CLASS, ABOVE_NORMAL_PRIORITY_CLASS);
+{$ENDIF}
 
 { TJclExecuteCmdProcessOptions }
 
@@ -3020,10 +3020,10 @@ begin
 end;
 
 function ExecuteCmdProcess(Options: TJclExecuteCmdProcessOptions): Boolean;
+{$IFDEF MSWINDOWS}
 var
   OutPipeInfo, ErrorPipeInfo: TPipeInfo;
   Index: Cardinal;
-{$IFDEF MSWINDOWS}
 const
   StartupVisibilityFlags: array[TStartupVisibility] of DWORD = (SW_HIDE, SW_SHOW, SW_SHOWDEFAULT);
 var
@@ -3036,7 +3036,7 @@ var
   InternalAbort: Boolean;
   LastError: DWORD;
   CommandLine: string;
-  AbortPtr: PBoolean;
+  AbortPtr: {$IFDEF FPC} PByte {$ELSE} PBoolean {$ENDIF};
   Flags: DWORD;
 begin
   Result := False;
@@ -3191,7 +3191,7 @@ begin
         end;
         if {$IFDEF FPC}Boolean({$ENDIF}AbortPtr^{$IFDEF FPC}){$ENDIF} then
           TerminateProcess(ProcessEvent.Handle, Cardinal(ABORT_EXIT_CODE));
-        if (ProcessEvent.WaitForever = {$IFDEF RTL280_UP}TJclWaitResult.{$ENDIF RTL280_UP}wrSignaled) and not GetExitCodeProcess(ProcessEvent.Handle, Options.FExitCode) then
+        if (ProcessEvent.WaitForever = {$IFDEF RTL270_UP}TJclWaitResult.{$ENDIF RTL270_UP}wrSignaled) and not GetExitCodeProcess(ProcessEvent.Handle, Options.FExitCode) then
           Options.FExitCode := $FFFFFFFF;
         CloseHandle(ProcessInfo.hThread);
         ProcessInfo.hThread := 0;
@@ -3244,32 +3244,6 @@ begin
       SetLastError(LastError);
     end;
   end;
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-var
-  PipeBytesRead: Cardinal;
-  Pipe: PIOFile;
-  Cmd: string;
-begin
-  Cmd := Format('%s 2>&1', [Options.CommandLine]);
-  Pipe := nil;
-  try
-    Pipe := Libc.popen(PChar(Cmd), 'r');
-    { TODO : handle Abort }
-    repeat
-      PipeBytesRead := fread_unlocked(@OutBuffer, 1, BufferSize, Pipe);
-      if PipeBytesRead > 0 then
-        ProcessBuffer(OutBuffer, OutLine, PipeBytesRead);
-    until PipeBytesRead = 0;
-    Result := pclose(Pipe);
-    Pipe := nil;
-    wait(nil);
-  finally
-    if Pipe <> nil then
-      pclose(Pipe);
-    wait(nil);
-  end;
-{$ENDIF UNIX}
   if OutPipeInfo.Line <> '' then
     if Assigned(OutPipeInfo.TextHandler) then
       // output wasn't terminated by a line feed...
@@ -3290,9 +3264,69 @@ begin
         Options.FError := ErrorPipeInfo.Line
       else
         Options.FError := InternalExecuteMuteCRTerminatedLines(ErrorPipeInfo.Line);
+{$ENDIF MSWINDOWS}
+{$IFDEF UNIX}
+var
+  PipeBytesRead: Cardinal;
+  Pipe: PIOFile;
+  Cmd, OutLine: string;
+  OutBuffer: TBuffer;
+
+  procedure ProcessLine(const Line: string; LineEnd: Integer);
+  begin
+    if Options.RawOutput or (Line[LineEnd] <> NativeCarriageReturn) then
+    begin
+      while (LineEnd > 0) and CharIsReturn(Line[LineEnd]) do
+        Dec(LineEnd);
+      Options.OutputLineCallback(Copy(Line, 1, LineEnd));
+    end;
+  end;
+
+  procedure ProcessBuffer(var Buffer: TBuffer; var Line: string; PipeBytesRead: Cardinal);
+    var
+      CR, LF: Integer;
+      begin
+        Buffer[PipeBytesRead] := #0;
+        Line := Line + string(Buffer);
+        if Assigned(Options.OutputLineCallback) then
+        repeat
+          CR := Pos(NativeCarriageReturn, Line);
+          if CR = Length(Line) then
+            CR := 0;        // line feed at CR + 1 might be missing
+          LF := Pos(NativeLineFeed, Line);
+          if (CR > 0) and ((LF > CR + 1) or (LF = 0)) then
+            LF := CR;       // accept CR as line end
+          if LF > 0 then
+          begin
+            ProcessLine(Line, LF);
+            Delete(Line, 1, LF);
+          end;
+        until LF = 0;
+      end;
+
+begin
+  Cmd := Format('%s 2>&1', [Options.CommandLine]);
+  Pipe := nil;
+  try
+    Pipe := popen(PChar(Cmd), 'r');
+    { TODO : handle Abort }
+    repeat
+      PipeBytesRead := fread_unlocked(@OutBuffer, 1, BufferSize, Pipe);
+      if PipeBytesRead > 0 then
+        ProcessBuffer(OutBuffer, OutLine, PipeBytesRead);
+    until PipeBytesRead = 0;
+    Result := pclose(Pipe) > 0;
+    Pipe := nil;
+    wait(nil);
+  finally
+    if Pipe <> nil then
+      pclose(Pipe);
+    wait(nil);
+  end;
+{$ENDIF UNIX}
 end;
 
-function InternalExecute(CommandLine: string; AbortPtr: PBoolean; AbortEvent: TJclEvent;
+function InternalExecute(const CommandLine: string; AbortPtr: PBoolean; AbortEvent: TJclEvent;
   var Output: string; OutputLineCallback: TTextHandler; RawOutput: Boolean;
   MergeError: Boolean; var Error: string; ErrorLineCallback: TTextHandler; RawError: Boolean;
   ProcessPriority: TJclProcessPriority; AutoConvertOem: Boolean): Cardinal;
@@ -3480,8 +3514,6 @@ begin
   FOutputCallback := CallbackMethod;
 end;
 
-{$ENDIF FPC}
-
 //=== Console Utilities ======================================================
 
 function ReadKey: Char;
@@ -3543,7 +3575,7 @@ end;
 
 //=== Loading of modules (DLLs) ==============================================
 
-function LoadModule(var Module: TModuleHandle; FileName: string): Boolean;
+function LoadModule(var Module: TModuleHandle; const FileName: string): Boolean;
 {$IFDEF MSWINDOWS}
 begin
   if Module = INVALID_MODULEHANDLE_VALUE then
@@ -3559,7 +3591,8 @@ begin
 end;
 {$ENDIF UNIX}
 
-function LoadModuleEx(var Module: TModuleHandle; FileName: string; Flags: Cardinal): Boolean;
+function LoadModuleEx(var Module: TModuleHandle; const FileName: string; Flags:
+    Cardinal): Boolean;
 {$IFDEF MSWINDOWS}
 begin
   if Module = INVALID_MODULEHANDLE_VALUE then
@@ -3591,7 +3624,7 @@ begin
 end;
 {$ENDIF UNIX}
 
-function GetModuleSymbol(Module: TModuleHandle; SymbolName: string): Pointer;
+function GetModuleSymbol(Module: TModuleHandle; const SymbolName: string): Pointer;
 {$IFDEF MSWINDOWS}
 begin
   Result := nil;
@@ -3607,7 +3640,8 @@ begin
 end;
 {$ENDIF UNIX}
 
-function GetModuleSymbolEx(Module: TModuleHandle; SymbolName: string; var Accu: Boolean): Pointer;
+function GetModuleSymbolEx(Module: TModuleHandle; const SymbolName: string; var
+    Accu: Boolean): Pointer;
 {$IFDEF MSWINDOWS}
 begin
   Result := nil;
@@ -3625,7 +3659,8 @@ begin
 end;
 {$ENDIF UNIX}
 
-function ReadModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; Size: Cardinal): Boolean;
+function ReadModuleData(Module: TModuleHandle; const SymbolName: string; var
+    Buffer; Size: Cardinal): Boolean;
 var
   Sym: Pointer;
 begin
@@ -3635,7 +3670,8 @@ begin
     Move(Sym^, Buffer, Size);
 end;
 
-function WriteModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; Size: Cardinal): Boolean;
+function WriteModuleData(Module: TModuleHandle; const SymbolName: string; var
+    Buffer; Size: Cardinal): Boolean;
 var
   Sym: Pointer;
 begin
@@ -4395,7 +4431,7 @@ begin
 {$ENDIF}
 end;
 
-procedure TJclFormatSettings.SetCurrencyString(AValue: string);
+procedure TJclFormatSettings.SetCurrencyString(const AValue: string);
 begin
 {$IFDEF RTL220_UP}
   FormatSettings.CurrencyString := AValue;
@@ -4458,7 +4494,7 @@ begin
 {$ENDIF}
 end;
 
-procedure TJclFormatSettings.SetShortDateFormat(AValue: string);
+procedure TJclFormatSettings.SetShortDateFormat(const AValue: string);
 begin
 {$IFDEF RTL220_UP}
   FormatSettings.ShortDateFormat := AValue;

@@ -45,9 +45,9 @@ uses
   {$IFDEF HAS_UNITSCOPE}
   WinApi.Windows, System.SysUtils, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.Graphics, System.TypInfo,
   {$ELSE ~HAS_UNITSCOPE}
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF}
+  //{$IFDEF MSWINDOWS}
+  //Windows,
+  //{$ENDIF}
   SysUtils, StdCtrls, ComCtrls, Graphics, TypInfo,
   {$ENDIF ~HAS_UNITSCOPE}
   JclSysUtils, JclSysInfo;

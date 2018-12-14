@@ -858,6 +858,7 @@ implementation
 {$ENDIF DELPHI64_TEMPORARY}
 
 uses
+  Jcl8087,
   {$IFDEF HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
   {$IFNDEF FPC}
@@ -874,7 +875,6 @@ uses
   {$IFDEF USE_MATH_UNIT}
   System.Math,
   {$ENDIF USE_MATH_UNIT}
-  Jcl8087,
   JclResources
   {$IFDEF THREADSAFE}
   {$IFNDEF FPC}
@@ -1340,7 +1340,7 @@ function ArcTan(X: Float): Float;
 begin
   {$IFDEF USE_MATH_UNIT}
   System.Error(rePlatformNotImplemented);
-  Result := NaN; 
+  Result := NaN;
   {$ELSE ~USE_MATH_UNIT}
   asm
           FLD     X

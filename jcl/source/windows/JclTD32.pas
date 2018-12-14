@@ -873,7 +873,10 @@ const
 implementation
 
 uses
-  JclResources, JclSysUtils, JclStringConversions;
+  {$IFNDEF FPC}
+  JclResources,
+  {$ENDIF}
+  JclSysUtils, JclStringConversions;
 
 {$IFDEF BORLAND}
 const

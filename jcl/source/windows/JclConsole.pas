@@ -516,8 +516,8 @@ var
   TickCount: LongWord;
 begin
   SleepEx(N, False);
-  TickCount := GetTickCount + N;
-  while GetTickCount < TickCount do
+  TickCount := {$IFDEF FPC} GetTickCount64 {$ELSE} GetTickCount {$ENDIF} + N;
+  while {$IFDEF FPC} GetTickCount64 {$ELSE} GetTickCount {$ENDIF} < TickCount do
     ProcessMessages;
 end;
 

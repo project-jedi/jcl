@@ -799,7 +799,7 @@ uses
   {$ENDIF HAS_UNIT_ANSISTRINGS}
   SysUtils,
   {$ENDIF ~HAS_UNITSCOPE}
-  JclStringConversions, JclUnicode, JclAlgorithms;
+  {JclStringConversions,} JclUnicode, JclAlgorithms;
 
 //=== { TJclAbstractLockable } ===============================================
 

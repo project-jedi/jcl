@@ -530,10 +530,10 @@ begin
     while Succeeded(Enum.Next(1, Stat, @NumFetch)) and (NumFetch = 1) do
     try
       if Folders and (Stat.dwType = STGTY_STORAGE) then
-        Strings.Add(WideCharToString(Stat.pwcsName))
+        Strings.Add(string(WideCharToString(Stat.pwcsName)))
       else
       if not Folders and (Stat.dwType = STGTY_STREAM) then
-        Strings.Add(WideCharToString(Stat.pwcsName));
+        Strings.Add(string(WideCharToString(Stat.pwcsName)));
     finally
       CoMallocFree(Stat.pwcsName);
     end;
@@ -681,7 +681,7 @@ var
 begin
   if (FStorage <> nil) and CheckResult(FStorage.Stat(Stat, STATFLAG_DEFAULT)) then
   begin
-    Result := WideCharToString(Stat.pwcsName);
+    Result := string(WideCharToString(Stat.pwcsName));
     CoMallocFree(Stat.pwcsName);
   end
   else
@@ -749,7 +749,7 @@ var
 begin
   if (FStream <> nil) and CheckResult(FStream.Stat(Stat, STATFLAG_DEFAULT)) then
   begin
-    Result := WideCharToString(Stat.pwcsName);
+    Result := string(WideCharToString(Stat.pwcsName));
     CoMallocFree(Stat.pwcsName);
   end
   else

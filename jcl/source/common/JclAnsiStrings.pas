@@ -495,7 +495,7 @@ function MultiSzDup(const Source: PAnsiMultiSz): PAnsiMultiSz;
 
 // TJclAnsiStrings Manipulation
 procedure StrIToStrings(S, Sep: AnsiString; const List: TJclAnsiStrings; const AllowEmptyString: Boolean = True);
-procedure StrToStrings(S, Sep: AnsiString; const List: TJclAnsiStrings; const AllowEmptyString: Boolean = True);
+procedure StrToStrings(S: AnsiString; const Sep: AnsiString; const List: TJclAnsiStrings; const AllowEmptyString: Boolean = True);
 function StringsToStr(const List: TJclAnsiStrings; const Sep: AnsiString; const AllowEmptyString: Boolean = True): AnsiString;
 procedure TrimStrings(const List: TJclAnsiStrings; DeleteIfEmpty: Boolean = True);
 procedure TrimStringsRight(const List: TJclAnsiStrings; DeleteIfEmpty: Boolean = True);
@@ -599,7 +599,7 @@ uses
   {$ENDIF}
   {$ENDIF HAS_UNIT_RTLCONSTS}
   {$ENDIF SUPPORTS_UNICODE}
-  JclLogic, JclResources, JclStreams,
+  JclLogic, JclResources, //JclStreams,
   {$IFNDEF FPC}
   JclSynch,
   {$ENDIF ~ENDIF}
@@ -614,8 +614,8 @@ type
   end;
   PAnsiStrRec = ^TAnsiStrRec;
 
-const
-  AnsiStrRecSize  = SizeOf(TAnsiStrRec);     // size of the AnsiString header rec
+//const
+//  AnsiStrRecSize  = SizeOf(TAnsiStrRec);     // size of the AnsiString header rec
 
 procedure LoadCharTypes;
 var
@@ -897,7 +897,7 @@ end;
 
 function TJclAnsiStrings.GetDelimitedText(const ADelimiter: AnsiString; AQuoteChar: AnsiChar): AnsiString;
 
-  function Quoted(Item: AnsiString): AnsiString;
+  function Quoted(const Item: AnsiString): AnsiString;
   begin
     if (not StrictDelimiter) and ((Pos(AnsiSpace, Item) > 0) or (Pos(FQuoteChar, Item) > 0)) then
     begin
@@ -3485,7 +3485,8 @@ end;
 
 //=== TJclAnsiStrings Manipulation ===============================================
 
-procedure StrToStrings(S, Sep: AnsiString; const List: TJclAnsiStrings; const AllowEmptyString: Boolean = True);
+procedure StrToStrings(S: AnsiString;const Sep: AnsiString; const List:
+    TJclAnsiStrings; const AllowEmptyString: Boolean = True);
 var
   I, L: SizeInt;
   Left: AnsiString;

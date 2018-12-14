@@ -54,7 +54,7 @@ uses
   {$ENDIF MSWINDOWS}
   System.Classes, System.SysUtils, System.TypInfo,
   {$ELSE ~HAS_UNITSCOPE}
-  Types,
+  //Types,
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
@@ -680,7 +680,7 @@ function JclGenerateSubRange(BaseType: PTypeInfo; const TypeName: string;
 
 
 // Integer types
-function JclStrToTypedInt(Value: string; TypeInfo: PTypeInfo): Integer;
+function JclStrToTypedInt(const Value: string; TypeInfo: PTypeInfo): Integer;
 function JclTypedIntToStr(Value: Integer; TypeInfo: PTypeInfo): string;
 
 // Sets
@@ -2503,7 +2503,7 @@ begin
       Name := TypeName;
     end;
     TypeData := GetTypeData(Result);
-    {$if FPC_FULLVERSION>=30101}
+    {$IFDEF FPC_FULLVERSION>=30101}
     TypeData^.BaseTypeRef := AllocMem(SizeOf(Pointer));
     {$else}
     TypeData^.BaseType := AllocMem(SizeOf(Pointer));
@@ -2517,7 +2517,7 @@ begin
       TypeData^.OrdType := otULong;
     TypeData^.MinValue := 0;
     TypeData^.MaxValue := Length(Literals)-1;
-    {$if FPC_FULLVERSION>=30101}
+    {$IFDEF FPC_FULLVERSION>=30101}
     TypeData^.BaseTypeRef^ := Result;   // No sub-range: basetype points to itself
     {$else}
     TypeData^.BaseType{$IFDEF BORLAND}^{$ENDIF} := Result;   // No sub-range: basetype points to itself
@@ -2608,7 +2608,7 @@ begin
     TypeData^.OrdType := GetTypeData(BaseType)^.OrdType;
     TypeData^.MinValue := MinValue;
     TypeData^.MaxValue := MaxValue;
-    {$if FPC_FULLVERSION>=30101}
+    {$IFDEF FPC_FULLVERSION>=30101}
     TypeData^.BaseTypeRef := AllocMem(SizeOf(Pointer));
     TypeData^.BaseTypeRef^ := BaseType;
     {$else}
@@ -2629,7 +2629,7 @@ end;
 
 //=== Integers ===============================================================
 
-function JclStrToTypedInt(Value: string; TypeInfo: PTypeInfo): Integer;
+function JclStrToTypedInt(const Value: string; TypeInfo: PTypeInfo): Integer;
 var
   Conv: TIdentToInt;
   HaveConversion: Boolean;
@@ -2820,7 +2820,7 @@ begin
     TypeData^.CompType^ := BaseType;
     {$ENDIF BORLAND}
     {$IFDEF FPC}
-    {$if FPC_FULLVERSION>=30101}
+    {$IFDEF FPC_FULLVERSION>=30101}
     TypeData^.CompTypeRef^ := BaseType;
     {$else}
     TypeData^.CompType := BaseType;

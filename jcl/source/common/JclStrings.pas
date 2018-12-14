@@ -380,7 +380,7 @@ function WideMultiSzDup(const Source: PWideMultiSz): PWideMultiSz; {$IFDEF SUPPO
 
 // TStrings Manipulation
 procedure StrIToStrings(S, Sep: string; const List: TStrings; const AllowEmptyString: Boolean = True);
-procedure StrToStrings(S, Sep: string; const List: TStrings; const AllowEmptyString: Boolean = True);
+procedure StrToStrings(S: string; const Sep: string; const List: TStrings; const AllowEmptyString: Boolean = True);
 function StringsToStr(const List: TStrings; const Sep: string; const AllowEmptyString: Boolean = True): string; overload;
 function StringsToStr(const List: TStrings; const Sep: string; const NumberOfItems: SizeInt; const AllowEmptyString:
     Boolean = True): string; overload;
@@ -477,7 +477,7 @@ type
 
     function Replace(OldChar, NewChar: Char; StartIndex: SizeInt = 0; Count: SizeInt = -1): TJclStringBuilder;
       overload;
-    function Replace(OldValue, NewValue: string; StartIndex: SizeInt = 0; Count: SizeInt = -1): TJclStringBuilder;
+    function Replace(const OldValue, NewValue: string; StartIndex: SizeInt = 0; Count: SizeInt = -1): TJclStringBuilder;
       overload;
 
     function Remove(StartIndex, Length: SizeInt): TJclStringBuilder;
@@ -583,13 +583,13 @@ const
   TabSetFormatting_StopsWithoutBracketsAndTabWidth = TabSetFormatting_Default;
 
 // Tab expansion routines
-function StrExpandTabs(S: string): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF} overload;
-function StrExpandTabs(S: string; TabWidth: SizeInt): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF} overload;
-function StrExpandTabs(S: string; TabSet: TJclTabSet): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF} overload;
+function StrExpandTabs(const S: string): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF} overload;
+function StrExpandTabs(const S: string; TabWidth: SizeInt): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF} overload;
+function StrExpandTabs(const S: string; TabSet: TJclTabSet): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF} overload;
 // Tab optimization routines
-function StrOptimizeTabs(S: string): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF} overload;
-function StrOptimizeTabs(S: string; TabWidth: SizeInt): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF} overload;
-function StrOptimizeTabs(S: string; TabSet: TJclTabSet): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF} overload;
+function StrOptimizeTabs(const S: string): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF} overload;
+function StrOptimizeTabs(const S: string; TabWidth: SizeInt): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF} overload;
+function StrOptimizeTabs(const S: string; TabSet: TJclTabSet): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF} overload;
 
 // move to JclBase?
 type
@@ -653,7 +653,7 @@ uses
   StrUtils,
   {$ENDIF ~HAS_UNITSCOPE}
   {$ENDIF SUPPORTS_UNICODE}
-  JclLogic, JclResources, JclStreams,
+  JclLogic, JclResources, //JclStreams,
   {$IFNDEF FPC}
   JclSynch,
   {$ENDIF ~FPC}
@@ -3321,7 +3321,8 @@ end;
 
 //=== TStrings Manipulation ==================================================
 
-procedure StrToStrings(S, Sep: string; const List: TStrings; const AllowEmptyString: Boolean = True);
+procedure StrToStrings(S: string; const Sep: string; const List: TStrings;
+    const AllowEmptyString: Boolean = True);
 var
   I, L: SizeInt;
   Left: string;
@@ -4436,7 +4437,8 @@ begin
   Result := Self;
 end;
 
-function TJclStringBuilder.Replace(OldValue, NewValue: string; StartIndex, Count: SizeInt): TJclStringBuilder;
+function TJclStringBuilder.Replace(const OldValue, NewValue: string;
+    StartIndex: SizeInt = 0; Count: SizeInt = -1): TJclStringBuilder;
 var
   I: SizeInt;
   Offset: SizeInt;
@@ -4488,13 +4490,13 @@ begin
   Result := Self;
 end;
 
-function StrExpandTabs(S: string): string;
+function StrExpandTabs(const S: string): string;
 begin
   // use an empty tab set, which will default to a tab width of 2
   Result := TJclTabSet(nil).Expand(s);
 end;
 
-function StrExpandTabs(S: string; TabWidth: SizeInt): string;
+function StrExpandTabs(const S: string; TabWidth: SizeInt): string;
 var
   TabSet: TJclTabSet;
 begin
@@ -4507,19 +4509,19 @@ begin
   end;
 end;
 
-function StrExpandTabs(S: string; TabSet: TJclTabSet): string;
+function StrExpandTabs(const S: string; TabSet: TJclTabSet): string;
 begin
   // use the provided tab set to perform the expansion
   Result := TabSet.Expand(S);
 end;
 
-function StrOptimizeTabs(S: string): string;
+function StrOptimizeTabs(const S: string): string;
 begin
   // use an empty tab set, which will default to a tab width of 2
   Result := TJclTabSet(nil).Optimize(s);
 end;
 
-function StrOptimizeTabs(S: string; TabWidth: SizeInt): string;
+function StrOptimizeTabs(const S: string; TabWidth: SizeInt): string;
 var
   TabSet: TJclTabSet;
 begin
@@ -4532,7 +4534,7 @@ begin
   end;
 end;
 
-function StrOptimizeTabs(S: string; TabSet: TJclTabSet): string;
+function StrOptimizeTabs(const S: string; TabSet: TJclTabSet): string;
 begin
   // use the provided tab set to perform the optimization
   Result := TabSet.Optimize(S);

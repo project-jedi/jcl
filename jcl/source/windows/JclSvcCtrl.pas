@@ -856,7 +856,7 @@ begin
   WaitedState := DWORD(State);
   Open(SERVICE_QUERY_STATUS);
   try
-    StartTickCount := GetTickCount;
+    StartTickCount := {$IFDEF FPC} GetTickCount64 {$ELSE} GetTickCount {$ENDIF};
     OldCheckPoint := 0;
     while True do
     begin
@@ -865,14 +865,14 @@ begin
         Break;
       if SvcStatus.dwCheckPoint > OldCheckPoint then
       begin
-        StartTickCount := GetTickCount;
+        StartTickCount := {$IFDEF FPC} GetTickCount64 {$ELSE} GetTickCount {$ENDIF};
         OldCheckPoint := SvcStatus.dwCheckPoint;
       end
       else
       begin
         if TimeOut <> INFINITE then
           { TODO : Do we need to disable RangeCheck? }
-          if (GetTickCount - StartTickCount) > Max(SvcStatus.dwWaitHint, TimeOut) then
+          if ({$IFDEF FPC} GetTickCount64 {$ELSE} GetTickCount {$ENDIF} - StartTickCount) > Max(SvcStatus.dwWaitHint, TimeOut) then
             Break;
       end;
       WaitTime := SvcStatus.dwWaitHint div 10;

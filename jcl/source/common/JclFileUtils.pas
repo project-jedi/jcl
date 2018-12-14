@@ -209,8 +209,8 @@ procedure EnumDirectories(const Root: string; const HandleDirectory: TFileHandle
 procedure CreateEmptyFile(const FileName: string);
 function CloseVolume(var Volume: THandle): Boolean;
 function DeleteDirectory(const DirectoryName: string; MoveToRecycleBin: Boolean): Boolean;
-function CopyDirectory(ExistingDirectoryName, NewDirectoryName: string): Boolean;
-function MoveDirectory(ExistingDirectoryName, NewDirectoryName: string): Boolean;
+function CopyDirectory(const ExistingDirectoryName, NewDirectoryName: string): Boolean;
+function MoveDirectory(const ExistingDirectoryName, NewDirectoryName: string): Boolean;
 function DelTree(const Path: string): Boolean;
 function DelTreeEx(const Path: string; AbortOnFailure: Boolean; Progress: TDelTreeProgress): Boolean;
 function DiskInDrive(Drive: Char): Boolean;
@@ -252,7 +252,7 @@ function FileGetTempName(const Folder, Prefix: string): string; overload;
 {$IFDEF MSWINDOWS}
 function FileGetTypeName(const FileName: string): string;
 {$ENDIF MSWINDOWS}
-function FindUnusedFileName(FileName: string; const FileExt: string; NumberPrefix: string = ''): string;
+function FindUnusedFileName(FileName: string; const FileExt: string; const NumberPrefix: string = ''): string;
 function ForceDirectories(Name: string): Boolean;
 function GetDirectorySize(const Path: string): Int64;
 {$IFDEF MSWINDOWS}
@@ -3031,9 +3031,9 @@ var
   Attributes: Cardinal;
   pidl: PItemIDList;
   EnumIDL: IEnumIDList;
-  Drive: WideString;
+  Drive: string;
   Featched: Cardinal;
-  ParsePath: WideString;
+  ParsePath: string;
   Path, Name: string;
   Found: Boolean;
 begin
@@ -3043,7 +3043,7 @@ begin
     Exit;
   end;
 
-  Drive := ExtractFileDrive(LocalizedPath);
+  Drive := ExtractFileDrive(string(LocalizedPath));
   if Drive = '' then
   begin
     Result := LocalizedPath;
@@ -3095,9 +3095,9 @@ var
   Attributes: Cardinal;
   pidl: PItemIDList;
   EnumIDL: IEnumIDList;
-  Drive: WideString;
+  Drive: string;
   Featched: Cardinal;
-  ParsePath: WideString;
+  ParsePath: string;
   Path, Name, ParseName, DisplayName: string;
   Found: Boolean;
 begin
@@ -3277,7 +3277,7 @@ begin
     Result := DelTree(DirectoryName);
 end;
 
-function CopyDirectory(ExistingDirectoryName, NewDirectoryName: string): Boolean;
+function CopyDirectory(const ExistingDirectoryName, NewDirectoryName: string): Boolean;
 var
   SH: SHFILEOPSTRUCT;
 begin
@@ -3290,7 +3290,7 @@ begin
   Result := SHFileOperation(SH) = 0;
 end;
 
-function MoveDirectory(ExistingDirectoryName, NewDirectoryName: string): Boolean;
+function MoveDirectory(const ExistingDirectoryName, NewDirectoryName: string): Boolean;
 var
   SH: SHFILEOPSTRUCT;
 begin
@@ -3893,7 +3893,8 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-function FindUnusedFileName(FileName: string; const FileExt: string; NumberPrefix: string = ''): string;
+function FindUnusedFileName(FileName: string; const FileExt: string; const
+    NumberPrefix: string = ''): string;
 var
   I: Integer;
 begin
@@ -4106,14 +4107,14 @@ end;
 
 {$ENDIF MSWINDOWS}
 
-function GetFileInformation(const FileName: string; out FileInfo: TSearchRec): Boolean;
+function GetFileInformation(const FileName: string; out FileInfo: TSearchRec): Boolean; overload;
 begin
   Result := FindFirst(FileName, faAnyFile, FileInfo) = 0;
   if Result then
     {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.FindClose(FileInfo);
 end;
 
-function GetFileInformation(const FileName: string): TSearchRec;
+function GetFileInformation(const FileName: string): TSearchRec; overload;
 begin
   if not GetFileInformation(FileName, Result) then
     RaiseLastOSError;
@@ -4154,7 +4155,7 @@ end;
 
 {$IFDEF UNIX}
 
-function GetFileLastWrite(const FileName: string; out TimeStamp: Integer; ResolveSymLinks: Boolean): Boolean;
+function GetFileLastWrite(const FileName: string; out TimeStamp: Integer; ResolveSymLinks: Boolean): Boolean; overload;
 var
   Buf: TStatBuf64;
 begin
@@ -4163,7 +4164,7 @@ begin
     TimeStamp := Buf.st_mtime
 end;
 
-function GetFileLastWrite(const FileName: string; out LocalTime: TDateTime; ResolveSymLinks: Boolean): Boolean;
+function GetFileLastWrite(const FileName: string; out LocalTime: TDateTime; ResolveSymLinks: Boolean): Boolean; overload;
 var
   Buf: TStatBuf64;
 begin
@@ -4172,7 +4173,7 @@ begin
     LocalTime := FileDateToDateTime(Buf.st_mtime);
 end;
 
-function GetFileLastWrite(const FileName: string; ResolveSymLinks: Boolean): Integer;
+function GetFileLastWrite(const FileName: string; ResolveSymLinks: Boolean): Integer; overload;
 var
   Buf: TStatBuf64;
 begin
@@ -4204,7 +4205,7 @@ end;
 
 {$IFDEF UNIX}
 
-function GetFileLastAccess(const FileName: string; out TimeStamp: Integer; ResolveSymLinks: Boolean): Boolean;
+function GetFileLastAccess(const FileName: string; out TimeStamp: Integer; ResolveSymLinks: Boolean): Boolean; overload;
 var
   Buf: TStatBuf64;
 begin
@@ -4213,7 +4214,7 @@ begin
     TimeStamp := Buf.st_atime
 end;
 
-function GetFileLastAccess(const FileName: string; out LocalTime: TDateTime; ResolveSymLinks: Boolean): Boolean;
+function GetFileLastAccess(const FileName: string; out LocalTime: TDateTime; ResolveSymLinks: Boolean): Boolean; overload;
 var
   Buf: TStatBuf64;
 begin
@@ -4222,7 +4223,7 @@ begin
     LocalTime := FileDateToDateTime(Buf.st_atime);
 end;
 
-function GetFileLastAccess(const FileName: string; ResolveSymLinks: Boolean): Integer;
+function GetFileLastAccess(const FileName: string; ResolveSymLinks: Boolean): Integer; overload;
 var
   Buf: TStatBuf64;
 begin
@@ -4254,7 +4255,7 @@ end;
 
 {$IFDEF UNIX}
 
-function GetFileLastAttrChange(const FileName: string; out TimeStamp: Integer; ResolveSymLinks: Boolean): Boolean;
+function GetFileLastAttrChange(const FileName: string; out TimeStamp: Integer; ResolveSymLinks: Boolean): Boolean; overload;
 var
   Buf: TStatBuf64;
 begin
@@ -4263,7 +4264,7 @@ begin
     TimeStamp := Buf.st_ctime
 end;
 
-function GetFileLastAttrChange(const FileName: string; out LocalTime: TDateTime; ResolveSymLinks: Boolean): Boolean;
+function GetFileLastAttrChange(const FileName: string; out LocalTime: TDateTime; ResolveSymLinks: Boolean): Boolean; overload;
 var
   Buf: TStatBuf64;
 begin
@@ -4272,7 +4273,7 @@ begin
     LocalTime := FileDateToDateTime(Buf.st_ctime);
 end;
 
-function GetFileLastAttrChange(const FileName: string; ResolveSymLinks: Boolean): Integer;
+function GetFileLastAttrChange(const FileName: string; ResolveSymLinks: Boolean): Integer; overload;
 var
   Buf: TStatBuf64;
 begin
@@ -4303,7 +4304,7 @@ begin
   SetLength(Result, L);
 end;
 
-function GetSizeOfFile(const FileName: string): Int64;
+function GetSizeOfFile(const FileName: string): Int64; overload;
 {$IFDEF MSWINDOWS}
 var
   FileAttributesEx: WIN32_FILE_ATTRIBUTE_DATA;
@@ -4340,7 +4341,7 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-function GetSizeOfFile(const FileInfo: TSearchRec): Int64;
+function GetSizeOfFile(const FileInfo: TSearchRec): Int64; overload;
 {$IFDEF MSWINDOWS}
 begin
   Int64Rec(Result).Lo := FileInfo.FindData.nFileSizeLow;
@@ -4959,12 +4960,12 @@ end;
 {$ENDIF MSWINDOWS}
 
 // Version Info formatting
-function FormatVersionString(const HiV, LoV: Word): string;
+function FormatVersionString(const HiV, LoV: Word): string; overload;
 begin
   Result := Format('%u.%.2u', [HiV, LoV]);
 end;
 
-function FormatVersionString(const Major, Minor, Build, Revision: Word): string;
+function FormatVersionString(const Major, Minor, Build, Revision: Word): string; overload;
 begin
   Result := Format('%u.%u.%u.%u', [Major, Minor, Build, Revision]);
 end;
@@ -5229,7 +5230,7 @@ var
             else
             if IsUnicode then
             begin
-              Value := WideCharLenToString(PWideChar(Data), ValueLen);
+              Value := {$IFDEF FPC}string(Data){$ELSE}WideCharLenToString(PWideChar(Data), ValueLen){$ENDIF};
               StrResetLength(Value);
             end
             else

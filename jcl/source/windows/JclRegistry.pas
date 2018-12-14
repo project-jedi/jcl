@@ -397,15 +397,14 @@ implementation
 uses
   {$IFDEF HAS_UNITSCOPE}
   System.SysUtils,
-  Winapi.AccCtrl,
   {$ELSE ~HAS_UNITSCOPE}
   SysUtils,
-  AccCtrl,
   {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF FPC}
-//  JwaAccCtrl,
+  //  JwaAccCtrl,
   {$ELSE ~FPC}
-  JclSysUtils,
+  AccCtrl,
+  //JclSysUtils,
   {$ENDIF ~FPC}
   JclResources, JclWin32, JclSysInfo,
   JclAnsiStrings, JclWideStrings;

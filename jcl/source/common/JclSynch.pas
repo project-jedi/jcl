@@ -774,7 +774,7 @@ end;
 
 //=== { TJclDispatcherObject } ===============================================
 
-{$IFDEF WINDOWS}
+{$IFDEF MSWINDOWS}
 function MapSignalResult(const Ret: DWORD): TJclWaitResult;
 begin
   case Ret of
@@ -857,7 +857,7 @@ begin
     Handles[I] := Objects[I].Handle;
   Result := {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.WaitForMultipleObjectsEx(Count, @Handles[0], WaitAll, TimeOut, True);
 end;
-{$ENDIF WINDOWS}
+{$ENDIF MSWINDOWS}
 
 //=== { TJclCriticalSection } ================================================
 
@@ -1720,7 +1720,7 @@ end;
 
 { TODO: RTLD version }
 
-{$IFDEF WINDOWS}
+{$IFDEF MSWINDOWS}
 type
  TNtQueryProc = function (Handle: THandle; InfoClass: Byte; Info: Pointer;
      Len: Longint; ResLen: PLongint): Longint; stdcall;

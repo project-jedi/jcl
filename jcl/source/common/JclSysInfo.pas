@@ -109,7 +109,7 @@ function SetEnvironmentVar(const Name, Value: string): Boolean;
 {$IFDEF MSWINDOWS}
 function CreateEnvironmentBlock(const Options: TEnvironmentOptions; const AdditionalVars: TStrings): PChar;
 procedure DestroyEnvironmentBlock(var Env: PChar);
-procedure SetGlobalEnvironmentVariable(VariableName, VariableContent: string);
+procedure SetGlobalEnvironmentVariable(const VariableName, VariableContent: string);
 {$ENDIF MSWINDOWS}
 
 // Common Folder Locations
@@ -1822,7 +1822,7 @@ begin
   FreeMultiSz(Env);
 end;
 
-procedure SetGlobalEnvironmentVariable(VariableName, VariableContent: string);
+procedure SetGlobalEnvironmentVariable(const VariableName, VariableContent: string);
 const
   cEnvironment = 'Environment';
 begin
@@ -3191,7 +3191,7 @@ var
   Res: DWORD;
 begin
   Res := 0;
-  Result := SendMessageTimeout(Wnd, WM_NULL, 0, 0, SMTO_ABORTIFHUNG, Timeout, {$IFDEF RTL230_UP}@{$ENDIF}{$IFDEF FPC}@{$ENDIF}Res) <> 0;
+  Result := SendMessageTimeout(Wnd, WM_NULL, 0, 0, SMTO_ABORTIFHUNG, Timeout, {$IFDEF RTL230_UP}@{$ENDIF}Res) <> 0;
 end;
 
 function GetWindowIcon(Wnd: THandle; LargeIcon: Boolean): HICON;
@@ -4297,7 +4297,7 @@ var
   sOpenGLVersion, sOpenGLVendor: AnsiString;
   Save8087CW: Word;
 
-  procedure FunctionFailedError(Name: string);
+  procedure FunctionFailedError(const Name: string);
   begin
     raise EJclError.CreateResFmt(@RsEOpenGLInfo, [Name]);
   end;
@@ -4681,7 +4681,7 @@ function GetMacAddresses(const Machine: string; const Addresses: TStrings): Inte
         MIB_ifEntryNum.ids := @OID_ifEntryNum;
         PollForTrapEvent := 0;
         SupportedView := nil;
-        if SnmpExtensionInit(GetTickCount, PollForTrapEvent, SupportedView) then
+        if SnmpExtensionInit({$IFDEF FPC}GetTickCount64{$ELSE}GetTickCount{$ENDIF}, PollForTrapEvent, SupportedView) then
         begin
           VarBindList.list := @VarBind[0];
           VarBind[0].name := DEFINE_NULLOID;
