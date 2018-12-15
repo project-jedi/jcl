@@ -2710,7 +2710,7 @@ end;
 {$ENDIF MSWINDOWS}
 {$IFDEF UNIX}
 begin
-  Result := {GetEnvironmentVariable('TMPDIR')}GetTempDir;
+  Result := GetTempDir;
 end;
 {$ENDIF UNIX}
 

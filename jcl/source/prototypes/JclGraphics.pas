@@ -1,8 +1,4 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
-
-{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -940,9 +936,9 @@ var
   Data: PBGRAInt;
 begin
   Total := 0;
-  RGB.R := Total; // trick compiler into generating better code
+  RGB.B := Total; // trick compiler into generating better code
   RGB.G := Total;
-  RGB.B := Total;
+  RGB.R := Total;
   RGB.A := Total;
   Contr := @Contributor.Contributors[0];
   for J := 0 to Contributor.N - 1 do

@@ -44,7 +44,7 @@ ALERT_jedi_inc_missing
 
 {$IFNDEF MSWINDOWS}
   {$IFDEF SUPPORTS_COMPILETIME_MESSAGES}
-   // {$MESSAGE FATAL 'This unit is only supported on Windows!'}
+    {$MESSAGE FATAL 'This unit is only supported on Windows!'}
   {$ELSE}
     'This unit is only supported on Windows!'
   {$ENDIF SUPPORTS_COMPILETIME_MESSAGES}

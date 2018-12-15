@@ -2869,7 +2869,7 @@ function LoadedModulesList(const List: TStrings; ProcessID: DWORD; HandlesOnly: 
   var
     MemInfo: TMemoryBasicInformation;
     Base: PChar;
-    LastAllocBase: Pointer;
+    LastAllocBase, LastBase: Pointer;
     Res: DWORD;
   begin
     Base := nil;
@@ -2889,7 +2889,10 @@ function LoadedModulesList(const List: TStrings; ProcessID: DWORD; HandlesOnly: 
           AddToList(ProcessHandle, HMODULE(MemInfo.AllocationBase));
         LastAllocBase := MemInfo.AllocationBase;
       end;
+      LastBase := Base;
       Inc(Base, MemInfo.RegionSize);
+      if Base < LastBase then // WINE returns some questionable RegionSize values causing an infinite loop
+        Break;
       Res := VirtualQueryEx(ProcessHandle, Base, MemInfo, SizeOf(MemInfo));
     end;
   end;
@@ -4194,8 +4197,10 @@ begin
           Result := 'Windows 10 Fall Creators Update';
        1803:
           Result := 'Windows 10 April 2018 Update';
+       1809:
+          Result := 'Windows 10 October 2018 Update';
     else
-      Result := '';
+      Result := 'Windows 10 ' + IntToStr(GetWindows10ReleaseId) + ' Update';
     end;
   end
   else
@@ -4219,6 +4224,8 @@ begin
           Result := 'Redstone 3';
        1803:
           Result := 'Redstone 4';
+       1809:
+          Result := 'Redstone 5';
     else
       Result := '';
     end;
