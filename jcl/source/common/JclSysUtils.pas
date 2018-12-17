@@ -501,7 +501,7 @@ type
   TTextHandler = procedure(const Text: string) of object;
   TJclProcessPriority = (ppIdle, ppNormal, ppHigh, ppRealTime, ppBelowNormal, ppAboveNormal);
   {$IFNDEF MSWINDOWS}
-  TJclEvent = TEvent
+  TJclEvent = TEvent;
   {$ENDIF MSWINDOWS}
 
 const
