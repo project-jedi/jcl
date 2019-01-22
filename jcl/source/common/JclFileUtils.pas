@@ -5154,6 +5154,12 @@ var
         Inc(I)
       else
         Delete(Key, I, 1);
+
+    // Office16\1031\GrooveIntlResource.dll contains a '4094B0' key. Both parts (lang and codepage)
+    // are missing their leading zero. It should have been '040904B0'.
+    // The Windows file property dialog falls back to "English (United States) 1252", so do we.
+    if Length(Key) < 8 then
+      Key := '040904E4';
   end;
 
   procedure ProcessStringInfo(Size: Integer);
