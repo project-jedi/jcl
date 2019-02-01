@@ -199,9 +199,9 @@ type
   PJclMapSegmentClass = ^TJclMapSegmentClass;
   TJclMapSegmentClass = record
     Segment: Word; // segment ID
-    Start: DWORD;  // start as in the map file
-    Addr: DWORD;   // start as in process memory
-    VA: DWORD;     // position relative to module base adress
+    Start: TJclAddr;  // start as in the map file
+    Addr: TJclAddr;   // start as in process memory
+    VA: TJclAddr;     // position relative to module base adress
     Len: DWORD;    // segment length
     SectionName: TJclMapStringCache;
     GroupName: TJclMapStringCache;
@@ -210,22 +210,22 @@ type
   PJclMapSegment = ^TJclMapSegment;
   TJclMapSegment = record
     Segment: Word;
-    StartVA: DWORD; // VA relative to (module base address + $10000)
-    EndVA: DWORD;
+    StartVA: TJclAddr; // VA relative to (module base address + $10000)
+    EndVA: TJclAddr;
     UnitName: TJclMapStringCache;
   end;
 
   PJclMapProcName = ^TJclMapProcName;
   TJclMapProcName = record
     Segment: Word;
-    VA: DWORD; // VA relative to (module base address + $10000)
+    VA: TJclAddr; // VA relative to (module base address + $10000)
     ProcName: TJclMapStringCache;
   end;
 
   PJclMapLineNumber = ^TJclMapLineNumber;
   TJclMapLineNumber = record
     Segment: Word;
-    VA: DWORD; // VA relative to (module base address + $10000)
+    VA: TJclAddr; // VA relative to (module base address + $10000)
     LineNumber: Integer;
     UnitName: PJclMapString;
   end;
@@ -244,9 +244,9 @@ type
     FProcNamesCnt: Integer;
     FSegmentCnt: Integer;
     FLastAccessedSegementIndex: Integer;
-    function IndexOfSegment(Addr: DWORD): Integer;
+    function IndexOfSegment(Addr: TJclAddr): Integer;
   protected
-    function MAPAddrToVA(const Addr: DWORD): DWORD;
+    function MAPAddrToVA(const Addr: TJclAddr): TJclAddr;
     procedure ClassTableItem(const Address: TJclMapAddress; Len: Integer; SectionName, GroupName: PJclMapString); override;
     procedure SegmentItem(const Address: TJclMapAddress; Len: Integer; GroupName, UnitName: PJclMapString); override;
     function CanHandlePublicsByName: Boolean; override;
@@ -265,13 +265,13 @@ type
     class function MapStringCacheToStr(var MapString: TJclMapStringCache; IgnoreSpaces: Boolean = False): string;
 
     // Addr are virtual addresses relative to (module base address + $10000)
-    function LineNumberFromAddr(Addr: DWORD): Integer; overload;
-    function LineNumberFromAddr(Addr: DWORD; out Offset: Integer): Integer; overload;
-    function ModuleNameFromAddr(Addr: DWORD): string;
-    function ModuleStartFromAddr(Addr: DWORD): DWORD;
-    function ProcNameFromAddr(Addr: DWORD): string; overload;
-    function ProcNameFromAddr(Addr: DWORD; out Offset: Integer): string; overload;
-    function SourceNameFromAddr(Addr: DWORD): string;
+    function LineNumberFromAddr(Addr: TJclAddr): Integer; overload;
+    function LineNumberFromAddr(Addr: TJclAddr; out Offset: Integer): Integer; overload;
+    function ModuleNameFromAddr(Addr: TJclAddr): string;
+    function ModuleStartFromAddr(Addr: TJclAddr): TJclAddr;
+    function ProcNameFromAddr(Addr: TJclAddr): string; overload;
+    function ProcNameFromAddr(Addr: TJclAddr; out Offset: Integer): string; overload;
+    function SourceNameFromAddr(Addr: TJclAddr): string;
     property LineNumberErrors: Integer read FLineNumberErrors;
     property LineNumbersCnt: Integer read FLineNumbersCnt;
     property LineNumberByIndex[Index: Integer]: TJclMapLineNumber read GetLineNumberByIndex;
@@ -306,7 +306,7 @@ type
   end;
 
   TJclBinDbgNameCache = record
-    Addr: DWORD;
+    Addr: TJclAddr;
     FirstWord: Integer;
     SecondWord: Integer;
   end;
@@ -323,19 +323,19 @@ type
     procedure CacheLineNumbers;
     procedure CacheProcNames;
     procedure CheckFormat;
-    function DataToStr(A: Integer): string;
-    function MakePtr(A: Integer): Pointer;
+    function DataToStr(A: TJclAddr): string;
+    function MakePtr(A: TJclAddr): Pointer;
     function ReadValue(var P: Pointer; var Value: Integer): Boolean;
   public
     constructor Create(AStream: TCustomMemoryStream; CacheData: Boolean);
     function IsModuleNameValid(const Name: TFileName): Boolean;
-    function LineNumberFromAddr(Addr: DWORD): Integer; overload;
-    function LineNumberFromAddr(Addr: DWORD; out Offset: Integer): Integer; overload;
-    function ProcNameFromAddr(Addr: DWORD): string; overload;
-    function ProcNameFromAddr(Addr: DWORD; out Offset: Integer): string; overload;
-    function ModuleNameFromAddr(Addr: DWORD): string;
-    function ModuleStartFromAddr(Addr: DWORD): DWORD;
-    function SourceNameFromAddr(Addr: DWORD): string;
+    function LineNumberFromAddr(Addr: TJclAddr): Integer; overload;
+    function LineNumberFromAddr(Addr: TJclAddr; out Offset: Integer): Integer; overload;
+    function ProcNameFromAddr(Addr: TJclAddr): string; overload;
+    function ProcNameFromAddr(Addr: TJclAddr; out Offset: Integer): string; overload;
+    function ModuleNameFromAddr(Addr: TJclAddr): string;
+    function ModuleStartFromAddr(Addr: TJclAddr): TJclAddr;
+    function SourceNameFromAddr(Addr: TJclAddr): string;
     property ModuleName: string read GetModuleName;
     property ValidFormat: Boolean read FValidFormat;
   end;
@@ -472,7 +472,7 @@ type
     FModule: HMODULE;
     function GetFileName: TFileName;
   protected
-    function VAFromAddr(const Addr: Pointer): DWORD; virtual;
+    function VAFromAddr(const Addr: Pointer): TJclAddr; virtual;
   public
     constructor Create(AModule: HMODULE); virtual;
     function InitializeSource: Boolean; virtual; abstract;
@@ -1817,7 +1817,7 @@ begin
   Scan;
 end;
 
-function TJclMapScanner.MAPAddrToVA(const Addr: DWORD): DWORD;
+function TJclMapScanner.MAPAddrToVA(const Addr: TJclAddr): TJclAddr;
 begin
   // MAP file format was changed in Delphi 2005
   // before Delphi 2005: segments started at offset 0
@@ -1908,7 +1908,7 @@ begin
   end;
 end;
 
-function TJclMapScanner.LineNumberFromAddr(Addr: DWORD): Integer;
+function TJclMapScanner.LineNumberFromAddr(Addr: TJclAddr): Integer;
 var
   Dummy: Integer;
 begin
@@ -1920,10 +1920,10 @@ begin
   Result := Integer(PJclMapLineNumber(Item1)^.VA) - PInteger(Item2)^;
 end;
 
-function TJclMapScanner.LineNumberFromAddr(Addr: DWORD; out Offset: Integer): Integer;
+function TJclMapScanner.LineNumberFromAddr(Addr: TJclAddr; out Offset: Integer): Integer;
 var
   I: Integer;
-  ModuleStartAddr: DWORD;
+  ModuleStartAddr: TJclAddr;
 begin
   ModuleStartAddr := ModuleStartFromAddr(Addr);
   Result := 0;
@@ -1997,7 +1997,7 @@ begin
   Result := FLineNumbers[Index];
 end;
 
-function TJclMapScanner.IndexOfSegment(Addr: DWORD): Integer;
+function TJclMapScanner.IndexOfSegment(Addr: TJclAddr): Integer;
 var
   L, R: Integer;
   S: PJclMapSegment;
@@ -2032,7 +2032,7 @@ begin
   Result := -1;
 end;
 
-function TJclMapScanner.ModuleNameFromAddr(Addr: DWORD): string;
+function TJclMapScanner.ModuleNameFromAddr(Addr: TJclAddr): string;
 var
   I: Integer;
 begin
@@ -2043,17 +2043,17 @@ begin
     Result := '';
 end;
 
-function TJclMapScanner.ModuleStartFromAddr(Addr: DWORD): DWORD;
+function TJclMapScanner.ModuleStartFromAddr(Addr: TJclAddr): TJclAddr;
 var
   I: Integer;
 begin
   I := IndexOfSegment(Addr);
-  Result := DWORD(-1);
+  Result := High(TJclAddr);
   if I <> -1 then
     Result := FSegments[I].StartVA;
 end;
 
-function TJclMapScanner.ProcNameFromAddr(Addr: DWORD): string;
+function TJclMapScanner.ProcNameFromAddr(Addr: TJclAddr): string;
 var
   Dummy: Integer;
 begin
@@ -2065,10 +2065,10 @@ begin
   Result := Integer(PJclMapProcName(Item1)^.VA) - PInteger(Item2)^;
 end;
 
-function TJclMapScanner.ProcNameFromAddr(Addr: DWORD; out Offset: Integer): string;
+function TJclMapScanner.ProcNameFromAddr(Addr: TJclAddr; out Offset: Integer): string;
 var
   I: Integer;
-  ModuleStartAddr: DWORD;
+  ModuleStartAddr: TJclAddr;
 begin
   ModuleStartAddr := ModuleStartFromAddr(Addr);
   Result := '';
@@ -2093,6 +2093,7 @@ end;
 
 procedure TJclMapScanner.PublicsByNameItem(const Address: TJclMapAddress;  Name: PJclMapString);
 begin
+  { TODO : What to do? }
 end;
 
 procedure TJclMapScanner.PublicsByValueItem(const Address: TJclMapAddress; Name: PJclMapString);
@@ -2269,10 +2270,10 @@ begin
   end;
 end;
 
-function TJclMapScanner.SourceNameFromAddr(Addr: DWORD): string;
+function TJclMapScanner.SourceNameFromAddr(Addr: TJclAddr): string;
 var
   I: Integer;
-  ModuleStartVA: DWORD;
+  ModuleStartVA: TJclAddr;
 begin
   // try with line numbers first (Delphi compliance)
   ModuleStartVA := ModuleStartFromAddr(Addr);
@@ -3163,7 +3164,7 @@ end;
 {$OVERFLOWCHECKS ON}
 {$ENDIF OVERFLOWCHECKS_ON}
 
-function TJclBinDebugScanner.DataToStr(A: Integer): string;
+function TJclBinDebugScanner.DataToStr(A: TJclAddr): string;
 var
   P: PAnsiChar;
 begin
@@ -3186,18 +3187,18 @@ begin
   Result := AnsiSameText(ModuleName, PathExtractFileNameNoExt(Name));
 end;
 
-function TJclBinDebugScanner.LineNumberFromAddr(Addr: DWORD): Integer;
+function TJclBinDebugScanner.LineNumberFromAddr(Addr: TJclAddr): Integer;
 var
   Dummy: Integer;
 begin
   Result := LineNumberFromAddr(Addr, Dummy);
 end;
 
-function TJclBinDebugScanner.LineNumberFromAddr(Addr: DWORD; out Offset: Integer): Integer;
+function TJclBinDebugScanner.LineNumberFromAddr(Addr: TJclAddr; out Offset: Integer): Integer;
 var
   P: Pointer;
   Value, LineNumber: Integer;
-  CurrVA, ModuleStartVA, ItemVA: DWORD;
+  CurrVA, ModuleStartVA, ItemVA: TJclAddr;
 begin
   ModuleStartVA := ModuleStartFromAddr(Addr);
   LineNumber := 0;
@@ -3245,15 +3246,15 @@ begin
   Result := LineNumber;
 end;
 
-function TJclBinDebugScanner.MakePtr(A: Integer): Pointer;
+function TJclBinDebugScanner.MakePtr(A: TJclAddr): Pointer;
 begin
   Result := Pointer(TJclAddr(FStream.Memory) + TJclAddr(A));
 end;
 
-function TJclBinDebugScanner.ModuleNameFromAddr(Addr: DWORD): string;
+function TJclBinDebugScanner.ModuleNameFromAddr(Addr: TJclAddr): string;
 var
   Value, Name: Integer;
-  StartAddr: DWORD;
+  StartAddr: TJclAddr;
   P: Pointer;
 begin
   P := MakePtr(PJclDbgHeader(FStream.Memory)^.Units);
@@ -3274,10 +3275,10 @@ begin
   Result := DataToStr(Name);
 end;
 
-function TJclBinDebugScanner.ModuleStartFromAddr(Addr: DWORD): DWORD;
+function TJclBinDebugScanner.ModuleStartFromAddr(Addr: TJclAddr): TJclAddr;
 var
   Value: Integer;
-  StartAddr, ModuleStartAddr: DWORD;
+  StartAddr, ModuleStartAddr: TJclAddr;
   P: Pointer;
 begin
   P := MakePtr(PJclDbgHeader(FStream.Memory)^.Units);
@@ -3298,18 +3299,18 @@ begin
   Result := ModuleStartAddr;
 end;
 
-function TJclBinDebugScanner.ProcNameFromAddr(Addr: DWORD): string;
+function TJclBinDebugScanner.ProcNameFromAddr(Addr: TJclAddr): string;
 var
   Dummy: Integer;
 begin
   Result := ProcNameFromAddr(Addr, Dummy);
 end;
 
-function TJclBinDebugScanner.ProcNameFromAddr(Addr: DWORD; out Offset: Integer): string;
+function TJclBinDebugScanner.ProcNameFromAddr(Addr: TJclAddr; out Offset: Integer): string;
 var
   P: Pointer;
   Value, FirstWord, SecondWord: Integer;
-  CurrAddr, ModuleStartAddr, ItemAddr: DWORD;
+  CurrAddr, ModuleStartAddr, ItemAddr: TJclAddr;
 begin
   ModuleStartAddr := ModuleStartFromAddr(Addr);
   FirstWord := 0;
@@ -3387,10 +3388,10 @@ begin
   Result := (Value <> MaxInt);
 end;
 
-function TJclBinDebugScanner.SourceNameFromAddr(Addr: DWORD): string;
+function TJclBinDebugScanner.SourceNameFromAddr(Addr: TJclAddr): string;
 var
   Value, Name: Integer;
-  StartAddr, ModuleStartAddr, ItemAddr: DWORD;
+  StartAddr, ModuleStartAddr, ItemAddr: TJclAddr;
   P: Pointer;
   Found: Boolean;
 begin
@@ -3729,7 +3730,7 @@ begin
   Result := GetModulePath(FModule);
 end;
 
-function TJclDebugInfoSource.VAFromAddr(const Addr: Pointer): DWORD;
+function TJclDebugInfoSource.VAFromAddr(const Addr: Pointer): TJclAddr;
 begin
   Result := DWORD(TJclAddr(Addr) - TJclAddr(FModule) - ModuleCodeOffset);
 end;
@@ -5137,7 +5138,7 @@ end;
 
 {$STACKFRAMES OFF}
 
-function ValidCodeAddr(CodeAddr: DWORD; ModuleList: TJclModuleInfoList): Boolean;
+function ValidCodeAddr(CodeAddr: TJclAddr; ModuleList: TJclModuleInfoList): Boolean;
 begin
   if stAllModules in JclStackTrackingOptions then
     Result := ModuleList.IsValidModuleAddress(Pointer(CodeAddr))
