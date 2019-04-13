@@ -1045,25 +1045,25 @@ function PathListItemIndex(const List, Item: string): Integer;
 // returns the name of the command line parameter at position index, which is
 // separated by the given separator, if the first character of the name part
 // is one of the AllowedPrefixCharacters, this character will be deleted.
-function ParamName  (Index : Integer; const Separator : string = '=';
-             const AllowedPrefixCharacters : string = '-/'; TrimName : Boolean = true) : string;
+function ParamName(Index: Integer; const Separator: string = '=';
+  const AllowedPrefixCharacters: string = '-/'; TrimName: Boolean = True): string;
 // returns the value of the command line parameter at position index, which is
 // separated by the given separator
-function ParamValue (Index : Integer; const Separator : string = '='; TrimValue : Boolean = true) : string; overload;
+function ParamValue (Index: Integer; const Separator: string = '='; TrimValue: Boolean = True): string; overload;
 // seaches a command line parameter where the namepart is the searchname
 // and returns the value which is which by the given separator.
 // CaseSensitive defines the search type. if the first character of the name part
 // is one of the AllowedPrefixCharacters, this character will be deleted.
-function ParamValue (const SearchName : string; const Separator : string = '=';
-             CaseSensitive : Boolean = False;
-             const AllowedPrefixCharacters : string = '-/'; TrimValue : Boolean = true) : string; overload;
+function ParamValue (const SearchName: string; const Separator: string = '=';
+             CaseSensitive: Boolean = False;
+             const AllowedPrefixCharacters: string = '-/'; TrimValue: Boolean = True): string; overload;
 // seaches a command line parameter where the namepart is the searchname
 // and returns the position index. if no separator is defined, the full paramstr is compared.
 // CaseSensitive defines the search type. if the first character of the name part
 // is one of the AllowedPrefixCharacters, this character will be deleted.
-function ParamPos (const SearchName : string; const Separator : string = '=';
-             CaseSensitive : Boolean = False;
-             const AllowedPrefixCharacters : string = '-/'): Integer;
+function ParamPos (const SearchName: string; const Separator: string = '=';
+             CaseSensitive: Boolean = False;
+             const AllowedPrefixCharacters: string = '-/'): Integer;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -6940,22 +6940,23 @@ end;
 // returns the name of the command line parameter at position index, which is
 // separated by the given separator, if the first character of the name part
 // is one of the AllowedPrefixCharacters, this character will be deleted.
-function ParamName  (Index : Integer; const Separator : string = '=';
-             const AllowedPrefixCharacters : string = '-/'; TrimName : Boolean = true) : string;
-var s: string;
-    p: Integer;
+function ParamName(Index: Integer; const Separator: string;
+  const AllowedPrefixCharacters: string; TrimName: Boolean): string;
+var
+  S: string;
+  P: Integer;
 begin
-  if (index > 0) and (index <= ParamCount) then
+  if (Index > 0) and (Index <= ParamCount) then
   begin
-    s := ParamStr(index);
-    if Pos(Copy(s, 1, 1), AllowedPrefixCharacters) > 0 then
-      s := Copy (s, 2, Length(s)-1);
-    p := Pos(Separator, s);
-    if p > 0 then
-      s := Copy (s, 1, p-1);
+    S := ParamStr(Index);
+    if Pos(Copy(S, 1, 1), AllowedPrefixCharacters) > 0 then
+      S := Copy(S, 2, Length(S) - 1);
+    P := Pos(Separator, S);
+    if P > 0 then
+      S := Copy(S, 1, P - 1);
     if TrimName then
-      s := Trim(s);
-    Result := s;
+      S := Trim(S);
+    Result := S;
   end
   else
     Result := '';
@@ -6963,19 +6964,20 @@ end;
 
 // returns the value of the command line parameter at position index, which is
 // separated by the given separator
-function ParamValue (Index : Integer; const Separator : string = '='; TrimValue : Boolean = true) : string;
-var s: string;
-    p: Integer;
+function ParamValue(Index: Integer; const Separator: string; TrimValue: Boolean): string;
+var
+  S: string;
+  P: Integer;
 begin
-  if (index > 0) and (index <= ParamCount) then
+  if (Index > 0) and (Index <= ParamCount) then
   begin
-    s := ParamStr(index);
-    p := Pos(Separator, s);
-    if p > 0 then
-      s := Copy (s, p+1, Length(s)-p);
+    S := ParamStr(Index);
+    P := Pos(Separator, S);
+    if P > 0 then
+      S := Copy(S, P + 1, Length(S) - P);
     if TrimValue then
-      s := Trim(s);
-    Result := s;
+      S := Trim(S);
+    Result := S;
   end
   else
     Result := '';
@@ -6985,22 +6987,25 @@ end;
 // and returns the value which is which by the given separator.
 // CaseSensitive defines the search type. if the first character of the name part
 // is one of the AllowedPrefixCharacters, this character will be deleted.
-function ParamValue (const SearchName : string; const Separator : string = '=';
-             CaseSensitive : Boolean = False;
-             const AllowedPrefixCharacters : string = '-/'; TrimValue : Boolean = true) : string;
-var pName : string;
-    i : Integer;
+function ParamValue(const SearchName: string; const Separator: string;
+  CaseSensitive: Boolean; const AllowedPrefixCharacters: string;
+  TrimValue: Boolean): string;
+var
+  Name: string;
+  SearchS: String;
+  I: Integer;
 begin
   Result := '';
-  for i  := 1 to ParamCount do
+  SearchS := Trim(SearchName);
+
+  for I := 1 to ParamCount do
   begin
-    pName := ParamName(i, Separator, AllowedPrefixCharacters, True);
-    if (CaseSensitive and (pName = Trim(SearchName))) or
-       ((not CaseSensitive) and
-       (UpperCase(pName) = Trim(UpperCase(SearchName)))) then
+    Name := ParamName(I, Separator, AllowedPrefixCharacters, True);
+    if (CaseSensitive and (Name = SearchS)) or
+       ((not CaseSensitive) and (CompareText(Name, SearchS) = 0)) then
     begin
-      Result := ParamValue (i, Separator, TrimValue);
-      exit;
+      Result := ParamValue(I, Separator, TrimValue);
+      Exit;
     end;
   end;
 end;
@@ -7009,21 +7014,23 @@ end;
 // and returns the position index. if no separator is defined, the full paramstr is compared.
 // CaseSensitive defines the search type. if the first character of the name part
 // is one of the AllowedPrefixCharacters, this character will be deleted.
-function ParamPos (const SearchName : string; const Separator : string = '=';
-             CaseSensitive : Boolean = False;
-             const AllowedPrefixCharacters : string = '-/'): Integer;
-var pName : string;
-    i : Integer;
+function ParamPos(const SearchName: string; const Separator: string;
+  CaseSensitive: Boolean; const AllowedPrefixCharacters: string): Integer;
+var
+  Name: string;
+  SearchS: string;
+  I: Integer;
 begin
   Result := -1;
-  for i  := 1 to ParamCount do
+  SearchS := Trim(SearchName);
+
+  for I := 1 to ParamCount do
   begin
-    pName := ParamName(i, Separator, AllowedPrefixCharacters, True);
-    if (CaseSensitive and (pName = SearchName)) or
-       ((not CaseSensitive) and
-       (UpperCase(pName) = UpperCase(SearchName))) then
+    Name := ParamName(I, Separator, AllowedPrefixCharacters, True);
+    if (CaseSensitive and (Name = SearchS)) or
+       ((not CaseSensitive) and (CompareText(Name, SearchS) = 0)) then
     begin
-      Result := i;
+      Result := I;
       Exit;
     end;
   end;
