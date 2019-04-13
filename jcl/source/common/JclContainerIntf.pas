@@ -2873,7 +2873,7 @@ type
   end;
 
   IJclAnsiStrAnsiStrMap = interface(IJclAnsiStrContainer)
-    ['{A4788A96-281A-4924-AA24-03776DDAAD8A}']
+    ['{B01D6C80-E120-4BC2-AA93-3DEE18A19B7A}']
     procedure Clear;
     function ContainsKey(const Key: AnsiString): Boolean;
     function ContainsValue(const Value: AnsiString): Boolean;
