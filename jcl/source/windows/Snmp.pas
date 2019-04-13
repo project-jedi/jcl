@@ -362,7 +362,7 @@ var
   SnmpUtilOidAppend: function(pOidDst: PAsnObjectIdentifier; pOidSrc: PAsnObjectIdentifier): SNMPAPI; stdcall;
   SnmpUtilOidNCmp: function(pOid1, pOid2: PAsnObjectIdentifier; nSubIds: UINT): SNMPAPI; stdcall;
   SnmpUtilOidCmp: function(pOid1, pOid2: PAsnObjectIdentifier): SNMPAPI; stdcall;
-  SnmpUtilOidFree: procedure(pOid: TAsnObjectIdentifier); stdcall;
+  SnmpUtilOidFree: procedure(pOid: PAsnObjectIdentifier); stdcall;
   SnmpUtilOctetsCmp: function(pOctets1, pOctets2: PAsnOctetString): SNMPAPI; stdcall;
   SnmpUtilOctetsNCmp: function(pOctets1, pOctets2: PAsnOctetString; nChars: UINT): SNMPAPI; stdcall;
   SnmpUtilOctetsCpy: function(pOctetsDst, pOctetsSrc: PAsnOctetString): SNMPAPI; stdcall;
