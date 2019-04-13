@@ -4989,6 +4989,7 @@ end;
 procedure TJclCompressionArchive.ClearItems;
 begin
   FItems.Clear;
+  FCurrentItemIndex := -1;
 end;
 
 procedure TJclCompressionArchive.ClearOperationSuccess;
