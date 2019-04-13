@@ -6996,7 +6996,8 @@ begin
   begin
     pName := ParamName(i, Separator, AllowedPrefixCharacters, True);
     if (CaseSensitive and (pName = Trim(SearchName))) or
-       (UpperCase(pName) = Trim(UpperCase(SearchName))) then
+       ((not CaseSensitive) and
+       (UpperCase(pName) = Trim(UpperCase(SearchName)))) then
     begin
       Result := ParamValue (i, Separator, TrimValue);
       exit;
