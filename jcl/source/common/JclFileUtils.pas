@@ -7019,7 +7019,8 @@ begin
   begin
     pName := ParamName(i, Separator, AllowedPrefixCharacters, True);
     if (CaseSensitive and (pName = SearchName)) or
-       (UpperCase(pName) = UpperCase(SearchName)) then
+       ((not CaseSensitive) and
+       (UpperCase(pName) = UpperCase(SearchName))) then
     begin
       Result := i;
       Exit;
