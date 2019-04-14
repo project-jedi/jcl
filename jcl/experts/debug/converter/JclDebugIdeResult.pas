@@ -34,7 +34,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclOtaUtils;
+  JclOtaUtils{$IFDEF HAS_UNITSCOPE}, System.ImageList{$ENDIF};
 
 type
   TJclDebugResultForm = class(TForm)
