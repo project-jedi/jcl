@@ -657,7 +657,11 @@ function SetLargePageMode: HRESULT; stdcall;
 //DOM-IGNORE-END
 
 const
+  {$IFDEF Win32}
   SevenzipDefaultLibraryName = '7z.dll';
+  {$ELSE}
+  SevenzipDefaultLibraryName = '7z64.dll';
+  {$ENDIF}
   CreateObjectDefaultExportName = 'CreateObject';
   GetHandlerProperty2DefaultExportName = 'GetHandlerProperty2';
   GetHandlerPropertyDefaultExportName = 'GetHandlerProperty';
