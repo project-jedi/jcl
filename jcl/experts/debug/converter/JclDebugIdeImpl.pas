@@ -605,6 +605,10 @@ var
 begin
   if FBuildError or (Length(FResultInfo) = 0) then
     Exit;
+
+  if Assigned(Settings) and (Settings.LoadBool(JclDebugQuietSetting, false)) then
+    Exit;
+
   with TJclDebugResultForm.Create(Application, Settings) do
   try
     for I := 0 to Length(FResultInfo) - 1 do
