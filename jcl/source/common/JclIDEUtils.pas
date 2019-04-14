@@ -980,7 +980,7 @@ const
 
   LibraryKeyName             = 'Library';
   LibrarySearchPathValueName = 'Search Path';
-  LibraryBrowsingPathValueName = 'Browsing Path';
+  LibraryBrowsingPathValueName = 'BrowsingPath';
   LibraryBPLOutputValueName  = 'Package DPL Output';
   LibraryDCPOutputValueName  = 'Package DCP Output';
   BDSDebugDCUPathValueName   = 'Debug DCU Path';
