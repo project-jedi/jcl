@@ -987,6 +987,7 @@ const
 
   CppPathsKeyName            = 'CppPaths';
   CppPathsV5UpperKeyName     = 'C++\Paths';
+  CppPathsV9UpperKeyName     = 'C++\Paths\Win32';
   CppBrowsingPathValueName   = 'BrowsingPath';
   CppSearchPathValueName     = 'SearchPath';
   CppLibraryPathValueName    = 'LibraryPath';
@@ -3689,7 +3690,12 @@ end;
 function TJclBDSInstallation.GetCppPathsKeyName: string;
 begin
   if IDEVersionNumber >= 5 then
-    Result := CppPathsV5UpperKeyName
+  begin
+    if IDEVersionNumber >= 9 then
+      Result := CppPathsV9UpperKeyName
+    else
+      Result := CppPathsV5UpperKeyName
+  end
   else
     Result := CppPathsKeyName;
 end;
