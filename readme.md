@@ -22,7 +22,8 @@ The original repository can be found here: https://github.com/project-jedi/jcl
 
 Download the ZIP file
 ---------------------
-you have to move the jedi.inc and kylix.inc files from the jcl\jcl\source\include to the
+If you download the JCL as a ZIP file from GitHub, you also have to download the jedi.inc and
+kylix.inc files from the <https://github.com/project-jedi/jedi> project and copy them to the
 jcl\jcl\source\include\jedi directory.
 
 Clone with GIT

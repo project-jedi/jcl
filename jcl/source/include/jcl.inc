@@ -678,3 +678,8 @@ ALERT_jedi_inc_incompatible
   {$DEFINE DEBUG_NO_TD32}
 {$ENDIF FPC}
 
+{$IFNDEF FPC}
+  {$DEFINE THREADSAFE}
+{$ENDIF FPC}
+
+

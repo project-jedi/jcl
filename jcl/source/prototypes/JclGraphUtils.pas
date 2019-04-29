@@ -1093,9 +1093,12 @@ var
   X, Y: Integer;
   Delta: Integer;
 begin
+  {$IFDEF MSWINDOWS}
   X := GetSystemMetrics(SM_CXSCREEN);
   Y := GetSystemMetrics(SM_CYSCREEN);
-
+  {$ELSE ~MSWINDOWS}
+  TODO: find a solution for other systems
+  {$ENDIF ~MSWINDOWS}
   with R do
   begin
     if Right > X then

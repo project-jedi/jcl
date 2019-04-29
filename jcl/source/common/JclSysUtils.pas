@@ -426,8 +426,8 @@ type
     procedure AfterConstruction; override;
     { IInterface }
     // function QueryInterface(const IID: TGUID; out Obj): HRESULT; virtual; stdcall;
-    function _AddRef: Integer; stdcall;
-    function _Release: Integer; stdcall;
+    function _AddRef: Longint; {$IFNDEF WINDOWS}cdecl{$ELSE}stdcall{$ENDIF};
+    function _Release: Longint; {$IFNDEF WINDOWS}cdecl{$ELSE}stdcall{$ENDIF};
   end;
 
 // Numeric formatting routines
@@ -730,8 +730,8 @@ type
     destructor Destroy; override;
     { IInterface }
     // function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
-    function _AddRef: Integer; stdcall;
-    function _Release: Integer; stdcall;
+    function _AddRef: Longint; {$IFNDEF WINDOWS}cdecl{$ELSE}stdcall{$ENDIF};
+    function _Release: Longint; {$IFNDEF WINDOWS}cdecl{$ELSE}stdcall{$ENDIF};
   end;
 
 type
