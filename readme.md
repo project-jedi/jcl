@@ -26,7 +26,7 @@ jcl\jcl\source\include\jedi directory.
 Clone with GIT
 --------------
 ```
-> git clone git://github.com/project-jedi/jcl.git jcl
+> git clone https://github.com/project-jedi/jcl.git jcl
 > cd jcl
 > git submodule update --init
 ```
