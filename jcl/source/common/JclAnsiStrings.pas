@@ -98,6 +98,7 @@ type
     FNameValueSeparator: AnsiChar;
     FStrictDelimiter: Boolean;
     FQuoteChar: AnsiChar;
+    FUpdateCount: Integer;
     function GetText: AnsiString;
     procedure SetText(const Value: AnsiString);
     function GetCommaText: AnsiString; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
@@ -127,6 +128,8 @@ type
     procedure SetCapacity(const Value: Integer); virtual;
     function GetCount: Integer; virtual; abstract;
     function CompareStrings(const S1, S2: AnsiString): Integer; virtual;
+    procedure SetUpdateState(Updating: Boolean); virtual;
+    property UpdateCount: Integer read FUpdateCount;
   public
     constructor Create;
 
@@ -181,6 +184,8 @@ type
     FDuplicates: TDuplicates;
     FSorted: Boolean;
     FCaseSensitive: Boolean;
+    FOnChange: TNotifyEvent;
+    FOnChanging: TNotifyEvent;
     procedure Grow;
     procedure QuickSort(L, R: Integer; SCompare: TJclAnsiStringListSortCompare);
     procedure SetSorted(Value: Boolean);
@@ -194,8 +199,13 @@ type
     procedure SetCapacity(const Value: Integer); override;
     function GetCount: Integer; override;
     function CompareStrings(const S1, S2: AnsiString): Integer; override;
+    procedure SetUpdateState(Updating: Boolean); override;
+
+    procedure Changed; virtual;
+    procedure Changing; virtual;
   public
     constructor Create;
+    destructor Destroy; override;
 
     function AddObject(const S: AnsiString; AObject: TObject): Integer; override;
     procedure Assign(Source: TPersistent); override;
@@ -209,6 +219,9 @@ type
     property CaseSensitive: Boolean read FCaseSensitive write FCaseSensitive;
     property Duplicates: TDuplicates read FDuplicates write FDuplicates;
     property Sorted: Boolean read FSorted write SetSorted;
+
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnChanging: TNotifyEvent read FOnChanging write FOnChanging;
   end;
   {$ELSE ~SUPPORTS_UNICODE}
   TJclAnsiStrings = Classes.TStrings;
@@ -826,6 +839,10 @@ begin
   Result := CompareStr(S1, S2);
 end;
 
+procedure TJclAnsiStrings.SetUpdateState(Updating: Boolean);
+begin
+end;
+
 function TJclAnsiStrings.IndexOf(const S: AnsiString): Integer;
 begin
   for Result := 0 to Count - 1 do
@@ -1011,10 +1028,14 @@ end;
 
 procedure TJclAnsiStrings.BeginUpdate;
 begin
+  if FUpdateCount = 0 then SetUpdateState(True);
+  Inc(FUpdateCount);
 end;
 
 procedure TJclAnsiStrings.EndUpdate;
 begin
+  Dec(FUpdateCount);
+  if FUpdateCount = 0 then SetUpdateState(False);
 end;
 
 procedure TJclAnsiStrings.LoadFromFile(const FileName: TFileName);
@@ -1152,6 +1173,14 @@ begin
   FCaseSensitive := True;
 end;
 
+destructor TJclAnsiStringList.Destroy;
+begin
+  FOnChange := nil;
+  FOnChanging := nil;
+
+  inherited Destroy;
+end;
+
 procedure TJclAnsiStringList.Assign(Source: TPersistent);
 var
   StringListSource: TStringList;
@@ -1197,6 +1226,23 @@ begin
     Result := CompareStr(S1, S2)
   else
     Result := CompareText(S1, S2);
+end;
+
+procedure TJclAnsiStringList.SetUpdateState(Updating: Boolean);
+begin
+  if Updating then Changing else Changed;
+end;
+
+procedure TJclAnsiStringList.Changed;
+begin
+  if (FUpdateCount = 0) and Assigned(FOnChange) then
+    FOnChange(Self);
+end;
+
+procedure TJclAnsiStringList.Changing;
+begin
+  if (FUpdateCount = 0) and Assigned(FOnChanging) then
+    FOnChanging(Self);
 end;
 
 procedure TJclAnsiStringList.Grow;
