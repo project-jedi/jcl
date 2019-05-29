@@ -103,6 +103,8 @@ type
     function GetAppDomainCount: Integer;
     function GetDefaultAppDomain: _AppDomain;
     function GetCurrentAppDomain: _AppDomain;
+
+    class procedure GetClrVersionsLegacy(VersionNames: TJclWideStrings); // used for pre v4 runtime
   protected
     function AddAppDomain(const AppDomain: TJclClrAppDomain): Integer;
     function RemoveAppDomain(const AppDomain: TJclClrAppDomain): Integer; 
@@ -341,6 +343,44 @@ function GetRequestedRuntimeVersionForCLSID(rclsid: TGuid; pVersion: PWideChar;
 
 const
   mscoree_dll = 'mscoree.dll';
+
+type
+  ICLRMetaHost = interface(IUnknown)
+    ['{D332DB9E-B9B3-4125-8207-A14884F53216}']
+    function GetRuntime(const pwzVersion: PWideChar;
+                        const riid: TGUID;
+                        out assemblyNGenSetting: IUnknown): HResult; stdcall;
+    function GetVersionFromFile(const pwzFilePath: PWideChar;
+                                out pwzBuffer: PWideChar;
+                                var pcchBuffer: DWORD): HResult; stdcall;
+    function EnumerateInstalledRuntimes(out ppEnumerator: IEnumUnknown): HResult; stdcall;
+    function EnumerateLoadedRuntimes(const hndProcess: THandle;
+                                     out ppEnumerator: IEnumUnknown): HResult; stdcall;
+    function RequestRuntimeLoadedNotification(out pCallbackFunction: PPointer): HResult; stdcall;
+    function QueryLegacyV2RuntimeBinding(const riid: TGUID;
+                                         out ppUnk: PPointer): HResult; stdcall;
+    function ExitProcess(out iExitCode: Int32): HResult; stdcall;
+  end;
+
+
+  ICLRRuntimeInfo = interface(IUnknown)
+    ['{BD39D1D2-BA2F-486a-89B0-B4B0CB466891}']
+    function GetVersionString(pwzBuffer: PWideChar; var pcchBuffer: DWORD): HRESULT; stdcall;
+    function GetRuntimeDirectory(pwzBuffer: PWideChar; var pcchBuffer: DWORD): HRESULT; stdcall;
+    function IsLoaded(hndProcess: THandle; out pbLoaded: BOOL): HRESULT; stdcall;
+    function LoadErrorString(iResourceID: UINT; pwzBuffer: PWideChar; var pcchBuffer: DWORD; iLocaleID: LONG): HRESULT; stdcall;
+    function LoadLibrary(pwzDllName: LPCWSTR; out phndModule: HMODULE): HRESULT; stdcall;
+    function GetProcAddress(pszProcName: LPCSTR; out ppProc: Pointer): HRESULT; stdcall;
+    function GetInterface(const rclsid: TGuid; const riid: TGuid; out ppUnk: IUnknown): HRESULT; stdcall;
+    function IsLoadable(out pbLoadable: BOOL): HRESULT; stdcall;
+    function SetDefaultStartupFlags(dwStartupFlags: DWORD; pwzHostConfigFile: LPCWSTR): HRESULT; stdcall;
+    function GetDefaultStartupFlags(out pdwStartupFlags: DWORD; pwzHostConfigFile: LPWSTR; var pcchHostConfigFile: DWORD): HRESULT; stdcall;
+    function BindAsLegacyV2Runtime(): HRESULT; stdcall;
+    function IsStarted(out pbStarted: BOOL; out pdwStartupFlags: DWORD): HRESULT; stdcall;
+  end;
+
+const
+  CLSID_CLRMetaHost: TGUID = '{9280188d-0e8e-4867-b30c-7fa83884e8de}';
 
 {$IFDEF UNITVERSIONING}
 const
@@ -743,6 +783,26 @@ begin
   Result := _GetRequestedRuntimeVersionForCLSID(rclsid, pVersion, cchBuffer, dwLength, dwResolutionFlags);
 end;
 
+type
+  TCLRCreateInstance = function (const clsid: TGuid; const riid: TGuid; out Intf: IUnknown): HRESULT; stdcall;
+
+var
+  _CLRCreateInstance: TCLRCreateInstance = nil;
+
+function CLRCreateInstance(clsid: TGuid; riid: TGuid; out Intf: IUnknown): HRESULT;
+begin
+  GetProcedureAddress(Pointer(@_CLRCreateInstance), mscoree_dll, 'CLRCreateInstance');
+  if @_CLRCreateInstance = nil then
+  begin
+    Intf := nil;
+    Result := S_OK;
+  end
+  else
+  begin
+    Result := _CLRCreateInstance(clsid, riid, Intf);
+  end;
+end;
+
 //=== { TJclClrHost } ========================================================
 
 constructor TJclClrHost.Create(const ClrVer: WideString; const Flavor: TJclClrHostFlavor;
@@ -850,7 +910,47 @@ begin
   Result := Unk as _AppDomain;
 end;
 
-class procedure TJclClrHost.GetClrVersions(VersionNames: TWideStrings);
+class procedure TJclClrHost.GetClrVersions(VersionNames: TJclWideStrings);
+var
+  UnknownIntf: IUnknown;
+  MetaHost: ICLRMetaHost;
+  Enumerator: IEnumUnknown;
+  RuntimeInfo: ICLRRuntimeInfo;
+
+  Version: string;
+  Directory: string;
+  RequiredSize: DWORD;
+begin
+  // CLRCreateInstance returns S_OK and a nil interface if the entry point was not found in mscoree.dll
+  OleCheck(CLRCreateInstance(CLSID_CLRMetaHost, ICLRMetaHost, UnknownIntf));
+  if Assigned(UnknownIntf) then
+  begin
+    MetaHost := UnknownIntf as ICLRMetaHost;
+
+    OleCheck(MetaHost.EnumerateInstalledRuntimes(Enumerator));
+
+    while Enumerator.Next(1, UnknownIntf, nil) = S_OK do
+    begin
+      RuntimeInfo := UnknownIntf as ICLRRuntimeInfo;
+
+      RuntimeInfo.GetVersionString(nil, RequiredSize); // don't OleCheck here, the call fails but still fills RequiredSize
+      SetLength(Version, RequiredSize - 1);
+      OleCheck(RuntimeInfo.GetVersionString(@Version[1], RequiredSize));
+
+      RuntimeInfo.GetRuntimeDirectory(nil, RequiredSize);
+      SetLength(Directory, RequiredSize - 1);
+      OleCheck(RuntimeInfo.GetRuntimeDirectory(@Directory[1], RequiredSize));
+
+      VersionNames.Values[Version] := Directory;
+    end;
+  end
+  else
+  begin
+    GetClrVersionsLegacy(VersionNames);
+  end;
+end;
+
+class procedure TJclClrHost.GetClrVersionsLegacy(VersionNames: TJclWideStrings); // used for pre v4 runtime
   function DirectoryExistsW(const DirectoryName: WideString): Boolean;
   var
     Code: DWORD;
