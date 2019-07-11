@@ -397,6 +397,7 @@ implementation
 uses
   {$IFDEF HAS_UNITSCOPE}
   System.SysUtils,
+  Winapi.AccCtrl,
   {$ELSE ~HAS_UNITSCOPE}
   SysUtils,
   {$ENDIF ~HAS_UNITSCOPE}
@@ -404,7 +405,7 @@ uses
   //  JwaAccCtrl,
   {$ELSE ~FPC}
   AccCtrl,
-  //JclSysUtils,
+  JclSysUtils,
   {$ENDIF ~FPC}
   JclResources, JclWin32, JclSysInfo,
   JclAnsiStrings, JclWideStrings;
