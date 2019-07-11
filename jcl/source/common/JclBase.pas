@@ -161,6 +161,11 @@ type
   TJclULargeInteger = ULARGE_INTEGER;
   PJclULargeInteger = PULARGE_INTEGER;
 
+  {$IFNDEF COMPILER16_UP}
+  LONG = Longint;
+  {$EXTERNALSYM LONG}
+  {$ENDIF ~COMPILER16_UP}
+
 // Dynamic Array support
 type
   TDynByteArray          = array of Byte;

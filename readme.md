@@ -29,7 +29,7 @@ jcl\jcl\source\include\jedi directory.
 Clone with GIT
 --------------
 ```
-> git clone git://github.com/Makhaon/jcl.git jcl
+> git clone https://github.com/Makhaon/jcl.git jcl
 ```
 This will get you the JCL repository.
 you have to move the jedi.inc and kylix.inc files from the jcl\jcl\source\include to the

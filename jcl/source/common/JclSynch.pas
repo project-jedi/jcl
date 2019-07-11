@@ -379,7 +379,11 @@ uses
   {$ELSE ~HAS_UNITSCOPE}
   SysUtils,
   {$ENDIF ~HAS_UNITSCOPE}
-  JclLogic, JclRegistry, JclResources,
+  JclLogic,
+  {$IFDEF MSWINDOWS}
+  JclRegistry,
+  {$ENDIF}
+  JclResources,
   JclSysInfo, JclStrings;
 
 const

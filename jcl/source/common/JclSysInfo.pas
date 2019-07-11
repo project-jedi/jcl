@@ -261,7 +261,8 @@ type
     wvWinNT31, wvWinNT35, wvWinNT351, wvWinNT4, wvWin2000, wvWinXP,
     wvWin2003, wvWinXP64, wvWin2003R2, wvWinVista, wvWinServer2008,
     wvWin7, wvWinServer2008R2, wvWin8, wvWin8RT, wvWinServer2012,
-    wvWin81, wvWin81RT, wvWinServer2012R2, wvWin10, wvWinServer2016);
+    wvWin81, wvWin81RT, wvWinServer2012R2, wvWin10, wvWinServer2016,
+    wvWinServer2019, wvWinServer);
   TWindowsEdition =
    (weUnknown, weWinXPHome, weWinXPPro, weWinXPHomeN, weWinXPProN, weWinXPHomeK,
     weWinXPProK, weWinXPHomeKN, weWinXPProKN, weWinXPStarter, weWinXPMediaCenter,
@@ -311,6 +312,8 @@ var
   IsWinServer2012R2: Boolean = False;
   IsWin10: Boolean = False;
   IsWinServer2016: Boolean = False;
+  IsWinServer2019: Boolean = False;
+  IsWinServer: Boolean = False;
 
 const
   PROCESSOR_ARCHITECTURE_INTEL = 0;
@@ -339,6 +342,8 @@ function GetWindows10ReleaseId: Integer;
 function GetWindows10ReleaseName: String;
 function GetWindows10ReleaseCodeName: String;
 function GetWindows10ReleaseVersion: String;
+function GetWindowsServerReleaseId: Integer;
+function GetWindowsServerReleaseVersion: String;
 function GetOpenGLVersion(const Win: THandle; out Version, Vendor: AnsiString): Boolean;
 function GetNativeSystemInfo(var SystemInfo: TSystemInfo): Boolean;
 function GetProcessorArchitecture: TProcessorArchitecture;
@@ -3473,7 +3478,7 @@ var
   TrimmedWin32CSDVersion: string;
   SystemInfo: TSystemInfo;
   OSVersionInfoEx: TOSVersionInfoEx;
-  Win32MajorVersionEx, Win32MinorVersionEx: integer;
+  Win32MajorVersionEx, Win32MinorVersionEx, WindowsReleaseId: integer;
   ProductName: string;
 const
   SM_SERVERR2 = 89;
@@ -3560,7 +3565,7 @@ begin
                  Win32MinorVersionEx := 4 // Windows 10 (builds < 9926) and Windows Server 2016 (builds < 10074)
               else
               if Win32MajorVersionEx = 10 then
-                 Win32MinorVersionEx := -1 // Windows 10 (builds >= 9926) and Windows Server 2016 (builds >= 10074), set to -1 to escape case block
+                 Win32MinorVersionEx := -1 // Windows 10 (builds >= 9926) and Windows Server 2016/2019 (builds >= 10074), set to -1 to escape case block
               else
                  Win32MinorVersionEx := Win32MinorVersion;
             end;
@@ -3625,7 +3630,7 @@ begin
       end;
   end;
 
-  // This part will only be hit with Windows 10 and Windows Server 2016 (and newer) where an application manifest is not included
+  // This part will only be hit with Windows 10, Windows Server 2016 and beyond where an application manifest is not included
   if (Win32MajorVersionEx >= 10) then
   begin
     case Win32MajorVersionEx of
@@ -3636,12 +3641,22 @@ begin
         case Win32MinorVersionEx of
           0:
             begin
-              // Windows 10 (builds >= 9926) and Windows Server 2016 (builds >= 10074)
+              // Windows 10 (builds >= 9926), Windows Server 2016 (builds >= 10074) and beyond
               OSVersionInfoEx.dwOSVersionInfoSize := SizeOf(OSVersionInfoEx);
               if GetVersionEx(OSVersionInfoEx) and (OSVersionInfoEx.wProductType = VER_NT_WORKSTATION) then
                 Result := wvWin10
               else
-                Result := wvWinServer2016;
+              begin
+                WindowsReleaseId := StrToIntDef(RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'ReleaseId', '0'), -1);
+                case WindowsReleaseId of
+                  1607:
+                    Result := wvWinServer2016;
+                  1809:
+                    Result := wvWinServer2019;
+                else
+                    Result := wvWinServer;
+                end;
+              end;
             end;
         end;
       end;
@@ -3964,6 +3979,10 @@ begin
       Result := LoadResString(@RsOSVersionWin10);
     wvWinServer2016:
       Result := LoadResString(@RsOSVersionWinServer2016);
+    wvWinServer2019:
+      Result := LoadResString(@RsOSVersionWinServer2019);
+    wvWinServer:
+      Result := LoadResString(@RsOSVersionWinServer);
   else
     Result := '';
   end;
@@ -4199,6 +4218,8 @@ begin
           Result := 'Windows 10 April 2018 Update';
        1809:
           Result := 'Windows 10 October 2018 Update';
+       1903:
+          Result := 'Windows 10 May 2019 Update';
     else
       Result := 'Windows 10 ' + IntToStr(GetWindows10ReleaseId) + ' Update';
     end;
@@ -4226,6 +4247,8 @@ begin
           Result := 'Redstone 4';
        1809:
           Result := 'Redstone 5';
+       1903:
+          Result := '19H1';
     else
       Result := '';
     end;
@@ -4242,7 +4265,31 @@ begin
   begin
     WindowsReleaseId := GetWindows10ReleaseId;
     if WindowsReleaseId > 0 then
-      Result := 'Windows 10 Version ' + IntToStr(WindowsReleaseId)
+      Result := 'Windows 10, version ' + IntToStr(WindowsReleaseId)
+    else
+      Result := '';
+  end
+  else
+    Result := '';
+end;
+
+function GetWindowsServerReleaseId: Integer;
+begin
+  if IsWinServer then
+    Result := StrToIntDef(RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'ReleaseId', '0'), -1)
+  else
+    Result := -1;
+end;
+
+function GetWindowsServerReleaseVersion: String;
+var
+  WindowsReleaseId: Integer;
+begin
+  if IsWinServer then
+  begin
+    WindowsReleaseId := GetWindowsServerReleaseId;
+    if WindowsReleaseId > 0 then
+      Result := 'Windows Server, version ' + IntToStr(WindowsReleaseId)
     else
       Result := '';
   end
@@ -6364,6 +6411,10 @@ begin
       IsWin10 := True;
     wvWinServer2016:
       IsWinServer2016 := True;
+    wvWinServer2019:
+      IsWinServer2019 := True;
+    wvWinServer:
+      IsWinServer := True;
   end;
 end;
 
