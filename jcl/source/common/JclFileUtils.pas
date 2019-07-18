@@ -6559,15 +6559,25 @@ begin
   EnumFiles(FCurrentDirectory + '*', FInternalFileInfoHandler, FRejectedAttr, FRequiredAttr, @Terminated);
 end;
 
+{$IFDEF FPC}
+{$IF FPC_FULLVERSION>=30101}
+ {$DEFINE RTL_220_OR_NEW_FPC}
+{$ENDIF}
+{$ELSE}
+{$IFDEF RTL220_UP}
+ {$DEFINE RTL_220_OR_NEW_FPC}
+{$ENDIF}
+{$ENDIF}
+
 function TEnumFileThread.FileMatch: Boolean;
 var
   FileSize: Int64;
 begin
-  {$IFDEF RTL220_UP}
+  {$IFDEF RTL_220_OR_NEW_FPC}
   Result := FileNameMatchesMask and (FFileInfo.TimeStamp >= FFileTimeMin) and (FFileInfo.TimeStamp <= FFileTimeMax);
-  {$ELSE ~RTL220_UP}
+  {$ELSE ~RTL_220_OR_NEW_FPC}
   Result := FileNameMatchesMask and (FFileInfo.Time >= FFileTimeMin) and (FFileInfo.Time <= FFileTimeMax);
-  {$ENDIF ~RTL220_UP}
+  {$ENDIF ~RTL_220_OR_NEW_FPC}
   if Result then
   begin
     FileSize := GetSizeOfFile(FFileInfo);

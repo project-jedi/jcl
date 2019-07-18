@@ -2341,6 +2341,11 @@ end;
 
 //=== { TJclDesktopCanvas } ==================================================
 
+{$IFDEF UNIX}
+const
+  HWND_DESKTOP = 0;
+{$ENDIF}
+
 constructor TJclDesktopCanvas.Create;
 begin
   inherited Create;

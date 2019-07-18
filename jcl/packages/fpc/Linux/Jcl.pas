@@ -2,7 +2,7 @@
   This source is only used to compile and install the package.
  }
 
-unit JclCommon;
+unit Jcl;
 
 {$warn 5023 off : no warning about unused units}
 interface
@@ -15,7 +15,8 @@ uses
   JclStringConversions, JclStringLists, JclStrings, JclSynch, JclSysInfo, 
   JclSysUtils, JclUnicode, JclUnitConv, JclUnitVersioning, 
   JclUnitVersioningProviders, JclValidation, JclWideStrings, pcre, zlibh, 
-  FpLibcCompatibility, FpStringHash, FpWinAPICompatibility;
+  JclRegistry, FpLibcCompatibility, FpStringHash, FpWinAPICompatibility, 
+  libclite;
 
 implementation
 

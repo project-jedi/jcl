@@ -772,7 +772,7 @@ uses
   {$ENDIF MSWINDOWS}
   {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF HAS_UNIT_LIBC}
-  Libc,
+  libclite,
   {$ENDIF HAS_UNIT_LIBC}
   JclFileUtils, JclLogic, JclDevToolsResources,
   JclAnsiStrings, JclWideStrings, JclStrings,

@@ -187,10 +187,10 @@ function RectUnion(const R1, R2: TRect): TRect;
 function RectWidth(const R: TRect): Integer;
 
 // Clipping
-function ClipCodes(const X, Y, MinX, MinY, MaxX, MaxY: Float): TClipCodes; overload;
-function ClipCodes(const X, Y: Float; const ClipRect: TRect): TClipCodes; overload;
+function ClipCodes(const X, Y, MinX, MinY, MaxX, MaxY: JclBase.Float): TClipCodes; overload;
+function ClipCodes(const X, Y: JclBase.Float; const ClipRect: TRect): TClipCodes; overload;
 function ClipLine(var X1, Y1, X2, Y2: Integer; const ClipRect: TRect): Boolean; overload;
-function ClipLine(var X1, Y1, X2, Y2: Float; const MinX, MinY, MaxX, MaxY: Float;
+function ClipLine(var X1, Y1, X2, Y2: JclBase.Float; const MinX, MinY, MaxX, MaxY: JclBase.Float;
   Codes: PClipCodes = nil): Boolean; overload;
 procedure DrawPolyLine(const Canvas: TCanvas; var Points: TPointArray; const ClipRect: TRect);
 
@@ -223,8 +223,8 @@ procedure RGBToBGR(const Source, Target: Pointer; const BitsPerSample: Byte; Cou
 procedure RGBToBGR(const R, G, B, Target: Pointer; const BitsPerSample: Byte; Count: Cardinal); overload;
 procedure RGBAToBGRA(const Source, Target: Pointer; const BitsPerSample: Byte; Count: Cardinal);
 
-procedure WinColorToOpenGLColor(const Color: TColor; out Red, Green, Blue: Float);
-function OpenGLColorToWinColor(const Red, Green, Blue: Float): TColor;
+procedure WinColorToOpenGLColor(const Color: TColor; out Red, Green, Blue: JclBase.Float);
+function OpenGLColorToWinColor(const Red, Green, Blue: JclBase.Float): TColor;
 
 function Color32(WinColor: TColor): TColor32; overload;
 function Color32(const R, G, B: Byte; const A: Byte = $FF): TColor32; overload;
@@ -1894,7 +1894,7 @@ begin
   end;
 end;
 
-procedure WinColorToOpenGLColor(const Color: TColor; out Red, Green, Blue: Float);
+procedure WinColorToOpenGLColor(const Color: TColor; out Red, Green, Blue: JclBase.Float);
 var
   Temp: TColorRec;
 begin
@@ -1904,7 +1904,7 @@ begin
   Blue  := (Temp.B / High(Temp.B));
 end;
 
-function OpenGLColorToWinColor(const Red, Green, Blue: Float): TColor;
+function OpenGLColorToWinColor(const Red, Green, Blue: JclBase.Float): TColor;
 var
   Temp: TColorRec;
 begin
@@ -2393,7 +2393,7 @@ begin
       end;
 
       // Windows 2000+ automatically switches the order in the string. For every other system we have to take care.
-      if IsWin2K or not RTL then
+      if {$IFDEF MSWINDOWS} IsWin2K or {$ENDIF} not RTL then
         Result := Copy(S, 1, N - 1) + '...'
       else
         Result := '...' + Copy(S, 1, N - 1);
@@ -2403,7 +2403,7 @@ end;
 
 //=== Clipping ===============================================================
 
-function ClipCodes(const X, Y, MinX, MinY, MaxX, MaxY: Float): TClipCodes;
+function ClipCodes(const X, Y, MinX, MinY, MaxX, MaxY: JclBase.Float): TClipCodes;
 begin
   Result := [];
   if X > MaxX then
@@ -2418,14 +2418,14 @@ begin
     Include(Result, ccBelow);
 end;
 
-function ClipCodes(const X, Y: Float; const ClipRect: TRect): TClipCodes;
+function ClipCodes(const X, Y: JclBase.Float; const ClipRect: TRect): TClipCodes;
 begin
   Result := ClipCodes(X, Y, ClipRect.Left, ClipRect.Top, ClipRect.Right, ClipRect.Bottom);
 end;
 
 function ClipLine(var X1, Y1, X2, Y2: Integer; const ClipRect: TRect): Boolean;
 var
-  FX1, FY1, FX2, FY2: Float;
+  FX1, FY1, FX2, FY2: JclBase.Float;
 begin
   FX1 := X1;
   FY1 := Y1;
@@ -2442,7 +2442,7 @@ begin
   end;
 end;
 
-function ClipLine(var X1, Y1, X2, Y2: Float; const MinX, MinY, MaxX, MaxY: Float;
+function ClipLine(var X1, Y1, X2, Y2: JclBase.Float; const MinX, MinY, MaxX, MaxY: JclBase.Float;
   Codes: PClipCodes): Boolean;
 var
   Done: Boolean;
@@ -2535,7 +2535,7 @@ procedure DrawPolyLine(const Canvas: TCanvas; var Points: TPointArray; const Cli
 var
   I: Integer;
   X, Y: Integer;
-  X1, Y1, X2, Y2: Float;
+  X1, Y1, X2, Y2: JclBase.Float;
   ClipX1, ClipY1, ClipX2, ClipY2: Float;
   Codes1, Codes2: TClipCodes;
 begin

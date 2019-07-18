@@ -68,6 +68,9 @@ uses
   {$ELSE ~HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
   Windows,
+  {$IFDEF FPC}
+  JwaWinBase,
+  {$ENDIF}
   {$ENDIF MSWINDOWS}
   {$IFDEF FPCNONWINDOWS}
   FpWinAPICompatibility,
@@ -1003,14 +1006,14 @@ function WriteProtectedMemory(BaseAddress, Buffer: Pointer;
   Size: Cardinal; out WrittenBytes: Cardinal): Boolean;
 {$IFDEF MSWINDOWS}
 var
-  OldProtect, Dummy: Cardinal;
+  OldProtect, Dummy: {$IFDEF FPC} DWORD {$ELSE} Cardinal {$ENDIF};
 begin
   WrittenBytes := 0;
   if Size > 0 then
   begin
     // (outchy) VirtualProtect for DEP issues
     OldProtect := 0;
-    Result := VirtualProtect(BaseAddress, Size, PAGE_EXECUTE_READWRITE, OldProtect);
+    Result := VirtualProtect(BaseAddress, Size, PAGE_EXECUTE_READWRITE, {$IFDEF FPC} @OldProtect {$ELSE} OldProtect {$ENDIF});
     if Result then
     try
       Move(Buffer^, BaseAddress^, Size);
@@ -1019,7 +1022,7 @@ begin
         FlushInstructionCache(GetCurrentProcess, BaseAddress, Size);
     finally
       Dummy := 0;
-      VirtualProtect(BaseAddress, Size, OldProtect, Dummy);
+      VirtualProtect(BaseAddress, Size, OldProtect, {$IFDEF FPC} @Dummy {$ELSE} Dummy {$ENDIF});
     end;
   end;
   Result := WrittenBytes = Size;
@@ -1262,6 +1265,29 @@ var
   {$ENDIF THREADSAFE}
 
 {$IFDEF THREADSAFE}
+
+{$IFDEF FPC}
+ {$IF FPC_FULLVERSION>=30101}
+  {$DEFINE RTL_NEWEST} //New FPC
+ {$ELSE}
+  {$IFDEF MSWINDOWS}
+  {$DEFINE RTL_NEWEST} //Old FPC
+  {$ELSE}
+  {$DEFINE RTL_OLD} //Old FPC
+  {$ENDIF}
+ {$ENDIF}
+{$ELSE}
+ {$IFDEF RTL200_UP}
+  {$DEFINE RTL_NEWEST} // Delphi 2009+
+ {$ELSE}
+  {$IFDEF RTL160_UP}
+   {$DEFINE RTL_NEW} // Delphi 7-2007
+  {$ELSE}
+   {$DEFINE RTL_OLD} // Delphi 5, 6
+  {$ENDIF}
+ {$ENDIF}
+{$ENDIF}
+
 function GetAccessToHandleList: IInterface;
 var
   OldValue: Pointer;
@@ -1270,17 +1296,17 @@ begin
   if not Assigned(GlobalMMFHandleListCS) and not MMFFinalized then
   begin
     CS := TJclIntfCriticalSection.Create;
-    {$IFDEF RTL200_UP} // Delphi 2009+
+    {$IFDEF RTL_NEWEST}
     OldValue := InterlockedCompareExchangePointer(Pointer(GlobalMMFHandleListCS), Pointer(CS), nil);
     {$ELSE}
-      {$IFDEF RTL160_UP} // Delphi 7-2007
+    {$IFDEF RTL_NEW}
     OldValue := Pointer(InterlockedCompareExchange(Longint(GlobalMMFHandleListCS), Longint(CS), 0));
-      {$ELSE} // Delphi 5, 6
-    {$IFNDEF FPC}
+    {$ELSE}
+    {$IFDEF RTL_OLD}
     OldValue := InterlockedCompareExchange(Pointer(GlobalMMFHandleListCS), Pointer(CS), nil);
-    {$ENDIF FPC}
-      {$ENDIF RTL180_UP}
-    {$ENDIF RTL185_UP}
+    {$ENDIF RTL_OLD}
+    {$ENDIF RTL_NEW}
+    {$ENDIF RTL_NEWEST}
     if OldValue <> nil then
       CS.Free;
   end;
@@ -2887,7 +2913,7 @@ var
   Res: DWORD;
 begin
   NullDWORD := nil;
-  if not ReadFile(PipeInfo.PipeRead, PipeInfo.Buffer[0], BufferSize, NullDWORD^, @Overlapped) then
+  if not ReadFile(PipeInfo.PipeRead, {$IFDEF FPC} @PipeInfo.Buffer[0] {$ELSE} PipeInfo.Buffer[0] {$ENDIF}, BufferSize, {$IFDEF FPC} NullDWORD {$ELSE} NullDWORD^ {$ENDIF}, @Overlapped) then
   begin
     Res := GetLastError;
     case Res of
@@ -2940,7 +2966,7 @@ begin
   begin
     if PipeBytesRead > BufferSize then
       PipeBytesRead := BufferSize;
-    if not ReadFile(PipeInfo.PipeRead, PipeInfo.Buffer[0], PipeBytesRead, PipeBytesRead, nil) then
+    if not ReadFile(PipeInfo.PipeRead, {$IFDEF FPC} @PipeInfo.Buffer[0] {$ELSE} PipeInfo.Buffer[0] {$ENDIF}, PipeBytesRead, {$IFDEF FPC} @PipeBytesRead {$ELSE} PipeBytesRead {$ENDIF}, nil) then
       RaiseLastOSError;
     InternalExecuteProcessBuffer(PipeInfo, PipeBytesRead);
   end;

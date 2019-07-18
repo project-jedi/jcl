@@ -494,11 +494,21 @@ type
     property MaxCapacity: SizeInt read FMaxCapacity;
   end;
 
+  {$IFDEF FPC}
+  {$IF FPC_FULLVERSION>=30101}
+   {$DEFINE RTL_200_OR_NEW_FPC}
+  {$ENDIF}
+  {$ELSE}
   {$IFDEF RTL200_UP}
+   {$DEFINE RTL_200_OR_NEW_FPC}
+  {$ENDIF}
+  {$ENDIF}
+
+  {$IFDEF RTL_200_OR_NEW_FPC}
   TStringBuilder = {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.TStringBuilder;
-  {$ELSE ~RTL200_UP}
+  {$ELSE ~RTL_200_OR_NEW_FPC}
   TStringBuilder = TJclStringBuilder;
-  {$ENDIF ~RTL200_UP}
+  {$ENDIF ~RTL_200_OR_NEW_FPC}
 
 // DotNetFormat() uses the .NET format style: "{argX}"
 function DotNetFormat(const Fmt: string; const Args: array of const): string; overload;

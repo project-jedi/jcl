@@ -260,7 +260,7 @@ uses
   SysConst,
   {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF HAS_UNIT_LIBC}
-  Libc,
+  libclite,
   {$ENDIF HAS_UNIT_LIBC}
   JclFileUtils,
   JclDevToolsResources,

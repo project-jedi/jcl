@@ -2503,7 +2503,7 @@ begin
       Name := TypeName;
     end;
     TypeData := GetTypeData(Result);
-    {$IFDEF FPC_FULLVERSION>=30101}
+    {$IF FPC_FULLVERSION>=30101}
     TypeData^.BaseTypeRef := AllocMem(SizeOf(Pointer));
     {$else}
     TypeData^.BaseType := AllocMem(SizeOf(Pointer));
@@ -2517,7 +2517,7 @@ begin
       TypeData^.OrdType := otULong;
     TypeData^.MinValue := 0;
     TypeData^.MaxValue := Length(Literals)-1;
-    {$IFDEF FPC_FULLVERSION>=30101}
+    {$IF FPC_FULLVERSION>=30101}
     TypeData^.BaseTypeRef^ := Result;   // No sub-range: basetype points to itself
     {$else}
     TypeData^.BaseType{$IFDEF BORLAND}^{$ENDIF} := Result;   // No sub-range: basetype points to itself
@@ -2608,7 +2608,7 @@ begin
     TypeData^.OrdType := GetTypeData(BaseType)^.OrdType;
     TypeData^.MinValue := MinValue;
     TypeData^.MaxValue := MaxValue;
-    {$IFDEF FPC_FULLVERSION>=30101}
+    {$IF FPC_FULLVERSION>=30101}
     TypeData^.BaseTypeRef := AllocMem(SizeOf(Pointer));
     TypeData^.BaseTypeRef^ := BaseType;
     {$else}
@@ -2820,7 +2820,7 @@ begin
     TypeData^.CompType^ := BaseType;
     {$ENDIF BORLAND}
     {$IFDEF FPC}
-    {$IFDEF FPC_FULLVERSION>=30101}
+    {$IF FPC_FULLVERSION>=30101}
     TypeData^.CompTypeRef^ := BaseType;
     {$else}
     TypeData^.CompType := BaseType;
