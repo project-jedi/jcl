@@ -2876,13 +2876,16 @@ end;
 procedure TJclIntfIntfSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclIntfIntfSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclIntfIntfSortedMap then
   begin
     MyDest := TJclIntfIntfSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -3538,13 +3541,16 @@ end;
 procedure TJclAnsiStrIntfSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclAnsiStrIntfSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclAnsiStrIntfSortedMap then
   begin
     MyDest := TJclAnsiStrIntfSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -4200,13 +4206,16 @@ end;
 procedure TJclIntfAnsiStrSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclIntfAnsiStrSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclIntfAnsiStrSortedMap then
   begin
     MyDest := TJclIntfAnsiStrSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -4862,13 +4871,16 @@ end;
 procedure TJclAnsiStrAnsiStrSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclAnsiStrAnsiStrSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclAnsiStrAnsiStrSortedMap then
   begin
     MyDest := TJclAnsiStrAnsiStrSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -5524,13 +5536,16 @@ end;
 procedure TJclWideStrIntfSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclWideStrIntfSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclWideStrIntfSortedMap then
   begin
     MyDest := TJclWideStrIntfSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -6186,13 +6201,16 @@ end;
 procedure TJclIntfWideStrSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclIntfWideStrSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclIntfWideStrSortedMap then
   begin
     MyDest := TJclIntfWideStrSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -6848,13 +6866,16 @@ end;
 procedure TJclWideStrWideStrSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclWideStrWideStrSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclWideStrWideStrSortedMap then
   begin
     MyDest := TJclWideStrWideStrSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -7511,13 +7532,16 @@ end;
 procedure TJclUnicodeStrIntfSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclUnicodeStrIntfSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclUnicodeStrIntfSortedMap then
   begin
     MyDest := TJclUnicodeStrIntfSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -8176,13 +8200,16 @@ end;
 procedure TJclIntfUnicodeStrSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclIntfUnicodeStrSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclIntfUnicodeStrSortedMap then
   begin
     MyDest := TJclIntfUnicodeStrSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -8841,13 +8868,16 @@ end;
 procedure TJclUnicodeStrUnicodeStrSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclUnicodeStrUnicodeStrSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclUnicodeStrUnicodeStrSortedMap then
   begin
     MyDest := TJclUnicodeStrUnicodeStrSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -9505,13 +9535,16 @@ end;
 procedure TJclSingleIntfSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclSingleIntfSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclSingleIntfSortedMap then
   begin
     MyDest := TJclSingleIntfSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -10167,13 +10200,16 @@ end;
 procedure TJclIntfSingleSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclIntfSingleSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclIntfSingleSortedMap then
   begin
     MyDest := TJclIntfSingleSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -10829,13 +10865,16 @@ end;
 procedure TJclSingleSingleSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclSingleSingleSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclSingleSingleSortedMap then
   begin
     MyDest := TJclSingleSingleSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -11457,13 +11496,16 @@ end;
 procedure TJclDoubleIntfSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclDoubleIntfSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclDoubleIntfSortedMap then
   begin
     MyDest := TJclDoubleIntfSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -12119,13 +12161,16 @@ end;
 procedure TJclIntfDoubleSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclIntfDoubleSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclIntfDoubleSortedMap then
   begin
     MyDest := TJclIntfDoubleSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -12781,13 +12826,16 @@ end;
 procedure TJclDoubleDoubleSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclDoubleDoubleSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclDoubleDoubleSortedMap then
   begin
     MyDest := TJclDoubleDoubleSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -13409,13 +13457,16 @@ end;
 procedure TJclExtendedIntfSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclExtendedIntfSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclExtendedIntfSortedMap then
   begin
     MyDest := TJclExtendedIntfSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -14071,13 +14122,16 @@ end;
 procedure TJclIntfExtendedSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclIntfExtendedSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclIntfExtendedSortedMap then
   begin
     MyDest := TJclIntfExtendedSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -14733,13 +14787,16 @@ end;
 procedure TJclExtendedExtendedSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclExtendedExtendedSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclExtendedExtendedSortedMap then
   begin
     MyDest := TJclExtendedExtendedSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -15361,13 +15418,16 @@ end;
 procedure TJclIntegerIntfSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclIntegerIntfSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclIntegerIntfSortedMap then
   begin
     MyDest := TJclIntegerIntfSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -16023,13 +16083,16 @@ end;
 procedure TJclIntfIntegerSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclIntfIntegerSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclIntfIntegerSortedMap then
   begin
     MyDest := TJclIntfIntegerSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -16685,13 +16748,16 @@ end;
 procedure TJclIntegerIntegerSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclIntegerIntegerSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclIntegerIntegerSortedMap then
   begin
     MyDest := TJclIntegerIntegerSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -17313,13 +17379,16 @@ end;
 procedure TJclCardinalIntfSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclCardinalIntfSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclCardinalIntfSortedMap then
   begin
     MyDest := TJclCardinalIntfSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -17975,13 +18044,16 @@ end;
 procedure TJclIntfCardinalSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclIntfCardinalSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclIntfCardinalSortedMap then
   begin
     MyDest := TJclIntfCardinalSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -18637,13 +18709,16 @@ end;
 procedure TJclCardinalCardinalSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclCardinalCardinalSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclCardinalCardinalSortedMap then
   begin
     MyDest := TJclCardinalCardinalSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -19265,13 +19340,16 @@ end;
 procedure TJclInt64IntfSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclInt64IntfSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclInt64IntfSortedMap then
   begin
     MyDest := TJclInt64IntfSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -19927,13 +20005,16 @@ end;
 procedure TJclIntfInt64SortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclIntfInt64SortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclIntfInt64SortedMap then
   begin
     MyDest := TJclIntfInt64SortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -20589,13 +20670,16 @@ end;
 procedure TJclInt64Int64SortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclInt64Int64SortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclInt64Int64SortedMap then
   begin
     MyDest := TJclInt64Int64SortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -21217,13 +21301,16 @@ end;
 procedure TJclPtrIntfSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclPtrIntfSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclPtrIntfSortedMap then
   begin
     MyDest := TJclPtrIntfSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -21879,13 +21966,16 @@ end;
 procedure TJclIntfPtrSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclIntfPtrSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclIntfPtrSortedMap then
   begin
     MyDest := TJclIntfPtrSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -22541,13 +22631,16 @@ end;
 procedure TJclPtrPtrSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclPtrPtrSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclPtrPtrSortedMap then
   begin
     MyDest := TJclPtrPtrSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -23170,13 +23263,16 @@ end;
 procedure TJclIntfSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclIntfSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclIntfSortedMap then
   begin
     MyDest := TJclIntfSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -23846,13 +23942,16 @@ end;
 procedure TJclAnsiStrSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclAnsiStrSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclAnsiStrSortedMap then
   begin
     MyDest := TJclAnsiStrSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -24522,13 +24621,16 @@ end;
 procedure TJclWideStrSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclWideStrSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclWideStrSortedMap then
   begin
     MyDest := TJclWideStrSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -25199,13 +25301,16 @@ end;
 procedure TJclUnicodeStrSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclUnicodeStrSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclUnicodeStrSortedMap then
   begin
     MyDest := TJclUnicodeStrSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -25877,13 +25982,16 @@ end;
 procedure TJclSingleSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclSingleSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclSingleSortedMap then
   begin
     MyDest := TJclSingleSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -26519,13 +26627,16 @@ end;
 procedure TJclDoubleSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclDoubleSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclDoubleSortedMap then
   begin
     MyDest := TJclDoubleSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -27161,13 +27272,16 @@ end;
 procedure TJclExtendedSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclExtendedSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclExtendedSortedMap then
   begin
     MyDest := TJclExtendedSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -27803,13 +27917,16 @@ end;
 procedure TJclIntegerSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclIntegerSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclIntegerSortedMap then
   begin
     MyDest := TJclIntegerSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -28445,13 +28562,16 @@ end;
 procedure TJclCardinalSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclCardinalSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclCardinalSortedMap then
   begin
     MyDest := TJclCardinalSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -29087,13 +29207,16 @@ end;
 procedure TJclInt64SortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclInt64SortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclInt64SortedMap then
   begin
     MyDest := TJclInt64SortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -29729,13 +29852,16 @@ end;
 procedure TJclPtrSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclPtrSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclPtrSortedMap then
   begin
     MyDest := TJclPtrSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -30372,13 +30498,16 @@ end;
 procedure TJclSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclSortedMap;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclSortedMap then
   begin
     MyDest := TJclSortedMap(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -31034,13 +31163,16 @@ end;
 procedure TJclSortedMap<TKey,TValue>.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: TJclSortedMap<TKey,TValue>;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclSortedMap<TKey,TValue> then
   begin
     MyDest := TJclSortedMap<TKey,TValue>(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
