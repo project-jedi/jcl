@@ -399,12 +399,14 @@ uses
   System.SysUtils,
   Winapi.AccCtrl,
   {$ELSE ~HAS_UNITSCOPE}
+  {$IFNDEF FPC}
+  AccCtrl,
+  {$ENDIF ~FPC}
   SysUtils,
   {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF FPC}
   //  JwaAccCtrl,
   {$ELSE ~FPC}
-  AccCtrl,
   JclSysUtils,
   {$ENDIF ~FPC}
   JclResources, JclWin32, JclSysInfo,

@@ -2482,6 +2482,10 @@ begin
     Result := GetEnumName(TypeInfo, EnumVal);
 end;
 
+{$IFDEF FPC}
+{$I ../include/fpc_version.inc}
+{$ENDIF}
+
 function JclGenerateEnumType(const TypeName: ShortString;
   const Literals: array of string): PTypeInfo;
 var
@@ -2503,7 +2507,7 @@ begin
       Name := TypeName;
     end;
     TypeData := GetTypeData(Result);
-    {$IF FPC_FULLVERSION>=30101}
+    {$IFDEF RTL_200_OR_NEW_FPC}
     TypeData^.BaseTypeRef := AllocMem(SizeOf(Pointer));
     {$else}
     TypeData^.BaseType := AllocMem(SizeOf(Pointer));
@@ -2517,7 +2521,7 @@ begin
       TypeData^.OrdType := otULong;
     TypeData^.MinValue := 0;
     TypeData^.MaxValue := Length(Literals)-1;
-    {$IF FPC_FULLVERSION>=30101}
+    {$IFDEF RTL_200_OR_NEW_FPC}
     TypeData^.BaseTypeRef^ := Result;   // No sub-range: basetype points to itself
     {$else}
     TypeData^.BaseType{$IFDEF BORLAND}^{$ENDIF} := Result;   // No sub-range: basetype points to itself
@@ -2608,7 +2612,7 @@ begin
     TypeData^.OrdType := GetTypeData(BaseType)^.OrdType;
     TypeData^.MinValue := MinValue;
     TypeData^.MaxValue := MaxValue;
-    {$IF FPC_FULLVERSION>=30101}
+    {$IFDEF RTL_200_OR_NEW_FPC}
     TypeData^.BaseTypeRef := AllocMem(SizeOf(Pointer));
     TypeData^.BaseTypeRef^ := BaseType;
     {$else}
@@ -2820,7 +2824,7 @@ begin
     TypeData^.CompType^ := BaseType;
     {$ENDIF BORLAND}
     {$IFDEF FPC}
-    {$IF FPC_FULLVERSION>=30101}
+    {$IFDEF RTL_200_OR_NEW_FPC}
     TypeData^.CompTypeRef^ := BaseType;
     {$else}
     TypeData^.CompType := BaseType;

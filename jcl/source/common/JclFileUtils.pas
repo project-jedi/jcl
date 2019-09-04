@@ -6560,9 +6560,7 @@ begin
 end;
 
 {$IFDEF FPC}
-{$IF FPC_FULLVERSION>=30101}
- {$DEFINE RTL_220_OR_NEW_FPC}
-{$ENDIF}
+{$I ../include/fpc_version.inc}
 {$ELSE}
 {$IFDEF RTL220_UP}
  {$DEFINE RTL_220_OR_NEW_FPC}

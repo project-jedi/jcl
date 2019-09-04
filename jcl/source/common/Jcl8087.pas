@@ -168,16 +168,14 @@ begin
 end;
 
 {$IFDEF FPC}
-{$IF FPC_FULLVERSION>=30101}
- {$DEFINE NEW_FPC}
-{$ENDIF}
+{$I ../include/fpc_version.inc}
 {$ENDIF}
 
 function Set8087ControlWord(const Control: Word): Word;
 var
   StackControl: Word;
 asm
-          {$IFDEF NEW_FPC}
+          {$IFDEF RTL_200_OR_NEW_FPC}
           MOV     AX, Control word ptr
           MOV     StackControl, AX
           {$ELSE}

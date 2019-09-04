@@ -1267,18 +1267,10 @@ var
 {$IFDEF THREADSAFE}
 
 {$IFDEF FPC}
- {$IF FPC_FULLVERSION>=30101}
-  {$DEFINE RTL_NEWEST} //New FPC
- {$ELSE}
-  {$IFDEF MSWINDOWS}
-  {$DEFINE RTL_NEWEST} //Old FPC
-  {$ELSE}
-  {$DEFINE RTL_OLD} //Old FPC
-  {$ENDIF}
- {$ENDIF}
+{$I ../include/fpc_version.inc}
 {$ELSE}
  {$IFDEF RTL200_UP}
-  {$DEFINE RTL_NEWEST} // Delphi 2009+
+  {$DEFINE RTL_200_OR_NEW_FPC} // Delphi 2009+
  {$ELSE}
   {$IFDEF RTL160_UP}
    {$DEFINE RTL_NEW} // Delphi 7-2007
@@ -1296,7 +1288,7 @@ begin
   if not Assigned(GlobalMMFHandleListCS) and not MMFFinalized then
   begin
     CS := TJclIntfCriticalSection.Create;
-    {$IFDEF RTL_NEWEST}
+    {$IFDEF RTL_200_OR_NEW_FPC}
     OldValue := InterlockedCompareExchangePointer(Pointer(GlobalMMFHandleListCS), Pointer(CS), nil);
     {$ELSE}
     {$IFDEF RTL_NEW}
@@ -1306,7 +1298,7 @@ begin
     OldValue := InterlockedCompareExchange(Pointer(GlobalMMFHandleListCS), Pointer(CS), nil);
     {$ENDIF RTL_OLD}
     {$ENDIF RTL_NEW}
-    {$ENDIF RTL_NEWEST}
+    {$ENDIF RTL_200_OR_NEW_FPC}
     if OldValue <> nil then
       CS.Free;
   end;
