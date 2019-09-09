@@ -1,5 +1,161 @@
+(*$JPPDEFINEMACRO JCLSORTEDMAPITRIMP(SELFCLASSNAME, ITRINTERFACENAME, MAPCLASSNAME, TYPENAME)
+//=== { SELFCLASSNAME } ===============================================================
+
+constructor SELFCLASSNAME.Create(AOwnMap: MAPCLASSNAME; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function SELFCLASSNAME.Add(const AEntry: TYPENAME): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure SELFCLASSNAME.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: SELFCLASSNAME;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is SELFCLASSNAME then
+  begin
+    ADest := SELFCLASSNAME(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function SELFCLASSNAME.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := SELFCLASSNAME.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure SELFCLASSNAME.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function SELFCLASSNAME.GetEntry: TYPENAME;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function SELFCLASSNAME.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function SELFCLASSNAME.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function SELFCLASSNAME.Insert(const AEntry: TYPENAME): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function SELFCLASSNAME.IteratorEquals(const AIterator: ITRINTERFACENAME): Boolean;
+var
+  Obj: TObject;
+  ItrObj: SELFCLASSNAME;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is SELFCLASSNAME then
+  begin
+    ItrObj := SELFCLASSNAME(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function SELFCLASSNAME.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function SELFCLASSNAME.Next: TYPENAME;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function SELFCLASSNAME.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function SELFCLASSNAME.Previous: TYPENAME;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function SELFCLASSNAME.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure SELFCLASSNAME.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure SELFCLASSNAME.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure SELFCLASSNAME.SetEntry(const AEntry: TYPENAME);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;*)
 (*$JPPDEFINEMACRO JCLSORTEDMAPIMP(ENTRYTYPENAME, ENTRYARRAYTYPENAME, SELFCLASSNAME,
-  STDMAPINTERFACENAME, SORTEDMAPINTERFACENAME, KEYSETINTERFACENAME, KEYITRINTERFACENAME, VALUECOLLECTIONINTERFACENAME,
+  STDMAPINTERFACENAME, SORTEDMAPINTERFACENAME, ENTRYITRINTERFACENAME, ENTRYITRCLASSNAME,
+  KEYSETINTERFACENAME, KEYITRINTERFACENAME, VALUECOLLECTIONINTERFACENAME,
   KEYOWNERSHIPDECLARATION, VALUEOWNERSHIPDECLARATION, OWNERSHIPASSIGNMENTS,
   KEYCONSTKEYWORD, KEYTYPENAME, KEYDEFAULT, VALUECONSTKEYWORD, VALUETYPENAME, VALUEDEFAULT,
   CREATEKEYSET, CREATEVALUECOLLECTION)
@@ -132,6 +288,13 @@ begin
       Result := VALUEDEFAULT;
   {$JPPEXPANDMACRO UNLOCK}
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function SELFCLASSNAME.GetEnumerator: ENTRYITRINTERFACENAME;
+begin
+  Result := ENTRYITRCLASSNAME.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 function SELFCLASSNAME.GetValue(KEYCONSTKEYWORDKey: KEYTYPENAME): VALUETYPENAME;
 var

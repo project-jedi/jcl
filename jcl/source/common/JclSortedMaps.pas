@@ -54,13 +54,6 @@ uses
   JclAbstractContainers, JclContainerIntf, JclArrayLists, JclArraySets;
 
 type
-  TJclIntfIntfSortedMapEntry = record
-    Key: IInterface;
-    Value: IInterface;
-  end;
-
-  TJclIntfIntfSortedMapEntryArray = array of TJclIntfIntfSortedMapEntry;
-
   TJclIntfIntfSortedMap = class(TJclIntfAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclIntfContainer,
     IJclIntfIntfMap, IJclIntfIntfSortedMap)
@@ -71,18 +64,18 @@ type
     function KeysCompare(const A, B: IInterface): Integer;
     function ValuesCompare(const A, B: IInterface): Integer;
   private
-    FEntries: TJclIntfIntfSortedMapEntryArray;
+    FEntries: TJclIntfIntfMapEntryArray;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure FinalizeArrayBeforeMove(var List: TJclIntfIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure FinalizeArrayBeforeMove(var List: TJclIntfIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArray(var List: TJclIntfIntfSortedMapEntryArray; FromIndex, Count: SizeInt);
+    procedure InitializeArray(var List: TJclIntfIntfMapEntryArray; FromIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArrayAfterMove(var List: TJclIntfIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclIntfIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-    procedure MoveArray(var List: TJclIntfIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclIntfIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -109,14 +102,42 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfIntfSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfIntfSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIntfIntfSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclAnsiStrIntfSortedMapEntry = record
-    Key: AnsiString;
-    Value: IInterface;
+  TJclIntfIntfSortedMapIterator = class(TJclAbstractIterator, IJclIntfIntfSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclIntfIntfSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclIntfIntfSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclIntfIntfSortedMapIterator }
+    function Add(const AEntry: TJclIntfIntfMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclIntfIntfMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclIntfIntfMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclIntfIntfSortedMapIterator): Boolean;
+    function Next: TJclIntfIntfMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclIntfIntfMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclIntfIntfMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclIntfIntfMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclAnsiStrIntfSortedMapEntryArray = array of TJclAnsiStrIntfSortedMapEntry;
 
   TJclAnsiStrIntfSortedMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclStrBaseContainer, IJclAnsiStrContainer, IJclIntfContainer,
@@ -128,18 +149,18 @@ type
     function KeysCompare(const A, B: AnsiString): Integer;
     function ValuesCompare(const A, B: IInterface): Integer;
   private
-    FEntries: TJclAnsiStrIntfSortedMapEntryArray;
+    FEntries: TJclAnsiStrIntfMapEntryArray;
     function BinarySearch(const Key: AnsiString): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure FinalizeArrayBeforeMove(var List: TJclAnsiStrIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure FinalizeArrayBeforeMove(var List: TJclAnsiStrIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArray(var List: TJclAnsiStrIntfSortedMapEntryArray; FromIndex, Count: SizeInt);
+    procedure InitializeArray(var List: TJclAnsiStrIntfMapEntryArray; FromIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArrayAfterMove(var List: TJclAnsiStrIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclAnsiStrIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-    procedure MoveArray(var List: TJclAnsiStrIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclAnsiStrIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -166,14 +187,42 @@ type
     function LastKey: AnsiString;
     function SubMap(const FromKey, ToKey: AnsiString): IJclAnsiStrIntfSortedMap;
     function TailMap(const FromKey: AnsiString): IJclAnsiStrIntfSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclAnsiStrIntfSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclIntfAnsiStrSortedMapEntry = record
-    Key: IInterface;
-    Value: AnsiString;
+  TJclAnsiStrIntfSortedMapIterator = class(TJclAbstractIterator, IJclAnsiStrIntfSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclAnsiStrIntfSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclAnsiStrIntfSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclAnsiStrIntfSortedMapIterator }
+    function Add(const AEntry: TJclAnsiStrIntfMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclAnsiStrIntfMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclAnsiStrIntfMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclAnsiStrIntfSortedMapIterator): Boolean;
+    function Next: TJclAnsiStrIntfMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclAnsiStrIntfMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclAnsiStrIntfMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclAnsiStrIntfMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclIntfAnsiStrSortedMapEntryArray = array of TJclIntfAnsiStrSortedMapEntry;
 
   TJclIntfAnsiStrSortedMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclStrBaseContainer, IJclIntfContainer, IJclAnsiStrContainer,
@@ -185,18 +234,18 @@ type
     function KeysCompare(const A, B: IInterface): Integer;
     function ValuesCompare(const A, B: AnsiString): Integer;
   private
-    FEntries: TJclIntfAnsiStrSortedMapEntryArray;
+    FEntries: TJclIntfAnsiStrMapEntryArray;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure FinalizeArrayBeforeMove(var List: TJclIntfAnsiStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure FinalizeArrayBeforeMove(var List: TJclIntfAnsiStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArray(var List: TJclIntfAnsiStrSortedMapEntryArray; FromIndex, Count: SizeInt);
+    procedure InitializeArray(var List: TJclIntfAnsiStrMapEntryArray; FromIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArrayAfterMove(var List: TJclIntfAnsiStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclIntfAnsiStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-    procedure MoveArray(var List: TJclIntfAnsiStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclIntfAnsiStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -223,14 +272,42 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfAnsiStrSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfAnsiStrSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIntfAnsiStrSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclAnsiStrAnsiStrSortedMapEntry = record
-    Key: AnsiString;
-    Value: AnsiString;
+  TJclIntfAnsiStrSortedMapIterator = class(TJclAbstractIterator, IJclIntfAnsiStrSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclIntfAnsiStrSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclIntfAnsiStrSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclIntfAnsiStrSortedMapIterator }
+    function Add(const AEntry: TJclIntfAnsiStrMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclIntfAnsiStrMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclIntfAnsiStrMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclIntfAnsiStrSortedMapIterator): Boolean;
+    function Next: TJclIntfAnsiStrMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclIntfAnsiStrMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclIntfAnsiStrMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclIntfAnsiStrMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclAnsiStrAnsiStrSortedMapEntryArray = array of TJclAnsiStrAnsiStrSortedMapEntry;
 
   TJclAnsiStrAnsiStrSortedMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclStrBaseContainer, IJclAnsiStrContainer,
@@ -242,18 +319,18 @@ type
     function KeysCompare(const A, B: AnsiString): Integer;
     function ValuesCompare(const A, B: AnsiString): Integer;
   private
-    FEntries: TJclAnsiStrAnsiStrSortedMapEntryArray;
+    FEntries: TJclAnsiStrAnsiStrMapEntryArray;
     function BinarySearch(const Key: AnsiString): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure FinalizeArrayBeforeMove(var List: TJclAnsiStrAnsiStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure FinalizeArrayBeforeMove(var List: TJclAnsiStrAnsiStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArray(var List: TJclAnsiStrAnsiStrSortedMapEntryArray; FromIndex, Count: SizeInt);
+    procedure InitializeArray(var List: TJclAnsiStrAnsiStrMapEntryArray; FromIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArrayAfterMove(var List: TJclAnsiStrAnsiStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclAnsiStrAnsiStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-    procedure MoveArray(var List: TJclAnsiStrAnsiStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclAnsiStrAnsiStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -280,14 +357,42 @@ type
     function LastKey: AnsiString;
     function SubMap(const FromKey, ToKey: AnsiString): IJclAnsiStrAnsiStrSortedMap;
     function TailMap(const FromKey: AnsiString): IJclAnsiStrAnsiStrSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclAnsiStrAnsiStrSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclWideStrIntfSortedMapEntry = record
-    Key: WideString;
-    Value: IInterface;
+  TJclAnsiStrAnsiStrSortedMapIterator = class(TJclAbstractIterator, IJclAnsiStrAnsiStrSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclAnsiStrAnsiStrSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclAnsiStrAnsiStrSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclAnsiStrAnsiStrSortedMapIterator }
+    function Add(const AEntry: TJclAnsiStrAnsiStrMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclAnsiStrAnsiStrMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclAnsiStrAnsiStrMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclAnsiStrAnsiStrSortedMapIterator): Boolean;
+    function Next: TJclAnsiStrAnsiStrMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclAnsiStrAnsiStrMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclAnsiStrAnsiStrMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclAnsiStrAnsiStrMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclWideStrIntfSortedMapEntryArray = array of TJclWideStrIntfSortedMapEntry;
 
   TJclWideStrIntfSortedMap = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclStrBaseContainer, IJclWideStrContainer, IJclIntfContainer,
@@ -299,18 +404,18 @@ type
     function KeysCompare(const A, B: WideString): Integer;
     function ValuesCompare(const A, B: IInterface): Integer;
   private
-    FEntries: TJclWideStrIntfSortedMapEntryArray;
+    FEntries: TJclWideStrIntfMapEntryArray;
     function BinarySearch(const Key: WideString): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure FinalizeArrayBeforeMove(var List: TJclWideStrIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure FinalizeArrayBeforeMove(var List: TJclWideStrIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArray(var List: TJclWideStrIntfSortedMapEntryArray; FromIndex, Count: SizeInt);
+    procedure InitializeArray(var List: TJclWideStrIntfMapEntryArray; FromIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArrayAfterMove(var List: TJclWideStrIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclWideStrIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-    procedure MoveArray(var List: TJclWideStrIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclWideStrIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -337,14 +442,42 @@ type
     function LastKey: WideString;
     function SubMap(const FromKey, ToKey: WideString): IJclWideStrIntfSortedMap;
     function TailMap(const FromKey: WideString): IJclWideStrIntfSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclWideStrIntfSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclIntfWideStrSortedMapEntry = record
-    Key: IInterface;
-    Value: WideString;
+  TJclWideStrIntfSortedMapIterator = class(TJclAbstractIterator, IJclWideStrIntfSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclWideStrIntfSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclWideStrIntfSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclWideStrIntfSortedMapIterator }
+    function Add(const AEntry: TJclWideStrIntfMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclWideStrIntfMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclWideStrIntfMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclWideStrIntfSortedMapIterator): Boolean;
+    function Next: TJclWideStrIntfMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclWideStrIntfMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclWideStrIntfMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclWideStrIntfMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclIntfWideStrSortedMapEntryArray = array of TJclIntfWideStrSortedMapEntry;
 
   TJclIntfWideStrSortedMap = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclStrBaseContainer, IJclIntfContainer, IJclWideStrContainer,
@@ -356,18 +489,18 @@ type
     function KeysCompare(const A, B: IInterface): Integer;
     function ValuesCompare(const A, B: WideString): Integer;
   private
-    FEntries: TJclIntfWideStrSortedMapEntryArray;
+    FEntries: TJclIntfWideStrMapEntryArray;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure FinalizeArrayBeforeMove(var List: TJclIntfWideStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure FinalizeArrayBeforeMove(var List: TJclIntfWideStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArray(var List: TJclIntfWideStrSortedMapEntryArray; FromIndex, Count: SizeInt);
+    procedure InitializeArray(var List: TJclIntfWideStrMapEntryArray; FromIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArrayAfterMove(var List: TJclIntfWideStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclIntfWideStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-    procedure MoveArray(var List: TJclIntfWideStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclIntfWideStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -394,14 +527,42 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfWideStrSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfWideStrSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIntfWideStrSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclWideStrWideStrSortedMapEntry = record
-    Key: WideString;
-    Value: WideString;
+  TJclIntfWideStrSortedMapIterator = class(TJclAbstractIterator, IJclIntfWideStrSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclIntfWideStrSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclIntfWideStrSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclIntfWideStrSortedMapIterator }
+    function Add(const AEntry: TJclIntfWideStrMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclIntfWideStrMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclIntfWideStrMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclIntfWideStrSortedMapIterator): Boolean;
+    function Next: TJclIntfWideStrMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclIntfWideStrMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclIntfWideStrMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclIntfWideStrMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclWideStrWideStrSortedMapEntryArray = array of TJclWideStrWideStrSortedMapEntry;
 
   TJclWideStrWideStrSortedMap = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclStrBaseContainer, IJclWideStrContainer,
@@ -413,18 +574,18 @@ type
     function KeysCompare(const A, B: WideString): Integer;
     function ValuesCompare(const A, B: WideString): Integer;
   private
-    FEntries: TJclWideStrWideStrSortedMapEntryArray;
+    FEntries: TJclWideStrWideStrMapEntryArray;
     function BinarySearch(const Key: WideString): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure FinalizeArrayBeforeMove(var List: TJclWideStrWideStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure FinalizeArrayBeforeMove(var List: TJclWideStrWideStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArray(var List: TJclWideStrWideStrSortedMapEntryArray; FromIndex, Count: SizeInt);
+    procedure InitializeArray(var List: TJclWideStrWideStrMapEntryArray; FromIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArrayAfterMove(var List: TJclWideStrWideStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclWideStrWideStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-    procedure MoveArray(var List: TJclWideStrWideStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclWideStrWideStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -451,16 +612,42 @@ type
     function LastKey: WideString;
     function SubMap(const FromKey, ToKey: WideString): IJclWideStrWideStrSortedMap;
     function TailMap(const FromKey: WideString): IJclWideStrWideStrSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclWideStrWideStrSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  {$IFDEF SUPPORTS_UNICODE_STRING}
-  TJclUnicodeStrIntfSortedMapEntry = record
-    Key: UnicodeString;
-    Value: IInterface;
+  TJclWideStrWideStrSortedMapIterator = class(TJclAbstractIterator, IJclWideStrWideStrSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclWideStrWideStrSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclWideStrWideStrSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclWideStrWideStrSortedMapIterator }
+    function Add(const AEntry: TJclWideStrWideStrMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclWideStrWideStrMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclWideStrWideStrMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclWideStrWideStrSortedMapIterator): Boolean;
+    function Next: TJclWideStrWideStrMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclWideStrWideStrMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclWideStrWideStrMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclWideStrWideStrMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclUnicodeStrIntfSortedMapEntryArray = array of TJclUnicodeStrIntfSortedMapEntry;
-  {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF SUPPORTS_UNICODE_STRING}
   TJclUnicodeStrIntfSortedMap = class(TJclUnicodeStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -473,18 +660,18 @@ type
     function KeysCompare(const A, B: UnicodeString): Integer;
     function ValuesCompare(const A, B: IInterface): Integer;
   private
-    FEntries: TJclUnicodeStrIntfSortedMapEntryArray;
+    FEntries: TJclUnicodeStrIntfMapEntryArray;
     function BinarySearch(const Key: UnicodeString): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure FinalizeArrayBeforeMove(var List: TJclUnicodeStrIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure FinalizeArrayBeforeMove(var List: TJclUnicodeStrIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArray(var List: TJclUnicodeStrIntfSortedMapEntryArray; FromIndex, Count: SizeInt);
+    procedure InitializeArray(var List: TJclUnicodeStrIntfMapEntryArray; FromIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArrayAfterMove(var List: TJclUnicodeStrIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclUnicodeStrIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-    procedure MoveArray(var List: TJclUnicodeStrIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclUnicodeStrIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -511,16 +698,44 @@ type
     function LastKey: UnicodeString;
     function SubMap(const FromKey, ToKey: UnicodeString): IJclUnicodeStrIntfSortedMap;
     function TailMap(const FromKey: UnicodeString): IJclUnicodeStrIntfSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclUnicodeStrIntfSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
   {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF SUPPORTS_UNICODE_STRING}
-  TJclIntfUnicodeStrSortedMapEntry = record
-    Key: IInterface;
-    Value: UnicodeString;
+  TJclUnicodeStrIntfSortedMapIterator = class(TJclAbstractIterator, IJclUnicodeStrIntfSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclUnicodeStrIntfSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclUnicodeStrIntfSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclUnicodeStrIntfSortedMapIterator }
+    function Add(const AEntry: TJclUnicodeStrIntfMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclUnicodeStrIntfMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclUnicodeStrIntfMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclUnicodeStrIntfSortedMapIterator): Boolean;
+    function Next: TJclUnicodeStrIntfMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclUnicodeStrIntfMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclUnicodeStrIntfMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclUnicodeStrIntfMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclIntfUnicodeStrSortedMapEntryArray = array of TJclIntfUnicodeStrSortedMapEntry;
   {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF SUPPORTS_UNICODE_STRING}
@@ -534,18 +749,18 @@ type
     function KeysCompare(const A, B: IInterface): Integer;
     function ValuesCompare(const A, B: UnicodeString): Integer;
   private
-    FEntries: TJclIntfUnicodeStrSortedMapEntryArray;
+    FEntries: TJclIntfUnicodeStrMapEntryArray;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure FinalizeArrayBeforeMove(var List: TJclIntfUnicodeStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure FinalizeArrayBeforeMove(var List: TJclIntfUnicodeStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArray(var List: TJclIntfUnicodeStrSortedMapEntryArray; FromIndex, Count: SizeInt);
+    procedure InitializeArray(var List: TJclIntfUnicodeStrMapEntryArray; FromIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArrayAfterMove(var List: TJclIntfUnicodeStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclIntfUnicodeStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-    procedure MoveArray(var List: TJclIntfUnicodeStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclIntfUnicodeStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -572,16 +787,44 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfUnicodeStrSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfUnicodeStrSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIntfUnicodeStrSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
   {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF SUPPORTS_UNICODE_STRING}
-  TJclUnicodeStrUnicodeStrSortedMapEntry = record
-    Key: UnicodeString;
-    Value: UnicodeString;
+  TJclIntfUnicodeStrSortedMapIterator = class(TJclAbstractIterator, IJclIntfUnicodeStrSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclIntfUnicodeStrSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclIntfUnicodeStrSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclIntfUnicodeStrSortedMapIterator }
+    function Add(const AEntry: TJclIntfUnicodeStrMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclIntfUnicodeStrMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclIntfUnicodeStrMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclIntfUnicodeStrSortedMapIterator): Boolean;
+    function Next: TJclIntfUnicodeStrMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclIntfUnicodeStrMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclIntfUnicodeStrMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclIntfUnicodeStrMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclUnicodeStrUnicodeStrSortedMapEntryArray = array of TJclUnicodeStrUnicodeStrSortedMapEntry;
   {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF SUPPORTS_UNICODE_STRING}
@@ -595,18 +838,18 @@ type
     function KeysCompare(const A, B: UnicodeString): Integer;
     function ValuesCompare(const A, B: UnicodeString): Integer;
   private
-    FEntries: TJclUnicodeStrUnicodeStrSortedMapEntryArray;
+    FEntries: TJclUnicodeStrUnicodeStrMapEntryArray;
     function BinarySearch(const Key: UnicodeString): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure FinalizeArrayBeforeMove(var List: TJclUnicodeStrUnicodeStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure FinalizeArrayBeforeMove(var List: TJclUnicodeStrUnicodeStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArray(var List: TJclUnicodeStrUnicodeStrSortedMapEntryArray; FromIndex, Count: SizeInt);
+    procedure InitializeArray(var List: TJclUnicodeStrUnicodeStrMapEntryArray; FromIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArrayAfterMove(var List: TJclUnicodeStrUnicodeStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclUnicodeStrUnicodeStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-    procedure MoveArray(var List: TJclUnicodeStrUnicodeStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclUnicodeStrUnicodeStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -633,18 +876,45 @@ type
     function LastKey: UnicodeString;
     function SubMap(const FromKey, ToKey: UnicodeString): IJclUnicodeStrUnicodeStrSortedMap;
     function TailMap(const FromKey: UnicodeString): IJclUnicodeStrUnicodeStrSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclUnicodeStrUnicodeStrSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
   {$ENDIF SUPPORTS_UNICODE_STRING}
 
-  {$IFDEF CONTAINER_ANSISTR}
-  TJclStrIntfSortedMapEntry = TJclAnsiStrIntfSortedMapEntry;
-  {$ENDIF CONTAINER_ANSISTR}
-  {$IFDEF CONTAINER_WIDESTR}
-  TJclStrIntfSortedMapEntry = TJclWideStrIntfSortedMapEntry;
-  {$ENDIF CONTAINER_WIDESTR}
-  {$IFDEF CONTAINER_UNICODESTR}
-  TJclStrIntfSortedMapEntry = TJclUnicodeStrIntfSortedMapEntry;
-  {$ENDIF CONTAINER_UNICODESTR}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  TJclUnicodeStrUnicodeStrSortedMapIterator = class(TJclAbstractIterator, IJclUnicodeStrUnicodeStrSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclUnicodeStrUnicodeStrSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclUnicodeStrUnicodeStrSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclUnicodeStrUnicodeStrSortedMapIterator }
+    function Add(const AEntry: TJclUnicodeStrUnicodeStrMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclUnicodeStrUnicodeStrMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclUnicodeStrUnicodeStrMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclUnicodeStrUnicodeStrSortedMapIterator): Boolean;
+    function Next: TJclUnicodeStrUnicodeStrMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclUnicodeStrUnicodeStrMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclUnicodeStrUnicodeStrMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclUnicodeStrUnicodeStrMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   TJclStrIntfSortedMap = TJclAnsiStrIntfSortedMap;
@@ -657,13 +927,13 @@ type
   {$ENDIF CONTAINER_UNICODESTR}
 
   {$IFDEF CONTAINER_ANSISTR}
-  TJclIntfStrSortedMapEntry = TJclIntfAnsiStrSortedMapEntry;
+  TJclStrIntfSortedMapIterator = TJclAnsiStrIntfSortedMapIterator;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
-  TJclIntfStrSortedMapEntry = TJclIntfWideStrSortedMapEntry;
+  TJclStrIntfSortedMapIterator = TJclWideStrIntfSortedMapIterator;
   {$ENDIF CONTAINER_WIDESTR}
   {$IFDEF CONTAINER_UNICODESTR}
-  TJclIntfStrSortedMapEntry = TJclIntfUnicodeStrSortedMapEntry;
+  TJclStrIntfSortedMapIterator = TJclUnicodeStrIntfSortedMapIterator;
   {$ENDIF CONTAINER_UNICODESTR}
 
   {$IFDEF CONTAINER_ANSISTR}
@@ -677,13 +947,13 @@ type
   {$ENDIF CONTAINER_UNICODESTR}
 
   {$IFDEF CONTAINER_ANSISTR}
-  TJclStrStrSortedMapEntry = TJclAnsiStrAnsiStrSortedMapEntry;
+  TJclIntfStrSortedMapIterator = TJclIntfAnsiStrSortedMapIterator;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
-  TJclStrStrSortedMapEntry = TJclWideStrWideStrSortedMapEntry;
+  TJclIntfStrSortedMapIterator = TJclIntfWideStrSortedMapIterator;
   {$ENDIF CONTAINER_WIDESTR}
   {$IFDEF CONTAINER_UNICODESTR}
-  TJclStrStrSortedMapEntry = TJclUnicodeStrUnicodeStrSortedMapEntry;
+  TJclIntfStrSortedMapIterator = TJclIntfUnicodeStrSortedMapIterator;
   {$ENDIF CONTAINER_UNICODESTR}
 
   {$IFDEF CONTAINER_ANSISTR}
@@ -696,12 +966,15 @@ type
   TJclStrStrSortedMap = TJclUnicodeStrUnicodeStrSortedMap;
   {$ENDIF CONTAINER_UNICODESTR}
 
-  TJclSingleIntfSortedMapEntry = record
-    Key: Single;
-    Value: IInterface;
-  end;
-
-  TJclSingleIntfSortedMapEntryArray = array of TJclSingleIntfSortedMapEntry;
+  {$IFDEF CONTAINER_ANSISTR}
+  TJclStrStrSortedMapIterator = TJclAnsiStrAnsiStrSortedMapIterator;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TJclStrStrSortedMapIterator = TJclWideStrWideStrSortedMapIterator;
+  {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  TJclStrStrSortedMapIterator = TJclUnicodeStrUnicodeStrSortedMapIterator;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   TJclSingleIntfSortedMap = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclSingleContainer, IJclIntfContainer,
@@ -713,18 +986,18 @@ type
     function KeysCompare(const A, B: Single): Integer;
     function ValuesCompare(const A, B: IInterface): Integer;
   private
-    FEntries: TJclSingleIntfSortedMapEntryArray;
+    FEntries: TJclSingleIntfMapEntryArray;
     function BinarySearch(const Key: Single): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure FinalizeArrayBeforeMove(var List: TJclSingleIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure FinalizeArrayBeforeMove(var List: TJclSingleIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArray(var List: TJclSingleIntfSortedMapEntryArray; FromIndex, Count: SizeInt);
+    procedure InitializeArray(var List: TJclSingleIntfMapEntryArray; FromIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArrayAfterMove(var List: TJclSingleIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclSingleIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-    procedure MoveArray(var List: TJclSingleIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclSingleIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -751,14 +1024,42 @@ type
     function LastKey: Single;
     function SubMap(const FromKey, ToKey: Single): IJclSingleIntfSortedMap;
     function TailMap(const FromKey: Single): IJclSingleIntfSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclSingleIntfSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclIntfSingleSortedMapEntry = record
-    Key: IInterface;
-    Value: Single;
+  TJclSingleIntfSortedMapIterator = class(TJclAbstractIterator, IJclSingleIntfSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclSingleIntfSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclSingleIntfSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclSingleIntfSortedMapIterator }
+    function Add(const AEntry: TJclSingleIntfMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclSingleIntfMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclSingleIntfMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclSingleIntfSortedMapIterator): Boolean;
+    function Next: TJclSingleIntfMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclSingleIntfMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclSingleIntfMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclSingleIntfMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclIntfSingleSortedMapEntryArray = array of TJclIntfSingleSortedMapEntry;
 
   TJclIntfSingleSortedMap = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclIntfContainer, IJclSingleContainer,
@@ -770,18 +1071,18 @@ type
     function KeysCompare(const A, B: IInterface): Integer;
     function ValuesCompare(const A, B: Single): Integer;
   private
-    FEntries: TJclIntfSingleSortedMapEntryArray;
+    FEntries: TJclIntfSingleMapEntryArray;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure FinalizeArrayBeforeMove(var List: TJclIntfSingleSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure FinalizeArrayBeforeMove(var List: TJclIntfSingleMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArray(var List: TJclIntfSingleSortedMapEntryArray; FromIndex, Count: SizeInt);
+    procedure InitializeArray(var List: TJclIntfSingleMapEntryArray; FromIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArrayAfterMove(var List: TJclIntfSingleSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclIntfSingleMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-    procedure MoveArray(var List: TJclIntfSingleSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclIntfSingleMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -808,14 +1109,42 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfSingleSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfSingleSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIntfSingleSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclSingleSingleSortedMapEntry = record
-    Key: Single;
-    Value: Single;
+  TJclIntfSingleSortedMapIterator = class(TJclAbstractIterator, IJclIntfSingleSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclIntfSingleSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclIntfSingleSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclIntfSingleSortedMapIterator }
+    function Add(const AEntry: TJclIntfSingleMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclIntfSingleMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclIntfSingleMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclIntfSingleSortedMapIterator): Boolean;
+    function Next: TJclIntfSingleMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclIntfSingleMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclIntfSingleMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclIntfSingleMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclSingleSingleSortedMapEntryArray = array of TJclSingleSingleSortedMapEntry;
 
   TJclSingleSingleSortedMap = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclSingleContainer,
@@ -827,13 +1156,13 @@ type
     function KeysCompare(const A, B: Single): Integer;
     function ValuesCompare(const A, B: Single): Integer;
   private
-    FEntries: TJclSingleSingleSortedMapEntryArray;
+    FEntries: TJclSingleSingleMapEntryArray;
     function BinarySearch(const Key: Single): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure InitializeArrayAfterMove(var List: TJclSingleSingleSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclSingleSingleMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure MoveArray(var List: TJclSingleSingleSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclSingleSingleMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -860,14 +1189,42 @@ type
     function LastKey: Single;
     function SubMap(const FromKey, ToKey: Single): IJclSingleSingleSortedMap;
     function TailMap(const FromKey: Single): IJclSingleSingleSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclSingleSingleSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclDoubleIntfSortedMapEntry = record
-    Key: Double;
-    Value: IInterface;
+  TJclSingleSingleSortedMapIterator = class(TJclAbstractIterator, IJclSingleSingleSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclSingleSingleSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclSingleSingleSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclSingleSingleSortedMapIterator }
+    function Add(const AEntry: TJclSingleSingleMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclSingleSingleMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclSingleSingleMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclSingleSingleSortedMapIterator): Boolean;
+    function Next: TJclSingleSingleMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclSingleSingleMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclSingleSingleMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclSingleSingleMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclDoubleIntfSortedMapEntryArray = array of TJclDoubleIntfSortedMapEntry;
 
   TJclDoubleIntfSortedMap = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclDoubleContainer, IJclIntfContainer,
@@ -879,18 +1236,18 @@ type
     function KeysCompare(const A, B: Double): Integer;
     function ValuesCompare(const A, B: IInterface): Integer;
   private
-    FEntries: TJclDoubleIntfSortedMapEntryArray;
+    FEntries: TJclDoubleIntfMapEntryArray;
     function BinarySearch(const Key: Double): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure FinalizeArrayBeforeMove(var List: TJclDoubleIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure FinalizeArrayBeforeMove(var List: TJclDoubleIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArray(var List: TJclDoubleIntfSortedMapEntryArray; FromIndex, Count: SizeInt);
+    procedure InitializeArray(var List: TJclDoubleIntfMapEntryArray; FromIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArrayAfterMove(var List: TJclDoubleIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclDoubleIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-    procedure MoveArray(var List: TJclDoubleIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclDoubleIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -917,14 +1274,42 @@ type
     function LastKey: Double;
     function SubMap(const FromKey, ToKey: Double): IJclDoubleIntfSortedMap;
     function TailMap(const FromKey: Double): IJclDoubleIntfSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclDoubleIntfSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclIntfDoubleSortedMapEntry = record
-    Key: IInterface;
-    Value: Double;
+  TJclDoubleIntfSortedMapIterator = class(TJclAbstractIterator, IJclDoubleIntfSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclDoubleIntfSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclDoubleIntfSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclDoubleIntfSortedMapIterator }
+    function Add(const AEntry: TJclDoubleIntfMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclDoubleIntfMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclDoubleIntfMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclDoubleIntfSortedMapIterator): Boolean;
+    function Next: TJclDoubleIntfMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclDoubleIntfMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclDoubleIntfMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclDoubleIntfMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclIntfDoubleSortedMapEntryArray = array of TJclIntfDoubleSortedMapEntry;
 
   TJclIntfDoubleSortedMap = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclIntfContainer, IJclDoubleContainer,
@@ -936,18 +1321,18 @@ type
     function KeysCompare(const A, B: IInterface): Integer;
     function ValuesCompare(const A, B: Double): Integer;
   private
-    FEntries: TJclIntfDoubleSortedMapEntryArray;
+    FEntries: TJclIntfDoubleMapEntryArray;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure FinalizeArrayBeforeMove(var List: TJclIntfDoubleSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure FinalizeArrayBeforeMove(var List: TJclIntfDoubleMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArray(var List: TJclIntfDoubleSortedMapEntryArray; FromIndex, Count: SizeInt);
+    procedure InitializeArray(var List: TJclIntfDoubleMapEntryArray; FromIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArrayAfterMove(var List: TJclIntfDoubleSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclIntfDoubleMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-    procedure MoveArray(var List: TJclIntfDoubleSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclIntfDoubleMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -974,14 +1359,42 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfDoubleSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfDoubleSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIntfDoubleSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclDoubleDoubleSortedMapEntry = record
-    Key: Double;
-    Value: Double;
+  TJclIntfDoubleSortedMapIterator = class(TJclAbstractIterator, IJclIntfDoubleSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclIntfDoubleSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclIntfDoubleSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclIntfDoubleSortedMapIterator }
+    function Add(const AEntry: TJclIntfDoubleMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclIntfDoubleMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclIntfDoubleMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclIntfDoubleSortedMapIterator): Boolean;
+    function Next: TJclIntfDoubleMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclIntfDoubleMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclIntfDoubleMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclIntfDoubleMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclDoubleDoubleSortedMapEntryArray = array of TJclDoubleDoubleSortedMapEntry;
 
   TJclDoubleDoubleSortedMap = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclDoubleContainer,
@@ -993,13 +1406,13 @@ type
     function KeysCompare(const A, B: Double): Integer;
     function ValuesCompare(const A, B: Double): Integer;
   private
-    FEntries: TJclDoubleDoubleSortedMapEntryArray;
+    FEntries: TJclDoubleDoubleMapEntryArray;
     function BinarySearch(const Key: Double): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure InitializeArrayAfterMove(var List: TJclDoubleDoubleSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclDoubleDoubleMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure MoveArray(var List: TJclDoubleDoubleSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclDoubleDoubleMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1026,14 +1439,42 @@ type
     function LastKey: Double;
     function SubMap(const FromKey, ToKey: Double): IJclDoubleDoubleSortedMap;
     function TailMap(const FromKey: Double): IJclDoubleDoubleSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclDoubleDoubleSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclExtendedIntfSortedMapEntry = record
-    Key: Extended;
-    Value: IInterface;
+  TJclDoubleDoubleSortedMapIterator = class(TJclAbstractIterator, IJclDoubleDoubleSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclDoubleDoubleSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclDoubleDoubleSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclDoubleDoubleSortedMapIterator }
+    function Add(const AEntry: TJclDoubleDoubleMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclDoubleDoubleMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclDoubleDoubleMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclDoubleDoubleSortedMapIterator): Boolean;
+    function Next: TJclDoubleDoubleMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclDoubleDoubleMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclDoubleDoubleMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclDoubleDoubleMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclExtendedIntfSortedMapEntryArray = array of TJclExtendedIntfSortedMapEntry;
 
   TJclExtendedIntfSortedMap = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclExtendedContainer, IJclIntfContainer,
@@ -1045,18 +1486,18 @@ type
     function KeysCompare(const A, B: Extended): Integer;
     function ValuesCompare(const A, B: IInterface): Integer;
   private
-    FEntries: TJclExtendedIntfSortedMapEntryArray;
+    FEntries: TJclExtendedIntfMapEntryArray;
     function BinarySearch(const Key: Extended): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure FinalizeArrayBeforeMove(var List: TJclExtendedIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure FinalizeArrayBeforeMove(var List: TJclExtendedIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArray(var List: TJclExtendedIntfSortedMapEntryArray; FromIndex, Count: SizeInt);
+    procedure InitializeArray(var List: TJclExtendedIntfMapEntryArray; FromIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArrayAfterMove(var List: TJclExtendedIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclExtendedIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-    procedure MoveArray(var List: TJclExtendedIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclExtendedIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1083,14 +1524,42 @@ type
     function LastKey: Extended;
     function SubMap(const FromKey, ToKey: Extended): IJclExtendedIntfSortedMap;
     function TailMap(const FromKey: Extended): IJclExtendedIntfSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclExtendedIntfSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclIntfExtendedSortedMapEntry = record
-    Key: IInterface;
-    Value: Extended;
+  TJclExtendedIntfSortedMapIterator = class(TJclAbstractIterator, IJclExtendedIntfSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclExtendedIntfSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclExtendedIntfSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclExtendedIntfSortedMapIterator }
+    function Add(const AEntry: TJclExtendedIntfMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclExtendedIntfMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclExtendedIntfMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclExtendedIntfSortedMapIterator): Boolean;
+    function Next: TJclExtendedIntfMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclExtendedIntfMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclExtendedIntfMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclExtendedIntfMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclIntfExtendedSortedMapEntryArray = array of TJclIntfExtendedSortedMapEntry;
 
   TJclIntfExtendedSortedMap = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclIntfContainer, IJclExtendedContainer,
@@ -1102,18 +1571,18 @@ type
     function KeysCompare(const A, B: IInterface): Integer;
     function ValuesCompare(const A, B: Extended): Integer;
   private
-    FEntries: TJclIntfExtendedSortedMapEntryArray;
+    FEntries: TJclIntfExtendedMapEntryArray;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure FinalizeArrayBeforeMove(var List: TJclIntfExtendedSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure FinalizeArrayBeforeMove(var List: TJclIntfExtendedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArray(var List: TJclIntfExtendedSortedMapEntryArray; FromIndex, Count: SizeInt);
+    procedure InitializeArray(var List: TJclIntfExtendedMapEntryArray; FromIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArrayAfterMove(var List: TJclIntfExtendedSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclIntfExtendedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-    procedure MoveArray(var List: TJclIntfExtendedSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclIntfExtendedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1140,14 +1609,42 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfExtendedSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfExtendedSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIntfExtendedSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclExtendedExtendedSortedMapEntry = record
-    Key: Extended;
-    Value: Extended;
+  TJclIntfExtendedSortedMapIterator = class(TJclAbstractIterator, IJclIntfExtendedSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclIntfExtendedSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclIntfExtendedSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclIntfExtendedSortedMapIterator }
+    function Add(const AEntry: TJclIntfExtendedMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclIntfExtendedMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclIntfExtendedMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclIntfExtendedSortedMapIterator): Boolean;
+    function Next: TJclIntfExtendedMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclIntfExtendedMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclIntfExtendedMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclIntfExtendedMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclExtendedExtendedSortedMapEntryArray = array of TJclExtendedExtendedSortedMapEntry;
 
   TJclExtendedExtendedSortedMap = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclExtendedContainer,
@@ -1159,13 +1656,13 @@ type
     function KeysCompare(const A, B: Extended): Integer;
     function ValuesCompare(const A, B: Extended): Integer;
   private
-    FEntries: TJclExtendedExtendedSortedMapEntryArray;
+    FEntries: TJclExtendedExtendedMapEntryArray;
     function BinarySearch(const Key: Extended): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure InitializeArrayAfterMove(var List: TJclExtendedExtendedSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclExtendedExtendedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure MoveArray(var List: TJclExtendedExtendedSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclExtendedExtendedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1192,17 +1689,42 @@ type
     function LastKey: Extended;
     function SubMap(const FromKey, ToKey: Extended): IJclExtendedExtendedSortedMap;
     function TailMap(const FromKey: Extended): IJclExtendedExtendedSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclExtendedExtendedSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  {$IFDEF MATH_SINGLE_PRECISION}
-  TJclFloatIntfSortedMapEntry = TJclSingleIntfSortedMapEntry;
-  {$ENDIF MATH_SINGLE_PRECISION}
-  {$IFDEF MATH_DOUBLE_PRECISION}
-  TJclFloatIntfSortedMapEntry = TJclDoubleIntfSortedMapEntry;
-  {$ENDIF MATH_DOUBLE_PRECISION}
-  {$IFDEF MATH_EXTENDED_PRECISION}
-  TJclFloatIntfSortedMapEntry = TJclExtendedIntfSortedMapEntry;
-  {$ENDIF MATH_EXTENDED_PRECISION}
+  TJclExtendedExtendedSortedMapIterator = class(TJclAbstractIterator, IJclExtendedExtendedSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclExtendedExtendedSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclExtendedExtendedSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclExtendedExtendedSortedMapIterator }
+    function Add(const AEntry: TJclExtendedExtendedMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclExtendedExtendedMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclExtendedExtendedMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclExtendedExtendedSortedMapIterator): Boolean;
+    function Next: TJclExtendedExtendedMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclExtendedExtendedMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclExtendedExtendedMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclExtendedExtendedMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
 
   {$IFDEF MATH_SINGLE_PRECISION}
   TJclFloatIntfSortedMap = TJclSingleIntfSortedMap;
@@ -1215,13 +1737,13 @@ type
   {$ENDIF MATH_EXTENDED_PRECISION}
 
   {$IFDEF MATH_SINGLE_PRECISION}
-  TJclIntfFloatSortedMapEntry = TJclIntfSingleSortedMapEntry;
+  TJclFloatIntfSortedMapIterator = TJclSingleIntfSortedMapIterator;
   {$ENDIF MATH_SINGLE_PRECISION}
   {$IFDEF MATH_DOUBLE_PRECISION}
-  TJclIntfFloatSortedMapEntry = TJclIntfDoubleSortedMapEntry;
+  TJclFloatIntfSortedMapIterator = TJclDoubleIntfSortedMapIterator;
   {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_EXTENDED_PRECISION}
-  TJclIntfFloatSortedMapEntry = TJclIntfExtendedSortedMapEntry;
+  TJclFloatIntfSortedMapIterator = TJclExtendedIntfSortedMapIterator;
   {$ENDIF MATH_EXTENDED_PRECISION}
 
   {$IFDEF MATH_SINGLE_PRECISION}
@@ -1235,13 +1757,13 @@ type
   {$ENDIF MATH_EXTENDED_PRECISION}
 
   {$IFDEF MATH_SINGLE_PRECISION}
-  TJclFloatFloatSortedMapEntry = TJclSingleSingleSortedMapEntry;
+  TJclIntfFloatSortedMapIterator = TJclIntfSingleSortedMapIterator;
   {$ENDIF MATH_SINGLE_PRECISION}
   {$IFDEF MATH_DOUBLE_PRECISION}
-  TJclFloatFloatSortedMapEntry = TJclDoubleDoubleSortedMapEntry;
+  TJclIntfFloatSortedMapIterator = TJclIntfDoubleSortedMapIterator;
   {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_EXTENDED_PRECISION}
-  TJclFloatFloatSortedMapEntry = TJclExtendedExtendedSortedMapEntry;
+  TJclIntfFloatSortedMapIterator = TJclIntfExtendedSortedMapIterator;
   {$ENDIF MATH_EXTENDED_PRECISION}
 
   {$IFDEF MATH_SINGLE_PRECISION}
@@ -1254,12 +1776,15 @@ type
   TJclFloatFloatSortedMap = TJclExtendedExtendedSortedMap;
   {$ENDIF MATH_EXTENDED_PRECISION}
 
-  TJclIntegerIntfSortedMapEntry = record
-    Key: Integer;
-    Value: IInterface;
-  end;
-
-  TJclIntegerIntfSortedMapEntryArray = array of TJclIntegerIntfSortedMapEntry;
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TJclFloatFloatSortedMapIterator = TJclSingleSingleSortedMapIterator;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TJclFloatFloatSortedMapIterator = TJclDoubleDoubleSortedMapIterator;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TJclFloatFloatSortedMapIterator = TJclExtendedExtendedSortedMapIterator;
+  {$ENDIF MATH_EXTENDED_PRECISION}
 
   TJclIntegerIntfSortedMap = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclIntegerContainer, IJclIntfContainer,
@@ -1271,18 +1796,18 @@ type
     function KeysCompare(A, B: Integer): Integer;
     function ValuesCompare(const A, B: IInterface): Integer;
   private
-    FEntries: TJclIntegerIntfSortedMapEntryArray;
+    FEntries: TJclIntegerIntfMapEntryArray;
     function BinarySearch(Key: Integer): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure FinalizeArrayBeforeMove(var List: TJclIntegerIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure FinalizeArrayBeforeMove(var List: TJclIntegerIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArray(var List: TJclIntegerIntfSortedMapEntryArray; FromIndex, Count: SizeInt);
+    procedure InitializeArray(var List: TJclIntegerIntfMapEntryArray; FromIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArrayAfterMove(var List: TJclIntegerIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclIntegerIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-    procedure MoveArray(var List: TJclIntegerIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclIntegerIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1309,14 +1834,42 @@ type
     function LastKey: Integer;
     function SubMap(FromKey, ToKey: Integer): IJclIntegerIntfSortedMap;
     function TailMap(FromKey: Integer): IJclIntegerIntfSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIntegerIntfSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclIntfIntegerSortedMapEntry = record
-    Key: IInterface;
-    Value: Integer;
+  TJclIntegerIntfSortedMapIterator = class(TJclAbstractIterator, IJclIntegerIntfSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclIntegerIntfSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclIntegerIntfSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclIntegerIntfSortedMapIterator }
+    function Add(const AEntry: TJclIntegerIntfMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclIntegerIntfMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclIntegerIntfMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclIntegerIntfSortedMapIterator): Boolean;
+    function Next: TJclIntegerIntfMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclIntegerIntfMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclIntegerIntfMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclIntegerIntfMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclIntfIntegerSortedMapEntryArray = array of TJclIntfIntegerSortedMapEntry;
 
   TJclIntfIntegerSortedMap = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclIntfContainer, IJclIntegerContainer,
@@ -1328,18 +1881,18 @@ type
     function KeysCompare(const A, B: IInterface): Integer;
     function ValuesCompare(A, B: Integer): Integer;
   private
-    FEntries: TJclIntfIntegerSortedMapEntryArray;
+    FEntries: TJclIntfIntegerMapEntryArray;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure FinalizeArrayBeforeMove(var List: TJclIntfIntegerSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure FinalizeArrayBeforeMove(var List: TJclIntfIntegerMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArray(var List: TJclIntfIntegerSortedMapEntryArray; FromIndex, Count: SizeInt);
+    procedure InitializeArray(var List: TJclIntfIntegerMapEntryArray; FromIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArrayAfterMove(var List: TJclIntfIntegerSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclIntfIntegerMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-    procedure MoveArray(var List: TJclIntfIntegerSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclIntfIntegerMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1366,14 +1919,42 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfIntegerSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfIntegerSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIntfIntegerSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclIntegerIntegerSortedMapEntry = record
-    Key: Integer;
-    Value: Integer;
+  TJclIntfIntegerSortedMapIterator = class(TJclAbstractIterator, IJclIntfIntegerSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclIntfIntegerSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclIntfIntegerSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclIntfIntegerSortedMapIterator }
+    function Add(const AEntry: TJclIntfIntegerMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclIntfIntegerMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclIntfIntegerMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclIntfIntegerSortedMapIterator): Boolean;
+    function Next: TJclIntfIntegerMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclIntfIntegerMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclIntfIntegerMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclIntfIntegerMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclIntegerIntegerSortedMapEntryArray = array of TJclIntegerIntegerSortedMapEntry;
 
   TJclIntegerIntegerSortedMap = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclIntegerContainer,
@@ -1385,13 +1966,13 @@ type
     function KeysCompare(A, B: Integer): Integer;
     function ValuesCompare(A, B: Integer): Integer;
   private
-    FEntries: TJclIntegerIntegerSortedMapEntryArray;
+    FEntries: TJclIntegerIntegerMapEntryArray;
     function BinarySearch(Key: Integer): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure InitializeArrayAfterMove(var List: TJclIntegerIntegerSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclIntegerIntegerMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure MoveArray(var List: TJclIntegerIntegerSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclIntegerIntegerMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1418,14 +1999,42 @@ type
     function LastKey: Integer;
     function SubMap(FromKey, ToKey: Integer): IJclIntegerIntegerSortedMap;
     function TailMap(FromKey: Integer): IJclIntegerIntegerSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIntegerIntegerSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclCardinalIntfSortedMapEntry = record
-    Key: Cardinal;
-    Value: IInterface;
+  TJclIntegerIntegerSortedMapIterator = class(TJclAbstractIterator, IJclIntegerIntegerSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclIntegerIntegerSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclIntegerIntegerSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclIntegerIntegerSortedMapIterator }
+    function Add(const AEntry: TJclIntegerIntegerMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclIntegerIntegerMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclIntegerIntegerMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclIntegerIntegerSortedMapIterator): Boolean;
+    function Next: TJclIntegerIntegerMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclIntegerIntegerMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclIntegerIntegerMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclIntegerIntegerMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclCardinalIntfSortedMapEntryArray = array of TJclCardinalIntfSortedMapEntry;
 
   TJclCardinalIntfSortedMap = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclCardinalContainer, IJclIntfContainer,
@@ -1437,18 +2046,18 @@ type
     function KeysCompare(A, B: Cardinal): Integer;
     function ValuesCompare(const A, B: IInterface): Integer;
   private
-    FEntries: TJclCardinalIntfSortedMapEntryArray;
+    FEntries: TJclCardinalIntfMapEntryArray;
     function BinarySearch(Key: Cardinal): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure FinalizeArrayBeforeMove(var List: TJclCardinalIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure FinalizeArrayBeforeMove(var List: TJclCardinalIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArray(var List: TJclCardinalIntfSortedMapEntryArray; FromIndex, Count: SizeInt);
+    procedure InitializeArray(var List: TJclCardinalIntfMapEntryArray; FromIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArrayAfterMove(var List: TJclCardinalIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclCardinalIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-    procedure MoveArray(var List: TJclCardinalIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclCardinalIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1475,14 +2084,42 @@ type
     function LastKey: Cardinal;
     function SubMap(FromKey, ToKey: Cardinal): IJclCardinalIntfSortedMap;
     function TailMap(FromKey: Cardinal): IJclCardinalIntfSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclCardinalIntfSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclIntfCardinalSortedMapEntry = record
-    Key: IInterface;
-    Value: Cardinal;
+  TJclCardinalIntfSortedMapIterator = class(TJclAbstractIterator, IJclCardinalIntfSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclCardinalIntfSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclCardinalIntfSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclCardinalIntfSortedMapIterator }
+    function Add(const AEntry: TJclCardinalIntfMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclCardinalIntfMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclCardinalIntfMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclCardinalIntfSortedMapIterator): Boolean;
+    function Next: TJclCardinalIntfMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclCardinalIntfMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclCardinalIntfMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclCardinalIntfMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclIntfCardinalSortedMapEntryArray = array of TJclIntfCardinalSortedMapEntry;
 
   TJclIntfCardinalSortedMap = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclIntfContainer, IJclCardinalContainer,
@@ -1494,18 +2131,18 @@ type
     function KeysCompare(const A, B: IInterface): Integer;
     function ValuesCompare(A, B: Cardinal): Integer;
   private
-    FEntries: TJclIntfCardinalSortedMapEntryArray;
+    FEntries: TJclIntfCardinalMapEntryArray;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure FinalizeArrayBeforeMove(var List: TJclIntfCardinalSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure FinalizeArrayBeforeMove(var List: TJclIntfCardinalMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArray(var List: TJclIntfCardinalSortedMapEntryArray; FromIndex, Count: SizeInt);
+    procedure InitializeArray(var List: TJclIntfCardinalMapEntryArray; FromIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArrayAfterMove(var List: TJclIntfCardinalSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclIntfCardinalMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-    procedure MoveArray(var List: TJclIntfCardinalSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclIntfCardinalMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1532,14 +2169,42 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfCardinalSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfCardinalSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIntfCardinalSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclCardinalCardinalSortedMapEntry = record
-    Key: Cardinal;
-    Value: Cardinal;
+  TJclIntfCardinalSortedMapIterator = class(TJclAbstractIterator, IJclIntfCardinalSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclIntfCardinalSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclIntfCardinalSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclIntfCardinalSortedMapIterator }
+    function Add(const AEntry: TJclIntfCardinalMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclIntfCardinalMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclIntfCardinalMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclIntfCardinalSortedMapIterator): Boolean;
+    function Next: TJclIntfCardinalMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclIntfCardinalMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclIntfCardinalMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclIntfCardinalMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclCardinalCardinalSortedMapEntryArray = array of TJclCardinalCardinalSortedMapEntry;
 
   TJclCardinalCardinalSortedMap = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclCardinalContainer,
@@ -1551,13 +2216,13 @@ type
     function KeysCompare(A, B: Cardinal): Integer;
     function ValuesCompare(A, B: Cardinal): Integer;
   private
-    FEntries: TJclCardinalCardinalSortedMapEntryArray;
+    FEntries: TJclCardinalCardinalMapEntryArray;
     function BinarySearch(Key: Cardinal): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure InitializeArrayAfterMove(var List: TJclCardinalCardinalSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclCardinalCardinalMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure MoveArray(var List: TJclCardinalCardinalSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclCardinalCardinalMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1584,14 +2249,42 @@ type
     function LastKey: Cardinal;
     function SubMap(FromKey, ToKey: Cardinal): IJclCardinalCardinalSortedMap;
     function TailMap(FromKey: Cardinal): IJclCardinalCardinalSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclCardinalCardinalSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclInt64IntfSortedMapEntry = record
-    Key: Int64;
-    Value: IInterface;
+  TJclCardinalCardinalSortedMapIterator = class(TJclAbstractIterator, IJclCardinalCardinalSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclCardinalCardinalSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclCardinalCardinalSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclCardinalCardinalSortedMapIterator }
+    function Add(const AEntry: TJclCardinalCardinalMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclCardinalCardinalMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclCardinalCardinalMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclCardinalCardinalSortedMapIterator): Boolean;
+    function Next: TJclCardinalCardinalMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclCardinalCardinalMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclCardinalCardinalMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclCardinalCardinalMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclInt64IntfSortedMapEntryArray = array of TJclInt64IntfSortedMapEntry;
 
   TJclInt64IntfSortedMap = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclInt64Container, IJclIntfContainer,
@@ -1603,18 +2296,18 @@ type
     function KeysCompare(const A, B: Int64): Integer;
     function ValuesCompare(const A, B: IInterface): Integer;
   private
-    FEntries: TJclInt64IntfSortedMapEntryArray;
+    FEntries: TJclInt64IntfMapEntryArray;
     function BinarySearch(const Key: Int64): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure FinalizeArrayBeforeMove(var List: TJclInt64IntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure FinalizeArrayBeforeMove(var List: TJclInt64IntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArray(var List: TJclInt64IntfSortedMapEntryArray; FromIndex, Count: SizeInt);
+    procedure InitializeArray(var List: TJclInt64IntfMapEntryArray; FromIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArrayAfterMove(var List: TJclInt64IntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclInt64IntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-    procedure MoveArray(var List: TJclInt64IntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclInt64IntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1641,14 +2334,42 @@ type
     function LastKey: Int64;
     function SubMap(const FromKey, ToKey: Int64): IJclInt64IntfSortedMap;
     function TailMap(const FromKey: Int64): IJclInt64IntfSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclInt64IntfSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclIntfInt64SortedMapEntry = record
-    Key: IInterface;
-    Value: Int64;
+  TJclInt64IntfSortedMapIterator = class(TJclAbstractIterator, IJclInt64IntfSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclInt64IntfSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclInt64IntfSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclInt64IntfSortedMapIterator }
+    function Add(const AEntry: TJclInt64IntfMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclInt64IntfMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclInt64IntfMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclInt64IntfSortedMapIterator): Boolean;
+    function Next: TJclInt64IntfMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclInt64IntfMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclInt64IntfMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclInt64IntfMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclIntfInt64SortedMapEntryArray = array of TJclIntfInt64SortedMapEntry;
 
   TJclIntfInt64SortedMap = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclIntfContainer, IJclInt64Container,
@@ -1660,18 +2381,18 @@ type
     function KeysCompare(const A, B: IInterface): Integer;
     function ValuesCompare(const A, B: Int64): Integer;
   private
-    FEntries: TJclIntfInt64SortedMapEntryArray;
+    FEntries: TJclIntfInt64MapEntryArray;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure FinalizeArrayBeforeMove(var List: TJclIntfInt64SortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure FinalizeArrayBeforeMove(var List: TJclIntfInt64MapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArray(var List: TJclIntfInt64SortedMapEntryArray; FromIndex, Count: SizeInt);
+    procedure InitializeArray(var List: TJclIntfInt64MapEntryArray; FromIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArrayAfterMove(var List: TJclIntfInt64SortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclIntfInt64MapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-    procedure MoveArray(var List: TJclIntfInt64SortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclIntfInt64MapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1698,14 +2419,42 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfInt64SortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfInt64SortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIntfInt64SortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclInt64Int64SortedMapEntry = record
-    Key: Int64;
-    Value: Int64;
+  TJclIntfInt64SortedMapIterator = class(TJclAbstractIterator, IJclIntfInt64SortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclIntfInt64SortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclIntfInt64SortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclIntfInt64SortedMapIterator }
+    function Add(const AEntry: TJclIntfInt64MapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclIntfInt64MapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclIntfInt64MapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclIntfInt64SortedMapIterator): Boolean;
+    function Next: TJclIntfInt64MapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclIntfInt64MapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclIntfInt64MapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclIntfInt64MapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclInt64Int64SortedMapEntryArray = array of TJclInt64Int64SortedMapEntry;
 
   TJclInt64Int64SortedMap = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclInt64Container,
@@ -1717,13 +2466,13 @@ type
     function KeysCompare(const A, B: Int64): Integer;
     function ValuesCompare(const A, B: Int64): Integer;
   private
-    FEntries: TJclInt64Int64SortedMapEntryArray;
+    FEntries: TJclInt64Int64MapEntryArray;
     function BinarySearch(const Key: Int64): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure InitializeArrayAfterMove(var List: TJclInt64Int64SortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclInt64Int64MapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure MoveArray(var List: TJclInt64Int64SortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclInt64Int64MapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1750,14 +2499,42 @@ type
     function LastKey: Int64;
     function SubMap(const FromKey, ToKey: Int64): IJclInt64Int64SortedMap;
     function TailMap(const FromKey: Int64): IJclInt64Int64SortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclInt64Int64SortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclPtrIntfSortedMapEntry = record
-    Key: Pointer;
-    Value: IInterface;
+  TJclInt64Int64SortedMapIterator = class(TJclAbstractIterator, IJclInt64Int64SortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclInt64Int64SortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclInt64Int64SortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclInt64Int64SortedMapIterator }
+    function Add(const AEntry: TJclInt64Int64MapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclInt64Int64MapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclInt64Int64MapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclInt64Int64SortedMapIterator): Boolean;
+    function Next: TJclInt64Int64MapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclInt64Int64MapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclInt64Int64MapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclInt64Int64MapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclPtrIntfSortedMapEntryArray = array of TJclPtrIntfSortedMapEntry;
 
   TJclPtrIntfSortedMap = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclPtrContainer, IJclIntfContainer,
@@ -1769,18 +2546,18 @@ type
     function KeysCompare(A, B: Pointer): Integer;
     function ValuesCompare(const A, B: IInterface): Integer;
   private
-    FEntries: TJclPtrIntfSortedMapEntryArray;
+    FEntries: TJclPtrIntfMapEntryArray;
     function BinarySearch(Key: Pointer): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure FinalizeArrayBeforeMove(var List: TJclPtrIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure FinalizeArrayBeforeMove(var List: TJclPtrIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArray(var List: TJclPtrIntfSortedMapEntryArray; FromIndex, Count: SizeInt);
+    procedure InitializeArray(var List: TJclPtrIntfMapEntryArray; FromIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArrayAfterMove(var List: TJclPtrIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclPtrIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-    procedure MoveArray(var List: TJclPtrIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclPtrIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1807,14 +2584,42 @@ type
     function LastKey: Pointer;
     function SubMap(FromKey, ToKey: Pointer): IJclPtrIntfSortedMap;
     function TailMap(FromKey: Pointer): IJclPtrIntfSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclPtrIntfSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclIntfPtrSortedMapEntry = record
-    Key: IInterface;
-    Value: Pointer;
+  TJclPtrIntfSortedMapIterator = class(TJclAbstractIterator, IJclPtrIntfSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclPtrIntfSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclPtrIntfSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclPtrIntfSortedMapIterator }
+    function Add(const AEntry: TJclPtrIntfMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclPtrIntfMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclPtrIntfMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclPtrIntfSortedMapIterator): Boolean;
+    function Next: TJclPtrIntfMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclPtrIntfMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclPtrIntfMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclPtrIntfMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclIntfPtrSortedMapEntryArray = array of TJclIntfPtrSortedMapEntry;
 
   TJclIntfPtrSortedMap = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclIntfContainer, IJclPtrContainer,
@@ -1826,18 +2631,18 @@ type
     function KeysCompare(const A, B: IInterface): Integer;
     function ValuesCompare(A, B: Pointer): Integer;
   private
-    FEntries: TJclIntfPtrSortedMapEntryArray;
+    FEntries: TJclIntfPtrMapEntryArray;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure FinalizeArrayBeforeMove(var List: TJclIntfPtrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure FinalizeArrayBeforeMove(var List: TJclIntfPtrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArray(var List: TJclIntfPtrSortedMapEntryArray; FromIndex, Count: SizeInt);
+    procedure InitializeArray(var List: TJclIntfPtrMapEntryArray; FromIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArrayAfterMove(var List: TJclIntfPtrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclIntfPtrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-    procedure MoveArray(var List: TJclIntfPtrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclIntfPtrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1864,14 +2669,42 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfPtrSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfPtrSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIntfPtrSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclPtrPtrSortedMapEntry = record
-    Key: Pointer;
-    Value: Pointer;
+  TJclIntfPtrSortedMapIterator = class(TJclAbstractIterator, IJclIntfPtrSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclIntfPtrSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclIntfPtrSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclIntfPtrSortedMapIterator }
+    function Add(const AEntry: TJclIntfPtrMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclIntfPtrMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclIntfPtrMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclIntfPtrSortedMapIterator): Boolean;
+    function Next: TJclIntfPtrMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclIntfPtrMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclIntfPtrMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclIntfPtrMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclPtrPtrSortedMapEntryArray = array of TJclPtrPtrSortedMapEntry;
 
   TJclPtrPtrSortedMap = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclPtrContainer,
@@ -1883,13 +2716,13 @@ type
     function KeysCompare(A, B: Pointer): Integer;
     function ValuesCompare(A, B: Pointer): Integer;
   private
-    FEntries: TJclPtrPtrSortedMapEntryArray;
+    FEntries: TJclPtrPtrMapEntryArray;
     function BinarySearch(Key: Pointer): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure InitializeArrayAfterMove(var List: TJclPtrPtrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclPtrPtrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure MoveArray(var List: TJclPtrPtrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclPtrPtrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1916,14 +2749,42 @@ type
     function LastKey: Pointer;
     function SubMap(FromKey, ToKey: Pointer): IJclPtrPtrSortedMap;
     function TailMap(FromKey: Pointer): IJclPtrPtrSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclPtrPtrSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclIntfSortedMapEntry = record
-    Key: IInterface;
-    Value: TObject;
+  TJclPtrPtrSortedMapIterator = class(TJclAbstractIterator, IJclPtrPtrSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclPtrPtrSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclPtrPtrSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclPtrPtrSortedMapIterator }
+    function Add(const AEntry: TJclPtrPtrMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclPtrPtrMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclPtrPtrMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclPtrPtrSortedMapIterator): Boolean;
+    function Next: TJclPtrPtrMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclPtrPtrMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclPtrPtrMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclPtrPtrMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclIntfSortedMapEntryArray = array of TJclIntfSortedMapEntry;
 
   TJclIntfSortedMap = class(TJclIntfAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclIntfContainer, IJclContainer, IJclValueOwner,
@@ -1941,18 +2802,18 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FEntries: TJclIntfSortedMapEntryArray;
+    FEntries: TJclIntfObjMapEntryArray;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure FinalizeArrayBeforeMove(var List: TJclIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure FinalizeArrayBeforeMove(var List: TJclIntfObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArray(var List: TJclIntfSortedMapEntryArray; FromIndex, Count: SizeInt);
+    procedure InitializeArray(var List: TJclIntfObjMapEntryArray; FromIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArrayAfterMove(var List: TJclIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclIntfObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-    procedure MoveArray(var List: TJclIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclIntfObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
@@ -1979,14 +2840,42 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIntfObjSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclAnsiStrSortedMapEntry = record
-    Key: AnsiString;
-    Value: TObject;
+  TJclIntfObjSortedMapIterator = class(TJclAbstractIterator, IJclIntfObjSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclIntfSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclIntfSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclIntfObjSortedMapIterator }
+    function Add(const AEntry: TJclIntfObjMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclIntfObjMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclIntfObjMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclIntfObjSortedMapIterator): Boolean;
+    function Next: TJclIntfObjMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclIntfObjMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclIntfObjMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclIntfObjMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclAnsiStrSortedMapEntryArray = array of TJclAnsiStrSortedMapEntry;
 
   TJclAnsiStrSortedMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclStrBaseContainer, IJclAnsiStrContainer, IJclContainer, IJclValueOwner,
@@ -2004,18 +2893,18 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FEntries: TJclAnsiStrSortedMapEntryArray;
+    FEntries: TJclAnsiStrObjMapEntryArray;
     function BinarySearch(const Key: AnsiString): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure FinalizeArrayBeforeMove(var List: TJclAnsiStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure FinalizeArrayBeforeMove(var List: TJclAnsiStrObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArray(var List: TJclAnsiStrSortedMapEntryArray; FromIndex, Count: SizeInt);
+    procedure InitializeArray(var List: TJclAnsiStrObjMapEntryArray; FromIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArrayAfterMove(var List: TJclAnsiStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclAnsiStrObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-    procedure MoveArray(var List: TJclAnsiStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclAnsiStrObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
@@ -2042,14 +2931,42 @@ type
     function LastKey: AnsiString;
     function SubMap(const FromKey, ToKey: AnsiString): IJclAnsiStrSortedMap;
     function TailMap(const FromKey: AnsiString): IJclAnsiStrSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclAnsiStrObjSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclWideStrSortedMapEntry = record
-    Key: WideString;
-    Value: TObject;
+  TJclAnsiStrObjSortedMapIterator = class(TJclAbstractIterator, IJclAnsiStrObjSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclAnsiStrSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclAnsiStrSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclAnsiStrObjSortedMapIterator }
+    function Add(const AEntry: TJclAnsiStrObjMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclAnsiStrObjMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclAnsiStrObjMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclAnsiStrObjSortedMapIterator): Boolean;
+    function Next: TJclAnsiStrObjMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclAnsiStrObjMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclAnsiStrObjMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclAnsiStrObjMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclWideStrSortedMapEntryArray = array of TJclWideStrSortedMapEntry;
 
   TJclWideStrSortedMap = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclStrBaseContainer, IJclWideStrContainer, IJclContainer, IJclValueOwner,
@@ -2067,18 +2984,18 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FEntries: TJclWideStrSortedMapEntryArray;
+    FEntries: TJclWideStrObjMapEntryArray;
     function BinarySearch(const Key: WideString): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure FinalizeArrayBeforeMove(var List: TJclWideStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure FinalizeArrayBeforeMove(var List: TJclWideStrObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArray(var List: TJclWideStrSortedMapEntryArray; FromIndex, Count: SizeInt);
+    procedure InitializeArray(var List: TJclWideStrObjMapEntryArray; FromIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArrayAfterMove(var List: TJclWideStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclWideStrObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-    procedure MoveArray(var List: TJclWideStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclWideStrObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
@@ -2105,16 +3022,42 @@ type
     function LastKey: WideString;
     function SubMap(const FromKey, ToKey: WideString): IJclWideStrSortedMap;
     function TailMap(const FromKey: WideString): IJclWideStrSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclWideStrObjSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  {$IFDEF SUPPORTS_UNICODE_STRING}
-  TJclUnicodeStrSortedMapEntry = record
-    Key: UnicodeString;
-    Value: TObject;
+  TJclWideStrObjSortedMapIterator = class(TJclAbstractIterator, IJclWideStrObjSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclWideStrSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclWideStrSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclWideStrObjSortedMapIterator }
+    function Add(const AEntry: TJclWideStrObjMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclWideStrObjMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclWideStrObjMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclWideStrObjSortedMapIterator): Boolean;
+    function Next: TJclWideStrObjMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclWideStrObjMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclWideStrObjMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclWideStrObjMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclUnicodeStrSortedMapEntryArray = array of TJclUnicodeStrSortedMapEntry;
-  {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF SUPPORTS_UNICODE_STRING}
   TJclUnicodeStrSortedMap = class(TJclUnicodeStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -2133,18 +3076,18 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FEntries: TJclUnicodeStrSortedMapEntryArray;
+    FEntries: TJclUnicodeStrObjMapEntryArray;
     function BinarySearch(const Key: UnicodeString): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure FinalizeArrayBeforeMove(var List: TJclUnicodeStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure FinalizeArrayBeforeMove(var List: TJclUnicodeStrObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArray(var List: TJclUnicodeStrSortedMapEntryArray; FromIndex, Count: SizeInt);
+    procedure InitializeArray(var List: TJclUnicodeStrObjMapEntryArray; FromIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure InitializeArrayAfterMove(var List: TJclUnicodeStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclUnicodeStrObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-    procedure MoveArray(var List: TJclUnicodeStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclUnicodeStrObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
@@ -2171,18 +3114,45 @@ type
     function LastKey: UnicodeString;
     function SubMap(const FromKey, ToKey: UnicodeString): IJclUnicodeStrSortedMap;
     function TailMap(const FromKey: UnicodeString): IJclUnicodeStrSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclUnicodeStrObjSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
   {$ENDIF SUPPORTS_UNICODE_STRING}
 
-  {$IFDEF CONTAINER_ANSISTR}
-  TJclStrSortedMapEntry = TJclAnsiStrSortedMapEntry;
-  {$ENDIF CONTAINER_ANSISTR}
-  {$IFDEF CONTAINER_WIDESTR}
-  TJclStrSortedMapEntry = TJclWideStrSortedMapEntry;
-  {$ENDIF CONTAINER_WIDESTR}
-  {$IFDEF CONTAINER_UNICODESTR}
-  TJclStrSortedMapEntry = TJclUnicodeStrSortedMapEntry;
-  {$ENDIF CONTAINER_UNICODESTR}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  TJclUnicodeStrObjSortedMapIterator = class(TJclAbstractIterator, IJclUnicodeStrObjSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclUnicodeStrSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclUnicodeStrSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclUnicodeStrObjSortedMapIterator }
+    function Add(const AEntry: TJclUnicodeStrObjMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclUnicodeStrObjMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclUnicodeStrObjMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclUnicodeStrObjSortedMapIterator): Boolean;
+    function Next: TJclUnicodeStrObjMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclUnicodeStrObjMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclUnicodeStrObjMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclUnicodeStrObjMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+  {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   TJclStrSortedMap = TJclAnsiStrSortedMap;
@@ -2194,12 +3164,15 @@ type
   TJclStrSortedMap = TJclUnicodeStrSortedMap;
   {$ENDIF CONTAINER_UNICODESTR}
 
-  TJclSingleSortedMapEntry = record
-    Key: Single;
-    Value: TObject;
-  end;
-
-  TJclSingleSortedMapEntryArray = array of TJclSingleSortedMapEntry;
+  {$IFDEF CONTAINER_ANSISTR}
+  TJclStrObjSortedMapIterator = TJclAnsiStrObjSortedMapIterator;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TJclStrObjSortedMapIterator = TJclWideStrObjSortedMapIterator;
+  {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  TJclStrObjSortedMapIterator = TJclUnicodeStrObjSortedMapIterator;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   TJclSingleSortedMap = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclSingleContainer, IJclContainer, IJclValueOwner,
@@ -2217,13 +3190,13 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FEntries: TJclSingleSortedMapEntryArray;
+    FEntries: TJclSingleObjMapEntryArray;
     function BinarySearch(const Key: Single): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure InitializeArrayAfterMove(var List: TJclSingleSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclSingleObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure MoveArray(var List: TJclSingleSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclSingleObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
@@ -2250,14 +3223,42 @@ type
     function LastKey: Single;
     function SubMap(const FromKey, ToKey: Single): IJclSingleSortedMap;
     function TailMap(const FromKey: Single): IJclSingleSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclSingleObjSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclDoubleSortedMapEntry = record
-    Key: Double;
-    Value: TObject;
+  TJclSingleObjSortedMapIterator = class(TJclAbstractIterator, IJclSingleObjSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclSingleSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclSingleSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclSingleObjSortedMapIterator }
+    function Add(const AEntry: TJclSingleObjMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclSingleObjMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclSingleObjMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclSingleObjSortedMapIterator): Boolean;
+    function Next: TJclSingleObjMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclSingleObjMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclSingleObjMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclSingleObjMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclDoubleSortedMapEntryArray = array of TJclDoubleSortedMapEntry;
 
   TJclDoubleSortedMap = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclDoubleContainer, IJclContainer, IJclValueOwner,
@@ -2275,13 +3276,13 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FEntries: TJclDoubleSortedMapEntryArray;
+    FEntries: TJclDoubleObjMapEntryArray;
     function BinarySearch(const Key: Double): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure InitializeArrayAfterMove(var List: TJclDoubleSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclDoubleObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure MoveArray(var List: TJclDoubleSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclDoubleObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
@@ -2308,14 +3309,42 @@ type
     function LastKey: Double;
     function SubMap(const FromKey, ToKey: Double): IJclDoubleSortedMap;
     function TailMap(const FromKey: Double): IJclDoubleSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclDoubleObjSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclExtendedSortedMapEntry = record
-    Key: Extended;
-    Value: TObject;
+  TJclDoubleObjSortedMapIterator = class(TJclAbstractIterator, IJclDoubleObjSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclDoubleSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclDoubleSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclDoubleObjSortedMapIterator }
+    function Add(const AEntry: TJclDoubleObjMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclDoubleObjMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclDoubleObjMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclDoubleObjSortedMapIterator): Boolean;
+    function Next: TJclDoubleObjMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclDoubleObjMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclDoubleObjMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclDoubleObjMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclExtendedSortedMapEntryArray = array of TJclExtendedSortedMapEntry;
 
   TJclExtendedSortedMap = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclExtendedContainer, IJclContainer, IJclValueOwner,
@@ -2333,13 +3362,13 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FEntries: TJclExtendedSortedMapEntryArray;
+    FEntries: TJclExtendedObjMapEntryArray;
     function BinarySearch(const Key: Extended): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure InitializeArrayAfterMove(var List: TJclExtendedSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclExtendedObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure MoveArray(var List: TJclExtendedSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclExtendedObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
@@ -2366,17 +3395,42 @@ type
     function LastKey: Extended;
     function SubMap(const FromKey, ToKey: Extended): IJclExtendedSortedMap;
     function TailMap(const FromKey: Extended): IJclExtendedSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclExtendedObjSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  {$IFDEF MATH_SINGLE_PRECISION}
-  TJclFloatSortedMapEntry = TJclSingleSortedMapEntry;
-  {$ENDIF MATH_SINGLE_PRECISION}
-  {$IFDEF MATH_DOUBLE_PRECISION}
-  TJclFloatSortedMapEntry = TJclDoubleSortedMapEntry;
-  {$ENDIF MATH_DOUBLE_PRECISION}
-  {$IFDEF MATH_EXTENDED_PRECISION}
-  TJclFloatSortedMapEntry = TJclExtendedSortedMapEntry;
-  {$ENDIF MATH_EXTENDED_PRECISION}
+  TJclExtendedObjSortedMapIterator = class(TJclAbstractIterator, IJclExtendedObjSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclExtendedSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclExtendedSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclExtendedObjSortedMapIterator }
+    function Add(const AEntry: TJclExtendedObjMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclExtendedObjMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclExtendedObjMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclExtendedObjSortedMapIterator): Boolean;
+    function Next: TJclExtendedObjMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclExtendedObjMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclExtendedObjMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclExtendedObjMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
 
   {$IFDEF MATH_SINGLE_PRECISION}
   TJclFloatSortedMap = TJclSingleSortedMap;
@@ -2388,12 +3442,15 @@ type
   TJclFloatSortedMap = TJclExtendedSortedMap;
   {$ENDIF MATH_EXTENDED_PRECISION}
 
-  TJclIntegerSortedMapEntry = record
-    Key: Integer;
-    Value: TObject;
-  end;
-
-  TJclIntegerSortedMapEntryArray = array of TJclIntegerSortedMapEntry;
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TJclFloatObjSortedMapIterator = TJclSingleObjSortedMapIterator;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TJclFloatObjSortedMapIterator = TJclDoubleObjSortedMapIterator;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TJclFloatObjSortedMapIterator = TJclExtendedObjSortedMapIterator;
+  {$ENDIF MATH_EXTENDED_PRECISION}
 
   TJclIntegerSortedMap = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclIntegerContainer, IJclContainer, IJclValueOwner,
@@ -2411,13 +3468,13 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FEntries: TJclIntegerSortedMapEntryArray;
+    FEntries: TJclIntegerObjMapEntryArray;
     function BinarySearch(Key: Integer): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure InitializeArrayAfterMove(var List: TJclIntegerSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclIntegerObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure MoveArray(var List: TJclIntegerSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclIntegerObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
@@ -2444,14 +3501,42 @@ type
     function LastKey: Integer;
     function SubMap(FromKey, ToKey: Integer): IJclIntegerSortedMap;
     function TailMap(FromKey: Integer): IJclIntegerSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIntegerObjSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclCardinalSortedMapEntry = record
-    Key: Cardinal;
-    Value: TObject;
+  TJclIntegerObjSortedMapIterator = class(TJclAbstractIterator, IJclIntegerObjSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclIntegerSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclIntegerSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclIntegerObjSortedMapIterator }
+    function Add(const AEntry: TJclIntegerObjMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclIntegerObjMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclIntegerObjMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclIntegerObjSortedMapIterator): Boolean;
+    function Next: TJclIntegerObjMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclIntegerObjMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclIntegerObjMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclIntegerObjMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclCardinalSortedMapEntryArray = array of TJclCardinalSortedMapEntry;
 
   TJclCardinalSortedMap = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclCardinalContainer, IJclContainer, IJclValueOwner,
@@ -2469,13 +3554,13 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FEntries: TJclCardinalSortedMapEntryArray;
+    FEntries: TJclCardinalObjMapEntryArray;
     function BinarySearch(Key: Cardinal): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure InitializeArrayAfterMove(var List: TJclCardinalSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclCardinalObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure MoveArray(var List: TJclCardinalSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclCardinalObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
@@ -2502,14 +3587,42 @@ type
     function LastKey: Cardinal;
     function SubMap(FromKey, ToKey: Cardinal): IJclCardinalSortedMap;
     function TailMap(FromKey: Cardinal): IJclCardinalSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclCardinalObjSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclInt64SortedMapEntry = record
-    Key: Int64;
-    Value: TObject;
+  TJclCardinalObjSortedMapIterator = class(TJclAbstractIterator, IJclCardinalObjSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclCardinalSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclCardinalSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclCardinalObjSortedMapIterator }
+    function Add(const AEntry: TJclCardinalObjMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclCardinalObjMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclCardinalObjMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclCardinalObjSortedMapIterator): Boolean;
+    function Next: TJclCardinalObjMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclCardinalObjMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclCardinalObjMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclCardinalObjMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclInt64SortedMapEntryArray = array of TJclInt64SortedMapEntry;
 
   TJclInt64SortedMap = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclInt64Container, IJclContainer, IJclValueOwner,
@@ -2527,13 +3640,13 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FEntries: TJclInt64SortedMapEntryArray;
+    FEntries: TJclInt64ObjMapEntryArray;
     function BinarySearch(const Key: Int64): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure InitializeArrayAfterMove(var List: TJclInt64SortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclInt64ObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure MoveArray(var List: TJclInt64SortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclInt64ObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
@@ -2560,14 +3673,42 @@ type
     function LastKey: Int64;
     function SubMap(const FromKey, ToKey: Int64): IJclInt64SortedMap;
     function TailMap(const FromKey: Int64): IJclInt64SortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclInt64ObjSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclPtrSortedMapEntry = record
-    Key: Pointer;
-    Value: TObject;
+  TJclInt64ObjSortedMapIterator = class(TJclAbstractIterator, IJclInt64ObjSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclInt64SortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclInt64SortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclInt64ObjSortedMapIterator }
+    function Add(const AEntry: TJclInt64ObjMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclInt64ObjMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclInt64ObjMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclInt64ObjSortedMapIterator): Boolean;
+    function Next: TJclInt64ObjMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclInt64ObjMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclInt64ObjMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclInt64ObjMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclPtrSortedMapEntryArray = array of TJclPtrSortedMapEntry;
 
   TJclPtrSortedMap = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclPtrContainer, IJclContainer, IJclValueOwner,
@@ -2585,13 +3726,13 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FEntries: TJclPtrSortedMapEntryArray;
+    FEntries: TJclPtrObjMapEntryArray;
     function BinarySearch(Key: Pointer): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure InitializeArrayAfterMove(var List: TJclPtrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclPtrObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure MoveArray(var List: TJclPtrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclPtrObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
@@ -2618,14 +3759,42 @@ type
     function LastKey: Pointer;
     function SubMap(FromKey, ToKey: Pointer): IJclPtrSortedMap;
     function TailMap(FromKey: Pointer): IJclPtrSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclPtrObjSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  TJclSortedMapEntry = record
-    Key: TObject;
-    Value: TObject;
+  TJclPtrObjSortedMapIterator = class(TJclAbstractIterator, IJclPtrObjSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclPtrSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclPtrSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclPtrObjSortedMapIterator }
+    function Add(const AEntry: TJclPtrObjMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclPtrObjMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclPtrObjMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclPtrObjSortedMapIterator): Boolean;
+    function Next: TJclPtrObjMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclPtrObjMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclPtrObjMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclPtrObjMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
-
-  TJclSortedMapEntryArray = array of TJclSortedMapEntry;
 
   TJclSortedMap = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclContainer, IJclKeyOwner, IJclValueOwner,
@@ -2647,13 +3816,13 @@ type
     function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FEntries: TJclSortedMapEntryArray;
+    FEntries: TJclObjObjMapEntryArray;
     function BinarySearch(Key: TObject): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure InitializeArrayAfterMove(var List: TJclSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure InitializeArrayAfterMove(var List: TJclObjObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
       {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-    procedure MoveArray(var List: TJclSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TJclObjObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
     destructor Destroy; override;
@@ -2680,16 +3849,46 @@ type
     function LastKey: TObject;
     function SubMap(FromKey, ToKey: TObject): IJclSortedMap;
     function TailMap(FromKey: TObject): IJclSortedMap;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclObjObjSortedMapIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  TJclObjObjSortedMapIterator = class(TJclAbstractIterator, IJclObjObjSortedMapIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclSortedMap;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclObjObjSortedMapIterator }
+    function Add(const AEntry: TJclObjObjMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclObjObjMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclObjObjMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclObjObjSortedMapIterator): Boolean;
+    function Next: TJclObjObjMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclObjObjMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclObjObjMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclObjObjMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
 
   {$IFDEF SUPPORTS_GENERICS}
   //DOM-IGNORE-BEGIN
-
-  TJclSortedEntry<TKey,TValue> = record
-    Key: TKey;
-    Value: TValue;
-  end;
 
   TJclSortedMap<TKey,TValue> = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclBaseContainer, IJclPairOwner<TKey,TValue>,
@@ -2697,8 +3896,8 @@ type
 
   protected
     type
-      TSortedEntry = TJclSortedEntry<TKey,TValue>;
-      TSortedEntryArray = array of TSortedEntry;
+      TMapEntry = TJclMapEntry<TKey,TValue>;
+      TMapEntryArray = array of TMapEntry;
   private
     FOwnsKeys: Boolean;
     FOwnsValues: Boolean;
@@ -2716,11 +3915,11 @@ type
     property OwnsKeys: Boolean read FOwnsKeys;
     property OwnsValues: Boolean read FOwnsValues;
   private
-    FEntries: TSortedEntryArray;
+    FEntries: TMapEntryArray;
     function BinarySearch(const Key: TKey): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TSortedEntryArray; FromIndex, ToIndex, Count: SizeInt);
+    procedure MoveArray(var List: TMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
     destructor Destroy; override;
@@ -2747,6 +3946,41 @@ type
     function LastKey: TKey;
     function SubMap(const FromKey, ToKey: TKey): IJclSortedMap<TKey,TValue>;
     function TailMap(const FromKey: TKey): IJclSortedMap<TKey,TValue>;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclSortedMapIterator<TKey,TValue>;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  TJclSortedMapIterator<TKey,TValue> = class(TJclAbstractIterator, IJclSortedMapIterator<TKey,TValue>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FStart: TItrStart;
+    FOwnMap: TJclSortedMap<TKey,TValue>;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(AOwnMap: TJclSortedMap<TKey,TValue>; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    { IJclSortedMapIterator<TKey,TValue> }
+    function Add(const AEntry: TJclMapEntry<TKey,TValue>): Boolean;
+    procedure Extract;
+    function GetEntry: TJclMapEntry<TKey,TValue>;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclMapEntry<TKey,TValue>): Boolean;
+    function IteratorEquals(const AIterator: IJclSortedMapIterator<TKey,TValue>): Boolean;
+    function Next: TJclMapEntry<TKey,TValue>;
+    function NextIndex: Integer;
+    function Previous: TJclMapEntry<TKey,TValue>;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclMapEntry<TKey,TValue>);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclMapEntry<TKey,TValue> read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
   // E = external helper to compare items
@@ -3046,6 +4280,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntfIntfSortedMap.GetEnumerator: IJclIntfIntfSortedMapIterator;
+begin
+  Result := TJclIntfIntfSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclIntfIntfSortedMap.GetValue(const Key: IInterface): IInterface;
 var
   Index: Integer;
@@ -3223,7 +4464,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfIntfSortedMap.FinalizeArrayBeforeMove(var List: TJclIntfIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfIntfSortedMap.FinalizeArrayBeforeMove(var List: TJclIntfIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   Assert(Count > 0);
   if FromIndex < ToIndex then
@@ -3242,7 +4483,7 @@ begin
   end;
 end;
 
-procedure TJclIntfIntfSortedMap.InitializeArray(var List: TJclIntfIntfSortedMapEntryArray; FromIndex, Count: SizeInt);
+procedure TJclIntfIntfSortedMap.InitializeArray(var List: TJclIntfIntfMapEntryArray; FromIndex, Count: SizeInt);
 begin
   {$IFDEF FPC}
   while Count > 0 do
@@ -3256,7 +4497,7 @@ begin
   {$ENDIF ~FPC}
 end;
 
-procedure TJclIntfIntfSortedMap.InitializeArrayAfterMove(var List: TJclIntfIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfIntfSortedMap.InitializeArrayAfterMove(var List: TJclIntfIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
@@ -3275,7 +4516,7 @@ begin
   end;
 end;
 
-procedure TJclIntfIntfSortedMap.MoveArray(var List: TJclIntfIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfIntfSortedMap.MoveArray(var List: TJclIntfIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -3520,6 +4761,160 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
+//=== { TJclIntfIntfSortedMapIterator } ===============================================================
+
+constructor TJclIntfIntfSortedMapIterator.Create(AOwnMap: TJclIntfIntfSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclIntfIntfSortedMapIterator.Add(const AEntry: TJclIntfIntfMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclIntfIntfSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclIntfIntfSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclIntfIntfSortedMapIterator then
+  begin
+    ADest := TJclIntfIntfSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclIntfIntfSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclIntfIntfSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclIntfIntfSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclIntfIntfSortedMapIterator.GetEntry: TJclIntfIntfMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfIntfSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclIntfIntfSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclIntfIntfSortedMapIterator.Insert(const AEntry: TJclIntfIntfMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclIntfIntfSortedMapIterator.IteratorEquals(const AIterator: IJclIntfIntfSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclIntfIntfSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclIntfIntfSortedMapIterator then
+  begin
+    ItrObj := TJclIntfIntfSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntfIntfSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclIntfIntfSortedMapIterator.Next: TJclIntfIntfMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfIntfSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclIntfIntfSortedMapIterator.Previous: TJclIntfIntfMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfIntfSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclIntfIntfSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclIntfIntfSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclIntfIntfSortedMapIterator.SetEntry(const AEntry: TJclIntfIntfMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclAnsiStrIntfSortedMap } ==============================================
 
 constructor TJclAnsiStrIntfSortedMap.Create(ACapacity: Integer);
@@ -3708,6 +5103,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclAnsiStrIntfSortedMap.GetEnumerator: IJclAnsiStrIntfSortedMapIterator;
+begin
+  Result := TJclAnsiStrIntfSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclAnsiStrIntfSortedMap.GetValue(const Key: AnsiString): IInterface;
 var
   Index: Integer;
@@ -3885,7 +5287,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclAnsiStrIntfSortedMap.FinalizeArrayBeforeMove(var List: TJclAnsiStrIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclAnsiStrIntfSortedMap.FinalizeArrayBeforeMove(var List: TJclAnsiStrIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   Assert(Count > 0);
   if FromIndex < ToIndex then
@@ -3904,7 +5306,7 @@ begin
   end;
 end;
 
-procedure TJclAnsiStrIntfSortedMap.InitializeArray(var List: TJclAnsiStrIntfSortedMapEntryArray; FromIndex, Count: SizeInt);
+procedure TJclAnsiStrIntfSortedMap.InitializeArray(var List: TJclAnsiStrIntfMapEntryArray; FromIndex, Count: SizeInt);
 begin
   {$IFDEF FPC}
   while Count > 0 do
@@ -3918,7 +5320,7 @@ begin
   {$ENDIF ~FPC}
 end;
 
-procedure TJclAnsiStrIntfSortedMap.InitializeArrayAfterMove(var List: TJclAnsiStrIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclAnsiStrIntfSortedMap.InitializeArrayAfterMove(var List: TJclAnsiStrIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
@@ -3937,7 +5339,7 @@ begin
   end;
 end;
 
-procedure TJclAnsiStrIntfSortedMap.MoveArray(var List: TJclAnsiStrIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclAnsiStrIntfSortedMap.MoveArray(var List: TJclAnsiStrIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -4182,6 +5584,160 @@ begin
   Result := IntfSimpleCompare(A, B);
 end;
 
+//=== { TJclAnsiStrIntfSortedMapIterator } ===============================================================
+
+constructor TJclAnsiStrIntfSortedMapIterator.Create(AOwnMap: TJclAnsiStrIntfSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclAnsiStrIntfSortedMapIterator.Add(const AEntry: TJclAnsiStrIntfMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclAnsiStrIntfSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclAnsiStrIntfSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclAnsiStrIntfSortedMapIterator then
+  begin
+    ADest := TJclAnsiStrIntfSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclAnsiStrIntfSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclAnsiStrIntfSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclAnsiStrIntfSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclAnsiStrIntfSortedMapIterator.GetEntry: TJclAnsiStrIntfMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclAnsiStrIntfSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclAnsiStrIntfSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclAnsiStrIntfSortedMapIterator.Insert(const AEntry: TJclAnsiStrIntfMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclAnsiStrIntfSortedMapIterator.IteratorEquals(const AIterator: IJclAnsiStrIntfSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclAnsiStrIntfSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclAnsiStrIntfSortedMapIterator then
+  begin
+    ItrObj := TJclAnsiStrIntfSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclAnsiStrIntfSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclAnsiStrIntfSortedMapIterator.Next: TJclAnsiStrIntfMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclAnsiStrIntfSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclAnsiStrIntfSortedMapIterator.Previous: TJclAnsiStrIntfMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclAnsiStrIntfSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclAnsiStrIntfSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclAnsiStrIntfSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclAnsiStrIntfSortedMapIterator.SetEntry(const AEntry: TJclAnsiStrIntfMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclIntfAnsiStrSortedMap } ==============================================
 
 constructor TJclIntfAnsiStrSortedMap.Create(ACapacity: Integer);
@@ -4370,6 +5926,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntfAnsiStrSortedMap.GetEnumerator: IJclIntfAnsiStrSortedMapIterator;
+begin
+  Result := TJclIntfAnsiStrSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclIntfAnsiStrSortedMap.GetValue(const Key: IInterface): AnsiString;
 var
   Index: Integer;
@@ -4547,7 +6110,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfAnsiStrSortedMap.FinalizeArrayBeforeMove(var List: TJclIntfAnsiStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfAnsiStrSortedMap.FinalizeArrayBeforeMove(var List: TJclIntfAnsiStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   Assert(Count > 0);
   if FromIndex < ToIndex then
@@ -4566,7 +6129,7 @@ begin
   end;
 end;
 
-procedure TJclIntfAnsiStrSortedMap.InitializeArray(var List: TJclIntfAnsiStrSortedMapEntryArray; FromIndex, Count: SizeInt);
+procedure TJclIntfAnsiStrSortedMap.InitializeArray(var List: TJclIntfAnsiStrMapEntryArray; FromIndex, Count: SizeInt);
 begin
   {$IFDEF FPC}
   while Count > 0 do
@@ -4580,7 +6143,7 @@ begin
   {$ENDIF ~FPC}
 end;
 
-procedure TJclIntfAnsiStrSortedMap.InitializeArrayAfterMove(var List: TJclIntfAnsiStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfAnsiStrSortedMap.InitializeArrayAfterMove(var List: TJclIntfAnsiStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
@@ -4599,7 +6162,7 @@ begin
   end;
 end;
 
-procedure TJclIntfAnsiStrSortedMap.MoveArray(var List: TJclIntfAnsiStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfAnsiStrSortedMap.MoveArray(var List: TJclIntfAnsiStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -4844,6 +6407,160 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
+//=== { TJclIntfAnsiStrSortedMapIterator } ===============================================================
+
+constructor TJclIntfAnsiStrSortedMapIterator.Create(AOwnMap: TJclIntfAnsiStrSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclIntfAnsiStrSortedMapIterator.Add(const AEntry: TJclIntfAnsiStrMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclIntfAnsiStrSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclIntfAnsiStrSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclIntfAnsiStrSortedMapIterator then
+  begin
+    ADest := TJclIntfAnsiStrSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclIntfAnsiStrSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclIntfAnsiStrSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclIntfAnsiStrSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclIntfAnsiStrSortedMapIterator.GetEntry: TJclIntfAnsiStrMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfAnsiStrSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclIntfAnsiStrSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclIntfAnsiStrSortedMapIterator.Insert(const AEntry: TJclIntfAnsiStrMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclIntfAnsiStrSortedMapIterator.IteratorEquals(const AIterator: IJclIntfAnsiStrSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclIntfAnsiStrSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclIntfAnsiStrSortedMapIterator then
+  begin
+    ItrObj := TJclIntfAnsiStrSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntfAnsiStrSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclIntfAnsiStrSortedMapIterator.Next: TJclIntfAnsiStrMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfAnsiStrSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclIntfAnsiStrSortedMapIterator.Previous: TJclIntfAnsiStrMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfAnsiStrSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclIntfAnsiStrSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclIntfAnsiStrSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclIntfAnsiStrSortedMapIterator.SetEntry(const AEntry: TJclIntfAnsiStrMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclAnsiStrAnsiStrSortedMap } ==============================================
 
 constructor TJclAnsiStrAnsiStrSortedMap.Create(ACapacity: Integer);
@@ -5032,6 +6749,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclAnsiStrAnsiStrSortedMap.GetEnumerator: IJclAnsiStrAnsiStrSortedMapIterator;
+begin
+  Result := TJclAnsiStrAnsiStrSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclAnsiStrAnsiStrSortedMap.GetValue(const Key: AnsiString): AnsiString;
 var
   Index: Integer;
@@ -5209,7 +6933,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclAnsiStrAnsiStrSortedMap.FinalizeArrayBeforeMove(var List: TJclAnsiStrAnsiStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclAnsiStrAnsiStrSortedMap.FinalizeArrayBeforeMove(var List: TJclAnsiStrAnsiStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   Assert(Count > 0);
   if FromIndex < ToIndex then
@@ -5228,7 +6952,7 @@ begin
   end;
 end;
 
-procedure TJclAnsiStrAnsiStrSortedMap.InitializeArray(var List: TJclAnsiStrAnsiStrSortedMapEntryArray; FromIndex, Count: SizeInt);
+procedure TJclAnsiStrAnsiStrSortedMap.InitializeArray(var List: TJclAnsiStrAnsiStrMapEntryArray; FromIndex, Count: SizeInt);
 begin
   {$IFDEF FPC}
   while Count > 0 do
@@ -5242,7 +6966,7 @@ begin
   {$ENDIF ~FPC}
 end;
 
-procedure TJclAnsiStrAnsiStrSortedMap.InitializeArrayAfterMove(var List: TJclAnsiStrAnsiStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclAnsiStrAnsiStrSortedMap.InitializeArrayAfterMove(var List: TJclAnsiStrAnsiStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
@@ -5261,7 +6985,7 @@ begin
   end;
 end;
 
-procedure TJclAnsiStrAnsiStrSortedMap.MoveArray(var List: TJclAnsiStrAnsiStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclAnsiStrAnsiStrSortedMap.MoveArray(var List: TJclAnsiStrAnsiStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -5506,6 +7230,160 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
+//=== { TJclAnsiStrAnsiStrSortedMapIterator } ===============================================================
+
+constructor TJclAnsiStrAnsiStrSortedMapIterator.Create(AOwnMap: TJclAnsiStrAnsiStrSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclAnsiStrAnsiStrSortedMapIterator.Add(const AEntry: TJclAnsiStrAnsiStrMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclAnsiStrAnsiStrSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclAnsiStrAnsiStrSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclAnsiStrAnsiStrSortedMapIterator then
+  begin
+    ADest := TJclAnsiStrAnsiStrSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclAnsiStrAnsiStrSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclAnsiStrAnsiStrSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclAnsiStrAnsiStrSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclAnsiStrAnsiStrSortedMapIterator.GetEntry: TJclAnsiStrAnsiStrMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclAnsiStrAnsiStrSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclAnsiStrAnsiStrSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclAnsiStrAnsiStrSortedMapIterator.Insert(const AEntry: TJclAnsiStrAnsiStrMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclAnsiStrAnsiStrSortedMapIterator.IteratorEquals(const AIterator: IJclAnsiStrAnsiStrSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclAnsiStrAnsiStrSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclAnsiStrAnsiStrSortedMapIterator then
+  begin
+    ItrObj := TJclAnsiStrAnsiStrSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclAnsiStrAnsiStrSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclAnsiStrAnsiStrSortedMapIterator.Next: TJclAnsiStrAnsiStrMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclAnsiStrAnsiStrSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclAnsiStrAnsiStrSortedMapIterator.Previous: TJclAnsiStrAnsiStrMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclAnsiStrAnsiStrSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclAnsiStrAnsiStrSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclAnsiStrAnsiStrSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclAnsiStrAnsiStrSortedMapIterator.SetEntry(const AEntry: TJclAnsiStrAnsiStrMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclWideStrIntfSortedMap } ==============================================
 
 constructor TJclWideStrIntfSortedMap.Create(ACapacity: Integer);
@@ -5694,6 +7572,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclWideStrIntfSortedMap.GetEnumerator: IJclWideStrIntfSortedMapIterator;
+begin
+  Result := TJclWideStrIntfSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclWideStrIntfSortedMap.GetValue(const Key: WideString): IInterface;
 var
   Index: Integer;
@@ -5871,7 +7756,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclWideStrIntfSortedMap.FinalizeArrayBeforeMove(var List: TJclWideStrIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclWideStrIntfSortedMap.FinalizeArrayBeforeMove(var List: TJclWideStrIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   Assert(Count > 0);
   if FromIndex < ToIndex then
@@ -5890,7 +7775,7 @@ begin
   end;
 end;
 
-procedure TJclWideStrIntfSortedMap.InitializeArray(var List: TJclWideStrIntfSortedMapEntryArray; FromIndex, Count: SizeInt);
+procedure TJclWideStrIntfSortedMap.InitializeArray(var List: TJclWideStrIntfMapEntryArray; FromIndex, Count: SizeInt);
 begin
   {$IFDEF FPC}
   while Count > 0 do
@@ -5904,7 +7789,7 @@ begin
   {$ENDIF ~FPC}
 end;
 
-procedure TJclWideStrIntfSortedMap.InitializeArrayAfterMove(var List: TJclWideStrIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclWideStrIntfSortedMap.InitializeArrayAfterMove(var List: TJclWideStrIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
@@ -5923,7 +7808,7 @@ begin
   end;
 end;
 
-procedure TJclWideStrIntfSortedMap.MoveArray(var List: TJclWideStrIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclWideStrIntfSortedMap.MoveArray(var List: TJclWideStrIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -6168,6 +8053,160 @@ begin
   Result := IntfSimpleCompare(A, B);
 end;
 
+//=== { TJclWideStrIntfSortedMapIterator } ===============================================================
+
+constructor TJclWideStrIntfSortedMapIterator.Create(AOwnMap: TJclWideStrIntfSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclWideStrIntfSortedMapIterator.Add(const AEntry: TJclWideStrIntfMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclWideStrIntfSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclWideStrIntfSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclWideStrIntfSortedMapIterator then
+  begin
+    ADest := TJclWideStrIntfSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclWideStrIntfSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclWideStrIntfSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclWideStrIntfSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclWideStrIntfSortedMapIterator.GetEntry: TJclWideStrIntfMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclWideStrIntfSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclWideStrIntfSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclWideStrIntfSortedMapIterator.Insert(const AEntry: TJclWideStrIntfMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclWideStrIntfSortedMapIterator.IteratorEquals(const AIterator: IJclWideStrIntfSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclWideStrIntfSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclWideStrIntfSortedMapIterator then
+  begin
+    ItrObj := TJclWideStrIntfSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclWideStrIntfSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclWideStrIntfSortedMapIterator.Next: TJclWideStrIntfMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclWideStrIntfSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclWideStrIntfSortedMapIterator.Previous: TJclWideStrIntfMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclWideStrIntfSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclWideStrIntfSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclWideStrIntfSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclWideStrIntfSortedMapIterator.SetEntry(const AEntry: TJclWideStrIntfMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclIntfWideStrSortedMap } ==============================================
 
 constructor TJclIntfWideStrSortedMap.Create(ACapacity: Integer);
@@ -6356,6 +8395,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntfWideStrSortedMap.GetEnumerator: IJclIntfWideStrSortedMapIterator;
+begin
+  Result := TJclIntfWideStrSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclIntfWideStrSortedMap.GetValue(const Key: IInterface): WideString;
 var
   Index: Integer;
@@ -6533,7 +8579,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfWideStrSortedMap.FinalizeArrayBeforeMove(var List: TJclIntfWideStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfWideStrSortedMap.FinalizeArrayBeforeMove(var List: TJclIntfWideStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   Assert(Count > 0);
   if FromIndex < ToIndex then
@@ -6552,7 +8598,7 @@ begin
   end;
 end;
 
-procedure TJclIntfWideStrSortedMap.InitializeArray(var List: TJclIntfWideStrSortedMapEntryArray; FromIndex, Count: SizeInt);
+procedure TJclIntfWideStrSortedMap.InitializeArray(var List: TJclIntfWideStrMapEntryArray; FromIndex, Count: SizeInt);
 begin
   {$IFDEF FPC}
   while Count > 0 do
@@ -6566,7 +8612,7 @@ begin
   {$ENDIF ~FPC}
 end;
 
-procedure TJclIntfWideStrSortedMap.InitializeArrayAfterMove(var List: TJclIntfWideStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfWideStrSortedMap.InitializeArrayAfterMove(var List: TJclIntfWideStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
@@ -6585,7 +8631,7 @@ begin
   end;
 end;
 
-procedure TJclIntfWideStrSortedMap.MoveArray(var List: TJclIntfWideStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfWideStrSortedMap.MoveArray(var List: TJclIntfWideStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -6830,6 +8876,160 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
+//=== { TJclIntfWideStrSortedMapIterator } ===============================================================
+
+constructor TJclIntfWideStrSortedMapIterator.Create(AOwnMap: TJclIntfWideStrSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclIntfWideStrSortedMapIterator.Add(const AEntry: TJclIntfWideStrMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclIntfWideStrSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclIntfWideStrSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclIntfWideStrSortedMapIterator then
+  begin
+    ADest := TJclIntfWideStrSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclIntfWideStrSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclIntfWideStrSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclIntfWideStrSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclIntfWideStrSortedMapIterator.GetEntry: TJclIntfWideStrMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfWideStrSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclIntfWideStrSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclIntfWideStrSortedMapIterator.Insert(const AEntry: TJclIntfWideStrMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclIntfWideStrSortedMapIterator.IteratorEquals(const AIterator: IJclIntfWideStrSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclIntfWideStrSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclIntfWideStrSortedMapIterator then
+  begin
+    ItrObj := TJclIntfWideStrSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntfWideStrSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclIntfWideStrSortedMapIterator.Next: TJclIntfWideStrMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfWideStrSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclIntfWideStrSortedMapIterator.Previous: TJclIntfWideStrMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfWideStrSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclIntfWideStrSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclIntfWideStrSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclIntfWideStrSortedMapIterator.SetEntry(const AEntry: TJclIntfWideStrMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclWideStrWideStrSortedMap } ==============================================
 
 constructor TJclWideStrWideStrSortedMap.Create(ACapacity: Integer);
@@ -7018,6 +9218,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclWideStrWideStrSortedMap.GetEnumerator: IJclWideStrWideStrSortedMapIterator;
+begin
+  Result := TJclWideStrWideStrSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclWideStrWideStrSortedMap.GetValue(const Key: WideString): WideString;
 var
   Index: Integer;
@@ -7195,7 +9402,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclWideStrWideStrSortedMap.FinalizeArrayBeforeMove(var List: TJclWideStrWideStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclWideStrWideStrSortedMap.FinalizeArrayBeforeMove(var List: TJclWideStrWideStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   Assert(Count > 0);
   if FromIndex < ToIndex then
@@ -7214,7 +9421,7 @@ begin
   end;
 end;
 
-procedure TJclWideStrWideStrSortedMap.InitializeArray(var List: TJclWideStrWideStrSortedMapEntryArray; FromIndex, Count: SizeInt);
+procedure TJclWideStrWideStrSortedMap.InitializeArray(var List: TJclWideStrWideStrMapEntryArray; FromIndex, Count: SizeInt);
 begin
   {$IFDEF FPC}
   while Count > 0 do
@@ -7228,7 +9435,7 @@ begin
   {$ENDIF ~FPC}
 end;
 
-procedure TJclWideStrWideStrSortedMap.InitializeArrayAfterMove(var List: TJclWideStrWideStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclWideStrWideStrSortedMap.InitializeArrayAfterMove(var List: TJclWideStrWideStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
@@ -7247,7 +9454,7 @@ begin
   end;
 end;
 
-procedure TJclWideStrWideStrSortedMap.MoveArray(var List: TJclWideStrWideStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclWideStrWideStrSortedMap.MoveArray(var List: TJclWideStrWideStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -7492,6 +9699,160 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
+//=== { TJclWideStrWideStrSortedMapIterator } ===============================================================
+
+constructor TJclWideStrWideStrSortedMapIterator.Create(AOwnMap: TJclWideStrWideStrSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclWideStrWideStrSortedMapIterator.Add(const AEntry: TJclWideStrWideStrMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclWideStrWideStrSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclWideStrWideStrSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclWideStrWideStrSortedMapIterator then
+  begin
+    ADest := TJclWideStrWideStrSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclWideStrWideStrSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclWideStrWideStrSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclWideStrWideStrSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclWideStrWideStrSortedMapIterator.GetEntry: TJclWideStrWideStrMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclWideStrWideStrSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclWideStrWideStrSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclWideStrWideStrSortedMapIterator.Insert(const AEntry: TJclWideStrWideStrMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclWideStrWideStrSortedMapIterator.IteratorEquals(const AIterator: IJclWideStrWideStrSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclWideStrWideStrSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclWideStrWideStrSortedMapIterator then
+  begin
+    ItrObj := TJclWideStrWideStrSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclWideStrWideStrSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclWideStrWideStrSortedMapIterator.Next: TJclWideStrWideStrMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclWideStrWideStrSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclWideStrWideStrSortedMapIterator.Previous: TJclWideStrWideStrMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclWideStrWideStrSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclWideStrWideStrSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclWideStrWideStrSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclWideStrWideStrSortedMapIterator.SetEntry(const AEntry: TJclWideStrWideStrMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 {$IFDEF SUPPORTS_UNICODE_STRING}
 //=== { TJclUnicodeStrIntfSortedMap } ==============================================
 
@@ -7681,6 +10042,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclUnicodeStrIntfSortedMap.GetEnumerator: IJclUnicodeStrIntfSortedMapIterator;
+begin
+  Result := TJclUnicodeStrIntfSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclUnicodeStrIntfSortedMap.GetValue(const Key: UnicodeString): IInterface;
 var
   Index: Integer;
@@ -7858,7 +10226,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclUnicodeStrIntfSortedMap.FinalizeArrayBeforeMove(var List: TJclUnicodeStrIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclUnicodeStrIntfSortedMap.FinalizeArrayBeforeMove(var List: TJclUnicodeStrIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   Assert(Count > 0);
   if FromIndex < ToIndex then
@@ -7877,7 +10245,7 @@ begin
   end;
 end;
 
-procedure TJclUnicodeStrIntfSortedMap.InitializeArray(var List: TJclUnicodeStrIntfSortedMapEntryArray; FromIndex, Count: SizeInt);
+procedure TJclUnicodeStrIntfSortedMap.InitializeArray(var List: TJclUnicodeStrIntfMapEntryArray; FromIndex, Count: SizeInt);
 begin
   {$IFDEF FPC}
   while Count > 0 do
@@ -7891,7 +10259,7 @@ begin
   {$ENDIF ~FPC}
 end;
 
-procedure TJclUnicodeStrIntfSortedMap.InitializeArrayAfterMove(var List: TJclUnicodeStrIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclUnicodeStrIntfSortedMap.InitializeArrayAfterMove(var List: TJclUnicodeStrIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
@@ -7910,7 +10278,7 @@ begin
   end;
 end;
 
-procedure TJclUnicodeStrIntfSortedMap.MoveArray(var List: TJclUnicodeStrIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclUnicodeStrIntfSortedMap.MoveArray(var List: TJclUnicodeStrIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -8158,6 +10526,162 @@ end;
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
 {$IFDEF SUPPORTS_UNICODE_STRING}
+//=== { TJclUnicodeStrIntfSortedMapIterator } ===============================================================
+
+constructor TJclUnicodeStrIntfSortedMapIterator.Create(AOwnMap: TJclUnicodeStrIntfSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclUnicodeStrIntfSortedMapIterator.Add(const AEntry: TJclUnicodeStrIntfMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclUnicodeStrIntfSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclUnicodeStrIntfSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclUnicodeStrIntfSortedMapIterator then
+  begin
+    ADest := TJclUnicodeStrIntfSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclUnicodeStrIntfSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclUnicodeStrIntfSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclUnicodeStrIntfSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclUnicodeStrIntfSortedMapIterator.GetEntry: TJclUnicodeStrIntfMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclUnicodeStrIntfSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclUnicodeStrIntfSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclUnicodeStrIntfSortedMapIterator.Insert(const AEntry: TJclUnicodeStrIntfMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclUnicodeStrIntfSortedMapIterator.IteratorEquals(const AIterator: IJclUnicodeStrIntfSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclUnicodeStrIntfSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclUnicodeStrIntfSortedMapIterator then
+  begin
+    ItrObj := TJclUnicodeStrIntfSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclUnicodeStrIntfSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclUnicodeStrIntfSortedMapIterator.Next: TJclUnicodeStrIntfMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclUnicodeStrIntfSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclUnicodeStrIntfSortedMapIterator.Previous: TJclUnicodeStrIntfMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclUnicodeStrIntfSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclUnicodeStrIntfSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclUnicodeStrIntfSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclUnicodeStrIntfSortedMapIterator.SetEntry(const AEntry: TJclUnicodeStrIntfMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+{$IFDEF SUPPORTS_UNICODE_STRING}
 //=== { TJclIntfUnicodeStrSortedMap } ==============================================
 
 constructor TJclIntfUnicodeStrSortedMap.Create(ACapacity: Integer);
@@ -8346,6 +10870,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntfUnicodeStrSortedMap.GetEnumerator: IJclIntfUnicodeStrSortedMapIterator;
+begin
+  Result := TJclIntfUnicodeStrSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclIntfUnicodeStrSortedMap.GetValue(const Key: IInterface): UnicodeString;
 var
   Index: Integer;
@@ -8523,7 +11054,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfUnicodeStrSortedMap.FinalizeArrayBeforeMove(var List: TJclIntfUnicodeStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfUnicodeStrSortedMap.FinalizeArrayBeforeMove(var List: TJclIntfUnicodeStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   Assert(Count > 0);
   if FromIndex < ToIndex then
@@ -8542,7 +11073,7 @@ begin
   end;
 end;
 
-procedure TJclIntfUnicodeStrSortedMap.InitializeArray(var List: TJclIntfUnicodeStrSortedMapEntryArray; FromIndex, Count: SizeInt);
+procedure TJclIntfUnicodeStrSortedMap.InitializeArray(var List: TJclIntfUnicodeStrMapEntryArray; FromIndex, Count: SizeInt);
 begin
   {$IFDEF FPC}
   while Count > 0 do
@@ -8556,7 +11087,7 @@ begin
   {$ENDIF ~FPC}
 end;
 
-procedure TJclIntfUnicodeStrSortedMap.InitializeArrayAfterMove(var List: TJclIntfUnicodeStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfUnicodeStrSortedMap.InitializeArrayAfterMove(var List: TJclIntfUnicodeStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
@@ -8575,7 +11106,7 @@ begin
   end;
 end;
 
-procedure TJclIntfUnicodeStrSortedMap.MoveArray(var List: TJclIntfUnicodeStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfUnicodeStrSortedMap.MoveArray(var List: TJclIntfUnicodeStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -8823,6 +11354,162 @@ end;
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
 {$IFDEF SUPPORTS_UNICODE_STRING}
+//=== { TJclIntfUnicodeStrSortedMapIterator } ===============================================================
+
+constructor TJclIntfUnicodeStrSortedMapIterator.Create(AOwnMap: TJclIntfUnicodeStrSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclIntfUnicodeStrSortedMapIterator.Add(const AEntry: TJclIntfUnicodeStrMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclIntfUnicodeStrSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclIntfUnicodeStrSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclIntfUnicodeStrSortedMapIterator then
+  begin
+    ADest := TJclIntfUnicodeStrSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclIntfUnicodeStrSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclIntfUnicodeStrSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclIntfUnicodeStrSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclIntfUnicodeStrSortedMapIterator.GetEntry: TJclIntfUnicodeStrMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfUnicodeStrSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclIntfUnicodeStrSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclIntfUnicodeStrSortedMapIterator.Insert(const AEntry: TJclIntfUnicodeStrMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclIntfUnicodeStrSortedMapIterator.IteratorEquals(const AIterator: IJclIntfUnicodeStrSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclIntfUnicodeStrSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclIntfUnicodeStrSortedMapIterator then
+  begin
+    ItrObj := TJclIntfUnicodeStrSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntfUnicodeStrSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclIntfUnicodeStrSortedMapIterator.Next: TJclIntfUnicodeStrMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfUnicodeStrSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclIntfUnicodeStrSortedMapIterator.Previous: TJclIntfUnicodeStrMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfUnicodeStrSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclIntfUnicodeStrSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclIntfUnicodeStrSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclIntfUnicodeStrSortedMapIterator.SetEntry(const AEntry: TJclIntfUnicodeStrMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+{$IFDEF SUPPORTS_UNICODE_STRING}
 //=== { TJclUnicodeStrUnicodeStrSortedMap } ==============================================
 
 constructor TJclUnicodeStrUnicodeStrSortedMap.Create(ACapacity: Integer);
@@ -9011,6 +11698,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclUnicodeStrUnicodeStrSortedMap.GetEnumerator: IJclUnicodeStrUnicodeStrSortedMapIterator;
+begin
+  Result := TJclUnicodeStrUnicodeStrSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclUnicodeStrUnicodeStrSortedMap.GetValue(const Key: UnicodeString): UnicodeString;
 var
   Index: Integer;
@@ -9188,7 +11882,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclUnicodeStrUnicodeStrSortedMap.FinalizeArrayBeforeMove(var List: TJclUnicodeStrUnicodeStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclUnicodeStrUnicodeStrSortedMap.FinalizeArrayBeforeMove(var List: TJclUnicodeStrUnicodeStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   Assert(Count > 0);
   if FromIndex < ToIndex then
@@ -9207,7 +11901,7 @@ begin
   end;
 end;
 
-procedure TJclUnicodeStrUnicodeStrSortedMap.InitializeArray(var List: TJclUnicodeStrUnicodeStrSortedMapEntryArray; FromIndex, Count: SizeInt);
+procedure TJclUnicodeStrUnicodeStrSortedMap.InitializeArray(var List: TJclUnicodeStrUnicodeStrMapEntryArray; FromIndex, Count: SizeInt);
 begin
   {$IFDEF FPC}
   while Count > 0 do
@@ -9221,7 +11915,7 @@ begin
   {$ENDIF ~FPC}
 end;
 
-procedure TJclUnicodeStrUnicodeStrSortedMap.InitializeArrayAfterMove(var List: TJclUnicodeStrUnicodeStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclUnicodeStrUnicodeStrSortedMap.InitializeArrayAfterMove(var List: TJclUnicodeStrUnicodeStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
@@ -9240,7 +11934,7 @@ begin
   end;
 end;
 
-procedure TJclUnicodeStrUnicodeStrSortedMap.MoveArray(var List: TJclUnicodeStrUnicodeStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclUnicodeStrUnicodeStrSortedMap.MoveArray(var List: TJclUnicodeStrUnicodeStrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -9487,6 +12181,162 @@ end;
 
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+//=== { TJclUnicodeStrUnicodeStrSortedMapIterator } ===============================================================
+
+constructor TJclUnicodeStrUnicodeStrSortedMapIterator.Create(AOwnMap: TJclUnicodeStrUnicodeStrSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMapIterator.Add(const AEntry: TJclUnicodeStrUnicodeStrMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclUnicodeStrUnicodeStrSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclUnicodeStrUnicodeStrSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclUnicodeStrUnicodeStrSortedMapIterator then
+  begin
+    ADest := TJclUnicodeStrUnicodeStrSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclUnicodeStrUnicodeStrSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclUnicodeStrUnicodeStrSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMapIterator.GetEntry: TJclUnicodeStrUnicodeStrMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMapIterator.Insert(const AEntry: TJclUnicodeStrUnicodeStrMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMapIterator.IteratorEquals(const AIterator: IJclUnicodeStrUnicodeStrSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclUnicodeStrUnicodeStrSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclUnicodeStrUnicodeStrSortedMapIterator then
+  begin
+    ItrObj := TJclUnicodeStrUnicodeStrSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclUnicodeStrUnicodeStrSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclUnicodeStrUnicodeStrSortedMapIterator.Next: TJclUnicodeStrUnicodeStrMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMapIterator.Previous: TJclUnicodeStrUnicodeStrMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclUnicodeStrUnicodeStrSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclUnicodeStrUnicodeStrSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclUnicodeStrUnicodeStrSortedMapIterator.SetEntry(const AEntry: TJclUnicodeStrUnicodeStrMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 //=== { TJclSingleIntfSortedMap } ==============================================
 
 constructor TJclSingleIntfSortedMap.Create(ACapacity: Integer);
@@ -9675,6 +12525,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclSingleIntfSortedMap.GetEnumerator: IJclSingleIntfSortedMapIterator;
+begin
+  Result := TJclSingleIntfSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclSingleIntfSortedMap.GetValue(const Key: Single): IInterface;
 var
   Index: Integer;
@@ -9852,7 +12709,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclSingleIntfSortedMap.FinalizeArrayBeforeMove(var List: TJclSingleIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclSingleIntfSortedMap.FinalizeArrayBeforeMove(var List: TJclSingleIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   Assert(Count > 0);
   if FromIndex < ToIndex then
@@ -9871,7 +12728,7 @@ begin
   end;
 end;
 
-procedure TJclSingleIntfSortedMap.InitializeArray(var List: TJclSingleIntfSortedMapEntryArray; FromIndex, Count: SizeInt);
+procedure TJclSingleIntfSortedMap.InitializeArray(var List: TJclSingleIntfMapEntryArray; FromIndex, Count: SizeInt);
 begin
   {$IFDEF FPC}
   while Count > 0 do
@@ -9885,7 +12742,7 @@ begin
   {$ENDIF ~FPC}
 end;
 
-procedure TJclSingleIntfSortedMap.InitializeArrayAfterMove(var List: TJclSingleIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclSingleIntfSortedMap.InitializeArrayAfterMove(var List: TJclSingleIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
@@ -9904,7 +12761,7 @@ begin
   end;
 end;
 
-procedure TJclSingleIntfSortedMap.MoveArray(var List: TJclSingleIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclSingleIntfSortedMap.MoveArray(var List: TJclSingleIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -10149,6 +13006,160 @@ begin
   Result := IntfSimpleCompare(A, B);
 end;
 
+//=== { TJclSingleIntfSortedMapIterator } ===============================================================
+
+constructor TJclSingleIntfSortedMapIterator.Create(AOwnMap: TJclSingleIntfSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclSingleIntfSortedMapIterator.Add(const AEntry: TJclSingleIntfMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclSingleIntfSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclSingleIntfSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclSingleIntfSortedMapIterator then
+  begin
+    ADest := TJclSingleIntfSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclSingleIntfSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclSingleIntfSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclSingleIntfSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclSingleIntfSortedMapIterator.GetEntry: TJclSingleIntfMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclSingleIntfSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclSingleIntfSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclSingleIntfSortedMapIterator.Insert(const AEntry: TJclSingleIntfMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclSingleIntfSortedMapIterator.IteratorEquals(const AIterator: IJclSingleIntfSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclSingleIntfSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclSingleIntfSortedMapIterator then
+  begin
+    ItrObj := TJclSingleIntfSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclSingleIntfSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclSingleIntfSortedMapIterator.Next: TJclSingleIntfMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclSingleIntfSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclSingleIntfSortedMapIterator.Previous: TJclSingleIntfMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclSingleIntfSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclSingleIntfSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclSingleIntfSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclSingleIntfSortedMapIterator.SetEntry(const AEntry: TJclSingleIntfMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclIntfSingleSortedMap } ==============================================
 
 constructor TJclIntfSingleSortedMap.Create(ACapacity: Integer);
@@ -10337,6 +13348,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntfSingleSortedMap.GetEnumerator: IJclIntfSingleSortedMapIterator;
+begin
+  Result := TJclIntfSingleSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclIntfSingleSortedMap.GetValue(const Key: IInterface): Single;
 var
   Index: Integer;
@@ -10514,7 +13532,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfSingleSortedMap.FinalizeArrayBeforeMove(var List: TJclIntfSingleSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfSingleSortedMap.FinalizeArrayBeforeMove(var List: TJclIntfSingleMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   Assert(Count > 0);
   if FromIndex < ToIndex then
@@ -10533,7 +13551,7 @@ begin
   end;
 end;
 
-procedure TJclIntfSingleSortedMap.InitializeArray(var List: TJclIntfSingleSortedMapEntryArray; FromIndex, Count: SizeInt);
+procedure TJclIntfSingleSortedMap.InitializeArray(var List: TJclIntfSingleMapEntryArray; FromIndex, Count: SizeInt);
 begin
   {$IFDEF FPC}
   while Count > 0 do
@@ -10547,7 +13565,7 @@ begin
   {$ENDIF ~FPC}
 end;
 
-procedure TJclIntfSingleSortedMap.InitializeArrayAfterMove(var List: TJclIntfSingleSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfSingleSortedMap.InitializeArrayAfterMove(var List: TJclIntfSingleMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
@@ -10566,7 +13584,7 @@ begin
   end;
 end;
 
-procedure TJclIntfSingleSortedMap.MoveArray(var List: TJclIntfSingleSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfSingleSortedMap.MoveArray(var List: TJclIntfSingleMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -10811,6 +13829,160 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
+//=== { TJclIntfSingleSortedMapIterator } ===============================================================
+
+constructor TJclIntfSingleSortedMapIterator.Create(AOwnMap: TJclIntfSingleSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclIntfSingleSortedMapIterator.Add(const AEntry: TJclIntfSingleMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclIntfSingleSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclIntfSingleSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclIntfSingleSortedMapIterator then
+  begin
+    ADest := TJclIntfSingleSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclIntfSingleSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclIntfSingleSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclIntfSingleSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclIntfSingleSortedMapIterator.GetEntry: TJclIntfSingleMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfSingleSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclIntfSingleSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclIntfSingleSortedMapIterator.Insert(const AEntry: TJclIntfSingleMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclIntfSingleSortedMapIterator.IteratorEquals(const AIterator: IJclIntfSingleSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclIntfSingleSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclIntfSingleSortedMapIterator then
+  begin
+    ItrObj := TJclIntfSingleSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntfSingleSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclIntfSingleSortedMapIterator.Next: TJclIntfSingleMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfSingleSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclIntfSingleSortedMapIterator.Previous: TJclIntfSingleMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfSingleSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclIntfSingleSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclIntfSingleSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclIntfSingleSortedMapIterator.SetEntry(const AEntry: TJclIntfSingleMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclSingleSingleSortedMap } ==============================================
 
 constructor TJclSingleSingleSortedMap.Create(ACapacity: Integer);
@@ -10999,6 +14171,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclSingleSingleSortedMap.GetEnumerator: IJclSingleSingleSortedMapIterator;
+begin
+  Result := TJclSingleSingleSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclSingleSingleSortedMap.GetValue(const Key: Single): Single;
 var
   Index: Integer;
@@ -11176,7 +14355,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclSingleSingleSortedMap.InitializeArrayAfterMove(var List: TJclSingleSingleSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclSingleSingleSortedMap.InitializeArrayAfterMove(var List: TJclSingleSingleMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Clean array }
   if FromIndex < ToIndex then
@@ -11195,7 +14374,7 @@ begin
   end;
 end;
 
-procedure TJclSingleSingleSortedMap.MoveArray(var List: TJclSingleSingleSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclSingleSingleSortedMap.MoveArray(var List: TJclSingleSingleMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -11439,6 +14618,160 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
+//=== { TJclSingleSingleSortedMapIterator } ===============================================================
+
+constructor TJclSingleSingleSortedMapIterator.Create(AOwnMap: TJclSingleSingleSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclSingleSingleSortedMapIterator.Add(const AEntry: TJclSingleSingleMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclSingleSingleSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclSingleSingleSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclSingleSingleSortedMapIterator then
+  begin
+    ADest := TJclSingleSingleSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclSingleSingleSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclSingleSingleSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclSingleSingleSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclSingleSingleSortedMapIterator.GetEntry: TJclSingleSingleMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclSingleSingleSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclSingleSingleSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclSingleSingleSortedMapIterator.Insert(const AEntry: TJclSingleSingleMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclSingleSingleSortedMapIterator.IteratorEquals(const AIterator: IJclSingleSingleSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclSingleSingleSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclSingleSingleSortedMapIterator then
+  begin
+    ItrObj := TJclSingleSingleSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclSingleSingleSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclSingleSingleSortedMapIterator.Next: TJclSingleSingleMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclSingleSingleSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclSingleSingleSortedMapIterator.Previous: TJclSingleSingleMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclSingleSingleSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclSingleSingleSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclSingleSingleSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclSingleSingleSortedMapIterator.SetEntry(const AEntry: TJclSingleSingleMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclDoubleIntfSortedMap } ==============================================
 
 constructor TJclDoubleIntfSortedMap.Create(ACapacity: Integer);
@@ -11627,6 +14960,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclDoubleIntfSortedMap.GetEnumerator: IJclDoubleIntfSortedMapIterator;
+begin
+  Result := TJclDoubleIntfSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclDoubleIntfSortedMap.GetValue(const Key: Double): IInterface;
 var
   Index: Integer;
@@ -11804,7 +15144,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclDoubleIntfSortedMap.FinalizeArrayBeforeMove(var List: TJclDoubleIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclDoubleIntfSortedMap.FinalizeArrayBeforeMove(var List: TJclDoubleIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   Assert(Count > 0);
   if FromIndex < ToIndex then
@@ -11823,7 +15163,7 @@ begin
   end;
 end;
 
-procedure TJclDoubleIntfSortedMap.InitializeArray(var List: TJclDoubleIntfSortedMapEntryArray; FromIndex, Count: SizeInt);
+procedure TJclDoubleIntfSortedMap.InitializeArray(var List: TJclDoubleIntfMapEntryArray; FromIndex, Count: SizeInt);
 begin
   {$IFDEF FPC}
   while Count > 0 do
@@ -11837,7 +15177,7 @@ begin
   {$ENDIF ~FPC}
 end;
 
-procedure TJclDoubleIntfSortedMap.InitializeArrayAfterMove(var List: TJclDoubleIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclDoubleIntfSortedMap.InitializeArrayAfterMove(var List: TJclDoubleIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
@@ -11856,7 +15196,7 @@ begin
   end;
 end;
 
-procedure TJclDoubleIntfSortedMap.MoveArray(var List: TJclDoubleIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclDoubleIntfSortedMap.MoveArray(var List: TJclDoubleIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -12101,6 +15441,160 @@ begin
   Result := IntfSimpleCompare(A, B);
 end;
 
+//=== { TJclDoubleIntfSortedMapIterator } ===============================================================
+
+constructor TJclDoubleIntfSortedMapIterator.Create(AOwnMap: TJclDoubleIntfSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclDoubleIntfSortedMapIterator.Add(const AEntry: TJclDoubleIntfMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclDoubleIntfSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclDoubleIntfSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclDoubleIntfSortedMapIterator then
+  begin
+    ADest := TJclDoubleIntfSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclDoubleIntfSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclDoubleIntfSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclDoubleIntfSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclDoubleIntfSortedMapIterator.GetEntry: TJclDoubleIntfMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclDoubleIntfSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclDoubleIntfSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclDoubleIntfSortedMapIterator.Insert(const AEntry: TJclDoubleIntfMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclDoubleIntfSortedMapIterator.IteratorEquals(const AIterator: IJclDoubleIntfSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclDoubleIntfSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclDoubleIntfSortedMapIterator then
+  begin
+    ItrObj := TJclDoubleIntfSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclDoubleIntfSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclDoubleIntfSortedMapIterator.Next: TJclDoubleIntfMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclDoubleIntfSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclDoubleIntfSortedMapIterator.Previous: TJclDoubleIntfMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclDoubleIntfSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclDoubleIntfSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclDoubleIntfSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclDoubleIntfSortedMapIterator.SetEntry(const AEntry: TJclDoubleIntfMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclIntfDoubleSortedMap } ==============================================
 
 constructor TJclIntfDoubleSortedMap.Create(ACapacity: Integer);
@@ -12289,6 +15783,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntfDoubleSortedMap.GetEnumerator: IJclIntfDoubleSortedMapIterator;
+begin
+  Result := TJclIntfDoubleSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclIntfDoubleSortedMap.GetValue(const Key: IInterface): Double;
 var
   Index: Integer;
@@ -12466,7 +15967,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfDoubleSortedMap.FinalizeArrayBeforeMove(var List: TJclIntfDoubleSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfDoubleSortedMap.FinalizeArrayBeforeMove(var List: TJclIntfDoubleMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   Assert(Count > 0);
   if FromIndex < ToIndex then
@@ -12485,7 +15986,7 @@ begin
   end;
 end;
 
-procedure TJclIntfDoubleSortedMap.InitializeArray(var List: TJclIntfDoubleSortedMapEntryArray; FromIndex, Count: SizeInt);
+procedure TJclIntfDoubleSortedMap.InitializeArray(var List: TJclIntfDoubleMapEntryArray; FromIndex, Count: SizeInt);
 begin
   {$IFDEF FPC}
   while Count > 0 do
@@ -12499,7 +16000,7 @@ begin
   {$ENDIF ~FPC}
 end;
 
-procedure TJclIntfDoubleSortedMap.InitializeArrayAfterMove(var List: TJclIntfDoubleSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfDoubleSortedMap.InitializeArrayAfterMove(var List: TJclIntfDoubleMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
@@ -12518,7 +16019,7 @@ begin
   end;
 end;
 
-procedure TJclIntfDoubleSortedMap.MoveArray(var List: TJclIntfDoubleSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfDoubleSortedMap.MoveArray(var List: TJclIntfDoubleMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -12763,6 +16264,160 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
+//=== { TJclIntfDoubleSortedMapIterator } ===============================================================
+
+constructor TJclIntfDoubleSortedMapIterator.Create(AOwnMap: TJclIntfDoubleSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclIntfDoubleSortedMapIterator.Add(const AEntry: TJclIntfDoubleMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclIntfDoubleSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclIntfDoubleSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclIntfDoubleSortedMapIterator then
+  begin
+    ADest := TJclIntfDoubleSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclIntfDoubleSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclIntfDoubleSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclIntfDoubleSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclIntfDoubleSortedMapIterator.GetEntry: TJclIntfDoubleMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfDoubleSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclIntfDoubleSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclIntfDoubleSortedMapIterator.Insert(const AEntry: TJclIntfDoubleMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclIntfDoubleSortedMapIterator.IteratorEquals(const AIterator: IJclIntfDoubleSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclIntfDoubleSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclIntfDoubleSortedMapIterator then
+  begin
+    ItrObj := TJclIntfDoubleSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntfDoubleSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclIntfDoubleSortedMapIterator.Next: TJclIntfDoubleMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfDoubleSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclIntfDoubleSortedMapIterator.Previous: TJclIntfDoubleMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfDoubleSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclIntfDoubleSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclIntfDoubleSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclIntfDoubleSortedMapIterator.SetEntry(const AEntry: TJclIntfDoubleMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclDoubleDoubleSortedMap } ==============================================
 
 constructor TJclDoubleDoubleSortedMap.Create(ACapacity: Integer);
@@ -12951,6 +16606,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclDoubleDoubleSortedMap.GetEnumerator: IJclDoubleDoubleSortedMapIterator;
+begin
+  Result := TJclDoubleDoubleSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclDoubleDoubleSortedMap.GetValue(const Key: Double): Double;
 var
   Index: Integer;
@@ -13128,7 +16790,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclDoubleDoubleSortedMap.InitializeArrayAfterMove(var List: TJclDoubleDoubleSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclDoubleDoubleSortedMap.InitializeArrayAfterMove(var List: TJclDoubleDoubleMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Clean array }
   if FromIndex < ToIndex then
@@ -13147,7 +16809,7 @@ begin
   end;
 end;
 
-procedure TJclDoubleDoubleSortedMap.MoveArray(var List: TJclDoubleDoubleSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclDoubleDoubleSortedMap.MoveArray(var List: TJclDoubleDoubleMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -13391,6 +17053,160 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
+//=== { TJclDoubleDoubleSortedMapIterator } ===============================================================
+
+constructor TJclDoubleDoubleSortedMapIterator.Create(AOwnMap: TJclDoubleDoubleSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclDoubleDoubleSortedMapIterator.Add(const AEntry: TJclDoubleDoubleMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclDoubleDoubleSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclDoubleDoubleSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclDoubleDoubleSortedMapIterator then
+  begin
+    ADest := TJclDoubleDoubleSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclDoubleDoubleSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclDoubleDoubleSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclDoubleDoubleSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclDoubleDoubleSortedMapIterator.GetEntry: TJclDoubleDoubleMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclDoubleDoubleSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclDoubleDoubleSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclDoubleDoubleSortedMapIterator.Insert(const AEntry: TJclDoubleDoubleMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclDoubleDoubleSortedMapIterator.IteratorEquals(const AIterator: IJclDoubleDoubleSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclDoubleDoubleSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclDoubleDoubleSortedMapIterator then
+  begin
+    ItrObj := TJclDoubleDoubleSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclDoubleDoubleSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclDoubleDoubleSortedMapIterator.Next: TJclDoubleDoubleMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclDoubleDoubleSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclDoubleDoubleSortedMapIterator.Previous: TJclDoubleDoubleMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclDoubleDoubleSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclDoubleDoubleSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclDoubleDoubleSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclDoubleDoubleSortedMapIterator.SetEntry(const AEntry: TJclDoubleDoubleMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclExtendedIntfSortedMap } ==============================================
 
 constructor TJclExtendedIntfSortedMap.Create(ACapacity: Integer);
@@ -13579,6 +17395,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclExtendedIntfSortedMap.GetEnumerator: IJclExtendedIntfSortedMapIterator;
+begin
+  Result := TJclExtendedIntfSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclExtendedIntfSortedMap.GetValue(const Key: Extended): IInterface;
 var
   Index: Integer;
@@ -13756,7 +17579,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclExtendedIntfSortedMap.FinalizeArrayBeforeMove(var List: TJclExtendedIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclExtendedIntfSortedMap.FinalizeArrayBeforeMove(var List: TJclExtendedIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   Assert(Count > 0);
   if FromIndex < ToIndex then
@@ -13775,7 +17598,7 @@ begin
   end;
 end;
 
-procedure TJclExtendedIntfSortedMap.InitializeArray(var List: TJclExtendedIntfSortedMapEntryArray; FromIndex, Count: SizeInt);
+procedure TJclExtendedIntfSortedMap.InitializeArray(var List: TJclExtendedIntfMapEntryArray; FromIndex, Count: SizeInt);
 begin
   {$IFDEF FPC}
   while Count > 0 do
@@ -13789,7 +17612,7 @@ begin
   {$ENDIF ~FPC}
 end;
 
-procedure TJclExtendedIntfSortedMap.InitializeArrayAfterMove(var List: TJclExtendedIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclExtendedIntfSortedMap.InitializeArrayAfterMove(var List: TJclExtendedIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
@@ -13808,7 +17631,7 @@ begin
   end;
 end;
 
-procedure TJclExtendedIntfSortedMap.MoveArray(var List: TJclExtendedIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclExtendedIntfSortedMap.MoveArray(var List: TJclExtendedIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -14053,6 +17876,160 @@ begin
   Result := IntfSimpleCompare(A, B);
 end;
 
+//=== { TJclExtendedIntfSortedMapIterator } ===============================================================
+
+constructor TJclExtendedIntfSortedMapIterator.Create(AOwnMap: TJclExtendedIntfSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclExtendedIntfSortedMapIterator.Add(const AEntry: TJclExtendedIntfMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclExtendedIntfSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclExtendedIntfSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclExtendedIntfSortedMapIterator then
+  begin
+    ADest := TJclExtendedIntfSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclExtendedIntfSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclExtendedIntfSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclExtendedIntfSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclExtendedIntfSortedMapIterator.GetEntry: TJclExtendedIntfMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclExtendedIntfSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclExtendedIntfSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclExtendedIntfSortedMapIterator.Insert(const AEntry: TJclExtendedIntfMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclExtendedIntfSortedMapIterator.IteratorEquals(const AIterator: IJclExtendedIntfSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclExtendedIntfSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclExtendedIntfSortedMapIterator then
+  begin
+    ItrObj := TJclExtendedIntfSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclExtendedIntfSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclExtendedIntfSortedMapIterator.Next: TJclExtendedIntfMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclExtendedIntfSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclExtendedIntfSortedMapIterator.Previous: TJclExtendedIntfMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclExtendedIntfSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclExtendedIntfSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclExtendedIntfSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclExtendedIntfSortedMapIterator.SetEntry(const AEntry: TJclExtendedIntfMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclIntfExtendedSortedMap } ==============================================
 
 constructor TJclIntfExtendedSortedMap.Create(ACapacity: Integer);
@@ -14241,6 +18218,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntfExtendedSortedMap.GetEnumerator: IJclIntfExtendedSortedMapIterator;
+begin
+  Result := TJclIntfExtendedSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclIntfExtendedSortedMap.GetValue(const Key: IInterface): Extended;
 var
   Index: Integer;
@@ -14418,7 +18402,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfExtendedSortedMap.FinalizeArrayBeforeMove(var List: TJclIntfExtendedSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfExtendedSortedMap.FinalizeArrayBeforeMove(var List: TJclIntfExtendedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   Assert(Count > 0);
   if FromIndex < ToIndex then
@@ -14437,7 +18421,7 @@ begin
   end;
 end;
 
-procedure TJclIntfExtendedSortedMap.InitializeArray(var List: TJclIntfExtendedSortedMapEntryArray; FromIndex, Count: SizeInt);
+procedure TJclIntfExtendedSortedMap.InitializeArray(var List: TJclIntfExtendedMapEntryArray; FromIndex, Count: SizeInt);
 begin
   {$IFDEF FPC}
   while Count > 0 do
@@ -14451,7 +18435,7 @@ begin
   {$ENDIF ~FPC}
 end;
 
-procedure TJclIntfExtendedSortedMap.InitializeArrayAfterMove(var List: TJclIntfExtendedSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfExtendedSortedMap.InitializeArrayAfterMove(var List: TJclIntfExtendedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
@@ -14470,7 +18454,7 @@ begin
   end;
 end;
 
-procedure TJclIntfExtendedSortedMap.MoveArray(var List: TJclIntfExtendedSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfExtendedSortedMap.MoveArray(var List: TJclIntfExtendedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -14715,6 +18699,160 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
+//=== { TJclIntfExtendedSortedMapIterator } ===============================================================
+
+constructor TJclIntfExtendedSortedMapIterator.Create(AOwnMap: TJclIntfExtendedSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclIntfExtendedSortedMapIterator.Add(const AEntry: TJclIntfExtendedMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclIntfExtendedSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclIntfExtendedSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclIntfExtendedSortedMapIterator then
+  begin
+    ADest := TJclIntfExtendedSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclIntfExtendedSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclIntfExtendedSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclIntfExtendedSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclIntfExtendedSortedMapIterator.GetEntry: TJclIntfExtendedMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfExtendedSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclIntfExtendedSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclIntfExtendedSortedMapIterator.Insert(const AEntry: TJclIntfExtendedMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclIntfExtendedSortedMapIterator.IteratorEquals(const AIterator: IJclIntfExtendedSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclIntfExtendedSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclIntfExtendedSortedMapIterator then
+  begin
+    ItrObj := TJclIntfExtendedSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntfExtendedSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclIntfExtendedSortedMapIterator.Next: TJclIntfExtendedMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfExtendedSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclIntfExtendedSortedMapIterator.Previous: TJclIntfExtendedMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfExtendedSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclIntfExtendedSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclIntfExtendedSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclIntfExtendedSortedMapIterator.SetEntry(const AEntry: TJclIntfExtendedMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclExtendedExtendedSortedMap } ==============================================
 
 constructor TJclExtendedExtendedSortedMap.Create(ACapacity: Integer);
@@ -14903,6 +19041,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclExtendedExtendedSortedMap.GetEnumerator: IJclExtendedExtendedSortedMapIterator;
+begin
+  Result := TJclExtendedExtendedSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclExtendedExtendedSortedMap.GetValue(const Key: Extended): Extended;
 var
   Index: Integer;
@@ -15080,7 +19225,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclExtendedExtendedSortedMap.InitializeArrayAfterMove(var List: TJclExtendedExtendedSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclExtendedExtendedSortedMap.InitializeArrayAfterMove(var List: TJclExtendedExtendedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Clean array }
   if FromIndex < ToIndex then
@@ -15099,7 +19244,7 @@ begin
   end;
 end;
 
-procedure TJclExtendedExtendedSortedMap.MoveArray(var List: TJclExtendedExtendedSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclExtendedExtendedSortedMap.MoveArray(var List: TJclExtendedExtendedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -15343,6 +19488,160 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
+//=== { TJclExtendedExtendedSortedMapIterator } ===============================================================
+
+constructor TJclExtendedExtendedSortedMapIterator.Create(AOwnMap: TJclExtendedExtendedSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclExtendedExtendedSortedMapIterator.Add(const AEntry: TJclExtendedExtendedMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclExtendedExtendedSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclExtendedExtendedSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclExtendedExtendedSortedMapIterator then
+  begin
+    ADest := TJclExtendedExtendedSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclExtendedExtendedSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclExtendedExtendedSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclExtendedExtendedSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclExtendedExtendedSortedMapIterator.GetEntry: TJclExtendedExtendedMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclExtendedExtendedSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclExtendedExtendedSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclExtendedExtendedSortedMapIterator.Insert(const AEntry: TJclExtendedExtendedMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclExtendedExtendedSortedMapIterator.IteratorEquals(const AIterator: IJclExtendedExtendedSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclExtendedExtendedSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclExtendedExtendedSortedMapIterator then
+  begin
+    ItrObj := TJclExtendedExtendedSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclExtendedExtendedSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclExtendedExtendedSortedMapIterator.Next: TJclExtendedExtendedMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclExtendedExtendedSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclExtendedExtendedSortedMapIterator.Previous: TJclExtendedExtendedMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclExtendedExtendedSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclExtendedExtendedSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclExtendedExtendedSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclExtendedExtendedSortedMapIterator.SetEntry(const AEntry: TJclExtendedExtendedMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclIntegerIntfSortedMap } ==============================================
 
 constructor TJclIntegerIntfSortedMap.Create(ACapacity: Integer);
@@ -15531,6 +19830,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntegerIntfSortedMap.GetEnumerator: IJclIntegerIntfSortedMapIterator;
+begin
+  Result := TJclIntegerIntfSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclIntegerIntfSortedMap.GetValue(Key: Integer): IInterface;
 var
   Index: Integer;
@@ -15708,7 +20014,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntegerIntfSortedMap.FinalizeArrayBeforeMove(var List: TJclIntegerIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntegerIntfSortedMap.FinalizeArrayBeforeMove(var List: TJclIntegerIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   Assert(Count > 0);
   if FromIndex < ToIndex then
@@ -15727,7 +20033,7 @@ begin
   end;
 end;
 
-procedure TJclIntegerIntfSortedMap.InitializeArray(var List: TJclIntegerIntfSortedMapEntryArray; FromIndex, Count: SizeInt);
+procedure TJclIntegerIntfSortedMap.InitializeArray(var List: TJclIntegerIntfMapEntryArray; FromIndex, Count: SizeInt);
 begin
   {$IFDEF FPC}
   while Count > 0 do
@@ -15741,7 +20047,7 @@ begin
   {$ENDIF ~FPC}
 end;
 
-procedure TJclIntegerIntfSortedMap.InitializeArrayAfterMove(var List: TJclIntegerIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntegerIntfSortedMap.InitializeArrayAfterMove(var List: TJclIntegerIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
@@ -15760,7 +20066,7 @@ begin
   end;
 end;
 
-procedure TJclIntegerIntfSortedMap.MoveArray(var List: TJclIntegerIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntegerIntfSortedMap.MoveArray(var List: TJclIntegerIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -16005,6 +20311,160 @@ begin
   Result := IntfSimpleCompare(A, B);
 end;
 
+//=== { TJclIntegerIntfSortedMapIterator } ===============================================================
+
+constructor TJclIntegerIntfSortedMapIterator.Create(AOwnMap: TJclIntegerIntfSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclIntegerIntfSortedMapIterator.Add(const AEntry: TJclIntegerIntfMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclIntegerIntfSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclIntegerIntfSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclIntegerIntfSortedMapIterator then
+  begin
+    ADest := TJclIntegerIntfSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclIntegerIntfSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclIntegerIntfSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclIntegerIntfSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclIntegerIntfSortedMapIterator.GetEntry: TJclIntegerIntfMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntegerIntfSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclIntegerIntfSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclIntegerIntfSortedMapIterator.Insert(const AEntry: TJclIntegerIntfMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclIntegerIntfSortedMapIterator.IteratorEquals(const AIterator: IJclIntegerIntfSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclIntegerIntfSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclIntegerIntfSortedMapIterator then
+  begin
+    ItrObj := TJclIntegerIntfSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntegerIntfSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclIntegerIntfSortedMapIterator.Next: TJclIntegerIntfMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntegerIntfSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclIntegerIntfSortedMapIterator.Previous: TJclIntegerIntfMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntegerIntfSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclIntegerIntfSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclIntegerIntfSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclIntegerIntfSortedMapIterator.SetEntry(const AEntry: TJclIntegerIntfMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclIntfIntegerSortedMap } ==============================================
 
 constructor TJclIntfIntegerSortedMap.Create(ACapacity: Integer);
@@ -16193,6 +20653,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntfIntegerSortedMap.GetEnumerator: IJclIntfIntegerSortedMapIterator;
+begin
+  Result := TJclIntfIntegerSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclIntfIntegerSortedMap.GetValue(const Key: IInterface): Integer;
 var
   Index: Integer;
@@ -16370,7 +20837,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfIntegerSortedMap.FinalizeArrayBeforeMove(var List: TJclIntfIntegerSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfIntegerSortedMap.FinalizeArrayBeforeMove(var List: TJclIntfIntegerMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   Assert(Count > 0);
   if FromIndex < ToIndex then
@@ -16389,7 +20856,7 @@ begin
   end;
 end;
 
-procedure TJclIntfIntegerSortedMap.InitializeArray(var List: TJclIntfIntegerSortedMapEntryArray; FromIndex, Count: SizeInt);
+procedure TJclIntfIntegerSortedMap.InitializeArray(var List: TJclIntfIntegerMapEntryArray; FromIndex, Count: SizeInt);
 begin
   {$IFDEF FPC}
   while Count > 0 do
@@ -16403,7 +20870,7 @@ begin
   {$ENDIF ~FPC}
 end;
 
-procedure TJclIntfIntegerSortedMap.InitializeArrayAfterMove(var List: TJclIntfIntegerSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfIntegerSortedMap.InitializeArrayAfterMove(var List: TJclIntfIntegerMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
@@ -16422,7 +20889,7 @@ begin
   end;
 end;
 
-procedure TJclIntfIntegerSortedMap.MoveArray(var List: TJclIntfIntegerSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfIntegerSortedMap.MoveArray(var List: TJclIntfIntegerMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -16667,6 +21134,160 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
+//=== { TJclIntfIntegerSortedMapIterator } ===============================================================
+
+constructor TJclIntfIntegerSortedMapIterator.Create(AOwnMap: TJclIntfIntegerSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclIntfIntegerSortedMapIterator.Add(const AEntry: TJclIntfIntegerMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclIntfIntegerSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclIntfIntegerSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclIntfIntegerSortedMapIterator then
+  begin
+    ADest := TJclIntfIntegerSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclIntfIntegerSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclIntfIntegerSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclIntfIntegerSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclIntfIntegerSortedMapIterator.GetEntry: TJclIntfIntegerMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfIntegerSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclIntfIntegerSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclIntfIntegerSortedMapIterator.Insert(const AEntry: TJclIntfIntegerMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclIntfIntegerSortedMapIterator.IteratorEquals(const AIterator: IJclIntfIntegerSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclIntfIntegerSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclIntfIntegerSortedMapIterator then
+  begin
+    ItrObj := TJclIntfIntegerSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntfIntegerSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclIntfIntegerSortedMapIterator.Next: TJclIntfIntegerMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfIntegerSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclIntfIntegerSortedMapIterator.Previous: TJclIntfIntegerMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfIntegerSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclIntfIntegerSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclIntfIntegerSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclIntfIntegerSortedMapIterator.SetEntry(const AEntry: TJclIntfIntegerMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclIntegerIntegerSortedMap } ==============================================
 
 constructor TJclIntegerIntegerSortedMap.Create(ACapacity: Integer);
@@ -16855,6 +21476,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntegerIntegerSortedMap.GetEnumerator: IJclIntegerIntegerSortedMapIterator;
+begin
+  Result := TJclIntegerIntegerSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclIntegerIntegerSortedMap.GetValue(Key: Integer): Integer;
 var
   Index: Integer;
@@ -17032,7 +21660,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntegerIntegerSortedMap.InitializeArrayAfterMove(var List: TJclIntegerIntegerSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntegerIntegerSortedMap.InitializeArrayAfterMove(var List: TJclIntegerIntegerMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Clean array }
   if FromIndex < ToIndex then
@@ -17051,7 +21679,7 @@ begin
   end;
 end;
 
-procedure TJclIntegerIntegerSortedMap.MoveArray(var List: TJclIntegerIntegerSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntegerIntegerSortedMap.MoveArray(var List: TJclIntegerIntegerMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -17295,6 +21923,160 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
+//=== { TJclIntegerIntegerSortedMapIterator } ===============================================================
+
+constructor TJclIntegerIntegerSortedMapIterator.Create(AOwnMap: TJclIntegerIntegerSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclIntegerIntegerSortedMapIterator.Add(const AEntry: TJclIntegerIntegerMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclIntegerIntegerSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclIntegerIntegerSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclIntegerIntegerSortedMapIterator then
+  begin
+    ADest := TJclIntegerIntegerSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclIntegerIntegerSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclIntegerIntegerSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclIntegerIntegerSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclIntegerIntegerSortedMapIterator.GetEntry: TJclIntegerIntegerMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntegerIntegerSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclIntegerIntegerSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclIntegerIntegerSortedMapIterator.Insert(const AEntry: TJclIntegerIntegerMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclIntegerIntegerSortedMapIterator.IteratorEquals(const AIterator: IJclIntegerIntegerSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclIntegerIntegerSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclIntegerIntegerSortedMapIterator then
+  begin
+    ItrObj := TJclIntegerIntegerSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntegerIntegerSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclIntegerIntegerSortedMapIterator.Next: TJclIntegerIntegerMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntegerIntegerSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclIntegerIntegerSortedMapIterator.Previous: TJclIntegerIntegerMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntegerIntegerSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclIntegerIntegerSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclIntegerIntegerSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclIntegerIntegerSortedMapIterator.SetEntry(const AEntry: TJclIntegerIntegerMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclCardinalIntfSortedMap } ==============================================
 
 constructor TJclCardinalIntfSortedMap.Create(ACapacity: Integer);
@@ -17483,6 +22265,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclCardinalIntfSortedMap.GetEnumerator: IJclCardinalIntfSortedMapIterator;
+begin
+  Result := TJclCardinalIntfSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclCardinalIntfSortedMap.GetValue(Key: Cardinal): IInterface;
 var
   Index: Integer;
@@ -17660,7 +22449,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclCardinalIntfSortedMap.FinalizeArrayBeforeMove(var List: TJclCardinalIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclCardinalIntfSortedMap.FinalizeArrayBeforeMove(var List: TJclCardinalIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   Assert(Count > 0);
   if FromIndex < ToIndex then
@@ -17679,7 +22468,7 @@ begin
   end;
 end;
 
-procedure TJclCardinalIntfSortedMap.InitializeArray(var List: TJclCardinalIntfSortedMapEntryArray; FromIndex, Count: SizeInt);
+procedure TJclCardinalIntfSortedMap.InitializeArray(var List: TJclCardinalIntfMapEntryArray; FromIndex, Count: SizeInt);
 begin
   {$IFDEF FPC}
   while Count > 0 do
@@ -17693,7 +22482,7 @@ begin
   {$ENDIF ~FPC}
 end;
 
-procedure TJclCardinalIntfSortedMap.InitializeArrayAfterMove(var List: TJclCardinalIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclCardinalIntfSortedMap.InitializeArrayAfterMove(var List: TJclCardinalIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
@@ -17712,7 +22501,7 @@ begin
   end;
 end;
 
-procedure TJclCardinalIntfSortedMap.MoveArray(var List: TJclCardinalIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclCardinalIntfSortedMap.MoveArray(var List: TJclCardinalIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -17957,6 +22746,160 @@ begin
   Result := IntfSimpleCompare(A, B);
 end;
 
+//=== { TJclCardinalIntfSortedMapIterator } ===============================================================
+
+constructor TJclCardinalIntfSortedMapIterator.Create(AOwnMap: TJclCardinalIntfSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclCardinalIntfSortedMapIterator.Add(const AEntry: TJclCardinalIntfMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclCardinalIntfSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclCardinalIntfSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclCardinalIntfSortedMapIterator then
+  begin
+    ADest := TJclCardinalIntfSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclCardinalIntfSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclCardinalIntfSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclCardinalIntfSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclCardinalIntfSortedMapIterator.GetEntry: TJclCardinalIntfMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclCardinalIntfSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclCardinalIntfSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclCardinalIntfSortedMapIterator.Insert(const AEntry: TJclCardinalIntfMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclCardinalIntfSortedMapIterator.IteratorEquals(const AIterator: IJclCardinalIntfSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclCardinalIntfSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclCardinalIntfSortedMapIterator then
+  begin
+    ItrObj := TJclCardinalIntfSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclCardinalIntfSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclCardinalIntfSortedMapIterator.Next: TJclCardinalIntfMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclCardinalIntfSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclCardinalIntfSortedMapIterator.Previous: TJclCardinalIntfMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclCardinalIntfSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclCardinalIntfSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclCardinalIntfSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclCardinalIntfSortedMapIterator.SetEntry(const AEntry: TJclCardinalIntfMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclIntfCardinalSortedMap } ==============================================
 
 constructor TJclIntfCardinalSortedMap.Create(ACapacity: Integer);
@@ -18145,6 +23088,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntfCardinalSortedMap.GetEnumerator: IJclIntfCardinalSortedMapIterator;
+begin
+  Result := TJclIntfCardinalSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclIntfCardinalSortedMap.GetValue(const Key: IInterface): Cardinal;
 var
   Index: Integer;
@@ -18322,7 +23272,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfCardinalSortedMap.FinalizeArrayBeforeMove(var List: TJclIntfCardinalSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfCardinalSortedMap.FinalizeArrayBeforeMove(var List: TJclIntfCardinalMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   Assert(Count > 0);
   if FromIndex < ToIndex then
@@ -18341,7 +23291,7 @@ begin
   end;
 end;
 
-procedure TJclIntfCardinalSortedMap.InitializeArray(var List: TJclIntfCardinalSortedMapEntryArray; FromIndex, Count: SizeInt);
+procedure TJclIntfCardinalSortedMap.InitializeArray(var List: TJclIntfCardinalMapEntryArray; FromIndex, Count: SizeInt);
 begin
   {$IFDEF FPC}
   while Count > 0 do
@@ -18355,7 +23305,7 @@ begin
   {$ENDIF ~FPC}
 end;
 
-procedure TJclIntfCardinalSortedMap.InitializeArrayAfterMove(var List: TJclIntfCardinalSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfCardinalSortedMap.InitializeArrayAfterMove(var List: TJclIntfCardinalMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
@@ -18374,7 +23324,7 @@ begin
   end;
 end;
 
-procedure TJclIntfCardinalSortedMap.MoveArray(var List: TJclIntfCardinalSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfCardinalSortedMap.MoveArray(var List: TJclIntfCardinalMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -18619,6 +23569,160 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
+//=== { TJclIntfCardinalSortedMapIterator } ===============================================================
+
+constructor TJclIntfCardinalSortedMapIterator.Create(AOwnMap: TJclIntfCardinalSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclIntfCardinalSortedMapIterator.Add(const AEntry: TJclIntfCardinalMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclIntfCardinalSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclIntfCardinalSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclIntfCardinalSortedMapIterator then
+  begin
+    ADest := TJclIntfCardinalSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclIntfCardinalSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclIntfCardinalSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclIntfCardinalSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclIntfCardinalSortedMapIterator.GetEntry: TJclIntfCardinalMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfCardinalSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclIntfCardinalSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclIntfCardinalSortedMapIterator.Insert(const AEntry: TJclIntfCardinalMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclIntfCardinalSortedMapIterator.IteratorEquals(const AIterator: IJclIntfCardinalSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclIntfCardinalSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclIntfCardinalSortedMapIterator then
+  begin
+    ItrObj := TJclIntfCardinalSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntfCardinalSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclIntfCardinalSortedMapIterator.Next: TJclIntfCardinalMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfCardinalSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclIntfCardinalSortedMapIterator.Previous: TJclIntfCardinalMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfCardinalSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclIntfCardinalSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclIntfCardinalSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclIntfCardinalSortedMapIterator.SetEntry(const AEntry: TJclIntfCardinalMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclCardinalCardinalSortedMap } ==============================================
 
 constructor TJclCardinalCardinalSortedMap.Create(ACapacity: Integer);
@@ -18807,6 +23911,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclCardinalCardinalSortedMap.GetEnumerator: IJclCardinalCardinalSortedMapIterator;
+begin
+  Result := TJclCardinalCardinalSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclCardinalCardinalSortedMap.GetValue(Key: Cardinal): Cardinal;
 var
   Index: Integer;
@@ -18984,7 +24095,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclCardinalCardinalSortedMap.InitializeArrayAfterMove(var List: TJclCardinalCardinalSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclCardinalCardinalSortedMap.InitializeArrayAfterMove(var List: TJclCardinalCardinalMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Clean array }
   if FromIndex < ToIndex then
@@ -19003,7 +24114,7 @@ begin
   end;
 end;
 
-procedure TJclCardinalCardinalSortedMap.MoveArray(var List: TJclCardinalCardinalSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclCardinalCardinalSortedMap.MoveArray(var List: TJclCardinalCardinalMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -19247,6 +24358,160 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
+//=== { TJclCardinalCardinalSortedMapIterator } ===============================================================
+
+constructor TJclCardinalCardinalSortedMapIterator.Create(AOwnMap: TJclCardinalCardinalSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclCardinalCardinalSortedMapIterator.Add(const AEntry: TJclCardinalCardinalMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclCardinalCardinalSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclCardinalCardinalSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclCardinalCardinalSortedMapIterator then
+  begin
+    ADest := TJclCardinalCardinalSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclCardinalCardinalSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclCardinalCardinalSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclCardinalCardinalSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclCardinalCardinalSortedMapIterator.GetEntry: TJclCardinalCardinalMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclCardinalCardinalSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclCardinalCardinalSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclCardinalCardinalSortedMapIterator.Insert(const AEntry: TJclCardinalCardinalMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclCardinalCardinalSortedMapIterator.IteratorEquals(const AIterator: IJclCardinalCardinalSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclCardinalCardinalSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclCardinalCardinalSortedMapIterator then
+  begin
+    ItrObj := TJclCardinalCardinalSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclCardinalCardinalSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclCardinalCardinalSortedMapIterator.Next: TJclCardinalCardinalMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclCardinalCardinalSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclCardinalCardinalSortedMapIterator.Previous: TJclCardinalCardinalMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclCardinalCardinalSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclCardinalCardinalSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclCardinalCardinalSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclCardinalCardinalSortedMapIterator.SetEntry(const AEntry: TJclCardinalCardinalMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclInt64IntfSortedMap } ==============================================
 
 constructor TJclInt64IntfSortedMap.Create(ACapacity: Integer);
@@ -19435,6 +24700,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclInt64IntfSortedMap.GetEnumerator: IJclInt64IntfSortedMapIterator;
+begin
+  Result := TJclInt64IntfSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclInt64IntfSortedMap.GetValue(const Key: Int64): IInterface;
 var
   Index: Integer;
@@ -19612,7 +24884,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclInt64IntfSortedMap.FinalizeArrayBeforeMove(var List: TJclInt64IntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclInt64IntfSortedMap.FinalizeArrayBeforeMove(var List: TJclInt64IntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   Assert(Count > 0);
   if FromIndex < ToIndex then
@@ -19631,7 +24903,7 @@ begin
   end;
 end;
 
-procedure TJclInt64IntfSortedMap.InitializeArray(var List: TJclInt64IntfSortedMapEntryArray; FromIndex, Count: SizeInt);
+procedure TJclInt64IntfSortedMap.InitializeArray(var List: TJclInt64IntfMapEntryArray; FromIndex, Count: SizeInt);
 begin
   {$IFDEF FPC}
   while Count > 0 do
@@ -19645,7 +24917,7 @@ begin
   {$ENDIF ~FPC}
 end;
 
-procedure TJclInt64IntfSortedMap.InitializeArrayAfterMove(var List: TJclInt64IntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclInt64IntfSortedMap.InitializeArrayAfterMove(var List: TJclInt64IntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
@@ -19664,7 +24936,7 @@ begin
   end;
 end;
 
-procedure TJclInt64IntfSortedMap.MoveArray(var List: TJclInt64IntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclInt64IntfSortedMap.MoveArray(var List: TJclInt64IntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -19909,6 +25181,160 @@ begin
   Result := IntfSimpleCompare(A, B);
 end;
 
+//=== { TJclInt64IntfSortedMapIterator } ===============================================================
+
+constructor TJclInt64IntfSortedMapIterator.Create(AOwnMap: TJclInt64IntfSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclInt64IntfSortedMapIterator.Add(const AEntry: TJclInt64IntfMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclInt64IntfSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclInt64IntfSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclInt64IntfSortedMapIterator then
+  begin
+    ADest := TJclInt64IntfSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclInt64IntfSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclInt64IntfSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclInt64IntfSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclInt64IntfSortedMapIterator.GetEntry: TJclInt64IntfMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclInt64IntfSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclInt64IntfSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclInt64IntfSortedMapIterator.Insert(const AEntry: TJclInt64IntfMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclInt64IntfSortedMapIterator.IteratorEquals(const AIterator: IJclInt64IntfSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclInt64IntfSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclInt64IntfSortedMapIterator then
+  begin
+    ItrObj := TJclInt64IntfSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclInt64IntfSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclInt64IntfSortedMapIterator.Next: TJclInt64IntfMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclInt64IntfSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclInt64IntfSortedMapIterator.Previous: TJclInt64IntfMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclInt64IntfSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclInt64IntfSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclInt64IntfSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclInt64IntfSortedMapIterator.SetEntry(const AEntry: TJclInt64IntfMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclIntfInt64SortedMap } ==============================================
 
 constructor TJclIntfInt64SortedMap.Create(ACapacity: Integer);
@@ -20097,6 +25523,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntfInt64SortedMap.GetEnumerator: IJclIntfInt64SortedMapIterator;
+begin
+  Result := TJclIntfInt64SortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclIntfInt64SortedMap.GetValue(const Key: IInterface): Int64;
 var
   Index: Integer;
@@ -20274,7 +25707,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfInt64SortedMap.FinalizeArrayBeforeMove(var List: TJclIntfInt64SortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfInt64SortedMap.FinalizeArrayBeforeMove(var List: TJclIntfInt64MapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   Assert(Count > 0);
   if FromIndex < ToIndex then
@@ -20293,7 +25726,7 @@ begin
   end;
 end;
 
-procedure TJclIntfInt64SortedMap.InitializeArray(var List: TJclIntfInt64SortedMapEntryArray; FromIndex, Count: SizeInt);
+procedure TJclIntfInt64SortedMap.InitializeArray(var List: TJclIntfInt64MapEntryArray; FromIndex, Count: SizeInt);
 begin
   {$IFDEF FPC}
   while Count > 0 do
@@ -20307,7 +25740,7 @@ begin
   {$ENDIF ~FPC}
 end;
 
-procedure TJclIntfInt64SortedMap.InitializeArrayAfterMove(var List: TJclIntfInt64SortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfInt64SortedMap.InitializeArrayAfterMove(var List: TJclIntfInt64MapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
@@ -20326,7 +25759,7 @@ begin
   end;
 end;
 
-procedure TJclIntfInt64SortedMap.MoveArray(var List: TJclIntfInt64SortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfInt64SortedMap.MoveArray(var List: TJclIntfInt64MapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -20571,6 +26004,160 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
+//=== { TJclIntfInt64SortedMapIterator } ===============================================================
+
+constructor TJclIntfInt64SortedMapIterator.Create(AOwnMap: TJclIntfInt64SortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclIntfInt64SortedMapIterator.Add(const AEntry: TJclIntfInt64MapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclIntfInt64SortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclIntfInt64SortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclIntfInt64SortedMapIterator then
+  begin
+    ADest := TJclIntfInt64SortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclIntfInt64SortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclIntfInt64SortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclIntfInt64SortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclIntfInt64SortedMapIterator.GetEntry: TJclIntfInt64MapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfInt64SortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclIntfInt64SortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclIntfInt64SortedMapIterator.Insert(const AEntry: TJclIntfInt64MapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclIntfInt64SortedMapIterator.IteratorEquals(const AIterator: IJclIntfInt64SortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclIntfInt64SortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclIntfInt64SortedMapIterator then
+  begin
+    ItrObj := TJclIntfInt64SortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntfInt64SortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclIntfInt64SortedMapIterator.Next: TJclIntfInt64MapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfInt64SortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclIntfInt64SortedMapIterator.Previous: TJclIntfInt64MapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfInt64SortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclIntfInt64SortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclIntfInt64SortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclIntfInt64SortedMapIterator.SetEntry(const AEntry: TJclIntfInt64MapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclInt64Int64SortedMap } ==============================================
 
 constructor TJclInt64Int64SortedMap.Create(ACapacity: Integer);
@@ -20759,6 +26346,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclInt64Int64SortedMap.GetEnumerator: IJclInt64Int64SortedMapIterator;
+begin
+  Result := TJclInt64Int64SortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclInt64Int64SortedMap.GetValue(const Key: Int64): Int64;
 var
   Index: Integer;
@@ -20936,7 +26530,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclInt64Int64SortedMap.InitializeArrayAfterMove(var List: TJclInt64Int64SortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclInt64Int64SortedMap.InitializeArrayAfterMove(var List: TJclInt64Int64MapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Clean array }
   if FromIndex < ToIndex then
@@ -20955,7 +26549,7 @@ begin
   end;
 end;
 
-procedure TJclInt64Int64SortedMap.MoveArray(var List: TJclInt64Int64SortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclInt64Int64SortedMap.MoveArray(var List: TJclInt64Int64MapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -21199,6 +26793,160 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
+//=== { TJclInt64Int64SortedMapIterator } ===============================================================
+
+constructor TJclInt64Int64SortedMapIterator.Create(AOwnMap: TJclInt64Int64SortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclInt64Int64SortedMapIterator.Add(const AEntry: TJclInt64Int64MapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclInt64Int64SortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclInt64Int64SortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclInt64Int64SortedMapIterator then
+  begin
+    ADest := TJclInt64Int64SortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclInt64Int64SortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclInt64Int64SortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclInt64Int64SortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclInt64Int64SortedMapIterator.GetEntry: TJclInt64Int64MapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclInt64Int64SortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclInt64Int64SortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclInt64Int64SortedMapIterator.Insert(const AEntry: TJclInt64Int64MapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclInt64Int64SortedMapIterator.IteratorEquals(const AIterator: IJclInt64Int64SortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclInt64Int64SortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclInt64Int64SortedMapIterator then
+  begin
+    ItrObj := TJclInt64Int64SortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclInt64Int64SortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclInt64Int64SortedMapIterator.Next: TJclInt64Int64MapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclInt64Int64SortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclInt64Int64SortedMapIterator.Previous: TJclInt64Int64MapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclInt64Int64SortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclInt64Int64SortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclInt64Int64SortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclInt64Int64SortedMapIterator.SetEntry(const AEntry: TJclInt64Int64MapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclPtrIntfSortedMap } ==============================================
 
 constructor TJclPtrIntfSortedMap.Create(ACapacity: Integer);
@@ -21387,6 +27135,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclPtrIntfSortedMap.GetEnumerator: IJclPtrIntfSortedMapIterator;
+begin
+  Result := TJclPtrIntfSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclPtrIntfSortedMap.GetValue(Key: Pointer): IInterface;
 var
   Index: Integer;
@@ -21564,7 +27319,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclPtrIntfSortedMap.FinalizeArrayBeforeMove(var List: TJclPtrIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclPtrIntfSortedMap.FinalizeArrayBeforeMove(var List: TJclPtrIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   Assert(Count > 0);
   if FromIndex < ToIndex then
@@ -21583,7 +27338,7 @@ begin
   end;
 end;
 
-procedure TJclPtrIntfSortedMap.InitializeArray(var List: TJclPtrIntfSortedMapEntryArray; FromIndex, Count: SizeInt);
+procedure TJclPtrIntfSortedMap.InitializeArray(var List: TJclPtrIntfMapEntryArray; FromIndex, Count: SizeInt);
 begin
   {$IFDEF FPC}
   while Count > 0 do
@@ -21597,7 +27352,7 @@ begin
   {$ENDIF ~FPC}
 end;
 
-procedure TJclPtrIntfSortedMap.InitializeArrayAfterMove(var List: TJclPtrIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclPtrIntfSortedMap.InitializeArrayAfterMove(var List: TJclPtrIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
@@ -21616,7 +27371,7 @@ begin
   end;
 end;
 
-procedure TJclPtrIntfSortedMap.MoveArray(var List: TJclPtrIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclPtrIntfSortedMap.MoveArray(var List: TJclPtrIntfMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -21861,6 +27616,160 @@ begin
   Result := IntfSimpleCompare(A, B);
 end;
 
+//=== { TJclPtrIntfSortedMapIterator } ===============================================================
+
+constructor TJclPtrIntfSortedMapIterator.Create(AOwnMap: TJclPtrIntfSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclPtrIntfSortedMapIterator.Add(const AEntry: TJclPtrIntfMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclPtrIntfSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclPtrIntfSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclPtrIntfSortedMapIterator then
+  begin
+    ADest := TJclPtrIntfSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclPtrIntfSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclPtrIntfSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclPtrIntfSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclPtrIntfSortedMapIterator.GetEntry: TJclPtrIntfMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclPtrIntfSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclPtrIntfSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclPtrIntfSortedMapIterator.Insert(const AEntry: TJclPtrIntfMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclPtrIntfSortedMapIterator.IteratorEquals(const AIterator: IJclPtrIntfSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclPtrIntfSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclPtrIntfSortedMapIterator then
+  begin
+    ItrObj := TJclPtrIntfSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclPtrIntfSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclPtrIntfSortedMapIterator.Next: TJclPtrIntfMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclPtrIntfSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclPtrIntfSortedMapIterator.Previous: TJclPtrIntfMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclPtrIntfSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclPtrIntfSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclPtrIntfSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclPtrIntfSortedMapIterator.SetEntry(const AEntry: TJclPtrIntfMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclIntfPtrSortedMap } ==============================================
 
 constructor TJclIntfPtrSortedMap.Create(ACapacity: Integer);
@@ -22049,6 +27958,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntfPtrSortedMap.GetEnumerator: IJclIntfPtrSortedMapIterator;
+begin
+  Result := TJclIntfPtrSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclIntfPtrSortedMap.GetValue(const Key: IInterface): Pointer;
 var
   Index: Integer;
@@ -22226,7 +28142,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfPtrSortedMap.FinalizeArrayBeforeMove(var List: TJclIntfPtrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfPtrSortedMap.FinalizeArrayBeforeMove(var List: TJclIntfPtrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   Assert(Count > 0);
   if FromIndex < ToIndex then
@@ -22245,7 +28161,7 @@ begin
   end;
 end;
 
-procedure TJclIntfPtrSortedMap.InitializeArray(var List: TJclIntfPtrSortedMapEntryArray; FromIndex, Count: SizeInt);
+procedure TJclIntfPtrSortedMap.InitializeArray(var List: TJclIntfPtrMapEntryArray; FromIndex, Count: SizeInt);
 begin
   {$IFDEF FPC}
   while Count > 0 do
@@ -22259,7 +28175,7 @@ begin
   {$ENDIF ~FPC}
 end;
 
-procedure TJclIntfPtrSortedMap.InitializeArrayAfterMove(var List: TJclIntfPtrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfPtrSortedMap.InitializeArrayAfterMove(var List: TJclIntfPtrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
@@ -22278,7 +28194,7 @@ begin
   end;
 end;
 
-procedure TJclIntfPtrSortedMap.MoveArray(var List: TJclIntfPtrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfPtrSortedMap.MoveArray(var List: TJclIntfPtrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -22523,6 +28439,160 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
+//=== { TJclIntfPtrSortedMapIterator } ===============================================================
+
+constructor TJclIntfPtrSortedMapIterator.Create(AOwnMap: TJclIntfPtrSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclIntfPtrSortedMapIterator.Add(const AEntry: TJclIntfPtrMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclIntfPtrSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclIntfPtrSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclIntfPtrSortedMapIterator then
+  begin
+    ADest := TJclIntfPtrSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclIntfPtrSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclIntfPtrSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclIntfPtrSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclIntfPtrSortedMapIterator.GetEntry: TJclIntfPtrMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfPtrSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclIntfPtrSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclIntfPtrSortedMapIterator.Insert(const AEntry: TJclIntfPtrMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclIntfPtrSortedMapIterator.IteratorEquals(const AIterator: IJclIntfPtrSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclIntfPtrSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclIntfPtrSortedMapIterator then
+  begin
+    ItrObj := TJclIntfPtrSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntfPtrSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclIntfPtrSortedMapIterator.Next: TJclIntfPtrMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfPtrSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclIntfPtrSortedMapIterator.Previous: TJclIntfPtrMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfPtrSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclIntfPtrSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclIntfPtrSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclIntfPtrSortedMapIterator.SetEntry(const AEntry: TJclIntfPtrMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclPtrPtrSortedMap } ==============================================
 
 constructor TJclPtrPtrSortedMap.Create(ACapacity: Integer);
@@ -22711,6 +28781,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclPtrPtrSortedMap.GetEnumerator: IJclPtrPtrSortedMapIterator;
+begin
+  Result := TJclPtrPtrSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclPtrPtrSortedMap.GetValue(Key: Pointer): Pointer;
 var
   Index: Integer;
@@ -22888,7 +28965,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclPtrPtrSortedMap.InitializeArrayAfterMove(var List: TJclPtrPtrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclPtrPtrSortedMap.InitializeArrayAfterMove(var List: TJclPtrPtrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Clean array }
   if FromIndex < ToIndex then
@@ -22907,7 +28984,7 @@ begin
   end;
 end;
 
-procedure TJclPtrPtrSortedMap.MoveArray(var List: TJclPtrPtrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclPtrPtrSortedMap.MoveArray(var List: TJclPtrPtrMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -23151,6 +29228,160 @@ begin
   Result := ItemsCompare(A, B);
 end;
 
+//=== { TJclPtrPtrSortedMapIterator } ===============================================================
+
+constructor TJclPtrPtrSortedMapIterator.Create(AOwnMap: TJclPtrPtrSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclPtrPtrSortedMapIterator.Add(const AEntry: TJclPtrPtrMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclPtrPtrSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclPtrPtrSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclPtrPtrSortedMapIterator then
+  begin
+    ADest := TJclPtrPtrSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclPtrPtrSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclPtrPtrSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclPtrPtrSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclPtrPtrSortedMapIterator.GetEntry: TJclPtrPtrMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclPtrPtrSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclPtrPtrSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclPtrPtrSortedMapIterator.Insert(const AEntry: TJclPtrPtrMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclPtrPtrSortedMapIterator.IteratorEquals(const AIterator: IJclPtrPtrSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclPtrPtrSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclPtrPtrSortedMapIterator then
+  begin
+    ItrObj := TJclPtrPtrSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclPtrPtrSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclPtrPtrSortedMapIterator.Next: TJclPtrPtrMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclPtrPtrSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclPtrPtrSortedMapIterator.Previous: TJclPtrPtrMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclPtrPtrSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclPtrPtrSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclPtrPtrSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclPtrPtrSortedMapIterator.SetEntry(const AEntry: TJclPtrPtrMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclIntfSortedMap } ==============================================
 
 constructor TJclIntfSortedMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
@@ -23340,6 +29571,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntfSortedMap.GetEnumerator: IJclIntfObjSortedMapIterator;
+begin
+  Result := TJclIntfObjSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclIntfSortedMap.GetValue(const Key: IInterface): TObject;
 var
   Index: Integer;
@@ -23517,7 +29755,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfSortedMap.FinalizeArrayBeforeMove(var List: TJclIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfSortedMap.FinalizeArrayBeforeMove(var List: TJclIntfObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   Assert(Count > 0);
   if FromIndex < ToIndex then
@@ -23536,7 +29774,7 @@ begin
   end;
 end;
 
-procedure TJclIntfSortedMap.InitializeArray(var List: TJclIntfSortedMapEntryArray; FromIndex, Count: SizeInt);
+procedure TJclIntfSortedMap.InitializeArray(var List: TJclIntfObjMapEntryArray; FromIndex, Count: SizeInt);
 begin
   {$IFDEF FPC}
   while Count > 0 do
@@ -23550,7 +29788,7 @@ begin
   {$ENDIF ~FPC}
 end;
 
-procedure TJclIntfSortedMap.InitializeArrayAfterMove(var List: TJclIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfSortedMap.InitializeArrayAfterMove(var List: TJclIntfObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
@@ -23569,7 +29807,7 @@ begin
   end;
 end;
 
-procedure TJclIntfSortedMap.MoveArray(var List: TJclIntfSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntfSortedMap.MoveArray(var List: TJclIntfObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -23827,6 +30065,160 @@ begin
   Result := SimpleCompare(A, B);
 end;
 
+//=== { TJclIntfObjSortedMapIterator } ===============================================================
+
+constructor TJclIntfObjSortedMapIterator.Create(AOwnMap: TJclIntfSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclIntfObjSortedMapIterator.Add(const AEntry: TJclIntfObjMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclIntfObjSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclIntfObjSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclIntfObjSortedMapIterator then
+  begin
+    ADest := TJclIntfObjSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclIntfObjSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclIntfObjSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclIntfObjSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclIntfObjSortedMapIterator.GetEntry: TJclIntfObjMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfObjSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclIntfObjSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclIntfObjSortedMapIterator.Insert(const AEntry: TJclIntfObjMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclIntfObjSortedMapIterator.IteratorEquals(const AIterator: IJclIntfObjSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclIntfObjSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclIntfObjSortedMapIterator then
+  begin
+    ItrObj := TJclIntfObjSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntfObjSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclIntfObjSortedMapIterator.Next: TJclIntfObjMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfObjSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclIntfObjSortedMapIterator.Previous: TJclIntfObjMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntfObjSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclIntfObjSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclIntfObjSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclIntfObjSortedMapIterator.SetEntry(const AEntry: TJclIntfObjMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclAnsiStrSortedMap } ==============================================
 
 constructor TJclAnsiStrSortedMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
@@ -24016,6 +30408,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclAnsiStrSortedMap.GetEnumerator: IJclAnsiStrObjSortedMapIterator;
+begin
+  Result := TJclAnsiStrObjSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclAnsiStrSortedMap.GetValue(const Key: AnsiString): TObject;
 var
   Index: Integer;
@@ -24193,7 +30592,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclAnsiStrSortedMap.FinalizeArrayBeforeMove(var List: TJclAnsiStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclAnsiStrSortedMap.FinalizeArrayBeforeMove(var List: TJclAnsiStrObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   Assert(Count > 0);
   if FromIndex < ToIndex then
@@ -24212,7 +30611,7 @@ begin
   end;
 end;
 
-procedure TJclAnsiStrSortedMap.InitializeArray(var List: TJclAnsiStrSortedMapEntryArray; FromIndex, Count: SizeInt);
+procedure TJclAnsiStrSortedMap.InitializeArray(var List: TJclAnsiStrObjMapEntryArray; FromIndex, Count: SizeInt);
 begin
   {$IFDEF FPC}
   while Count > 0 do
@@ -24226,7 +30625,7 @@ begin
   {$ENDIF ~FPC}
 end;
 
-procedure TJclAnsiStrSortedMap.InitializeArrayAfterMove(var List: TJclAnsiStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclAnsiStrSortedMap.InitializeArrayAfterMove(var List: TJclAnsiStrObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
@@ -24245,7 +30644,7 @@ begin
   end;
 end;
 
-procedure TJclAnsiStrSortedMap.MoveArray(var List: TJclAnsiStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclAnsiStrSortedMap.MoveArray(var List: TJclAnsiStrObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -24503,6 +30902,160 @@ begin
   Result := SimpleCompare(A, B);
 end;
 
+//=== { TJclAnsiStrObjSortedMapIterator } ===============================================================
+
+constructor TJclAnsiStrObjSortedMapIterator.Create(AOwnMap: TJclAnsiStrSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclAnsiStrObjSortedMapIterator.Add(const AEntry: TJclAnsiStrObjMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclAnsiStrObjSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclAnsiStrObjSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclAnsiStrObjSortedMapIterator then
+  begin
+    ADest := TJclAnsiStrObjSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclAnsiStrObjSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclAnsiStrObjSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclAnsiStrObjSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclAnsiStrObjSortedMapIterator.GetEntry: TJclAnsiStrObjMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclAnsiStrObjSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclAnsiStrObjSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclAnsiStrObjSortedMapIterator.Insert(const AEntry: TJclAnsiStrObjMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclAnsiStrObjSortedMapIterator.IteratorEquals(const AIterator: IJclAnsiStrObjSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclAnsiStrObjSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclAnsiStrObjSortedMapIterator then
+  begin
+    ItrObj := TJclAnsiStrObjSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclAnsiStrObjSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclAnsiStrObjSortedMapIterator.Next: TJclAnsiStrObjMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclAnsiStrObjSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclAnsiStrObjSortedMapIterator.Previous: TJclAnsiStrObjMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclAnsiStrObjSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclAnsiStrObjSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclAnsiStrObjSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclAnsiStrObjSortedMapIterator.SetEntry(const AEntry: TJclAnsiStrObjMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclWideStrSortedMap } ==============================================
 
 constructor TJclWideStrSortedMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
@@ -24692,6 +31245,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclWideStrSortedMap.GetEnumerator: IJclWideStrObjSortedMapIterator;
+begin
+  Result := TJclWideStrObjSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclWideStrSortedMap.GetValue(const Key: WideString): TObject;
 var
   Index: Integer;
@@ -24869,7 +31429,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclWideStrSortedMap.FinalizeArrayBeforeMove(var List: TJclWideStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclWideStrSortedMap.FinalizeArrayBeforeMove(var List: TJclWideStrObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   Assert(Count > 0);
   if FromIndex < ToIndex then
@@ -24888,7 +31448,7 @@ begin
   end;
 end;
 
-procedure TJclWideStrSortedMap.InitializeArray(var List: TJclWideStrSortedMapEntryArray; FromIndex, Count: SizeInt);
+procedure TJclWideStrSortedMap.InitializeArray(var List: TJclWideStrObjMapEntryArray; FromIndex, Count: SizeInt);
 begin
   {$IFDEF FPC}
   while Count > 0 do
@@ -24902,7 +31462,7 @@ begin
   {$ENDIF ~FPC}
 end;
 
-procedure TJclWideStrSortedMap.InitializeArrayAfterMove(var List: TJclWideStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclWideStrSortedMap.InitializeArrayAfterMove(var List: TJclWideStrObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
@@ -24921,7 +31481,7 @@ begin
   end;
 end;
 
-procedure TJclWideStrSortedMap.MoveArray(var List: TJclWideStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclWideStrSortedMap.MoveArray(var List: TJclWideStrObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -25179,6 +31739,160 @@ begin
   Result := SimpleCompare(A, B);
 end;
 
+//=== { TJclWideStrObjSortedMapIterator } ===============================================================
+
+constructor TJclWideStrObjSortedMapIterator.Create(AOwnMap: TJclWideStrSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclWideStrObjSortedMapIterator.Add(const AEntry: TJclWideStrObjMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclWideStrObjSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclWideStrObjSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclWideStrObjSortedMapIterator then
+  begin
+    ADest := TJclWideStrObjSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclWideStrObjSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclWideStrObjSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclWideStrObjSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclWideStrObjSortedMapIterator.GetEntry: TJclWideStrObjMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclWideStrObjSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclWideStrObjSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclWideStrObjSortedMapIterator.Insert(const AEntry: TJclWideStrObjMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclWideStrObjSortedMapIterator.IteratorEquals(const AIterator: IJclWideStrObjSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclWideStrObjSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclWideStrObjSortedMapIterator then
+  begin
+    ItrObj := TJclWideStrObjSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclWideStrObjSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclWideStrObjSortedMapIterator.Next: TJclWideStrObjMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclWideStrObjSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclWideStrObjSortedMapIterator.Previous: TJclWideStrObjMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclWideStrObjSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclWideStrObjSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclWideStrObjSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclWideStrObjSortedMapIterator.SetEntry(const AEntry: TJclWideStrObjMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 {$IFDEF SUPPORTS_UNICODE_STRING}
 //=== { TJclUnicodeStrSortedMap } ==============================================
 
@@ -25369,6 +32083,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclUnicodeStrSortedMap.GetEnumerator: IJclUnicodeStrObjSortedMapIterator;
+begin
+  Result := TJclUnicodeStrObjSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclUnicodeStrSortedMap.GetValue(const Key: UnicodeString): TObject;
 var
   Index: Integer;
@@ -25546,7 +32267,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclUnicodeStrSortedMap.FinalizeArrayBeforeMove(var List: TJclUnicodeStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclUnicodeStrSortedMap.FinalizeArrayBeforeMove(var List: TJclUnicodeStrObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   Assert(Count > 0);
   if FromIndex < ToIndex then
@@ -25565,7 +32286,7 @@ begin
   end;
 end;
 
-procedure TJclUnicodeStrSortedMap.InitializeArray(var List: TJclUnicodeStrSortedMapEntryArray; FromIndex, Count: SizeInt);
+procedure TJclUnicodeStrSortedMap.InitializeArray(var List: TJclUnicodeStrObjMapEntryArray; FromIndex, Count: SizeInt);
 begin
   {$IFDEF FPC}
   while Count > 0 do
@@ -25579,7 +32300,7 @@ begin
   {$ENDIF ~FPC}
 end;
 
-procedure TJclUnicodeStrSortedMap.InitializeArrayAfterMove(var List: TJclUnicodeStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclUnicodeStrSortedMap.InitializeArrayAfterMove(var List: TJclUnicodeStrObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
@@ -25598,7 +32319,7 @@ begin
   end;
 end;
 
-procedure TJclUnicodeStrSortedMap.MoveArray(var List: TJclUnicodeStrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclUnicodeStrSortedMap.MoveArray(var List: TJclUnicodeStrObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -25858,6 +32579,162 @@ end;
 
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+//=== { TJclUnicodeStrObjSortedMapIterator } ===============================================================
+
+constructor TJclUnicodeStrObjSortedMapIterator.Create(AOwnMap: TJclUnicodeStrSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclUnicodeStrObjSortedMapIterator.Add(const AEntry: TJclUnicodeStrObjMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclUnicodeStrObjSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclUnicodeStrObjSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclUnicodeStrObjSortedMapIterator then
+  begin
+    ADest := TJclUnicodeStrObjSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclUnicodeStrObjSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclUnicodeStrObjSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclUnicodeStrObjSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclUnicodeStrObjSortedMapIterator.GetEntry: TJclUnicodeStrObjMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclUnicodeStrObjSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclUnicodeStrObjSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclUnicodeStrObjSortedMapIterator.Insert(const AEntry: TJclUnicodeStrObjMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclUnicodeStrObjSortedMapIterator.IteratorEquals(const AIterator: IJclUnicodeStrObjSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclUnicodeStrObjSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclUnicodeStrObjSortedMapIterator then
+  begin
+    ItrObj := TJclUnicodeStrObjSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclUnicodeStrObjSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclUnicodeStrObjSortedMapIterator.Next: TJclUnicodeStrObjMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclUnicodeStrObjSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclUnicodeStrObjSortedMapIterator.Previous: TJclUnicodeStrObjMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclUnicodeStrObjSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclUnicodeStrObjSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclUnicodeStrObjSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclUnicodeStrObjSortedMapIterator.SetEntry(const AEntry: TJclUnicodeStrObjMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 //=== { TJclSingleSortedMap } ==============================================
 
 constructor TJclSingleSortedMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
@@ -26047,6 +32924,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclSingleSortedMap.GetEnumerator: IJclSingleObjSortedMapIterator;
+begin
+  Result := TJclSingleObjSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclSingleSortedMap.GetValue(const Key: Single): TObject;
 var
   Index: Integer;
@@ -26224,7 +33108,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclSingleSortedMap.InitializeArrayAfterMove(var List: TJclSingleSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclSingleSortedMap.InitializeArrayAfterMove(var List: TJclSingleObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Clean array }
   if FromIndex < ToIndex then
@@ -26243,7 +33127,7 @@ begin
   end;
 end;
 
-procedure TJclSingleSortedMap.MoveArray(var List: TJclSingleSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclSingleSortedMap.MoveArray(var List: TJclSingleObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -26500,6 +33384,160 @@ begin
   Result := SimpleCompare(A, B);
 end;
 
+//=== { TJclSingleObjSortedMapIterator } ===============================================================
+
+constructor TJclSingleObjSortedMapIterator.Create(AOwnMap: TJclSingleSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclSingleObjSortedMapIterator.Add(const AEntry: TJclSingleObjMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclSingleObjSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclSingleObjSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclSingleObjSortedMapIterator then
+  begin
+    ADest := TJclSingleObjSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclSingleObjSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclSingleObjSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclSingleObjSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclSingleObjSortedMapIterator.GetEntry: TJclSingleObjMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclSingleObjSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclSingleObjSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclSingleObjSortedMapIterator.Insert(const AEntry: TJclSingleObjMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclSingleObjSortedMapIterator.IteratorEquals(const AIterator: IJclSingleObjSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclSingleObjSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclSingleObjSortedMapIterator then
+  begin
+    ItrObj := TJclSingleObjSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclSingleObjSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclSingleObjSortedMapIterator.Next: TJclSingleObjMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclSingleObjSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclSingleObjSortedMapIterator.Previous: TJclSingleObjMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclSingleObjSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclSingleObjSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclSingleObjSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclSingleObjSortedMapIterator.SetEntry(const AEntry: TJclSingleObjMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclDoubleSortedMap } ==============================================
 
 constructor TJclDoubleSortedMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
@@ -26689,6 +33727,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclDoubleSortedMap.GetEnumerator: IJclDoubleObjSortedMapIterator;
+begin
+  Result := TJclDoubleObjSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclDoubleSortedMap.GetValue(const Key: Double): TObject;
 var
   Index: Integer;
@@ -26866,7 +33911,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclDoubleSortedMap.InitializeArrayAfterMove(var List: TJclDoubleSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclDoubleSortedMap.InitializeArrayAfterMove(var List: TJclDoubleObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Clean array }
   if FromIndex < ToIndex then
@@ -26885,7 +33930,7 @@ begin
   end;
 end;
 
-procedure TJclDoubleSortedMap.MoveArray(var List: TJclDoubleSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclDoubleSortedMap.MoveArray(var List: TJclDoubleObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -27142,6 +34187,160 @@ begin
   Result := SimpleCompare(A, B);
 end;
 
+//=== { TJclDoubleObjSortedMapIterator } ===============================================================
+
+constructor TJclDoubleObjSortedMapIterator.Create(AOwnMap: TJclDoubleSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclDoubleObjSortedMapIterator.Add(const AEntry: TJclDoubleObjMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclDoubleObjSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclDoubleObjSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclDoubleObjSortedMapIterator then
+  begin
+    ADest := TJclDoubleObjSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclDoubleObjSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclDoubleObjSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclDoubleObjSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclDoubleObjSortedMapIterator.GetEntry: TJclDoubleObjMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclDoubleObjSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclDoubleObjSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclDoubleObjSortedMapIterator.Insert(const AEntry: TJclDoubleObjMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclDoubleObjSortedMapIterator.IteratorEquals(const AIterator: IJclDoubleObjSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclDoubleObjSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclDoubleObjSortedMapIterator then
+  begin
+    ItrObj := TJclDoubleObjSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclDoubleObjSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclDoubleObjSortedMapIterator.Next: TJclDoubleObjMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclDoubleObjSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclDoubleObjSortedMapIterator.Previous: TJclDoubleObjMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclDoubleObjSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclDoubleObjSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclDoubleObjSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclDoubleObjSortedMapIterator.SetEntry(const AEntry: TJclDoubleObjMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclExtendedSortedMap } ==============================================
 
 constructor TJclExtendedSortedMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
@@ -27331,6 +34530,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclExtendedSortedMap.GetEnumerator: IJclExtendedObjSortedMapIterator;
+begin
+  Result := TJclExtendedObjSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclExtendedSortedMap.GetValue(const Key: Extended): TObject;
 var
   Index: Integer;
@@ -27508,7 +34714,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclExtendedSortedMap.InitializeArrayAfterMove(var List: TJclExtendedSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclExtendedSortedMap.InitializeArrayAfterMove(var List: TJclExtendedObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Clean array }
   if FromIndex < ToIndex then
@@ -27527,7 +34733,7 @@ begin
   end;
 end;
 
-procedure TJclExtendedSortedMap.MoveArray(var List: TJclExtendedSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclExtendedSortedMap.MoveArray(var List: TJclExtendedObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -27784,6 +34990,160 @@ begin
   Result := SimpleCompare(A, B);
 end;
 
+//=== { TJclExtendedObjSortedMapIterator } ===============================================================
+
+constructor TJclExtendedObjSortedMapIterator.Create(AOwnMap: TJclExtendedSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclExtendedObjSortedMapIterator.Add(const AEntry: TJclExtendedObjMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclExtendedObjSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclExtendedObjSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclExtendedObjSortedMapIterator then
+  begin
+    ADest := TJclExtendedObjSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclExtendedObjSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclExtendedObjSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclExtendedObjSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclExtendedObjSortedMapIterator.GetEntry: TJclExtendedObjMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclExtendedObjSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclExtendedObjSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclExtendedObjSortedMapIterator.Insert(const AEntry: TJclExtendedObjMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclExtendedObjSortedMapIterator.IteratorEquals(const AIterator: IJclExtendedObjSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclExtendedObjSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclExtendedObjSortedMapIterator then
+  begin
+    ItrObj := TJclExtendedObjSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclExtendedObjSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclExtendedObjSortedMapIterator.Next: TJclExtendedObjMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclExtendedObjSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclExtendedObjSortedMapIterator.Previous: TJclExtendedObjMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclExtendedObjSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclExtendedObjSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclExtendedObjSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclExtendedObjSortedMapIterator.SetEntry(const AEntry: TJclExtendedObjMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclIntegerSortedMap } ==============================================
 
 constructor TJclIntegerSortedMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
@@ -27973,6 +35333,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntegerSortedMap.GetEnumerator: IJclIntegerObjSortedMapIterator;
+begin
+  Result := TJclIntegerObjSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclIntegerSortedMap.GetValue(Key: Integer): TObject;
 var
   Index: Integer;
@@ -28150,7 +35517,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntegerSortedMap.InitializeArrayAfterMove(var List: TJclIntegerSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntegerSortedMap.InitializeArrayAfterMove(var List: TJclIntegerObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Clean array }
   if FromIndex < ToIndex then
@@ -28169,7 +35536,7 @@ begin
   end;
 end;
 
-procedure TJclIntegerSortedMap.MoveArray(var List: TJclIntegerSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclIntegerSortedMap.MoveArray(var List: TJclIntegerObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -28426,6 +35793,160 @@ begin
   Result := SimpleCompare(A, B);
 end;
 
+//=== { TJclIntegerObjSortedMapIterator } ===============================================================
+
+constructor TJclIntegerObjSortedMapIterator.Create(AOwnMap: TJclIntegerSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclIntegerObjSortedMapIterator.Add(const AEntry: TJclIntegerObjMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclIntegerObjSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclIntegerObjSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclIntegerObjSortedMapIterator then
+  begin
+    ADest := TJclIntegerObjSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclIntegerObjSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclIntegerObjSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclIntegerObjSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclIntegerObjSortedMapIterator.GetEntry: TJclIntegerObjMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntegerObjSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclIntegerObjSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclIntegerObjSortedMapIterator.Insert(const AEntry: TJclIntegerObjMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclIntegerObjSortedMapIterator.IteratorEquals(const AIterator: IJclIntegerObjSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclIntegerObjSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclIntegerObjSortedMapIterator then
+  begin
+    ItrObj := TJclIntegerObjSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntegerObjSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclIntegerObjSortedMapIterator.Next: TJclIntegerObjMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntegerObjSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclIntegerObjSortedMapIterator.Previous: TJclIntegerObjMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclIntegerObjSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclIntegerObjSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclIntegerObjSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclIntegerObjSortedMapIterator.SetEntry(const AEntry: TJclIntegerObjMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclCardinalSortedMap } ==============================================
 
 constructor TJclCardinalSortedMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
@@ -28615,6 +36136,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclCardinalSortedMap.GetEnumerator: IJclCardinalObjSortedMapIterator;
+begin
+  Result := TJclCardinalObjSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclCardinalSortedMap.GetValue(Key: Cardinal): TObject;
 var
   Index: Integer;
@@ -28792,7 +36320,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclCardinalSortedMap.InitializeArrayAfterMove(var List: TJclCardinalSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclCardinalSortedMap.InitializeArrayAfterMove(var List: TJclCardinalObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Clean array }
   if FromIndex < ToIndex then
@@ -28811,7 +36339,7 @@ begin
   end;
 end;
 
-procedure TJclCardinalSortedMap.MoveArray(var List: TJclCardinalSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclCardinalSortedMap.MoveArray(var List: TJclCardinalObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -29068,6 +36596,160 @@ begin
   Result := SimpleCompare(A, B);
 end;
 
+//=== { TJclCardinalObjSortedMapIterator } ===============================================================
+
+constructor TJclCardinalObjSortedMapIterator.Create(AOwnMap: TJclCardinalSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclCardinalObjSortedMapIterator.Add(const AEntry: TJclCardinalObjMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclCardinalObjSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclCardinalObjSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclCardinalObjSortedMapIterator then
+  begin
+    ADest := TJclCardinalObjSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclCardinalObjSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclCardinalObjSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclCardinalObjSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclCardinalObjSortedMapIterator.GetEntry: TJclCardinalObjMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclCardinalObjSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclCardinalObjSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclCardinalObjSortedMapIterator.Insert(const AEntry: TJclCardinalObjMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclCardinalObjSortedMapIterator.IteratorEquals(const AIterator: IJclCardinalObjSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclCardinalObjSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclCardinalObjSortedMapIterator then
+  begin
+    ItrObj := TJclCardinalObjSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclCardinalObjSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclCardinalObjSortedMapIterator.Next: TJclCardinalObjMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclCardinalObjSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclCardinalObjSortedMapIterator.Previous: TJclCardinalObjMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclCardinalObjSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclCardinalObjSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclCardinalObjSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclCardinalObjSortedMapIterator.SetEntry(const AEntry: TJclCardinalObjMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclInt64SortedMap } ==============================================
 
 constructor TJclInt64SortedMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
@@ -29257,6 +36939,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclInt64SortedMap.GetEnumerator: IJclInt64ObjSortedMapIterator;
+begin
+  Result := TJclInt64ObjSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclInt64SortedMap.GetValue(const Key: Int64): TObject;
 var
   Index: Integer;
@@ -29434,7 +37123,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclInt64SortedMap.InitializeArrayAfterMove(var List: TJclInt64SortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclInt64SortedMap.InitializeArrayAfterMove(var List: TJclInt64ObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Clean array }
   if FromIndex < ToIndex then
@@ -29453,7 +37142,7 @@ begin
   end;
 end;
 
-procedure TJclInt64SortedMap.MoveArray(var List: TJclInt64SortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclInt64SortedMap.MoveArray(var List: TJclInt64ObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -29710,6 +37399,160 @@ begin
   Result := SimpleCompare(A, B);
 end;
 
+//=== { TJclInt64ObjSortedMapIterator } ===============================================================
+
+constructor TJclInt64ObjSortedMapIterator.Create(AOwnMap: TJclInt64SortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclInt64ObjSortedMapIterator.Add(const AEntry: TJclInt64ObjMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclInt64ObjSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclInt64ObjSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclInt64ObjSortedMapIterator then
+  begin
+    ADest := TJclInt64ObjSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclInt64ObjSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclInt64ObjSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclInt64ObjSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclInt64ObjSortedMapIterator.GetEntry: TJclInt64ObjMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclInt64ObjSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclInt64ObjSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclInt64ObjSortedMapIterator.Insert(const AEntry: TJclInt64ObjMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclInt64ObjSortedMapIterator.IteratorEquals(const AIterator: IJclInt64ObjSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclInt64ObjSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclInt64ObjSortedMapIterator then
+  begin
+    ItrObj := TJclInt64ObjSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclInt64ObjSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclInt64ObjSortedMapIterator.Next: TJclInt64ObjMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclInt64ObjSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclInt64ObjSortedMapIterator.Previous: TJclInt64ObjMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclInt64ObjSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclInt64ObjSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclInt64ObjSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclInt64ObjSortedMapIterator.SetEntry(const AEntry: TJclInt64ObjMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclPtrSortedMap } ==============================================
 
 constructor TJclPtrSortedMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
@@ -29899,6 +37742,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclPtrSortedMap.GetEnumerator: IJclPtrObjSortedMapIterator;
+begin
+  Result := TJclPtrObjSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclPtrSortedMap.GetValue(Key: Pointer): TObject;
 var
   Index: Integer;
@@ -30076,7 +37926,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclPtrSortedMap.InitializeArrayAfterMove(var List: TJclPtrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclPtrSortedMap.InitializeArrayAfterMove(var List: TJclPtrObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Clean array }
   if FromIndex < ToIndex then
@@ -30095,7 +37945,7 @@ begin
   end;
 end;
 
-procedure TJclPtrSortedMap.MoveArray(var List: TJclPtrSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclPtrSortedMap.MoveArray(var List: TJclPtrObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -30352,6 +38202,160 @@ begin
   Result := SimpleCompare(A, B);
 end;
 
+//=== { TJclPtrObjSortedMapIterator } ===============================================================
+
+constructor TJclPtrObjSortedMapIterator.Create(AOwnMap: TJclPtrSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclPtrObjSortedMapIterator.Add(const AEntry: TJclPtrObjMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclPtrObjSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclPtrObjSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclPtrObjSortedMapIterator then
+  begin
+    ADest := TJclPtrObjSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclPtrObjSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclPtrObjSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclPtrObjSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclPtrObjSortedMapIterator.GetEntry: TJclPtrObjMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclPtrObjSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclPtrObjSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclPtrObjSortedMapIterator.Insert(const AEntry: TJclPtrObjMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclPtrObjSortedMapIterator.IteratorEquals(const AIterator: IJclPtrObjSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclPtrObjSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclPtrObjSortedMapIterator then
+  begin
+    ItrObj := TJclPtrObjSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclPtrObjSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclPtrObjSortedMapIterator.Next: TJclPtrObjMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclPtrObjSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclPtrObjSortedMapIterator.Previous: TJclPtrObjMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclPtrObjSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclPtrObjSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclPtrObjSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclPtrObjSortedMapIterator.SetEntry(const AEntry: TJclPtrObjMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 //=== { TJclSortedMap } ==============================================
 
 constructor TJclSortedMap.Create(ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
@@ -30542,6 +38546,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclSortedMap.GetEnumerator: IJclObjObjSortedMapIterator;
+begin
+  Result := TJclObjObjSortedMapIterator.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclSortedMap.GetValue(Key: TObject): TObject;
 var
   Index: Integer;
@@ -30719,7 +38730,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclSortedMap.InitializeArrayAfterMove(var List: TJclSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclSortedMap.InitializeArrayAfterMove(var List: TJclObjObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   { Clean array }
   if FromIndex < ToIndex then
@@ -30738,7 +38749,7 @@ begin
   end;
 end;
 
-procedure TJclSortedMap.MoveArray(var List: TJclSortedMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclSortedMap.MoveArray(var List: TJclObjObjMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 begin
   if Count > 0 then
   begin
@@ -31008,6 +39019,160 @@ begin
   Result := SimpleCompare(A, B);
 end;
 
+//=== { TJclObjObjSortedMapIterator } ===============================================================
+
+constructor TJclObjObjSortedMapIterator.Create(AOwnMap: TJclSortedMap; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclObjObjSortedMapIterator.Add(const AEntry: TJclObjObjMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclObjObjSortedMapIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclObjObjSortedMapIterator;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclObjObjSortedMapIterator then
+  begin
+    ADest := TJclObjObjSortedMapIterator(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclObjObjSortedMapIterator.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclObjObjSortedMapIterator.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclObjObjSortedMapIterator.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclObjObjSortedMapIterator.GetEntry: TJclObjObjMapEntry;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclObjObjSortedMapIterator.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclObjObjSortedMapIterator.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclObjObjSortedMapIterator.Insert(const AEntry: TJclObjObjMapEntry): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclObjObjSortedMapIterator.IteratorEquals(const AIterator: IJclObjObjSortedMapIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclObjObjSortedMapIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclObjObjSortedMapIterator then
+  begin
+    ItrObj := TJclObjObjSortedMapIterator(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclObjObjSortedMapIterator.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclObjObjSortedMapIterator.Next: TJclObjObjMapEntry;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclObjObjSortedMapIterator.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclObjObjSortedMapIterator.Previous: TJclObjObjMapEntry;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclObjObjSortedMapIterator.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclObjObjSortedMapIterator.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclObjObjSortedMapIterator.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclObjObjSortedMapIterator.SetEntry(const AEntry: TJclObjObjMapEntry);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
 
 
 {$IFDEF SUPPORTS_GENERICS}
@@ -31204,6 +39369,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclSortedMap<TKey,TValue>.GetEnumerator: IJclSortedMapIterator<TKey,TValue>;
+begin
+  Result := TJclSortedMapIterator<TKey,TValue>.Create(Self, 0, False, isFirst);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclSortedMap<TKey,TValue>.GetValue(const Key: TKey): TValue;
 var
   Index: Integer;
@@ -31381,7 +39553,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclSortedMap<TKey,TValue>.MoveArray(var List: TSortedEntryArray; FromIndex, ToIndex, Count: SizeInt);
+procedure TJclSortedMap<TKey,TValue>.MoveArray(var List: TMapEntryArray; FromIndex, ToIndex, Count: SizeInt);
 var
   I: SizeInt;
 begin
@@ -31393,11 +39565,11 @@ begin
     if (ToIndex - FromIndex) < Count then
       // overlapped source and target
       for I := 0 to ToIndex - FromIndex - 1 do
-        List[FromIndex + I] := Default(TSortedEntry)
+        List[FromIndex + I] := Default(TMapEntry)
     else
       // independant
       for I := 0 to Count - 1 do
-        List[FromIndex + I] := Default(TSortedEntry);
+        List[FromIndex + I] := Default(TMapEntry);
   end
   else
   begin
@@ -31407,11 +39579,11 @@ begin
     if (FromIndex - ToIndex) < Count then
       // overlapped source and target
       for I := Count - FromIndex + ToIndex to Count - 1 do
-        List[FromIndex + I] := Default(TSortedEntry)
+        List[FromIndex + I] := Default(TMapEntry)
     else
       // independant
       for I := 0 to Count - 1 do
-        List[FromIndex + I] := Default(TSortedEntry);
+        List[FromIndex + I] := Default(TMapEntry);
   end; 
 end;
 
@@ -31658,6 +39830,161 @@ end;
 function TJclSortedMap<TKey,TValue>.GetOwnsValues: Boolean;
 begin
   Result := FOwnsValues;
+end;
+
+//=== { TJclSortedMapIterator<TKey,TValue> } ===============================================================
+
+constructor TJclSortedMapIterator<TKey,TValue>.Create(AOwnMap: TJclSortedMap<TKey,TValue>; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+begin
+  inherited Create(AValid);
+  FOwnMap := AOwnMap;
+  FStart := AStart;
+  FCursor := ACursor;
+end;
+
+function TJclSortedMapIterator<TKey,TValue>.Add(const AEntry: TJclMapEntry<TKey,TValue>): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclSortedMapIterator<TKey,TValue>.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TJclSortedMapIterator<TKey,TValue>;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclSortedMapIterator<TKey,TValue> then
+  begin
+    ADest := TJclSortedMapIterator<TKey,TValue>(Dest);
+    ADest.FOwnMap := FOwnMap;
+    ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
+  end;
+end;
+
+function TJclSortedMapIterator<TKey,TValue>.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TJclSortedMapIterator<TKey,TValue>.Create(FOwnMap, FCursor, Valid, FStart);
+end;
+
+procedure TJclSortedMapIterator<TKey,TValue>.Extract;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Extract(FOwnMap.FEntries[FCursor].Key);
+end;
+
+function TJclSortedMapIterator<TKey,TValue>.GetEntry: TJclMapEntry<TKey,TValue>;
+begin
+  CheckValid;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclSortedMapIterator<TKey,TValue>.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnMap.Size - 1)
+  else
+    Result := FCursor < FOwnMap.Size;
+end;
+
+function TJclSortedMapIterator<TKey,TValue>.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TJclSortedMapIterator<TKey,TValue>.Insert(const AEntry: TJclMapEntry<TKey,TValue>): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclSortedMapIterator<TKey,TValue>.IteratorEquals(const AIterator: IJclSortedMapIterator<TKey,TValue>): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclSortedMapIterator<TKey,TValue>;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclSortedMapIterator<TKey,TValue> then
+  begin
+    ItrObj := TJclSortedMapIterator<TKey,TValue>(Obj);
+    Result := (FOwnMap = ItrObj.FOwnMap) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclSortedMapIterator<TKey,TValue>.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnMap.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclSortedMapIterator<TKey,TValue>.Next: TJclMapEntry<TKey,TValue>;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclSortedMapIterator<TKey,TValue>.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TJclSortedMapIterator<TKey,TValue>.Previous: TJclMapEntry<TKey,TValue>;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result.Key := FOwnMap.FEntries[FCursor].Key;
+  Result.Value := FOwnMap.FEntries[FCursor].Value;
+end;
+
+function TJclSortedMapIterator<TKey,TValue>.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TJclSortedMapIterator<TKey,TValue>.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnMap.Remove(FOwnMap.FEntries[FCursor].Key);
+end;
+
+procedure TJclSortedMapIterator<TKey,TValue>.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnMap.Size - 1;
+  end;
+end;
+
+procedure TJclSortedMapIterator<TKey,TValue>.SetEntry(const AEntry: TJclMapEntry<TKey,TValue>);
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 //=== { TJclSortedMapE<TKey, TValue> } =======================================
