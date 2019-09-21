@@ -21,13 +21,16 @@ end;
 procedure SELFCLASSNAME.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: SELFCLASSNAME;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is SELFCLASSNAME then
   begin
     MyDest := SELFCLASSNAME(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
