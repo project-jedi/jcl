@@ -3192,9 +3192,7 @@ end;
 
 function TJclIntfIntfSortedMap.MapEquals(const AMap: IJclIntfIntfMap): Boolean;
 var
-  It: IJclIntfIterator;
   Index: Integer;
-  AKey: IInterface;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -3206,16 +3204,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -3857,9 +3854,7 @@ end;
 
 function TJclAnsiStrIntfSortedMap.MapEquals(const AMap: IJclAnsiStrIntfMap): Boolean;
 var
-  It: IJclAnsiStrIterator;
   Index: Integer;
-  AKey: AnsiString;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -3871,16 +3866,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -4522,9 +4516,7 @@ end;
 
 function TJclIntfAnsiStrSortedMap.MapEquals(const AMap: IJclIntfAnsiStrMap): Boolean;
 var
-  It: IJclIntfIterator;
   Index: Integer;
-  AKey: IInterface;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -4536,16 +4528,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -5187,9 +5178,7 @@ end;
 
 function TJclAnsiStrAnsiStrSortedMap.MapEquals(const AMap: IJclAnsiStrAnsiStrMap): Boolean;
 var
-  It: IJclAnsiStrIterator;
   Index: Integer;
-  AKey: AnsiString;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -5201,16 +5190,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -5852,9 +5840,7 @@ end;
 
 function TJclWideStrIntfSortedMap.MapEquals(const AMap: IJclWideStrIntfMap): Boolean;
 var
-  It: IJclWideStrIterator;
   Index: Integer;
-  AKey: WideString;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -5866,16 +5852,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -6517,9 +6502,7 @@ end;
 
 function TJclIntfWideStrSortedMap.MapEquals(const AMap: IJclIntfWideStrMap): Boolean;
 var
-  It: IJclIntfIterator;
   Index: Integer;
-  AKey: IInterface;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -6531,16 +6514,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -7182,9 +7164,7 @@ end;
 
 function TJclWideStrWideStrSortedMap.MapEquals(const AMap: IJclWideStrWideStrMap): Boolean;
 var
-  It: IJclWideStrIterator;
   Index: Integer;
-  AKey: WideString;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -7196,16 +7176,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -7848,9 +7827,7 @@ end;
 
 function TJclUnicodeStrIntfSortedMap.MapEquals(const AMap: IJclUnicodeStrIntfMap): Boolean;
 var
-  It: IJclUnicodeStrIterator;
   Index: Integer;
-  AKey: UnicodeString;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -7862,16 +7839,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -8516,9 +8492,7 @@ end;
 
 function TJclIntfUnicodeStrSortedMap.MapEquals(const AMap: IJclIntfUnicodeStrMap): Boolean;
 var
-  It: IJclIntfIterator;
   Index: Integer;
-  AKey: IInterface;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -8530,16 +8504,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -9184,9 +9157,7 @@ end;
 
 function TJclUnicodeStrUnicodeStrSortedMap.MapEquals(const AMap: IJclUnicodeStrUnicodeStrMap): Boolean;
 var
-  It: IJclUnicodeStrIterator;
   Index: Integer;
-  AKey: UnicodeString;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -9198,16 +9169,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -9851,9 +9821,7 @@ end;
 
 function TJclSingleIntfSortedMap.MapEquals(const AMap: IJclSingleIntfMap): Boolean;
 var
-  It: IJclSingleIterator;
   Index: Integer;
-  AKey: Single;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -9865,16 +9833,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -10516,9 +10483,7 @@ end;
 
 function TJclIntfSingleSortedMap.MapEquals(const AMap: IJclIntfSingleMap): Boolean;
 var
-  It: IJclIntfIterator;
   Index: Integer;
-  AKey: IInterface;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -10530,16 +10495,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -11181,9 +11145,7 @@ end;
 
 function TJclSingleSingleSortedMap.MapEquals(const AMap: IJclSingleSingleMap): Boolean;
 var
-  It: IJclSingleIterator;
   Index: Integer;
-  AKey: Single;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -11195,16 +11157,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -11812,9 +11773,7 @@ end;
 
 function TJclDoubleIntfSortedMap.MapEquals(const AMap: IJclDoubleIntfMap): Boolean;
 var
-  It: IJclDoubleIterator;
   Index: Integer;
-  AKey: Double;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -11826,16 +11785,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -12477,9 +12435,7 @@ end;
 
 function TJclIntfDoubleSortedMap.MapEquals(const AMap: IJclIntfDoubleMap): Boolean;
 var
-  It: IJclIntfIterator;
   Index: Integer;
-  AKey: IInterface;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -12491,16 +12447,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -13142,9 +13097,7 @@ end;
 
 function TJclDoubleDoubleSortedMap.MapEquals(const AMap: IJclDoubleDoubleMap): Boolean;
 var
-  It: IJclDoubleIterator;
   Index: Integer;
-  AKey: Double;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -13156,16 +13109,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -13773,9 +13725,7 @@ end;
 
 function TJclExtendedIntfSortedMap.MapEquals(const AMap: IJclExtendedIntfMap): Boolean;
 var
-  It: IJclExtendedIterator;
   Index: Integer;
-  AKey: Extended;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -13787,16 +13737,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -14438,9 +14387,7 @@ end;
 
 function TJclIntfExtendedSortedMap.MapEquals(const AMap: IJclIntfExtendedMap): Boolean;
 var
-  It: IJclIntfIterator;
   Index: Integer;
-  AKey: IInterface;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -14452,16 +14399,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -15103,9 +15049,7 @@ end;
 
 function TJclExtendedExtendedSortedMap.MapEquals(const AMap: IJclExtendedExtendedMap): Boolean;
 var
-  It: IJclExtendedIterator;
   Index: Integer;
-  AKey: Extended;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -15117,16 +15061,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -15734,9 +15677,7 @@ end;
 
 function TJclIntegerIntfSortedMap.MapEquals(const AMap: IJclIntegerIntfMap): Boolean;
 var
-  It: IJclIntegerIterator;
   Index: Integer;
-  AKey: Integer;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -15748,16 +15689,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -16399,9 +16339,7 @@ end;
 
 function TJclIntfIntegerSortedMap.MapEquals(const AMap: IJclIntfIntegerMap): Boolean;
 var
-  It: IJclIntfIterator;
   Index: Integer;
-  AKey: IInterface;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -16413,16 +16351,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -17064,9 +17001,7 @@ end;
 
 function TJclIntegerIntegerSortedMap.MapEquals(const AMap: IJclIntegerIntegerMap): Boolean;
 var
-  It: IJclIntegerIterator;
   Index: Integer;
-  AKey: Integer;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -17078,16 +17013,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -17695,9 +17629,7 @@ end;
 
 function TJclCardinalIntfSortedMap.MapEquals(const AMap: IJclCardinalIntfMap): Boolean;
 var
-  It: IJclCardinalIterator;
   Index: Integer;
-  AKey: Cardinal;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -17709,16 +17641,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -18360,9 +18291,7 @@ end;
 
 function TJclIntfCardinalSortedMap.MapEquals(const AMap: IJclIntfCardinalMap): Boolean;
 var
-  It: IJclIntfIterator;
   Index: Integer;
-  AKey: IInterface;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -18374,16 +18303,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -19025,9 +18953,7 @@ end;
 
 function TJclCardinalCardinalSortedMap.MapEquals(const AMap: IJclCardinalCardinalMap): Boolean;
 var
-  It: IJclCardinalIterator;
   Index: Integer;
-  AKey: Cardinal;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -19039,16 +18965,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -19656,9 +19581,7 @@ end;
 
 function TJclInt64IntfSortedMap.MapEquals(const AMap: IJclInt64IntfMap): Boolean;
 var
-  It: IJclInt64Iterator;
   Index: Integer;
-  AKey: Int64;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -19670,16 +19593,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -20321,9 +20243,7 @@ end;
 
 function TJclIntfInt64SortedMap.MapEquals(const AMap: IJclIntfInt64Map): Boolean;
 var
-  It: IJclIntfIterator;
   Index: Integer;
-  AKey: IInterface;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -20335,16 +20255,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -20986,9 +20905,7 @@ end;
 
 function TJclInt64Int64SortedMap.MapEquals(const AMap: IJclInt64Int64Map): Boolean;
 var
-  It: IJclInt64Iterator;
   Index: Integer;
-  AKey: Int64;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -21000,16 +20917,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -21617,9 +21533,7 @@ end;
 
 function TJclPtrIntfSortedMap.MapEquals(const AMap: IJclPtrIntfMap): Boolean;
 var
-  It: IJclPtrIterator;
   Index: Integer;
-  AKey: Pointer;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -21631,16 +21545,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -22282,9 +22195,7 @@ end;
 
 function TJclIntfPtrSortedMap.MapEquals(const AMap: IJclIntfPtrMap): Boolean;
 var
-  It: IJclIntfIterator;
   Index: Integer;
-  AKey: IInterface;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -22296,16 +22207,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -22947,9 +22857,7 @@ end;
 
 function TJclPtrPtrSortedMap.MapEquals(const AMap: IJclPtrPtrMap): Boolean;
 var
-  It: IJclPtrIterator;
   Index: Integer;
-  AKey: Pointer;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -22961,16 +22869,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -23579,9 +23486,7 @@ end;
 
 function TJclIntfSortedMap.MapEquals(const AMap: IJclIntfMap): Boolean;
 var
-  It: IJclIntfIterator;
   Index: Integer;
-  AKey: IInterface;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -23593,16 +23498,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -24258,9 +24162,7 @@ end;
 
 function TJclAnsiStrSortedMap.MapEquals(const AMap: IJclAnsiStrMap): Boolean;
 var
-  It: IJclAnsiStrIterator;
   Index: Integer;
-  AKey: AnsiString;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -24272,16 +24174,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -24937,9 +24838,7 @@ end;
 
 function TJclWideStrSortedMap.MapEquals(const AMap: IJclWideStrMap): Boolean;
 var
-  It: IJclWideStrIterator;
   Index: Integer;
-  AKey: WideString;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -24951,16 +24850,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -25617,9 +25515,7 @@ end;
 
 function TJclUnicodeStrSortedMap.MapEquals(const AMap: IJclUnicodeStrMap): Boolean;
 var
-  It: IJclUnicodeStrIterator;
   Index: Integer;
-  AKey: UnicodeString;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -25631,16 +25527,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -26298,9 +26193,7 @@ end;
 
 function TJclSingleSortedMap.MapEquals(const AMap: IJclSingleMap): Boolean;
 var
-  It: IJclSingleIterator;
   Index: Integer;
-  AKey: Single;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -26312,16 +26205,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -26943,9 +26835,7 @@ end;
 
 function TJclDoubleSortedMap.MapEquals(const AMap: IJclDoubleMap): Boolean;
 var
-  It: IJclDoubleIterator;
   Index: Integer;
-  AKey: Double;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -26957,16 +26847,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -27588,9 +27477,7 @@ end;
 
 function TJclExtendedSortedMap.MapEquals(const AMap: IJclExtendedMap): Boolean;
 var
-  It: IJclExtendedIterator;
   Index: Integer;
-  AKey: Extended;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -27602,16 +27489,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -28233,9 +28119,7 @@ end;
 
 function TJclIntegerSortedMap.MapEquals(const AMap: IJclIntegerMap): Boolean;
 var
-  It: IJclIntegerIterator;
   Index: Integer;
-  AKey: Integer;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -28247,16 +28131,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -28878,9 +28761,7 @@ end;
 
 function TJclCardinalSortedMap.MapEquals(const AMap: IJclCardinalMap): Boolean;
 var
-  It: IJclCardinalIterator;
   Index: Integer;
-  AKey: Cardinal;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -28892,16 +28773,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -29523,9 +29403,7 @@ end;
 
 function TJclInt64SortedMap.MapEquals(const AMap: IJclInt64Map): Boolean;
 var
-  It: IJclInt64Iterator;
   Index: Integer;
-  AKey: Int64;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -29537,16 +29415,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -30168,9 +30045,7 @@ end;
 
 function TJclPtrSortedMap.MapEquals(const AMap: IJclPtrMap): Boolean;
 var
-  It: IJclPtrIterator;
   Index: Integer;
-  AKey: Pointer;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -30182,16 +30057,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -30814,9 +30688,7 @@ end;
 
 function TJclSortedMap.MapEquals(const AMap: IJclMap): Boolean;
 var
-  It: IJclIterator;
   Index: Integer;
-  AKey: TObject;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -30828,16 +30700,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -31479,9 +31350,7 @@ end;
 
 function TJclSortedMap<TKey,TValue>.MapEquals(const AMap: IJclMap<TKey,TValue>): Boolean;
 var
-  It: IJclIterator<TKey>;
   Index: Integer;
-  AKey: TKey;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -31493,16 +31362,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$IFDEF THREADSAFE}
