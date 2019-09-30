@@ -4862,7 +4862,7 @@ begin
         if JclCheckWinVersion(6, 0) then // WinVista or newer
         begin
           DllHinst := LoadLibrary('Kernel32.dll');
-          if DllHinst < HINSTANCE_ERROR then
+          if DllHinst <> 0 then
           begin
             try
               {$IFDEF SUPPORTS_UNICODE}
@@ -4890,7 +4890,7 @@ begin
         else
         begin
           DllHinst := LoadLibrary('Psapi.dll');
-          if DllHinst < HINSTANCE_ERROR then
+          if DllHinst <> 0 then
           begin
             try
               {$IFDEF SUPPORTS_UNICODE}
