@@ -127,6 +127,8 @@ type
   TCompactPath = ({cpBegin, }cpCenter, cpEnd);
 
 function CharIsDriveLetter(const C: char): Boolean;
+function CharIsInvalidFileNameCharacter(const C: Char): Boolean;
+function CharIsInvalidPathCharacter(const C: Char): Boolean;
 
 function PathAddSeparator(const Path: string): string;
 function PathAddExtension(const Path, Extension: string): string;
@@ -1064,6 +1066,7 @@ function ParamValue (const SearchName: string; const Separator: string = '=';
 function ParamPos (const SearchName: string; const Separator: string = '=';
              CaseSensitive: Boolean = False;
              const AllowedPrefixCharacters: string = '-/'): Integer;
+
 
 {$IFDEF UNITVERSIONING}
 const
@@ -2852,10 +2855,26 @@ begin
   end;
 end;
 
-function CharIsInvalidPathCharacter(const C: Char): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function CharIsInvalidFileNameCharacter(const C: Char): Boolean;
 begin
   case C of
-    '<', '>', '?', '/', ',', '*', '+', '=', '[', ']', '|', ':', ';', '"', '''':
+    '<', '>', '?', '/', '\', ',', '*', '+', '=', '[', ']', '|', ':', ';', '"', '''':
+      Result := True;
+  else
+    Result := False;
+  end;
+end;
+
+function CharIsInvalidPathCharacter(const C: Char): Boolean;
+begin
+  case C of
+    '<', '>', '?',
+  {$IFDEF UNIX}
+    '/',
+  {$ELSE}
+    '\',
+  {$ENDIF}
+    ',', '*', '+', '=', '[', ']', '|', ':', ';', '"', '''':
       Result := True;
   else
     Result := False;
