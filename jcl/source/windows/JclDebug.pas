@@ -5449,7 +5449,7 @@ begin
   ResetMemory(StackInfo, SizeOf(StackInfo));
   for I := 0 to CapturedFramesCount - 1 do
   begin
-    StackInfo.CallerAddr := TJclAddr(BackTrace[I]);
+    StackInfo.CallerAddr := TJclAddr(BackTrace[I]) - 2; //magic number
     StackInfo.Level := I;
     StoreToList(StackInfo); // skips all frames with a level less than "IgnoreLevels"
   end;
