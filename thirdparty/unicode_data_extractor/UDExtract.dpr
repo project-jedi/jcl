@@ -60,7 +60,7 @@ type
   TRangeArray = array of TRange;
 
   CategoryString = record
-    Name: AnsiString;
+    Name: string;
     Category: TCharacterCategory;
   end;
 
@@ -343,7 +343,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure AddRangeToCategories(Start, Stop: Cardinal; CategoryID: AnsiString); overload;
+procedure AddRangeToCategories(Start, Stop: Cardinal; CategoryID: string); overload;
 
 // Adds a range of code points to the categories structure.
 
@@ -370,7 +370,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure AddToCategories(Code: Cardinal; CategoryID: AnsiString); overload;
+procedure AddToCategories(Code: Cardinal; CategoryID: string); overload;
 
 // Adds a range of code points to the categories structure.
 
@@ -726,10 +726,10 @@ begin
           EndCode := StrToInt('$' + Line[0]);
 
           // register general category
-          AddRangeToCategories(StartCode, EndCode, AnsiString(Line[2]));
+          AddRangeToCategories(StartCode, EndCode, Line[2]);
 
           // register bidirectional category
-          AddRangeToCategories(StartCode, EndCode, AnsiString(Line[4]));
+          AddRangeToCategories(StartCode, EndCode, Line[4]);
 
           // mark the range as containing assigned code points
           AddRangeToCategories(StartCode, EndCode, ccAssigned);
@@ -768,7 +768,7 @@ begin
             if Line.Count < 3 then
               Continue;
             // 3) categorize the general character class
-            AddToCategories(StartCode, AnsiString(Line[2]));
+            AddToCategories(StartCode, Line[2]);
 
             if Line.Count < 4 then
               Continue;
@@ -778,7 +778,7 @@ begin
             if Line.Count < 5 then
               Continue;
             // 5) categorize the bidirectional character class
-            AddToCategories(StartCode, AnsiString(Line[4]));
+            AddToCategories(StartCode, Line[4]);
 
             if Line.Count < 6 then
               Continue;
