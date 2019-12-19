@@ -72,7 +72,7 @@ const
   //       These are:
   //       - Mn, NSM for non-spacing mark
   //       - Zp, B for paragraph separator
-  CategoriesStrings: array[0..87] of CategoryString = (
+  CategoriesStrings: array[0..94] of CategoryString = (
     // normative categories
     (Name: 'Lu';  Category: ccLetterUppercase),           // letter, upper case
     (Name: 'Ll';  Category: ccLetterLowercase),           // letter, lower case
@@ -127,6 +127,10 @@ const
     (Name: 'WS';  Category: ccWhiteSpace),                // white space
     (Name: 'White_Space'; Category: ccWhiteSpace),
     (Name: 'ON';  Category: ccOtherNeutrals),             // other neutrals
+    (Name: 'LRI'; Category: ccLeftToRightIsolate),
+    (Name: 'RLI'; Category: ccRightToLeftIsolate),
+    (Name: 'FSI'; Category: ccFirstStrongIsolate),
+    (Name: 'PDI'; Category: ccPopDirectionalIsolate),
     // self defined categories, they do not appear in the Unicode data file
     (Name: 'Cm';  Category: ccComposed),                  // composed (can be decomposed)
     (Name: 'Nb';  Category: ccNonBreaking),               // non-breaking
@@ -165,7 +169,10 @@ const
     (Name: 'STerm'; Category: ccSTerm),
     (Name: 'Variation_Selector'; Category: ccVariationSelector),
     (Name: 'Pattern_White_Space'; Category: ccPatternWhiteSpace),
-    (Name: 'Pattern_Syntax'; Category: ccPatternSyntax)
+    (Name: 'Pattern_Syntax'; Category: ccPatternSyntax),
+    (Name: 'Sentence_Terminal'; Category: ccSentenceTerminal),
+    (Name: 'Prepended_Concatenation_Mark'; Category: ccPrependedQuotationMark),
+    (Name: 'Regional_Indicator'; Category: ccRegionalIndicator)
     );
 
 const
