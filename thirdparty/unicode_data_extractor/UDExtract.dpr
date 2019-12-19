@@ -45,7 +45,7 @@ type
 
   TNumber = record
     Numerator,
-    Denominator: Integer;
+    Denominator: Int64;
   end;
 
   // start and stop of a range of code points
@@ -407,7 +407,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function MakeNumber(Num, Denom: Integer): Integer;
+function MakeNumber(Num, Denom: Int64): Integer;
 
 // adds a number if it does not already exist and returns its index value
 
@@ -436,7 +436,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure AddNumber(Code: Cardinal; Num, Denom: Integer);
+procedure AddNumber(Code: Cardinal; Num, Denom: Int64);
 
 var
   I, J: Integer;
@@ -692,7 +692,7 @@ var
 
   // number representation
   Nominator,
-  Denominator: Integer;
+  Denominator: Int64;
 
   // case mapping
   AMapping: TUCS4Array;
@@ -829,15 +829,15 @@ begin
             StrToStrings(Line[8], '/', NumberStr, False);
             if NumberStr.Count = 1 then
             begin
-              Nominator := StrToInt(NumberStr.Strings[0]);
+              Nominator := StrToInt64(NumberStr.Strings[0]);
               Denominator := 1;
               AddNumber(StartCode, Nominator, Denominator);
             end
             else
             if NumberStr.Count = 2 then
             begin
-              Nominator := StrToInt(NumberStr.Strings[0]);
-              Denominator := StrToInt(NumberStr.Strings[1]);
+              Nominator := StrToInt64(NumberStr.Strings[0]);
+              Denominator := StrToInt64(NumberStr.Strings[1]);
               AddNumber(StartCode, Nominator, Denominator);
             end
             else
