@@ -120,9 +120,16 @@ function NtfsOpLockBreakNotify(Handle: THandle; Overlapped: TOverlapped): Boolea
 function NtfsRequestOpLock(Handle: THandle; Kind: TOpLock; Overlapped: TOverlapped): Boolean;
 
 // Junction Points
+function NtfsIsJunctionPoint(const Path: string): Boolean;
 function NtfsCreateJunctionPoint(const Source, Destination: string): Boolean;
 function NtfsDeleteJunctionPoint(const Source: string): Boolean;
-function NtfsGetJunctionPointDestination(const Source: string; var Destination: string): Boolean;
+function NtfsGetJunctionPointDestination(const Source: string; var Destination: string; RemovePathPrefix: Boolean = False): Boolean;
+
+// Symbolic Links
+function NtfsIsSymlink(const Path: string): Boolean;
+function NtfsGetSymlinkDestination(const Source: string; var Destination: string; RemovePathPrefix: Boolean = False): Boolean;
+
+function NtfsGetReparsePointDestination(const Source: string; var Destination: string; RemovePathPrefix: Boolean = False): Boolean;
 
 // Streams
 type
@@ -1160,6 +1167,108 @@ begin
     (Tag > IO_REPARSE_TAG_RESERVED_RANGE);
 end;
 
+function NtfsRemovePathPrefix(Path: PWideChar; var Len: Integer): PWideChar;
+begin
+  Result := Path;
+  if Len > 4 then
+  begin
+    // Remove '\??\' and '\\?\'
+    if (Path[0] = '\') and (Path[2] = '?') and (Path[3] = '\') and ((Path[1] = '\') or (Path[1] = '?')) then
+    begin
+      Inc(Result, 4);
+      Dec(Len, 4);
+    end;
+  end;
+end;
+
+function NtfsReadMountPointDestination(const ReparseData: TReparseDataBufferOverlay; var Destination: string; RemovePathPrefix: Boolean): Boolean;
+var
+  {$IFNDEF UNICODE}
+  SubstituteName: WideString;
+  {$ENDIF ~UNICODE}
+  SubstituteNameAddr: PWideChar;
+  Offset: Word;
+  WideLen: Integer;
+begin
+  case ReparseData.Reparse.ReparseTag of
+    IO_REPARSE_TAG_MOUNT_POINT:
+      begin
+        Offset := ReparseData.Reparse.MountPointReparseBuffer.SubstituteNameOffset div SizeOf(WideChar);
+        SubstituteNameAddr := @ReparseData.Reparse.MountPointReparseBuffer.PathBuffer[Offset];
+        WideLen := ReparseData.Reparse.MountPointReparseBuffer.SubstituteNameLength div SizeOf(WideChar);
+      end;
+
+    IO_REPARSE_TAG_SYMLINK:
+      begin
+        Offset := ReparseData.Reparse.SymbolicLinkReparseBuffer.SubstituteNameOffset div SizeOf(WideChar);
+        SubstituteNameAddr := @ReparseData.Reparse.SymbolicLinkReparseBuffer.PathBuffer[Offset];
+        WideLen := ReparseData.Reparse.SymbolicLinkReparseBuffer.SubstituteNameLength div SizeOf(WideChar);
+      end;
+
+  else
+    Result := False;
+    Exit;
+  end;
+
+  if RemovePathPrefix then
+    SubstituteNameAddr := NtfsRemovePathPrefix(SubstituteNameAddr, WideLen);
+  {$IFDEF UNICODE}
+  SetString(Destination, SubstituteNameAddr, WideLen);
+  {$ELSE}
+  SetString(SubstituteName, SubstituteNameAddr, WideLen);
+  Destination := string(SubstituteName);
+  {$ENDIF UNICODE}
+
+  Result := True;
+end;
+
+function NtfsIsJunctionPoint(const Path: string): Boolean;
+var
+  Tag: DWORD;
+begin
+  if NtfsGetReparseTag(Path, Tag) then
+    Result := Tag = IO_REPARSE_TAG_MOUNT_POINT
+  else
+    Result := False;
+end;
+
+function NtfsGetReparsePointData(const Path: string; var ReparseData: TReparseDataBufferOverlay): Boolean;
+var
+  Handle: THandle;
+  BytesReturned: DWORD;
+  ByteLen: DWORD;
+begin
+  BytesReturned := 0;
+  Result := False;
+  if NtfsFileHasReparsePoint(Path) then
+  begin
+    Handle := CreateFile(PChar(Path), GENERIC_READ, FILE_SHARE_READ or FILE_SHARE_WRITE, nil,
+      OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS or FILE_FLAG_OPEN_REPARSE_POINT, 0);
+    if Handle <> INVALID_HANDLE_VALUE then
+    begin
+      try
+        if DeviceIoControl(Handle, FSCTL_GET_REPARSE_POINT, nil, 0, @ReparseData,
+          MAXIMUM_REPARSE_DATA_BUFFER_SIZE, BytesReturned, nil) {and
+          IsReparseTagValid(ReparseData.Reparse.ReparseTag) then}
+          then
+        begin
+          case ReparseData.Reparse.ReparseTag of
+            IO_REPARSE_TAG_SYMLINK:
+              ByteLen := DWORD(ReparseData.Reparse.SymbolicLinkReparseBuffer.SubstituteNameLength) + SizeOf(WideChar);
+          else
+            //IO_REPARSE_TAG_MOUNT_POINT:
+              ByteLen := DWORD(ReparseData.Reparse.MountPointReparseBuffer.SubstituteNameLength) + SizeOf(WideChar);
+          end;
+          if BytesReturned >= ByteLen then
+            Result := True;
+        end;
+      finally
+        CloseHandle(Handle);
+      end;
+    end;
+  end;
+end;
+
 function NtfsCreateJunctionPoint(const Source, Destination: string): Boolean;
 var
   Dest: array [0..1024] of Char; // Writable copy of Destination
@@ -1190,12 +1299,12 @@ begin
   NameLength := StrLen(Dest) * SizeOf(WideChar);
   ReparseData.Reparse.ReparseTag := IO_REPARSE_TAG_MOUNT_POINT;
   ReparseData.Reparse.ReparseDataLength := NameLength + 12;
-  ReparseData.Reparse.SubstituteNameLength := NameLength;
-  ReparseData.Reparse.PrintNameOffset := NameLength + 2;
+  ReparseData.Reparse.MountPointReparseBuffer.SubstituteNameLength := NameLength;
+  ReparseData.Reparse.MountPointReparseBuffer.PrintNameOffset := NameLength + SizeOf(WideChar); // #0
   // Not the most elegant way to copy an AnsiString into an Unicode buffer but
   // let's avoid dependencies on JclUnicode.pas (adds significant resources).
   DestW := WideString(Dest);
-  Move(DestW[1], ReparseData.Reparse.PathBuffer, Length(DestW) * SizeOf(WideChar));
+  Move(DestW[1], ReparseData.Reparse.MountPointReparseBuffer.PathBuffer, Length(DestW) * SizeOf(WideChar));
   Result := NtfsSetReparsePoint(Source, ReparseData.Reparse,
     ReparseData.Reparse.ReparseDataLength + REPARSE_DATA_BUFFER_HEADER_SIZE);
 end;
@@ -1205,41 +1314,48 @@ begin
   Result := NtfsDeleteReparsePoint(Source, IO_REPARSE_TAG_MOUNT_POINT);
 end;
 
-function NtfsGetJunctionPointDestination(const Source: string; var Destination: string): Boolean;
+function NtfsGetJunctionPointDestination(const Source: string; var Destination: string; RemovePathPrefix: Boolean): Boolean;
 var
-  Handle: THandle;
   ReparseData: TReparseDataBufferOverlay;
-  BytesReturned: DWORD;
-  SubstituteName: WideString;
-  SubstituteNameAddr: PWideChar;
 begin
   Result := False;
-  if NtfsFileHasReparsePoint(Source) then
-  begin
-    Handle := CreateFile(PChar(Source), GENERIC_READ, 0, nil,
-      OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS or FILE_FLAG_OPEN_REPARSE_POINT, 0);
-    if Handle <> INVALID_HANDLE_VALUE then
-    try
-      BytesReturned := 0;
-      if DeviceIoControl(Handle, FSCTL_GET_REPARSE_POINT, nil, 0, @ReparseData,
-        MAXIMUM_REPARSE_DATA_BUFFER_SIZE, BytesReturned, nil) {and
-        IsReparseTagValid(ReparseData.Reparse.ReparseTag) then}
-        then
-      begin
-        if BytesReturned >= DWORD(ReparseData.Reparse.SubstituteNameLength + SizeOf(WideChar)) then
-        begin
-          SetLength(Destination, ReparseData.Reparse.SubstituteNameLength div SizeOf(WideChar));
-          SubstituteNameAddr := @ReparseData.Reparse.PathBuffer;
-          Inc(SubstituteNameAddr, ReparseData.Reparse.SubstituteNameOffset div SizeOf(WideChar));
-          SetString(SubstituteName, SubstituteNameAddr, Length(Destination));
-          Destination := string(SubstituteName);
+  if NtfsGetReparsePointData(Source, ReparseData) then
+    if ReparseData.Reparse.ReparseTag = IO_REPARSE_TAG_MOUNT_POINT then
+      Result := NtfsReadMountPointDestination(ReparseData, Destination, RemovePathPrefix);
+end;
 
-          Result := True;
-        end;
-      end;
-    finally
-      CloseHandle(Handle);
-    end
+function NtfsIsSymlink(const Path: string): Boolean;
+var
+  Tag: DWORD;
+begin
+  if NtfsGetReparseTag(Path, Tag) then
+    Result := Tag = IO_REPARSE_TAG_SYMLINK
+  else
+    Result := False;
+end;
+
+function NtfsGetSymlinkDestination(const Source: string; var Destination: string; RemovePathPrefix: Boolean): Boolean;
+var
+  ReparseData: TReparseDataBufferOverlay;
+begin
+  Result := False;
+  if NtfsGetReparsePointData(Source, ReparseData) then
+    if ReparseData.Reparse.ReparseTag = IO_REPARSE_TAG_SYMLINK then
+      Result := NtfsReadMountPointDestination(ReparseData, Destination, RemovePathPrefix);
+end;
+
+function NtfsGetReparsePointDestination(const Source: string; var Destination: string; RemovePathPrefix: Boolean): Boolean;
+var
+  ReparseData: TReparseDataBufferOverlay;
+begin
+  Result := False;
+  if NtfsGetReparsePointData(Source, ReparseData) then
+  begin
+    case ReparseData.Reparse.ReparseTag of
+      IO_REPARSE_TAG_MOUNT_POINT,
+      IO_REPARSE_TAG_SYMLINK:
+        Result := NtfsReadMountPointDestination(ReparseData, Destination, RemovePathPrefix);
+    end;
   end;
 end;
 

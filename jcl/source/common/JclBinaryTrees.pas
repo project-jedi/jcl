@@ -117,13 +117,13 @@ type
   protected
     FCursor: TJclIntfBinaryNode;
     FStart: TItrStart;
-    FOwnTree: IJclIntfCollection;
+    FOwnTree: TJclIntfBinaryTree;
     FEqualityComparer: IJclIntfEqualityComparer;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function GetNextCursor: TJclIntfBinaryNode; virtual; abstract;
     function GetPreviousCursor: TJclIntfBinaryNode; virtual; abstract;
   public
-    constructor Create(const AOwnTree: IJclIntfCollection; ACursor: TJclIntfBinaryNode; AValid: Boolean; AStart: TItrStart);
+    constructor Create(const AOwnTree: TJclIntfBinaryTree; ACursor: TJclIntfBinaryNode; AValid: Boolean; AStart: TItrStart);
     { IJclIntfIterator }
     function Add(const AInterface: IInterface): Boolean;
     procedure Extract;
@@ -250,13 +250,13 @@ type
   protected
     FCursor: TJclAnsiStrBinaryNode;
     FStart: TItrStart;
-    FOwnTree: IJclAnsiStrCollection;
+    FOwnTree: TJclAnsiStrBinaryTree;
     FEqualityComparer: IJclAnsiStrEqualityComparer;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function GetNextCursor: TJclAnsiStrBinaryNode; virtual; abstract;
     function GetPreviousCursor: TJclAnsiStrBinaryNode; virtual; abstract;
   public
-    constructor Create(const AOwnTree: IJclAnsiStrCollection; ACursor: TJclAnsiStrBinaryNode; AValid: Boolean; AStart: TItrStart);
+    constructor Create(const AOwnTree: TJclAnsiStrBinaryTree; ACursor: TJclAnsiStrBinaryNode; AValid: Boolean; AStart: TItrStart);
     { IJclAnsiStrIterator }
     function Add(const AString: AnsiString): Boolean;
     procedure Extract;
@@ -383,13 +383,13 @@ type
   protected
     FCursor: TJclWideStrBinaryNode;
     FStart: TItrStart;
-    FOwnTree: IJclWideStrCollection;
+    FOwnTree: TJclWideStrBinaryTree;
     FEqualityComparer: IJclWideStrEqualityComparer;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function GetNextCursor: TJclWideStrBinaryNode; virtual; abstract;
     function GetPreviousCursor: TJclWideStrBinaryNode; virtual; abstract;
   public
-    constructor Create(const AOwnTree: IJclWideStrCollection; ACursor: TJclWideStrBinaryNode; AValid: Boolean; AStart: TItrStart);
+    constructor Create(const AOwnTree: TJclWideStrBinaryTree; ACursor: TJclWideStrBinaryNode; AValid: Boolean; AStart: TItrStart);
     { IJclWideStrIterator }
     function Add(const AString: WideString): Boolean;
     procedure Extract;
@@ -521,13 +521,13 @@ type
   protected
     FCursor: TJclUnicodeStrBinaryNode;
     FStart: TItrStart;
-    FOwnTree: IJclUnicodeStrCollection;
+    FOwnTree: TJclUnicodeStrBinaryTree;
     FEqualityComparer: IJclUnicodeStrEqualityComparer;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function GetNextCursor: TJclUnicodeStrBinaryNode; virtual; abstract;
     function GetPreviousCursor: TJclUnicodeStrBinaryNode; virtual; abstract;
   public
-    constructor Create(const AOwnTree: IJclUnicodeStrCollection; ACursor: TJclUnicodeStrBinaryNode; AValid: Boolean; AStart: TItrStart);
+    constructor Create(const AOwnTree: TJclUnicodeStrBinaryTree; ACursor: TJclUnicodeStrBinaryNode; AValid: Boolean; AStart: TItrStart);
     { IJclUnicodeStrIterator }
     function Add(const AString: UnicodeString): Boolean;
     procedure Extract;
@@ -694,13 +694,13 @@ type
   protected
     FCursor: TJclSingleBinaryNode;
     FStart: TItrStart;
-    FOwnTree: IJclSingleCollection;
+    FOwnTree: TJclSingleBinaryTree;
     FEqualityComparer: IJclSingleEqualityComparer;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function GetNextCursor: TJclSingleBinaryNode; virtual; abstract;
     function GetPreviousCursor: TJclSingleBinaryNode; virtual; abstract;
   public
-    constructor Create(const AOwnTree: IJclSingleCollection; ACursor: TJclSingleBinaryNode; AValid: Boolean; AStart: TItrStart);
+    constructor Create(const AOwnTree: TJclSingleBinaryTree; ACursor: TJclSingleBinaryNode; AValid: Boolean; AStart: TItrStart);
     { IJclSingleIterator }
     function Add(const AValue: Single): Boolean;
     procedure Extract;
@@ -827,13 +827,13 @@ type
   protected
     FCursor: TJclDoubleBinaryNode;
     FStart: TItrStart;
-    FOwnTree: IJclDoubleCollection;
+    FOwnTree: TJclDoubleBinaryTree;
     FEqualityComparer: IJclDoubleEqualityComparer;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function GetNextCursor: TJclDoubleBinaryNode; virtual; abstract;
     function GetPreviousCursor: TJclDoubleBinaryNode; virtual; abstract;
   public
-    constructor Create(const AOwnTree: IJclDoubleCollection; ACursor: TJclDoubleBinaryNode; AValid: Boolean; AStart: TItrStart);
+    constructor Create(const AOwnTree: TJclDoubleBinaryTree; ACursor: TJclDoubleBinaryNode; AValid: Boolean; AStart: TItrStart);
     { IJclDoubleIterator }
     function Add(const AValue: Double): Boolean;
     procedure Extract;
@@ -960,13 +960,13 @@ type
   protected
     FCursor: TJclExtendedBinaryNode;
     FStart: TItrStart;
-    FOwnTree: IJclExtendedCollection;
+    FOwnTree: TJclExtendedBinaryTree;
     FEqualityComparer: IJclExtendedEqualityComparer;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function GetNextCursor: TJclExtendedBinaryNode; virtual; abstract;
     function GetPreviousCursor: TJclExtendedBinaryNode; virtual; abstract;
   public
-    constructor Create(const AOwnTree: IJclExtendedCollection; ACursor: TJclExtendedBinaryNode; AValid: Boolean; AStart: TItrStart);
+    constructor Create(const AOwnTree: TJclExtendedBinaryTree; ACursor: TJclExtendedBinaryNode; AValid: Boolean; AStart: TItrStart);
     { IJclExtendedIterator }
     function Add(const AValue: Extended): Boolean;
     procedure Extract;
@@ -1132,13 +1132,13 @@ type
   protected
     FCursor: TJclIntegerBinaryNode;
     FStart: TItrStart;
-    FOwnTree: IJclIntegerCollection;
+    FOwnTree: TJclIntegerBinaryTree;
     FEqualityComparer: IJclIntegerEqualityComparer;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function GetNextCursor: TJclIntegerBinaryNode; virtual; abstract;
     function GetPreviousCursor: TJclIntegerBinaryNode; virtual; abstract;
   public
-    constructor Create(const AOwnTree: IJclIntegerCollection; ACursor: TJclIntegerBinaryNode; AValid: Boolean; AStart: TItrStart);
+    constructor Create(const AOwnTree: TJclIntegerBinaryTree; ACursor: TJclIntegerBinaryNode; AValid: Boolean; AStart: TItrStart);
     { IJclIntegerIterator }
     function Add(AValue: Integer): Boolean;
     procedure Extract;
@@ -1265,13 +1265,13 @@ type
   protected
     FCursor: TJclCardinalBinaryNode;
     FStart: TItrStart;
-    FOwnTree: IJclCardinalCollection;
+    FOwnTree: TJclCardinalBinaryTree;
     FEqualityComparer: IJclCardinalEqualityComparer;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function GetNextCursor: TJclCardinalBinaryNode; virtual; abstract;
     function GetPreviousCursor: TJclCardinalBinaryNode; virtual; abstract;
   public
-    constructor Create(const AOwnTree: IJclCardinalCollection; ACursor: TJclCardinalBinaryNode; AValid: Boolean; AStart: TItrStart);
+    constructor Create(const AOwnTree: TJclCardinalBinaryTree; ACursor: TJclCardinalBinaryNode; AValid: Boolean; AStart: TItrStart);
     { IJclCardinalIterator }
     function Add(AValue: Cardinal): Boolean;
     procedure Extract;
@@ -1398,13 +1398,13 @@ type
   protected
     FCursor: TJclInt64BinaryNode;
     FStart: TItrStart;
-    FOwnTree: IJclInt64Collection;
+    FOwnTree: TJclInt64BinaryTree;
     FEqualityComparer: IJclInt64EqualityComparer;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function GetNextCursor: TJclInt64BinaryNode; virtual; abstract;
     function GetPreviousCursor: TJclInt64BinaryNode; virtual; abstract;
   public
-    constructor Create(const AOwnTree: IJclInt64Collection; ACursor: TJclInt64BinaryNode; AValid: Boolean; AStart: TItrStart);
+    constructor Create(const AOwnTree: TJclInt64BinaryTree; ACursor: TJclInt64BinaryNode; AValid: Boolean; AStart: TItrStart);
     { IJclInt64Iterator }
     function Add(const AValue: Int64): Boolean;
     procedure Extract;
@@ -1531,13 +1531,13 @@ type
   protected
     FCursor: TJclPtrBinaryNode;
     FStart: TItrStart;
-    FOwnTree: IJclPtrCollection;
+    FOwnTree: TJclPtrBinaryTree;
     FEqualityComparer: IJclPtrEqualityComparer;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function GetNextCursor: TJclPtrBinaryNode; virtual; abstract;
     function GetPreviousCursor: TJclPtrBinaryNode; virtual; abstract;
   public
-    constructor Create(const AOwnTree: IJclPtrCollection; ACursor: TJclPtrBinaryNode; AValid: Boolean; AStart: TItrStart);
+    constructor Create(const AOwnTree: TJclPtrBinaryTree; ACursor: TJclPtrBinaryNode; AValid: Boolean; AStart: TItrStart);
     { IJclPtrIterator }
     function Add(APtr: Pointer): Boolean;
     procedure Extract;
@@ -1664,13 +1664,13 @@ type
   protected
     FCursor: TJclBinaryNode;
     FStart: TItrStart;
-    FOwnTree: IJclCollection;
+    FOwnTree: TJclBinaryTree;
     FEqualityComparer: IJclEqualityComparer;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function GetNextCursor: TJclBinaryNode; virtual; abstract;
     function GetPreviousCursor: TJclBinaryNode; virtual; abstract;
   public
-    constructor Create(const AOwnTree: IJclCollection; ACursor: TJclBinaryNode; AValid: Boolean; AStart: TItrStart);
+    constructor Create(const AOwnTree: TJclBinaryTree; ACursor: TJclBinaryNode; AValid: Boolean; AStart: TItrStart);
     { IJclIterator }
     function Add(AObject: TObject): Boolean;
     procedure Extract;
@@ -1810,13 +1810,13 @@ type
   protected
     FCursor: TJclBinaryNode<T>;
     FStart: TItrStart;
-    FOwnTree: IJclCollection<T>;
+    FOwnTree: TJclBinaryTree<T>;
     FEqualityComparer: IJclEqualityComparer<T>;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function GetNextCursor: TJclBinaryNode<T>; virtual; abstract;
     function GetPreviousCursor: TJclBinaryNode<T>; virtual; abstract;
   public
-    constructor Create(const AOwnTree: IJclCollection<T>; ACursor: TJclBinaryNode<T>; AValid: Boolean; AStart: TItrStart);
+    constructor Create(const AOwnTree: TJclBinaryTree<T>; ACursor: TJclBinaryNode<T>; AValid: Boolean; AStart: TItrStart);
     { IJclIterator<T> }
     function Add(const AItem: T): Boolean;
     procedure Extract;
@@ -2755,7 +2755,7 @@ end;
 
 //=== { TJclIntfBinaryTreeIterator } ===========================================================
 
-constructor TJclIntfBinaryTreeIterator.Create(const AOwnTree: IJclIntfCollection; ACursor: TJclIntfBinaryNode; AValid: Boolean; AStart: TItrStart);
+constructor TJclIntfBinaryTreeIterator.Create(const AOwnTree: TJclIntfBinaryTree; ACursor: TJclIntfBinaryNode; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AValid);
   FCursor := ACursor;
@@ -4242,7 +4242,7 @@ end;
 
 //=== { TJclAnsiStrBinaryTreeIterator } ===========================================================
 
-constructor TJclAnsiStrBinaryTreeIterator.Create(const AOwnTree: IJclAnsiStrCollection; ACursor: TJclAnsiStrBinaryNode; AValid: Boolean; AStart: TItrStart);
+constructor TJclAnsiStrBinaryTreeIterator.Create(const AOwnTree: TJclAnsiStrBinaryTree; ACursor: TJclAnsiStrBinaryNode; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AValid);
   FCursor := ACursor;
@@ -5729,7 +5729,7 @@ end;
 
 //=== { TJclWideStrBinaryTreeIterator } ===========================================================
 
-constructor TJclWideStrBinaryTreeIterator.Create(const AOwnTree: IJclWideStrCollection; ACursor: TJclWideStrBinaryNode; AValid: Boolean; AStart: TItrStart);
+constructor TJclWideStrBinaryTreeIterator.Create(const AOwnTree: TJclWideStrBinaryTree; ACursor: TJclWideStrBinaryNode; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AValid);
   FCursor := ACursor;
@@ -7220,7 +7220,7 @@ end;
 {$IFDEF SUPPORTS_UNICODE_STRING}
 //=== { TJclUnicodeStrBinaryTreeIterator } ===========================================================
 
-constructor TJclUnicodeStrBinaryTreeIterator.Create(const AOwnTree: IJclUnicodeStrCollection; ACursor: TJclUnicodeStrBinaryNode; AValid: Boolean; AStart: TItrStart);
+constructor TJclUnicodeStrBinaryTreeIterator.Create(const AOwnTree: TJclUnicodeStrBinaryTree; ACursor: TJclUnicodeStrBinaryNode; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AValid);
   FCursor := ACursor;
@@ -8708,7 +8708,7 @@ end;
 
 //=== { TJclSingleBinaryTreeIterator } ===========================================================
 
-constructor TJclSingleBinaryTreeIterator.Create(const AOwnTree: IJclSingleCollection; ACursor: TJclSingleBinaryNode; AValid: Boolean; AStart: TItrStart);
+constructor TJclSingleBinaryTreeIterator.Create(const AOwnTree: TJclSingleBinaryTree; ACursor: TJclSingleBinaryNode; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AValid);
   FCursor := ACursor;
@@ -10195,7 +10195,7 @@ end;
 
 //=== { TJclDoubleBinaryTreeIterator } ===========================================================
 
-constructor TJclDoubleBinaryTreeIterator.Create(const AOwnTree: IJclDoubleCollection; ACursor: TJclDoubleBinaryNode; AValid: Boolean; AStart: TItrStart);
+constructor TJclDoubleBinaryTreeIterator.Create(const AOwnTree: TJclDoubleBinaryTree; ACursor: TJclDoubleBinaryNode; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AValid);
   FCursor := ACursor;
@@ -11682,7 +11682,7 @@ end;
 
 //=== { TJclExtendedBinaryTreeIterator } ===========================================================
 
-constructor TJclExtendedBinaryTreeIterator.Create(const AOwnTree: IJclExtendedCollection; ACursor: TJclExtendedBinaryNode; AValid: Boolean; AStart: TItrStart);
+constructor TJclExtendedBinaryTreeIterator.Create(const AOwnTree: TJclExtendedBinaryTree; ACursor: TJclExtendedBinaryNode; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AValid);
   FCursor := ACursor;
@@ -13169,7 +13169,7 @@ end;
 
 //=== { TJclIntegerBinaryTreeIterator } ===========================================================
 
-constructor TJclIntegerBinaryTreeIterator.Create(const AOwnTree: IJclIntegerCollection; ACursor: TJclIntegerBinaryNode; AValid: Boolean; AStart: TItrStart);
+constructor TJclIntegerBinaryTreeIterator.Create(const AOwnTree: TJclIntegerBinaryTree; ACursor: TJclIntegerBinaryNode; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AValid);
   FCursor := ACursor;
@@ -14656,7 +14656,7 @@ end;
 
 //=== { TJclCardinalBinaryTreeIterator } ===========================================================
 
-constructor TJclCardinalBinaryTreeIterator.Create(const AOwnTree: IJclCardinalCollection; ACursor: TJclCardinalBinaryNode; AValid: Boolean; AStart: TItrStart);
+constructor TJclCardinalBinaryTreeIterator.Create(const AOwnTree: TJclCardinalBinaryTree; ACursor: TJclCardinalBinaryNode; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AValid);
   FCursor := ACursor;
@@ -16143,7 +16143,7 @@ end;
 
 //=== { TJclInt64BinaryTreeIterator } ===========================================================
 
-constructor TJclInt64BinaryTreeIterator.Create(const AOwnTree: IJclInt64Collection; ACursor: TJclInt64BinaryNode; AValid: Boolean; AStart: TItrStart);
+constructor TJclInt64BinaryTreeIterator.Create(const AOwnTree: TJclInt64BinaryTree; ACursor: TJclInt64BinaryNode; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AValid);
   FCursor := ACursor;
@@ -17630,7 +17630,7 @@ end;
 
 //=== { TJclPtrBinaryTreeIterator } ===========================================================
 
-constructor TJclPtrBinaryTreeIterator.Create(const AOwnTree: IJclPtrCollection; ACursor: TJclPtrBinaryNode; AValid: Boolean; AStart: TItrStart);
+constructor TJclPtrBinaryTreeIterator.Create(const AOwnTree: TJclPtrBinaryTree; ACursor: TJclPtrBinaryNode; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AValid);
   FCursor := ACursor;
@@ -19117,7 +19117,7 @@ end;
 
 //=== { TJclBinaryTreeIterator } ===========================================================
 
-constructor TJclBinaryTreeIterator.Create(const AOwnTree: IJclCollection; ACursor: TJclBinaryNode; AValid: Boolean; AStart: TItrStart);
+constructor TJclBinaryTreeIterator.Create(const AOwnTree: TJclBinaryTree; ACursor: TJclBinaryNode; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AValid);
   FCursor := ACursor;
@@ -20602,7 +20602,7 @@ end;
 
 //=== { TJclBinaryTreeIterator<T> } ===========================================================
 
-constructor TJclBinaryTreeIterator<T>.Create(const AOwnTree: IJclCollection<T>; ACursor: TJclBinaryNode<T>; AValid: Boolean; AStart: TItrStart);
+constructor TJclBinaryTreeIterator<T>.Create(const AOwnTree: TJclBinaryTree<T>; ACursor: TJclBinaryNode<T>; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AValid);
   FCursor := ACursor;

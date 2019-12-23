@@ -286,6 +286,10 @@ type
     ccSegmentSeparator,      // this includes tab and vertical tab
     ccWhiteSpace,            // Separator characters and control characters which should be treated by programming languages as "white space" for the purpose of parsing elements.
     ccOtherNeutrals,
+    ccLeftToRightIsolate,
+    ccRightToLeftIsolate,
+    ccFirstStrongIsolate,
+    ccPopDirectionalIsolate,
     // self defined categories, they do not appear in the Unicode data file
     ccComposed,              // can be decomposed
     ccNonBreaking,
@@ -322,7 +326,10 @@ type
     ccSTerm,                 // Sentence Terminal. Used in UAX #29: Unicode Text Segmentation [UAX29].
     ccTerminalPunctuation,   // Punctuation characters that generally mark the end of textual units.
     ccUnifiedIdeograph,      // Used in Ideographic Description Sequences.
-    ccVariationSelector     // Indicates characters that are Variation Selectors. For details on the behavior of these characters, see StandardizedVariants.html, Section 16.4, "Variation Selectors" in [Unicode], and the Unicode Ideographic Variation Database [UTS37].
+    ccVariationSelector,     // Indicates characters that are Variation Selectors. For details on the behavior of these characters, see StandardizedVariants.html, Section 16.4, "Variation Selectors" in [Unicode], and the Unicode Ideographic Variation Database [UTS37].
+    ccSentenceTerminal,      // Characters used at the end of a sentence
+    ccPrependedQuotationMark,
+    ccRegionalIndicator
   );
   TCharacterCategories = set of TCharacterCategory;
 
