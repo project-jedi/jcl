@@ -61,10 +61,14 @@ type
     FHead: Integer;
     FTail: Integer;
   protected
+    procedure AutoGrow; override;
+    procedure AutoPack; override;
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
+    { IJclGrowable }
+    procedure Grow; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -89,10 +93,14 @@ type
     FHead: Integer;
     FTail: Integer;
   protected
+    procedure AutoGrow; override;
+    procedure AutoPack; override;
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
+    { IJclGrowable }
+    procedure Grow; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -117,10 +125,14 @@ type
     FHead: Integer;
     FTail: Integer;
   protected
+    procedure AutoGrow; override;
+    procedure AutoPack; override;
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
+    { IJclGrowable }
+    procedure Grow; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -146,10 +158,14 @@ type
     FHead: Integer;
     FTail: Integer;
   protected
+    procedure AutoGrow; override;
+    procedure AutoPack; override;
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
+    { IJclGrowable }
+    procedure Grow; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -185,10 +201,14 @@ type
     FHead: Integer;
     FTail: Integer;
   protected
+    procedure AutoGrow; override;
+    procedure AutoPack; override;
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
+    { IJclGrowable }
+    procedure Grow; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -213,10 +233,14 @@ type
     FHead: Integer;
     FTail: Integer;
   protected
+    procedure AutoGrow; override;
+    procedure AutoPack; override;
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
+    { IJclGrowable }
+    procedure Grow; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -241,10 +265,14 @@ type
     FHead: Integer;
     FTail: Integer;
   protected
+    procedure AutoGrow; override;
+    procedure AutoPack; override;
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
+    { IJclGrowable }
+    procedure Grow; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -279,10 +307,14 @@ type
     FHead: Integer;
     FTail: Integer;
   protected
+    procedure AutoGrow; override;
+    procedure AutoPack; override;
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
+    { IJclGrowable }
+    procedure Grow; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -307,10 +339,14 @@ type
     FHead: Integer;
     FTail: Integer;
   protected
+    procedure AutoGrow; override;
+    procedure AutoPack; override;
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
+    { IJclGrowable }
+    procedure Grow; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -335,10 +371,14 @@ type
     FHead: Integer;
     FTail: Integer;
   protected
+    procedure AutoGrow; override;
+    procedure AutoPack; override;
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
+    { IJclGrowable }
+    procedure Grow; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -363,10 +403,14 @@ type
     FHead: Integer;
     FTail: Integer;
   protected
+    procedure AutoGrow; override;
+    procedure AutoPack; override;
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
+    { IJclGrowable }
+    procedure Grow; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -391,10 +435,14 @@ type
     FHead: Integer;
     FTail: Integer;
   protected
+    procedure AutoGrow; override;
+    procedure AutoPack; override;
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer; AOwnsObjects: Boolean);
     destructor Destroy; override;
+    { IJclGrowable }
+    procedure Grow; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -425,10 +473,14 @@ type
     FHead: Integer;
     FTail: Integer;
   protected
+    procedure AutoGrow; override;
+    procedure AutoPack; override;
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
   public
     constructor Create(ACapacity: Integer; AOwnsItems: Boolean);
     destructor Destroy; override;
+    { IJclGrowable }
+    procedure Grow; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -551,6 +603,16 @@ begin
         I := 0;
     end;
   end;
+end;
+
+procedure TJclIntfQueue.AutoGrow;
+begin
+  SetCapacity(CalcGrowCapacity(FCapacity, Size + 1));
+end;
+
+procedure TJclIntfQueue.AutoPack;
+begin
+  SetCapacity(CalcPackCapacity(FCapacity, Size + 1));
 end;
 
 procedure TJclIntfQueue.Clear;
@@ -677,6 +739,24 @@ begin
       if FTail = FCapacity then
         FTail := 0;
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntfQueue.Grow;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    SetCapacity(Size + 1);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -836,6 +916,16 @@ begin
   end;
 end;
 
+procedure TJclAnsiStrQueue.AutoGrow;
+begin
+  SetCapacity(CalcGrowCapacity(FCapacity, Size + 1));
+end;
+
+procedure TJclAnsiStrQueue.AutoPack;
+begin
+  SetCapacity(CalcPackCapacity(FCapacity, Size + 1));
+end;
+
 procedure TJclAnsiStrQueue.Clear;
 var
   I: Integer;
@@ -960,6 +1050,24 @@ begin
       if FTail = FCapacity then
         FTail := 0;
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclAnsiStrQueue.Grow;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    SetCapacity(Size + 1);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -1119,6 +1227,16 @@ begin
   end;
 end;
 
+procedure TJclWideStrQueue.AutoGrow;
+begin
+  SetCapacity(CalcGrowCapacity(FCapacity, Size + 1));
+end;
+
+procedure TJclWideStrQueue.AutoPack;
+begin
+  SetCapacity(CalcPackCapacity(FCapacity, Size + 1));
+end;
+
 procedure TJclWideStrQueue.Clear;
 var
   I: Integer;
@@ -1243,6 +1361,24 @@ begin
       if FTail = FCapacity then
         FTail := 0;
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclWideStrQueue.Grow;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    SetCapacity(Size + 1);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -1403,6 +1539,16 @@ begin
   end;
 end;
 
+procedure TJclUnicodeStrQueue.AutoGrow;
+begin
+  SetCapacity(CalcGrowCapacity(FCapacity, Size + 1));
+end;
+
+procedure TJclUnicodeStrQueue.AutoPack;
+begin
+  SetCapacity(CalcPackCapacity(FCapacity, Size + 1));
+end;
+
 procedure TJclUnicodeStrQueue.Clear;
 var
   I: Integer;
@@ -1527,6 +1673,24 @@ begin
       if FTail = FCapacity then
         FTail := 0;
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrQueue.Grow;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    SetCapacity(Size + 1);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -1688,6 +1852,16 @@ begin
   end;
 end;
 
+procedure TJclSingleQueue.AutoGrow;
+begin
+  SetCapacity(CalcGrowCapacity(FCapacity, Size + 1));
+end;
+
+procedure TJclSingleQueue.AutoPack;
+begin
+  SetCapacity(CalcPackCapacity(FCapacity, Size + 1));
+end;
+
 procedure TJclSingleQueue.Clear;
 var
   I: Integer;
@@ -1812,6 +1986,24 @@ begin
       if FTail = FCapacity then
         FTail := 0;
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclSingleQueue.Grow;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    SetCapacity(Size + 1);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -1971,6 +2163,16 @@ begin
   end;
 end;
 
+procedure TJclDoubleQueue.AutoGrow;
+begin
+  SetCapacity(CalcGrowCapacity(FCapacity, Size + 1));
+end;
+
+procedure TJclDoubleQueue.AutoPack;
+begin
+  SetCapacity(CalcPackCapacity(FCapacity, Size + 1));
+end;
+
 procedure TJclDoubleQueue.Clear;
 var
   I: Integer;
@@ -2095,6 +2297,24 @@ begin
       if FTail = FCapacity then
         FTail := 0;
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclDoubleQueue.Grow;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    SetCapacity(Size + 1);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -2254,6 +2474,16 @@ begin
   end;
 end;
 
+procedure TJclExtendedQueue.AutoGrow;
+begin
+  SetCapacity(CalcGrowCapacity(FCapacity, Size + 1));
+end;
+
+procedure TJclExtendedQueue.AutoPack;
+begin
+  SetCapacity(CalcPackCapacity(FCapacity, Size + 1));
+end;
+
 procedure TJclExtendedQueue.Clear;
 var
   I: Integer;
@@ -2378,6 +2608,24 @@ begin
       if FTail = FCapacity then
         FTail := 0;
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclExtendedQueue.Grow;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    SetCapacity(Size + 1);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -2537,6 +2785,16 @@ begin
   end;
 end;
 
+procedure TJclIntegerQueue.AutoGrow;
+begin
+  SetCapacity(CalcGrowCapacity(FCapacity, Size + 1));
+end;
+
+procedure TJclIntegerQueue.AutoPack;
+begin
+  SetCapacity(CalcPackCapacity(FCapacity, Size + 1));
+end;
+
 procedure TJclIntegerQueue.Clear;
 var
   I: Integer;
@@ -2661,6 +2919,24 @@ begin
       if FTail = FCapacity then
         FTail := 0;
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntegerQueue.Grow;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    SetCapacity(Size + 1);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -2820,6 +3096,16 @@ begin
   end;
 end;
 
+procedure TJclCardinalQueue.AutoGrow;
+begin
+  SetCapacity(CalcGrowCapacity(FCapacity, Size + 1));
+end;
+
+procedure TJclCardinalQueue.AutoPack;
+begin
+  SetCapacity(CalcPackCapacity(FCapacity, Size + 1));
+end;
+
 procedure TJclCardinalQueue.Clear;
 var
   I: Integer;
@@ -2944,6 +3230,24 @@ begin
       if FTail = FCapacity then
         FTail := 0;
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclCardinalQueue.Grow;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    SetCapacity(Size + 1);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -3103,6 +3407,16 @@ begin
   end;
 end;
 
+procedure TJclInt64Queue.AutoGrow;
+begin
+  SetCapacity(CalcGrowCapacity(FCapacity, Size + 1));
+end;
+
+procedure TJclInt64Queue.AutoPack;
+begin
+  SetCapacity(CalcPackCapacity(FCapacity, Size + 1));
+end;
+
 procedure TJclInt64Queue.Clear;
 var
   I: Integer;
@@ -3227,6 +3541,24 @@ begin
       if FTail = FCapacity then
         FTail := 0;
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclInt64Queue.Grow;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    SetCapacity(Size + 1);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -3386,6 +3718,16 @@ begin
   end;
 end;
 
+procedure TJclPtrQueue.AutoGrow;
+begin
+  SetCapacity(CalcGrowCapacity(FCapacity, Size + 1));
+end;
+
+procedure TJclPtrQueue.AutoPack;
+begin
+  SetCapacity(CalcPackCapacity(FCapacity, Size + 1));
+end;
+
 procedure TJclPtrQueue.Clear;
 var
   I: Integer;
@@ -3510,6 +3852,24 @@ begin
       if FTail = FCapacity then
         FTail := 0;
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclPtrQueue.Grow;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    SetCapacity(Size + 1);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -3669,6 +4029,16 @@ begin
   end;
 end;
 
+procedure TJclQueue.AutoGrow;
+begin
+  SetCapacity(CalcGrowCapacity(FCapacity, Size + 1));
+end;
+
+procedure TJclQueue.AutoPack;
+begin
+  SetCapacity(CalcPackCapacity(FCapacity, Size + 1));
+end;
+
 procedure TJclQueue.Clear;
 var
   I: Integer;
@@ -3793,6 +4163,24 @@ begin
       if FTail = FCapacity then
         FTail := 0;
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclQueue.Grow;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    SetCapacity(Size + 1);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -3956,6 +4344,16 @@ begin
   end;
 end;
 
+procedure TJclQueue<T>.AutoGrow;
+begin
+  SetCapacity(CalcGrowCapacity(FCapacity, Size + 1));
+end;
+
+procedure TJclQueue<T>.AutoPack;
+begin
+  SetCapacity(CalcPackCapacity(FCapacity, Size + 1));
+end;
+
 procedure TJclQueue<T>.Clear;
 var
   I: Integer;
@@ -4080,6 +4478,24 @@ begin
       if FTail = FCapacity then
         FTail := 0;
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclQueue<T>.Grow;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    SetCapacity(Size + 1);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then

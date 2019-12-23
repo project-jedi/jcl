@@ -1136,12 +1136,12 @@ type
   private
     FCursor: Integer;
     FStart: TItrStart;
-    FOwnList: IJclList<T>;
+    FOwnList: TJclArrayList<T>;
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function CreateEmptyIterator: TJclAbstractIterator; override;
   public
-    constructor Create(AOwnList: IJclList<T>; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    constructor Create(AOwnList: TJclArrayList<T>; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
     { IJclIterator<T> }
     function Add(const AItem: T): Boolean;
     procedure Extract;
@@ -11812,7 +11812,7 @@ end;
 
 //=== { TJclArrayIterator<T> } ===============================================================
 
-constructor TJclArrayIterator<T>.Create(AOwnList: IJclList<T>; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+constructor TJclArrayIterator<T>.Create(AOwnList: TJclArrayList<T>; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AValid);
   FOwnList := AOwnList;
