@@ -358,7 +358,7 @@ begin
       AddRangeToCategories(Start, Stop, CategoriesStrings[Index].Category);
       Exit;
     end;
-  FatalError('No unicode category for ID "' + CategoryID + '"');
+  FatalError('No unicode category for ID "' + string(CategoryID) + '"');
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -385,7 +385,7 @@ begin
       AddToCategories(Code, CategoriesStrings[Index].Category);
       Exit;
     end;
-  FatalError('No unicode category for ID "' + CategoryID + '"');
+  FatalError('No unicode category for ID "' + string(CategoryID) + '"');
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -1091,12 +1091,12 @@ begin
           begin
             Start := StrToInt('$' + Copy(Line[0], 1, SeparatorPos - 1));
             Stop := StrToInt('$' + Copy(Line[0], SeparatorPos + 2, MaxInt));
-            AddRangeToCategories(Start, Stop, Line[1]);
+            AddRangeToCategories(Start, Stop, AnsiString(Line[1]));
           end
           else
           begin
             Start := StrToInt('$' + Line[0]);
-            AddToCategories(Start, Line[1]);
+            AddToCategories(Start, AnsiString(Line[1]));
           end;
         end;
         if not Verbose then
