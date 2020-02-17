@@ -500,29 +500,33 @@ const
 
 function Execute(const CommandLine: string; OutputLineCallback: TTextHandler; RawOutput: Boolean = False;
   AbortPtr: PBoolean = nil; ProcessPriority: TJclProcessPriority = ppNormal;
-  AutoConvertOem: Boolean = False): Cardinal; overload;
+  AutoConvertOem: Boolean = False; const CurrentDirectory: string = ''): Cardinal; overload;
 function Execute(const CommandLine: string; AbortEvent: TJclEvent;
   OutputLineCallback: TTextHandler; RawOutput: Boolean = False; ProcessPriority: TJclProcessPriority = ppNormal;
-  AutoConvertOem: Boolean = False): Cardinal; overload;
+  AutoConvertOem: Boolean = False; const CurrentDirectory: string = ''): Cardinal; overload;
 function Execute(const CommandLine: string; var Output: string; RawOutput: Boolean = False;
   AbortPtr: PBoolean = nil; ProcessPriority: TJclProcessPriority = ppNormal;
-  AutoConvertOem: Boolean = False): Cardinal; overload;
+  AutoConvertOem: Boolean = False; const CurrentDirectory: string = ''): Cardinal; overload;
 function Execute(const CommandLine: string; AbortEvent: TJclEvent;
   var Output: string; RawOutput: Boolean = False; ProcessPriority: TJclProcessPriority = ppNormal;
-  AutoConvertOem: Boolean = False): Cardinal; overload;
+  AutoConvertOem: Boolean = False; const CurrentDirectory: string = ''): Cardinal; overload;
 
 function Execute(const CommandLine: string; OutputLineCallback, ErrorLineCallback: TTextHandler;
   RawOutput: Boolean = False; RawError: Boolean = False; AbortPtr: PBoolean = nil;
-  ProcessPriority: TJclProcessPriority = ppNormal; AutoConvertOem: Boolean = False): Cardinal; overload;
+  ProcessPriority: TJclProcessPriority = ppNormal; AutoConvertOem: Boolean = False;
+  const CurrentDirectory: string = ''): Cardinal; overload;
 function Execute(const CommandLine: string; AbortEvent: TJclEvent;
   OutputLineCallback, ErrorLineCallback: TTextHandler; RawOutput: Boolean = False; RawError: Boolean = False;
-  ProcessPriority: TJclProcessPriority = ppNormal; AutoConvertOem: Boolean = False): Cardinal; overload;
+  ProcessPriority: TJclProcessPriority = ppNormal; AutoConvertOem: Boolean = False;
+  const CurrentDirectory: string = ''): Cardinal; overload;
 function Execute(const CommandLine: string; var Output, Error: string;
   RawOutput: Boolean = False; RawError: Boolean = False; AbortPtr: PBoolean = nil;
-  ProcessPriority: TJclProcessPriority = ppNormal; AutoConvertOem: Boolean = False): Cardinal; overload;
+  ProcessPriority: TJclProcessPriority = ppNormal; AutoConvertOem: Boolean = False;
+  const CurrentDirectory: string = ''): Cardinal; overload;
 function Execute(const CommandLine: string; AbortEvent: TJclEvent;
   var Output, Error: string; RawOutput: Boolean = False; RawError: Boolean = False;
-  ProcessPriority: TJclProcessPriority = ppNormal; AutoConvertOem: Boolean = False): Cardinal; overload;
+  ProcessPriority: TJclProcessPriority = ppNormal; AutoConvertOem: Boolean = False;
+  const CurrentDirectory: string = ''): Cardinal; overload;
 
 type
   {$IFDEF MSWINDOWS}
@@ -548,6 +552,7 @@ type
     FCreateProcessFlags: DWORD;
     FStartupVisibility: TStartupVisibility;
     FBeforeResume: TJclExecuteCmdProcessOptionBeforeResumeEvent;
+    FCurrentDirectory: string;
     {$ENDIF MSWINDOWS}
 
     FExitCode: Cardinal;
@@ -573,6 +578,7 @@ type
     property CreateProcessFlags: DWORD read FCreateProcessFlags write FCreateProcessFlags;
     property StartupVisibility: TStartupVisibility read FStartupVisibility write FStartupVisibility;
     property BeforeResume: TJclExecuteCmdProcessOptionBeforeResumeEvent read FBeforeResume write FBeforeResume;
+    property CurrentDirectory: string read FCurrentDirectory write FCurrentDirectory;
     {$ENDIF MSWINDOWS}
 
     // out:
@@ -3009,6 +3015,7 @@ var
   CommandLine: string;
   AbortPtr: PBoolean;
   Flags: DWORD;
+  PCurrentDirectory: PChar;
 begin
   Result := False;
 
@@ -3064,6 +3071,7 @@ begin
   UniqueString(CommandLine); // CommandLine must be in a writable memory block
   ResetMemory(ProcessInfo, SizeOf(ProcessInfo));
   ProcessEvent := nil;
+  PCurrentDirectory := Iff(Length(Options.CurrentDirectory) = 0, nil, PChar(Options.CurrentDirectory));
   try
     Flags := Options.CreateProcessFlags and not (NORMAL_PRIORITY_CLASS or IDLE_PRIORITY_CLASS or
                                                  HIGH_PRIORITY_CLASS or REALTIME_PRIORITY_CLASS);
@@ -3072,7 +3080,7 @@ begin
       Flags := Flags or CREATE_SUSPENDED;
 
     if CreateProcess(nil, PChar(CommandLine), nil, nil, True, Flags,
-      nil, nil, StartupInfo, ProcessInfo) then
+      nil, PCurrentDirectory, StartupInfo, ProcessInfo) then
     begin
       Result := True;
       try
@@ -3266,7 +3274,7 @@ end;
 function InternalExecute(CommandLine: string; AbortPtr: PBoolean; AbortEvent: TJclEvent;
   var Output: string; OutputLineCallback: TTextHandler; RawOutput: Boolean;
   MergeError: Boolean; var Error: string; ErrorLineCallback: TTextHandler; RawError: Boolean;
-  ProcessPriority: TJclProcessPriority; AutoConvertOem: Boolean): Cardinal;
+  ProcessPriority: TJclProcessPriority; AutoConvertOem: Boolean; const CurrentDirectory: string): Cardinal;
 var
   Options: TJclExecuteCmdProcessOptions;
 begin
@@ -3282,6 +3290,7 @@ begin
     Options.ErrorLineCallback := ErrorLineCallback;
     Options.RawError := RawError;
     Options.ProcessPriority := ProcessPriority;
+    Options.CurrentDirectory := CurrentDirectory;
 
     ExecuteCmdProcess(Options);
 
@@ -3300,23 +3309,24 @@ RawOutput: Do not process isolated carriage returns (#13).
 That is, for RawOutput = False, lines not terminated by a line feed (#10) are deleted from Output. }
 
 function Execute(const CommandLine: string; var Output: string; RawOutput: Boolean;
-  AbortPtr: PBoolean; ProcessPriority: TJclProcessPriority; AutoConvertOem: Boolean): Cardinal;
+  AbortPtr: PBoolean; ProcessPriority: TJclProcessPriority; AutoConvertOem: Boolean;
+  const CurrentDirectory: string): Cardinal;
 var
   Error: string;
 begin
   Error := '';
   Result := InternalExecute(CommandLine, AbortPtr, nil, Output, nil, RawOutput, True, Error,
-    nil, False, ProcessPriority, AutoConvertOem);
+    nil, False, ProcessPriority, AutoConvertOem, CurrentDirectory);
 end;
 
 function Execute(const CommandLine: string; AbortEvent: TJclEvent; var Output: string; RawOutput: Boolean;
-  ProcessPriority: TJclProcessPriority; AutoConvertOem: Boolean): Cardinal;
+  ProcessPriority: TJclProcessPriority; AutoConvertOem: Boolean; const CurrentDirectory: string): Cardinal;
 var
   Error: string;
 begin
   Error := '';
   Result := InternalExecute(CommandLine, nil, AbortEvent, Output, nil, RawOutput, True, Error,
-    nil, False, ProcessPriority, AutoConvertOem);
+    nil, False, ProcessPriority, AutoConvertOem, CurrentDirectory);
 end;
 
 { TODO -cHelp :
@@ -3324,25 +3334,26 @@ Author: Robert Rossmair
 OutputLineCallback called once per line of output. }
 
 function Execute(const CommandLine: string; OutputLineCallback: TTextHandler; RawOutput: Boolean;
-  AbortPtr: PBoolean; ProcessPriority: TJclProcessPriority; AutoConvertOem: Boolean): Cardinal;
+  AbortPtr: PBoolean; ProcessPriority: TJclProcessPriority; AutoConvertOem: Boolean;
+  const CurrentDirectory: string): Cardinal;
 var
   Output, Error: string;
 begin
   Output := '';
   Error := '';
   Result := InternalExecute(CommandLine, AbortPtr, nil, Output, OutputLineCallback, RawOutput, True, Error,
-    nil, False, ProcessPriority, AutoConvertOem);
+    nil, False, ProcessPriority, AutoConvertOem, CurrentDirectory);
 end;
 
 function Execute(const CommandLine: string; AbortEvent: TJclEvent; OutputLineCallback: TTextHandler; RawOutput: Boolean;
-  ProcessPriority: TJclProcessPriority; AutoConvertOem: Boolean): Cardinal;
+  ProcessPriority: TJclProcessPriority; AutoConvertOem: Boolean; const CurrentDirectory: string): Cardinal;
 var
   Output, Error: string;
 begin
   Output := '';
   Error := '';
   Result := InternalExecute(CommandLine, nil, AbortEvent, Output, OutputLineCallback, RawOutput, True, Error,
-    nil, False, ProcessPriority, AutoConvertOem);
+    nil, False, ProcessPriority, AutoConvertOem, CurrentDirectory);
 end;
 
 { TODO -cHelp :
@@ -3350,17 +3361,19 @@ RawOutput: Do not process isolated carriage returns (#13).
 That is, for RawOutput = False, lines not terminated by a line feed (#10) are deleted from Output. }
 
 function Execute(const CommandLine: string; var Output, Error: string; RawOutput, RawError: Boolean;
-  AbortPtr: PBoolean; ProcessPriority: TJclProcessPriority; AutoConvertOem: Boolean): Cardinal;
+  AbortPtr: PBoolean; ProcessPriority: TJclProcessPriority; AutoConvertOem: Boolean;
+  const CurrentDirectory: string): Cardinal;
 begin
   Result := InternalExecute(CommandLine, AbortPtr, nil, Output, nil, RawOutput, False, Error,
-    nil, RawError, ProcessPriority, AutoConvertOem);
+    nil, RawError, ProcessPriority, AutoConvertOem, CurrentDirectory);
 end;
 
 function Execute(const CommandLine: string; AbortEvent: TJclEvent; var Output, Error: string;
-  RawOutput, RawError: Boolean; ProcessPriority: TJclProcessPriority; AutoConvertOem: Boolean): Cardinal;
+  RawOutput, RawError: Boolean; ProcessPriority: TJclProcessPriority; AutoConvertOem: Boolean;
+  const CurrentDirectory: string): Cardinal;
 begin
   Result := InternalExecute(CommandLine, nil, AbortEvent, Output, nil, RawOutput, False, Error,
-    nil, RawError, ProcessPriority, AutoConvertOem);
+    nil, RawError, ProcessPriority, AutoConvertOem, CurrentDirectory);
 end;
 
 { TODO -cHelp :
@@ -3368,25 +3381,27 @@ Author: Robert Rossmair
 OutputLineCallback called once per line of output. }
 
 function Execute(const CommandLine: string; OutputLineCallback, ErrorLineCallback: TTextHandler;
-  RawOutput, RawError: Boolean; AbortPtr: PBoolean; ProcessPriority: TJclProcessPriority; AutoConvertOem: Boolean): Cardinal;
+  RawOutput, RawError: Boolean; AbortPtr: PBoolean; ProcessPriority: TJclProcessPriority; AutoConvertOem: Boolean;
+  const CurrentDirectory: string): Cardinal;
 var
   Output, Error: string;
 begin
   Output := '';
   Error := '';
   Result := InternalExecute(CommandLine, AbortPtr, nil, Output, OutputLineCallback, RawOutput, False, Error,
-    ErrorLineCallback, RawError, ProcessPriority, AutoConvertOem);
+    ErrorLineCallback, RawError, ProcessPriority, AutoConvertOem, CurrentDirectory);
 end;
 
 function Execute(const CommandLine: string; AbortEvent: TJclEvent; OutputLineCallback, ErrorLineCallback: TTextHandler;
-  RawOutput, RawError: Boolean; ProcessPriority: TJclProcessPriority; AutoConvertOem: Boolean): Cardinal;
+  RawOutput, RawError: Boolean; ProcessPriority: TJclProcessPriority; AutoConvertOem: Boolean;
+  const CurrentDirectory: string): Cardinal;
 var
   Output, Error: string;
 begin
   Output := '';
   Error := '';
   Result := InternalExecute(CommandLine, nil, AbortEvent, Output, OutputLineCallback, RawOutput, False, Error,
-    ErrorLineCallback, RawError, ProcessPriority, AutoConvertOem);
+    ErrorLineCallback, RawError, ProcessPriority, AutoConvertOem, CurrentDirectory);
 end;
 
 //=== { TJclCommandLineTool } ================================================
