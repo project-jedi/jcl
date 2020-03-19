@@ -1711,7 +1711,10 @@ var
           Target.BCC.Options.Add('-fno-spell-checking');
           Target.BCC.Options.Add('-fno-use-cxa-atexit');
           Target.BCC.Options.Add('-x c++');
-          Target.BCC.Options.Add('-std=c++11');
+          if Target.IDEVersionNumber >= 20 then
+            Target.BCC.Options.Add('-std=c++17')
+          else
+            Target.BCC.Options.Add('-std=c++11');
           Target.BCC.Options.Add('-O0');
           Target.BCC.Options.Add('-tC');
           Target.BCC.Options.Add('-tM');
