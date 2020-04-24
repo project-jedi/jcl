@@ -2407,19 +2407,22 @@ begin
         List{$IFNDEF RTL230_UP}^{$ENDIF !RTL230_UP}[I] := ExportItem;
       end;
 
-      for I := 0 to NameCount - 1 do
+      if NameCount > 0 then
       begin
+        for I := 0 to NameCount - 1 do
+        begin
           // named function
-        UTF8Name := PAnsiChar(RvaToVa(Names^));
-        if not TryUTF8ToString(UTF8Name, ExportName) then
-          ExportName := string(UTF8Name);
+          UTF8Name := PAnsiChar(RvaToVa(Names^));
+          if not TryUTF8ToString(UTF8Name, ExportName) then
+            ExportName := string(UTF8Name);
 
-        ExportItem := TJclPeExportFuncItem(List{$IFNDEF RTL230_UP}^{$ENDIF !RTL230_UP}[NameOrdinals^]);
-        ExportItem.FName := ExportName;
-        ExportItem.FHint := I;
+          ExportItem := TJclPeExportFuncItem(List{$IFNDEF RTL230_UP}^{$ENDIF !RTL230_UP}[NameOrdinals^]);
+          ExportItem.FName := ExportName;
+          ExportItem.FHint := I;
 
-        Inc(NameOrdinals);
-        Inc(Names);
+          Inc(NameOrdinals);
+          Inc(Names);
+        end;
       end;
     end;
   end;

@@ -132,6 +132,8 @@ type
   TCompactPath = ({cpBegin, }cpCenter, cpEnd);
 
 function CharIsDriveLetter(const C: char): Boolean;
+function CharIsInvalidFileNameCharacter(const C: Char): Boolean;
+function CharIsInvalidPathCharacter(const C: Char): Boolean;
 
 function PathAddSeparator(const Path: string): string;
 function PathAddExtension(const Path, Extension: string): string;
@@ -1049,25 +1051,26 @@ function PathListItemIndex(const List, Item: string): Integer;
 // returns the name of the command line parameter at position index, which is
 // separated by the given separator, if the first character of the name part
 // is one of the AllowedPrefixCharacters, this character will be deleted.
-function ParamName  (Index : Integer; const Separator : string = '=';
-             const AllowedPrefixCharacters : string = '-/'; TrimName : Boolean = true) : string;
+function ParamName(Index: Integer; const Separator: string = '=';
+  const AllowedPrefixCharacters: string = '-/'; TrimName: Boolean = True): string;
 // returns the value of the command line parameter at position index, which is
 // separated by the given separator
-function ParamValue (Index : Integer; const Separator : string = '='; TrimValue : Boolean = true) : string; overload;
+function ParamValue (Index: Integer; const Separator: string = '='; TrimValue: Boolean = True): string; overload;
 // seaches a command line parameter where the namepart is the searchname
 // and returns the value which is which by the given separator.
 // CaseSensitive defines the search type. if the first character of the name part
 // is one of the AllowedPrefixCharacters, this character will be deleted.
-function ParamValue (const SearchName : string; const Separator : string = '=';
-             CaseSensitive : Boolean = False;
-             const AllowedPrefixCharacters : string = '-/'; TrimValue : Boolean = true) : string; overload;
+function ParamValue (const SearchName: string; const Separator: string = '=';
+             CaseSensitive: Boolean = False;
+             const AllowedPrefixCharacters: string = '-/'; TrimValue: Boolean = True): string; overload;
 // seaches a command line parameter where the namepart is the searchname
 // and returns the position index. if no separator is defined, the full paramstr is compared.
 // CaseSensitive defines the search type. if the first character of the name part
 // is one of the AllowedPrefixCharacters, this character will be deleted.
-function ParamPos (const SearchName : string; const Separator : string = '=';
-             CaseSensitive : Boolean = False;
-             const AllowedPrefixCharacters : string = '-/'): Integer;
+function ParamPos (const SearchName: string; const Separator: string = '=';
+             CaseSensitive: Boolean = False;
+             const AllowedPrefixCharacters: string = '-/'): Integer;
+
 
 {$IFDEF UNITVERSIONING}
 const
@@ -2856,10 +2859,26 @@ begin
   end;
 end;
 
-function CharIsInvalidPathCharacter(const C: Char): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function CharIsInvalidFileNameCharacter(const C: Char): Boolean;
 begin
   case C of
-    '<', '>', '?', '/', ',', '*', '+', '=', '[', ']', '|', ':', ';', '"', '''':
+    '<', '>', '?', '/', '\', ',', '*', '+', '=', '[', ']', '|', ':', ';', '"', '''':
+      Result := True;
+  else
+    Result := False;
+  end;
+end;
+
+function CharIsInvalidPathCharacter(const C: Char): Boolean;
+begin
+  case C of
+    '<', '>', '?',
+  {$IFDEF UNIX}
+    '/',
+  {$ELSE}
+    '\',
+  {$ENDIF}
+    ',', '*', '+', '=', '[', ']', '|', ':', ';', '"', '''':
       Result := True;
   else
     Result := False;
@@ -4893,7 +4912,7 @@ begin
         if JclCheckWinVersion(6, 0) then // WinVista or newer
         begin
           DllHinst := LoadLibrary('Kernel32.dll');
-          if DllHinst < HINSTANCE_ERROR then
+          if DllHinst <> 0 then
           begin
             try
               {$IFDEF SUPPORTS_UNICODE}
@@ -4921,7 +4940,7 @@ begin
         else
         begin
           DllHinst := LoadLibrary('Psapi.dll');
-          if DllHinst < HINSTANCE_ERROR then
+          if DllHinst <> 0 then
           begin
             try
               {$IFDEF SUPPORTS_UNICODE}

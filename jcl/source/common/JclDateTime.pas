@@ -185,8 +185,8 @@ function SystemTimeToStr(const SystemTime: TSystemTime): string;
 // Filedates
 function CreationDateTimeOfFile(const Sr: TSearchRec): TDateTime;
 function LastAccessDateTimeOfFile(const Sr: TSearchRec): TDateTime;
-function LastWriteDateTimeOfFile(const Sr: TSearchRec): TDateTime;
 {$ENDIF MSWINDOWS}
+function LastWriteDateTimeOfFile(const Sr: TSearchRec): TDateTime;
 
 type
   TJclUnixTime32 = Longword;
@@ -981,12 +981,16 @@ begin
   Result := FileTimeToDateTime(Sr.FindData.ftLastAccessTime);
 end;
 
+{$ENDIF MSWINDOWS}
+
 function LastWriteDateTimeOfFile(const Sr: TSearchRec): TDateTime;
 begin
+  {$IFDEF MSWINDOWS}
   Result := FileTimeToDateTime(Sr.FindData.ftLastWriteTime);
+  {$ELSE}
+  Result := Sr.TimeStamp;
+  {$ENDIF}
 end;
-
-{$ENDIF MSWINDOWS}
 
 // Additional format tokens (also available in upper case):
 // w: Week no according to ISO

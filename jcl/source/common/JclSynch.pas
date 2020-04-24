@@ -329,7 +329,7 @@ type
   end;
 
   TTimerInfo = record
-    Remaining: Int64; // 100ns intervals until signaled
+    Remaining: int64; // 100ns intervals until signaled
     Signaled: ByteBool;       // is signaled?
   end;
 

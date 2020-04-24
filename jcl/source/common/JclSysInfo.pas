@@ -489,6 +489,7 @@ type
     DEPCapable: Boolean;
     HasCacheInfo: Boolean;
     HasExtendedInfo: Boolean;
+    RDRand: Boolean;
     PType: Byte;
     Family: Byte;
     ExtendedFamily: Byte;
@@ -2367,7 +2368,6 @@ end;
 {$ENDIF UNIX}
 
 function GetLocalComputerName: string;
-// (rom) UNIX or LINUX?
 {$IFDEF LINUX}
 var
   MachineInfo: utsname;
@@ -2379,13 +2379,13 @@ end;
 {$IFDEF MSWINDOWS}
 var
   Count: DWORD;
+  Buf: array[0..MAX_PATH] of Char;
 begin
-  Count := MAX_COMPUTERNAME_LENGTH + 1;
-  // set buffer size to MAX_COMPUTERNAME_LENGTH + 2 characters for safety
-  { TODO : Win2k solution }
-  SetLength(Result, Count);
-  if GetComputerName(PChar(Result), Count) then
-    StrResetLength(Result)
+  Count := Length(Buf) - 1;
+  // GetComputerName can return a string larger than MAX_COMPUTERNAME_LENGTH which was the NetBios limit.
+  // The Windows 10 allows to enter 260 (MAX_PATH) chars computer name's field.
+  if GetComputerName(Buf, Count) then
+    SetString(Result, Buf, Count)
   else
     Result := '';
 end;
@@ -4220,6 +4220,8 @@ begin
           Result := 'Windows 10 October 2018 Update';
        1903:
           Result := 'Windows 10 May 2019 Update';
+       1909:
+          Result := 'Windows 10 November 2019 Update';
     else
       Result := 'Windows 10 ' + IntToStr(GetWindows10ReleaseId) + ' Update';
     end;
@@ -4249,6 +4251,8 @@ begin
           Result := 'Redstone 5';
        1903:
           Result := '19H1';
+       1909:
+          Result := '19H2';
     else
       Result := '';
     end;
@@ -5363,6 +5367,7 @@ function CPUID: TCpuInfo;
       Include(CPUInfo.SSE, avx);
     CPUInfo.Is64Bits := CPUInfo.HasExtendedInfo and ((CPUInfo.IntelSpecific.Ex64Features and EINTEL64_EM64T)<>0);
     CPUInfo.DepCapable := CPUInfo.HasExtendedInfo and ((CPUInfo.IntelSpecific.Ex64Features and EINTEL64_XD) <> 0);
+    CPUInfo.RDRand := CPUInfo.HasExtendedInfo and ((CPUInfo.IntelSpecific.Ex64Features and EINTEL_RDRAND) <> 0);
   end;
 
   procedure ProcessAMD(var CPUInfo: TCpuInfo; HiVal: Cardinal);

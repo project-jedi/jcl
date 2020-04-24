@@ -77,7 +77,7 @@ protected
     TArrayIterator = TJclArrayIterator<T>;
   {$JPPDEFINE GENERIC}{$JPPEXPANDMACRO MOVEARRAYINT(MoveArray,TDynArray,)},,; AOwnsItems: Boolean,const ,AItem,T,GetItem,SetItem)*)
 
-  {$JPPEXPANDMACRO JCLARRAYLISTITRINT(TJclArrayIterator<T>,IJclIterator<T>,IJclList<T>,const ,AItem,T,GetItem,SetItem)}
+  {$JPPEXPANDMACRO JCLARRAYLISTITRINT(TJclArrayIterator<T>,IJclIterator<T>,TJclArrayList<T>,const ,AItem,T,GetItem,SetItem)}
 
   // E = External helper to compare items for equality
   // GetHashCode is not used
@@ -170,7 +170,7 @@ uses
 
 {$JPPDEFINE GENERIC}{$JPPEXPANDMACRO MOVEARRAYIMP(MoveArray,TDynArray,Default(T),TJclArrayList<T>.,)}
 
-{$JPPEXPANDMACRO JCLARRAYLISTITRIMP(TJclArrayIterator<T>,IJclIterator<T>,IJclList<T>,const ,AItem,T,GetItem,SetItem)}
+{$JPPEXPANDMACRO JCLARRAYLISTITRIMP(TJclArrayIterator<T>,IJclIterator<T>,TJclArrayList<T>,const ,AItem,T,GetItem,SetItem)}
 
 //=== { TJclArrayListE<T> } ==================================================
 

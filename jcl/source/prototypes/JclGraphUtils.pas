@@ -67,11 +67,11 @@ type
   TArrayOfColor32 = array of TColor32;
 
   { Blending Function Prototypes }
-  TCombineReg  = function(X, Y, W: TColor32): TColor32;
+  TCombineReg  = function(X, Y, W: TColor32; alpha_ptr, bias_ptr: Pointer): TColor32;
   TCombineMem  = procedure(F: TColor32; var B: TColor32; W: TColor32);
-  TBlendReg    = function(F, B: TColor32): TColor32;
+  TBlendReg    = function(F, B: TColor32; bias_ptr: Pointer): TColor32;
   TBlendMem    = procedure(F: TColor32; var B: TColor32);
-  TBlendRegEx  = function(F, B, M: TColor32): TColor32;
+  TBlendRegEx  = function(F, B, M: TColor32; alpha_ptr, bias_ptr: Pointer): TColor32;
   TBlendMemEx  = procedure(F: TColor32; var B: TColor32; M: TColor32);
   TBlendLine   = procedure(Src, Dst: PColor32; Count: Integer);
   TBlendLineEx = procedure(Src, Dst: PColor32; Count: Integer; M: TColor32);
@@ -183,10 +183,10 @@ function RectUnion(const R1, R2: TRect): TRect;
 function RectWidth(const R: TRect): Integer;
 
 // Clipping
-function ClipCodes(const X, Y, MinX, MinY, MaxX, MaxY: Float): TClipCodes; overload;
-function ClipCodes(const X, Y: Float; const ClipRect: TRect): TClipCodes; overload;
+function ClipCodes(const X, Y, MinX, MinY, MaxX, MaxY: JclBase.Float): TClipCodes; overload;
+function ClipCodes(const X, Y: JclBase.Float; const ClipRect: TRect): TClipCodes; overload;
 function ClipLine(var X1, Y1, X2, Y2: Integer; const ClipRect: TRect): Boolean; overload;
-function ClipLine(var X1, Y1, X2, Y2: Float; const MinX, MinY, MaxX, MaxY: Float;
+function ClipLine(var X1, Y1, X2, Y2: JclBase.Float; const MinX, MinY, MaxX, MaxY: JclBase.Float;
   Codes: PClipCodes = nil): Boolean; overload;
 procedure DrawPolyLine(const Canvas: TCanvas; var Points: TPointArray; const ClipRect: TRect);
 
@@ -219,8 +219,8 @@ procedure RGBToBGR(const Source, Target: Pointer; const BitsPerSample: Byte; Cou
 procedure RGBToBGR(const R, G, B, Target: Pointer; const BitsPerSample: Byte; Count: Cardinal); overload;
 procedure RGBAToBGRA(const Source, Target: Pointer; const BitsPerSample: Byte; Count: Cardinal);
 
-procedure WinColorToOpenGLColor(const Color: TColor; out Red, Green, Blue: Float);
-function OpenGLColorToWinColor(const Red, Green, Blue: Float): TColor;
+procedure WinColorToOpenGLColor(const Color: TColor; out Red, Green, Blue: JclBase.Float);
+function OpenGLColorToWinColor(const Red, Green, Blue: JclBase.Float): TColor;
 
 function Color32(WinColor: TColor): TColor32; overload;
 function Color32(const R, G, B: Byte; const A: Byte = $FF): TColor32; overload;
@@ -400,7 +400,7 @@ var
 begin
   ErrorCode := GetLastError;
   if (ErrorCode <> 0) and (FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, nil,
-    ErrorCode, LOCALE_USER_DEFAULT, Buf, SizeOf(Buf), nil) <> 0) then
+    ErrorCode, LOCALE_USER_DEFAULT, Buf, Length(Buf), nil) <> 0) then
     raise EOutOfResources.Create(Buf)
   else
     OutOfResources;
@@ -427,7 +427,7 @@ end;
 
 //=== Blending routines ======================================================
 
-function _CombineReg(X, Y, W: TColor32): TColor32;
+function _CombineReg(X, Y, W: TColor32; alpha_ptr, bias_ptr: Pointer): TColor32;
 begin
   // combine RGBA channels of colors X and Y with the weight of X given in W
   // Result Z = W * X + (1 - W) * Y (all channels are combined, including alpha)
@@ -458,27 +458,27 @@ end;
 
 procedure _CombineMem(F: TColor32; var B: TColor32; W: TColor32);
 begin
-  B := _CombineReg(F, B, W);
+  B := _CombineReg(F, B, W, nil, nil);
 end;
 
-function _BlendReg(F, B: TColor32): TColor32;
+function _BlendReg(F, B: TColor32; bias_ptr: Pointer): TColor32;
 begin
-  Result := _CombineReg(F, B, F shr 24);
+  Result := _CombineReg(F, B, F shr 24, nil, bias_ptr);
 end;
 
 procedure _BlendMem(F: TColor32; var B: TColor32);
 begin
-  B := _CombineReg(F, B, F shr 24);
+  B := _CombineReg(F, B, F shr 24, nil, nil);
 end;
 
-function _BlendRegEx(F, B, M: TColor32): TColor32;
+function _BlendRegEx(F, B, M: TColor32; alpha_ptr, bias_ptr: Pointer): TColor32;
 begin
-  Result := _CombineReg(F, B, ((F shr 24) * M) shr 8);
+  Result := _CombineReg(F, B, ((F shr 24) * M) shr 8, alpha_ptr, bias_ptr);
 end;
 
 procedure _BlendMemEx(F: TColor32; var B: TColor32; M: TColor32);
 begin
-  B := _CombineReg(F, B, ((F shr 24) * M) shr 8);
+  B := _CombineReg(F, B, ((F shr 24) * M) shr 8, nil, nil);
 end;
 
 
@@ -571,7 +571,7 @@ asm
 @4:     RET
   {$ENDIF CPU32}
   {$IFDEF CPU64}
-  TODO
+  //TODO
   {$ENDIF CPU64}
 end;
 {$ENDIF ~DELPHI64_TEMPORARY}
@@ -635,7 +635,7 @@ begin
 end;
 {$ENDIF ~DELPHI64_TEMPORARY}
 
-function M_CombineReg(X, Y, W: TColor32): TColor32; assembler;
+function M_CombineReg(X, Y, W: TColor32; alpha_ptr, bias_ptr: Pointer): TColor32; assembler;
 asm
   {$IFDEF CPU32}
   // EAX - Color X
@@ -682,10 +682,10 @@ end;
 
 procedure M_CombineMem(F: TColor32; var B: TColor32; W: TColor32);
 begin
-  B := M_CombineReg(F, B, W);
+  B := M_CombineReg(F, B, W, alpha_ptr, bias_ptr);
 end;
 
-function M_BlendReg(F, B: TColor32): TColor32; assembler;
+function M_BlendReg(F, B: TColor32; bias_ptr: Pointer): TColor32; assembler;
 asm
   {$IFDEF CPU32}
   // blend foreground color (F) to a background color (B),
@@ -734,10 +734,10 @@ end;
 
 procedure M_BlendMem(F: TColor32; var B: TColor32);
 begin
-  B := M_BlendReg(F, B);
+  B := M_BlendReg(F, B, bias_ptr);
 end;
 
-function M_BlendRegEx(F, B, M: TColor32): TColor32; assembler;
+function M_BlendRegEx(F, B, M: TColor32; alpha_ptr, bias_ptr: Pointer): TColor32; assembler;
 asm
   {$IFDEF CPU32}
   // blend foreground color (F) to a background color (B),
@@ -805,7 +805,7 @@ end;
 
 procedure M_BlendMemEx(F: TColor32; var B: TColor32; M: TColor32);
 begin
-  B := M_BlendRegEx(F, B, M);
+  B := M_BlendRegEx(F, B, M, alpha_ptr, bias_ptr);
 end;
 
 {$IFDEF DELPHI64_TEMPORARY}
@@ -872,7 +872,7 @@ asm
 @4:     RET
   {$ENDIF CPU32}
   {$IFDEF CPU64}
-  TODO
+  //TODO
   {$ENDIF CPU64}
 end;
 {$ENDIF ~DELPHI64_TEMPORARY}
@@ -945,7 +945,7 @@ asm
 @4:
   {$ENDIF CPU32}
   {$IFDEF CPU64}
-  TODO
+  //TODO
   {$ENDIF CPU64}
 end;
 {$ENDIF ~DELPHI64_TEMPORARY}
@@ -1093,12 +1093,9 @@ var
   X, Y: Integer;
   Delta: Integer;
 begin
-  {$IFDEF MSWINDOWS}
   X := GetSystemMetrics(SM_CXSCREEN);
   Y := GetSystemMetrics(SM_CYSCREEN);
-  {$ELSE ~MSWINDOWS}
-  TODO: find a solution for other systems
-  {$ENDIF ~MSWINDOWS}
+
   with R do
   begin
     if Right > X then
@@ -1893,7 +1890,7 @@ begin
   end;
 end;
 
-procedure WinColorToOpenGLColor(const Color: TColor; out Red, Green, Blue: Float);
+procedure WinColorToOpenGLColor(const Color: TColor; out Red, Green, Blue: JclBase.Float);
 var
   Temp: TColorRec;
 begin
@@ -1903,7 +1900,7 @@ begin
   Blue  := (Temp.B / High(Temp.B));
 end;
 
-function OpenGLColorToWinColor(const Red, Green, Blue: Float): TColor;
+function OpenGLColorToWinColor(const Red, Green, Blue: JclBase.Float): TColor;
 var
   Temp: TColorRec;
 begin
@@ -2392,7 +2389,7 @@ begin
       end;
 
       // Windows 2000+ automatically switches the order in the string. For every other system we have to take care.
-      if IsWin2K or not RTL then
+      if {$IFDEF MSWINDOWS} IsWin2K or {$ENDIF} not RTL then
         Result := Copy(S, 1, N - 1) + '...'
       else
         Result := '...' + Copy(S, 1, N - 1);
@@ -2402,7 +2399,7 @@ end;
 
 //=== Clipping ===============================================================
 
-function ClipCodes(const X, Y, MinX, MinY, MaxX, MaxY: Float): TClipCodes;
+function ClipCodes(const X, Y, MinX, MinY, MaxX, MaxY: JclBase.Float): TClipCodes;
 begin
   Result := [];
   if X > MaxX then
@@ -2417,14 +2414,14 @@ begin
     Include(Result, ccBelow);
 end;
 
-function ClipCodes(const X, Y: Float; const ClipRect: TRect): TClipCodes;
+function ClipCodes(const X, Y: JclBase.Float; const ClipRect: TRect): TClipCodes;
 begin
   Result := ClipCodes(X, Y, ClipRect.Left, ClipRect.Top, ClipRect.Right, ClipRect.Bottom);
 end;
 
 function ClipLine(var X1, Y1, X2, Y2: Integer; const ClipRect: TRect): Boolean;
 var
-  FX1, FY1, FX2, FY2: Float;
+  FX1, FY1, FX2, FY2: JclBase.Float;
 begin
   FX1 := X1;
   FY1 := Y1;
@@ -2441,7 +2438,7 @@ begin
   end;
 end;
 
-function ClipLine(var X1, Y1, X2, Y2: Float; const MinX, MinY, MaxX, MaxY: Float;
+function ClipLine(var X1, Y1, X2, Y2: JclBase.Float; const MinX, MinY, MaxX, MaxY: JclBase.Float;
   Codes: PClipCodes): Boolean;
 var
   Done: Boolean;
@@ -2534,7 +2531,7 @@ procedure DrawPolyLine(const Canvas: TCanvas; var Points: TPointArray; const Cli
 var
   I: Integer;
   X, Y: Integer;
-  X1, Y1, X2, Y2: Float;
+  X1, Y1, X2, Y2: JclBase.Float;
   ClipX1, ClipY1, ClipX2, ClipY2: Float;
   Codes1, Codes2: TClipCodes;
 begin

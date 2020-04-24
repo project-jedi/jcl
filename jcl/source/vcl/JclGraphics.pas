@@ -1972,7 +1972,7 @@ var
       C4 := P^;
       Dec(P);
       C3 := P^;
-      C := CombineReg(CombineReg(C1, C2, celx), CombineReg(C3, C4, celx), cely);
+      C := CombineReg(CombineReg(C1, C2, celx, nil, nil), CombineReg(C3, C4, celx, nil, nil), cely, nil, nil);
       Result := True;
     end
     else
@@ -3361,7 +3361,7 @@ begin
     Result := CombineReg(
       FStipplePattern[PrevIndex],
       FStipplePattern[NextIndex],
-      PrevWeight);
+      PrevWeight, nil, nil);
     EMMS;
   end;
   FStippleCounter := FStippleCounter + FStippleStep;

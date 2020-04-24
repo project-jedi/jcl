@@ -3326,7 +3326,11 @@ begin
       {$IFDEF FPC}
       PrevExceptObjProc := Pointer(InterlockedExchange(TJclAddr(ExceptObjProc), TJclAddr(@GetExceptionObject)));
       {$ELSE ~FPC}
+      {$IFDEF RTL200_UP} // Delphi 2009+
+      PrevExceptObjProc := InterlockedExchangePointer(ExceptObjProc, @GetExceptionObject);
+      {$ELSE}
       PrevExceptObjProc := Pointer(InterlockedExchange(Integer(ExceptObjProc), Integer(@GetExceptionObject)));
+      {$ENDIF RTL200_UP}
       {$ENDIF ~FPC}
 end;
 {$ENDIF ~FPC}
@@ -3631,8 +3635,11 @@ var
   R: TJclRational;
 begin
   R := TJclRational.Create(Numerator, Denominator);
-  Result := IsEqual(R);
-  R.Free;
+  try
+    Result := IsEqual(R);
+  finally
+    R.Free;
+  end;
 end;
 
 function TJclRational.IsEqual(const R: TJclRational): Boolean;

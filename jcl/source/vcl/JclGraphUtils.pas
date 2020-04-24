@@ -71,11 +71,11 @@ type
   TArrayOfColor32 = array of TColor32;
 
   { Blending Function Prototypes }
-  TCombineReg  = function(X, Y, W: TColor32): TColor32;
+  TCombineReg  = function(X, Y, W: TColor32; alpha_ptr, bias_ptr: Pointer): TColor32;
   TCombineMem  = procedure(F: TColor32; var B: TColor32; W: TColor32);
-  TBlendReg    = function(F, B: TColor32): TColor32;
+  TBlendReg    = function(F, B: TColor32; bias_ptr: Pointer): TColor32;
   TBlendMem    = procedure(F: TColor32; var B: TColor32);
-  TBlendRegEx  = function(F, B, M: TColor32): TColor32;
+  TBlendRegEx  = function(F, B, M: TColor32; alpha_ptr, bias_ptr: Pointer): TColor32;
   TBlendMemEx  = procedure(F: TColor32; var B: TColor32; M: TColor32);
   TBlendLine   = procedure(Src, Dst: PColor32; Count: Integer);
   TBlendLineEx = procedure(Src, Dst: PColor32; Count: Integer; M: TColor32);
@@ -404,7 +404,7 @@ var
 begin
   ErrorCode := GetLastError;
   if (ErrorCode <> 0) and (FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, nil,
-    ErrorCode, LOCALE_USER_DEFAULT, Buf, SizeOf(Buf), nil) <> 0) then
+    ErrorCode, LOCALE_USER_DEFAULT, Buf, Length(Buf), nil) <> 0) then
     raise EOutOfResources.Create(Buf)
   else
     OutOfResources;
@@ -431,7 +431,7 @@ end;
 
 //=== Blending routines ======================================================
 
-function _CombineReg(X, Y, W: TColor32): TColor32;
+function _CombineReg(X, Y, W: TColor32; alpha_ptr, bias_ptr: Pointer): TColor32;
 begin
   // combine RGBA channels of colors X and Y with the weight of X given in W
   // Result Z = W * X + (1 - W) * Y (all channels are combined, including alpha)
@@ -462,27 +462,27 @@ end;
 
 procedure _CombineMem(F: TColor32; var B: TColor32; W: TColor32);
 begin
-  B := _CombineReg(F, B, W);
+  B := _CombineReg(F, B, W, nil, nil);
 end;
 
-function _BlendReg(F, B: TColor32): TColor32;
+function _BlendReg(F, B: TColor32; bias_ptr: Pointer): TColor32;
 begin
-  Result := _CombineReg(F, B, F shr 24);
+  Result := _CombineReg(F, B, F shr 24, nil, bias_ptr);
 end;
 
 procedure _BlendMem(F: TColor32; var B: TColor32);
 begin
-  B := _CombineReg(F, B, F shr 24);
+  B := _CombineReg(F, B, F shr 24, nil, nil);
 end;
 
-function _BlendRegEx(F, B, M: TColor32): TColor32;
+function _BlendRegEx(F, B, M: TColor32; alpha_ptr, bias_ptr: Pointer): TColor32;
 begin
-  Result := _CombineReg(F, B, ((F shr 24) * M) shr 8);
+  Result := _CombineReg(F, B, ((F shr 24) * M) shr 8, alpha_ptr, bias_ptr);
 end;
 
 procedure _BlendMemEx(F: TColor32; var B: TColor32; M: TColor32);
 begin
-  B := _CombineReg(F, B, ((F shr 24) * M) shr 8);
+  B := _CombineReg(F, B, ((F shr 24) * M) shr 8, nil, nil);
 end;
 
 
@@ -639,7 +639,7 @@ begin
 end;
 {$ENDIF ~DELPHI64_TEMPORARY}
 
-function M_CombineReg(X, Y, W: TColor32): TColor32; assembler;
+function M_CombineReg(X, Y, W: TColor32; alpha_ptr, bias_ptr: Pointer): TColor32; assembler;
 asm
   {$IFDEF CPU32}
   // EAX - Color X
@@ -686,10 +686,10 @@ end;
 
 procedure M_CombineMem(F: TColor32; var B: TColor32; W: TColor32);
 begin
-  B := M_CombineReg(F, B, W);
+  B := M_CombineReg(F, B, W, alpha_ptr, bias_ptr);
 end;
 
-function M_BlendReg(F, B: TColor32): TColor32; assembler;
+function M_BlendReg(F, B: TColor32; bias_ptr: Pointer): TColor32; assembler;
 asm
   {$IFDEF CPU32}
   // blend foreground color (F) to a background color (B),
@@ -738,10 +738,10 @@ end;
 
 procedure M_BlendMem(F: TColor32; var B: TColor32);
 begin
-  B := M_BlendReg(F, B);
+  B := M_BlendReg(F, B, bias_ptr);
 end;
 
-function M_BlendRegEx(F, B, M: TColor32): TColor32; assembler;
+function M_BlendRegEx(F, B, M: TColor32; alpha_ptr, bias_ptr: Pointer): TColor32; assembler;
 asm
   {$IFDEF CPU32}
   // blend foreground color (F) to a background color (B),
@@ -809,7 +809,7 @@ end;
 
 procedure M_BlendMemEx(F: TColor32; var B: TColor32; M: TColor32);
 begin
-  B := M_BlendRegEx(F, B, M);
+  B := M_BlendRegEx(F, B, M, alpha_ptr, bias_ptr);
 end;
 
 {$IFDEF DELPHI64_TEMPORARY}
