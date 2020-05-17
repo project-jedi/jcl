@@ -326,7 +326,7 @@ type
     procedure CheckFormat;
     function DataToStr(A: Integer): string;
     function MakePtr(A: Integer): Pointer;
-    function ReadValue(var P: Pointer; var Value: Integer): Boolean;
+    class function ReadValue(var P: Pointer; var Value: Integer): Boolean; {$IFDEF SUPPORTS_STATIC}static;{$ENDIF}
   public
     constructor Create(AStream: TCustomMemoryStream; CacheData: Boolean);
     function IsModuleNameValid(const Name: TFileName): Boolean;
@@ -1480,14 +1480,14 @@ begin
   FirstCh := SubStr[0];
   if FirstCh = #0 then
     Exit;
-  SubStrLen := StrLen(SubStr);
+  SubStrLen := StrLenA(SubStr);
   while I < Len do
   begin
     while (I < Len) and (S[I] <> FirstCh) do
       Inc(I);
     if I = Len then
       Break;
-    if StrLComp(SubStr, @S[I], SubStrLen) = 0 then
+    if StrLCompA(SubStr, @S[I], SubStrLen) = 0 then
     begin
       Result := I + 1;
       Exit;
@@ -1693,8 +1693,8 @@ var
     end;
     SkipWhiteSpace;
     P := CurrPos;
-    PrefixLen := StrLen(Prefix);
-    Result := StrLComp(Prefix, P, PrefixLen) = 0;
+    PrefixLen := StrLenA(Prefix);
+    Result := StrLCompA(Prefix, P, PrefixLen) = 0;
     if Result then
       CurrPos := P + PrefixLen;
     SkipWhiteSpace;
@@ -3034,8 +3034,15 @@ begin
     for I := 0 to Length(FSourceNames) - 1 do
       if IsSegmentStored(FSourceNames[I].Segment) then
       begin
-        WriteValueOfs(FSourceNames[I].VA, L1);
-        WriteValueOfs(AddWord(MapStringCacheToStr(FSourceNames[I].ProcName)), L2);
+        // FSourceNames[] is sorted by VA, so if the source file name is the same as the previous
+        // we don't need to store it because the VA will be matched by the previous entry.
+        // This removes a lot of "Generics.Collections.pas" entries.
+        S := MapStringCacheToStr(FSourceNames[I].ProcName);
+        if (I = 0) or (FSourceNames[I - 1].ProcName.CachedValue <> S) then
+        begin
+          WriteValueOfs(FSourceNames[I].VA, L1);
+          WriteValueOfs(AddWord(S), L2);
+        end;
       end;
     WriteValue(MaxInt);
 
@@ -3422,13 +3429,13 @@ begin
   begin
     Result := DataToStr(FirstWord);
     if SecondWord <> 0 then
-      Result := Result + '.' + DataToStr(SecondWord)
+      Result := Result + '.' + DataToStr(SecondWord);
   end
   else
     Result := '';
 end;
 
-function TJclBinDebugScanner.ReadValue(var P: Pointer; var Value: Integer): Boolean;
+class function TJclBinDebugScanner.ReadValue(var P: Pointer; var Value: Integer): Boolean;
 var
   N: Integer;
   I: Integer;
@@ -3443,7 +3450,7 @@ begin
     Inc(I, 7);
   until B and $80 = 0;
   Value := N;
-  Result := (Value <> MaxInt);
+  Result := (N <> MaxInt);
 end;
 
 function TJclBinDebugScanner.SourceNameFromAddr(Addr: DWORD): string;
