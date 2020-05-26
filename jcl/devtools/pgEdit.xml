@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
 <Configuration>
   <!-- These are the values stored by jaxStore -->
-  <pgEdit/>
+  <pgEdit>
+    <FormVersion>0</FormVersion>
+    <ShowCmd>1</ShowCmd>
+    <Flags>0</Flags>
+    <PixelsPerInch>96</PixelsPerInch>
+    <MinMaxPos_2960x1050_>-1,-1,-1,-1</MinMaxPos_2960x1050_>
+    <MinMaxPos>-1,-1,-1,-1</MinMaxPos>
+    <NormPos_2960x1050_>428,199,1251,820</NormPos_2960x1050_>
+    <NormPos>428,199,1251,820</NormPos>
+    <pnlList_Width>137</pnlList_Width>
+    <jsgDependencies_Height>129</jsgDependencies_Height>
+    <pnlEdit_Width>668</pnlEdit_Width>
+    <jsgFiles_Height>168</jsgFiles_Height>
+    <odlAddFiles_InitialDir>..\..\run</odlAddFiles_InitialDir>
+    <cmbModel_ItemIndex>-1</cmbModel_ItemIndex>
+  </pgEdit>
   <!--
     The nodes below are read by the generation process.
     Packages are generated according to a model. The models are defined
@@ -85,28 +100,29 @@
         <target name="d24" defines="BCB" IsBds="1"/>
         <target name="d25" defines="BCB" IsBds="1"/>
         <target name="d26" defines="BCB" IsBds="1"/>
+        <target name="d27" defines="BCB" IsBds="1"/>
       </targets>
       <aliases>
         <!-- language aliases -->
-        <alias name="Delphi" value="d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26"/>
-        <alias name="Bcb" value="c6,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26"/>
-        <alias name="Pascal" value="fpc,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26"/>
+        <alias name="Delphi" value="d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27"/>
+        <alias name="Bcb" value="c6,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27"/>
+        <alias name="Pascal" value="fpc,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27"/>
         <!-- platform aliases -->
-        <alias name="Windows" value="help,fpc,c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26"/>
+        <alias name="Windows" value="help,fpc,c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27"/>
         <alias name="Linux" value="help,fpc"/>
         <!-- package aliases -->
-        <alias name="allv11up" value="d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26"/>
-        <alias name="allv14up" value="d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26"/>
-        <alias name="allv15up" value="d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26"/>
+        <alias name="allv11up" value="d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27"/>
+        <alias name="allv14up" value="d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27"/>
+        <alias name="allv15up" value="d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27"/>
         <!-- GUI aliases -->
         <alias name="Clx" value="help,c6,d6,d7"/>
-        <alias name="Vcl" value="help,c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26"/>
+        <alias name="Vcl" value="help,c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27"/>
         <!-- IDE aliases -->
-        <alias name="BDS" value="cs1,d8,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26"/>
-        <alias name="runtimeBDS" value="d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26"/>
+        <alias name="BDS" value="cs1,d8,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27"/>
+        <alias name="runtimeBDS" value="d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27"/>
         <alias name="OldStyleIDE" value="c6,d6,d7"/>
-        <alias name="runtimeIDE" value="c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26"/>
-        <alias name="designtimeIDE" value="c6,d6,d7,d8,d9,d10,cs1,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26"/>
+        <alias name="runtimeIDE" value="c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27"/>
+        <alias name="designtimeIDE" value="c6,d6,d7,d8,d9,d10,cs1,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27"/>
       </aliases>
       <ProjectProperties>
         <ProjectProperty name="VersionMajorNumber" value="2"/>
