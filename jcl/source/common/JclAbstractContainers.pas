@@ -1140,8 +1140,17 @@ end;
 
 {$IFDEF SUPPORTS_GENERICS}
 procedure TJclAbstractContainerBase.FreeAndNilIfObject<T>(var Value: T);
+{$IFNDEF RTL280_UP}
+var
+  Info: PTypeInfo;
+{$ENDIF ~RTL280_UP}
 begin
+  {$IFDEF RTL280_UP}
   if GetTypeKind(T) = tkClass then
+  {$ELSE ~RTL280_UP}
+  Info := TypeInfo(T);
+  if Assigned(Info) and (Info.Kind = tkClass) then
+  {$ENDIF ~RTL280_UP}
     FreeAndNil(TJclAbstractContainerBase_PObject(@Value)^)
   else
     Value := Default(T);
