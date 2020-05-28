@@ -4193,7 +4193,9 @@ begin
           Result := 'Windows 10 May 2019 Update';
        1909:
           Result := 'Windows 10 November 2019 Update';
-    else
+       2004:
+          Result := 'Windows 10 May 2020 Update';
+     else
       Result := 'Windows 10 ' + IntToStr(GetWindows10ReleaseId) + ' Update';
     end;
   end
@@ -4224,6 +4226,8 @@ begin
           Result := '19H1';
        1909:
           Result := '19H2';
+       2004:
+          Result := '20H1';
     else
       Result := '';
     end;
