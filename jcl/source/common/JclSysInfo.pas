@@ -2345,7 +2345,6 @@ end;
 {$ENDIF UNIX}
 
 function GetLocalComputerName: string;
-// (rom) UNIX or LINUX?
 {$IFDEF LINUX}
 var
   MachineInfo: utsname;
@@ -2357,13 +2356,13 @@ end;
 {$IFDEF MSWINDOWS}
 var
   Count: DWORD;
+  Buf: array[0..MAX_PATH] of Char;
 begin
-  Count := MAX_COMPUTERNAME_LENGTH + 1;
-  // set buffer size to MAX_COMPUTERNAME_LENGTH + 2 characters for safety
-  { TODO : Win2k solution }
-  SetLength(Result, Count);
-  if GetComputerName(PChar(Result), Count) then
-    StrResetLength(Result)
+  Count := Length(Buf) - 1;
+  // GetComputerName can return a string larger than MAX_COMPUTERNAME_LENGTH which was the NetBios limit.
+  // The Windows 10 allows to enter 260 (MAX_PATH) chars computer name's field.
+  if GetComputerName(Buf, Count) then
+    SetString(Result, Buf, Count)
   else
     Result := '';
 end;
@@ -4194,7 +4193,9 @@ begin
           Result := 'Windows 10 May 2019 Update';
        1909:
           Result := 'Windows 10 November 2019 Update';
-    else
+       2004:
+          Result := 'Windows 10 May 2020 Update';
+     else
       Result := 'Windows 10 ' + IntToStr(GetWindows10ReleaseId) + ' Update';
     end;
   end
@@ -4225,6 +4226,8 @@ begin
           Result := '19H1';
        1909:
           Result := '19H2';
+       2004:
+          Result := '20H1';
     else
       Result := '';
     end;

@@ -33,6 +33,8 @@ copy ..\source\include\jcl.template.inc ..\source\include\jcld25win32.inc
 copy ..\source\include\jcl.template.inc ..\source\include\jcld25win64.inc
 copy ..\source\include\jcl.template.inc ..\source\include\jcld26win32.inc
 copy ..\source\include\jcl.template.inc ..\source\include\jcld26win64.inc
+copy ..\source\include\jcl.template.inc ..\source\include\jcld27win32.inc
+copy ..\source\include\jcl.template.inc ..\source\include\jcld27win64.inc
 
 
 copy ..\source\include\jcl.template.inc ..\source\include\jclfpc.inc

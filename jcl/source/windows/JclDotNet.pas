@@ -920,9 +920,11 @@ var
   Version: string;
   Directory: string;
   RequiredSize: DWORD;
+  Err: HRESULT;
 begin
   // CLRCreateInstance returns S_OK and a nil interface if the entry point was not found in mscoree.dll
-  OleCheck(CLRCreateInstance(CLSID_CLRMetaHost, ICLRMetaHost, UnknownIntf));
+  // very old versions  of CLR return E_NOTIMPL and a nil interface
+  Err := CLRCreateInstance(CLSID_CLRMetaHost, ICLRMetaHost, UnknownIntf);
   if Assigned(UnknownIntf) then
   begin
     MetaHost := UnknownIntf as ICLRMetaHost;
@@ -945,9 +947,12 @@ begin
     end;
   end
   else
+  if(Err = S_OK) or (Err = E_NOTIMPL) then
   begin
     GetClrVersionsLegacy(VersionNames);
-  end;
+  end
+  else
+    OleCheck(Err);
 end;
 
 class procedure TJclClrHost.GetClrVersionsLegacy(VersionNames: TJclWideStrings); // used for pre v4 runtime

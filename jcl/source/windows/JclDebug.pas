@@ -98,6 +98,7 @@ type
   private
     FDynamicBuild: Boolean;
     FSystemModulesOnly: Boolean;
+    FRefCount: Integer;
     function GetItems(Index: Integer): TJclModuleInfo;
     function GetModuleFromAddress(Addr: Pointer): TJclModuleInfo;
   protected
@@ -325,7 +326,7 @@ type
     procedure CheckFormat;
     function DataToStr(A: Integer): string;
     function MakePtr(A: Integer): Pointer;
-    function ReadValue(var P: Pointer; var Value: Integer): Boolean;
+    class function ReadValue(var P: Pointer; var Value: Integer): Boolean; {$IFDEF SUPPORTS_STATIC}static;{$ENDIF}
   public
     constructor Create(AStream: TCustomMemoryStream; CacheData: Boolean);
     function IsModuleNameValid(const Name: TFileName): Boolean;
@@ -1103,6 +1104,11 @@ const
 
 var
   HexMap: array[AnsiChar] of Byte;
+  JclDebugFinalized: Boolean;
+  GlobalStackListLiveCount: Integer;
+
+procedure FreeJclDebugGlobals;
+  forward;
 
 {$STACKFRAMES OFF}
 
@@ -1428,7 +1434,7 @@ begin
   SetString(Result, MapString, P - MapString);
 end;
 
-function IsDecDigit(P: PJclMapString): Boolean; {$IFDEF SUPPORTS_INLINE}inline{$ENDIF}
+function IsDecDigit(P: PJclMapString): Boolean; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 begin
   Result := False;
   case P^ of
@@ -1461,13 +1467,42 @@ begin
   end;
 end;
 
+function AnsiStrPosIdxLen(const SubStr, S: PAnsiChar; Len: Integer): Integer;
+var
+  I: Integer;
+  SubStrLen: Integer;
+  FirstCh: AnsiChar;
+begin
+  Result := 0;
+  if Len = 0 then
+    Exit;
+  I := 0;
+  FirstCh := SubStr[0];
+  if FirstCh = #0 then
+    Exit;
+  SubStrLen := StrLenA(SubStr);
+  while I < Len do
+  begin
+    while (I < Len) and (S[I] <> FirstCh) do
+      Inc(I);
+    if I = Len then
+      Break;
+    if StrLCompA(SubStr, @S[I], SubStrLen) = 0 then
+    begin
+      Result := I + 1;
+      Exit;
+    end;
+    Inc(I);
+  end;
+end;
+
 procedure TJclAbstractMapParser.Parse;
 const
-  TableHeader          : array [0..3] of string = ('Start', 'Length', 'Name', 'Class');
-  SegmentsHeader       : array [0..3] of string = ('Detailed', 'map', 'of', 'segments');
-  PublicsByNameHeader  : array [0..3] of string = ('Address', 'Publics', 'by', 'Name');
-  PublicsByValueHeader : array [0..3] of string = ('Address', 'Publics', 'by', 'Value');
-  LineNumbersPrefix    : string = 'Line numbers for';
+  TableHeader          : array [0..3] of PJclMapString = ('Start', 'Length', 'Name', 'Class');
+  SegmentsHeader       : array [0..3] of PJclMapString = ('Detailed', 'map', 'of', 'segments');
+  PublicsByNameHeader  : array [0..3] of PJclMapString = ('Address', 'Publics', 'by', 'Name');
+  PublicsByValueHeader : array [0..3] of PJclMapString = ('Address', 'Publics', 'by', 'Value');
+  LineNumbersPrefix    : PJclMapString = 'Line numbers for';
 var
   CurrPos, EndPos: PJclMapString;
 {$IFNDEF COMPILER9_UP}
@@ -1513,7 +1548,7 @@ var
     CurrPos := P;
   end;
 
-  function ReadTrimmedTextLine: string;
+  function ReadTrimmedTextLine(var Len: Integer): PJclMapString;
   var
     Start, P: PJclMapString;
   begin
@@ -1524,14 +1559,17 @@ var
     CurrPos := P;
 
     // Trim
-    while (Start^ <> #0) and (Start^ <= ' ') do
+    while (Start < P) and (Start^ <> #0) and (Start^ <= ' ') do
       Inc(Start);
     Dec(P);
     while (P > Start) and (P^ <= ' ') do
       Dec(P);
     Inc(P);
 
-    SetString(Result, Start, P - Start);
+    Result := Start;
+    Len := P - Start;
+    if Len < 0 then
+      Len := 0;
   end;
 
   function ReadDecValue: Integer;
@@ -1607,43 +1645,46 @@ var
     CurrPos := P + 2;
   end;
 
-  function SyncToHeader(const Header: array of string): Boolean;
+  function SyncToHeader(const Header: array of PJclMapString): Boolean;
   var
-    S: string;
+    S: PJclMapString;
+    SLen: Integer;
     TokenIndex, OldPosition, CurrentPosition: Integer;
   begin
     Result := False;
     while not Eof do
     begin
-      S := ReadTrimmedTextLine;
-      TokenIndex := Low(Header);
-      CurrentPosition := 0;
-      OldPosition := 0;
-      while (TokenIndex <= High(Header)) do
+      S := ReadTrimmedTextLine(SLen);
+      if SLen > 0 then
       begin
-        CurrentPosition := Pos(Header[TokenIndex],S);
-        if (CurrentPosition <= OldPosition) then
+        TokenIndex := Low(Header);
+        CurrentPosition := 0;
+        OldPosition := 0;
+        while (TokenIndex <= High(Header)) do
         begin
-          CurrentPosition := 0;
-          Break;
+          CurrentPosition := AnsiStrPosIdxLen(Header[TokenIndex], S, SLen);
+          if (CurrentPosition <= OldPosition) then
+          begin
+            CurrentPosition := 0;
+            Break;
+          end;
+          OldPosition := CurrentPosition;
+          Inc(TokenIndex);
         end;
-        OldPosition := CurrentPosition;
-        Inc(TokenIndex);
+        Result := CurrentPosition <> 0;
+        if Result then
+          Break;
       end;
-      Result := CurrentPosition <> 0;
-      if Result then
-        Break;
       SkipEndLine;
     end;
     if not Eof then
       SkipWhiteSpace;
   end;
 
-  function SyncToPrefix(const Prefix: string): Boolean;
+  function SyncToPrefix(const Prefix: PJclMapString): Boolean;
   var
-    I: Integer;
     P: PJclMapString;
-    S: string;
+    PrefixLen: Integer;
   begin
     if Eof then
     begin
@@ -1652,16 +1693,10 @@ var
     end;
     SkipWhiteSpace;
     P := CurrPos;
-    I := Length(Prefix);
-    while not Eof and (P^ <> #13) and (P^ <> #0) and (I > 0) do
-    begin
-      Inc(P);
-      Dec(I);
-    end;
-    SetString(S, CurrPos, Length(Prefix));
-    Result := (S = Prefix);
+    PrefixLen := StrLenA(Prefix);
+    Result := StrLCompA(Prefix, P, PrefixLen) = 0;
     if Result then
-      CurrPos := P;
+      CurrPos := P + PrefixLen;
     SkipWhiteSpace;
   end;
 
@@ -2843,6 +2878,30 @@ var
   LastSegmentID: Word;
   LastSegmentStored: Boolean;
 
+  function PosLastNameSep(const S: string): Integer;
+  var
+    InGeneric: Integer;
+  begin
+    // Unit.Name.ProcName                             => "Unit.Name" + "ProcName"
+    // Unit.Name..ClassName                           => "UnitName" + ".ClassName"
+    // Unit.Name.Class<Unit.Name.OtherClass>.ProcName => "Unit.Name.Class<Unit.Name.OtherClass>" + "ProcName"
+    InGeneric := 0;
+    for Result := Length(S) downto 1 do
+    begin
+      case S[Result] of
+        '.':
+          if InGeneric = 0 then
+            if (Result = 1) or (S[Result - 1] <> '.') then
+              Exit;
+        '>':
+          Inc(InGeneric);
+        '<':
+          Dec(InGeneric);
+      end;
+    end;
+    Result := 0;
+  end;
+
   function AddWord(const S: string): Integer;
   var
     {$IFDEF SUPPORTS_GENERICS}
@@ -2975,8 +3034,15 @@ begin
     for I := 0 to Length(FSourceNames) - 1 do
       if IsSegmentStored(FSourceNames[I].Segment) then
       begin
-        WriteValueOfs(FSourceNames[I].VA, L1);
-        WriteValueOfs(AddWord(MapStringCacheToStr(FSourceNames[I].ProcName)), L2);
+        // FSourceNames[] is sorted by VA, so if the source file name is the same as the previous
+        // we don't need to store it because the VA will be matched by the previous entry.
+        // This removes a lot of "Generics.Collections.pas" entries.
+        S := MapStringCacheToStr(FSourceNames[I].ProcName);
+        if (I = 0) or (FSourceNames[I - 1].ProcName.CachedValue <> S) then
+        begin
+          WriteValueOfs(FSourceNames[I].VA, L1);
+          WriteValueOfs(AddWord(S), L2);
+        end;
       end;
     WriteValue(MaxInt);
 
@@ -2990,7 +3056,7 @@ begin
         WriteValueOfs(FProcNames[I].VA, L1);
         // MAP files generated by C++Builder have spaces in their names
         S := MapStringCacheToStr(FProcNames[I].ProcName, True);
-        D := Pos('.', S);
+        D := PosLastNameSep(S);
         if D = 1 then
         begin
           FirstWord := 0;
@@ -3363,13 +3429,13 @@ begin
   begin
     Result := DataToStr(FirstWord);
     if SecondWord <> 0 then
-      Result := Result + '.' + DataToStr(SecondWord)
+      Result := Result + '.' + DataToStr(SecondWord);
   end
   else
     Result := '';
 end;
 
-function TJclBinDebugScanner.ReadValue(var P: Pointer; var Value: Integer): Boolean;
+class function TJclBinDebugScanner.ReadValue(var P: Pointer; var Value: Integer): Boolean;
 var
   N: Integer;
   I: Integer;
@@ -3384,7 +3450,7 @@ begin
     Inc(I, 7);
   until B and $80 = 0;
   Value := N;
-  Result := (Value <> MaxInt);
+  Result := (N <> MaxInt);
 end;
 
 function TJclBinDebugScanner.SourceNameFromAddr(Addr: DWORD): string;
@@ -5033,7 +5099,10 @@ end;
 destructor TJclGlobalModulesList.Destroy;
 begin
   FreeAndNil(FLock);
-  FreeAndNil(FModulesList);
+  // Keep FModulesList alive if there are still TJclStackInfoLists referencing it. The
+  // last JclStackInfoList will destroy it through FreeModulesList.
+  if (FModulesList <> nil) and (FModulesList.FRefCount = 0) then
+    FreeAndNil(FModulesList);
   FreeAndNil(FAddedModules);
   inherited Destroy;
 end;
@@ -5095,25 +5164,36 @@ begin
     if IsMultiThreaded then
       FLock.Leave;
   end;
+  // RefCount the "global" FModulesList so that if GlobalModulesList is destroyed we can keep
+  // the FModulesList alive and let it be destroyed by the last TJclStackInfoList.
+  if Result = FModulesList then
+    InterlockedIncrement(FModulesList.FRefCount);
 end;
 
 procedure TJclGlobalModulesList.FreeModulesList(var ModulesList: TJclModuleInfoList);
 var
   IsMultiThreaded: Boolean;
 begin
-  if (Self <> nil) and // happens when finalization already ran but a TJclStackInfoList is still alive
-     (FModulesList <> ModulesList) then
+  if Self <> nil then // happens when finalization already ran but a TJclStackInfoList is still alive
   begin
-    IsMultiThreaded := IsMultiThread;
-    if IsMultiThreaded then
-      FLock.Enter;
-    try
-      FreeAndNil(ModulesList);
-    finally
+    if FModulesList <> ModulesList then
+    begin
+      IsMultiThreaded := IsMultiThread;
       if IsMultiThreaded then
-        FLock.Leave;
-    end;
-  end;
+        FLock.Enter;
+      try
+        FreeAndNil(ModulesList);
+      finally
+        if IsMultiThreaded then
+          FLock.Leave;
+      end;
+    end
+    else if FModulesList <> nil then
+      InterlockedDecrement(FModulesList.FRefCount);
+  end
+  else
+    if InterlockedDecrement(ModulesList.FRefCount) = 0 then
+      FreeAndNil(ModulesList);
 end;
 
 function TJclGlobalModulesList.ValidateAddress(Addr: Pointer): Boolean;
@@ -5382,6 +5462,7 @@ var
   Item: TJclStackInfoItem;
 begin
   inherited Create;
+  InterlockedIncrement(GlobalStackListLiveCount);
   FIgnoreLevels := AIgnoreLevels;
   FDelayedTrace := ADelayedTrace;
   FRaw := ARaw;
@@ -5421,6 +5502,8 @@ begin
     FreeMem(FStackData);
   GlobalModulesList.FreeModulesList(FModuleInfoList);
   inherited Destroy;
+  if (InterlockedDecrement(GlobalStackListLiveCount) = 0) and JclDebugFinalized then
+    FreeJclDebugGlobals;
 end;
 
 {$IFDEF CPU64}
@@ -7288,6 +7371,25 @@ begin
     HexMap[Ch] := Ord(Ch) - (Ord('A') - 10);
 end;
 
+procedure FreeJclDebugGlobals;
+begin
+  {$IFDEF HAS_EXCEPTION_STACKTRACE}
+  ResetExceptionProcs;
+  {$ENDIF HAS_EXCEPTION_STACKTRACE}
+
+  FreeAndNil(RegisteredThreadList);
+  FreeAndNil(DebugInfoList);
+  FreeAndNil(GlobalStackList);
+  FreeAndNil(GlobalModulesList);
+  FreeAndNil(DebugInfoCritSect);
+  FreeAndNil(InfoSourceClassList);
+  FreeAndNil(IgnoredExceptions);
+  FreeAndNil(IgnoredExceptionClassNames);
+  FreeAndNil(IgnoredExceptionClassNamesCritSect);
+
+  TJclDebugInfoSymbols.CleanupDebugSymbols;
+end;
+
 initialization
   InitHexMap;
   DebugInfoCritSect := TJclCriticalSection.Create;
@@ -7302,9 +7404,6 @@ initialization
   {$ENDIF HAS_EXCEPTION_STACKTRACE}
 
 finalization
-  {$IFDEF HAS_EXCEPTION_STACKTRACE}
-  ResetExceptionProcs;
-  {$ENDIF HAS_EXCEPTION_STACKTRACE}
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
@@ -7314,16 +7413,9 @@ finalization
     safely because we need to be covered by JclHookExcept.Notifiers critical section }
   JclStopExceptionTracking;
 
-  FreeAndNil(RegisteredThreadList);
-  FreeAndNil(DebugInfoList);
-  FreeAndNil(GlobalStackList);
-  FreeAndNil(GlobalModulesList);
-  FreeAndNil(DebugInfoCritSect);
-  FreeAndNil(InfoSourceClassList);
-  FreeAndNil(IgnoredExceptions);
-  FreeAndNil(IgnoredExceptionClassNames);
-  FreeAndNil(IgnoredExceptionClassNamesCritSect);
-
-  TJclDebugInfoSymbols.CleanupDebugSymbols;
+  GlobalStackList.Clear;
+  JclDebugFinalized := True;
+  if GlobalStackListLiveCount = 0 then
+    FreeJclDebugGlobals;
 
 end.
