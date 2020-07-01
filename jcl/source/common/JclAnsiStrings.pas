@@ -4141,12 +4141,12 @@ begin
   end;
 end;
 
-function AnsiCompareNaturalStr(const S1, S2: AnsiString): SizeInt; overload;
+function AnsiCompareNaturalStr(const S1, S2: AnsiString): SizeInt;{$IFDEF DELPHICOMPILER}overload;{$ENDIF}
 begin
   Result := AnsiCompareNatural(S1, S2, False);
 end;
 
-function AnsiCompareNaturalText(const S1, S2: AnsiString): SizeInt; overload;
+function AnsiCompareNaturalText(const S1, S2: AnsiString): SizeInt;{$IFDEF DELPHICOMPILER}overload;{$ENDIF}
 begin
   Result := AnsiCompareNatural(S1, S2, True);
 end;

@@ -2223,12 +2223,12 @@ begin
   if TypeData.elType = nil then
   begin
     if TypeData.elType2 <> nil then
-      Result := JclTypeInfo(TypeData.elType2^)
+      Result := JclTypeInfo(TypeData.elType2{$IFDEF DELPHICOMPILER}^{$ENDIF})
     else
       Result := nil;
   end
   else
-    Result := JclTypeInfo(TypeData.elType^);
+    Result := JclTypeInfo(TypeData.elType{$IFDEF DELPHICOMPILER}^{$ENDIF});
 end;
 
 function TJclDynArrayTypeInfo.GetElementsNeedCleanup: Boolean;

@@ -730,7 +730,7 @@ end;
 function TJclStructStorageStream.CopyTo(Stream: TJclStructStorageStream;
   Size: Int64): Boolean;
 var
-  DidRead, DidWrite: {$IFDEF RTL290_UP}LargeUInt{$ELSE}Largeint{$ENDIF RTL290_UP};
+  DidRead, DidWrite: {$IF DEFINED(RTL290_UP) OR DEFINED(CPU64)}LargeUInt{$ELSE}Largeint{$ENDIF RTL290_UP};
 begin
   DidRead := 0;
   DidWrite := 0;
@@ -774,7 +774,7 @@ end;
 
 function TJclStructStorageStream.Seek(Offset: Integer; Origin: Word): Longint;
 var
-  N: {$IFDEF RTL290_UP}LargeUInt{$ELSE}Largeint{$ENDIF RTL290_UP};
+  N: {$IF DEFINED(RTL290_UP) OR DEFINED(CPU64)}LargeUInt{$ELSE}Largeint{$ENDIF RTL290_UP};
 begin
   Check;
   if not Succeeded(FStream.Seek(Offset, Ord(Origin), N)) then

@@ -3167,7 +3167,7 @@ end;
 
 function IsWindowResponding(Wnd: THandle; Timeout: Integer): Boolean;
 var
-  Res: DWORD;
+  Res: DWORD_PTR;
 begin
   Res := 0;
   Result := SendMessageTimeout(Wnd, WM_NULL, 0, 0, SMTO_ABORTIFHUNG, Timeout, {$IFDEF RTL230_UP}@{$ENDIF}Res) <> 0;
@@ -4191,8 +4191,6 @@ begin
           Result := 'Windows 10 October 2018 Update';
        1903:
           Result := 'Windows 10 May 2019 Update';
-       1909:
-          Result := 'Windows 10 November 2019 Update';
        2004:
           Result := 'Windows 10 May 2020 Update';
      else
@@ -4224,8 +4222,6 @@ begin
           Result := 'Redstone 5';
        1903:
           Result := '19H1';
-       1909:
-          Result := '19H2';
        2004:
           Result := '20H1';
     else

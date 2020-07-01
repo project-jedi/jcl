@@ -5390,12 +5390,12 @@ begin
   end;
 end;
 
-function CompareNaturalStr(const S1, S2: string): SizeInt; overload;
+function CompareNaturalStr(const S1, S2: string): SizeInt;{$IFDEF DELPHICOMPILER}overload;{$ENDIF}
 begin
   Result := CompareNatural(S1, S2, False);
 end;
 
-function CompareNaturalText(const S1, S2: string): SizeInt; overload;
+function CompareNaturalText(const S1, S2: string): SizeInt;{$IFDEF DELPHICOMPILER}overload;{$ENDIF}
 begin
   Result := CompareNatural(S1, S2, True);
 end;

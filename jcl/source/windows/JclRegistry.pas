@@ -62,7 +62,11 @@ uses
   JclBase, JclStrings;
 
 type
-  DelphiHKEY = {$IFDEF CPUX64}type Winapi.Windows.HKEY{$ELSE}Longword{$ENDIF CPUX64};
+  {$IFDEF CPU64}
+  DelphiHKEY = type {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}Windows.HKEY;
+  {$ELSE ~CPU64}
+  DelphiHKEY = type Longword;
+  {$ENDIF ~CPU64}
   {$HPPEMIT '// BCB users must typecast the HKEY values to DelphiHKEY or use the HK-values below.'}
 
   TExecKind = (ekMachineRun, ekMachineRunOnce, ekUserRun, ekUserRunOnce,
@@ -398,7 +402,7 @@ uses
   Winapi.AccCtrl,
   {$ELSE ~HAS_UNITSCOPE}
   SysUtils,
-  AccCtrl,
+  {$IFDEF DELPHILANGUAGE}AccCtrl,{$ENDIF ~DELPHILANGUAGE}
   {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF FPC}
 //  JwaAccCtrl,

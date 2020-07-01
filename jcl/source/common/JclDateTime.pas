@@ -263,7 +263,7 @@ const
   //   7 : first full week
   //ISOFirstWeekMinDays = 4;
 
-function EncodeDate(const Year: Integer; Month, Day: Word): TDateTime; overload;
+function EncodeDate(const Year: Integer; Month, Day: Word): TDateTime;{$IFDEF DELPHICOMPILER}overload;{$ENDIF}
 begin
   if (Year > 0) and (Year < EncodeDateMaxYear + 1) then
     Result := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.EncodeDate(Year, Month, Day)

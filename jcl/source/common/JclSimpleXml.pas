@@ -629,7 +629,7 @@ type
       const Name: string; const Arguments: TVarDataArray): Boolean; override;
     function GetProperty(var Dest: TVarData; const V: TVarData;
       const Name: string): Boolean; override;
-    function SetProperty(const V: TVarData; const Name: string;
+    function SetProperty(var V: TVarData; const Name: string;
       const Value: TVarData): Boolean; override;
   end;
 
@@ -4244,7 +4244,7 @@ begin
   Result := (VXML = nil) or (not VXML.HasItems);
 end;
 
-function TXMLVariant.SetProperty(const V: TVarData; const Name: string;
+function TXMLVariant.SetProperty(var V: TVarData; const Name: string;
   const Value: TVarData): Boolean;
 
   function GetStrValue: string;

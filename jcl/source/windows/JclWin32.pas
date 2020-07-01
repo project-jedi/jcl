@@ -55,7 +55,11 @@ unit JclWin32;
 {$I windowsonly.inc}
 
 {$MINENUMSIZE 4}
-{$ALIGN ON}
+{$IFDEF WIN64}
+  {$ALIGN 8}
+{$ELSE}
+  {$ALIGN 4}
+{$ENDIF}
 
 interface
 

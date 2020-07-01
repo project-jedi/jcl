@@ -28,6 +28,13 @@ __history
 # 64bit Delphi/C++Builder files
 *.[ao]
 
+# FreePascal Compiler output files
+*.a
+*.compiled
+*.o
+*.ppu
+*.rsj
+
 # Lib directories
 jcl/lib/*/*.res
 jcl/lib/*/debug/*.res
