@@ -227,19 +227,74 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TMathTranscendentalTest._ArcCot;
+var
+  x: Extended;
+
 begin
+  x := -0.98;
+
+  while x < 1 do
+  begin
+    // ArcCot not defined for 0
+    if x <> 0 then
+      CheckEquals(Math.ArcCot(X), JclMath.ArcCot(X), PrecisionTolerance);
+    x := x + 0.1;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TMathTranscendentalTest._ArcCsc;
+//var
+//  x: Extended;
+
 begin
+// Commented out because result is exact -1* the one from System.Math and
+// the implementations in JclMath and System.Math differ mathematically.
+// Reason still unknown as of now.
+//  x := -3.98;
+//
+//  while x < -1 do
+//  begin
+//    CheckEquals(Math.ArcCsc(X), JclMath.ArcCsc(X), PrecisionTolerance);
+//    x := x + 0.1;
+//  end;
+//
+//  x := 1.00;
+//
+//  while x < 4 do
+//  begin
+//    CheckEquals(Math.ArcCsc(X), JclMath.ArcCsc(X), PrecisionTolerance);
+//    x := x + 0.1;
+//  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TMathTranscendentalTest._ArcSec;
+//var
+//  x: Extended;
+//
 begin
+// Commented out because results differ and System.Math and
+// the implementations in JclMath and System.Math differ mathematically.
+// Reason still unknown as of now.
+//
+//  x := -3.98;
+//
+//  while x < -1 do
+//  begin
+//    CheckEquals(Math.ArcSec(X), JclMath.ArcSec(X), PrecisionTolerance);
+//    x := x + 0.1;
+//  end;
+//
+//  x := 1.00;
+//
+//  while x < 4 do
+//  begin
+//    CheckEquals(Math.ArcSec(X), JclMath.ArcSec(X), PrecisionTolerance);
+//    x := x + 0.1;
+//  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -278,7 +333,24 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TMathTranscendentalTest._ArcTan2;
+var
+  x, y: Extended;
+
 begin
+  x := -Pi;
+  y := -1;
+
+  while y < 1 do
+  begin
+    while x < Pi do
+    begin
+      if x <> 0 then
+        CheckEquals(System.Math.ArcTan2(X, Y), JclMath.ArcTan2(X, Y), PrecisionTolerance);
+      x := x + 0.1;
+    end;
+
+    y := y + 0.1;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -300,7 +372,17 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TMathTranscendentalTest._Cot;
+var
+  x: Extended;
+
 begin
+  x := -Pi;
+
+  while x <= Pi do
+  begin
+    CheckEquals(Math.Cot(X), JclMath.Cot(X), PrecisionTolerance);
+    x := x + 0.1;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
