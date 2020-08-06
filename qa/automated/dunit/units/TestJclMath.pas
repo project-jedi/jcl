@@ -342,7 +342,7 @@ begin
 
   while x <= Pi do
   begin
-    SinCos(x, s, c);
+    JclMath.SinCos(x, s, c);
 
     CheckEquals(System.Sin(X), s, PrecisionTolerance);
     CheckEquals(System.Cos(X), c, PrecisionTolerance);
@@ -1074,30 +1074,30 @@ begin
   s := Infinity;
   d := JclMath.Infinity;
   e := Infinity;
-  CheckEquals(True, IsInfinite(s));
-  CheckEquals(True, IsInfinite(d));
-  CheckEquals(True, IsInfinite(e));
+  CheckEquals(True, JclMath.IsInfinite(s));
+  CheckEquals(True, JclMath.IsInfinite(d));
+  CheckEquals(True, JclMath.IsInfinite(e));
 
   s := 0;
   d := 0;
   e := 0;
-  CheckEquals(False, IsInfinite(s));
-  CheckEquals(False, IsInfinite(d));
-  CheckEquals(False, IsInfinite(e));
+  CheckEquals(False, JclMath.IsInfinite(s));
+  CheckEquals(False, JclMath.IsInfinite(d));
+  CheckEquals(False, JclMath.IsInfinite(e));
 
   s := NaN;
   d := NaN;
   e := NaN;
-  CheckEquals(False, IsInfinite(s));
-  CheckEquals(False, IsInfinite(d));
-  CheckEquals(False, IsInfinite(e));
+  CheckEquals(False, JclMath.IsInfinite(s));
+  CheckEquals(False, JclMath.IsInfinite(d));
+  CheckEquals(False, JclMath.IsInfinite(e));
 
   s := NegInfinity;
   d := NegInfinity;
   e := NegInfinity;
-  CheckEquals(True, IsInfinite(s));
-  CheckEquals(True, IsInfinite(d));
-  CheckEquals(True, IsInfinite(e));
+  CheckEquals(True, JclMath.IsInfinite(s));
+  CheckEquals(True, JclMath.IsInfinite(d));
+  CheckEquals(True, JclMath.IsInfinite(e));
 end;
 
 //--------------------------------------------------------------------------------------------------
