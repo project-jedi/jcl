@@ -28,6 +28,7 @@ uses
   {$ENDIF}
   Classes,
   SysUtils,
+  JclSysUtils,
   JclStrings;
 
 { TJclStringCharacterTestRoutines }
@@ -384,14 +385,6 @@ begin
 
     Strings[t-1] := s;
   end;
-end;
-
-function StrLower2(const S: AnsiString): AnsiString;
-var sTemp: String;
-begin
-  sTemp := S;
-  StrLowerInPlace(sTemp);
-  Result := sTemp;
 end;
 
 //==================================================================================================
