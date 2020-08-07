@@ -60,6 +60,7 @@ begin
     finally
       FS.Free;
     end;
+
     MapScanner := TJclMapScanner.Create(MapFileName);
     try
       ModuleStr := MapScanner.ModuleNameFromAddr($100);
