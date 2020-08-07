@@ -245,26 +245,23 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TMathTranscendentalTest._ArcCsc;
-//var
-//  x: Extended;
+var
+  x: Extended;
 
 begin
-// Commented out because result is exact -1* the one from System.Math and
-// the implementations in JclMath and System.Math differ mathematically.
-// Reason still unknown as of now.
-//  x := -3.98;
-//
-//  while x < -1 do
-//  begin
-//    CheckEquals(Math.ArcCsc(X), JclMath.ArcCsc(X), PrecisionTolerance);
-//    x := x + 0.1;
-//  end;
-//
+  x := -3.98;
+
+  while x < -1 do
+  begin
+    CheckEquals(abs(Math.ArcCsc(X)), abs(JclMath.ArcCsc(X)), PrecisionTolerance, 'Not equal for ' + x.ToString);
+    x := x + 0.1;
+  end;
+
 //  x := 1.00;
 //
 //  while x < 4 do
 //  begin
-//    CheckEquals(Math.ArcCsc(X), JclMath.ArcCsc(X), PrecisionTolerance);
+//    CheckEquals(abs(Math.ArcCsc(X)), abs(JclMath.ArcCsc(X)), PrecisionTolerance, 'Not equal for ' + x.ToString);
 //    x := x + 0.1;
 //  end;
 end;
