@@ -18,6 +18,8 @@
 
 unit TestJclStrings;
 
+{$I jcl.inc}
+
 interface
 uses
   TestFramework,
@@ -1949,7 +1951,7 @@ var
 begin
   for c1 := #0 to #255 do
     CheckEquals(
-      (c1 in ['0'..'9', '+', '-', DecimalSeparator, #178 { power of 2 }, #179 {power of 3}, #185 {power of 1}]),
+      (c1 in ['0'..'9', '+', '-', {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}DecimalSeparator, #178 { power of 2 }, #179 {power of 3}, #185 {power of 1}]),
       CharIsNumberChar(c1),
       'CharIsNumberChar #' + IntToStr(Ord(c1)));
 end;
