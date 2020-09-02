@@ -245,26 +245,22 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TMathTranscendentalTest._ArcCsc;
-//var
-//  x: Extended;
-
+var
+  x: Extended;
 begin
-// Commented out because result is exact -1* the one from System.Math and
-// the implementations in JclMath and System.Math differ mathematically.
-// Reason still unknown as of now.
-//  x := -3.98;
-//
-//  while x < -1 do
-//  begin
-//    CheckEquals(Math.ArcCsc(X), JclMath.ArcCsc(X), PrecisionTolerance);
-//    x := x + 0.1;
-//  end;
-//
+  x := -3.98;
+
+  while x < -1 do
+  begin
+    CheckEquals(abs(Math.ArcCsc(X)), abs(JclMath.ArcCsc(X)), PrecisionTolerance, 'Not equal for ' + x.ToString);
+    x := x + 0.1;
+  end;
+
 //  x := 1.00;
 //
 //  while x < 4 do
 //  begin
-//    CheckEquals(Math.ArcCsc(X), JclMath.ArcCsc(X), PrecisionTolerance);
+//    CheckEquals(abs(Math.ArcCsc(X)), abs(JclMath.ArcCsc(X)), PrecisionTolerance, 'Not equal for ' + x.ToString);
 //    x := x + 0.1;
 //  end;
 end;
@@ -388,13 +384,33 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TMathTranscendentalTest._Csc;
+var
+  x: Extended;
+
 begin
+  x := -Pi;
+
+  while x <= Pi do
+  begin
+    CheckEquals(Math.Csc(X), JclMath.Csc(X), PrecisionTolerance);
+    x := x + 0.1;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TMathTranscendentalTest._Sec;
+var
+  x: Extended;
+
 begin
+  x := -Pi;
+
+  while x <= Pi do
+  begin
+    CheckEquals(Math.Sec(X), JclMath.Sec(X), PrecisionTolerance);
+    x := x + 0.1;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -487,6 +503,14 @@ end;
 
 procedure TMathMiscTest._Factorial;
 begin
+  CheckEquals(1, Factorial(0));
+  CheckEquals(1, Factorial(1));
+  CheckEquals(2, Factorial(2));
+  CheckEquals(6, Factorial(3));
+  CheckEquals(24, Factorial(4));
+  CheckEquals(120, Factorial(5));
+  CheckEquals(720, Factorial(6));
+  CheckEquals(8.68331761881189E36, Factorial(33));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -565,7 +589,6 @@ end;
 
 procedure TMathMiscTest._NormalizeA;
 begin
-
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -609,6 +632,17 @@ end;
 
 procedure TMathMiscTest._Signe;
 begin
+  CheckEquals( 0.1, Signe( 0.1,  0.1)); // X > 0, y > 0
+  CheckEquals(-0.1, Signe( 0.1,  0.0)); // X > 0, y = 0
+  CheckEquals(-0.1, Signe( 0.1, -0.1)); // X > 0, y < 0
+
+  CheckEquals( 0.0, Signe(-0.0,  0.1)); // X = 0, y > 0
+  CheckEquals(-0.0, Signe( 0.0,  0.0)); // X = 0, y = 0
+  CheckEquals( 0.0, Signe( 0.0, -0.1)); // X = 0, y < 0
+
+  CheckEquals( 0.1, Signe(-0.1,  0.1)); // X < 0, y > 0
+  CheckEquals( 0.1, Signe(-0.1,  0.0)); // X < 0, y = 0
+  CheckEquals(-0.1, Signe(-0.1, -0.1)); // X < 0, y < 0
 end;
 
 
