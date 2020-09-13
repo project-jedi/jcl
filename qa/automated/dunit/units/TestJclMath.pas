@@ -40,8 +40,6 @@ type
     procedure _HexToDouble;
   end;
 
-<<<<<<< HEAD
-=======
   TMathAngleConversionTest = class (TTestCase)
   published
     procedure _DegToRad;
@@ -52,7 +50,6 @@ type
     procedure _GradToDeg;
   end;
 
->>>>>>> origin/UnitTests_JclMath_3
   TMathLogarithmicTest = class (TTestCase)
   published
     procedure _LogBase10;
@@ -1442,10 +1439,6 @@ begin
   CheckEquals(Exp, Act, 'Failure for pi ');
 end;
 
-<<<<<<< HEAD
-initialization
-  RegisterTest('JCLMath', TMathHexConversionTest.Suite);
-=======
 { TMathAngleConversionTest }
 
 procedure TMathAngleConversionTest._DegToGrad;
@@ -1535,7 +1528,6 @@ end;
 initialization
   RegisterTest('JCLMath', TMathHexConversionTest.Suite);
   RegisterTest('JCLMath', TMathAngleConversionTest.Suite);
->>>>>>> origin/UnitTests_JclMath_3
   RegisterTest('JCLMath', TMathLogarithmicTest.Suite);
   RegisterTest('JCLMath', TMathTranscendentalTest.Suite);
   RegisterTest('JCLMath', TMathMiscTest.Suite);
