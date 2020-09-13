@@ -40,6 +40,19 @@ type
     procedure _HexToDouble;
   end;
 
+<<<<<<< HEAD
+=======
+  TMathAngleConversionTest = class (TTestCase)
+  published
+    procedure _DegToRad;
+    procedure _RadToDeg;
+    procedure _GradToRad;
+    procedure _RadToGrad;
+    procedure _DegToGrad;
+    procedure _GradToDeg;
+  end;
+
+>>>>>>> origin/UnitTests_JclMath_3
   TMathLogarithmicTest = class (TTestCase)
   published
     procedure _LogBase10;
@@ -1429,8 +1442,100 @@ begin
   CheckEquals(Exp, Act, 'Failure for pi ');
 end;
 
+<<<<<<< HEAD
 initialization
   RegisterTest('JCLMath', TMathHexConversionTest.Suite);
+=======
+{ TMathAngleConversionTest }
+
+procedure TMathAngleConversionTest._DegToGrad;
+var
+  x: Extended;
+
+begin
+  x := 0;
+
+  while x < 360.0 do
+  begin
+    CheckEquals(Math.DegToGrad(X), JclMath.DegToGrad(X), PrecisionTolerance);
+    x := x + 0.1;
+  end;
+end;
+
+procedure TMathAngleConversionTest._DegToRad;
+var
+  x: Extended;
+
+begin
+  x := 0;
+
+  while x < 360.0 do
+  begin
+    CheckEquals(Math.DegToRad(X), JclMath.DegToRad(X), PrecisionTolerance);
+    x := x + 0.1;
+  end;
+end;
+
+procedure TMathAngleConversionTest._GradToDeg;
+var
+  x: Extended;
+
+begin
+  x := 0;
+
+  while x < 400.0 do
+  begin
+    CheckEquals(Math.GradToDeg(X), JclMath.GradToDeg(X), PrecisionTolerance);
+    x := x + 0.1;
+  end;
+end;
+
+procedure TMathAngleConversionTest._GradToRad;
+var
+  x: Extended;
+
+begin
+  x := 0;
+
+  while x < 400.0 do
+  begin
+    CheckEquals(Math.GradToRad(X), JclMath.GradToRad(X), PrecisionTolerance);
+    x := x + 0.1;
+  end;
+end;
+
+procedure TMathAngleConversionTest._RadToDeg;
+var
+  x: Extended;
+
+begin
+  x := 0;
+
+  while x < pi do
+  begin
+    CheckEquals(Math.RadToDeg(X), JclMath.RadToDeg(X), PrecisionTolerance);
+    x := x + 0.1;
+  end;
+end;
+
+procedure TMathAngleConversionTest._RadToGrad;
+var
+  x: Extended;
+
+begin
+  x := 0;
+
+  while x < pi do
+  begin
+    CheckEquals(Math.RadToGrad(X), JclMath.RadToGrad(X), PrecisionTolerance);
+    x := x + 0.1;
+  end;
+end;
+
+initialization
+  RegisterTest('JCLMath', TMathHexConversionTest.Suite);
+  RegisterTest('JCLMath', TMathAngleConversionTest.Suite);
+>>>>>>> origin/UnitTests_JclMath_3
   RegisterTest('JCLMath', TMathLogarithmicTest.Suite);
   RegisterTest('JCLMath', TMathTranscendentalTest.Suite);
   RegisterTest('JCLMath', TMathMiscTest.Suite);
