@@ -25,7 +25,7 @@ type
   Ppthread_attr_t = ^pthread_attr_t;
 
   Ppthread_cond_t = ^pthread_cond_t;
-  pthread_cond_t = unixtype.pthread_cond_t;
+  //pthread_cond_t = Posix.SysTypes.pthread_cond_t;
   {record
        __c_lock : _pthread_fastlock;
        __c_waiting : _pthread_descr;

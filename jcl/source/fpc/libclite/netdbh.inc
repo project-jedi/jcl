@@ -8,8 +8,10 @@ const
    _PATH_PROTOCOLS = '/etc/protocols';
    _PATH_SERVICES = '/etc/services';
 
+{$IFDEF FPC}
 var
    h_errno : longint;cvar;external;
+{$ENDIF FPC}
 
 function __h_errno_location:Plongint;cdecl;external clib name '__h_errno_location';
 

@@ -8,7 +8,7 @@ type
         tms_cstime : clock_t;
      end;
 
-function times(__buffer:Ptms):clock_t;cdecl;external clib name 'times';
+function times(__buffer:Ptms):clock_t;cdecl;external clib name 'times'; overload;
 
 { ---------------------------------------------------------------------
     Borland compatibility types
@@ -18,5 +18,5 @@ Type
   TTimes = tms;
   PTimes = ^TTimes;
 
-function times(var __buffer:tms):clock_t;cdecl;external clib name 'times';
+function times(var __buffer:tms):clock_t;cdecl;external clib name 'times'; overload;
 

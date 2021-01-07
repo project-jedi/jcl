@@ -24,6 +24,8 @@ type
    P__gconv_step_data = ^__gconv_step_data;
    P__gconv_loaded_object = pointer; // ^__gconv_loaded_object;
    P__gconv_trans_data = ^__gconv_trans_data;
+   PPbyte = ^Pbyte;
+   PPPchar = ^PPchar;
 
 
    __gconv_fct = function (_para1:P__gconv_step; _para2:P__gconv_step_data; _para3:PPbyte; _para4:Pbyte; _para5:PPbyte;

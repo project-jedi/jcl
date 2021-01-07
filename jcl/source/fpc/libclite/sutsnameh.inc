@@ -17,7 +17,7 @@ type
 const
    SYS_NMLN = _UTSNAME_LENGTH;
 
-function uname(__name:Putsname):longint;cdecl;external clib name 'uname';
+function uname(__name:Putsname):longint;cdecl;external clib name 'uname'; overload;
 
 
 { ---------------------------------------------------------------------
@@ -27,5 +27,5 @@ function uname(__name:Putsname):longint;cdecl;external clib name 'uname';
 Type
   TUTSName = utsname;
 
-function uname(var __name: utsname):longint;cdecl;external clib name 'uname';
+function uname(var __name: utsname):longint;cdecl;external clib name 'uname'; overload;
 

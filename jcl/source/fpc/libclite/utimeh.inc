@@ -7,7 +7,7 @@ type
    end;
 
 
-function utime(__file:Pchar; __file_times:Putimbuf):longint;cdecl;external clib name 'utime';
+function utime(__file:Pchar; __file_times:Putimbuf):longint;cdecl;external clib name 'utime'; overload;
 
 { ---------------------------------------------------------------------
     Borland compatibility types
@@ -17,4 +17,4 @@ type
   TUTimeBuffer = utimbuf;
   PUTimeBuffer = ^TUTimeBuffer;
 
-function utime(__file:Pchar; const __file_times: utimbuf):longint;cdecl;external clib name 'utime';
+function utime(__file:Pchar; const __file_times: utimbuf):longint;cdecl;external clib name 'utime'; overload;

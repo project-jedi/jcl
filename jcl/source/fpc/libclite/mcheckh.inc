@@ -1,11 +1,11 @@
 
 type
    mcheck_status =  (
-     MCHECK_DISABLED := -(1),
-     MCHECK_OK := 0,
-     MCHECK_FREE := 1,
-     MCHECK_HEAD := 2,
-     MCHECK_TAIL := 3
+     MCHECK_DISABLED = -(1),
+     MCHECK_OK = 0,
+     MCHECK_FREE = 1,
+     MCHECK_HEAD = 2,
+     MCHECK_TAIL = 3
    );
 
 type

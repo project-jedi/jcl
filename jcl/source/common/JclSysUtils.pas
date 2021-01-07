@@ -347,6 +347,7 @@ type
   TDynamicAddressList = array [0..MaxInt div 16] of Pointer;
   PDynamicAddressList = ^TDynamicAddressList;
 
+{$IFNDEF PUREPASCAL}
 function GetDynamicMethodCount(AClass: TClass): Integer;
 function GetDynamicIndexList(AClass: TClass): PDynamicIndexList;
 function GetDynamicAddressList(AClass: TClass): PDynamicAddressList;
@@ -358,6 +359,7 @@ function GetDynamicMethod(AClass: TClass; Index: Integer): Pointer;
 { init table methods }
 
 function GetInitTable(AClass: TClass): PTypeInfo;
+{$ENDIF PUREPASCAL}
 
 { field table methods }
 
@@ -383,7 +385,9 @@ type
    {Entries: array [1..65534] of TFieldEntry;}
   end;
 
+{$IFNDEF PUREPASCAL}
 function GetFieldTable(AClass: TClass): PFieldTable;
+{$ENDIF PUREPASCAL}
 
 { method table }
 
@@ -402,16 +406,22 @@ type
    {Entries: array [1..65534] of TMethodEntry;}
   end;
 
+{$IFNDEF PUREPASCAL}
 function GetMethodTable(AClass: TClass): PMethodTable;
 function GetMethodEntry(MethodTable: PMethodTable; Index: Integer): PMethodEntry;
+{$ENDIF PUREPASCAL}
 
 // Class Parent
 procedure SetClassParent(AClass: TClass; NewClassParent: TClass);
+{$IFNDEF PUREPASCAL}
 function GetClassParent(AClass: TClass): TClass;
+{$ENDIF PUREPASCAL}
 
 {$IFNDEF FPC}
+{$IFNDEF PUREPASCAL}
 function IsClass(Address: Pointer): Boolean;
 function IsObject(Address: Pointer): Boolean;
+{$ENDIF PUREPASCAL}
 {$ENDIF ~FPC}
 
 function InheritsFromByName(AClass: TClass; const AClassName: string): Boolean;
@@ -882,11 +892,11 @@ implementation
 
 uses
   {$IFDEF HAS_UNIT_LIBC}
-  {$IFNDEF FPC}
-  Libc,
-  {$ELSE}
+  //{$IFNDEF FPC}
+  //Libc,
+  //{$ELSE}
   libclite,
-  {$ENDIF ~FPC}
+  //{$ENDIF ~FPC}
   {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF MSWINDOWS}
   JclConsole,
@@ -1265,21 +1275,6 @@ var
   {$ENDIF THREADSAFE}
 
 {$IFDEF THREADSAFE}
-
-{$IFDEF FPC}
-{$I ../include/fpc_version.inc}
-{$ELSE}
- {$IFDEF RTL200_UP}
-  {$DEFINE RTL_200_OR_NEW_FPC} // Delphi 2009+
- {$ELSE}
-  {$IFDEF RTL160_UP}
-   {$DEFINE RTL_NEW} // Delphi 7-2007
-  {$ELSE}
-   {$DEFINE RTL_OLD} // Delphi 5, 6
-  {$ENDIF}
- {$ENDIF}
-{$ENDIF}
-
 function GetAccessToHandleList: IInterface;
 var
   OldValue: Pointer;
@@ -1288,17 +1283,15 @@ begin
   if not Assigned(GlobalMMFHandleListCS) and not MMFFinalized then
   begin
     CS := TJclIntfCriticalSection.Create;
-    {$IFDEF RTL_200_OR_NEW_FPC}
+    {$IFDEF RTL200_UP} // Delphi 2009+
     OldValue := InterlockedCompareExchangePointer(Pointer(GlobalMMFHandleListCS), Pointer(CS), nil);
     {$ELSE}
-    {$IFDEF RTL_NEW}
+      {$IFDEF RTL160_UP} // Delphi 7-2007
     OldValue := Pointer(InterlockedCompareExchange(Longint(GlobalMMFHandleListCS), Longint(CS), 0));
-    {$ELSE}
-    {$IFDEF RTL_OLD}
+      {$ELSE} // Delphi 5, 6
     OldValue := InterlockedCompareExchange(Pointer(GlobalMMFHandleListCS), Pointer(CS), nil);
-    {$ENDIF RTL_OLD}
-    {$ENDIF RTL_NEW}
-    {$ENDIF RTL_200_OR_NEW_FPC}
+      {$ENDIF RTL180_UP}
+    {$ENDIF RTL185_UP}
     if OldValue <> nil then
       CS.Free;
   end;
@@ -1314,9 +1307,9 @@ var
   FileMappingHandle: THandle;
   Iterate, NewListItem: PMMFHandleListItem;
   Protect: Cardinal;
-  //{$IFDEF THREADSAFE}
-  //HandleListAccess: IInterface;
-  //{$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  HandleListAccess: IInterface;
+  {$ENDIF THREADSAFE}
 begin
   Result := 0;
   Pointer(P) := nil;
@@ -1324,9 +1317,9 @@ begin
   if not JclCheckWinVersion(5, 0) and ((Name = '') or (Pos('\', Name) > 0)) then
     raise ESharedMemError.CreateResFmt(@RsInvalidMMFName, [Name]);
 
-  //{$IFDEF THREADSAFE}
-  //HandleListAccess := GetAccessToHandleList;
-  //{$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  HandleListAccess := GetAccessToHandleList;
+  {$ENDIF THREADSAFE}
 
   // search for same name
   Iterate := MMFHandleList;
@@ -1403,16 +1396,16 @@ end;
 function SharedFreeMem(var P{: Pointer}): Boolean;
 var
   N, Iterate: PMMFHandleListItem;
-  //{$IFDEF THREADSAFE}
-  //HandleListAccess: IInterface;
-  //{$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  HandleListAccess: IInterface;
+  {$ENDIF THREADSAFE}
 begin
   if Pointer(P) <> nil then
   begin
     Result := False;
-    //{$IFDEF THREADSAFE}
-    //HandleListAccess := GetAccessToHandleList;
-    //{$ENDIF THREADSAFE}
+    {$IFDEF THREADSAFE}
+    HandleListAccess := GetAccessToHandleList;
+    {$ENDIF THREADSAFE}
     Iterate := MMFHandleList;
     N := nil;
     while Iterate <> nil do
@@ -1994,28 +1987,28 @@ end;
 {$IFNDEF FPC}
 function GetVirtualMethodCount(AClass: TClass): Integer;
 type
-  PINT_PTR = ^INT_PTR;
+ PIntPtr = ^IntPtr;
 var
-  BeginVMT: INT_PTR;
-  EndVMT: INT_PTR;
-  TablePointer: INT_PTR;
+  BeginVMT: IntPtr;
+  EndVMT: IntPtr;
+  TablePointer: IntPtr;
   I: Integer;
 begin
-  BeginVMT := INT_PTR(AClass);
+  BeginVMT := IntPtr(AClass);
 
   // Scan the offset entries in the class table for the various fields,
   // namely vmtIntfTable, vmtAutoTable, ..., vmtDynamicTable
   // The last entry is always the vmtClassName, so stop once we got there
   // After the last virtual method there is one of these entries.
 
-  EndVMT := PINT_PTR(INT_PTR(AClass) + vmtClassName)^;
+  EndVMT := PIntPtr(IntPtr(AClass) + vmtClassName)^;
   // Set iterator to first item behind VMT table pointer
   I := vmtSelfPtr + SizeOf(Pointer);
   repeat
-    TablePointer := PINT_PTR(INT_PTR(AClass) + I)^;
+    TablePointer := PIntPtr(IntPtr(AClass) + I)^;
     if (TablePointer <> 0) and (TablePointer >= BeginVMT) and
        (TablePointer < EndVMT) then
-      EndVMT := INT_PTR(TablePointer);
+      EndVMT := IntPtr(TablePointer);
     Inc(I, SizeOf(Pointer));
   until I >= vmtClassName;
 
@@ -2037,6 +2030,7 @@ begin
   SetVMTPointer(AClass, Index * SizeOf(Pointer), Method);
 end;
 
+{$IFNDEF PUREPASCAL}
 function GetDynamicMethodCount(AClass: TClass): Integer; assembler;
 asm
         {$IFDEF CPU32}
@@ -2212,6 +2206,7 @@ asm
         MOV     RAX, [RCX].vmtMethodTable
         {$ENDIF CPU64}
 end;
+{$ENDIF PUREPASCAL}
 
 function GetMethodEntry(MethodTable: PMethodTable; Index: Integer): PMethodEntry;
 begin
@@ -2242,6 +2237,7 @@ begin
   // FlushInstructionCache{$IFDEF MSWINDOWS}(GetCurrentProcess, PatchAddress, SizeOf(Pointer)){$ENDIF};
 end;
 
+{$IFNDEF PUREPASCAL}
 function GetClassParent(AClass: TClass): TClass; assembler;
 asm
         {$IFDEF CPU32}
@@ -2290,6 +2286,7 @@ asm
 @Exit:
 end;
 {$ENDIF BORLAND}
+{$ENDIF PUREPASCAL}
 
 function InheritsFromByName(AClass: TClass; const AClassName: string): Boolean;
 begin
@@ -2349,7 +2346,7 @@ begin
     GetOwner.GetInterface(IInterface, FOwnerInterface);
 end;
 
-function TJclInterfacedPersistent._AddRef: Integer;
+function TJclInterfacedPersistent._AddRef: Longint;
 begin
   if FOwnerInterface <> nil then
     Result := FOwnerInterface._AddRef
@@ -2357,7 +2354,7 @@ begin
     Result := InterlockedIncrement(FRefCount);
 end;
 
-function TJclInterfacedPersistent._Release: Integer;
+function TJclInterfacedPersistent._Release: Longint;
 begin
   if FOwnerInterface <> nil then
     Result := FOwnerInterface._Release
@@ -3286,7 +3283,9 @@ begin
 {$IFDEF UNIX}
 var
   PipeBytesRead: Cardinal;
+{$IFDEF FPC}
   Pipe: PIOFile;
+{$ENDIF FPC}
   Cmd, OutLine: string;
   OutBuffer: TBuffer;
 
@@ -3324,6 +3323,7 @@ var
 
 begin
   Cmd := Format('%s 2>&1', [Options.CommandLine]);
+{$IFDEF FPC}
   Pipe := nil;
   try
     Pipe := popen(PChar(Cmd), 'r');
@@ -3341,6 +3341,7 @@ begin
       pclose(Pipe);
     wait(nil);
   end;
+{$ENDIF FPC}
 {$ENDIF UNIX}
 end;
 
@@ -4003,13 +4004,13 @@ begin
   inherited Destroy;
 end;
 
-function TJclIntfCriticalSection._AddRef: Integer;
+function TJclIntfCriticalSection._AddRef: Longint;
 begin
   FCriticalSection.Acquire;
   Result := -1;
 end;
 
-function TJclIntfCriticalSection._Release: Integer;
+function TJclIntfCriticalSection._Release: Longint;
 begin
   FCriticalSection.Release;
   Result := -1;

@@ -68,20 +68,23 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  Types,
   {$IFDEF HAS_UNIT_LIBC}
-  {$IFNDEF FPC}
-  Libc,
-  {$ELSE}
+  //{$IFNDEF FPC}
+  //Libc,
+  //{$ELSE}
   libclite,
-  {$ENDIF ~FPC}
+  //{$ENDIF ~FPC}
   {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
+  System.IOUtils,
   Winapi.Windows, JclWin32,
   {$ENDIF MSWINDOWS}
   System.Classes, System.SysUtils,
   {$ELSE ~HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
+  IOUtils,
   Windows, JclWin32,
   {$ENDIF MSWINDOWS}
   Classes, SysUtils,
@@ -159,7 +162,9 @@ function PathGetTempPath: string;
 function PathIsAbsolute(const Path: string): Boolean;
 function PathIsChild(const Path, Base: string): Boolean;
 function PathIsEqualOrChild(const Path, Base: string): Boolean;
+{$IFNDEF LINUX}
 function PathIsDiskDevice(const Path: string): Boolean;
+{$ENDIF LINUX}
 function PathIsUNC(const Path: string): Boolean;
 function PathRemoveSeparator(const Path: string): string;
 function PathRemoveExtension(const Path: string): string;
@@ -280,6 +285,7 @@ function GetFileCreation(const FileName: string): TFileTime; overload;
 function GetFileCreation(const FileName: string; out LocalTime: TDateTime): Boolean; overload;
 {$ENDIF MSWINDOWS}
 {$IFDEF UNIX}
+function GetFileLastWrite2(const FileName: string): TDateTime;
 function GetFileLastWrite(const FileName: string; out TimeStamp: Integer; ResolveSymLinks: Boolean = True): Boolean; overload;
 function GetFileLastWrite(const FileName: string; out LocalTime: TDateTime; ResolveSymLinks: Boolean = True): Boolean; overload;
 function GetFileLastWrite(const FileName: string; ResolveSymLinks: Boolean = True): Integer; overload;
@@ -314,11 +320,9 @@ procedure ShredFile(const FileName: string; Times: Integer = 1);
 function UnlockVolume(var Handle: THandle): Boolean;
 {$ENDIF MSWINDOWS}
 
-{$IFDEF UNIX}
 function CreateSymbolicLink(const Name, Target: string): Boolean;
 { This function gets the value of the symbolic link filename. }
 function SymbolicLinkTarget(const Name: string): string;
-{$ENDIF UNIX}
 
 // TJclFileAttributeMask
 //
@@ -1088,7 +1092,7 @@ implementation
 
 uses
   {$IFDEF HAS_UNITSCOPE}
-  System.Types, // inlining of TList.Remove
+  //System.Types, // inlining of TList.Remove
   {$IFDEF HAS_UNIT_CHARACTER}
   System.Character,
   {$ENDIF HAS_UNIT_CHARACTER}
@@ -2789,6 +2793,7 @@ begin
   {$ENDIF UNIX}
 end;
 
+{$IFNDEF LINUX}
 function PathIsDiskDevice(const Path: string): Boolean;
 {$IFDEF UNIX}
 var
@@ -2846,6 +2851,7 @@ begin
   Result := Copy(Path, 1, Length(PathDevicePrefix)) = PathDevicePrefix;
 end;
 {$ENDIF MSWINDOWS}
+{$ENDIF LINUX}
 
 function CharIsMachineName(const C: Char): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 begin
@@ -3776,8 +3782,8 @@ end;
 {$IFDEF UNIX}
 var
   Buf: TStatBuf64;
-  ResultBuf: TPasswordRecord;
-  ResultBufPtr: PPasswordRecord;
+  ResultBuf: passwd;
+  ResultBufPtr: Ppasswd;
   Buffer: array of Char;
 begin
   if GetFileStatus(FileName, Buf, ResolveSymLinks) = 0 then
@@ -4173,6 +4179,14 @@ end;
 {$ENDIF MSWINDOWS}
 
 {$IFDEF UNIX}
+
+function GetFileLastWrite2(const FileName: string): TDateTime;
+var
+ TM: TDateTime;
+begin
+ if not GetFileLastWrite(FileName, TM) then
+  Result := 0;
+end;
 
 function GetFileLastWrite(const FileName: string; out TimeStamp: Integer; ResolveSymLinks: Boolean): Boolean; overload;
 var
@@ -4704,17 +4718,24 @@ end;
 
 {$ENDIF MSWINDOWS}
 
-{$IFDEF UNIX}
-
 function CreateSymbolicLink(const Name, Target: string): Boolean;
 begin
+  {$IFDEF MSWINDOWS}
+  Result := TFile.CreateSymLink(Name, Target);
+  {$ELSE}
   Result := symlink(PChar(Target), PChar(Name)) = 0;
+  {$ENDIF}
 end;
 
 function SymbolicLinkTarget(const Name: string): string;
+{$IFNDEF MSWINDOWS}
 var
   N, BufLen: Integer;
+{$ENDIF}
 begin
+  {$IFDEF MSWINDOWS}
+  TFile.GetSymLinkTarget(Name, Result);
+  {$ELSE}
   BufLen := 128;
   repeat
     Inc(BufLen, BufLen);
@@ -4727,9 +4748,8 @@ begin
     end;
   until N < BufLen;
   SetLength(Result, N);
+  {$ENDIF}
 end;
-
-{$ENDIF UNIX}
 
 //=== File Version info routines =============================================
 
@@ -6419,13 +6439,13 @@ type
     FRequiredAttr: Integer;
     FFileSizeMin: Int64;
     FFileSizeMax: Int64;
-    {$IFDEF RTL220_UP}
+    {$IFDEF RTL_220_OR_FPC}
     FFileTimeMin: TDateTime;
     FFileTimeMax: TDateTime;
-    {$ELSE ~RTL220_UP}
+    {$ELSE ~RTL_220_OR_FPC}
     FFileTimeMin: Integer;
     FFileTimeMax: Integer;
-    {$ENDIF ~RTL220_UP}
+    {$ENDIF ~RTL_220_OR_FPC}
     FSynchronizationMode: TFileEnumeratorSyncMode;
     FIncludeSubDirectories: Boolean;
     FIncludeHiddenSubDirectories: Boolean;
@@ -6454,13 +6474,13 @@ type
     property FileMasks: TStrings read GetFileMasks write SetFileMasks;
     property FileSizeMin: Int64 read FFileSizeMin write FFileSizeMin;
     property FileSizeMax: Int64 read FFileSizeMax write FFileSizeMax;
-    {$IFDEF RTL220_UP}
+    {$IFDEF RTL_220_OR_FPC}
     property FileTimeMin: TDateTime read FFileTimeMin write FFileTimeMin;
     property FileTimeMax: TDateTime read FFileTimeMax write FFileTimeMax;
-    {$ELSE ~RTL220_UP}
+    {$ELSE ~RTL_220_OR_FPC}
     property FileTimeMin: Integer read FFileTimeMin write FFileTimeMin;
     property FileTimeMax: Integer read FFileTimeMax write FFileTimeMax;
-    {$ENDIF ~RTL220_UP}
+    {$ENDIF ~RTL_220_OR_FPC}
     property Directories: TStrings read GetDirectories write SetDirectories;
     property IncludeSubDirectories: Boolean
       read FIncludeSubDirectories write FIncludeSubDirectories;
@@ -6484,13 +6504,13 @@ begin
   inherited Create(True);
   FDirectories := TStringList.Create;
   FFileMasks := TStringList.Create;
-  {$IFDEF RTL220_UP}
+  {$IFDEF RTL_220_OR_FPC}
   FFileTimeMin := -MaxDouble;
   FFileTimeMax := MaxDouble;
-  {$ELSE ~RTL220_UP}
+  {$ELSE ~RTL_220_OR_FPC}
   FFileTimeMin := Low(FFileInfo.Time);
   FFileTimeMax := High(FFileInfo.Time);
-  {$ENDIF ~RTL220_UP}
+  {$ENDIF ~RTL_220_OR_FPC}
   FFileSizeMax := High(FFileSizeMax);
   {$IFDEF MSWINDOWS}
   Priority := tpIdle;
@@ -6577,14 +6597,6 @@ procedure TEnumFileThread.ProcessDirFiles;
 begin
   EnumFiles(FCurrentDirectory + '*', FInternalFileInfoHandler, FRejectedAttr, FRequiredAttr, @Terminated);
 end;
-
-{$IFDEF FPC}
-{$I ../include/fpc_version.inc}
-{$ELSE}
-{$IFDEF RTL220_UP}
- {$DEFINE RTL_220_OR_NEW_FPC}
-{$ENDIF}
-{$ENDIF}
 
 function TEnumFileThread.FileMatch: Boolean;
 var
@@ -6717,9 +6729,9 @@ begin
   if fsMaxSize in Options then
     Task.FileSizeMax := FileSizeMax;
   if fsLastChangeAfter in Options then
-    Task.FFileTimeMin := {$IFDEF RTL220_UP}LastChangeAfter{$ELSE}DateTimeToFileDate(LastChangeAfter){$ENDIF};
+    Task.FFileTimeMin := {$IFDEF RTL_220_OR_FPC}LastChangeAfter{$ELSE}DateTimeToFileDate(LastChangeAfter){$ENDIF};
   if fsLastChangeBefore in Options then
-    Task.FFileTimeMax := {$IFDEF RTL220_UP}LastChangeBefore{$ELSE}DateTimeToFileDate(LastChangeBefore){$ENDIF};
+    Task.FFileTimeMax := {$IFDEF RTL_220_OR_FPC}LastChangeBefore{$ELSE}DateTimeToFileDate(LastChangeBefore){$ENDIF};
   Task.SynchronizationMode := SynchronizationMode;
   Task.FOnEnterDirectory := OnEnterDirectory;
   Task.OnTerminate := TaskTerminated;

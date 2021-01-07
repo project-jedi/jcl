@@ -15,11 +15,11 @@ const
   WAIT_ANY = -(1);
   WAIT_MYPGRP = 0;
 
-function wait(__stat_loc:PLongint):__pid_t;cdecl;external clib name 'wait';
-function waitpid(__pid:__pid_t; __stat_loc:Plongint; __options:longint):__pid_t;cdecl;external clib name 'waitpid';
-function waitid(__idtype:idtype_t; __id:__id_t; __infop:Psiginfo_t; __options:longint):longint;cdecl;external clib name 'waitid';
-function wait3(__stat_loc: Plongint; __options:longint; __usage:Prusage):__pid_t;cdecl;external clib name 'wait3';
-function wait4(__pid:__pid_t; __stat_loc: Plongint; __options:longint; __usage:Prusage):__pid_t;cdecl;external clib name 'wait4';
+function wait(__stat_loc:PLongint):__pid_t;cdecl;external clib name 'wait'; overload;
+function waitpid(__pid:__pid_t; __stat_loc:Plongint; __options:longint):__pid_t;cdecl;external clib name 'waitpid'; overload;
+function waitid(__idtype:idtype_t; __id:__id_t; __infop:Psiginfo_t; __options:longint):longint;cdecl;external clib name 'waitid'; overload;
+function wait3(__stat_loc: Plongint; __options:longint; __usage:Prusage):__pid_t;cdecl;external clib name 'wait3'; overload;
+function wait4(__pid:__pid_t; __stat_loc: Plongint; __options:longint; __usage:Prusage):__pid_t;cdecl;external clib name 'wait4'; overload;
 
 
 { ---------------------------------------------------------------------
@@ -27,8 +27,8 @@ function wait4(__pid:__pid_t; __stat_loc: Plongint; __options:longint; __usage:P
   ---------------------------------------------------------------------}
 
 // Type
-function wait(var __stat_loc: Longint):__pid_t;cdecl;external clib name 'wait';
-function waitpid(__pid:__pid_t; var __stat_loc:longint; __options:longint):__pid_t;cdecl;external clib name 'waitpid';
-function waitid(__idtype:idtype_t; __id:__id_t; var __infop: siginfo_t; __options:longint):longint;cdecl;external clib name 'waitid';
-function wait3(var __stat_loc: longint; __options:longint; var __usage:rusage):__pid_t;cdecl;external clib name 'wait3';
-function wait4(__pid:__pid_t; var __stat_loc: longint; __options:longint; var __usage: rusage):__pid_t;cdecl;external clib name 'wait4';
+function wait(var __stat_loc: Longint):__pid_t;cdecl;external clib name 'wait'; overload;
+function waitpid(__pid:__pid_t; var __stat_loc:longint; __options:longint):__pid_t;cdecl;external clib name 'waitpid'; overload;
+function waitid(__idtype:idtype_t; __id:__id_t; var __infop: siginfo_t; __options:longint):longint;cdecl;external clib name 'waitid'; overload;
+function wait3(var __stat_loc: longint; __options:longint; var __usage:rusage):__pid_t;cdecl;external clib name 'wait3'; overload;
+function wait4(__pid:__pid_t; var __stat_loc: longint; __options:longint; var __usage: rusage):__pid_t;cdecl;external clib name 'wait4'; overload;

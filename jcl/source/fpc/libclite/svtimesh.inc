@@ -18,7 +18,7 @@ type
      end;
     P_vtimes = ^_vtimes;
 
-function vtimes(__current:Pvtimes; __child:Pvtimes):longint;cdecl;external clib name 'vtimes';
+function vtimes(__current:Pvtimes; __child:Pvtimes):longint;cdecl;external clib name 'vtimes'; overload;
 
 { ---------------------------------------------------------------------
     Borland compatibility types
@@ -27,6 +27,6 @@ function vtimes(__current:Pvtimes; __child:Pvtimes):longint;cdecl;external clib 
 Type
   Tvtimes = _vtimes;
 
-function vtimes(var __current: _vtimes; var __child: _vtimes):longint;cdecl;external clib name 'vtimes';
-function vtimes(var __current: _vtimes; __child: pvtimes):longint;cdecl;external clib name 'vtimes';
-function vtimes( __current: pvtimes; var __child: _vtimes):longint;cdecl;external clib name 'vtimes';
+function vtimes(var __current: _vtimes; var __child: _vtimes):longint;cdecl;external clib name 'vtimes'; overload;
+function vtimes(var __current: _vtimes; __child: pvtimes):longint;cdecl;external clib name 'vtimes'; overload;
+function vtimes( __current: pvtimes; var __child: _vtimes):longint;cdecl;external clib name 'vtimes'; overload;

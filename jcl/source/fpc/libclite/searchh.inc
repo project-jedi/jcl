@@ -47,7 +47,7 @@ type
    end;
 
 
-function hsearch_r(__item:hsearch_ENTRY; __action:hsearch_ACTION; __retval:PPhsearch_ENTRY; __htab:Phsearch_data):longint;cdecl;external clib name 'hsearch_r';
+function hsearch_r(__item:hsearch_ENTRY; __action:hsearch_ACTION; __retval:PPhsearch_ENTRY; __htab:Phsearch_data):longint;cdecl;external clib name 'hsearch_r'; overload;
 function hcreate_r(__nel:size_t; __htab:Phsearch_data):longint;cdecl;external clib name 'hcreate_r';
 procedure hdestroy_r(__htab:Phsearch_data);cdecl;external clib name 'hdestroy_r';
 
@@ -55,9 +55,9 @@ type
   PSearch_VISIT = ^tsearch_VISIT;
   tsearch_VISIT = (preorder, postorder, endorder, leaf);
 
-function tsearch(__key:pointer; __rootp:Ppointer; __compar:__compar_fn_t):pointer;cdecl;external clib name 'tsearch';
-function tfind(__key:pointer; __rootp:Ppointer; __compar:__compar_fn_t):pointer;cdecl;external clib name 'tfind';
-function tdelete(__key:pointer; __rootp:Ppointer; __compar:__compar_fn_t):pointer;cdecl;external clib name 'tdelete';
+function tsearch(__key:pointer; __rootp:Ppointer; __compar:__compar_fn_t):pointer;cdecl;external clib name 'tsearch'; overload;
+function tfind(__key:pointer; __rootp:Ppointer; __compar:__compar_fn_t):pointer;cdecl;external clib name 'tfind'; overload;
+function tdelete(__key:pointer; __rootp:Ppointer; __compar:__compar_fn_t):pointer;cdecl;external clib name 'tdelete'; overload;
 
 type
    __action_fn_t = procedure (__nodep:pointer; __value:tsearch_VISIT; __level:longint);cdecl;
@@ -86,9 +86,9 @@ Type
   THSearchEntryOpaque = hsearch_ENTRY;
   PHSearchEntryOpaque = ^THSearchEntryOpaque;
 
-function hsearch_r(__item:hsearch_ENTRY; __action:hsearch_ACTION; var __retval:Phsearch_ENTRY; __htab:Phsearch_data):longint;cdecl;external clib name 'hsearch_r';
+function hsearch_r(__item:hsearch_ENTRY; __action:hsearch_ACTION; var __retval:Phsearch_ENTRY; __htab:Phsearch_data):longint;cdecl;external clib name 'hsearch_r'; overload;
 
-function tsearch(__key:pointer; var __rootp:pointer; __compar:__compar_fn_t):pointer;cdecl;external clib name 'tsearch';
-function tfind(__key:pointer; var __rootp:pointer; __compar:__compar_fn_t):pointer;cdecl;external clib name 'tfind';
-function tdelete(__key:pointer; var __rootp:pointer; __compar:__compar_fn_t):pointer;cdecl;external clib name 'tdelete';
+function tsearch(__key:pointer; var __rootp:pointer; __compar:__compar_fn_t):pointer;cdecl;external clib name 'tsearch'; overload;
+function tfind(__key:pointer; var __rootp:pointer; __compar:__compar_fn_t):pointer;cdecl;external clib name 'tfind'; overload;
+function tdelete(__key:pointer; var __rootp:pointer; __compar:__compar_fn_t):pointer;cdecl;external clib name 'tdelete'; overload;
 

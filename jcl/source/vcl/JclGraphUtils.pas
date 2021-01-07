@@ -1303,7 +1303,7 @@ end;
 const
   MaxBytePercent = High(Byte) * 0.01;
 
-procedure GetRGBValue(const Color: TColor; out Red, Green, Blue: Byte);
+procedure GetRGBValue(const Color: {$IFDEF FPC}Graphics.{$ENDIF}TColor; out Red, Green, Blue: Byte);
 var
   Temp: TColorRec;
 begin
@@ -1313,7 +1313,7 @@ begin
   Blue := Temp.B;
 end;
 
-function SetRGBValue(const Red, Green, Blue: Byte): TColor;
+function SetRGBValue(const Red, Green, Blue: Byte): {$IFDEF FPC}Graphics.{$ENDIF}TColor;
 begin
   TColorRec(Result).Red := Red;
   TColorRec(Result).Green := Green;
@@ -1321,24 +1321,24 @@ begin
   TColorRec(Result).Flag := 0;
 end;
 
-function SetColorFlag(const Color: TColor; const Flag: Byte): TColor;
+function SetColorFlag(const Color: {$IFDEF FPC}Graphics.{$ENDIF}TColor; const Flag: Byte): {$IFDEF FPC}Graphics.{$ENDIF}TColor;
 begin
   Result := Color;
   TColorRec(Result).Flag := Flag;
 end;
 
-function GetColorFlag(const Color: TColor): Byte;
+function GetColorFlag(const Color: {$IFDEF FPC}Graphics.{$ENDIF}TColor): Byte;
 begin
   Result := TColorRec(Color).Flag;
 end;
 
-function SetColorRed(const Color: TColor; const Red: Byte): TColor;
+function SetColorRed(const Color: {$IFDEF FPC}Graphics.{$ENDIF}TColor; const Red: Byte): {$IFDEF FPC}Graphics.{$ENDIF}TColor;
 begin
   Result := ColorToRGB(Color);
   TColorRec(Result).Red := Red;
 end;
 
-function GetColorRed(const Color: TColor): Byte;
+function GetColorRed(const Color: {$IFDEF FPC}Graphics.{$ENDIF}TColor): Byte;
 var
   Temp: TColorRec;
 begin
@@ -1346,13 +1346,13 @@ begin
   Result := Temp.Red;
 end;
 
-function SetColorGreen(const Color: TColor; const Green: Byte): TColor;
+function SetColorGreen(const Color: {$IFDEF FPC}Graphics.{$ENDIF}TColor; const Green: Byte): {$IFDEF FPC}Graphics.{$ENDIF}TColor;
 begin
   Result := ColorToRGB(Color);
   TColorRec(Result).Green := Green;
 end;
 
-function GetColorGreen(const Color: TColor): Byte;
+function GetColorGreen(const Color: {$IFDEF FPC}Graphics.{$ENDIF}TColor): Byte;
 var
   Temp: TColorRec;
 begin
@@ -1360,13 +1360,13 @@ begin
   Result := Temp.Green;
 end;
 
-function SetColorBlue(const Color: TColor; const Blue: Byte): TColor;
+function SetColorBlue(const Color: {$IFDEF FPC}Graphics.{$ENDIF}TColor; const Blue: Byte): {$IFDEF FPC}Graphics.{$ENDIF}TColor;
 begin
   Result := ColorToRGB(Color);
   TColorRec(Result).Blue := Blue;
 end;
 
-function GetColorBlue(const Color: TColor): Byte;
+function GetColorBlue(const Color: {$IFDEF FPC}Graphics.{$ENDIF}TColor): Byte;
 var
   Temp: TColorRec;
 begin
@@ -1374,7 +1374,7 @@ begin
   Result := Temp.Blue;
 end;
 
-function BrightColor(const Color: TColor; const Pct: Single): TColor;
+function BrightColor(const Color: {$IFDEF FPC}Graphics.{$ENDIF}TColor; const Pct: Single): {$IFDEF FPC}Graphics.{$ENDIF}TColor;
 var
   Temp: TColorRec;
 begin
@@ -1401,7 +1401,7 @@ begin
   end;
 end;
 
-function DarkColor(const Color: TColor; const Pct: Single): TColor;
+function DarkColor(const Color: {$IFDEF FPC}Graphics.{$ENDIF}TColor; const Pct: Single): {$IFDEF FPC}Graphics.{$ENDIF}TColor;
 var
   Temp: TColorRec;
 begin
@@ -1894,7 +1894,7 @@ begin
   end;
 end;
 
-procedure WinColorToOpenGLColor(const Color: TColor; out Red, Green, Blue: JclBase.Float);
+procedure WinColorToOpenGLColor(const Color: {$IFDEF FPC}Graphics.{$ENDIF}TColor; out Red, Green, Blue: JclBase.Float);
 var
   Temp: TColorRec;
 begin
@@ -1904,7 +1904,7 @@ begin
   Blue  := (Temp.B / High(Temp.B));
 end;
 
-function OpenGLColorToWinColor(const Red, Green, Blue: JclBase.Float): TColor;
+function OpenGLColorToWinColor(const Red, Green, Blue: JclBase.Float): {$IFDEF FPC}Graphics.{$ENDIF}TColor;
 var
   Temp: TColorRec;
 begin
@@ -1915,7 +1915,7 @@ begin
   Result := Temp.Value;
 end;
 
-function Color32(WinColor: TColor): TColor32; overload;
+function Color32(WinColor: {$IFDEF FPC}Graphics.{$ENDIF}TColor): TColor32; overload;
 begin
   WinColor := ColorToRGB(WinColor);
   Result := ColorSwap(WinColor);
@@ -1937,7 +1937,7 @@ begin
     TColor32(Intensity) shl 8 + TColor32(Intensity);
 end;
 
-function WinColor(const Color32: TColor32): TColor;
+function WinColor(const Color32: TColor32): {$IFDEF FPC}Graphics.{$ENDIF}TColor;
 begin
   // the alpha channel byte is set to zero
   Result := (Color32 and _R shr 16) or (Color32 and _G) or
@@ -2132,7 +2132,7 @@ type
     I: Byte;
   end;
 
-function RGB(R, G, B: Byte): TColor;
+function RGB(R, G, B: Byte): {$IFDEF FPC}Graphics.{$ENDIF}TColor;
 begin
   TInternalRGB(Result).R := R;
   TInternalRGB(Result).G := G;
@@ -2254,7 +2254,7 @@ begin
 end;
 
 {$IFNDEF FPC}
-function SetBitmapColors(Bmp: TBitmap; const Colors: array of TColor; StartIndex: Integer): Integer;
+function SetBitmapColors(Bmp: TBitmap; const Colors: array of {$IFDEF FPC}Graphics.{$ENDIF}TColor; StartIndex: Integer): Integer;
 type
   TRGBQuadArray = array [Byte] of TRGBQuad;
   PRGBQuadArray = ^TRGBQuadArray;
@@ -2285,7 +2285,7 @@ end;
 
 //=== Misc ===================================================================
 
-function ColorToHTML(const Color: TColor): string;
+function ColorToHTML(const Color: {$IFDEF FPC}Graphics.{$ENDIF}TColor): string;
 var
   Temp: TColorRec;
 begin

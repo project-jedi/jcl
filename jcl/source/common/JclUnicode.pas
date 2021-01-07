@@ -450,7 +450,7 @@ type
 
   // An Unicode block usually corresponds to a particular language script but
   // can also represent special characters, musical symbols and the like.
-  // http://www.unicode.org/Public/5.0.0/ucd/Blocks.txt
+  // https://www.unicode.org/charts/
   TUnicodeBlock = (
     ubUndefined,
     ubBasicLatin,
@@ -658,8 +658,10 @@ type
     ubOldHungarian,
     ubHanifiRohingya,
     ubRumiNumeralSymbols,
+    ubYezidi,
     ubOldSogdian,
     ubSogdian,
+    ubChorasmian,
     ubElymaic,
     ubBrahmi,
     ubKaithi,
@@ -681,6 +683,7 @@ type
     ubAhom,
     ubDogra,
     ubWarangCiti,
+    ubDivesAkuru,
     ubNandinagari,
     ubZanabazarSquare,
     ubSoyombo,
@@ -691,6 +694,7 @@ type
     ubGunjalaGondi,
     ubTamilSupplement,
     ubMakasar,
+    ubLisuSupplement,
     ubCuneiform,
     ubCuneiformNumbersAndPunctuation,
     ubEarlyDynasticCuneiform,
@@ -706,6 +710,8 @@ type
     upIdeographicSymbolsAndPunctuation,
     ubTangut,
     ubTangutComponents,
+    ubKhitanSmallScript,
+    ubTangutSupplement,
     ubKanaSupplement,
     ubKanaExtendedA,
     ubSmallKanaExtension,
@@ -743,12 +749,14 @@ type
     ubSupplementalSymbolsAndPictographs,
     ubChessSymbols,
     ubSymbolsAndPictographsExtendedA,
+    ubSymbolsForLegacyComputing,
     ubCJKUnifiedIdeographsExtensionB,
     ubCJKUnifiedIdeographsExtensionC,
     ubCJKUnifiedIdeographsExtensionD,
     ubCJKUnifiedIdeographsExtensionE,
     ubCJKUnifiedIdeographsExtensionF,
     ubCJKCompatibilityIdeographsSupplement,
+    ubCJKUnifiedIdeographsExtensionG,
     ubTags,
     ubVariationSelectorsSupplement,
     ubSupplementaryPrivateUseAreaA,
@@ -883,7 +891,7 @@ const
     (Range:(RangeStart: $3300; RangeEnd: $33FF); Name: 'CJK Compatibility'),
     (Range:(RangeStart: $3400; RangeEnd: $4DBF); Name: 'CJK Unified Ideographs Extension A'),
     (Range:(RangeStart: $4DC0; RangeEnd: $4DFF); Name: 'Yijing Hexagram Symbols'),
-    (Range:(RangeStart: $4E00; RangeEnd: $9FFF); Name: 'CJK Unified Ideographs'),
+    (Range:(RangeStart: $4E00; RangeEnd: $9FFC); Name: 'CJK Unified Ideographs'),
     (Range:(RangeStart: $A000; RangeEnd: $A48F); Name: 'Yi Syllables'),
     (Range:(RangeStart: $A490; RangeEnd: $A4CF); Name: 'Yi Radicals'),
     (Range:(RangeStart: $A4D0; RangeEnd: $A4FF); Name: 'Lisu'),
@@ -969,8 +977,10 @@ const
     (Range:(RangeStart: $10C80; RangeEnd: $10CFF); Name: 'Old Hungarian'),
     (Range:(RangeStart: $10D00; RangeEnd: $10D3F); Name: 'Hanifi Rohingya'),
     (Range:(RangeStart: $10E60; RangeEnd: $10E7F); Name: 'Rumi Numeral Symbols'),
+    (Range:(RangeStart: $10E80; RangeEnd: $10EBF); Name: 'Yezidi'),
     (Range:(RangeStart: $10F00; RangeEnd: $10F2F); Name: 'Old Sogdian'),
-    (Range:(RangeStart: $10F30; RangeEnd: $10F6F); Name: 'Sogdian'),
+    (Range:(RangeStart: $10F30; RangeEnd: $10FAF); Name: 'Sogdian'),
+    (Range:(RangeStart: $10FB0; RangeEnd: $10FDF); Name: 'Chorasmian'),
     (Range:(RangeStart: $10FE0; RangeEnd: $10FFF); Name: 'Elymaic'),
     (Range:(RangeStart: $11000; RangeEnd: $1107F); Name: 'Brahmi'),
     (Range:(RangeStart: $11080; RangeEnd: $110CF); Name: 'Kaithi'),
@@ -992,6 +1002,7 @@ const
     (Range:(RangeStart: $11700; RangeEnd: $1173F); Name: 'Ahom'),
     (Range:(RangeStart: $11800; RangeEnd: $1184F); Name: 'Dogra'),
     (Range:(RangeStart: $118A0; RangeEnd: $118FF); Name: 'Warang Citi'),
+    (Range:(RangeStart: $11900; RangeEnd: $1195F); Name: 'Dives Akuru'),
     (Range:(RangeStart: $119A0; RangeEnd: $119FF); Name: 'Nandinagari'),
     (Range:(RangeStart: $11A00; RangeEnd: $11A4F); Name: 'Zanabazar Square'),
     (Range:(RangeStart: $11A50; RangeEnd: $11AAF); Name: 'Soyombo'),
@@ -1001,6 +1012,7 @@ const
     (Range:(RangeStart: $11D00; RangeEnd: $11D5F); Name: 'Masaram Gondi'),
     (Range:(RangeStart: $11D60; RangeEnd: $11DAF); Name: 'Gunjala Gondi'),
     (Range:(RangeStart: $11EE0; RangeEnd: $11EFF); Name: 'Makasar'),
+    (Range:(RangeStart: $11FB0; RangeEnd: $11FBF); Name: 'Lisu Supplement'),
     (Range:(RangeStart: $11FC0; RangeEnd: $11FFF); Name: 'Tamil Supplement'),
     (Range:(RangeStart: $12000; RangeEnd: $123FF); Name: 'Cuneiform'),
     (Range:(RangeStart: $12400; RangeEnd: $1247F); Name: 'Cuneiform Numbers and Punctuation'),
@@ -1017,6 +1029,8 @@ const
     (Range:(RangeStart: $16FE0; RangeEnd: $16FFF); Name: 'Ideographic Symbols and Punctuation'),
     (Range:(RangeStart: $17000; RangeEnd: $187F7); Name: 'Tangut'),
     (Range:(RangeStart: $18800; RangeEnd: $18AFF); Name: 'Tangut Components'),
+    (Range:(RangeStart: $18B00; RangeEnd: $18CFF); Name: 'Khitan Small Script'),
+    (Range:(RangeStart: $18D00; RangeEnd: $18D08); Name: 'Tangut Supplement'),
     (Range:(RangeStart: $1B000; RangeEnd: $1B0FF); Name: 'Kana Supplement'),
     (Range:(RangeStart: $1B100; RangeEnd: $1B12F); Name: 'Kana Extended-A'),
     (Range:(RangeStart: $1B130; RangeEnd: $1B16F); Name: 'Small Kana Extension'),
@@ -1054,12 +1068,14 @@ const
     (Range:(RangeStart: $1F900; RangeEnd: $1F9FF); Name: 'Supplemental Symbols And Pictographs'),
     (Range:(RangeStart: $1FA00; RangeEnd: $1FA6F); Name: 'Chess Symbols'),
     (Range:(RangeStart: $1FA70; RangeEnd: $1FAFF); Name: 'Symbols and Pictographs Extended-A'),
-    (Range:(RangeStart: $20000; RangeEnd: $2A6D6); Name: 'CJK Unified Ideographs Extension B'),
+    (Range:(RangeStart: $1FB00; RangeEnd: $1FBFF); Name: 'Symbols for Legacy Computing'),
+    (Range:(RangeStart: $20000; RangeEnd: $2A6DD); Name: 'CJK Unified Ideographs Extension B'),
     (Range:(RangeStart: $2A700; RangeEnd: $2B734); Name: 'CJK Unified Ideographs Extension C'),
     (Range:(RangeStart: $2B740; RangeEnd: $2B81D); Name: 'CJK Unified Ideographs Extension D'),
     (Range:(RangeStart: $2B820; RangeEnd: $2CEA1); Name: 'CJK Unified Ideographs Extension E'),
     (Range:(RangeStart: $2CEB0; RangeEnd: $2EBE0); Name: 'CJK Unified Ideographs Extension F'),
     (Range:(RangeStart: $2F800; RangeEnd: $2FA1F); Name: 'CJK Compatibility Ideographs Supplement'),
+    (Range:(RangeStart: $30000; RangeEnd: $3134A); Name: 'CJK Unified Ideographs Extension G'),
     (Range:(RangeStart: $E0000; RangeEnd: $E007F); Name: 'Tags'),
     (Range:(RangeStart: $E0100; RangeEnd: $E01EF); Name: 'Variation Selectors Supplement'),
     (Range:(RangeStart: $F0000; RangeEnd: $FFFFF); Name: 'Supplementary Private Use Area-A'),
@@ -1834,7 +1850,9 @@ uses
   {$ENDIF UNICODE_ZLIB_DATA}
   JclStreams,
   {$IFNDEF UNICODE_RAW_DATA}
+  {$IFDEF HAS_COMPRESSION_UNIT}
   JclCompression,
+  {$ENDIF HAS_COMPRESSION_UNIT}
   {$ENDIF ~UNICODE_RAW_DATA}
   {$ENDIF ~UNICODE_RTL_DATABASE}
   JclResources,
@@ -5348,7 +5366,9 @@ constructor TWideStrings.Create;
 begin
   inherited Create;
   {$IFNDEF FPCNONWINDOWS}
+  {$IFDEF FPC}
   FLanguage := GetUserDefaultLCID;
+  {$ENDIF FPC}
   {$ENDIF ~FPCNONWINDOWS}
   FNormalizationForm := nfC;
   FSaveFormat := sfUnicodeLSB;
@@ -5578,6 +5598,7 @@ end;
 
 procedure TWideStrings.Error(const Msg: string; Data: Integer);
 
+  {$IFNDEF PUREPASCAL}
   function ReturnAddr: Pointer;
   asm
           {$IFDEF CPU32}
@@ -5589,6 +5610,12 @@ procedure TWideStrings.Error(const Msg: string; Data: Integer);
           MOV     RAX, [RAX + 8]
           {$ENDIF CPU64}
   end;
+  {$ELSE}
+  function ReturnAddr: Pointer;
+  begin
+   Result := nil;
+  end;
+  {$ENDIF PUREPASCAL}
 
 begin
   raise EStringListError.CreateFmt(Msg, [Data]) at ReturnAddr;
@@ -5835,7 +5862,9 @@ begin
         if Size > BytesRead then
           // first 2 chars (maximum) were copied by System.Move
           Stream.Read(SW[3], Size-BytesRead);
+        {$IFNDEF PUREPASCAL}
         StrSwapByteOrder(PWideChar(SW));
+        {$ENDIF PUREPASCAL}
       end;
       SetText(SW);
       Loaded := True;
@@ -5969,7 +5998,9 @@ begin
             Stream.WriteBuffer(BOM_UTF16_MSB[0],SizeOf(BOM_UTF16_MSB));
           if Length(SW) > 0 then
           begin
+{$IFNDEF PUREPASCAL}
             StrSwapByteOrder(PWideChar(SW));
+{$ENDIF PUREPASCAL}
             Stream.WriteBuffer(SW[1],Length(SW)*SizeOf(UTF16));
           end;
           FSaved := True;
@@ -7982,7 +8013,9 @@ var
   Buf: array [0..6] of Char;
 begin
   {$IFNDEF FPCNONWINDOWS}
+  {$IFDEF FPC}
   GetLocaleInfo(Language, LOCALE_IDefaultAnsiCodePage, Buf, 6);
+  {$ENDIF FPC}
   Result := StrToIntDef(Buf, GetACP);
   {$ELSE ~FPCNONWINDOWS}
   Result := 0;
@@ -8080,8 +8113,10 @@ end;
 {$ELSE MSWINDOWS}
 function CompareTextW(const W1, W2: WideString; Locale: LCID): SizeInt;
 begin
+{$IFDEF FPC}
   {$NOTE Locale ignored. Adapt when a fpc release has a codepage strings}
   Result := widestringmanager.CompareWideStringProc(W1, W2, [coIgnoreCase]);
+{$ENDIF FPC}
 end;
 {$ENDIF MSWINDOWS}
 

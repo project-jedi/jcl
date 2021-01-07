@@ -73,18 +73,23 @@ function BitsHighest(X: Byte): Integer; overload;
 function BitsHighest(X: ShortInt): Integer; overload;
 function BitsHighest(X: SmallInt): Integer; overload;
 function BitsHighest(X: Word): Integer; overload;
+{$IFNDEF PUREPASCAL}
 function BitsHighest(X: Integer): Integer; overload;
 function BitsHighest(X: Cardinal): Integer; overload;
+{$ENDIF PUREPASCAL}
 function BitsHighest(X: Int64): Integer; overload;
 
 function BitsLowest(X: Byte): Integer; overload;
 function BitsLowest(X: Shortint): Integer; overload;
 function BitsLowest(X: Smallint): Integer; overload;
 function BitsLowest(X: Word): Integer; overload;
+{$IFNDEF PUREPASCAL}
 function BitsLowest(X: Cardinal): Integer; overload;
 function BitsLowest(X: Integer): Integer; overload;
+{$ENDIF PUREPASCAL}
 function BitsLowest(X: Int64): Integer; overload;
 
+{$IFNDEF PUREPASCAL}
 function ClearBit(const Value: Byte; const Bit: TBitRange): Byte; overload;
 function ClearBit(const Value: Shortint; const Bit: TBitRange): Shortint; overload;
 function ClearBit(const Value: Smallint; const Bit: TBitRange): Smallint; overload;
@@ -96,6 +101,7 @@ procedure ClearBitBuffer(var Value; const Bit: Cardinal); overload;
 {$IFDEF CPU64}
 procedure ClearBitBuffer(var Value; const Bit: Int64); overload;
 {$ENDIF CPU64}
+{$ENDIF PUREPASCAL}
 
 function CountBitsSet(X: Byte): Integer; overload;
 function CountBitsSet(X: Word): Integer; overload;
@@ -115,10 +121,12 @@ function CountBitsCleared(X: Cardinal): Integer; overload;
 function CountBitsCleared(X: Int64): Integer; overload;
 function CountBitsCleared(P: Pointer; Count: Cardinal): Cardinal; overload;
 
+{$IFNDEF PUREPASCAL}
 function LRot(const Value: Byte; const Count: TBitRange): Byte; overload;
 function LRot(const Value: Word; const Count: TBitRange): Word; overload;
 function LRot(const Value: Integer; const Count: TBitRange): Integer; overload;
 function LRot(const Value: Int64; const Count: TBitRange): Int64; overload;
+{$ENDIF PUREPASCAL}
 function ReverseBits(Value: Byte): Byte; overload;
 function ReverseBits(Value: Shortint): Shortint; overload;
 function ReverseBits(Value: Smallint): Smallint; overload;
@@ -128,6 +136,7 @@ function ReverseBits(Value: Cardinal): Cardinal; overload;
 function ReverseBits(Value: Int64): Int64; overload;
 function ReverseBits(P: Pointer; Count: Integer): Pointer; overload;
 
+{$IFNDEF PUREPASCAL}
 function RRot(const Value: Byte; const Count: TBitRange): Byte; overload;
 function RRot(const Value: Word; const Count: TBitRange): Word; overload;
 function RRot(const Value: Integer; const Count: TBitRange): Integer; overload;
@@ -143,6 +152,7 @@ function SetBit(const Value: Smallint; const Bit: TBitRange): Smallint; overload
 function SetBit(const Value: Word; const Bit: TBitRange): Word; overload;
 function SetBit(const Value: Cardinal; const Bit: TBitRange): Cardinal; overload;
 function SetBit(const Value: Integer; const Bit: TBitRange): Integer; overload;
+{$ENDIF PUREPASCAL}
 function SetBit(const Value: Int64; const Bit: TBitRange): Int64; overload;
 procedure SetBitBuffer(var Value; const Bit: Cardinal); overload;
 {$IFDEF CPU64}
@@ -155,7 +165,9 @@ function TestBit(const Value: Smallint; const Bit: TBitRange): Boolean; overload
 function TestBit(const Value: Word; const Bit: TBitRange): Boolean; overload;
 function TestBit(const Value: Cardinal; const Bit: TBitRange): Boolean; overload;
 function TestBit(const Value: Integer; const Bit: TBitRange): Boolean; overload;
+{$IFNDEF PUREPASCAL}
 function TestBit(const Value: Int64; const Bit: TBitRange): Boolean; overload;
+{$ENDIF PUREPASCAL}
 function TestBitBuffer(const Value; const Bit: Cardinal): Boolean; overload;
 {$IFDEF CPU64}
 function TestBitBuffer(const Value; const Bit: Int64): Boolean; overload;
@@ -399,7 +411,7 @@ begin
   end;
 end;
 
-
+{$IFNDEF PUREPASCAL}
 // Bit manipulation
 function BitsHighest(X: Cardinal): Integer;
 asm
@@ -444,6 +456,7 @@ asm
   CMOVZ   EAX, R10D
   {$ENDIF CPU64}
 end;
+{$ENDIF PUREPASCAL}
 
 function BitsHighest(X: Byte): Integer;
 begin
@@ -467,11 +480,13 @@ end;
 
 function BitsHighest(X: Int64): Integer;
 {$IFDEF CPU32}
+var
+ Temp: TJclULargeInteger absolute X;
 begin
-  if TJclULargeInteger(X).HighPart = 0 then
-    Result := BitsHighest(TJclULargeInteger(X).LowPart)
+  if Temp.HighPart = 0 then
+    Result := BitsHighest(Temp.LowPart)
   else
-    Result := BitsHighest(TJclULargeInteger(X).HighPart) + 32;
+    Result := BitsHighest(Temp.HighPart) + 32;
 end;
 {$ENDIF CPU32}
 {$IFDEF CPU64}
@@ -489,6 +504,7 @@ asm
 end;
 {$ENDIF CPU64}
 
+{$IFNDEF PUREPASCAL}
 function BitsLowest(X: Cardinal): Integer;
 asm
   {$IFDEF CPU32}
@@ -532,6 +548,7 @@ asm
   CMOVZ   EAX, R10D
   {$ENDIF CPU64}
 end;
+{$ENDIF PUREPASCAL}
 
 function BitsLowest(X: Byte): Integer;
 begin
@@ -555,11 +572,13 @@ end;
 
 function BitsLowest(X: Int64): Integer;
 {$IFDEF CPU32}
+var
+ Temp: TJclULargeInteger absolute X;
 begin
-  if TJclULargeInteger(X).LowPart = 0 then
-    Result := BitsLowest(TJclULargeInteger(X).HighPart) + 32
+  if Temp.LowPart = 0 then
+    Result := BitsLowest(Temp.HighPart) + 32
   else
-    Result := BitsLowest(TJclULargeInteger(X).LowPart);
+    Result := BitsLowest(Temp.LowPart);
 end;
 {$ENDIF CPU32}
 {$IFDEF CPU64}
@@ -577,6 +596,7 @@ asm
 end;
 {$ENDIF CPU64}
 
+{$IFNDEF PUREPASCAL}
 function ClearBit(const Value: Byte; const Bit: TBitRange): Byte;
 asm
   // 32 --> AL Value
@@ -680,7 +700,9 @@ asm
   BTR    RAX, RDX
 end;
 {$ENDIF CPU64}
+{$ENDIF PUREPASCAL}
 
+{$IFNDEF PUREPASCAL}
 procedure ClearBitBuffer(var Value; const Bit: Cardinal);
 {$IFDEF PUREPASCAL}
 var
@@ -722,6 +744,7 @@ asm
 end;
 {$ENDIF ~PUREPASCAL}
 {$ENDIF CPU64}
+{$ENDIF PUREPASCAL}
 
 const
   BitSetPerNibble: array[0..15] of Integer = (0,1,1,2,1,2,2,3,1,2,2,3,2,3,3,4);
@@ -804,8 +827,10 @@ begin
 end;
 
 function CountBitsSet(X: Int64): Integer;
+var
+ Temp: TJclULargeInteger absolute X;
 begin
-  Result := CountBitsSet(TJclULargeInteger(X).LowPart) + CountBitsSet(TJclULargeInteger(X).HighPart);
+  Result := CountBitsSet(Temp.LowPart) + CountBitsSet(Temp.HighPart);
 end;
 
 function CountBitsCleared(X: Byte): Integer;
@@ -848,6 +873,8 @@ begin
   Result := Count * BitsPerByte - CountBitsSet(P, Count);
 end;
 
+
+{$IFNDEF PUREPASCAL}
 function LRot(const Value: Byte; const Count: TBitRange): Byte;
 asm
   {$IFDEF CPU32}
@@ -965,7 +992,9 @@ asm
   ROL    RAX, CL
 end;
 {$ENDIF CPU64}
+{$ENDIF PUREPASCAL}
 
+{$IFNDEF PUREPASCAL}
 function RRot(const Value: Int64; const Count: TBitRange): Int64;
 {$IFDEF CPU32}
 begin
@@ -982,6 +1011,7 @@ asm
   ROR    RAX, CL
 end;
 {$ENDIF CPU64}
+{$ENDIF PUREPASCAL}
 
 const
   // Lookup table of bit reversed nibbles, used by simple overloads of ReverseBits
@@ -1042,9 +1072,12 @@ begin
 end;
 
 function ReverseBits(Value: Int64): Int64;
+var
+ Temp: TJclULargeInteger absolute Value;
+ Temp2: TJclULargeInteger absolute Result;
 begin
-  TJclULargeInteger(Result).LowPart := ReverseBits(TJclULargeInteger(Value).HighPart);
-  TJclULargeInteger(Result).HighPart := ReverseBits(TJclULargeInteger(Value).LowPart);
+  Temp2.LowPart := ReverseBits(Temp.HighPart);
+  Temp2.HighPart := ReverseBits(Temp.LowPart);
 end;
 
 const
@@ -1107,6 +1140,7 @@ begin
   Result := P;
 end;
 
+{$IFNDEF PUREPASCAL}
 function RRot(const Value: Byte; const Count: TBitRange): Byte;
 asm
   {$IFDEF CPU32}
@@ -1308,7 +1342,14 @@ asm
   {$ENDIF CPU64}
   BTS    EAX, EDX
 end;
+{$ENDIF PUREPASCAL}
 
+{$IFDEF PUREPASCAL}
+function SetBit(const Value: Int64; const Bit: TBitRange): Int64;
+begin
+  Result := Value or (Int64(1) shl (Bit and (BitsPerInt64 - 1)));
+end;
+{$ELSE}
 function SetBit(const Value: Int64; const Bit: TBitRange): Int64;
 {$IFDEF CPU32}
 begin
@@ -1324,6 +1365,7 @@ asm
   BTS    RAX, RDX
 end;
 {$ENDIF CPU64}
+{$ENDIF PUREPASCAL}
 
 procedure SetBitBuffer(var Value; const Bit: Cardinal);
 {$IFDEF PUREPASCAL}
@@ -1491,6 +1533,8 @@ asm
 end;
 {$ENDIF ~PUREPASCAL}
 
+{$IFDEF PUREPASCAL}
+{$ELSE}
 function TestBit(const Value: Int64; const Bit: TBitRange): Boolean;
 {$IFDEF CPU32}
 begin
@@ -1506,7 +1550,8 @@ asm
   BT     RAX, RDX
   SETC   AL
 end;
-{$ENDIF ~PUREPASCAL}
+{$ENDIF CPU64}
+{$ENDIF PUREPASCAL}
 
 function TestBitBuffer(const Value; const Bit: Cardinal): Boolean;
 {$IFDEF PUREPASCAL}
@@ -1705,6 +1750,12 @@ asm
 end;
 {$ENDIF ~PUREPASCAL}
 
+{$IFDEF PUREPASCAL}
+function ToggleBit(const Value: Int64; const Bit: TBitRange): Int64;
+begin
+  Result := Value xor (Int64(1) shl (Bit and (BitsPerInt64 - 1)));
+end;
+{$ELSE}
 function ToggleBit(const Value: Int64; const Bit: TBitRange): Int64;
 {$IFDEF CPU32}
 begin
@@ -1720,6 +1771,7 @@ asm
   BTC    RAX, RDX
 end;
 {$ENDIF CPU64}
+{$ENDIF PUREPASCAL}
 
 procedure ToggleBitBuffer(var Value; const Bit: Cardinal);
 {$IFDEF PUREPASCAL}
@@ -1912,8 +1964,8 @@ end;
 
 function ReverseBytes(Value: Smallint): Smallint;
 {$IFDEF PUREPASCAL}
-asm
-  XCHG    AL, AH
+begin
+ Result := Swap(Value);
 end;
 {$ELSE ~PUREPASCAL}
 asm
@@ -1973,6 +2025,20 @@ asm
 end;
 {$ENDIF ~PUREPASCAL}
 
+{$IFDEF PUREPASCAL}
+function ReverseBytes(Value: Int64): Int64;
+var
+  Lo, Hi: Cardinal;
+  Temp: TJclULargeInteger absolute Value;
+  Res: TJclULargeInteger absolute Result;
+begin
+  // low and hi DWORD swap
+  Lo := Temp.HighPart;
+  Hi := Temp.LowPart;
+  Res.HighPart := (Hi shr 24) or (Hi shl 24) or ((Hi and $00FF0000) shr 8) or ((Hi and $0000FF00) shl 8);
+  Res.LowPart := (Lo shr 24) or (Lo shl 24) or ((Lo and $00FF0000) shr 8) or ((Lo and $0000FF00) shl 8);
+end;
+{$ELSE}
 function ReverseBytes(Value: Int64): Int64;
 {$IFDEF CPU32}
 var
@@ -1993,6 +2059,7 @@ asm
   BSWAP  RAX
 end;
 {$ENDIF CPU64}
+{$ENDIF PUREPASCAL}
 
 function ReverseBytes(P: Pointer; Count: Integer): Pointer;
 var

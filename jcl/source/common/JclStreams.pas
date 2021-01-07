@@ -57,11 +57,11 @@ uses
   Contnrs,
   {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF HAS_UNIT_LIBC}
-  {$IFNDEF FPC}
-  Libc,
-  {$ELSE}
+  //{$IFNDEF FPC}
+  //Libc,
+  ///{$ELSE}
   libclite,
-  {$ENDIF ~FPC}
+  //{$ENDIF ~FPC}
   {$ENDIF HAS_UNIT_LIBC}
   JclBase, JclStringConversions;
 
@@ -732,8 +732,7 @@ begin
   Result := Result64;
 end;
 
-procedure TJclStream.LoadFromFile(const FileName: TFileName;
-  BufferSize: Integer);
+procedure TJclStream.LoadFromFile(const FileName: TFileName; BufferSize: Longint = StreamDefaultBufferSize);
 var
   FS: TStream;
 begin
@@ -745,12 +744,12 @@ begin
   end;
 end;
 
-procedure TJclStream.LoadFromStream(Source: TStream; BufferSize: Integer);
+procedure TJclStream.LoadFromStream(Source: TStream; BufferSize: Longint = StreamDefaultBufferSize);
 begin
   StreamCopy(Source, Self, BufferSize);
 end;
 
-procedure TJclStream.SaveToFile(const FileName: TFileName; BufferSize: Integer);
+procedure TJclStream.SaveToFile(const FileName: TFileName; BufferSize: Longint);
 var
   FS: TStream;
 begin
@@ -762,7 +761,7 @@ begin
   end;
 end;
 
-procedure TJclStream.SaveToStream(Dest: TStream; BufferSize: Integer);
+procedure TJclStream.SaveToStream(Dest: TStream; BufferSize: Longint);
 begin
   StreamCopy(Self, Dest, BufferSize);
 end;
@@ -1921,7 +1920,7 @@ begin
 end;
 
 constructor TJclSectoredStream.Create(AStorageStream: TStream;
-  AOwnsStream: Boolean; ASectorOverHead: Integer);
+  AOwnsStream: Boolean; ASectorOverHead: Longint);
 begin
   inherited Create(AStorageStream, AOwnsStream);
   FSectorOverHead := ASectorOverHead;

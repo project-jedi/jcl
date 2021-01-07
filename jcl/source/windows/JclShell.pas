@@ -576,7 +576,7 @@ begin
     WM_CREATE:
       begin
         ContextMenu2 := IContextMenu2(PCreateStruct(lParam).lpCreateParams);
-        SetWindowLongPtr(Wnd, GWLP_USERDATA, LONG_PTR(ContextMenu2));
+        SetWindowLongPtr(Wnd, GWLP_USERDATA, LONG_PTR(@ContextMenu2));
         Result := DefWindowProc(Wnd, Msg, wParam, lParam);
       end;
     WM_INITMENUPOPUP:

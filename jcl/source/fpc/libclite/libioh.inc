@@ -198,6 +198,7 @@ type
        {undefined structure}
      end;
 
+{$IFDEF FPC}
 var
   _IO_2_1_stdin_ : _IO_FILE_plus;cvar;external;
   _IO_2_1_stdout_ : _IO_FILE_plus;cvar;external;
@@ -206,6 +207,7 @@ var
   _IO_stdin : P_IO_FILE;cvar;external;
   _IO_stdout : P_IO_FILE;cvar;external;
   _IO_stderr : P_IO_FILE;cvar;external;
+{$ENDIF FPC}
 
 type
   __io_read_fn = function(__cookie: Pointer; __buf: PChar; __nbytes: size_t): __ssize_t; cdecl;

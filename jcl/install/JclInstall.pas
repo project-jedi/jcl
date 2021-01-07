@@ -1711,7 +1711,10 @@ var
           Target.BCC.Options.Add('-fno-spell-checking');
           Target.BCC.Options.Add('-fno-use-cxa-atexit');
           Target.BCC.Options.Add('-x c++');
-          Target.BCC.Options.Add('-std=c++11');
+          if Target.IDEVersionNumber >= 20 then
+            Target.BCC.Options.Add('-std=c++17')
+          else
+            Target.BCC.Options.Add('-std=c++11');
           Target.BCC.Options.Add('-O0');
           Target.BCC.Options.Add('-tC');
           Target.BCC.Options.Add('-tM');
@@ -3331,7 +3334,7 @@ function TJclDistribution.CreateInstall(Target: TJclBorRADToolInstallation): Boo
         Result := Target.VersionNumber in [6];
       brBorlandDevStudio :
         Result := ((Target.VersionNumber in [1, 2]) and (bpDelphi32 in Target.Personalities))
-          or (Target.VersionNumber in [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20]);
+          or (Target.VersionNumber in [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21]);
       else
         Result := False;
     end;

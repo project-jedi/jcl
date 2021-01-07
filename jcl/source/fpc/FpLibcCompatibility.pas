@@ -1,6 +1,8 @@
 unit FpLibcCompatibility;
 
+{$IFDEF FPC}
 {$mode objfpc}{$H+}
+{$ENDIF FPC}
 
 interface
 
@@ -98,7 +100,7 @@ end;
 
 Function tolower(c : Byte) : Integer;
 begin
-  Result := Integer(lowerCase(Char(c)));
+  Result := Integer(lowerCase(Char(c))[1]);
 end;
 
 Function toupper(c : Byte) : Integer;

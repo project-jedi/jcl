@@ -74,21 +74,23 @@ type
     wkrReplicator, wkrEveryone);
 
 function CreateAccount(const Server, Username, Fullname, Password, Description,
-  Homedir, Script: WideString; const PasswordNeverExpires: Boolean = True): Boolean;
+  Homedir, Script: string;
+  const PasswordNeverExpires: Boolean = True): Boolean;
 function CreateLocalAccount(const Username, Fullname, Password, Description,
-  Homedir, Script: WideString; const PasswordNeverExpires: Boolean = True): Boolean;
-function DeleteAccount(const Servername, Username: WideString): Boolean;
-function DeleteLocalAccount(Username: WideString): Boolean;
-function CreateLocalGroup(const Server, Groupname, Description: WideString): Boolean;
-function CreateGlobalGroup(const Server, Groupname, Description: WideString): Boolean;
-function DeleteLocalGroup(const Server, Groupname: WideString): Boolean;
+  Homedir, Script: string;
+  const PasswordNeverExpires: Boolean = True): Boolean;
+function DeleteAccount(const Servername, Username: string): Boolean;
+function DeleteLocalAccount(Username: string): Boolean;
+function CreateLocalGroup(const Server, Groupname, Description: string): Boolean;
+function CreateGlobalGroup(const Server, Groupname, Description: string): Boolean;
+function DeleteLocalGroup(const Server, Groupname: string): Boolean;
 
-function GetLocalGroups(const Server: WideString; const Groups: TStrings): Boolean;
-function GetGlobalGroups(const Server: WideString; const Groups: TStrings): Boolean;
+function GetLocalGroups(const Server: string; const Groups: TStrings): Boolean;
+function GetGlobalGroups(const Server: string; const Groups: TStrings): Boolean;
 function LocalGroupExists(const Group: string): Boolean;
-function GlobalGroupExists(const Server, Group: WideString): Boolean;
+function GlobalGroupExists(const Server, Group: string): Boolean;
 
-function AddAccountToLocalGroup(const Accountname, Groupname: WideString): Boolean;
+function AddAccountToLocalGroup(const Accountname, Groupname: string): Boolean;
 function LookupGroupName(const Server: string; const RID: TNetWellKnownRID): string;
 procedure ParseAccountName(const QualifiedName: string; out Domain, UserName: string);
 function IsLocalAccount(const AccountName: string): Boolean;
@@ -111,7 +113,7 @@ uses
   JclBase, JclStrings, JclSysUtils, JclSysInfo, JclWin32;
 
 function CreateAccount(const Server, Username, Fullname, Password, Description,
-  Homedir, Script: WideString; const PasswordNeverExpires: Boolean): Boolean;
+  Homedir, Script: string; const PasswordNeverExpires: Boolean): Boolean;
 var
   wServer, wUsername, wFullname,
   wPassword, wDescription, wHomedir, wScript: WideString;
@@ -148,13 +150,13 @@ begin
 end;
 
 function CreateLocalAccount(const Username, Fullname, Password, Description,
-  Homedir, Script: WideString; const PasswordNeverExpires: Boolean): Boolean;
+  Homedir, Script: string; const PasswordNeverExpires: Boolean): Boolean;
 begin
   Result := CreateAccount('', Username, Fullname, Password, Description, Homedir,
     Script, PassWordNeverExpires);
 end;
 
-function DeleteAccount(const Servername, Username: WideString): Boolean;
+function DeleteAccount(const Servername, Username: string): Boolean;
 var
   wServername, wUsername: WideString;
   Err: NET_API_STATUS;
@@ -165,12 +167,12 @@ begin
   Result := (Err = NERR_SUCCESS);
 end;
 
-function DeleteLocalAccount(Username: WideString): Boolean;
+function DeleteLocalAccount(Username: string): Boolean;
 begin
   Result := DeleteAccount('', Username);
 end;
 
-function CreateGlobalGroup(const Server, Groupname, Description: WideString): Boolean;
+function CreateGlobalGroup(const Server, Groupname, Description: string): Boolean;
 var
   wServer, wGroupname, wDescription: WideString;
   Details: GROUP_INFO_1;
@@ -189,7 +191,7 @@ begin
   Result := (Err = NERR_SUCCESS);
 end;
 
-function CreateLocalGroup(const Server, Groupname, Description: WideString): Boolean;
+function CreateLocalGroup(const Server, Groupname, Description: string): Boolean;
 var
   wServer, wGroupname, wDescription: WideString;
   Details: LOCALGROUP_INFO_1;
@@ -208,7 +210,7 @@ begin
   Result := (Err = NERR_SUCCESS);
 end;
 
-function DeleteLocalGroup(const Server, Groupname: WideString): Boolean;
+function DeleteLocalGroup(const Server, Groupname: string): Boolean;
 var
   wServername, wUsername: WideString;
   Err: NET_API_STATUS;
@@ -219,7 +221,7 @@ begin
   Result := (Err = NERR_SUCCESS);
 end;
 
-function GetLocalGroups(const Server: WideString; const Groups: TStrings): Boolean;
+function GetLocalGroups(const Server: string; const Groups: TStrings): Boolean;
 var
   Err: NET_API_STATUS;
   wServername: WideString;
@@ -251,7 +253,7 @@ begin
   Result := (Err = NERR_SUCCESS);
 end;
 
-function GetGlobalGroups(const Server: WideString; const Groups: TStrings): Boolean;
+function GetGlobalGroups(const Server: string; const Groups: TStrings): Boolean;
 var
   Err: NET_API_STATUS;
   wServername: WideString;
@@ -302,7 +304,7 @@ begin
   end;
 end;
 
-function GlobalGroupExists(const Server, Group: WideString): Boolean;
+function GlobalGroupExists(const Server, Group: string): Boolean;
 var
   Groups: TStringList;
 begin
@@ -315,7 +317,7 @@ begin
   end;
 end;
 
-function DeleteGlobalGroup(const Server, Groupname: WideString): Boolean;
+function DeleteGlobalGroup(const Server, Groupname: string): Boolean;
 var
   wServername, wUsername: WideString;
   Err: NET_API_STATUS;
@@ -326,7 +328,7 @@ begin
   Result := (Err = NERR_SUCCESS);
 end;
 
-function AddAccountToLocalGroup(const Accountname, Groupname: WideString): Boolean;
+function AddAccountToLocalGroup(const Accountname, Groupname: string): Boolean;
 var
   Err: NET_API_STATUS;
   wAccountname, wGroupname: WideString;

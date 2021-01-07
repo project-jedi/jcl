@@ -95,11 +95,13 @@ function argp_parse(__argp:Pargp; __argc:longint; __argv:PPchar; __flags:dword; 
            __input:pointer):error_t;cdecl;external clib name 'argp_parse';
 function __argp_parse(__argp:Pargp; __argc:longint; __argv:PPchar; __flags:dword; __arg_index:Plongint;
            __input:pointer):error_t;cdecl;external clib name '__argp_parse';
+{$IFDEF FPC}
 var
   argp_program_version : Pchar;cvar;external;
   argp_program_version_hook : TArgPProgramVersionHook;cvar;external;
   argp_program_bug_address : Pchar;cvar;external;
   argp_err_exit_status : error_t;cvar;external;
+{$ENDIF FPC}
 
 const
    ARGP_HELP_USAGE = $01;
@@ -123,14 +125,14 @@ procedure argp_state_help(__state:Pargp_state; __stream:PFILE; __flags:dword);cd
 procedure __argp_state_help(__state:Pargp_state; __stream:PFILE; __flags:dword);cdecl;external clib name '__argp_state_help';
 procedure argp_usage(__state:Pargp_state);cdecl;external clib name 'argp_usage';
 procedure __argp_usage(__state:Pargp_state);cdecl;external clib name '__argp_usage';
-procedure argp_error(__state:Pargp_state; __fmt:Pchar; args:array of const);cdecl;external clib name 'argp_error';
-procedure argp_error(__state:Pargp_state; __fmt:Pchar);cdecl;varargs;external clib name 'argp_error';
-procedure __argp_error(__state:Pargp_state; __fmt:Pchar; args:array of const);cdecl;external clib name '__argp_error';
-procedure __argp_error(__state:Pargp_state; __fmt:Pchar);cdecl;varargs;external clib name '__argp_error';
-procedure argp_failure(__state:Pargp_state; __status:longint; __errnum:longint; __fmt:Pchar; args:array of const);cdecl;external clib name 'argp_failure';
-procedure argp_failure(__state:Pargp_state; __status:longint; __errnum:longint; __fmt:Pchar);cdecl;varargs;external clib name 'argp_failure';
-procedure __argp_failure(__state:Pargp_state; __status:longint; __errnum:longint; __fmt:Pchar; args:array of const);cdecl;external clib name '__argp_failure';
-procedure __argp_failure(__state:Pargp_state; __status:longint; __errnum:longint; __fmt:Pchar);cdecl;varargs;external clib name '__argp_failure';
+procedure argp_error(__state:Pargp_state; __fmt:Pchar; args:array of const);cdecl;external clib name 'argp_error'; overload;
+procedure argp_error(__state:Pargp_state; __fmt:Pchar);cdecl;varargs;external clib name 'argp_error'; overload;
+procedure __argp_error(__state:Pargp_state; __fmt:Pchar; args:array of const);cdecl;external clib name '__argp_error'; overload;
+procedure __argp_error(__state:Pargp_state; __fmt:Pchar);cdecl;varargs;external clib name '__argp_error'; overload;
+procedure argp_failure(__state:Pargp_state; __status:longint; __errnum:longint; __fmt:Pchar; args:array of const);cdecl;external clib name 'argp_failure'; overload;
+procedure argp_failure(__state:Pargp_state; __status:longint; __errnum:longint; __fmt:Pchar);cdecl;varargs;external clib name 'argp_failure'; overload;
+procedure __argp_failure(__state:Pargp_state; __status:longint; __errnum:longint; __fmt:Pchar; args:array of const);cdecl;external clib name '__argp_failure'; overload;
+procedure __argp_failure(__state:Pargp_state; __status:longint; __errnum:longint; __fmt:Pchar);cdecl;varargs;external clib name '__argp_failure'; overload;
 function _option_is_short(__opt:Pargp_option):longint;cdecl;external clib name '_option_is_short';
 function __option_is_short(__opt:Pargp_option):longint;cdecl;external clib name '__option_is_short';
 function _option_is_end(__opt:Pargp_option):longint;cdecl;external clib name '_option_is_end';

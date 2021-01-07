@@ -55,8 +55,8 @@ Type
   TPipes = Array[0..1] of longint;
   PPipes = ^TPipes;
 
-function pipe(var __pipedes: TPipes):longint;cdecl;external clib name 'pipe';
-function pipe(__pipedes: Plongint):longint;cdecl;external clib name 'pipe';
+function pipe(var __pipedes: TPipes):longint;cdecl;external clib name 'pipe'; overload;
+function pipe(__pipedes: Plongint):longint;cdecl;external clib name 'pipe'; overload;
 function alarm(__seconds:dword):dword;cdecl;external clib name 'alarm';
 function __sleep(__seconds:dword):dword;cdecl;external clib name 'sleep';
 
@@ -79,21 +79,23 @@ function getwd(__buf:Pchar):Pchar;cdecl;external clib name 'getwd';
 function dup(__fd:longint):longint;cdecl;external clib name 'dup';
 function dup2(__fd:longint; __fd2:longint):longint;cdecl;external clib name 'dup2';
 
+{$IFDEF FPC}
   var
      __environ : ^Pchar;cvar;external;
      environ : ^Pchar;cvar;external;
+{$ENDIF FPC}
 
 function execve(__path:Pchar; __argv:PPchar; __envp:PPchar):longint;cdecl;external clib name 'execve';
 function fexecve(__fd:longint; __argv:PPchar; __envp:PPchar):longint;cdecl;external clib name 'fexecve';
 
 function execv(__path:Pchar; __argv:PPchar):longint;cdecl;external clib name 'execv';
-function execle(__path:Pchar; __arg:Pchar; args:array of const):longint;cdecl;varargs;external clib name 'execle';
-function execle(__path:Pchar; __arg:Pchar):longint;cdecl;external clib name 'execle';
-function execl(__path:Pchar; __arg:Pchar; args:array of const):longint;cdecl;external clib name 'execl';
-function execl(__path:Pchar; __arg:Pchar):longint;cdecl;varargs;external clib name 'execl';
+function execle(__path:Pchar; __arg:Pchar; args:array of const):longint;cdecl;varargs;external clib name 'execle'; overload;
+function execle(__path:Pchar; __arg:Pchar):longint;cdecl;external clib name 'execle'; overload;
+function execl(__path:Pchar; __arg:Pchar; args:array of const):longint;cdecl;external clib name 'execl'; overload;
+function execl(__path:Pchar; __arg:Pchar):longint;cdecl;varargs;external clib name 'execl'; overload;
 function execvp(__file:Pchar; __argv:PPchar):longint;cdecl;external clib name 'execvp';
-function execlp(__file:Pchar; __arg:Pchar; args:array of const):longint;cdecl;external clib name 'execlp';
-function execlp(__file:Pchar; __arg:Pchar):longint;cdecl;varargs;external clib name 'execlp';
+function execlp(__file:Pchar; __arg:Pchar; args:array of const):longint;cdecl;external clib name 'execlp'; overload;
+function execlp(__file:Pchar; __arg:Pchar):longint;cdecl;varargs;external clib name 'execlp'; overload;
 
 function nice(__inc:longint):longint;cdecl;external clib name 'nice';
 procedure _exit (__status : longint); cdecl; external clib name '_exit';
@@ -172,8 +174,8 @@ function getdtablesize:longint;cdecl;external clib name 'getdtablesize';
 function brk(__addr:pointer):longint;cdecl;external clib name 'brk';
 function sbrk(__delta:intptr_t):pointer;cdecl;external clib name 'sbrk';
 
-function syscall(__sysno:longint; args:array of const):longint;cdecl;external clib name 'syscall';
-function syscall(__sysno:longint):longint;cdecl;varargs;external clib name 'syscall';
+function syscall(__sysno:longint; args:array of const):longint;cdecl;external clib name 'syscall'; overload;
+function syscall(__sysno:longint):longint;cdecl;varargs;external clib name 'syscall'; overload;
 
 
 function crypt(__key:Pchar; __salt:Pchar):Pchar;cdecl;external clib name 'crypt';
@@ -192,7 +194,7 @@ Type
   end;
   PPipeDescriptors = ^TPipeDescriptors;
 
-function pipe(var PipeDes: TPipeDescriptors): Integer; cdecl; external clib name 'pipe';
+function pipe(var PipeDes: TPipeDescriptors): Integer; cdecl; external clib name 'pipe'; overload;
 function __read(Handle: Integer; var Buffer; Count: size_t): ssize_t; cdecl;external clib name 'read';
 function __write(Handle: Integer; const Buffer; Count: size_t): ssize_t; cdecl;external clib name 'write';
 function __close(Handle: Integer): Integer; cdecl;external clib name 'close';

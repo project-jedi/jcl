@@ -9,11 +9,11 @@ type
    end;
 
 
-function ftime(__timebuf:Ptimeb):longint;cdecl;external clib name 'ftime';
+function ftime(__timebuf:Ptimeb):longint;cdecl;external clib name 'ftime'; overload;
 
 { ---------------------------------------------------------------------
     Borland compatibility types
   ---------------------------------------------------------------------}
 
 // Type
-function ftime(var __timebuf:timeb):longint;cdecl;external clib name 'ftime';
+function ftime(var __timebuf:timeb):longint;cdecl;external clib name 'ftime'; overload;

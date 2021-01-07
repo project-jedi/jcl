@@ -304,7 +304,9 @@ function StrNewW(const Str: PWideChar): PWideChar; overload;
 function StrNewW(const Str: WideString): PWideChar; overload;
 procedure StrDisposeW(Str: PWideChar);
 procedure StrDisposeAndNilW(var Str: PWideChar);
+{$IFNDEF PUREPASCAL}
 procedure StrSwapByteOrder(Str: PWideChar);
+{$ENDIF PUREPASCAL}
 
 // WideString functions
 function WidePos(const SubStr, S: WideString): SizeInt;
@@ -821,6 +823,7 @@ end;
 // EAX/RAX contains address of string
 // stop at the first #0 character
 
+{$IFNDEF PUREPASCAL}
 procedure StrSwapByteOrder(Str: PWideChar);
 asm
        {$IFDEF CPU32}
@@ -855,6 +858,7 @@ asm
 @@2:
        {$ENDIF CPU64}
 end;
+{$ENDIF PUREPASCAL}
 
 function StrNScanW(const Str1, Str2: PWideChar): SizeInt;
 // Determines where (in Str1) the first time one of the characters of Str2 appear.

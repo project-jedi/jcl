@@ -36,8 +36,10 @@ const
    RE_DEBUG = RE_NO_GNU_OPS shl 1;
    RE_INVALID_INTERVAL_ORD = RE_DEBUG shl 1;
 
+{$IFDEF FPC}
 var
   re_syntax_options : reg_syntax_t;cvar;external;
+{$ENDIF FPC}
 
 const
    _RE_SYNTAX_POSIX_COMMON = (((RE_CHAR_CLASSES or RE_DOT_NEWLINE) or RE_DOT_NOT_NULL) or RE_INTERVALS) or RE_NO_EMPTY_RANGES;
@@ -76,24 +78,24 @@ const
 type
    Preg_errcode_t = ^reg_errcode_t;
    reg_errcode_t =(
-    REG_ENOSYS := -(1),
-    REG_NOERROR := 0,
-    REG_NOMATCH := 1,
-    REG_BADPAT := 2,
-    REG_ECOLLATE := 3,
-    REG_ECTYPE := 4,
-    REG_EESCAPE := 5,
-    REG_ESUBREG := 6,
-    REG_EBRACK := 7,
-    REG_EPAREN := 8,
-    REG_EBRACE := 9,
-    REG_BADBR := 10,
-    REG_ERANGE := 11,
-    REG_ESPACE := 12,
-    REG_BADRPT := 13,
-    REG_EEND := 14,
-    REG_ESIZE := 15,
-    REG_ERPAREN := 16);
+    REG_ENOSYS = -(1),
+    REG_NOERROR = 0,
+    REG_NOMATCH = 1,
+    REG_BADPAT = 2,
+    REG_ECOLLATE = 3,
+    REG_ECTYPE = 4,
+    REG_EESCAPE = 5,
+    REG_ESUBREG = 6,
+    REG_EBRACK = 7,
+    REG_EPAREN = 8,
+    REG_EBRACE = 9,
+    REG_BADBR = 10,
+    REG_ERANGE = 11,
+    REG_ESPACE = 12,
+    REG_BADRPT = 13,
+    REG_EEND = 14,
+    REG_ESIZE = 15,
+    REG_ERPAREN = 16);
 
 type
   Pre_pattern_buffer = ^re_pattern_buffer;
@@ -129,21 +131,21 @@ type
     rm_eo : regoff_t;
   end;
 
-function re_set_syntax(syntax:reg_syntax_t):reg_syntax_t;cdecl;external clib name 're_set_syntax';
-function re_compile_pattern(pattern:Pchar; length:size_t; buffer:Pre_pattern_buffer):Pchar;cdecl;external clib name 're_compile_pattern';
-function re_compile_fastmap(buffer:Pre_pattern_buffer):longint;cdecl;external clib name 're_compile_fastmap';
+function re_set_syntax(syntax:reg_syntax_t):reg_syntax_t;cdecl;external clib name 're_set_syntax'; overload;
+function re_compile_pattern(pattern:Pchar; length:size_t; buffer:Pre_pattern_buffer):Pchar;cdecl;external clib name 're_compile_pattern'; overload;
+function re_compile_fastmap(buffer:Pre_pattern_buffer):longint;cdecl;external clib name 're_compile_fastmap'; overload;
 function re_search(buffer:Pre_pattern_buffer; _string:Pchar; length:longint; start:longint; range:longint;
-           regs:Pre_registers):longint;cdecl;external clib name 're_search';
+           regs:Pre_registers):longint;cdecl;external clib name 're_search'; overload;
 function re_search_2(buffer:Pre_pattern_buffer; string1:Pchar; length1:longint; string2:Pchar; length2:longint;
-           start:longint; range:longint; regs:Pre_registers; stop:longint):longint;cdecl;external clib name 're_search_2';
-function re_match(buffer:Pre_pattern_buffer; _string:Pchar; length:longint; start:longint; regs:Pre_registers):longint;cdecl;external clib name 're_match';
+           start:longint; range:longint; regs:Pre_registers; stop:longint):longint;cdecl;external clib name 're_search_2'; overload;
+function re_match(buffer:Pre_pattern_buffer; _string:Pchar; length:longint; start:longint; regs:Pre_registers):longint;cdecl;external clib name 're_match'; overload;
 function re_match_2(buffer:Pre_pattern_buffer; string1:Pchar; length1:longint; string2:Pchar; length2:longint;
-           start:longint; regs:Pre_registers; stop:longint):longint;cdecl;external clib name 're_match_2';
-procedure re_set_registers(buffer:Pre_pattern_buffer; regs:Pre_registers; num_regs:dword; starts:Pregoff_t; ends:Pregoff_t);cdecl;external clib name 're_set_registers';
-function regcomp(__preg:Pregex_t; __pattern:Pchar; __cflags:longint):longint;cdecl;external clib name 'regcomp';
-function regexec(__preg:Pregex_t; __string:Pchar; __nmatch:size_t; __pmatch:array of regmatch_t; __eflags:longint):longint;cdecl;external clib name 'regexec';
-function regerror(__errcode:longint; __preg:Pregex_t; __errbuf:Pchar; __errbuf_size:size_t):size_t;cdecl;external clib name 'regerror';
-procedure regfree(__preg:Pregex_t);cdecl;external clib name 'regfree';
+           start:longint; regs:Pre_registers; stop:longint):longint;cdecl;external clib name 're_match_2'; overload;
+procedure re_set_registers(buffer:Pre_pattern_buffer; regs:Pre_registers; num_regs:dword; starts:Pregoff_t; ends:Pregoff_t);cdecl;external clib name 're_set_registers'; overload;
+function regcomp(__preg:Pregex_t; __pattern:Pchar; __cflags:longint):longint;cdecl;external clib name 'regcomp'; overload;
+function regexec(__preg:Pregex_t; __string:Pchar; __nmatch:size_t; __pmatch:array of regmatch_t; __eflags:longint):longint;cdecl;external clib name 'regexec'; overload;
+function regerror(__errcode:longint; __preg:Pregex_t; __errbuf:Pchar; __errbuf_size:size_t):size_t;cdecl;external clib name 'regerror'; overload;
+procedure regfree(__preg:Pregex_t);cdecl;external clib name 'regfree'; overload;
 
 
 { ---------------------------------------------------------------------
@@ -166,19 +168,19 @@ Type
   TRegMatch = regmatch_t;
   PRegMatch = ^TRegMatch;
 
-function re_compile_pattern(pattern:Pchar; length:size_t; var buffer: re_pattern_buffer):Pchar;cdecl;external clib name 're_compile_pattern';
-function re_compile_fastmap(var buffer: re_pattern_buffer):longint;cdecl;external clib name 're_compile_fastmap';
-function re_search(var buffer:re_pattern_buffer; _string:Pchar; length:longint; start:longint; range:longint; regs:Pre_registers):longint;cdecl;external clib name 're_search';
-function re_search(var buffer:re_pattern_buffer; _string:Pchar; length:longint; start:longint; range:longint; var regs:re_registers):longint;cdecl;external clib name 're_search';
-function re_search_2(var buffer:re_pattern_buffer; string1:Pchar; length1:longint; string2:Pchar; length2:longint; start:longint; range:longint; regs:Pre_registers; stop:longint):longint;cdecl;external clib name 're_search_2';
-function re_search_2(var buffer:re_pattern_buffer; string1:Pchar; length1:longint; string2:Pchar; length2:longint; start:longint; range:longint; var regs:re_registers; stop:longint):longint;cdecl;external clib name 're_search_2';
-function re_match(var buffer:re_pattern_buffer; _string:Pchar; length:longint; start:longint; regs:Pre_registers):longint;cdecl;external clib name 're_match';
-function re_match(var buffer:re_pattern_buffer; _string:Pchar; length:longint; start:longint; var regs:re_registers):longint;cdecl;external clib name 're_match';
-function re_match_2(var buffer:re_pattern_buffer; string1:Pchar; length1:longint; string2:Pchar; length2:longint; start:longint; regs:Pre_registers; stop:longint):longint;cdecl;external clib name 're_match_2';
-function re_match_2(var buffer:re_pattern_buffer; string1:Pchar; length1:longint; string2:Pchar; length2:longint; start:longint; var regs:re_registers; stop:longint):longint;cdecl;external clib name 're_match_2';
-procedure re_set_registers(var buffer:re_pattern_buffer; var regs:re_registers; num_regs:dword; var starts:regoff_t; var ends:regoff_t);cdecl;external clib name 're_set_registers';
-function regcomp(var __preg:regex_t; __pattern:Pchar; __cflags:longint):longint;cdecl;external clib name 'regcomp';
-function regexec(var __preg:regex_t; __string:Pchar; __nmatch:size_t; __pmatch: Pregmatch_t; __eflags:longint):longint;cdecl;external clib name 'regexec';
-function regerror(__errcode:longint; const __preg:regex_t; __errbuf:Pchar; __errbuf_size:size_t):size_t;cdecl;external clib name 'regerror';
-procedure regfree(var __preg:regex_t);cdecl;external clib name 'regfree';
+function re_compile_pattern(pattern:Pchar; length:size_t; var buffer: re_pattern_buffer):Pchar;cdecl;external clib name 're_compile_pattern'; overload;
+function re_compile_fastmap(var buffer: re_pattern_buffer):longint;cdecl;external clib name 're_compile_fastmap'; overload;
+function re_search(var buffer:re_pattern_buffer; _string:Pchar; length:longint; start:longint; range:longint; regs:Pre_registers):longint;cdecl;external clib name 're_search'; overload;
+function re_search(var buffer:re_pattern_buffer; _string:Pchar; length:longint; start:longint; range:longint; var regs:re_registers):longint;cdecl;external clib name 're_search'; overload;
+function re_search_2(var buffer:re_pattern_buffer; string1:Pchar; length1:longint; string2:Pchar; length2:longint; start:longint; range:longint; regs:Pre_registers; stop:longint):longint;cdecl;external clib name 're_search_2'; overload;
+function re_search_2(var buffer:re_pattern_buffer; string1:Pchar; length1:longint; string2:Pchar; length2:longint; start:longint; range:longint; var regs:re_registers; stop:longint):longint;cdecl;external clib name 're_search_2'; overload;
+function re_match(var buffer:re_pattern_buffer; _string:Pchar; length:longint; start:longint; regs:Pre_registers):longint;cdecl;external clib name 're_match'; overload;
+function re_match(var buffer:re_pattern_buffer; _string:Pchar; length:longint; start:longint; var regs:re_registers):longint;cdecl;external clib name 're_match'; overload;
+function re_match_2(var buffer:re_pattern_buffer; string1:Pchar; length1:longint; string2:Pchar; length2:longint; start:longint; regs:Pre_registers; stop:longint):longint;cdecl;external clib name 're_match_2'; overload;
+function re_match_2(var buffer:re_pattern_buffer; string1:Pchar; length1:longint; string2:Pchar; length2:longint; start:longint; var regs:re_registers; stop:longint):longint;cdecl;external clib name 're_match_2'; overload;
+procedure re_set_registers(var buffer:re_pattern_buffer; var regs:re_registers; num_regs:dword; var starts:regoff_t; var ends:regoff_t);cdecl;external clib name 're_set_registers'; overload;
+function regcomp(var __preg:regex_t; __pattern:Pchar; __cflags:longint):longint;cdecl;external clib name 'regcomp'; overload;
+function regexec(var __preg:regex_t; __string:Pchar; __nmatch:size_t; __pmatch: Pregmatch_t; __eflags:longint):longint;cdecl;external clib name 'regexec'; overload;
+function regerror(__errcode:longint; const __preg:regex_t; __errbuf:Pchar; __errbuf_size:size_t):size_t;cdecl;external clib name 'regerror'; overload;
+procedure regfree(var __preg:regex_t);cdecl;external clib name 'regfree'; overload;
 

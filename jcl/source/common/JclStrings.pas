@@ -257,7 +257,9 @@ function StrStrCount(const S, SubS: string): SizeInt;
 function StrCompare(const S1, S2: string; CaseSensitive: Boolean = False): SizeInt;
 function StrCompareRange(const S1, S2: string; Index, Count: SizeInt; CaseSensitive: Boolean = True): SizeInt;
 function StrCompareRangeEx(const S1, S2: string; Index, Count: SizeInt; CaseSensitive: Boolean): SizeInt;
+{$IFNDEF PUREPASCAL}
 procedure StrFillChar(var S; Count: SizeInt; C: Char);
+{$ENDIF PUREPASCAL}
 function StrRepeatChar(C: Char; Count: SizeInt): string;
 function StrFind(const Substr, S: string; const Index: SizeInt = 1): SizeInt;
 function StrHasPrefix(const S: string; const Prefixes: array of string): Boolean;
@@ -494,14 +496,6 @@ type
     property MaxCapacity: SizeInt read FMaxCapacity;
   end;
 
-  {$IFDEF FPC}
-  {$I ../include/fpc_version.inc}
-  {$ELSE}
-  {$IFDEF RTL200_UP}
-   {$DEFINE RTL_200_OR_NEW_FPC}
-  {$ENDIF}
-  {$ENDIF}
-
   {$IFDEF RTL_200_OR_NEW_FPC}
   TStringBuilder = {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}SysUtils.TStringBuilder;
   {$ELSE ~RTL_200_OR_NEW_FPC}
@@ -648,11 +642,11 @@ implementation
 
 uses
   {$IFDEF HAS_UNIT_LIBC}
-  {$IFNDEF FPC}
-  Libc,
-  {$ELSE}
+  //{$IFNDEF FPC}
+  //Libc,
+  ///{$ELSE}
   libclite,
-  {$ENDIF ~FPC}
+  //{$ENDIF ~FPC}
   {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF SUPPORTS_UNICODE}
   {$IFDEF HAS_UNITSCOPE}
@@ -661,11 +655,7 @@ uses
   StrUtils,
   {$ENDIF ~HAS_UNITSCOPE}
   {$ENDIF SUPPORTS_UNICODE}
-  JclLogic, JclResources, //JclStreams,
-  {$IFNDEF FPC}
-  JclSynch,
-  {$ENDIF ~FPC}
-  JclSysUtils;
+  JclLogic, JclResources, {JclStreams,} JclSynch, JclSysUtils;
 
 //=== Internal ===============================================================
 
@@ -2300,6 +2290,7 @@ begin
   Result := StrCompareRangeEx(S1, S2, Index, Count, CaseSensitive);
 end;
 
+{$IFNDEF PUREPASCAL}
 procedure StrFillChar(var S; Count: SizeInt; C: Char);
 {$IFDEF SUPPORTS_UNICODE}
 asm
@@ -2335,12 +2326,11 @@ begin
     FillChar(S, Count, C);
 end;
 {$ENDIF ~SUPPORTS_UNICODE}
+{$ENDIF PUREPASCAL}
 
 function StrRepeatChar(C: Char; Count: SizeInt): string;
 begin
-  SetLength(Result, Count);
-  if Count > 0 then
-    StrFillChar(Result[1], Count, C);
+ Result := StringOfChar(C, Count);
 end;
 
 function StrFind(const Substr, S: string; const Index: SizeInt): SizeInt;
@@ -3955,8 +3945,10 @@ var
       varString:
         Result := string(V.VString);
       {$IFDEF SUPPORTS_UNICODE_STRING}
+      {$IFNDEF FPC}
       varUString:
         Result := string(V.VUString);
+      {$ENDIF}
       {$ENDIF SUPPORTS_UNICODE_STRING}
       {varArray,
       varDispatch,
@@ -4555,7 +4547,7 @@ type
   public
     FStops: TDynSizeIntArray;
     FRealWidth: SizeInt;
-    FRefCount: SizeInt;
+    FRefCount: Integer;
     FWidth: SizeInt;
     FZeroBased: Boolean;
     constructor Create(TabStops: array of SizeInt; ZeroBased: Boolean; TabWidth: SizeInt);
@@ -4610,15 +4602,7 @@ end;
 
 function TTabSetData.AddRef: SizeInt;
 begin
-  {$IFNDEF FPC}
   Result := LockedInc(FRefCount);
-  {$ELSE ~FPC}
-  {$ifdef CPU64}
-  Result := InterLockedIncrement64(FRefCount);
-  {$ELSE ~CPU64}
-  Result := InterLockedIncrement(FRefCount);
-  {$ENDIF}
-  {$ENDIF FPC}
 end;
 
 procedure TTabSetData.CalcRealWidth;
@@ -4648,15 +4632,7 @@ end;
 
 function TTabSetData.ReleaseRef: SizeInt;
 begin
-  {$IFNDEF FPC}
   Result := LockedDec(FRefCount);
-  {$ELSE ~FPC}
-  {$ifdef CPU64}
-  Result := InterLockedDecrement64(FRefCount);
-  {$ELSE ~CPU64}
-  Result := InterLockedDecrement(FRefCount);
-  {$ENDIF}
-  {$ENDIF FPC}
   if Result <= 0 then
     Destroy;
 end;

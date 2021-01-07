@@ -2,6 +2,7 @@
 Type
   error_t = Integer;
 
+{$IFDEF FPC}
 var
 {$ifdef LIBC_OLDERRNO}
   errno : error_t; cvar; external;
@@ -12,6 +13,7 @@ var
   function errno : error_t;
   procedure seterrno (value : error_t);
 {$endif}
+{$ENDIF FPC}
 { ---------------------------------------------------------------------
     asm/errno.inc
   ---------------------------------------------------------------------}

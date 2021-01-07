@@ -86,14 +86,14 @@ function drand48:double;cdecl;external clib name 'drand48';
 Type
   TRandWordArray = Array[0..2] of word;
 
-function erand48(var __xsubi: trandwordarray):double;cdecl;external clib name 'erand48';
-function lrand48:longint;cdecl;external clib name 'lrand48';
-function nrand48(var __xsubi: trandwordarray):longint;cdecl;external clib name 'nrand48';
-function mrand48:longint;cdecl;external clib name 'mrand48';
-function jrand48(var __xsubi:trandwordarray):longint;cdecl;external clib name 'jrand48';
-procedure srand48(__seedval:longint);cdecl;external clib name 'srand48';
-function seed48(var __seed16v:trandwordarray):Pword;cdecl;external clib name 'seed48';
-procedure lcong48(var __param:trandwordarray);cdecl;external clib name 'lcong48';
+function erand48(var __xsubi: trandwordarray):double;cdecl;external clib name 'erand48'; overload;
+function lrand48:longint;cdecl;external clib name 'lrand48'; overload;
+function nrand48(var __xsubi: trandwordarray):longint;cdecl;external clib name 'nrand48'; overload;
+function mrand48:longint;cdecl;external clib name 'mrand48'; overload;
+function jrand48(var __xsubi:trandwordarray):longint;cdecl;external clib name 'jrand48'; overload;
+procedure srand48(__seedval:longint);cdecl;external clib name 'srand48'; overload;
+function seed48(var __seed16v:trandwordarray):Pword;cdecl;external clib name 'seed48'; overload;
+procedure lcong48(var __param:trandwordarray);cdecl;external clib name 'lcong48'; overload;
 
 type
   Pdrand48_data = ^drand48_data;
@@ -106,14 +106,14 @@ type
     end;
 
 function drand48_r(__buffer:Pdrand48_data; __result:Pdouble):longint;cdecl;external clib name 'drand48_r';
-function erand48_r(var __xsubi: TRandWordArray; __buffer:Pdrand48_data; __result:Pdouble):longint;cdecl;external clib name 'erand48_r';
-function lrand48_r(__buffer:Pdrand48_data; __result:Plongint):longint;cdecl;external clib name 'lrand48_r';
-function nrand48_r(var __xsubi: TRandWordArray; __buffer:Pdrand48_data; __result:Plongint):longint;cdecl;external clib name 'nrand48_r';
-function mrand48_r(__buffer:Pdrand48_data; __result:Plongint):longint;cdecl;external clib name 'mrand48_r';
-function jrand48_r(var __xsubi: TRandWordArray; __buffer:Pdrand48_data; __result:Plongint):longint;cdecl;external clib name 'jrand48_r';
-function srand48_r(__seedval:longint; __buffer:Pdrand48_data):longint;cdecl;external clib name 'srand48_r';
-function seed48_r(var __seed16v: TRandWordArray; __buffer:Pdrand48_data):longint;cdecl;external clib name 'seed48_r';
-function lcong48_r(__param: pword; __buffer:Pdrand48_data):longint;cdecl;external clib name 'lcong48_r';
+function erand48_r(var __xsubi: TRandWordArray; __buffer:Pdrand48_data; __result:Pdouble):longint;cdecl;external clib name 'erand48_r'; overload;
+function lrand48_r(__buffer:Pdrand48_data; __result:Plongint):longint;cdecl;external clib name 'lrand48_r'; overload;
+function nrand48_r(var __xsubi: TRandWordArray; __buffer:Pdrand48_data; __result:Plongint):longint;cdecl;external clib name 'nrand48_r'; overload;
+function mrand48_r(__buffer:Pdrand48_data; __result:Plongint):longint;cdecl;external clib name 'mrand48_r'; overload;
+function jrand48_r(var __xsubi: TRandWordArray; __buffer:Pdrand48_data; __result:Plongint):longint;cdecl;external clib name 'jrand48_r'; overload;
+function srand48_r(__seedval:longint; __buffer:Pdrand48_data):longint;cdecl;external clib name 'srand48_r'; overload;
+function seed48_r(var __seed16v: TRandWordArray; __buffer:Pdrand48_data):longint;cdecl;external clib name 'seed48_r'; overload;
+function lcong48_r(__param: pword; __buffer:Pdrand48_data):longint;cdecl;external clib name 'lcong48_r'; overload;
 
 procedure __abort; cdecl; external clib name 'abort';
 
@@ -197,14 +197,14 @@ Type
   TDrand48Data = drand48_data;
   PDrand48Data = ^TDrand48Data;
 
-function erand48(__xsubi: pword):double;cdecl;external clib name 'erand48';
-function nrand48(__xsubi: pword):longint;cdecl;external clib name 'nrand48';
-function jrand48(__xsubi: pword):longint;cdecl;external clib name 'jrand48';
-function seed48(__seed16v: pword):Pword;cdecl;external clib name 'seed48';
-procedure lcong48(__param: pword);cdecl;external clib name 'lcong48';
+function erand48(__xsubi: pword):double;cdecl;external clib name 'erand48'; overload;
+function nrand48(__xsubi: pword):longint;cdecl;external clib name 'nrand48'; overload;
+function jrand48(__xsubi: pword):longint;cdecl;external clib name 'jrand48'; overload;
+function seed48(__seed16v: pword):Pword;cdecl;external clib name 'seed48'; overload;
+procedure lcong48(__param: pword);cdecl;external clib name 'lcong48'; overload;
 
-function erand48_r(__xsubi:pword; __buffer:Pdrand48_data; __result:Pdouble):longint;cdecl;external clib name 'erand48_r';
-function nrand48_r(__xsubi:pword; __buffer:Pdrand48_data; __result:Plongint):longint;cdecl;external clib name 'nrand48_r';
-function jrand48_r(__xsubi:pword; __buffer:Pdrand48_data; __result:Plongint):longint;cdecl;external clib name 'jrand48_r';
-function seed48_r(__seed16v:pword; __buffer:Pdrand48_data):longint;cdecl;external clib name 'seed48_r';
+function erand48_r(__xsubi:pword; __buffer:Pdrand48_data; __result:Pdouble):longint;cdecl;external clib name 'erand48_r'; overload;
+function nrand48_r(__xsubi:pword; __buffer:Pdrand48_data; __result:Plongint):longint;cdecl;external clib name 'nrand48_r'; overload;
+function jrand48_r(__xsubi:pword; __buffer:Pdrand48_data; __result:Plongint):longint;cdecl;external clib name 'jrand48_r'; overload;
+function seed48_r(__seed16v:pword; __buffer:Pdrand48_data):longint;cdecl;external clib name 'seed48_r'; overload;
 

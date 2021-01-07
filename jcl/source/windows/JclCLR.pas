@@ -1161,7 +1161,6 @@ end;
 
 destructor TJclClrTableStream.Destroy;
 begin
-  FreeAndNil(FTables);
   inherited Destroy;
 end;
 

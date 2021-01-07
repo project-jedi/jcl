@@ -4128,6 +4128,7 @@ begin
           end;
         end;
       {$IFDEF SUPPORTS_UNICODE_STRING}
+      {$IFNDEF FPC}
       varUString:
         begin
           StorageStream := TStringStream.Create('');
@@ -4148,6 +4149,7 @@ begin
             StorageStream.Free;
           end;
         end;
+      {$ENDIF}
       {$ENDIF SUPPORTS_UNICODE_STRING}
     else
       RaiseCastError;

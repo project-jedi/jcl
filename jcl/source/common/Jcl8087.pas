@@ -59,6 +59,7 @@ type
 const
   All8087Exceptions = [Low(T8087Exception)..High(T8087Exception)];
 
+{$IFNDEF PUREPASCAL}
 function Get8087ControlWord: Word;
 function Get8087Infinity: T8087Infinity;
 function Get8087Precision: T8087Precision;
@@ -76,6 +77,7 @@ function GetMasked8087Exceptions: T8087Exceptions;
 function SetMasked8087Exceptions(Exceptions: T8087Exceptions; ClearBefore: Boolean = True): T8087Exceptions;
 function Mask8087Exceptions(Exceptions: T8087Exceptions): T8087Exceptions;
 function Unmask8087Exceptions(Exceptions: T8087Exceptions; ClearBefore: Boolean = True): T8087Exceptions;
+{$ENDIF PUREPASCAL}
 
 {$IFDEF UNITVERSIONING}
 const
@@ -94,6 +96,7 @@ implementation
 const
   X87ExceptBits = $3F;
 
+{$IFNDEF PUREPASCAL}
 function Get8087ControlWord: Word;
 asm
           FSTCW   Result
@@ -166,10 +169,6 @@ begin
   Result := T8087Rounding((CW and $0C00) shr 10);
   Set8087ControlWord((CW and $F3FF) or (Word(Rounding) shl 10));
 end;
-
-{$IFDEF FPC}
-{$I ../include/fpc_version.inc}
-{$ENDIF}
 
 function Set8087ControlWord(const Control: Word): Word;
 var
@@ -341,6 +340,7 @@ begin
   Exceptions := Result - Exceptions;
   SetMasked8087Exceptions(Exceptions, ClearBefore);
 end;
+{$ENDIF PUREPASCAL}
 
 {$IFDEF UNITVERSIONING}
 initialization

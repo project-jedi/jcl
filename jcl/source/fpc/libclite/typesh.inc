@@ -3,6 +3,9 @@
   ---------------------------------------------------------------------}
 
 type
+   qword = UInt64;
+   DWORD = LongWord;
+   Pdword = ^DWORD;
    __u_char = byte;
    __u_short = word;
    __u_int = dword;
@@ -218,9 +221,11 @@ Type
 
 
 { Macros }
+{$IFDEF FPC}
 Function __FDELT(d: longint): Integer;
 Function __FDMASK(d: longint): __fd_mask;
- 
+{$ENDIF FPC}
+
 { Borland compatibility }
 Type
 

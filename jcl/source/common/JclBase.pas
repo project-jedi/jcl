@@ -113,7 +113,7 @@ type
   UInt64 = Int64;
   {$ENDIF ~COMPILER7_UP}
   PWideChar = System.PWideChar;
-  PPWideChar = ^JclBase.PWideChar;
+  PPWideChar = ^PWideChar;
   PPAnsiChar = ^PAnsiChar;
   PInt64 = type System.PInt64;
   {$ENDIF ~FPC}
@@ -371,6 +371,11 @@ type
 //DOM-IGNORE-BEGIN
 
 type
+  IEquatable<T> = interface(IInterface)
+    function Equals(Value: T): Boolean;
+  end;
+
+type
   TCompare<T> = function(const Obj1, Obj2: T): Integer;
   TEqualityCompare<T> = function(const Obj1, Obj2: T): Boolean;
   THashConvert<T> = function(const AItem: T): Integer;
@@ -513,15 +518,19 @@ end;
 // Int64 support
 
 procedure I64ToCardinals(I: Int64; out LowPart, HighPart: Cardinal);
+var
+ Temp: TJclULargeInteger absolute I;
 begin
-  LowPart := TJclULargeInteger(I).LowPart;
-  HighPart := TJclULargeInteger(I).HighPart;
+  LowPart := Temp.LowPart;
+  HighPart := Temp.HighPart;
 end;
 
 procedure CardinalsToI64(out I: Int64; const LowPart, HighPart: Cardinal);
+var
+ Temp: TJclULargeInteger absolute I;
 begin
-  TJclULargeInteger(I).LowPart := LowPart;
-  TJclULargeInteger(I).HighPart := HighPart;
+  Temp.LowPart := LowPart;
+  Temp.HighPart := HighPart;
 end;
 
 // Cross Platform Compatibility

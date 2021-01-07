@@ -1,6 +1,8 @@
 
+{$IFDEF FPC}
 var
   __malloc_initialized : longint;cvar;external;
+{$ENDIF FPC}
 
 function malloc(__size:size_t):pointer;cdecl;external clib name 'malloc';
 function calloc(__nmemb:size_t; __size:size_t):pointer;cdecl;external clib name 'calloc';
@@ -11,8 +13,10 @@ function memalign(__alignment:size_t; __size:size_t):pointer;cdecl;external clib
 function valloc(__size:size_t):pointer;cdecl;external clib name 'valloc';
 function pvalloc(__size:size_t):pointer;cdecl;external clib name 'pvalloc';
 
+{$IFDEF FPC}
 var
   __morecore : function (__size:ptrdiff_t):pointer;cvar;external;
+{$ENDIF FPC}
 
 function __default_morecore(__size:ptrdiff_t):pointer;cdecl;external clib name '__default_morecore';
 
@@ -54,6 +58,7 @@ procedure malloc_stats;cdecl;external clib name 'malloc_stats';
 function malloc_get_state:pointer;cdecl;external clib name 'malloc_get_state';
 function malloc_set_state(__ptr:pointer):longint;cdecl;external clib name 'malloc_set_state';
 
+{$IFDEF FPC}
 var
   __malloc_initialize_hook : procedure ;cvar;external;
   __free_hook : procedure (__ptr:pointer; _para2:pointer);cvar;external;
@@ -61,6 +66,7 @@ var
   __realloc_hook : function (__ptr:pointer; __size:size_t; _para3:pointer):pointer;cvar;external;
   __memalign_hook : function (__alignment:size_t; __size:size_t; _para3:pointer):pointer;cvar;external;
   __after_morecore_hook : procedure ;cvar;external;
+{$ENDIF FPC}
 
 procedure __malloc_check_init;cdecl;external clib name '__malloc_check_init';
 

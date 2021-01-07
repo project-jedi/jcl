@@ -6,7 +6,7 @@ type
 
 function getrlimit(__resource:__rlimit_resource_t; __rlimits:Prlimit):longint;cdecl;external clib name 'getrlimit';
 function getrlimit64(__resource:__rlimit_resource_t; __rlimits:Prlimit64):longint;cdecl;external clib name 'getrlimit64';
-function setrlimit(__resource:__rlimit_resource_t; __rlimits:Prlimit):longint;cdecl;external clib name 'setrlimit';
+function setrlimit(__resource:__rlimit_resource_t; __rlimits:Prlimit):longint;cdecl;external clib name 'setrlimit'; overload;
 function setrlimit64(__resource:__rlimit_resource_t; __rlimits:Prlimit64):longint;cdecl;external clib name 'setrlimit64';
 
 function getrusage(__who:__rusage_who_t; __usage:Prusage):longint;cdecl;external clib name 'getrusage';
@@ -20,4 +20,4 @@ function setpriority(__which:__priority_which_t; __who:id_t; __prio:longint):lon
 
 // Type
 
-Function setrlimit (__resource: __rlimit_resource_t; const __rlimits: TRLimit): longint; cdecl; external clib name 'setrlimit';
+Function setrlimit (__resource: __rlimit_resource_t; const __rlimits: TRLimit): longint; cdecl; external clib name 'setrlimit'; overload;

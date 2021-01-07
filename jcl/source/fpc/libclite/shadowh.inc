@@ -23,11 +23,11 @@ function getspent:Pspwd;cdecl;external clib name 'getspent';
 function getspnam(__name:Pchar):Pspwd;cdecl;external clib name 'getspnam';
 function sgetspent(__string:Pchar):Pspwd;cdecl;external clib name 'sgetspent';
 function fgetspent(__stream:PFILE):Pspwd;cdecl;external clib name 'fgetspent';
-function putspent(__p:Pspwd; __stream:PFILE):longint;cdecl;external clib name 'putspent';
-function getspent_r(__result_buf:Pspwd; __buffer:Pchar; __buflen:size_t; __result:PPspwd):longint;cdecl;external clib name 'getspent_r';
-function getspnam_r(__name:Pchar; __result_buf:Pspwd; __buffer:Pchar; __buflen:size_t; __result:PPspwd):longint;cdecl;external clib name 'getspnam_r';
-function sgetspent_r(__string:Pchar; __result_buf:Pspwd; __buffer:Pchar; __buflen:size_t; __result:PPspwd):longint;cdecl;external clib name 'sgetspent_r';
-function fgetspent_r(__stream:PFILE; __result_buf:Pspwd; __buffer:Pchar; __buflen:size_t; __result:PPspwd):longint;cdecl;external clib name 'fgetspent_r';
+function putspent(__p:Pspwd; __stream:PFILE):longint;cdecl;external clib name 'putspent'; overload;
+function getspent_r(__result_buf:Pspwd; __buffer:Pchar; __buflen:size_t; __result:PPspwd):longint;cdecl;external clib name 'getspent_r'; overload;
+function getspnam_r(__name:Pchar; __result_buf:Pspwd; __buffer:Pchar; __buflen:size_t; __result:PPspwd):longint;cdecl;external clib name 'getspnam_r'; overload;
+function sgetspent_r(__string:Pchar; __result_buf:Pspwd; __buffer:Pchar; __buflen:size_t; __result:PPspwd):longint;cdecl;external clib name 'sgetspent_r'; overload;
+function fgetspent_r(__stream:PFILE; __result_buf:Pspwd; __buffer:Pchar; __buflen:size_t; __result:PPspwd):longint;cdecl;external clib name 'fgetspent_r'; overload;
 function lckpwdf:longint;cdecl;external clib name 'lckpwdf';
 function ulckpwdf:longint;cdecl;external clib name 'ulckpwdf';
 
@@ -39,8 +39,8 @@ Type
   TPasswordFileEntry = spwd;
   PPasswordFileEntry = ^TPasswordFileEntry;
 
-function putspent(const __p:spwd; __stream:PFILE):longint;cdecl;external clib name 'putspent';
-function getspent_r(var __result_buf: spwd; __buffer:Pchar; __buflen:size_t; var __result: Pspwd):longint;cdecl;external clib name 'getspent_r';
-function getspnam_r(__name:Pchar; var __result_buf:spwd; __buffer:Pchar; __buflen:size_t; var __result:Pspwd):longint;cdecl;external clib name 'getspnam_r';
-function sgetspent_r(__string:Pchar; var __result_buf:spwd; __buffer:Pchar; __buflen:size_t; var __result:Pspwd):longint;cdecl;external clib name 'sgetspent_r';
-function fgetspent_r(__stream:PFILE; var __result_buf:spwd; __buffer:Pchar; __buflen:size_t; var __result:Pspwd):longint;cdecl;external clib name 'fgetspent_r';
+function putspent(const __p:spwd; __stream:PFILE):longint;cdecl;external clib name 'putspent'; overload;
+function getspent_r(var __result_buf: spwd; __buffer:Pchar; __buflen:size_t; var __result: Pspwd):longint;cdecl;external clib name 'getspent_r'; overload;
+function getspnam_r(__name:Pchar; var __result_buf:spwd; __buffer:Pchar; __buflen:size_t; var __result:Pspwd):longint;cdecl;external clib name 'getspnam_r'; overload;
+function sgetspent_r(__string:Pchar; var __result_buf:spwd; __buffer:Pchar; __buflen:size_t; var __result:Pspwd):longint;cdecl;external clib name 'sgetspent_r'; overload;
+function fgetspent_r(__stream:PFILE; var __result_buf:spwd; __buffer:Pchar; __buflen:size_t; var __result:Pspwd):longint;cdecl;external clib name 'fgetspent_r'; overload;

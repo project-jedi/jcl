@@ -5,7 +5,9 @@
 const
   External_library='libc'; {Setup as you need}
 
+{$IFDEF FPC}
 {$PACKRECORDS C}
+{$ENDIF FPC}
 
 const
   __LITTLE_ENDIAN     = 1234;

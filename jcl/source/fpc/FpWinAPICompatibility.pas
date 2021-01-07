@@ -1,10 +1,13 @@
 unit FpWinAPICompatibility;
 
+{$IFDEF FPC}
 {$mode objfpc}{$H+}
+{$ENDIF FPC}
 
 interface
 
 uses
+  Types,
   SysUtils;
 
 const
@@ -15,6 +18,8 @@ const
   MB_USEGLYPHCHARS = 4;
 
 type
+  QWord = UInt64;
+  PtrUInt = QWord;
   LCID = DWORD;
   DWORD_PTR = PtrUInt;
 

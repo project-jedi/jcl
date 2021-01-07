@@ -63,6 +63,7 @@ uses
 // Locked Integer manipulation
 //
 // Routines to manipulate simple typed variables in a thread safe manner
+{$IFNDEF PUREPASCAL}
 function LockedAdd(var Target: Integer; Value: Integer): Integer; overload;
 function LockedCompareExchange(var Target: Integer; Exch, Comp: Integer): Integer; overload;
 function LockedCompareExchange(var Target: TObject; Exch, Comp: TObject): TObject; overload;
@@ -93,6 +94,7 @@ function LockedDec(var Target: NativeInt): NativeInt; overload;
 function LockedInc(var Target: NativeInt): NativeInt; overload;
 {$ENDIF BORLAND}
 {$ENDIF CPU64}
+{$ENDIF PUREPASCAL}
 
 // TJclDispatcherObject
 //
@@ -375,22 +377,26 @@ implementation
 
 uses
   {$IFDEF HAS_UNITSCOPE}
-  System.SysUtils,
+  System.SysUtils
   {$ELSE ~HAS_UNITSCOPE}
-  SysUtils,
+  SysUtils
   {$ENDIF ~HAS_UNITSCOPE}
-  JclLogic,
   {$IFDEF MSWINDOWS}
-  JclRegistry,
+  ,JclLogic
+  ,JclRegistry
+  ,JclResources
+  ,JclSysInfo
   {$ENDIF}
-  JclResources,
-  JclSysInfo, JclStrings;
+  ,JclStrings;
 
+{$IFDEF MSWINDOWS}
 const
   RegSessionManager = {HKLM\} 'SYSTEM\CurrentControlSet\Control\Session Manager';
   RegCritSecTimeout = {RegSessionManager\} 'CriticalSectionTimeout';
+{$ENDIF}
 
 // Locked Integer manipulation
+{$IFNDEF PUREPASCAL}
 function LockedAdd(var Target: Integer; Value: Integer): Integer;
 asm
         {$IFDEF CPU32}
@@ -771,6 +777,7 @@ asm
         LOCK XADD [RCX], RAX
         INC     RAX
 end;
+{$ENDIF PUREPASCAL}
 
 {$ENDIF BORLAND}
 

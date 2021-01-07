@@ -70,11 +70,11 @@ uses
   SysUtils,
   {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF HAS_UNIT_LIBC}
-  {$IFNDEF FPC}
-  Libc,
-  {$ELSE FPC}
+  //{$IFNDEF FPC}
+  //Libc,
+  //{$ELSE FPC}
   libclite,
-  {$ENDIF ~FPC}
+  //{$ENDIF ~FPC}
   {$ELSE ~HAS_UNIT_LIBC}
   {$IFDEF UNIX}
   BaseUnix,
@@ -84,9 +84,9 @@ uses
   {$ENDIF ~LINUX}
   {$ENDIF ~UNIX}
   {$ENDIF HAS_UNIT_LIBC}
-  {$IFDEF FPC}
+  //{$IFDEF FPC}
   types,
-  {$ENDIF ~FPC}
+  //{$ENDIF ~FPC}
   JclBase, JclResources;
 
 const
@@ -708,7 +708,7 @@ end;
 {$ELSE HAS_UNIT_LIBC}
 function DateTimeToLocalDateTime(DateTime: TDateTime): TDateTime;
 begin
-  Result := UniversalTimeToLocal(DateTime);
+  Result := {$IFDEF HAS_UniversalTimeToLocal}UniversalTimeToLocal(DateTime){$ELSE}Result{$ENDIF};
 end;
 {$ENDIF HAS_UNIT_LIBC}
 {$ENDIF UNIX}
@@ -753,7 +753,7 @@ end;
 {$ELSE HAS_UNIT_LIBC}
 function LocalDateTimeToDateTime(DateTime: TDateTime): TDateTime;
 begin
-  Result := LocalTimeToUniversal(DateTime);
+  Result := {$IFDEF HAS_UniversalTimeToLocal}LocalTimeToUniversal(DateTime){$ELSE}Result{$ENDIF};
 end;
 {$ENDIF HAS_UNIT_LIBC}
 {$ENDIF UNIX}

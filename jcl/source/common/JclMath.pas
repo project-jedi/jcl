@@ -61,12 +61,6 @@ uses
 
 { Mathematical constants }
 
-{$IFDEF FPC}
- {$IFDEF CPUX64}
-   {$UNDEF SUPPORTS_EXTENDED}
- {$ENDIF CPUX64}
-{$ENDIF FPC}
-
 const
   Bernstein: Float = 0.2801694990238691330364364912307;  // Bernstein constant
   Cbrt2: Float     = 1.2599210498948731647672106072782;  // CubeRoot(2)
@@ -164,7 +158,9 @@ function DegToRad(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_I
 {$ENDIF SUPPORTS_EXTENDED}
 function DegToRad(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function DegToRad(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+{$IFNDEF PUREPASCAL}
 procedure FastDegToRad;
+{$ENDIF PUREPASCAL}
 
 // Converts radians to degrees.
 {$IFDEF SUPPORTS_EXTENDED}
@@ -172,7 +168,9 @@ function RadToDeg(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_I
 {$ENDIF SUPPORTS_EXTENDED}
 function RadToDeg(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function RadToDeg(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+{$IFNDEF PUREPASCAL}
 procedure FastRadToDeg;
+{$ENDIF PUREPASCAL}
 
 // Converts grads to radians.
 {$IFDEF SUPPORTS_EXTENDED}
@@ -180,7 +178,9 @@ function GradToRad(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_
 {$ENDIF SUPPORTS_EXTENDED}
 function GradToRad(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function GradToRad(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+{$IFNDEF PUREPASCAL}
 procedure FastGradToRad;
+{$ENDIF PUREPASCAL}
 
 // Converts radians to grads.
 {$IFDEF SUPPORTS_EXTENDED}
@@ -188,7 +188,9 @@ function RadToGrad(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_
 {$ENDIF SUPPORTS_EXTENDED}
 function RadToGrad(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function RadToGrad(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+{$IFNDEF PUREPASCAL}
 procedure FastRadToGrad;
+{$ENDIF PUREPASCAL}
 
 // Converts degrees to grads.
 {$IFDEF SUPPORTS_EXTENDED}
@@ -196,7 +198,9 @@ function DegToGrad(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_
 {$ENDIF SUPPORTS_EXTENDED}
 function DegToGrad(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function DegToGrad(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+{$IFNDEF PUREPASCAL}
 procedure FastDegToGrad;
+{$ENDIF PUREPASCAL}
 
 // Converts grads to degrees.
 {$IFDEF SUPPORTS_EXTENDED}
@@ -204,7 +208,9 @@ function GradToDeg(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_
 {$ENDIF SUPPORTS_EXTENDED}
 function GradToDeg(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function GradToDeg(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+{$IFNDEF PUREPASCAL}
 procedure FastGradToDeg;
+{$ENDIF PUREPASCAL}
 
 { Logarithmic }
 
@@ -448,8 +454,8 @@ type
 
 type
   {$IFNDEF FPC}
-  TPointerArray = array [0..MaxLongint div 256] of Pointer;
-  PPointerArray = ^TPointerArray;
+  //TPointerArray = array [0..MaxLongint div 256] of Pointer;
+  //PPointerArray = ^TPointerArray;
   {$ENDIF ~FPC}
   TDelphiSet = set of Byte; // 256 elements
   PDelphiSet = ^TDelphiSet;
@@ -890,6 +896,7 @@ uses
 // (PIC, used by shared objects)
 
 {$IFDEF PIC}
+{$IFNDEF PUREPASCAL}
 function GetGOT: Pointer; export;
 begin
   asm
@@ -901,6 +908,7 @@ begin
         {$ENDIF CPU64}
   end;
 end;
+{$ENDIF PUREPASCAL}
 {$ENDIF PIC}
 
 // to keep name space usage low
@@ -970,6 +978,7 @@ end;
 
 // Expects degrees in ST(0), leaves radians in ST(0)
 // ST(0) := ST(0) * PI / 180
+{$IFNDEF PUREPASCAL}
 procedure FastDegToRad; assembler;
 asm
         {$IFDEF MSWINDOWS}
@@ -988,6 +997,7 @@ asm
         FWAIT
         {$ENDIF MSWINDOWS}
 end;
+{$ENDIF PUREPASCAL}
 
 // Converts radians to degrees.
 
@@ -1010,6 +1020,7 @@ end;
 
 // Expects radians in ST(0), leaves degrees in ST(0)
 // ST(0) := ST(0) * (180 / PI);
+{$IFNDEF PUREPASCAL}
 procedure FastRadToDeg; assembler;
 asm
         {$IFDEF MSWINDOWS}
@@ -1028,6 +1039,7 @@ asm
         FWAIT
         {$ENDIF MSWINDOWS}
 end;
+{$ENDIF PUREPASCAL}
 
 // Converts grads to radians.
 
@@ -1050,6 +1062,7 @@ end;
 
 // Expects grads in ST(0), leaves radians in ST(0)
 // ST(0) := ST(0) * PI / 200
+{$IFNDEF PUREPASCAL}
 procedure FastGradToRad; assembler;
 asm
         {$IFDEF MSWINDOWS}
@@ -1068,6 +1081,7 @@ asm
         FWAIT
         {$ENDIF MSWINDOWS}
 end;
+{$ENDIF PUREPASCAL}
 
 // Converts radians to grads.
 
@@ -1090,6 +1104,7 @@ end;
 
 // Expects radians in ST(0), leaves grads in ST(0)
 // ST(0) := ST(0) * (200 / PI);
+{$IFNDEF PUREPASCAL}
 procedure FastRadToGrad; assembler;
 asm
         {$IFDEF MSWINDOWS}
@@ -1108,6 +1123,7 @@ asm
         FWAIT
         {$ENDIF MSWINDOWS}
 end;
+{$ENDIF PUREPASCAL}
 
 // Converts degrees to grads.
 
@@ -1130,6 +1146,7 @@ end;
 
 // Expects Degrees in ST(0), leaves grads in ST(0)
 // ST(0) := ST(0) * (200 / 180);
+{$IFNDEF PUREPASCAL}
 procedure FastDegToGrad; assembler;
 asm
         {$IFDEF MSWINDOWS}
@@ -1148,6 +1165,7 @@ asm
         FWAIT
         {$ENDIF MSWINDOWS}
 end;
+{$ENDIF PUREPASCAL}
 
 // Converts grads to degrees.
 
@@ -1170,6 +1188,7 @@ end;
 
 // Expects grads in ST(0), leaves radians in ST(0)
 // ST(0) := ST(0) * PI / 200
+{$IFNDEF PUREPASCAL}
 procedure FastGradToDeg; assembler;
 asm
         {$IFDEF MSWINDOWS}
@@ -1188,6 +1207,7 @@ asm
         FWAIT
         {$ENDIF MSWINDOWS}
 end;
+{$ENDIF PUREPASCAL}
 
 procedure DomainCheck(Err: Boolean);
 begin
@@ -1699,6 +1719,7 @@ begin
   Result := System.Math.Cosh(X);
   {$ELSE ~USE_MATH_UNIT}
   asm
+          {$IFDEF MSWINDOWS}
           {$IFDEF PIC}
           CALL    GetGOT
           {$ENDIF PIC}
@@ -1742,6 +1763,7 @@ begin
           FMULP   ST(1), ST(0)
           FWAIT
           FSTP    Result
+          {$ENDIF MSWINDOWS}
   end;
   {$ENDIF ~USE_MATH_UNIT}
 end;
@@ -1784,6 +1806,7 @@ begin
   Result := System.Math.Sinh(X);
   {$ELSE ~USE_MATH_UNIT}
   asm
+          {$IFDEF MSWINDOWS}
           {$IFDEF PIC}
           CALL    GetGOT
           {$ENDIF PIC}
@@ -1827,6 +1850,7 @@ begin
           FMULP   ST(1), ST(0)
           FWAIT
           FSTP    Result
+          {$ENDIF MSWINDOWS}
   end;
   {$ENDIF ~USE_MATH_UNIT}
 end;
@@ -4691,7 +4715,11 @@ begin
   System.Error(rePlatformNotImplemented);
   Result := False;
   {$ELSE ~DELPHI64_TEMPORARY}
+  {$IFDEF CPU32}
   Result := JclMath.IsInfinite(Self);
+  {$ELSE}
+  Result := False;
+  {$ENDIF}
   {$ENDIF ~DELPHI64_TEMPORARY}
 end;
 
@@ -4786,7 +4814,11 @@ begin
   System.Error(rePlatformNotImplemented);
   Result := False;
   {$ELSE ~DELPHI64_TEMPORARY}
+  {$IFDEF CPU32}
   Result := JclMath.IsInfinite(Self);
+  {$ELSE}
+  Result := False;
+  {$ENDIF}
   {$ENDIF ~DELPHI64_TEMPORARY}
 end;
 

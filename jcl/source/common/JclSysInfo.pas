@@ -71,11 +71,11 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF HAS_UNIT_LIBC}
-  {$IFNDEF FPC}
-  Libc,
-  {$ELSE}
+  //{$IFNDEF FPC}
+  //Libc,
+  //{$ELSE}
   libclite,
-  {$ENDIF ~FPC}
+  //{$ENDIF ~FPC}
   {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
@@ -357,7 +357,9 @@ function GetOSVersionString: string;
 {$IFDEF MSWINDOWS}
 function GetMacAddresses(const Machine: string; const Addresses: TStrings): Integer;
 {$ENDIF MSWINDOWS}
+{$IFNDEF PUREPASCAL}
 function ReadTimeStampCounter: Int64;
+{$ENDIF PUREPASCAL}
 {$IFDEF WIN64}
 {$EXTERNALSYM ReadTimeStampCounter}
 {$ENDIF WIN64}
@@ -886,7 +888,7 @@ const
   EAMD2_LAHF          = BIT_0;  // LAHF/SAHF available in 64-bit mode
   EAMD2_CMPLEGACY     = BIT_1;  // core multi-processing legacy mode
   EAMD2_SVM           = BIT_2;  // Secure Virtual Machine
-  EAMD2_EXTAPICSPACE  = BIT_3;  // This bit indicates the presence of extended APIC register space starting at offset 400h from the “APIC Base Address Register,” as specified in the BKDG.
+  EAMD2_EXTAPICSPACE  = BIT_3;  // This bit indicates the presence of extended APIC register space starting at offset 400h from the "APIC Base Address Register," as specified in the BKDG.
   EAMD2_ALTMOVCR8     = BIT_4;  // LOCK MOV CR0 means MOV CR8
   EAMD2_ABM           = BIT_5;  // ABM: Advanced bit manipulation. LZCNT instruction support.
   EAMD2_SSE4A         = BIT_6;  // EXTRQ, INSERTQ, MOVNTSS, and MOVNTSD instruction support.
@@ -1336,7 +1338,9 @@ const
     (D: $FF; Family: cfOther;              Size: 0;     WaysOfAssoc: 0;  LineSize: 0;  LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescrFF)
   );
 
+{$IFNDEF PUREPASCAL}
 procedure GetCpuInfo(var CpuInfo: TCpuInfo);
+{$ENDIF PUREPASCAL}
 
 function GetIntelCacheDescription(const D: Byte): string;
 function RoundFrequency(const Frequency: Integer): Integer;
@@ -1349,8 +1353,10 @@ type
 
 function GetOSEnabledFeatures: TOSEnabledFeatures;
 {$ENDIF MSWINDOWS}
+{$IFNDEF PUREPASCAL}
 function CPUID: TCpuInfo;
 function TestFDIVInstruction: Boolean;
+{$ENDIF PUREPASCAL}
 
 // Memory Information
 {$IFDEF MSWINDOWS}
@@ -2311,7 +2317,7 @@ var
   Sock: Integer;
   IfReq: TIfReq;
   SockAddrPtr: PSockAddrIn;
-  ListSave, IfList: PIfNameIndex;
+  ListSave, IfList: PIf_NameIndex;
 begin
   //need a socket for ioctl()
   Sock := socket(AF_INET, SOCK_STREAM, 0);
@@ -2328,22 +2334,13 @@ begin
       while IfList^.if_index <> 0 do
       begin
         //copy in the interface name to look up address of
-        {$IFDEF FPC}
         strncpy(IfReq.ifr_ifrn.ifrn_name, IfList^.if_name, IFNAMSIZ);
-        {$ELSE ~FPC}
-        strncpy(IfReq.ifrn_name, IfList^.if_name, IFNAMSIZ);
-        {$ENDIF ~FPC}
         //get the address for this interface
-        if ioctl(Sock, SIOCGIFADDR, @IfReq) <> 0 then
+        if ioctl(Sock, SIOCGIFADDR, IfReq) <> 0 then
           RaiseLastOSError;
         //print out the address
-        {$IFDEF FPC}
         SockAddrPtr := PSockAddrIn(@IfReq.ifr_ifru.ifru_addr);
         Results.Add(Format('%s=%s', [IfReq.ifr_ifrn.ifrn_name, inet_ntoa(SockAddrPtr^.sin_addr)]));
-        {$ELSE ~FPC}
-        SockAddrPtr := PSockAddrIn(@IfReq.ifru_addr);
-        Results.Add(Format('%s=%s', [IfReq.ifrn_name, inet_ntoa(SockAddrPtr^.sin_addr)]));
-        {$ENDIF ~FPC}
         Inc(IfList);
       end;
     finally
@@ -2351,11 +2348,7 @@ begin
       if_freenameindex(ListSave);
     end;
   finally
-    {$IFNDEF FPC}
-    Libc.__close(Sock)
-    {$ELSE}
     libclite.__close(Sock)
-    {$ENDIF ~FPC}
   end;
 end;
 {$ELSE ~HAS_UNIT_LIBC}
@@ -2639,13 +2632,13 @@ const
 {$IFDEF HAS_UNIT_LIBC}
 function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
 var
-  ProcDir: PDirectoryStream;
-  PtrDirEnt: PDirEnt;
+  ProcDir: PDIR;
+  PtrDirEnt: PPdirent;
   Scratch: TDirEnt;
   ProcID: __pid_t;
   E: Integer;
   FileName: string;
-  F: PIOFile;
+  F: PFILE;
 begin
   Result := False;
   ProcDir := opendir(SProcDirectory);
@@ -4222,7 +4215,11 @@ begin
           Result := 'Windows 10 May 2019 Update';
        1909:
           Result := 'Windows 10 November 2019 Update';
-    else
+       2004:
+          Result := 'Windows 10 May 2020 Update';
+       2009:
+          Result := 'Windows 10 October 2020 Update';
+     else
       Result := 'Windows 10 ' + IntToStr(GetWindows10ReleaseId) + ' Update';
     end;
   end
@@ -4253,7 +4250,11 @@ begin
           Result := '19H1';
        1909:
           Result := '19H2';
-    else
+       2004:
+          Result := '20H1';
+       2009:
+          Result := '20H2';
+     else
       Result := '';
     end;
   end
@@ -4802,6 +4803,7 @@ begin
   end;
 end;
 {$ENDIF MSWINDOWS}
+{$IFNDEF PUREPASCAL}
 function ReadTimeStampCounter: Int64; assembler;
 asm
         DW      $310F
@@ -4812,6 +4814,7 @@ asm
         // Result in RAX
         {$ENDIF CPU64}
 end;
+{$ENDIF PUREPASCAL}
 
 function GetIntelCacheDescription(const D: Byte): string;
 var
@@ -4830,6 +4833,7 @@ begin
     Result := Format(LoadResString(@RsIntelUnknownCache),[D]);
 end;
 
+{$IFNDEF PUREPASCAL}
 procedure GetCpuInfo(var CpuInfo: TCpuInfo);
 begin
   CpuInfo := CPUID;
@@ -4842,6 +4846,7 @@ begin
     {$ENDIF MSWINDOWS}
   end;
 end;
+{$ENDIF PUREPASCAL}
 
 function RoundFrequency(const Frequency: Integer): Integer;
 const
@@ -5012,6 +5017,7 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
+{$IFNDEF PUREPASCAL}
 function CPUID: TCpuInfo;
   function HasCPUIDInstruction: Boolean;
   const
@@ -5802,6 +5808,7 @@ begin
   Result := True;
 end;
 {$ENDIF CPU64}
+{$ENDIF PUREPASCAL}
 
 //=== Alloc granularity ======================================================
 
@@ -5995,11 +6002,7 @@ function GetMemoryLoad: Byte;
 var
   SystemInf: TSysInfo;
 begin
-  {$IFDEF FPC}
   SysInfo(@SystemInf);
-  {$ELSE ~FPC}
-  SysInfo(SystemInf);
-  {$ENDIF ~FPC}
   with SystemInf do
     Result := 100 - Round(100 * freeram / totalram);
 end;
@@ -6021,11 +6024,7 @@ function GetSwapFileSize: Int64;
 var
   SystemInf: TSysInfo;
 begin
-  {$IFDEF FPC}
   SysInfo(@SystemInf);
-  {$ELSE ~FPC}
-  SysInfo(SystemInf);
-  {$ENDIF ~FPC}
   Result := SystemInf.totalswap;
 end;
 {$ENDIF UNIX}
@@ -6046,11 +6045,7 @@ function GetSwapFileUsage: Byte;
 var
   SystemInf: TSysInfo;
 begin
-  {$IFDEF FPC}
   SysInfo(@SystemInf);
-  {$ELSE ~FPC}
-  SysInfo(SystemInf);
-  {$ENDIF ~FPC}
   with SystemInf do
     Result := 100 - Trunc(100 * FreeSwap / TotalSwap);
 end;
@@ -6075,11 +6070,7 @@ function GetTotalPhysicalMemory: Int64;
 var
   SystemInf: TSysInfo;
 begin
-  {$IFDEF FPC}
   SysInfo(@SystemInf);
-  {$ELSE ~FPC}
-  SysInfo(SystemInf);
-  {$ENDIF ~FPC}
   Result := SystemInf.totalram;
 end;
 {$ENDIF UNIX}
@@ -6100,11 +6091,7 @@ function GetFreePhysicalMemory: Int64;
 var
   SystemInf: TSysInfo;
 begin
-  {$IFDEF FPC}
   SysInfo(@SystemInf);
-  {$ELSE ~FPC}
-  SysInfo(SystemInf);
-  {$ENDIF ~FPC}
   Result := SystemInf.freeram;
 end;
 {$ENDIF UNIX}

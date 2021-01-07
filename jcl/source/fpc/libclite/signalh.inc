@@ -25,9 +25,11 @@ Type
    sig_t = __sighandler_t;
 
 
+{$IFDEF FPC}
 var
   _sys_siglist : array[0..(_NSIG)-1] of Pchar;cvar;external;
   sys_siglist : array[0..(_NSIG)-1] of Pchar;cvar;external;
+{$ENDIF FPC}
 
 Type
   P_sigvec = ^_sigvec;
@@ -43,7 +45,7 @@ const
    SV_INTERRUPT = 1 shl 1;
    SV_RESETHAND = 1 shl 2;
 
-function sigvec(__sig:longint; __vec:p_sigvec; __ovec:p_sigvec):longint;cdecl;external clib name 'sigvec';
+function sigvec(__sig:longint; __vec:p_sigvec; __ovec:p_sigvec):longint;cdecl;external clib name 'sigvec'; overload;
 function sigreturn(__scp:Psigcontext):longint;cdecl;external clib name 'sigreturn';
 function siginterrupt(__sig:longint; __interrupt:longint):longint;cdecl;external clib name 'siginterrupt';
 function sigstack(__ss:Psigstack; __oss:Psigstack):longint;cdecl;external clib name 'sigstack';
@@ -52,7 +54,7 @@ function sighold(__sig:longint):longint;cdecl;external clib name 'sighold';
 function sigrelse(__sig:longint):longint;cdecl;external clib name 'sigrelse';
 function sigignore(__sig:longint):longint;cdecl;external clib name 'sigignore';
 function sigset(__sig:longint; __disp:__sighandler_t):__sighandler_t;cdecl;external clib name 'sigset';
-function sigaction(__sig: longint; Action: PSigAction; OldAction: PSigAction): Integer; cdecl;external clib name 'sigaction';
+function sigaction(__sig: longint; Action: PSigAction; OldAction: PSigAction): Integer; cdecl;external clib name 'sigaction'; overload;
 
 function __libc_current_sigrtmin:longint;cdecl;external clib name '__libc_current_sigrtmin';
 function __libc_current_sigrtmax:longint;cdecl;external clib name '__libc_current_sigrtmax';
@@ -77,14 +79,14 @@ function sigandset(var SigSet : TSigSet; const Left : TSigSet; const Right : TSi
 function sigorset(var SigSet : TSigSet; const Left : TSigSet; const Right : TSigSet):longint;cdecl;external clib name 'sigorset';
 function sigprocmask(__how:longint; var SigSet : TSigSet; var oldset: Tsigset):longint;cdecl;external clib name 'sigprocmask';
 function sigsuspend(SigSet : TSigSet):longint;cdecl;external clib name 'sigsuspend';
-function sigaction(__sig:longint; Const act: _sigaction; Var oldact: _sigaction):longint;cdecl;external clib name 'sigaction';
+function sigaction(__sig:longint; Const act: _sigaction; Var oldact: _sigaction):longint;cdecl;external clib name 'sigaction'; overload;
 function sigpending(SigSet : TSigSet):longint;cdecl;external clib name 'sigpending';
 function sigwait(SigSet : TSigSet; Var __sig:longint):longint;cdecl;external clib name 'sigwait';
 function sigwaitinfo(SigSet : TSigSet; var __info: tsiginfo_t):longint;cdecl;external clib name 'sigwaitinfo';
 function sigtimedwait(SigSet : TSigSet; var __info: tsiginfo_t; var __timeout: ttimespec):longint;cdecl;external clib name 'sigtimedwait';
 function sigqueue(__pid:__pid_t; __sig:longint; __val:sigval):longint;cdecl;external clib name 'sigqueue';
 
-function sigvec(__sig:longint; const vec: tsigvec; __ovec:p_sigvec):longint;cdecl;external clib name 'sigvec';
-function sigvec(__sig:longint; const vec: tsigvec; var __ovec: tsigvec):longint;cdecl;external clib name 'sigvec';
+function sigvec(__sig:longint; const vec: tsigvec; __ovec:p_sigvec):longint;cdecl;external clib name 'sigvec'; overload;
+function sigvec(__sig:longint; const vec: tsigvec; var __ovec: tsigvec):longint;cdecl;external clib name 'sigvec'; overload;
 
 

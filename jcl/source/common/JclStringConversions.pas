@@ -67,7 +67,9 @@ type
 // conversion routines between Ansi, UTF-16, UCS-4 and UTF8 strings
 
 // one shot conversion between PAnsiChar and PWideChar
+{$IFNDEF PUREPASCAL}
 procedure ExpandASCIIString(const Source: PAnsiChar; Target: PWideChar; Count: SizeInt);
+{$ENDIF PUREPASCAL}
 
 // tpye of stream related functions
 type
@@ -304,9 +306,11 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   {$ENDIF ~HAS_UNITSCOPE}
-  {$IFDEF FPCNONWINDOWS}
+  //{$IFDEF FPCNONWINDOWS}
+  {$IFDEF LINUX}
   FpWinAPICompatibility,
-  {$ENDIF ~FPCNONWINDOWS}
+  {$ENDIF LINUX}
+  //{$ENDIF ~FPCNONWINDOWS}
   JclResources;
 
 const MB_ERR_INVALID_CHARS = 8;
@@ -344,6 +348,7 @@ end;
 // from one byte to two bytes.
 // EAX contains Source, EDX contains Target, ECX contains Count
 
+{$IFNDEF PUREPASCAL}
 procedure ExpandASCIIString(const Source: PAnsiChar; Target: PWideChar; Count: SizeInt);
 asm
        {$IFDEF CPU32}
@@ -381,6 +386,7 @@ asm
        {$ENDIF CPU64}
 @@Finish:
 end;
+{$ENDIF PUREPASCAL}
 
 const
   HalfShift: Integer = 10;

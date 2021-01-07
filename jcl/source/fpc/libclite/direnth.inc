@@ -42,11 +42,11 @@ Type
   TSelectorFunc64 = function(const p1: PDirEnt64): Integer; cdecl;
   TCompareFunc    = function(const p1, p2: Pointer): Integer; cdecl;
 
-function scandir(__dir:Pchar; __namelist:PPPdirent; __selector:TSelectorfunc; __cmp:TComparefunc):longint;cdecl;external clib name 'scandir';
-function scandir64(__dir:Pchar; __namelist:PPPdirent64; __selector:TSelectorFunc64; __cmp:TCompareFunc):longint;cdecl;external clib name 'scandir64';
+function scandir(__dir:Pchar; __namelist:PPPdirent; __selector:TSelectorfunc; __cmp:TComparefunc):longint;cdecl;external clib name 'scandir'; overload;
+function scandir64(__dir:Pchar; __namelist:PPPdirent64; __selector:TSelectorFunc64; __cmp:TCompareFunc):longint;cdecl;external clib name 'scandir64'; overload;
 
-function getdirentries(__fd:longint; __buf:Pchar; __nbytes:size_t; __basep:P__off_t):__ssize_t;cdecl;external clib name 'getdirentries';
-function getdirentries64(__fd:longint; __buf:Pchar; __nbytes:size_t; __basep:P__off64_t):__ssize_t;cdecl;external clib name 'getdirentries64';
+function getdirentries(__fd:longint; __buf:Pchar; __nbytes:size_t; __basep:P__off_t):__ssize_t;cdecl;external clib name 'getdirentries'; overload;
+function getdirentries64(__fd:longint; __buf:Pchar; __nbytes:size_t; __basep:P__off64_t):__ssize_t;cdecl;external clib name 'getdirentries64'; overload;
 
 function alphasort(const e1: Pointer; const e2: Pointer): Integer; cdecl; external clib name 'alphasort';
 function alphasort64(const e1: Pointer; const e2: Pointer): Integer; cdecl; external clib name 'alphasort64';
@@ -66,9 +66,9 @@ Type
   TSelectorProc64 = TSelectorFunc64;
   TCompareProc    = TCompareFunc;
 
-function scandir(__dir:Pchar; var __namelist:PPdirent; __selector:TSelectorfunc; __cmp:TComparefunc):longint;cdecl;external clib name 'scandir';
-function scandir64(__dir:Pchar; var __namelist:PPdirent64; __selector:TSelectorFunc64; __cmp:TCompareFunc):longint;cdecl;external clib name 'scandir64';
+function scandir(__dir:Pchar; var __namelist:PPdirent; __selector:TSelectorfunc; __cmp:TComparefunc):longint;cdecl;external clib name 'scandir'; overload;
+function scandir64(__dir:Pchar; var __namelist:PPdirent64; __selector:TSelectorFunc64; __cmp:TCompareFunc):longint;cdecl;external clib name 'scandir64'; overload;
 
-function getdirentries(__fd:longint; __buf:Pchar; __nbytes:size_t; var __basep:__off_t):__ssize_t;cdecl;external clib name 'getdirentries';
-function getdirentries64(__fd:longint; __buf:Pchar; __nbytes:size_t; var __basep: __off64_t):__ssize_t;cdecl;external clib name 'getdirentries64';
+function getdirentries(__fd:longint; __buf:Pchar; __nbytes:size_t; var __basep:__off_t):__ssize_t;cdecl;external clib name 'getdirentries'; overload;
+function getdirentries64(__fd:longint; __buf:Pchar; __nbytes:size_t; var __basep: __off64_t):__ssize_t;cdecl;external clib name 'getdirentries64'; overload;
 

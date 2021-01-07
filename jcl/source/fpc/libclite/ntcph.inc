@@ -73,11 +73,11 @@ type
    TCPI_OPT_ECN = 8;
 type
    tcp_ca_state = (
-     TCP_CA_Open := 0,
-     TCP_CA_Disorder := 1,
-     TCP_CA_CWR := 2,
-     TCP_CA_Recovery := 3,
-     TCP_CA_Loss := 4);
+     TCP_CA_Open = 0,
+     TCP_CA_Disorder = 1,
+     TCP_CA_CWR = 2,
+     TCP_CA_Recovery = 3,
+     TCP_CA_Loss = 4);
 
 type
    Ptcp_info = ^_tcp_info;

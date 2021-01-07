@@ -2482,10 +2482,6 @@ begin
     Result := GetEnumName(TypeInfo, EnumVal);
 end;
 
-{$IFDEF FPC}
-{$I ../include/fpc_version.inc}
-{$ENDIF}
-
 function JclGenerateEnumType(const TypeName: ShortString;
   const Literals: array of string): PTypeInfo;
 var
