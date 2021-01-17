@@ -4696,7 +4696,7 @@ begin
     begin
       UnitNameWithoutUnitscope := UnitName;
       Delete(UnitNameWithoutUnitscope, 1, Pos('.', UnitNameWithoutUnitscope));
-      if Pos(UnitNameWithoutUnitscope + '.', FixedProcedureName) = 1 then
+      if Pos(StrLower(UnitNameWithoutUnitscope) + '.', StrLower(FixedProcedureName)) = 1 then
         FixedProcedureName := Copy(FixedProcedureName, Length(UnitNameWithoutUnitscope) + 2, Length(FixedProcedureName) - Length(UnitNameWithoutUnitscope) - 1);
     end;
 

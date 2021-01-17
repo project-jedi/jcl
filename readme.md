@@ -1,5 +1,8 @@
 JEDI Code Library
 =================
+![](https://tokei.rs/b1/github/project-jedi/jcl?category=code)
+![](https://tokei.rs/b1/github/project-jedi/jcl?category=files)
+
 
 The JEDI Code Library (JCL) consists of a set of thoroughly tested and fully documented
 utility functions and non-visual classes which can be instantly reused in your Delphi
