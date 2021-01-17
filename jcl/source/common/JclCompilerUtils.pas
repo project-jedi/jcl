@@ -175,6 +175,48 @@ type
     function GetExeName: string; override;
   end;
 
+  TJclDCCOSX64 = class(TJclDCC32)
+  public
+    class function GetPlatform: string; override;
+    function GetExeName: string; override;
+  end;
+
+  TJclDCCiOSSimulator = class(TJclDCC32)
+  public
+    class function GetPlatform: string; override;
+    function GetExeName: string; override;
+  end;
+
+  TJclDCCiOS32 = class(TJclDCC32)
+  public
+    class function GetPlatform: string; override;
+    function GetExeName: string; override;
+  end;
+
+  TJclDCCiOS64 = class(TJclDCC32)
+  public
+    class function GetPlatform: string; override;
+    function GetExeName: string; override;
+  end;
+
+  TJclDCCArm32 = class(TJclDCC32)
+  public
+    class function GetPlatform: string; override;
+    function GetExeName: string; override;
+  end;
+
+  TJclDCCArm64 = class(TJclDCC32)
+  public
+    class function GetPlatform: string; override;
+    function GetExeName: string; override;
+  end;
+
+  TJclDCCLinux64 = class(TJclDCC32)
+  public
+    class function GetPlatform: string; override;
+    function GetExeName: string; override;
+  end;
+
   {$IFDEF MSWINDOWS}
   TJclDCCIL = class(TJclDCC32)
   private
@@ -207,6 +249,13 @@ const
   DCC32ExeName              = 'dcc32.exe';
   DCC64ExeName              = 'dcc64.exe';
   DCCOSX32ExeName           = 'dccosx.exe';
+  DCCOSX64ExeName           = 'dccosx64.exe';
+  DCCiOSSimulatorExeName    = 'dccios32.exe';
+  DCCiOS32ExeName           = 'dcciosarm.exe';
+  DCCiOS64ExeName           = 'dcciosarm64.exe';
+  DCCArm32ExeName           = 'dccaarm.exe';   //Android 32
+  DCCArm64ExeName           = 'dccaarm64.exe'; //Android 64
+  DCCLinux64ExeName         = 'dcclinux64.exe';
   DCCILExeName              = 'dccil.exe';
   Bpr2MakExeName            = 'bpr2mak.exe';
   MakeExeName               = 'make.exe';
@@ -1243,6 +1292,90 @@ end;
 function TJclDCCOSX32.GetExeName: string;
 begin
   Result := DCCOSX32ExeName;
+end;
+
+//=== { TJclDCCOSX64 } =======================================================
+
+class function TJclDCCOSX64.GetPlatform: string;
+begin
+  Result := BDSPlatformOSX64;
+end;
+
+function TJclDCCOSX64.GetExeName: string;
+begin
+  Result := DCCOSX64ExeName;
+end;
+
+//=== { TJclDCCiOSSimulator } =======================================================
+
+class function TJclDCCiOSSimulator.GetPlatform: string;
+begin
+  Result := BDSPlatformiOSSimulator;
+end;
+
+function TJclDCCiOSSimulator.GetExeName: string;
+begin
+  Result := DCCiOSSimulatorExeName;
+end;
+
+//=== { TJclDCCiOS32 } =======================================================
+
+class function TJclDCCiOS32.GetPlatform: string;
+begin
+  Result := BDSPlatformiOSDevice32;
+end;
+
+function TJclDCCiOS32.GetExeName: string;
+begin
+  Result := DCCiOS32ExeName;
+end;
+
+//=== { TJclDCCiOS64 } =======================================================
+
+class function TJclDCCiOS64.GetPlatform: string;
+begin
+  Result := BDSPlatformiOSDevice64;
+end;
+
+function TJclDCCiOS64.GetExeName: string;
+begin
+  Result := DCCiOS64ExeName;
+end;
+
+//=== { TJclDCCArm32 } =======================================================
+
+class function TJclDCCArm32.GetPlatform: string;
+begin
+  Result := BDSPlatformAndroid32;
+end;
+
+function TJclDCCArm32.GetExeName: string;
+begin
+  Result := DCCArm32ExeName;
+end;
+
+//=== { TJclDCCArm64 } =======================================================
+
+class function TJclDCCArm64.GetPlatform: string;
+begin
+  Result := BDSPlatformAndroid64;
+end;
+
+function TJclDCCArm64.GetExeName: string;
+begin
+  Result := DCCArm64ExeName;
+end;
+
+//=== { TJclDCCLinux64 } =======================================================
+
+class function TJclDCCLinux64.GetPlatform: string;
+begin
+  Result := BDSPlatformLinux64;
+end;
+
+function TJclDCCLinux64.GetExeName: string;
+begin
+  Result := DCCLinux64ExeName;
 end;
 
 {$IFDEF MSWINDOWS}
