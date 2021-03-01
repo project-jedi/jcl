@@ -58,12 +58,18 @@ uses
   libclite,
   {$ENDIF MSWINDOWS}
   {$ENDIF ~HAS_UNITSCOPE}
+  {$IFDEF PUREPASCAL}
+  System.SyncObjs,
+  {$ENDIF}
   JclBase;
 
 // Locked Integer manipulation
 //
 // Routines to manipulate simple typed variables in a thread safe manner
-{$IFNDEF PUREPASCAL}
+{$IFDEF PUREPASCAL}
+function LockedInc(var Target: Integer): Integer; overload;
+function LockedDec(var Target: Integer): Integer; overload;
+{$ELSE}
 function LockedAdd(var Target: Integer; Value: Integer): Integer; overload;
 function LockedCompareExchange(var Target: Integer; Exch, Comp: Integer): Integer; overload;
 function LockedCompareExchange(var Target: TObject; Exch, Comp: TObject): TObject; overload;
@@ -136,6 +142,11 @@ function WaitAlertableForMultipleObjects(const Objects: array of TJclDispatcherO
 {$ENDIF MSWINDOWS}
 
 type
+  {$IFNDEF  FPC}
+  {$IFDEF LINUX}
+  TRTLCriticalSection = TCriticalSection;
+  {$ENDIF}
+  {$ENDIF}
   TJclCriticalSection = class(TObject)
   private
     FCriticalSection: TRTLCriticalSection;
@@ -396,7 +407,17 @@ const
 {$ENDIF}
 
 // Locked Integer manipulation
-{$IFNDEF PUREPASCAL}
+{$IFDEF PUREPASCAL}
+function LockedInc(var Target: Integer): Integer; overload;
+begin
+ Result := TInterlocked.Increment(Target);
+end;
+
+function LockedDec(var Target: Integer): Integer; overload;
+begin
+ Result := TInterlocked.Decrement(Target);
+end;
+{$ELSE}
 function LockedAdd(var Target: Integer; Value: Integer): Integer;
 asm
         {$IFDEF CPU32}
@@ -875,12 +896,20 @@ end;
 constructor TJclCriticalSection.Create;
 begin
   inherited Create;
+  {$IFDEF MSWINDOWS}
   {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}{$IFDEF MSWINDOWS}Windows.{$ENDIF WINDOWS}InitializeCriticalSection(FCriticalSection);
+  {$ELSE}
+  FCriticalSection := TCriticalSection.Create;
+  {$ENDIF}
 end;
 
 destructor TJclCriticalSection.Destroy;
 begin
+  {$IFDEF MSWINDOWS}
   {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}{$IFDEF MSWINDOWS}Windows.{$ENDIF WINDOWS}DeleteCriticalSection(FCriticalSection);
+  {$ELSE}
+  FCriticalSection.Free;
+  {$ENDIF}
   inherited Destroy;
 end;
 
@@ -889,7 +918,7 @@ var
   NewCritSect: TJclCriticalSection;
 begin
   NewCritSect := TJclCriticalSection.Create;
-  if LockedCompareExchange(Pointer(CS), Pointer(NewCritSect), nil) <> nil then
+  if {$IFDEF MSWINDOWS} LockedCompareExchange {$ELSE} TInterlocked.CompareExchange {$ENDIF}(Pointer(CS), Pointer(NewCritSect), nil) <> nil then
   begin
     // LoadInProgress was <> nil -> no exchange took place, free the CS
     NewCritSect.Free;
@@ -899,12 +928,20 @@ end;
 
 procedure TJclCriticalSection.Enter;
 begin
+  {$IFDEF MSWINDOWS}
   {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}{$IFDEF MSWINDOWS}Windows.{$ENDIF WINDOWS}EnterCriticalSection(FCriticalSection);
+  {$ELSE}
+  FCriticalSection.Enter;
+  {$ENDIF}
 end;
 
 procedure TJclCriticalSection.Leave;
 begin
+  {$IFDEF MSWINDOWS}
   {$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}{$IFDEF MSWINDOWS}Windows.{$ENDIF WINDOWS}LeaveCriticalSection(FCriticalSection);
+  {$ELSE}
+  FCriticalSection.Leave;
+  {$ENDIF}
 end;
 
 //== { TJclCriticalSectionEx } ===============================================

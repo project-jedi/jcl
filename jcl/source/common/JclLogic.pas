@@ -76,8 +76,8 @@ function BitsHighest(X: Word): Integer; overload;
 {$IFNDEF PUREPASCAL}
 function BitsHighest(X: Integer): Integer; overload;
 function BitsHighest(X: Cardinal): Integer; overload;
-{$ENDIF PUREPASCAL}
 function BitsHighest(X: Int64): Integer; overload;
+{$ENDIF PUREPASCAL}
 
 function BitsLowest(X: Byte): Integer; overload;
 function BitsLowest(X: Shortint): Integer; overload;
@@ -86,8 +86,8 @@ function BitsLowest(X: Word): Integer; overload;
 {$IFNDEF PUREPASCAL}
 function BitsLowest(X: Cardinal): Integer; overload;
 function BitsLowest(X: Integer): Integer; overload;
-{$ENDIF PUREPASCAL}
 function BitsLowest(X: Int64): Integer; overload;
+{$ENDIF PUREPASCAL}
 
 {$IFNDEF PUREPASCAL}
 function ClearBit(const Value: Byte; const Bit: TBitRange): Byte; overload;
@@ -478,8 +478,8 @@ begin
   Result := BitsHighest(Integer(X));
 end;
 
-function BitsHighest(X: Int64): Integer;
 {$IFDEF CPU32}
+function BitsHighest(X: Int64): Integer;
 var
  Temp: TJclULargeInteger absolute X;
 begin
@@ -489,7 +489,9 @@ begin
     Result := BitsHighest(Temp.HighPart) + 32;
 end;
 {$ENDIF CPU32}
+{$IFNDEF PUREPASCAL}
 {$IFDEF CPU64}
+function BitsHighest(X: Int64): Integer;
 asm
   // --> RCX X
   // <-- RAX
@@ -503,6 +505,7 @@ asm
   CMOVZ   RAX, R10
 end;
 {$ENDIF CPU64}
+{$ENDIF PUREPASCAL}
 
 {$IFNDEF PUREPASCAL}
 function BitsLowest(X: Cardinal): Integer;
@@ -570,8 +573,8 @@ begin
   Result := BitsLowest(Cardinal(X));
 end;
 
-function BitsLowest(X: Int64): Integer;
 {$IFDEF CPU32}
+function BitsLowest(X: Int64): Integer;
 var
  Temp: TJclULargeInteger absolute X;
 begin
@@ -581,7 +584,9 @@ begin
     Result := BitsLowest(Temp.LowPart);
 end;
 {$ENDIF CPU32}
+{$IFNDEF PUREPASCAL}
 {$IFDEF CPU64}
+function BitsLowest(X: Int64): Integer;
 asm
   // --> RCX X
   // <-- RAX
@@ -595,6 +600,7 @@ asm
   CMOVZ   RAX, R10
 end;
 {$ENDIF CPU64}
+{$ENDIF PUREPASCAL}
 
 {$IFNDEF PUREPASCAL}
 function ClearBit(const Value: Byte; const Bit: TBitRange): Byte;

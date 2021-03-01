@@ -1947,15 +1947,16 @@ var
   {$ENDIF ~FPCNONWINDOWS}
 
 function OpenResourceStream(const ResName: string): TJclEasyStream;
+{$IFDEF UNICODE_RAW_DATA}
 var
   ResourceStream: TStream;
-  {$IFNDEF UNICODE_RAW_DATA}
   DecompressionStream: TStream;
   RawStream: TMemoryStream;
-  {$ENDIF ~UNICODE_RAW_DATA}
+{$ENDIF ~UNICODE_RAW_DATA}
 begin
-  ResourceStream := TResourceStream.Create(HInstance, ResName, 'UNICODEDATA');
+  Result := nil;
   {$IFDEF UNICODE_RAW_DATA}
+  ResourceStream := TResourceStream.Create(HInstance, ResName, 'UNICODEDATA');
   Result := TJclEasyStream.Create(ResourceStream, True);
   {$ENDIF UNICODE_RAW_DATA}
   {$IFDEF UNICODE_BZIP2_DATA}
@@ -8121,25 +8122,37 @@ end;
 {$ENDIF MSWINDOWS}
 
 function StringToWideStringEx(const S: AnsiString; CodePage: Word): WideString;
+{$IFDEF MSWINDOWS}
 var
   InputLength,
   OutputLength: SizeInt;
+{$ENDIF}
 begin
+  {$IFDEF MSWINDOWS}
   InputLength := Length(S);
   OutputLength := MultiByteToWideChar(CodePage, 0, PAnsiChar(S), InputLength, nil, 0);
   SetLength(Result, OutputLength);
   MultiByteToWideChar(CodePage, 0, PAnsiChar(S), InputLength, PWideChar(Result), OutputLength);
+  {$ELSE}
+  Result := WideString(s);
+  {$ENDIF}
 end;
 
 function WideStringToStringEx(const WS: WideString; CodePage: Word): AnsiString;
+{$IFDEF MSWINDOWS}
 var
   InputLength,
   OutputLength: SizeInt;
+{$ENDIF}
 begin
+  {$IFDEF MSWINDOWS}
   InputLength := Length(WS);
   OutputLength := WideCharToMultiByte(CodePage, 0, PWideChar(WS), InputLength, nil, 0, nil, nil);
   SetLength(Result, OutputLength);
   WideCharToMultiByte(CodePage, 0, PWideChar(WS), InputLength, PAnsiChar(Result), OutputLength, nil, nil);
+  {$ELSE}
+  Result := AnsiString(WS);
+  {$ENDIF}
 end;
 
 function TranslateString(const S: AnsiString; CP1, CP2: Word): AnsiString;

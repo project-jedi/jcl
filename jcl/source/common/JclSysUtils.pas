@@ -71,6 +71,8 @@ uses
   {$IFDEF FPC}
   JwaWinBase,
   {$ENDIF}
+  {$ELSE}
+  Posix.Unistd,
   {$ENDIF MSWINDOWS}
   {$IFDEF FPCNONWINDOWS}
   FpWinAPICompatibility,
@@ -410,6 +412,10 @@ type
 function GetMethodTable(AClass: TClass): PMethodTable;
 function GetMethodEntry(MethodTable: PMethodTable; Index: Integer): PMethodEntry;
 {$ENDIF PUREPASCAL}
+
+// Function to compare if two methods/event handlers are equal
+function MethodEquals(aMethod1, aMethod2: TMethod): boolean;
+function NotifyEventEquals(aMethod1, aMethod2: TNotifyEvent): boolean;
 
 // Class Parent
 procedure SetClassParent(AClass: TClass; NewClassParent: TClass);
@@ -1283,8 +1289,12 @@ begin
   if not Assigned(GlobalMMFHandleListCS) and not MMFFinalized then
   begin
     CS := TJclIntfCriticalSection.Create;
-    {$IFDEF RTL200_UP} // Delphi 2009+
+    {$IFDEF RTL_200_OR_FPC} // Delphi 2009+
+{$IFDEF MSWINDOWS}
     OldValue := InterlockedCompareExchangePointer(Pointer(GlobalMMFHandleListCS), Pointer(CS), nil);
+{$ELSE}
+    OldValue := TInterlocked.CompareExchange(Pointer(GlobalMMFHandleListCS), Pointer(CS), nil);
+{$ENDIF}
     {$ELSE}
       {$IFDEF RTL160_UP} // Delphi 7-2007
     OldValue := Pointer(InterlockedCompareExchange(Longint(GlobalMMFHandleListCS), Longint(CS), 0));
@@ -2215,6 +2225,16 @@ begin
     Inc(TJclAddr(Result), Result^.EntrySize);
 end;
 
+function MethodEquals(aMethod1, aMethod2: TMethod): boolean;
+begin
+  Result := (aMethod1.Code = aMethod2.Code) and
+            (aMethod1.Data = aMethod2.Data);
+end;
+function NotifyEventEquals(aMethod1, aMethod2: TNotifyEvent): boolean;
+begin
+  Result := MethodEquals(TMethod(aMethod1),TMethod(aMethod2));
+end;
+
 //=== Class Parent methods ===================================================
 
 procedure SetClassParent(AClass: TClass; NewClassParent: TClass);
@@ -2351,7 +2371,7 @@ begin
   if FOwnerInterface <> nil then
     Result := FOwnerInterface._AddRef
   else
-    Result := InterlockedIncrement(FRefCount);
+    Result := LockedInc(FRefCount);
 end;
 
 function TJclInterfacedPersistent._Release: Longint;
@@ -2360,7 +2380,7 @@ begin
     Result := FOwnerInterface._Release
   else
   begin
-    Result := InterlockedDecrement(FRefCount);
+    Result := LockedDec(FRefCount);
     if Result = 0 then
       Destroy;
   end;
@@ -3206,7 +3226,7 @@ begin
         end;
         if {$IFDEF FPC}Boolean({$ENDIF}AbortPtr^{$IFDEF FPC}){$ENDIF} then
           TerminateProcess(ProcessEvent.Handle, Cardinal(ABORT_EXIT_CODE));
-        if (ProcessEvent.WaitForever = {$IFDEF RTL270_UP}TJclWaitResult.{$ENDIF RTL270_UP}wrSignaled) and not GetExitCodeProcess(ProcessEvent.Handle, Options.FExitCode) then
+        if (ProcessEvent.WaitForever = {$IFDEF RTL_270_OR_FPC}TJclWaitResult.{$ENDIF RTL_270_OR_FPC}wrSignaled) and not GetExitCodeProcess(ProcessEvent.Handle, Options.FExitCode) then
           Options.FExitCode := $FFFFFFFF;
         CloseHandle(ProcessInfo.hThread);
         ProcessInfo.hThread := 0;

@@ -70,21 +70,21 @@ uses
   {$ENDIF UNITVERSIONING}
   Types,
   {$IFDEF HAS_UNIT_LIBC}
-  //{$IFNDEF FPC}
-  //Libc,
-  //{$ELSE}
   libclite,
-  //{$ENDIF ~FPC}
   {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
+  {$IFNDEF FPC}
   System.IOUtils,
+  {$ENDIF}
   Winapi.Windows, JclWin32,
   {$ENDIF MSWINDOWS}
   System.Classes, System.SysUtils,
   {$ELSE ~HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
+  {$IFNDEF FPC}
   IOUtils,
+  {$ENDIF}
   Windows, JclWin32,
   {$ENDIF MSWINDOWS}
   Classes, SysUtils,
@@ -2717,7 +2717,11 @@ end;
 {$ENDIF MSWINDOWS}
 {$IFDEF UNIX}
 begin
+ {$IFDEF FPC}
   Result := GetTempDir;
+ {$ELSE}
+  TPath.GetTempPath;
+ {$ENDIF}
 end;
 {$ENDIF UNIX}
 
@@ -3862,8 +3866,17 @@ end;
 // leading to a possible security hole. The implementation generates names which
 // can hardly be predicted, but when opening the file you should use the O_EXCL
 // flag. Using tmpfile or mkstemp is a safe way to avoid this problem.
+{$IFNDEF FPC}
+var
+ s: string;
+{$ENDIF}
 begin
+ {$IFDEF FPC}
   Result := GetTempFileName(PathGetTempPath, Prefix);
+ {$ELSE}
+ s := TPath.GetTempFileName;
+ Result := ExtractFilePath(s) + Prefix + ExtractFileName(s);
+ {$ENDIF}
 end;
 {$ENDIF UNIX}
 
@@ -4721,7 +4734,11 @@ end;
 function CreateSymbolicLink(const Name, Target: string): Boolean;
 begin
   {$IFDEF MSWINDOWS}
+  {$IFDEF FPC}
+  Result := False;
+  {$ELSE}
   Result := TFile.CreateSymLink(Name, Target);
+  {$ENDIF}
   {$ELSE}
   Result := symlink(PChar(Target), PChar(Name)) = 0;
   {$ENDIF}
@@ -4734,7 +4751,11 @@ var
 {$ENDIF}
 begin
   {$IFDEF MSWINDOWS}
+  {$IFDEF FPC}
+  Result := '';
+  {$ELSE}
   TFile.GetSymLinkTarget(Name, Result);
+  {$ENDIF}
   {$ELSE}
   BufLen := 128;
   repeat

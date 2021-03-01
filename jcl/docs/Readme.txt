@@ -64,7 +64,7 @@ The JEDI Code Library packages are required by some 3rd party packages (includin
 
 The installer can generate MAP informations for each package. These informations can be linked into binaries to become JCL debug data or be converted to .jdbg files. Once linked MAP files could be deleted. These options are subnodes of the "Packages" node.
 
-For BDS 2006, RAD Studio 2007, 2009, 2010, XE, XE2, XE3, XE4, XE5, XE6, XE7, XE8, 10, 10.1, 10.2 and 10.3 the compiler introduced a new option to make the same packages available in C++, by checking the "Dual packages" option of the "Packages" node, you will be able to call functions of the JCL from C++ code.
+For BDS 2006, RAD Studio 2007, 2009, 2010, XE, XE2, XE3, XE4, XE5, XE6, XE7, XE8, 10, 10.1, 10.2, 10.3 and 10.4 the compiler introduced a new option to make the same packages available in C++, by checking the "Dual packages" option of the "Packages" node, you will be able to call functions of the JCL from C++ code.
 
 
 --------------------------------------------------------------------------------
@@ -102,6 +102,7 @@ Delphi 10 and C++Builder 10.
 Delphi 10.1 and C++Builder 10.1.
 Delphi 10.2 and C++Builder 10.2.
 Delphi 10.3 and C++Builder 10.3.
+Delphi 10.4 and C++Builder 10.4.
 
 --------------------------------------------------------------------------------
 
@@ -168,6 +169,8 @@ For Delphi 10.2 and C++Builder 10.2 Win32: source\include\jcld25win32.inc
 For Delphi 10.2 and C++Builder 10.2 Win64: source\include\jcld25win64.inc 
 For Delphi 10.3 and C++Builder 10.3 Win32: source\include\jcld26win32.inc 
 For Delphi 10.3 and C++Builder 10.3 Win64: source\include\jcld26win64.inc 
+For Delphi 10.4 and C++Builder 10.4 Win32: source\include\jcld27win32.inc 
+For Delphi 10.4 and C++Builder 10.4 Win64: source\include\jcld27win64.inc 
 For FreePascal: source\include\jclfpc.inc 
 In the IDE, open and compile package Jcl.dpk (or Jcl.bpk for C++Builder) located in a subdirectory of the "packages" directory matching your version of the IDE. This package doesn't have to be installed since it doesn't provide any components. 
 If you want to install experts, open package JclBaseExpert.dpk and compile it, then you can install all the experts you want (packages are located in the same directory). 

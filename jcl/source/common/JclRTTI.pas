@@ -697,7 +697,9 @@ function JclGenerateSetType(BaseType: PTypeInfo; const TypeName: ShortString): P
 procedure RemoveTypeInfo(TypeInfo: PTypeInfo);
 
 // Is/As hooking
+{$IFNDEF PUREPASCAL}
 function JclIsClass(const AnObj: TObject; const AClass: TClass): Boolean;
+{$ENDIF}
 function JclIsClassByName(const AnObj: TObject; const AClass: TClass): Boolean;
 
 // returns all properties of type string (kind = tkLString or kind = tkUString when Unicode is enabled)
@@ -2842,6 +2844,7 @@ end;
 
 // Copied from System.pas (_IsClass function)
 
+{$IFNDEF PUREPASCAL}
 function JclIsClass(const AnObj: TObject; const AClass: TClass): Boolean;
 asm
         {$IFDEF CPU32}
@@ -2877,6 +2880,7 @@ asm
         MOV     AL,1
 @@exit:
 end;
+{$ENDIF}
 
 function JclIsClassByName(const AnObj: TObject; const AClass: TClass): Boolean;
 var

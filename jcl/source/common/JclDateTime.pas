@@ -76,13 +76,13 @@ uses
   libclite,
   //{$ENDIF ~FPC}
   {$ELSE ~HAS_UNIT_LIBC}
-  {$IFDEF UNIX}
+  {$IFDEF LINUX}
   BaseUnix,
   dateutils,
   {$IFNDEF LINUX}
   Unix,
   {$ENDIF ~LINUX}
-  {$ENDIF ~UNIX}
+  {$ENDIF ~LINUX}
   {$ENDIF HAS_UNIT_LIBC}
   //{$IFDEF FPC}
   types,

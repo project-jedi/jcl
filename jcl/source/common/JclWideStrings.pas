@@ -1182,7 +1182,11 @@ begin
     Result := SysUtils.WideCompareStr(S1, S2);
     {$ELSE ~FPC}
     { TODO : Don't cheat here }
+ {$IFDEF MSWINDOWS}
     Result := CompareString(S1, S2);
+ {$ELSE}
+    Result := CompareStr(S1, S2);
+ {$ENDIF}
     {$ENDIF ~FPC}
   {$ENDIF ~MSWINDOWS}
 end;

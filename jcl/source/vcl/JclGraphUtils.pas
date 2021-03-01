@@ -1,8 +1,4 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
-
-{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -138,15 +134,15 @@ const
   clTrGreen32   = TColor32($7F00FF00);
   clTrBlue32    = TColor32($7F0000FF);
 
+{$IFNDEF PUREPASCAL}
 procedure EMMS;
 
-{$IFNDEF FPC}
 // Dialog Functions
 function DialogUnitsToPixelsX(const DialogUnits: Word): Word;
 function DialogUnitsToPixelsY(const DialogUnits: Word): Word;
 function PixelsToDialogUnitsX(const PixelUnits: Word): Word;
 function PixelsToDialogUnitsY(const PixelUnits: Word): Word;
-{$ENDIF ~FPC}
+{$ENDIF ~PUREPASCAL}
 
 // Points
 function NullPoint: TPoint;
@@ -257,17 +253,13 @@ function RGBToHLS(const RGBColor: TColorRef): THLSVector; overload;
 function HSLToRGB(const H, S, L: Single): TColor32; overload;
 procedure RGBToHSL(const RGB: TColor32; out H, S, L: Single); overload;
 
-{$IFNDEF FPC}
 function SetBitmapColors(Bmp: TBitmap; const Colors: array of TColor; StartIndex: Integer): Integer;
-{$ENDIF}
 
 // Misc
 function ColorToHTML(const Color: TColor): string;
 
 // Petr Vones
-{$IFNDEF FPC}
 function DottedLineTo(const Canvas: TCanvas; const X, Y: Integer): Boolean; overload;
-{$ENDIF ~FPC}
 function ShortenString(const DC: HDC; const S: WideString; const Width: Integer; const RTL: Boolean;
   EllipsisWidth: Integer = 0): WideString;
 
@@ -385,7 +377,7 @@ begin
   raise EOutOfResources.CreateRes(@SOutOfResources);
 end;
 
-{$IFDEF FPC}
+{$IFDEF LINUX}
 procedure GDIError;
 var
   ErrorCode: Integer;
@@ -396,7 +388,7 @@ begin
   else
     OutOfResources;
 end;
-{$ELSE ~FPC}
+{$ELSE ~LINUX}
 procedure GDIError;
 var
   ErrorCode: Integer;
@@ -627,6 +619,7 @@ begin
   AlphaTable := nil;
 end;
 
+{$IFNDEF PUREPASCAL}
 procedure EMMS;
 {$IFNDEF DELPHI64_TEMPORARY}
 begin
@@ -988,6 +981,7 @@ begin
     BlendLineEx := _BlendLineEx;
   end;
 end;
+{$ENDIF}
 
 {$IFNDEF FPC}
 //=== Dialog functions =======================================================

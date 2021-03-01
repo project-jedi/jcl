@@ -32,8 +32,10 @@ uses
   Math;
 
 function MultiByteToWideChar(CodePage: DWord; dwFlags: DWord; lpMultiByteStr: PAnsiChar; cchMultiByte: longint; lpWideCharStr:PWideChar; cchWideChar:longint): longint;
+{$IFDEF FPC}
 var
   UTF16Str: UnicodeString;
+{$ENDIF}
 begin
   if CodePage = CP_UTF8 then
   begin
@@ -41,6 +43,7 @@ begin
   end
   else
   begin
+ {$IFDEF FPC}
     //fpc 2.6.x does not support arbitrary code pages. Uses ansi for now
     if cchMultiByte = -1 then
       cchMultiByte := strlen(lpMultiByteStr);
@@ -48,9 +51,14 @@ begin
     Result := Min(cchWideChar, Length(UTF16Str));
     if Result > 0 then
       Move(UTF16Str[1], lpWideCharStr^, Result * SizeOf(PWideChar));
+ {$ELSE}
+    lpWideCharStr := PChar(string(lpMultiByteStr));
+    Result := Length(lpWideCharStr);
+ {$ENDIF}
   end;
 end;
 
+{$IFDEF FPC}
 //copied from fpc trunk
 function fpc_pwidechar_length(p:pwidechar):sizeint;
 var i : sizeint;
@@ -61,10 +69,13 @@ begin
       inc(i);
   exit(i);
 end;
+{$ENDIF}
 
 function WideCharToMultiByte(CodePage: DWord; dwFlags:DWORD; lpWideCharStr: PWideChar; cchWideChar:longint; lpMultiByteStr: PAnsiChar;cchMultiByte:longint; lpDefaultChar: PAnsiChar; lpUsedDefaultChar: PBoolean):longint;
+{$IFDEF FPC}
 var
   AnsiStr: AnsiString;
+{$ENDIF}
 begin
   if CodePage = CP_UTF8 then
   begin
@@ -72,6 +83,7 @@ begin
   end
   else
   begin
+ {$IFDEF FPC}
     //fpc 2.6.x does not support arbitrary code pages. Uses ansi for now
     if cchWideChar = -1 then
       cchWideChar := fpc_pwidechar_length(lpWideCharStr);
@@ -79,6 +91,10 @@ begin
     Result := Min(cchMultiByte, Length(AnsiStr));
     if Result > 0 then
       Move(AnsiStr[1], lpMultiByteStr^, Result);
+ {$ELSE}
+    lpMultiByteStr := PAnsiChar(AnsiString(lpWideCharStr));
+    Result := Length(lpMultiByteStr);
+ {$ENDIF}
   end;
 end;
 

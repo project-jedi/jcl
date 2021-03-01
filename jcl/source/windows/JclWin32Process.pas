@@ -50,7 +50,9 @@
 
 unit JclWin32Process;
 
+{$ifdef fpc}
 {$mode objfpc}{$H+}
+{$endif}
 
 interface
 

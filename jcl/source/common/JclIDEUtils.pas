@@ -139,6 +139,10 @@ const
   Personality64Bit        = '64 bit';
   PersonalityDelphi       = 'Delphi';
   PersonalityDelphiOSX    = 'Delphi for OSX';
+  PersonalityDelphiiOSSimulator = 'Delphi for iOSSimulator';
+  PersonalityDelphiiOSDevice    = 'Delphi for iOS';
+  PersonalityDelphiAndroid      = 'Delphi for Android';
+  PersonalityDelphiLinux        = 'Delphi for Linux';
   PersonalityDelphiDotNet = 'Delphi.net';
   PersonalityBCB          = 'C++Builder';
   PersonalityCSB          = 'C#Builder';
@@ -153,10 +157,19 @@ const
   BDSPlatformWin32        = 'Win32';
   BDSPlatformWin64        = 'Win64';
   BDSPlatformOSX32        = 'OSX32';
+  BDSPlatformOSX64        = 'OSX64';
+  BDSPlatformiOSSimulator = 'iOSSimulator';
+  BDSPlatformiOSDevice32  = 'iOSDevice32';
+  BDSPlatformiOSDevice64  = 'iOSDevice64';
+  BDSPlatformAndroid32    = 'Android32';
+  BDSPlatformAndroid64    = 'Android64';
+  BDSPlatformLinux64      = 'Linux64';
 
 // Installed versions information classes
 type
-  TJclBorPersonality = (bpDelphi32, bpDelphi64, bpDelphiOSX32, bpBCBuilder32, bpBCBuilder64,
+  TJclBorPersonality = (bpDelphi32, bpDelphi64, bpDelphiOSX32, bpDelphiOSX64,
+    bpDelphiAndroid32, bpDelphiAndroid64, bpDelphiiOSDevice32, bpDelphiiOSDevice64, bpDelphiiOSSimulator,
+    bpDelphiLinux64, bpBCBuilder32, bpBCBuilder64,
     bpDelphiNet32, bpDelphiNet64, bpCSBuilder32, bpCSBuilder64,
     bpVisualBasic32, bpVisualBasic64, bpDesign, bpUnknown);
 
@@ -166,7 +179,8 @@ type
 
   TJclBorDesigners = set of TJClBorDesigner;
 
-  TJclBDSPlatform = (bpWin32, bpWin64, bpOSX32);
+  TJclBDSPlatform = (bpWin32, bpWin64, bpOSX32, bpOSX64, bpAndroid32, bpAndroid64, bpiOSDevice32,
+    bpiOSDevice64, bpiOSSimulator, bpLinux64);
 
 const
   JclBorPersonalityDescription: array [TJclBorPersonality] of string =
@@ -174,6 +188,13 @@ const
     Personality32Bit + ' ' + PersonalityDelphi,
     Personality64Bit + ' ' + PersonalityDelphi,
     Personality32Bit + ' ' + PersonalityDelphiOSX,
+    Personality64Bit + ' ' + PersonalityDelphiOSX,
+    Personality32Bit + ' ' + PersonalityDelphiAndroid,
+    Personality64Bit + ' ' + PersonalityDelphiAndroid,
+    Personality32Bit + ' ' + PersonalityDelphiiOSDevice,
+    Personality64Bit + ' ' + PersonalityDelphiiOSDevice,
+    Personality32Bit + ' ' + PersonalityDelphiiOSSimulator,
+    Personality64Bit + ' ' + PersonalityDelphiLinux,
     Personality32Bit + ' ' + PersonalityBCB,
     Personality64Bit + ' ' + PersonalityBCB,
     Personality32Bit + ' ' + PersonalityDelphiDotNet,
@@ -314,7 +335,8 @@ type
     property Pages: TStrings read GetPages;
   end;
 
-  TCommandLineTool = (clAsm, clBcc32, clBcc64, clDcc32, clDcc64, clDccOSX32, clDccIL, clMake, clProj2Mak);
+  TCommandLineTool = (clAsm, clBcc32, clBcc64, clDcc32, clDcc64, clDccOSX32, clDccOSX64, clDcciOSSimulator,
+    clDcciOS32, clDcciOS64, clDccArm32, clDccArm64, clDccLinux64, clDccIL, clMake, clProj2Mak);
   TCommandLineTools = set of TCommandLineTool;
 
   TJclBorRADToolInstallationClass = class of TJclBorRADToolInstallation;
@@ -602,6 +624,13 @@ type
     FDCCIL: TJclDCCIL;
     FDCC64: TJclDCC64;
     FDCCOSX32: TJclDCCOSX32;
+    FDCCOSX64: TJclDCCOSX64;
+    FDCCiOSSimulator: TJclDCCiOSSimulator;
+    FDCCiOS32: TJclDCCiOS32;
+    FDCCiOS64: TJclDCCiOS64;
+    FDCCArm32: TJclDCCArm32;
+    FDCCArm64: TJclDCCArm64;
+    FDCCLinux64: TJclDCCLinux64;
     FBCC64: TJclBCC64;
     FPdbCreate: Boolean;
     procedure SetDualPackageInstallation(const Value: Boolean);
@@ -621,6 +650,13 @@ type
     function GetMaxDelphiCLRVersion: string;
     function GetDCC64: TJclDCC64;
     function GetDCCOSX32: TJclDCCOSX32;
+    function GetDCCOSX64: TJclDCCOSX64;
+    function GetDCCiOSSimulator: TJclDCCiOSSimulator;
+    function GetDCCiOS32: TJclDCCiOS32;
+    function GetDCCiOS64: TJclDCCiOS64;
+    function GetDCCArm32: TJclDCCArm32;
+    function GetDCCArm64: TJclDCCArm64;
+    function GetDCCLinux64: TJclDCCLinux64;
     function GetDCCIL: TJclDCCIL;
     function GetBCC64: TJclBCC64;
 
@@ -700,6 +736,13 @@ type
     property Help2Manager: TJclHelp2Manager read FHelp2Manager;
     property DCC64: TJclDCC64 read GetDCC64;
     property DCCOSX32: TJclDCCOSX32 read GetDCCOSX32;
+    property DCCOSX64: TJclDCCOSX64 read GetDCCOSX64;
+    property DCCiOSSimulator: TJclDCCiOSSimulator read GetDCCiOSSimulator;
+    property DCCiOS32: TJclDCCiOS32 read GetDCCiOS32;
+    property DCCiOS64: TJclDCCiOS64 read GetDCCiOS64;
+    property DCCArm32: TJclDCCArm32 read GetDCCArm32;
+    property DCCArm64: TJclDCCArm64 read GetDCCArm64;
+    property DCCLinux64: TJclDCCLinux64 read GetDCCLinux64;
     property BCC64: TJclBCC64 read GetBCC64;
     property DCCIL: TJclDCCIL read GetDCCIL;
     property MaxDelphiCLRVersion: string read GetMaxDelphiCLRVersion;
@@ -1788,6 +1831,20 @@ begin
     Include(FCommandLineTools, clDcc64);
   if FileExists(BinFolderName + DCCOSX32ExeName) then
     Include(FCommandLineTools, clDccOSX32);
+  if FileExists(BinFolderName + DCCOSX64ExeName) then
+    Include(FCommandLineTools, clDccOSX64);
+  if FileExists(BinFolderName + DCCiOSSimulatorExeName) then
+    Include(FCommandLineTools, clDcciOSSimulator);
+  if FileExists(BinFolderName + DCCiOS32ExeName) then
+    Include(FCommandLineTools, clDcciOS32);
+  if FileExists(BinFolderName + DCCiOS64ExeName) then
+    Include(FCommandLineTools, clDcciOS64);
+  if FileExists(BinFolderName + DCCArm32ExeName) then
+    Include(FCommandLineTools, clDccArm32);
+  if FileExists(BinFolderName + DCCArm64ExeName) then
+    Include(FCommandLineTools, clDccArm64);
+  if FileExists(BinFolderName + DCCLinux64ExeName) then
+    Include(FCommandLineTools, clDccLinux64);
   {$IFDEF MSWINDOWS}
   if FileExists(BinFolderName + DCCILExeName) then
     Include(FCommandLineTools, clDccIL);
@@ -1905,7 +1962,14 @@ procedure TJclBorRADToolInstallation.CheckPlatform(APlatform: TJclBDSPlatform);
 begin
   if ((APlatform = bpWin32) and ([bpDelphi32,bpBCBuilder32] * Personalities = [])) or
      ((APlatform = bpWin64) and ([bpDelphi64,bpBCBuilder64] * Personalities = [])) or
-     ((APlatform = bpOSX32) and ([bpDelphiOSX32] * Personalities = [])) then
+     ((APlatform = bpOSX32) and ([bpDelphiOSX32] * Personalities = [])) or
+     ((APlatform = bpOSX64) and ([bpDelphiOSX64] * Personalities = [])) or
+     ((APlatform = bpiOSSimulator) and ([bpDelphiiOSSimulator] * Personalities = [])) or
+     ((APlatform = bpiOSDevice32) and ([bpDelphiiOSDevice32] * Personalities = [])) or
+     ((APlatform = bpiOSDevice64) and ([bpDelphiiOSDevice64] * Personalities = [])) or
+     ((APlatform = bpAndroid32) and ([bpDelphiAndroid32] * Personalities = [])) or
+     ((APlatform = bpAndroid64) and ([bpDelphiAndroid64] * Personalities = [])) or
+     ((APlatform = bpLinux64) and ([bpDelphiLinux64] * Personalities = [])) then
     raise EJclBorRADException.CreateRes(@RsEPlatformNotValid);
 end;
 
@@ -3415,6 +3479,20 @@ begin
     Include(FPersonalities, bpDelphi64);
   if clDccOSX32 in CommandLineTools then
     Include(FPersonalities, bpDelphiOSX32);
+  if clDccOSX64 in CommandLineTools then
+    Include(FPersonalities, bpDelphiOSX64);
+  if clDcciOSSimulator in CommandLineTools then
+    Include(FPersonalities, bpDelphiiOSSimulator);
+  if clDcciOS32 in CommandLineTools then
+    Include(FPersonalities, bpDelphiiOSDevice32);
+  if clDcciOS64 in CommandLineTools then
+    Include(FPersonalities, bpDelphiiOSDevice64);
+  if clDccArm32 in CommandLineTools then
+    Include(FPersonalities, bpDelphiAndroid32);
+  if clDccArm64 in CommandLineTools then
+    Include(FPersonalities, bpDelphiAndroid64);
+  if clDccLinux64 in CommandLineTools then
+    Include(FPersonalities, bpDelphiLinux64);
   if clBcc64 in CommandLineTools then
     Include(FPersonalities, bpBCBuilder64);
 end;
@@ -3425,6 +3503,13 @@ begin
   FreeAndNil(FDCC64);
   FreeAndNil(FBCC64);
   FreeAndNil(FDCCOSX32);
+  FreeAndNil(FDCCOSX64);
+  FreeAndNil(FDCCiOSSimulator);
+  FreeAndNil(FDCCiOS32);
+  FreeAndNil(FDCCiOS64);
+  FreeAndNil(FDCCArm32);
+  FreeAndNil(FDCCArm64);
+  FreeAndNil(FDCCLinux64);
   FreeAndNil(FHelp2Manager);
   inherited Destroy;
 end;
@@ -3630,6 +3715,20 @@ begin
       Result := BDSPlatformWin64;
     bpOSX32:
       Result := BDSPlatformOSX32;
+    bpOSX64:
+      Result := BDSPlatformOSX64;
+    bpAndroid32:
+      Result := BDSPlatformAndroid32;
+    bpAndroid64:
+      Result := BDSPlatformAndroid64;
+    bpiOSDevice32:
+      Result := BDSPlatformiOSDevice32;
+    bpiOSDevice64:
+      Result := BDSPlatformiOSDevice64;
+    bpiOSSimulator:
+      Result := BDSPlatformiOSSimulator;
+    bpLinux64:
+      Result := BDSPlatformLinux64;
   else
     raise EJclBorRADException.CreateRes(@RsEPlatformNotValid);
   end;
@@ -3763,6 +3862,97 @@ begin
                                      LibDebugFolderName[bpOSX32], ObjFolderName[bpOSX32]);
   end;
   Result := FDCCOSX32;
+end;
+
+function TJclBDSInstallation.GetDCCOSX64: TJclDCCOSX64;
+begin
+  if not Assigned(FDCCOSX64) then
+  begin
+    if not (clDccOSX64 in CommandLineTools) then
+      raise EJclBorRadException.CreateResFmt(@RsENotFound, [DccOSX64ExeName]);
+    FDCCOSX64 := TJclDCCOSX64.Create(BinFolderName, LongPathBug, DCCVersion, CompilerSettingsFormat,
+                                     SupportsNoConfig, SupportsPlatform, DCPOutputPath[bpOSX64], LibFolderName[bpOSX64],
+                                     LibDebugFolderName[bpOSX64], ObjFolderName[bpOSX64]);
+  end;
+  Result := FDCCOSX64;
+end;
+
+function TJclBDSInstallation.GetDCCiOSSimulator: TJclDCCiOSSimulator;
+begin
+  if not Assigned(FDCCiOSSimulator) then
+  begin
+    if not (clDcciOSSimulator in CommandLineTools) then
+      raise EJclBorRadException.CreateResFmt(@RsENotFound, [DCCiOSSimulatorExeName]);
+    FDCCiOSSimulator := TJclDCCiOSSimulator.Create(BinFolderName, LongPathBug, DCCVersion, CompilerSettingsFormat,
+                                     SupportsNoConfig, SupportsPlatform, DCPOutputPath[bpiOSSimulator], LibFolderName[bpiOSSimulator],
+                                     LibDebugFolderName[bpiOSSimulator], ObjFolderName[bpiOSSimulator]);
+  end;
+  Result := FDCCiOSSimulator;
+end;
+
+function TJclBDSInstallation.GetDCCiOS32: TJclDCCiOS32;
+begin
+  if not Assigned(FDCCiOS32) then
+  begin
+    if not (clDcciOS32 in CommandLineTools) then
+      raise EJclBorRadException.CreateResFmt(@RsENotFound, [DCCiOS32ExeName]);
+    FDCCiOS32 := TJclDCCiOS32.Create(BinFolderName, LongPathBug, DCCVersion, CompilerSettingsFormat,
+                                     SupportsNoConfig, SupportsPlatform, DCPOutputPath[bpiOSDevice32], LibFolderName[bpiOSDevice32],
+                                     LibDebugFolderName[bpiOSDevice32], ObjFolderName[bpiOSDevice32]);
+  end;
+  Result := FDCCiOS32;
+end;
+
+function TJclBDSInstallation.GetDCCiOS64: TJclDCCiOS64;
+begin
+  if not Assigned(FDCCiOS64) then
+  begin
+    if not (clDcciOS64 in CommandLineTools) then
+      raise EJclBorRadException.CreateResFmt(@RsENotFound, [DCCiOS64ExeName]);
+    FDCCiOS64 := TJclDCCiOS64.Create(BinFolderName, LongPathBug, DCCVersion, CompilerSettingsFormat,
+                                     SupportsNoConfig, SupportsPlatform, DCPOutputPath[bpiOSDevice64], LibFolderName[bpiOSDevice64],
+                                     LibDebugFolderName[bpiOSDevice64], ObjFolderName[bpiOSDevice64]);
+  end;
+  Result := FDCCiOS64;
+end;
+
+function TJclBDSInstallation.GetDCCArm32: TJclDCCArm32;
+begin
+  if not Assigned(FDCCArm32) then
+  begin
+    if not (clDccArm32 in CommandLineTools) then
+      raise EJclBorRadException.CreateResFmt(@RsENotFound, [DCCArm32ExeName]);
+    FDCCArm32 := TJclDCCArm32.Create(BinFolderName, LongPathBug, DCCVersion, CompilerSettingsFormat,
+                                     SupportsNoConfig, SupportsPlatform, DCPOutputPath[bpAndroid32], LibFolderName[bpAndroid32],
+                                     LibDebugFolderName[bpAndroid32], ObjFolderName[bpAndroid32]);
+  end;
+  Result := FDCCArm32;
+end;
+
+function TJclBDSInstallation.GetDCCArm64: TJclDCCArm64;
+begin
+  if not Assigned(FDCCArm64) then
+  begin
+    if not (clDccArm64 in CommandLineTools) then
+      raise EJclBorRadException.CreateResFmt(@RsENotFound, [DCCArm64ExeName]);
+    FDCCArm64 := TJclDCCArm64.Create(BinFolderName, LongPathBug, DCCVersion, CompilerSettingsFormat,
+                                     SupportsNoConfig, SupportsPlatform, DCPOutputPath[bpAndroid64], LibFolderName[bpAndroid64],
+                                     LibDebugFolderName[bpAndroid64], ObjFolderName[bpAndroid64]);
+  end;
+  Result := FDCCArm64;
+end;
+
+function TJclBDSInstallation.GetDCCLinux64: TJclDCCLinux64;
+begin
+  if not Assigned(FDCCLinux64) then
+  begin
+    if not (clDccLinux64 in CommandLineTools) then
+      raise EJclBorRadException.CreateResFmt(@RsENotFound, [DCCLinux64ExeName]);
+    FDCCLinux64 := TJclDCCLinux64.Create(BinFolderName, LongPathBug, DCCVersion, CompilerSettingsFormat,
+                                     SupportsNoConfig, SupportsPlatform, DCPOutputPath[bpLinux64], LibFolderName[bpLinux64],
+                                     LibDebugFolderName[bpLinux64], ObjFolderName[bpLinux64]);
+  end;
+  Result := FDCCLinux64;
 end;
 
 function TJclBDSInstallation.GetBCC64: TJclBCC64;
@@ -4443,6 +4633,20 @@ begin
     DCC64.OutputCallback := Value;
   if clDccOSX32 in CommandLineTools then
     DCCOSX32.OutputCallback := Value;
+  if clDccOSX64 in CommandLineTools then
+    DCCOSX64.OutputCallback := Value;
+  if clDcciOSSimulator in CommandLineTools then
+    DCCiOSSimulator.OutputCallback := Value;
+  if clDcciOS32 in CommandLineTools then
+    DCCiOS32.OutputCallback := Value;
+  if clDcciOS64 in CommandLineTools then
+    DCCiOS64.OutputCallback := Value;
+  if clDccArm32 in CommandLineTools then
+    DCCArm32.OutputCallback := Value;
+  if clDccArm64 in CommandLineTools then
+    DCCArm64.OutputCallback := Value;
+  if clDccLinux64 in CommandLineTools then
+    DCCLinux64.OutputCallback := Value;
   if clBcc64 in CommandLineTools then
     BCC64.OutputCallback := Value;
   if clDccIL in CommandLineTools then
