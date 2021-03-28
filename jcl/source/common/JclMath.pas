@@ -289,48 +289,6 @@ function Floor(const X: Float): Integer;
 function GCD(X, Y: Cardinal): Cardinal;
 function ISqrt(const I: Smallint): Smallint;
 function LCM(const X, Y: Cardinal): Cardinal;
-
-/// <summary>
-///   Get the next multiple of a given multiplicator which is higher than
-///   the number given. Example: Num = 21, Multiplicator = 5, Result is 25
-/// </summary>
-function NearestHigherMultiple(Num, Multiplicator: Integer):Integer; overload;
-/// <summary>
-///   Get the next multiple of a given multiplicator which is higher than
-///   the number given. Example: Num = 21, Multiplicator = 5, Result is 25
-/// </summary>
-function NearestHigherMultiple(Num, Multiplicator: Int64):Int64; overload;
-/// <summary>
-///   Get the next multiple of a given multiplicator which is higher than
-///   the number given. Example: Num = 21, Multiplicator = 5, Result is 25
-/// </summary>
-function NearestHigherMultiple(Num: Float; Multiplicator: Integer):Integer; overload
-/// <summary>
-///   Get the next multiple of a given multiplicator which is higher than
-///   the number given. Example: Num = 21, Multiplicator = 5, Result is 25
-/// </summary>
-function NearestHigherMultiple(Num: Float; Multiplicator: Int64):Int64; overload;
-/// <summary>
-///   Get the next multiple of a given multiplicator which is lower than
-///   the number given. Example: Num = 24, Multiplicator = 5, Result is 20
-/// </summary>
-function NearestLowerMultiple(Num, Multiplicator: Integer):Integer; overload;
-/// <summary>
-///   Get the next multiple of a given multiplicator which is lower than
-///   the number given. Example: Num = 24, Multiplicator = 5, Result is 20
-/// </summary>
-function NearestLowerMultiple(Num, Multiplicator: Int64):Int64; overload;
-/// <summary>
-///   Get the next multiple of a given multiplicator which is lower than
-///   the number given. Example: Num = 24, Multiplicator = 5, Result is 20
-/// </summary>
-function NearestLowerMultiple(Num: Float; Multiplicator: Integer):Integer; overload;
-/// <summary>
-///   Get the next multiple of a given multiplicator which is lower than
-///   the number given. Example: Num = 24, Multiplicator = 5, Result is 20
-/// </summary>
-function NearestLowerMultiple(Num: Float; Multiplicator: Int64):Int64; overload;
-
 function NormalizeAngle(const Angle: Float): Float;
 function Pythagoras(const X, Y: Float): Float;
 function Sgn(const X: Float): Integer;
@@ -2410,46 +2368,6 @@ begin
     Result := (X div E) * Y
   else
     Result := 0;
-end;
-
-function NearestHigherMultiple(Num, Multiplicator: Integer):Integer;
-begin
-  Result := Ceiling(Num / Multiplicator)*Multiplicator;
-end;
-
-function NearestHigherMultiple(Num, Multiplicator: Int64):Int64;
-begin
-  Result := Ceiling(Num / Multiplicator)*Multiplicator;
-end;
-
-function NearestHigherMultiple(Num: Float; Multiplicator: Integer):Integer;
-begin
-  Result := Ceiling(Num / Multiplicator)*Multiplicator;
-end;
-
-function NearestHigherMultiple(Num: Float; Multiplicator: Int64):Int64;
-begin
-  Result := Ceiling(Num / Multiplicator)*Multiplicator;
-end;
-
-function NearestLowerMultiple(Num, Multiplicator: Integer):Integer;
-begin
-  Result := Floor(Num / Multiplicator)*Multiplicator;
-end;
-
-function NearestLowerMultiple(Num, Multiplicator: Int64):Int64;
-begin
-  Result := Floor(Num / Multiplicator)*Multiplicator;
-end;
-
-function NearestLowerMultiple(Num:Float; Multiplicator: Integer):Integer;
-begin
-  Result := Floor(Num / Multiplicator)*Multiplicator;
-end;
-
-function NearestLowerMultiple(Num:FLoat; Multiplicator: Int64):Int64;
-begin
-  Result := Floor(Num / Multiplicator)*Multiplicator;
 end;
 
 function NormalizeAngle(const Angle: Float): Float;
