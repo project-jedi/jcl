@@ -1,0 +1,20 @@
+{{JCL}}
+
+= Getting Involved =
+
+Creating a library such as the JCL is a lot of work. If you have some spare time and would like to get involved in the development of the JCL then please [[JCL_Communications|Contact us]]. There are several ways in which you can contribute:
+
+* Donating code. See [[JCL Submitting Code]]
+* Making suggestions for improvements and submitting bugreports. See Feedback on how to [[JCL_Communications|Contact us]].
+* Testing the JCL.
+* Helpfile writing.
+* Development of new code. This is similar to donating code except that it will be carried out with a few more restrictions and in a slightly more coordinated manner. You can submit ideas for new code or be assigned to develop code based on request received from the community.
+* Unit owner. In this case you will be assigned to one or more units in the JCL which from that point on will be maintained by you. This means that you will be responsible for all modifications made to that unit. For example, bugreports and new donations will be forwarded to you for processing.
+* Processing donations. This will mean that submitted code will be forwarded to you. You factor out routines that can be included in the JCL, reformat them and do some initial testing. After that you forward the code to the unit owner in which the new code is to be included.
+* This is not an extensive list. If you have other ideas or suggestions: [[JCL_Communications|Contact us]].
+
+=Join the team=
+
+You are interested in joining the JEDI JCL development team? Great! Everyone who wants to help is welcome.
+
+We not only need developers, but also people to help with documentation help files, homepage etc. If you would like to join the team, please [[JCL_Communications|Contact us]].
