@@ -51,6 +51,9 @@ uses
   {$IFDEF MSWINDOWS}
   Winapi.Windows, JclWin32,
   {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX64}
+  System.SyncObjs,
+  {$ENDIF LINUX64}
   {$ELSE ~HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
   Windows, JclWin32,
@@ -132,7 +135,7 @@ function WaitAlertableForMultipleObjects(const Objects: array of TJclDispatcherO
 type
   TJclCriticalSection = class(TObject)
   private
-    FCriticalSection: TRTLCriticalSection;
+    FCriticalSection: {$IFDEF LINUX64}TCriticalSection{$ELSE}TRTLCriticalSection{$ENDIF LINUX64};
   public
     constructor Create; virtual;
     destructor Destroy; override;
@@ -321,7 +324,7 @@ type
     Signaled: ByteBool;       // is signaled?
   end;
 
-function QueryCriticalSection(CS: TJclCriticalSection; var Info: TRTLCriticalSection): Boolean;
+function QueryCriticalSection(CS: TJclCriticalSection; var Info: {$IFDEF LINUX64}TCriticalSection{$ELSE}TRTLCriticalSection{$ENDIF LINUX64}): Boolean;
 { TODO -cTest : Test these 4 functions }
 function QueryEvent(Handle: THandle; var Info: TEventInfo): Boolean;
 function QueryMutex(Handle: THandle; var Info: TMutexInfo): Boolean;
@@ -1687,7 +1690,7 @@ end;
 
 //=== Debugging ==============================================================
 
-function QueryCriticalSection(CS: TJclCriticalSection; var Info: TRTLCriticalSection): Boolean;
+function QueryCriticalSection(CS: TJclCriticalSection; var Info: {$IFDEF LINUX64}TCriticalSection{$ELSE}TRTLCriticalSection{$ENDIF LINUX64}): Boolean;
 begin
   Result := CS <> nil;
   if Result then
