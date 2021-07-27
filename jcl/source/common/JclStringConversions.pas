@@ -160,6 +160,7 @@ function UTF16SetNextBufferToStream(S: TStream; const Buffer: TUCS4Array; var St
 function AnsiGetNextChar(const S: AnsiString; var StrPos: SizeInt): UCS4; overload;
 function AnsiGetNextBuffer(const S: AnsiString; var StrPos: SizeInt; var Buffer: TUCS4Array; var Start: SizeInt; Count: SizeInt): SizeInt; overload;
 function AnsiGetNextCharFromStream(S: TStream; out Ch: UCS4): Boolean; overload;
+{$IFNDEF LINUX}
 function AnsiGetNextBufferFromStream(S: TStream; var Buffer: TUCS4Array; var Start: SizeInt; Count: SizeInt): SizeInt; overload;
 
 // same as AnsiGetNextChar* with custom codepage
@@ -167,6 +168,7 @@ function AnsiGetNextChar(const S: AnsiString; CodePage: Word; var StrPos: SizeIn
 function AnsiGetNextBuffer(const S: AnsiString; CodePage: Word; var StrPos: SizeInt; var Buffer: TUCS4Array; var Start: SizeInt; Count: SizeInt): SizeInt; overload;
 function AnsiGetNextCharFromStream(S: TStream; CodePage: Word; out Ch: UCS4): Boolean; overload;
 function AnsiGetNextBufferFromStream(S: TStream; CodePage: Word; var Buffer: TUCS4Array; var Start: SizeInt; Count: SizeInt): SizeInt; overload;
+{$ENDIF ~LINUX}
 
 // AnsiSkipChars = skip NbSeq characters starting from StrPos
 // returns False if String is too small
@@ -188,10 +190,12 @@ function AnsiSetNextCharToStream(S: TStream; Ch: UCS4): Boolean; overload;
 function AnsiSetNextBufferToStream(S: TStream; const Buffer: TUCS4Array; var Start: SizeInt; Count: SizeInt): SizeInt; overload;
 
 // same as AnsiSetNextChar* with custom codepage
+{$IFNDEF LINUX}
 function AnsiSetNextChar(var S: AnsiString; CodePage: Word; var StrPos: SizeInt; Ch: UCS4): Boolean; overload;
 function AnsiSetNextBuffer(var S: AnsiString; CodePage: Word; var StrPos: SizeInt; const Buffer: TUCS4Array; var Start: SizeInt; Count: SizeInt): SizeInt; overload;
 function AnsiSetNextCharToStream(S: TStream; CodePage: Word; Ch: UCS4): Boolean; overload;
 function AnsiSetNextBufferToStream(S: TStream; CodePage: Word; const Buffer: TUCS4Array; var Start: SizeInt; Count: SizeInt): SizeInt; overload;
+{$ENDIF ~LINUX}
 
 // StringGetNextChar = read next character/sequence at StrPos
 // if UNICODE_SILENT_FAILURE is defined, invalid sequences will be replaced by ReplacementCharacter
@@ -2665,6 +2669,7 @@ begin
   end;
 end;
 
+{$IFNDEF LINUX}
 function AnsiGetNextBufferFromStream(S: TStream; var Buffer: TUCS4Array; var Start: SizeInt; Count: SizeInt): SizeInt; overload;
 var
   B: TDynByteArray;
@@ -2828,6 +2833,7 @@ begin
     Dec(Count, ReadCount);
   end;
 end;
+{$ENDIF ~LINUX}
 
 // AnsiSkipChars = skip NbSeq characters starting from StrPos
 // returns False if String is too small
@@ -3058,6 +3064,7 @@ begin
   end;
 end;
 
+{$IFNDEF LINUX}
 function AnsiSetNextChar(var S: AnsiString; CodePage: Word; var StrPos: SizeInt; Ch: UCS4): Boolean;
 var
   StrLen, TmpPos, AnsiStrLen: SizeInt;
@@ -3208,6 +3215,7 @@ begin
     Dec(Count);
   end;
 end;
+{$ENDIF ~LINUX}
 
 // StringGetNextChar = read next character/sequence at StrPos
 // if UNICODE_SILENT_FAILURE is defined, invalid sequences will be replaced by ReplacementCharacter
