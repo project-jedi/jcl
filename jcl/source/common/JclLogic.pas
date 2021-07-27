@@ -402,6 +402,12 @@ end;
 
 // Bit manipulation
 function BitsHighest(X: Cardinal): Integer;
+{$IFDEF PUREPASCAL}
+begin
+  {$MESSAGE WARN 'Not implemented'}
+  Result := -1;
+end;
+{$ELSE}
 asm
   {$IFDEF CPU32}
   // --> EAX X
@@ -422,8 +428,15 @@ asm
   CMOVZ   EAX, R10D
   {$ENDIF CPU64}
 end;
+{$ENDIF ~PUREPASCAL}
 
 function BitsHighest(X: Integer): Integer;
+{$IFDEF PUREPASCAL}
+begin
+  {$MESSAGE WARN 'Not implemented'}
+  Result := -1;
+end;
+{$ELSE}
 asm
   {$IFDEF CPU32}
   // --> EAX X
@@ -444,6 +457,7 @@ asm
   CMOVZ   EAX, R10D
   {$ENDIF CPU64}
 end;
+{$ENDIF ~PUREPASCAL}
 
 function BitsHighest(X: Byte): Integer;
 begin
@@ -466,6 +480,14 @@ begin
 end;
 
 function BitsHighest(X: Int64): Integer;
+{$IFDEF PUREPASCAL}
+begin
+  if PJclULargeInteger(@X).HighPart = 0 then
+    Result := BitsHighest(PJclULargeInteger(@X).LowPart)
+  else
+    Result := BitsHighest(PJclULargeInteger(@X).HighPart) + 32;
+end;
+{$ELSE}
 {$IFDEF CPU32}
 begin
   if TJclULargeInteger(X).HighPart = 0 then
@@ -488,8 +510,15 @@ asm
   CMOVZ   RAX, R10
 end;
 {$ENDIF CPU64}
+{$ENDIF ~PUREPASCAL}
 
 function BitsLowest(X: Cardinal): Integer;
+{$IFDEF PUREPASCAL}
+begin
+  {$MESSAGE WARN 'Not implemented'}
+  Result := -1;
+end;
+{$ELSE}
 asm
   {$IFDEF CPU32}
   // --> EAX X
@@ -510,8 +539,15 @@ asm
   CMOVZ   EAX, R10D
   {$ENDIF CPU64}
 end;
+{$ENDIF ~PUREPASCAL}
 
 function BitsLowest(X: Integer): Integer;
+{$IFDEF PUREPASCAL}
+begin
+  {$MESSAGE WARN 'Not implemented'}
+  Result := -1;
+end;
+{$ELSE}
 asm
   {$IFDEF CPU32}
   // --> EAX X
@@ -532,6 +568,7 @@ asm
   CMOVZ   EAX, R10D
   {$ENDIF CPU64}
 end;
+{$ENDIF ~PUREPASCAL}
 
 function BitsLowest(X: Byte): Integer;
 begin
@@ -554,6 +591,12 @@ begin
 end;
 
 function BitsLowest(X: Int64): Integer;
+{$IFDEF PUREPASCAL}
+begin
+  {$MESSAGE WARN 'Not implemented'}
+  Result := -1;
+end;
+{$ELSE}
 {$IFDEF CPU32}
 begin
   if TJclULargeInteger(X).LowPart = 0 then
@@ -576,8 +619,15 @@ asm
   CMOVZ   RAX, R10
 end;
 {$ENDIF CPU64}
+{$ENDIF ~PUREPASCAL}
 
 function ClearBit(const Value: Byte; const Bit: TBitRange): Byte;
+{$IFDEF PUREPASCAL}
+begin
+  {$MESSAGE WARN 'Not implemented'}
+  Result := 0;
+end;
+{$ELSE}
 asm
   // 32 --> AL Value
   //        DL Bit
@@ -591,8 +641,15 @@ asm
   {$ENDIF CPU64}
   BTR    EAX, EDX
 end;
+{$ENDIF ~PUREPASCAL}
 
 function ClearBit(const Value: Shortint; const Bit: TBitRange): Shortint;
+{$IFDEF PUREPASCAL}
+begin
+  {$MESSAGE WARN 'Not implemented'}
+  Result := -1;
+end;
+{$ELSE}
 asm
   // 32 --> AL Value
   //        DL Bit
@@ -606,8 +663,15 @@ asm
   {$ENDIF CPU64}
   BTR    EAX, EDX
 end;
+{$ENDIF ~PUREPASCAL}
 
 function ClearBit(const Value: Smallint; const Bit: TBitRange): Smallint;
+{$IFDEF PUREPASCAL}
+begin
+  {$MESSAGE WARN 'Not implemented'}
+  Result := -1;
+end;
+{$ELSE}
 asm
   // 32 --> AX Value
   //        DL Bit
@@ -621,8 +685,14 @@ asm
   {$ENDIF CPU64}
   BTR    EAX, EDX
 end;
-
+{$ENDIF ~PUREPASCAL}
 function ClearBit(const Value: Word; const Bit: TBitRange): Word;
+{$IFDEF PUREPASCAL}
+begin
+  {$MESSAGE WARN 'Not implemented'}
+  Result := 0;
+end;
+{$ELSE}
 asm
   // 32 --> AX Value
   //        DL Bit
@@ -636,8 +706,15 @@ asm
   {$ENDIF CPU64}
   BTR    EAX, EDX
 end;
+{$ENDIF ~PUREPASCAL}
 
 function ClearBit(const Value: Cardinal; const Bit: TBitRange): Cardinal;
+{$IFDEF PUREPASCAL}
+begin
+  {$MESSAGE WARN 'Not implemented'}
+  Result := 0;
+end;
+{$ELSE}
 asm
   // 32 --> EAX Value
   //        DL  Bit
@@ -650,8 +727,15 @@ asm
   {$ENDIF CPU64}
   BTR    EAX, EDX
 end;
+{$ENDIF ~PUREPASCAL}
 
 function ClearBit(const Value: Integer; const Bit: TBitRange): Integer;
+{$IFDEF PUREPASCAL}
+begin
+  {$MESSAGE WARN 'Not implemented'}
+  Result := -1;
+end;
+{$ELSE}
 asm
   // 32 --> EAX Value
   //        DL  Bit
@@ -664,8 +748,15 @@ asm
   {$ENDIF CPU64}
   BTR    EAX, EDX
 end;
+{$ENDIF ~PUREPASCAL}
 
 function ClearBit(const Value: Int64; const Bit: TBitRange): Int64;
+{$IFDEF PUREPASCAL}
+begin
+  {$MESSAGE WARN 'Not implemented'}
+  Result := -1;
+end;
+{$ELSE}
 {$IFDEF CPU32}
 begin
   Result := Value and not (Int64(1) shl (Bit and (BitsPerInt64 - 1)));
@@ -680,6 +771,7 @@ asm
   BTR    RAX, RDX
 end;
 {$ENDIF CPU64}
+{$ENDIF ~PUREPASCAL}
 
 procedure ClearBitBuffer(var Value; const Bit: Cardinal);
 {$IFDEF PUREPASCAL}
@@ -805,7 +897,7 @@ end;
 
 function CountBitsSet(X: Int64): Integer;
 begin
-  Result := CountBitsSet(TJclULargeInteger(X).LowPart) + CountBitsSet(TJclULargeInteger(X).HighPart);
+  Result := CountBitsSet(PJclULargeInteger(@X).LowPart) + CountBitsSet(PJclULargeInteger(@X).HighPart);
 end;
 
 function CountBitsCleared(X: Byte): Integer;
@@ -849,6 +941,12 @@ begin
 end;
 
 function LRot(const Value: Byte; const Count: TBitRange): Byte;
+{$IFDEF PUREPASCAL}
+begin
+  {$MESSAGE WARN 'Not implemented'}
+  Result := 0;
+end;
+{$ELSE}
 asm
   {$IFDEF CPU32}
   // --> AL Value
@@ -866,8 +964,15 @@ asm
   ROL    AL, CL
   {$ENDIF CPU64}
 end;
+{$ENDIF ~PUREPASCAL}
 
 function LRot(const Value: Word; const Count: TBitRange): Word;
+{$IFDEF PUREPASCAL}
+begin
+  {$MESSAGE WARN 'Not implemented'}
+  Result := 0;
+end;
+{$ELSE}
 asm
   {$IFDEF CPU32}
   // --> AX Value
@@ -885,8 +990,15 @@ asm
   ROL    AX, CL
   {$ENDIF CPU64}
 end;
+{$ENDIF ~PUREPASCAL}
 
 function LRot(const Value: Integer; const Count: TBitRange): Integer;
+{$IFDEF PUREPASCAL}
+begin
+  {$MESSAGE WARN 'Not implemented'}
+  Result := -1;
+end;
+{$ELSE}
 asm
   {$IFDEF CPU32}
   // --> EAX Value
@@ -904,8 +1016,15 @@ asm
   ROL    EAX, CL
   {$ENDIF CPU64}
 end;
+{$ENDIF ~PUREPASCAL}
 
 function LRot(const Value: Int64; const Count: TBitRange): Int64;
+{$IFDEF PUREPASCAL}
+begin
+  {$MESSAGE WARN 'Not implemented'}
+  Result := -1;
+end;
+{$ELSE}
 {$IFDEF CPU32}
 asm
   // --> Value on stack
@@ -965,8 +1084,14 @@ asm
   ROL    RAX, CL
 end;
 {$ENDIF CPU64}
+{$ENDIF ~PUREPASCAL}
 
 function RRot(const Value: Int64; const Count: TBitRange): Int64;
+{$IFDEF PUREPASCAL}
+begin
+  Result := LRot(Value, 64 - (Count and $3F));
+end;
+{$ELSE}
 {$IFDEF CPU32}
 begin
   Result := LRot(Value, 64 - (Count and $3F));
@@ -982,6 +1107,7 @@ asm
   ROR    RAX, CL
 end;
 {$ENDIF CPU64}
+{$ENDIF ~PUREPASCAL}
 
 const
   // Lookup table of bit reversed nibbles, used by simple overloads of ReverseBits
@@ -1043,8 +1169,8 @@ end;
 
 function ReverseBits(Value: Int64): Int64;
 begin
-  TJclULargeInteger(Result).LowPart := ReverseBits(TJclULargeInteger(Value).HighPart);
-  TJclULargeInteger(Result).HighPart := ReverseBits(TJclULargeInteger(Value).LowPart);
+  PJclULargeInteger(@Result).LowPart := ReverseBits(PJclULargeInteger(@Value).HighPart);
+  PJclULargeInteger(@Result).HighPart := ReverseBits(PJclULargeInteger(@Value).LowPart);
 end;
 
 const
@@ -1108,6 +1234,12 @@ begin
 end;
 
 function RRot(const Value: Byte; const Count: TBitRange): Byte;
+{$IFDEF PUREPASCAL}
+begin
+  {$MESSAGE WARN 'Not implemented'}
+  Result := 0;
+end;
+{$ELSE}
 asm
   {$IFDEF CPU32}
   // --> AL Value
@@ -1125,8 +1257,15 @@ asm
   ROR    AL, CL
   {$ENDIF CPU64}
 end;
+{$ENDIF ~PUREPASCAL}
 
 function RRot(const Value: Word; const Count: TBitRange): Word;
+{$IFDEF PUREPASCAL}
+begin
+  {$MESSAGE WARN 'Not implemented'}
+  Result := 0;
+end;
+{$ELSE}
 asm
   {$IFDEF CPU32}
   // --> AX Value
@@ -1144,8 +1283,15 @@ asm
   ROR    AX, CL
   {$ENDIF CPU64}
 end;
+{$ENDIF ~PUREPASCAL}
 
 function RRot(const Value: Integer; const Count: TBitRange): Integer;
+{$IFDEF PUREPASCAL}
+begin
+  {$MESSAGE WARN 'Not implemented'}
+  Result := -1;
+end;
+{$ELSE}
 asm
   {$IFDEF CPU32}
   // --> EAX Value
@@ -1163,8 +1309,15 @@ asm
   ROR    EAX, CL
   {$ENDIF CPU64}
 end;
+{$ENDIF ~PUREPASCAL}
 
 function Sar(const Value: Shortint; const Count: TBitRange): Shortint;
+{$IFDEF PUREPASCAL}
+begin
+  {$MESSAGE WARN 'Not implemented'}
+  Result := -1;
+end;
+{$ELSE}
 asm
   {$IFDEF CPU32}
   // --> AL Value
@@ -1182,8 +1335,15 @@ asm
   SAR    AL, CL
   {$ENDIF CPU64}
 end;
+{$ENDIF ~PUREPASCAL}
 
 function Sar(const Value: Smallint; const Count: TBitRange): Smallint;
+{$IFDEF PUREPASCAL}
+begin
+  {$MESSAGE WARN 'Not implemented'}
+  Result := -1;
+end;
+{$ELSE}
 asm
   {$IFDEF CPU32}
   // --> AX Value
@@ -1201,8 +1361,15 @@ asm
   SAR    AX, CL
   {$ENDIF CPU64}
 end;
+{$ENDIF ~PUREPASCAL}
 
 function Sar(const Value: Integer; const Count: TBitRange): Integer;
+{$IFDEF PUREPASCAL}
+begin
+  {$MESSAGE WARN 'Not implemented'}
+  Result := -1;
+end;
+{$ELSE}
 asm
   {$IFDEF CPU32}
   // --> EAX Value
@@ -1220,8 +1387,15 @@ asm
   SAR    EAX, CL
   {$ENDIF CPU64}
 end;
+{$ENDIF ~PUREPASCAL}
 
 function SetBit(const Value: Byte; const Bit: TBitRange): Byte;
+{$IFDEF PUREPASCAL}
+begin
+  {$MESSAGE WARN 'Not implemented'}
+  Result := 0;
+end;
+{$ELSE}
 asm
   // 32 --> AL Value
   //        DL Bit
@@ -1235,8 +1409,15 @@ asm
   {$ENDIF CPU64}
   BTS    EAX, EDX
 end;
+{$ENDIF ~PUREPASCAL}
 
 function SetBit(const Value: Shortint; const Bit: TBitRange): Shortint;
+{$IFDEF PUREPASCAL}
+begin
+  {$MESSAGE WARN 'Not implemented'}
+  Result := -1;
+end;
+{$ELSE}
 asm
   // 32 --> AL Value
   //        DL Bit
@@ -1250,8 +1431,15 @@ asm
   {$ENDIF CPU64}
   BTS    EAX, EDX
 end;
+{$ENDIF ~PUREPASCAL}
 
 function SetBit(const Value: Smallint; const Bit: TBitRange): Smallint;
+{$IFDEF PUREPASCAL}
+begin
+  {$MESSAGE WARN 'Not implemented'}
+  Result := -1;
+end;
+{$ELSE}
 asm
   // 32 --> AX Value
   //        DL Bit
@@ -1265,8 +1453,15 @@ asm
   {$ENDIF CPU64}
   BTS    EAX, EDX
 end;
+{$ENDIF ~PUREPASCAL}
 
 function SetBit(const Value: Word; const Bit: TBitRange): Word;
+{$IFDEF PUREPASCAL}
+begin
+  {$MESSAGE WARN 'Not implemented'}
+  Result := 0;
+end;
+{$ELSE}
 asm
   // 32 --> AX Value
   //        DL Bit
@@ -1280,8 +1475,15 @@ asm
   {$ENDIF CPU64}
   BTS    EAX, EDX
 end;
+{$ENDIF ~PUREPASCAL}
 
 function SetBit(const Value: Cardinal; const Bit: TBitRange): Cardinal;
+{$IFDEF PUREPASCAL}
+begin
+  {$MESSAGE WARN 'Not implemented'}
+  Result := 0;
+end;
+{$ELSE ~PUREPASCAL}
 asm
   // 32 --> EAX Value
   //        DL  Bit
@@ -1294,8 +1496,15 @@ asm
   {$ENDIF CPU64}
   BTS    EAX, EDX
 end;
+{$ENDIF ~PUREPASCAL}
 
 function SetBit(const Value: Integer; const Bit: TBitRange): Integer;
+{$IFDEF PUREPASCAL}
+begin
+  {$MESSAGE WARN 'Not implemented'}
+  Result := -1;
+end;
+{$ELSE}
 asm
   // 32 --> EAX Value
   //        DL  Bit
@@ -1308,8 +1517,15 @@ asm
   {$ENDIF CPU64}
   BTS    EAX, EDX
 end;
+{$ENDIF ~PUREPASCAL}
 
 function SetBit(const Value: Int64; const Bit: TBitRange): Int64;
+{$IFDEF PUREPASCAL}
+begin
+  {$MESSAGE WARN 'Not implemented'}
+  Result := -1;
+end;
+{$ELSE ~PUREPASCAL}
 {$IFDEF CPU32}
 begin
   Result := Value or (Int64(1) shl (Bit and (BitsPerInt64 - 1)));
@@ -1324,6 +1540,7 @@ asm
   BTS    RAX, RDX
 end;
 {$ENDIF CPU64}
+{$ENDIF ~PUREPASCAL}
 
 procedure SetBitBuffer(var Value; const Bit: Cardinal);
 {$IFDEF PUREPASCAL}
@@ -1492,6 +1709,11 @@ end;
 {$ENDIF ~PUREPASCAL}
 
 function TestBit(const Value: Int64; const Bit: TBitRange): Boolean;
+{$IFDEF PUREPASCAL}
+begin
+  Result := (Value shr (Bit and (BitsPerInt64 - 1))) and 1 <> 0;
+end;
+{$ELSE ~PUREPASCAL}
 {$IFDEF CPU32}
 begin
   Result := (Value shr (Bit and (BitsPerInt64 - 1))) and 1 <> 0;
@@ -1506,8 +1728,8 @@ asm
   BT     RAX, RDX
   SETC   AL
 end;
+{$ENDIF CPU64}
 {$ENDIF ~PUREPASCAL}
-
 function TestBitBuffer(const Value; const Bit: Cardinal): Boolean;
 {$IFDEF PUREPASCAL}
 var
@@ -1706,6 +1928,11 @@ end;
 {$ENDIF ~PUREPASCAL}
 
 function ToggleBit(const Value: Int64; const Bit: TBitRange): Int64;
+{$IFDEF PUREPASCAL}
+begin
+  Result := Value xor (Int64(1) shl (Bit and (BitsPerInt64 - 1)));
+end;
+{$ELSE ~PUREPASCAL}
 {$IFDEF CPU32}
 begin
   Result := Value xor (Int64(1) shl (Bit and (BitsPerInt64 - 1)));
@@ -1720,6 +1947,7 @@ asm
   BTC    RAX, RDX
 end;
 {$ENDIF CPU64}
+{$ENDIF ~PUREPASCAL}
 
 procedure ToggleBitBuffer(var Value; const Bit: Cardinal);
 {$IFDEF PUREPASCAL}
@@ -1912,8 +2140,8 @@ end;
 
 function ReverseBytes(Value: Smallint): Smallint;
 {$IFDEF PUREPASCAL}
-asm
-  XCHG    AL, AH
+begin
+  Result := (Value shr 8) or (Value shl 8);
 end;
 {$ELSE ~PUREPASCAL}
 asm
@@ -1974,6 +2202,17 @@ end;
 {$ENDIF ~PUREPASCAL}
 
 function ReverseBytes(Value: Int64): Int64;
+{$IFDEF PUREPASCAL}
+var
+  Lo, Hi: Cardinal;
+begin
+  // low and hi DWORD swap
+  Lo := PJclULargeInteger(@Value).HighPart;
+  Hi := PJclULargeInteger(@Value).LowPart;
+  PJclULargeInteger(@Result).HighPart := (Hi shr 24) or (Hi shl 24) or ((Hi and $00FF0000) shr 8) or ((Hi and $0000FF00) shl 8);
+  PJclULargeInteger(@Result).LowPart := (Lo shr 24) or (Lo shl 24) or ((Lo and $00FF0000) shr 8) or ((Lo and $0000FF00) shl 8);
+end;
+{$ELSE ~PUREPASCAL}
 {$IFDEF CPU32}
 var
   Lo, Hi: Cardinal;
@@ -1993,6 +2232,7 @@ asm
   BSWAP  RAX
 end;
 {$ENDIF CPU64}
+{$ENDIF ~PUREPASCAL}
 
 function ReverseBytes(P: Pointer; Count: Integer): Pointer;
 var
