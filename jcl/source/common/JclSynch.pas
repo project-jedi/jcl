@@ -175,7 +175,9 @@ type
     constructor Open(Access: Cardinal; Inheritable: Boolean; const Name: string);
     function Cancel: Boolean;
     function SetTimer(const DueTime: Int64; Period: Longint; Resume: Boolean): Boolean;
+    {$IFNDEF LINUX64}
     function SetTimerApc(const DueTime: Int64; Period: Longint; Resume: Boolean; Apc: TFNTimerAPCRoutine; Arg: Pointer): Boolean;
+    {$ENDIF ~LINUX64}
   end;
 
   TJclSemaphore = class(TJclDispatcherObject)
@@ -1019,6 +1021,7 @@ begin
   Result := SetWaitableTimer(FHandle, DT, Period, nil, nil, FResume);
 end;
 
+{$IFNDEF LINUX64}
 { TODO -cHelp : OS restrictions }
 function TJclWaitableTimer.SetTimerApc(const DueTime: Int64; Period: Longint;
   Resume: Boolean; Apc: TFNTimerAPCRoutine; Arg: Pointer): Boolean;
@@ -1032,6 +1035,7 @@ begin
   // if not Result and (GetLastError = ERROR_CALL_NOT_IMPLEMENTED) then
   //   RaiseLastOSError;
 end;
+{$ENDIF ~LINUX64}
 
 //== { TJclSemaphore } =======================================================
 
