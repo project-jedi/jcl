@@ -335,13 +335,15 @@ function QueryTimer(Handle: THandle; var Info: TTimerInfo): Boolean;
 
 type
   // Exceptions
-  EJclWin32HandleObjectError = class(EJclWin32Error);
-  EJclDispatcherObjectError = class(EJclWin32Error);
-  EJclCriticalSectionError = class(EJclWin32Error);
-  EJclEventError = class(EJclWin32Error);
-  EJclWaitableTimerError = class(EJclWin32Error);
-  EJclSemaphoreError = class(EJclWin32Error);
-  EJclMutexError = class(EJclWin32Error);
+  EJclSynchError = class({$IFDEF MSWINDOWS}EJclWin32Error{$ELSE}EJclError{$ENDIF MSWINDOWS});
+
+  EJclWin32HandleObjectError = class(EJclSynchError);
+  EJclDispatcherObjectError = class(EJclSynchError);
+  EJclCriticalSectionError = class(EJclSynchError);
+  EJclEventError = class(EJclSynchError);
+  EJclWaitableTimerError = class(EJclSynchError);
+  EJclSemaphoreError = class(EJclSynchError);
+  EJclMutexError = class(EJclSynchError);
   EJclMeteredSectionError = class(EJclError);
 
 function ValidateMutexName(const aName: string): string;
