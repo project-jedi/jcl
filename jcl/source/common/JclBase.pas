@@ -524,14 +524,14 @@ end;
 
 procedure I64ToCardinals(I: Int64; out LowPart, HighPart: Cardinal);
 begin
-  LowPart := TJclULargeInteger(I).LowPart;
-  HighPart := TJclULargeInteger(I).HighPart;
+  LowPart := PJclULargeInteger(@I).LowPart;
+  HighPart := PJclULargeInteger(@I).HighPart;
 end;
 
 procedure CardinalsToI64(out I: Int64; const LowPart, HighPart: Cardinal);
 begin
-  TJclULargeInteger(I).LowPart := LowPart;
-  TJclULargeInteger(I).HighPart := HighPart;
+  PJclULargeInteger(@I).LowPart := LowPart;
+  PJclULargeInteger(@I).HighPart := HighPart;
 end;
 
 // Cross Platform Compatibility
