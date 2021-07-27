@@ -369,6 +369,12 @@ ALERT_jedi_inc_incompatible
       {$ENDIF CPUX64}
       {$DEFINE JCL_CONFIGURED}
       {$ENDIF MSWINDOWS}
+      {$IFDEF LINUX}
+      // This file should be located in directory jcl/source/include
+      // Copy and adjust jcl/source/include/jcl.template.inc
+      {$I jcld25linux64.inc}
+      {$DEFINE JCL_CONFIGURED}
+      {$ENDIF}
     {$ENDIF BDS19}
     {----------------------------}
     {$IFDEF BDS20}
@@ -387,6 +393,12 @@ ALERT_jedi_inc_incompatible
       {$ENDIF CPUX64}
       {$DEFINE JCL_CONFIGURED}
       {$ENDIF MSWINDOWS}
+      {$IFDEF LINUX}
+      // This file should be located in directory jcl/source/include
+      // Copy and adjust jcl/source/include/jcl.template.inc
+      {$I jcld26linux64.inc}
+      {$DEFINE JCL_CONFIGURED}
+      {$ENDIF}
     {$ENDIF BDS20}
     {----------------------------}
     {$IFDEF BDS21}
@@ -405,6 +417,12 @@ ALERT_jedi_inc_incompatible
       {$ENDIF CPUX64}
       {$DEFINE JCL_CONFIGURED}
       {$ENDIF MSWINDOWS}
+      {$IFDEF LINUX}
+      // This file should be located in directory jcl/source/include
+      // Copy and adjust jcl/source/include/jcl.template.inc
+      {$I jcld27linux64.inc}
+      {$DEFINE JCL_CONFIGURED}
+      {$ENDIF}
     {$ENDIF BDS21}
     {----------------------------}
     {$IFDEF FPC}
