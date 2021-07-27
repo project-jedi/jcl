@@ -1,3 +1,15 @@
+# This the Linux64 branch
+
+This branch where we experiment JCL compilation with the Linux64 compiler, as available since Delphi 10.2
+
+Contributions are most welcome.
+
+
+
+
+
+
+
 JEDI Code Library
 =================
 ![](https://tokei.rs/b1/github/project-jedi/jcl?category=code)
