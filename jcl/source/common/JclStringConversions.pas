@@ -342,6 +342,17 @@ end;
 // EAX contains Source, EDX contains Target, ECX contains Count
 
 procedure ExpandASCIIString(const Source: PAnsiChar; Target: PWideChar; Count: SizeInt);
+{$IFDEF PUREPASCAL}
+var
+  Index: Integer;
+begin
+  for Index := 0 to Count - 1 do
+  begin
+    Target^ := Char(Source[Index]);
+    Inc(Target);
+  end;
+end;
+{$ELSE ~PUREPASCAL}
 asm
        {$IFDEF CPU32}
        // --> EAX Source
@@ -378,6 +389,7 @@ asm
        {$ENDIF CPU64}
 @@Finish:
 end;
+{$ENDIF ~PUREPASCAL}
 
 const
   HalfShift: Integer = 10;
