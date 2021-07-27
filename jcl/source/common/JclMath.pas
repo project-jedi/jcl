@@ -442,8 +442,10 @@ type
 
 type
   {$IFNDEF FPC}
+  {$IFNDEF LINUX64}
   TPointerArray = array [0..MaxLongint div 256] of Pointer;
   PPointerArray = ^TPointerArray;
+  {$ENDIF ~LINUX64}
   {$ENDIF ~FPC}
   TDelphiSet = set of Byte; // 256 elements
   PDelphiSet = ^TDelphiSet;
