@@ -980,6 +980,7 @@ uses
   Windows, // inline of AnsiSameText
   {$ENDIF ~HAS_UNITSCOPE}
   {$ENDIF SUPPORTS_INLINE}
+  Math,
   JclStrings;
 
 {$IFDEF RTL150_UP}
@@ -1194,6 +1195,11 @@ begin
         Result := NodeFactory.Multiply(Result, CompileExprLevel3(True));
       etForwardSlash:
         Result := NodeFactory.Divide(Result, CompileExprLevel3(True));
+      etPercent:
+        begin
+          Result := NodeFactory.Divide(Result, NodeFactory.LoadConst(100));
+          Lexer.NextTok;
+        end;
       etIdentifier: // div, mod, and, shl, shr, band
         if AnsiSameText(Lexer.TokenAsString, 'div') then
           Result := NodeFactory.IntegerDivide(Result, CompileExprLevel3(True))
@@ -1424,6 +1430,13 @@ begin
         Result := Result * EvalExprLevel3(True);
       etForwardSlash:
         Result := Result / EvalExprLevel3(True);
+      etArrow:
+        Result := Power(Result, EvalExprLevel3(True));
+      etPercent:
+        begin
+          Result := Result / 100;
+          Lexer.NextTok;
+        end;
       etIdentifier: // div, mod, and, shl, shr, band
         if AnsiSameText(Lexer.TokenAsString, 'div') then
           Result := Round(Result) div Round(EvalExprLevel3(True))
