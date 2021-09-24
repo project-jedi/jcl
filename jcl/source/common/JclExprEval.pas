@@ -444,6 +444,7 @@ type
     function IntegerDivide(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
     function Modulo(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
     function Negate(AValue: TExprNode): TExprNode; virtual; abstract;
+    function Power(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
 
     function Compare(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
     function CompareEqual(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
@@ -610,6 +611,7 @@ type
     function IntegerDivide(ALeft, ARight: TExprNode): TExprNode; override;
     function Modulo(ALeft, ARight: TExprNode): TExprNode; override;
     function Negate(AValue: TExprNode): TExprNode; override;
+    function Power(ALeft, ARight: TExprNode): TExprNode; override;
 
     function Compare(ALeft, ARight: TExprNode): TExprNode; override;
     function CompareEqual(ALeft, ARight: TExprNode): TExprNode; override;
@@ -1196,6 +1198,8 @@ begin
         Result := NodeFactory.Multiply(Result, CompileExprLevel3(True));
       etForwardSlash:
         Result := NodeFactory.Divide(Result, CompileExprLevel3(True));
+      etArrow:
+        Result := NodeFactory.Power(Result, CompileExprLevel3(True));
       etPercent:
         begin
           Result := NodeFactory.Divide(Result, NodeFactory.LoadConst(100));
@@ -1939,6 +1943,11 @@ type
     procedure Execute; override;
   end;
 
+  TExprPowerVmOp = class(TExprBinaryVmOp)
+  public
+    procedure Execute; override;
+  end;
+
   TExprCompareVmOp = class(TExprBinaryVmOp)
   public
     procedure Execute; override;
@@ -2270,6 +2279,13 @@ end;
 procedure TExprDivideVmOp.Execute;
 begin
   FOutput := FLeft^ / FRight^;
+end;
+
+//=== { TExprPowerVmOp } ====================================================
+
+procedure TExprPowerVmOp.Execute;
+begin
+  FOutput := Power(FLeft^ , FRight^);
 end;
 
 //=== { TExprCompareVmOp } ===================================================
@@ -3176,6 +3192,11 @@ end;
 function TExprVirtMachNodeFactory.Negate(AValue: TExprNode): TExprNode;
 begin
   Result := AddNode(TExprUnaryVmNode.Create(TExprNegateVmOp, [AValue]));
+end;
+
+function TExprVirtMachNodeFactory.Power(ALeft, ARight: TExprNode): TExprNode;
+begin
+  Result := AddNode(TExprBinaryVmNode.Create(TExprPowerVmOp, [ALeft, ARight]));
 end;
 
 procedure TExprVirtMachNodeFactory.DoClean(AVirtMach: TExprVirtMach);
