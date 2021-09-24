@@ -396,6 +396,10 @@ type
 function GetMethodTable(AClass: TClass): PMethodTable;
 function GetMethodEntry(MethodTable: PMethodTable; Index: Integer): PMethodEntry;
 
+// Function to compare if two methods/event handlers are equal
+function MethodEquals(aMethod1, aMethod2: TMethod): boolean;
+function NotifyEventEquals(aMethod1, aMethod2: TNotifyEvent): boolean;
+
 // Class Parent
 procedure SetClassParent(AClass: TClass; NewClassParent: TClass);
 function GetClassParent(AClass: TClass): TClass;
@@ -2173,6 +2177,16 @@ begin
   Result := Pointer(TJclAddr(MethodTable) + 2);
   for Index := Index downto 1 do
     Inc(TJclAddr(Result), Result^.EntrySize);
+end;
+
+function MethodEquals(aMethod1, aMethod2: TMethod): boolean;
+begin
+  Result := (aMethod1.Code = aMethod2.Code) and
+            (aMethod1.Data = aMethod2.Data);
+end;
+function NotifyEventEquals(aMethod1, aMethod2: TNotifyEvent): boolean;
+begin
+  Result := MethodEquals(TMethod(aMethod1),TMethod(aMethod2));
 end;
 
 //=== Class Parent methods ===================================================

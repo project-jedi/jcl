@@ -157,6 +157,7 @@ resourcestring
   RsEFunctionProperty = 'Unable to evaluate function property "%s"';
   RsERegistryProperty = 'Unable to evaluate registry property root="%s" path="%s" name="%s"';
   RsELocateXmlElem = 'Unable to locate the XML element for MSBuild property "%s"';
+  RsEUnsupportedChildTypeInElement = 'Unsupported child type "%s" in element "%s"';
 
 //=== JclUsesUtils.pas =======================================================
 resourcestring

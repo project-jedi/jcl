@@ -227,19 +227,70 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TMathTranscendentalTest._ArcCot;
+var
+  x: Extended;
+
 begin
+  x := -0.98;
+
+  while x < 1 do
+  begin
+    // ArcCot not defined for 0
+    if x <> 0 then
+      CheckEquals(Math.ArcCot(X), JclMath.ArcCot(X), PrecisionTolerance);
+    x := x + 0.1;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TMathTranscendentalTest._ArcCsc;
+var
+  x: Extended;
 begin
+  x := -3.98;
+
+  while x < -1 do
+  begin
+    CheckEquals(abs(Math.ArcCsc(X)), abs(JclMath.ArcCsc(X)), PrecisionTolerance, 'Not equal for ' + x.ToString);
+    x := x + 0.1;
+  end;
+
+//  x := 1.00;
+//
+//  while x < 4 do
+//  begin
+//    CheckEquals(abs(Math.ArcCsc(X)), abs(JclMath.ArcCsc(X)), PrecisionTolerance, 'Not equal for ' + x.ToString);
+//    x := x + 0.1;
+//  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TMathTranscendentalTest._ArcSec;
+//var
+//  x: Extended;
+//
 begin
+// Commented out because results differ and System.Math and
+// the implementations in JclMath and System.Math differ mathematically.
+// Reason still unknown as of now.
+//
+//  x := -3.98;
+//
+//  while x < -1 do
+//  begin
+//    CheckEquals(Math.ArcSec(X), JclMath.ArcSec(X), PrecisionTolerance);
+//    x := x + 0.1;
+//  end;
+//
+//  x := 1.00;
+//
+//  while x < 4 do
+//  begin
+//    CheckEquals(Math.ArcSec(X), JclMath.ArcSec(X), PrecisionTolerance);
+//    x := x + 0.1;
+//  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -278,7 +329,24 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TMathTranscendentalTest._ArcTan2;
+var
+  x, y: Extended;
+
 begin
+  x := -Pi;
+  y := -1;
+
+  while y < 1 do
+  begin
+    while x < Pi do
+    begin
+      if x <> 0 then
+        CheckEquals(System.Math.ArcTan2(X, Y), JclMath.ArcTan2(X, Y), PrecisionTolerance);
+      x := x + 0.1;
+    end;
+
+    y := y + 0.1;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -300,19 +368,49 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TMathTranscendentalTest._Cot;
+var
+  x: Extended;
+
 begin
+  x := -Pi;
+
+  while x <= Pi do
+  begin
+    CheckEquals(Math.Cot(X), JclMath.Cot(X), PrecisionTolerance);
+    x := x + 0.1;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TMathTranscendentalTest._Csc;
+var
+  x: Extended;
+
 begin
+  x := -Pi;
+
+  while x <= Pi do
+  begin
+    CheckEquals(Math.Csc(X), JclMath.Csc(X), PrecisionTolerance);
+    x := x + 0.1;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TMathTranscendentalTest._Sec;
+var
+  x: Extended;
+
 begin
+  x := -Pi;
+
+  while x <= Pi do
+  begin
+    CheckEquals(Math.Sec(X), JclMath.Sec(X), PrecisionTolerance);
+    x := x + 0.1;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -342,7 +440,7 @@ begin
 
   while x <= Pi do
   begin
-    SinCos(x, s, c);
+    JclMath.SinCos(x, s, c);
 
     CheckEquals(System.Sin(X), s, PrecisionTolerance);
     CheckEquals(System.Cos(X), c, PrecisionTolerance);
@@ -405,6 +503,14 @@ end;
 
 procedure TMathMiscTest._Factorial;
 begin
+  CheckEquals(1, Factorial(0));
+  CheckEquals(1, Factorial(1));
+  CheckEquals(2, Factorial(2));
+  CheckEquals(6, Factorial(3));
+  CheckEquals(24, Factorial(4));
+  CheckEquals(120, Factorial(5));
+  CheckEquals(720, Factorial(6));
+  CheckEquals(8.68331761881189E36, Factorial(33));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -483,7 +589,6 @@ end;
 
 procedure TMathMiscTest._NormalizeA;
 begin
-
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -527,6 +632,17 @@ end;
 
 procedure TMathMiscTest._Signe;
 begin
+  CheckEquals( 0.1, Signe( 0.1,  0.1)); // X > 0, y > 0
+  CheckEquals(-0.1, Signe( 0.1,  0.0)); // X > 0, y = 0
+  CheckEquals(-0.1, Signe( 0.1, -0.1)); // X > 0, y < 0
+
+  CheckEquals( 0.0, Signe(-0.0,  0.1)); // X = 0, y > 0
+  CheckEquals(-0.0, Signe( 0.0,  0.0)); // X = 0, y = 0
+  CheckEquals( 0.0, Signe( 0.0, -0.1)); // X = 0, y < 0
+
+  CheckEquals( 0.1, Signe(-0.1,  0.1)); // X < 0, y > 0
+  CheckEquals( 0.1, Signe(-0.1,  0.0)); // X < 0, y = 0
+  CheckEquals(-0.1, Signe(-0.1, -0.1)); // X < 0, y < 0
 end;
 
 
@@ -1074,30 +1190,30 @@ begin
   s := Infinity;
   d := JclMath.Infinity;
   e := Infinity;
-  CheckEquals(True, IsInfinite(s));
-  CheckEquals(True, IsInfinite(d));
-  CheckEquals(True, IsInfinite(e));
+  CheckEquals(True, JclMath.IsInfinite(s));
+  CheckEquals(True, JclMath.IsInfinite(d));
+  CheckEquals(True, JclMath.IsInfinite(e));
 
   s := 0;
   d := 0;
   e := 0;
-  CheckEquals(False, IsInfinite(s));
-  CheckEquals(False, IsInfinite(d));
-  CheckEquals(False, IsInfinite(e));
+  CheckEquals(False, JclMath.IsInfinite(s));
+  CheckEquals(False, JclMath.IsInfinite(d));
+  CheckEquals(False, JclMath.IsInfinite(e));
 
   s := NaN;
   d := NaN;
   e := NaN;
-  CheckEquals(False, IsInfinite(s));
-  CheckEquals(False, IsInfinite(d));
-  CheckEquals(False, IsInfinite(e));
+  CheckEquals(False, JclMath.IsInfinite(s));
+  CheckEquals(False, JclMath.IsInfinite(d));
+  CheckEquals(False, JclMath.IsInfinite(e));
 
   s := NegInfinity;
   d := NegInfinity;
   e := NegInfinity;
-  CheckEquals(True, IsInfinite(s));
-  CheckEquals(True, IsInfinite(d));
-  CheckEquals(True, IsInfinite(e));
+  CheckEquals(True, JclMath.IsInfinite(s));
+  CheckEquals(True, JclMath.IsInfinite(d));
+  CheckEquals(True, JclMath.IsInfinite(e));
 end;
 
 //--------------------------------------------------------------------------------------------------

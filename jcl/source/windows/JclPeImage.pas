@@ -465,6 +465,7 @@ type
   TJclPeDebugList = class(TJclPeImageBaseList)
   private
     function GetItems(Index: Integer): TImageDebugDirectory;
+    function IsTD32DebugInfo(DebugDir: PImageDebugDirectory): Boolean;
   protected
     procedure CreateList;
   public
@@ -1124,7 +1125,7 @@ uses
   Character,
   {$ENDIF HAS_UNIT_CHARACTER}
   {$ENDIF ~HAS_UNITSCOPE}
-  JclLogic, JclResources, JclSysUtils, JclAnsiStrings, JclStrings, JclStringConversions;
+  JclLogic, JclResources, JclSysUtils, JclAnsiStrings, JclStrings, JclStringConversions, JclTD32;
 
 const
   MANIFESTExtension = '.manifest';
@@ -3017,6 +3018,14 @@ begin
   CreateList;
 end;
 
+function TJclPeDebugList.IsTD32DebugInfo(DebugDir: PImageDebugDirectory): Boolean;
+var
+  Base: Pointer;
+begin
+  Base := Image.RvaToVa(DebugDir^.AddressOfRawData);
+  Result := TJclTD32InfoParser.IsTD32DebugInfoValid(Base, DebugDir^.SizeOfData);
+end;
+
 procedure TJclPeDebugList.CreateList;
 var
   DebugImageDir: TImageDataDirectory;
@@ -3032,19 +3041,17 @@ begin
     if DebugImageDir.VirtualAddress = 0 then
       Exit;
     if GetSectionHeader(DebugSectionName, Header) and
-      (Header^.VirtualAddress = DebugImageDir.VirtualAddress) then
+      (Header^.VirtualAddress = DebugImageDir.VirtualAddress) and
+      (IsTD32DebugInfo(RvaToVa(DebugImageDir.VirtualAddress))) then
     begin
+      // TD32 debug image directory is broken...size should be in bytes, not count.
       FormatCount := DebugImageDir.Size;
-      DebugDir := RvaToVa(Header^.VirtualAddress);
     end
     else
     begin
-      if not GetSectionHeader(ReadOnlySectionName, Header) then
-        Exit;
       FormatCount := DebugImageDir.Size div SizeOf(TImageDebugDirectory);
-      DebugDir := Pointer(MappedAddress + DebugImageDir.VirtualAddress -
-        Header^.VirtualAddress + Header^.PointerToRawData);
     end;
+    DebugDir := RvaToVa(DebugImageDir.VirtualAddress);
     for I := 1 to FormatCount do
     begin
       Add(TObject(DebugDir));

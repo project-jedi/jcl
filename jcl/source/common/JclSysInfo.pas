@@ -333,10 +333,12 @@ function GetWindowsMinorVersionNumber: Integer;
 function GetWindowsVersionNumber: string;
 function GetWindowsServicePackVersion: Integer;
 function GetWindowsServicePackVersionString: string;
+function GetWindows10DisplayVersion: string;
 function GetWindows10ReleaseId: Integer;
 function GetWindows10ReleaseName: String;
 function GetWindows10ReleaseCodeName: String;
 function GetWindows10ReleaseVersion: String;
+function GetWindowsServerDisplayVersion: string;
 function GetWindowsServerReleaseId: Integer;
 function GetWindowsServerReleaseVersion: String;
 function GetOpenGLVersion(const Win: THandle; out Version, Vendor: AnsiString): Boolean;
@@ -2345,7 +2347,6 @@ end;
 {$ENDIF UNIX}
 
 function GetLocalComputerName: string;
-// (rom) UNIX or LINUX?
 {$IFDEF LINUX}
 var
   MachineInfo: utsname;
@@ -2357,13 +2358,13 @@ end;
 {$IFDEF MSWINDOWS}
 var
   Count: DWORD;
+  Buf: array[0..MAX_PATH] of Char;
 begin
-  Count := MAX_COMPUTERNAME_LENGTH + 1;
-  // set buffer size to MAX_COMPUTERNAME_LENGTH + 2 characters for safety
-  { TODO : Win2k solution }
-  SetLength(Result, Count);
-  if GetComputerName(PChar(Result), Count) then
-    StrResetLength(Result)
+  Count := Length(Buf) - 1;
+  // GetComputerName can return a string larger than MAX_COMPUTERNAME_LENGTH which was the NetBios limit.
+  // The Windows 10 allows to enter 260 (MAX_PATH) chars computer name's field.
+  if GetComputerName(Buf, Count) then
+    SetString(Result, Buf, Count)
   else
     Result := '';
 end;
@@ -4163,8 +4164,19 @@ begin
     Result := '';
 end;
 
+function GetWindows10DisplayVersion: string;
+begin
+  // Starting with Windows 10 20H2, the DisplayVersion registry entry is being populated ("20H2")
+  if IsWin10 then
+    Result := RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'DisplayVersion', '')
+  else
+    Result := '';
+end;
+
 function GetWindows10ReleaseId: Integer;
 begin
+  // Starting with Windows 10 21H1, the ReleaseId registry entry is no more incremented (still populated as "2009" like Windows 10 20H2)
+  // and the DisplayVersion registry entry is to be used instead ("20H2")
   if IsWin10 then
     Result := StrToIntDef(RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'ReleaseId', '0'), -1)
   else
@@ -4172,28 +4184,43 @@ begin
 end;
 
 function GetWindows10ReleaseName: String;
+var
+  WindowsDisplayVersion: string;
 begin
   if IsWin10 then
   begin
     case GetWindows10ReleaseId of
-       1507:
-          Result := 'Windows 10';
-       1511:
-          Result := 'Windows 10 November Update';
-       1607:
-          Result := 'Windows 10 Anniversary Update';
-       1703:
-          Result := 'Windows 10 Creators Update';
-       1709:
-          Result := 'Windows 10 Fall Creators Update';
-       1803:
-          Result := 'Windows 10 April 2018 Update';
-       1809:
-          Result := 'Windows 10 October 2018 Update';
-       1903:
-          Result := 'Windows 10 May 2019 Update';
-       1909:
-          Result := 'Windows 10 November 2019 Update';
+      1507:
+         Result := 'Windows 10';
+      1511:
+         Result := 'Windows 10 November Update';
+      1607:
+         Result := 'Windows 10 Anniversary Update';
+      1703:
+         Result := 'Windows 10 Creators Update';
+      1709:
+         Result := 'Windows 10 Fall Creators Update';
+      1803:
+         Result := 'Windows 10 April 2018 Update';
+      1809:
+         Result := 'Windows 10 October 2018 Update';
+      1903:
+         Result := 'Windows 10 May 2019 Update';
+      1909:
+         Result := 'Windows 10 November 2019 Update';
+      2004:
+         Result := 'Windows 10 May 2020 Update';
+      2009:
+         begin
+           WindowsDisplayVersion := GetWindows10DisplayVersion;
+           if WindowsDisplayVersion = '20H2' then
+              Result := 'Windows 10 October 2020 Update'
+           else
+           if WindowsDisplayVersion = '21H1' then
+              Result := 'Windows 10 May 2021 Update'
+           else
+              Result := 'Windows 10 ' + WindowsDisplayVersion + ' Update';
+         end
     else
       Result := 'Windows 10 ' + IntToStr(GetWindows10ReleaseId) + ' Update';
     end;
@@ -4207,24 +4234,28 @@ begin
   if IsWin10 then
   begin
     case GetWindows10ReleaseId of
-       1507:
-          Result := 'Threshold 1';
-       1511:
-          Result := 'Threshold 2';
-       1607:
-          Result := 'Redstone 1';
-       1703:
-          Result := 'Redstone 2';
-       1709:
-          Result := 'Redstone 3';
-       1803:
-          Result := 'Redstone 4';
-       1809:
-          Result := 'Redstone 5';
-       1903:
-          Result := '19H1';
-       1909:
-          Result := '19H2';
+      1507:
+         Result := 'Threshold 1';
+      1511:
+         Result := 'Threshold 2';
+      1607:
+         Result := 'Redstone 1';
+      1703:
+         Result := 'Redstone 2';
+      1709:
+         Result := 'Redstone 3';
+      1803:
+         Result := 'Redstone 4';
+      1809:
+         Result := 'Redstone 5';
+      1903:
+         Result := '19H1';
+      1909:
+         Result := '19H2';
+      2004:
+         Result := '20H1';
+      2009:
+         Result := GetWindows10DisplayVersion;
     else
       Result := '';
     end;
@@ -4241,10 +4272,23 @@ begin
   begin
     WindowsReleaseId := GetWindows10ReleaseId;
     if WindowsReleaseId > 0 then
-      Result := 'Windows 10, version ' + IntToStr(WindowsReleaseId)
+    begin
+      if WindowsReleaseId < 2009 then
+        Result := 'Windows 10, version ' + IntToStr(WindowsReleaseId)
+      else
+        Result := 'Windows 10, version ' + GetWindows10DisplayVersion
+    end
     else
       Result := '';
   end
+  else
+    Result := '';
+end;
+
+function GetWindowsServerDisplayVersion: string;
+begin
+  if IsWinServer then
+    Result := RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'DisplayVersion', '')
   else
     Result := '';
 end;
@@ -4265,7 +4309,12 @@ begin
   begin
     WindowsReleaseId := GetWindowsServerReleaseId;
     if WindowsReleaseId > 0 then
-      Result := 'Windows Server, version ' + IntToStr(WindowsReleaseId)
+    begin
+      if WindowsReleaseId < 2009 then
+        Result := 'Windows Server, version ' + IntToStr(WindowsReleaseId)
+      else
+        Result := 'Windows Server, version ' + GetWindowsServerDisplayVersion
+    end
     else
       Result := '';
   end

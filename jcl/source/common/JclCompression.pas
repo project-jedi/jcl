@@ -4515,6 +4515,7 @@ begin
   RegisterFormat(TJclCpioDecompressArchive);
   RegisterFormat(TJclTarDecompressArchive);
   RegisterFormat(TJclGZipDecompressArchive);
+  RegisterFormat(TJclXzDecompressArchive);
   RegisterFormat(TJclNtfsDecompressArchive);
   RegisterFormat(TJclFatDecompressArchive);
   RegisterFormat(TJclMbrDecompressArchive);

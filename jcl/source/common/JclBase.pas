@@ -113,7 +113,7 @@ type
   UInt64 = Int64;
   {$ENDIF ~COMPILER7_UP}
   PWideChar = System.PWideChar;
-  PPWideChar = ^JclBase.PWideChar;
+  PPWideChar = ^PWideChar;
   PPAnsiChar = ^PAnsiChar;
   PInt64 = type System.PInt64;
   {$ENDIF ~FPC}

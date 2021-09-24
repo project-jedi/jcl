@@ -112,7 +112,11 @@ type
     procedure ProcessModuleDestroyed({$IFDEF RTL170_UP} const {$ENDIF} ProcessModule: IOTAProcessModule);
     // IOTAThreadNotifier
     procedure ThreadNotify(Reason: TOTANotifyReason);
+    {$IFNDEF RTL340_UP}
     procedure EvaluteComplete(const ExprStr, ResultStr: string;
+      CanModify: Boolean; ResultAddress, ResultSize: LongWord; ReturnCode: Integer);
+    {$ENDIF ~RTL340_UP}
+    procedure EvaluateComplete(const ExprStr, ResultStr: string;
       CanModify: Boolean; ResultAddress, ResultSize: LongWord; ReturnCode: Integer);
     procedure ModifyComplete(const ExprStr, ResultStr: string; ReturnCode: Integer);
     property Owner: TJclSIMDWizard read FOwner;
@@ -456,7 +460,15 @@ begin
 
 end;
 
+{$IFNDEF RTL340_UP}
 procedure TJclDebuggerNotifier.EvaluteComplete(const ExprStr, ResultStr: string;
+  CanModify: Boolean; ResultAddress, ResultSize: LongWord; ReturnCode: Integer);
+begin
+  EvaluateComplete(ExprStr, ResultStr, CanModify, ResultAddress, ResultSize, ReturnCode);
+end;
+{$ENDIF ~RTL340_UP}
+
+procedure TJclDebuggerNotifier.EvaluateComplete(const ExprStr, ResultStr: string;
   CanModify: Boolean; ResultAddress, ResultSize: LongWord; ReturnCode: Integer);
 begin
   try

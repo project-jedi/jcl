@@ -98,6 +98,7 @@ type
   private
     FDynamicBuild: Boolean;
     FSystemModulesOnly: Boolean;
+    FRefCount: Integer;
     function GetItems(Index: Integer): TJclModuleInfo;
     function GetModuleFromAddress(Addr: Pointer): TJclModuleInfo;
   protected
@@ -325,7 +326,7 @@ type
     procedure CheckFormat;
     function DataToStr(A: Integer): string;
     function MakePtr(A: Integer): Pointer;
-    function ReadValue(var P: Pointer; var Value: Integer): Boolean;
+    class function ReadValue(var P: Pointer; var Value: Integer): Boolean; {$IFDEF SUPPORTS_STATIC}static;{$ENDIF}
   public
     constructor Create(AStream: TCustomMemoryStream; CacheData: Boolean);
     function IsModuleNameValid(const Name: TFileName): Boolean;
@@ -470,6 +471,7 @@ type
   TJclDebugInfoSource = class(TObject)
   private
     FModule: HMODULE;
+    FModuleCodeSize: SizeInt;
     function GetFileName: TFileName;
   protected
     function VAFromAddr(const Addr: Pointer): DWORD; virtual;
@@ -479,6 +481,7 @@ type
     function GetLocationInfo(const Addr: Pointer; out Info: TJclLocationInfo): Boolean; virtual; abstract;
     property Module: HMODULE read FModule;
     property FileName: TFileName read GetFileName;
+    property ModuleCodeSize: SizeInt read FModuleCodeSize;
   end;
 
   TJclDebugInfoSourceClass = class of TJclDebugInfoSource;
@@ -1022,6 +1025,11 @@ type
      // the exception handling if no stacktrace is needed for the exception.
      , stImmediateExceptionStacktraceResolving
      {$ENDIF HAS_EXCEPTION_STACKTRACE}
+     // stCleanRawStack does a deeper analysis of the callstack by evaluating the instructions
+     // that manipulate the stack.
+     // It removes many cases of false positives but may also remove valid entries if it runs
+     // into a function that does non-standard stack pointer manipulation.
+     , stCleanRawStack // experimental
     );
   TJclStackTrackingOptions = set of TJclStackTrackingOption;
 
@@ -1103,6 +1111,11 @@ const
 
 var
   HexMap: array[AnsiChar] of Byte;
+  JclDebugFinalized: Boolean;
+  GlobalStackListLiveCount: Integer;
+
+procedure FreeJclDebugGlobals;
+  forward;
 
 {$STACKFRAMES OFF}
 
@@ -1428,7 +1441,7 @@ begin
   SetString(Result, MapString, P - MapString);
 end;
 
-function IsDecDigit(P: PJclMapString): Boolean; {$IFDEF SUPPORTS_INLINE}inline{$ENDIF}
+function IsDecDigit(P: PJclMapString): Boolean; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 begin
   Result := False;
   case P^ of
@@ -1461,13 +1474,42 @@ begin
   end;
 end;
 
+function AnsiStrPosIdxLen(const SubStr, S: PAnsiChar; Len: Integer): Integer;
+var
+  I: Integer;
+  SubStrLen: Integer;
+  FirstCh: AnsiChar;
+begin
+  Result := 0;
+  if Len = 0 then
+    Exit;
+  I := 0;
+  FirstCh := SubStr[0];
+  if FirstCh = #0 then
+    Exit;
+  SubStrLen := StrLenA(SubStr);
+  while I < Len do
+  begin
+    while (I < Len) and (S[I] <> FirstCh) do
+      Inc(I);
+    if I = Len then
+      Break;
+    if StrLCompA(SubStr, @S[I], SubStrLen) = 0 then
+    begin
+      Result := I + 1;
+      Exit;
+    end;
+    Inc(I);
+  end;
+end;
+
 procedure TJclAbstractMapParser.Parse;
 const
-  TableHeader          : array [0..3] of string = ('Start', 'Length', 'Name', 'Class');
-  SegmentsHeader       : array [0..3] of string = ('Detailed', 'map', 'of', 'segments');
-  PublicsByNameHeader  : array [0..3] of string = ('Address', 'Publics', 'by', 'Name');
-  PublicsByValueHeader : array [0..3] of string = ('Address', 'Publics', 'by', 'Value');
-  LineNumbersPrefix    : string = 'Line numbers for';
+  TableHeader          : array [0..3] of PJclMapString = ('Start', 'Length', 'Name', 'Class');
+  SegmentsHeader       : array [0..3] of PJclMapString = ('Detailed', 'map', 'of', 'segments');
+  PublicsByNameHeader  : array [0..3] of PJclMapString = ('Address', 'Publics', 'by', 'Name');
+  PublicsByValueHeader : array [0..3] of PJclMapString = ('Address', 'Publics', 'by', 'Value');
+  LineNumbersPrefix    : PJclMapString = 'Line numbers for';
 var
   CurrPos, EndPos: PJclMapString;
 {$IFNDEF COMPILER9_UP}
@@ -1513,7 +1555,7 @@ var
     CurrPos := P;
   end;
 
-  function ReadTrimmedTextLine: string;
+  function ReadTrimmedTextLine(var Len: Integer): PJclMapString;
   var
     Start, P: PJclMapString;
   begin
@@ -1524,14 +1566,17 @@ var
     CurrPos := P;
 
     // Trim
-    while (Start^ <> #0) and (Start^ <= ' ') do
+    while (Start < P) and (Start^ <> #0) and (Start^ <= ' ') do
       Inc(Start);
     Dec(P);
     while (P > Start) and (P^ <= ' ') do
       Dec(P);
     Inc(P);
 
-    SetString(Result, Start, P - Start);
+    Result := Start;
+    Len := P - Start;
+    if Len < 0 then
+      Len := 0;
   end;
 
   function ReadDecValue: Integer;
@@ -1607,43 +1652,46 @@ var
     CurrPos := P + 2;
   end;
 
-  function SyncToHeader(const Header: array of string): Boolean;
+  function SyncToHeader(const Header: array of PJclMapString): Boolean;
   var
-    S: string;
+    S: PJclMapString;
+    SLen: Integer;
     TokenIndex, OldPosition, CurrentPosition: Integer;
   begin
     Result := False;
     while not Eof do
     begin
-      S := ReadTrimmedTextLine;
-      TokenIndex := Low(Header);
-      CurrentPosition := 0;
-      OldPosition := 0;
-      while (TokenIndex <= High(Header)) do
+      S := ReadTrimmedTextLine(SLen);
+      if SLen > 0 then
       begin
-        CurrentPosition := Pos(Header[TokenIndex],S);
-        if (CurrentPosition <= OldPosition) then
+        TokenIndex := Low(Header);
+        CurrentPosition := 0;
+        OldPosition := 0;
+        while (TokenIndex <= High(Header)) do
         begin
-          CurrentPosition := 0;
-          Break;
+          CurrentPosition := AnsiStrPosIdxLen(Header[TokenIndex], S, SLen);
+          if (CurrentPosition <= OldPosition) then
+          begin
+            CurrentPosition := 0;
+            Break;
+          end;
+          OldPosition := CurrentPosition;
+          Inc(TokenIndex);
         end;
-        OldPosition := CurrentPosition;
-        Inc(TokenIndex);
+        Result := CurrentPosition <> 0;
+        if Result then
+          Break;
       end;
-      Result := CurrentPosition <> 0;
-      if Result then
-        Break;
       SkipEndLine;
     end;
     if not Eof then
       SkipWhiteSpace;
   end;
 
-  function SyncToPrefix(const Prefix: string): Boolean;
+  function SyncToPrefix(const Prefix: PJclMapString): Boolean;
   var
-    I: Integer;
     P: PJclMapString;
-    S: string;
+    PrefixLen: Integer;
   begin
     if Eof then
     begin
@@ -1652,16 +1700,10 @@ var
     end;
     SkipWhiteSpace;
     P := CurrPos;
-    I := Length(Prefix);
-    while not Eof and (P^ <> #13) and (P^ <> #0) and (I > 0) do
-    begin
-      Inc(P);
-      Dec(I);
-    end;
-    SetString(S, CurrPos, Length(Prefix));
-    Result := (S = Prefix);
+    PrefixLen := StrLenA(Prefix);
+    Result := StrLCompA(Prefix, P, PrefixLen) = 0;
     if Result then
-      CurrPos := P;
+      CurrPos := P + PrefixLen;
     SkipWhiteSpace;
   end;
 
@@ -2843,6 +2885,30 @@ var
   LastSegmentID: Word;
   LastSegmentStored: Boolean;
 
+  function PosLastNameSep(const S: string): Integer;
+  var
+    InGeneric: Integer;
+  begin
+    // Unit.Name.ProcName                             => "Unit.Name" + "ProcName"
+    // Unit.Name..ClassName                           => "UnitName" + ".ClassName"
+    // Unit.Name.Class<Unit.Name.OtherClass>.ProcName => "Unit.Name.Class<Unit.Name.OtherClass>" + "ProcName"
+    InGeneric := 0;
+    for Result := Length(S) downto 1 do
+    begin
+      case S[Result] of
+        '.':
+          if InGeneric = 0 then
+            if (Result = 1) or (S[Result - 1] <> '.') then
+              Exit;
+        '>':
+          Inc(InGeneric);
+        '<':
+          Dec(InGeneric);
+      end;
+    end;
+    Result := 0;
+  end;
+
   function AddWord(const S: string): Integer;
   var
     {$IFDEF SUPPORTS_GENERICS}
@@ -2975,8 +3041,15 @@ begin
     for I := 0 to Length(FSourceNames) - 1 do
       if IsSegmentStored(FSourceNames[I].Segment) then
       begin
-        WriteValueOfs(FSourceNames[I].VA, L1);
-        WriteValueOfs(AddWord(MapStringCacheToStr(FSourceNames[I].ProcName)), L2);
+        // FSourceNames[] is sorted by VA, so if the source file name is the same as the previous
+        // we don't need to store it because the VA will be matched by the previous entry.
+        // This removes a lot of "Generics.Collections.pas" entries.
+        S := MapStringCacheToStr(FSourceNames[I].ProcName);
+        if (I = 0) or (FSourceNames[I - 1].ProcName.CachedValue <> S) then
+        begin
+          WriteValueOfs(FSourceNames[I].VA, L1);
+          WriteValueOfs(AddWord(S), L2);
+        end;
       end;
     WriteValue(MaxInt);
 
@@ -2990,7 +3063,7 @@ begin
         WriteValueOfs(FProcNames[I].VA, L1);
         // MAP files generated by C++Builder have spaces in their names
         S := MapStringCacheToStr(FProcNames[I].ProcName, True);
-        D := Pos('.', S);
+        D := PosLastNameSep(S);
         if D = 1 then
         begin
           FirstWord := 0;
@@ -3363,13 +3436,13 @@ begin
   begin
     Result := DataToStr(FirstWord);
     if SecondWord <> 0 then
-      Result := Result + '.' + DataToStr(SecondWord)
+      Result := Result + '.' + DataToStr(SecondWord);
   end
   else
     Result := '';
 end;
 
-function TJclBinDebugScanner.ReadValue(var P: Pointer; var Value: Integer): Boolean;
+class function TJclBinDebugScanner.ReadValue(var P: Pointer; var Value: Integer): Boolean;
 var
   N: Integer;
   I: Integer;
@@ -3384,7 +3457,7 @@ begin
     Inc(I, 7);
   until B and $80 = 0;
   Value := N;
-  Result := (Value <> MaxInt);
+  Result := (N <> MaxInt);
 end;
 
 function TJclBinDebugScanner.SourceNameFromAddr(Addr: DWORD): string;
@@ -3720,8 +3793,13 @@ end;
 //=== { TJclDebugInfoSource } ================================================
 
 constructor TJclDebugInfoSource.Create(AModule: HMODULE);
+var
+  MemInfo: TMemoryBasicInformation;
 begin
   FModule := AModule;
+  FModuleCodeSize := 0;
+  if VirtualQuery(Pointer(TJclAddr(FModule) + ModuleCodeOffset), MemInfo, SizeOf(MemInfo)) = SizeOf(MemInfo) then
+    FModuleCodeSize := MemInfo.RegionSize;
 end;
 
 function TJclDebugInfoSource.GetFileName: TFileName;
@@ -4630,7 +4708,7 @@ begin
     begin
       UnitNameWithoutUnitscope := UnitName;
       Delete(UnitNameWithoutUnitscope, 1, Pos('.', UnitNameWithoutUnitscope));
-      if Pos(UnitNameWithoutUnitscope + '.', FixedProcedureName) = 1 then
+      if Pos(StrLower(UnitNameWithoutUnitscope) + '.', StrLower(FixedProcedureName)) = 1 then
         FixedProcedureName := Copy(FixedProcedureName, Length(UnitNameWithoutUnitscope) + 2, Length(FixedProcedureName) - Length(UnitNameWithoutUnitscope) - 1);
     end;
 
@@ -5033,7 +5111,10 @@ end;
 destructor TJclGlobalModulesList.Destroy;
 begin
   FreeAndNil(FLock);
-  FreeAndNil(FModulesList);
+  // Keep FModulesList alive if there are still TJclStackInfoLists referencing it. The
+  // last JclStackInfoList will destroy it through FreeModulesList.
+  if (FModulesList <> nil) and (FModulesList.FRefCount = 0) then
+    FreeAndNil(FModulesList);
   FreeAndNil(FAddedModules);
   inherited Destroy;
 end;
@@ -5095,25 +5176,36 @@ begin
     if IsMultiThreaded then
       FLock.Leave;
   end;
+  // RefCount the "global" FModulesList so that if GlobalModulesList is destroyed we can keep
+  // the FModulesList alive and let it be destroyed by the last TJclStackInfoList.
+  if Result = FModulesList then
+    InterlockedIncrement(FModulesList.FRefCount);
 end;
 
 procedure TJclGlobalModulesList.FreeModulesList(var ModulesList: TJclModuleInfoList);
 var
   IsMultiThreaded: Boolean;
 begin
-  if (Self <> nil) and // happens when finalization already ran but a TJclStackInfoList is still alive
-     (FModulesList <> ModulesList) then
+  if Self <> nil then // happens when finalization already ran but a TJclStackInfoList is still alive
   begin
-    IsMultiThreaded := IsMultiThread;
-    if IsMultiThreaded then
-      FLock.Enter;
-    try
-      FreeAndNil(ModulesList);
-    finally
+    if FModulesList <> ModulesList then
+    begin
+      IsMultiThreaded := IsMultiThread;
       if IsMultiThreaded then
-        FLock.Leave;
-    end;
-  end;
+        FLock.Enter;
+      try
+        FreeAndNil(ModulesList);
+      finally
+        if IsMultiThreaded then
+          FLock.Leave;
+      end;
+    end
+    else if FModulesList <> nil then
+      InterlockedDecrement(FModulesList.FRefCount);
+  end
+  else
+    if InterlockedDecrement(ModulesList.FRefCount) = 0 then
+      FreeAndNil(ModulesList);
 end;
 
 function TJclGlobalModulesList.ValidateAddress(Addr: Pointer): Boolean;
@@ -5382,6 +5474,7 @@ var
   Item: TJclStackInfoItem;
 begin
   inherited Create;
+  InterlockedIncrement(GlobalStackListLiveCount);
   FIgnoreLevels := AIgnoreLevels;
   FDelayedTrace := ADelayedTrace;
   FRaw := ARaw;
@@ -5421,6 +5514,8 @@ begin
     FreeMem(FStackData);
   GlobalModulesList.FreeModulesList(FModuleInfoList);
   inherited Destroy;
+  if (InterlockedDecrement(GlobalStackListLiveCount) = 0) and JclDebugFinalized then
+    FreeJclDebugGlobals;
 end;
 
 {$IFDEF CPU64}
@@ -5615,50 +5710,427 @@ begin
     StoreToList(StackInfo);
 end;
 
-function SearchForStackPtrManipulation(StackPtr: Pointer; Proc: Pointer): Pointer;
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF SUPPORTS_INLINE}
-{var
-  Addr: PByteArray;}
-begin
-{  Addr := Proc;
-  while (Addr <> nil) and (DWORD_PTR(Addr) > DWORD_PTR(Proc) - $100) and not IsBadReadPtr(Addr, 6) do
+
+function TraceStackInstuctions(Proc, InstructionAddr: Pointer; ModuleEndAddr: TJclAddr;
+  var LocalVarStackOffset, ParamStackOffset: Integer): Boolean;
+const
+  PointerSize = SizeOf(Pointer);
+
+  function ParseSaveRegisters(ProcAddr, CallAddr: TJclAddr; var RegisterStackOffset: Integer): TJclAddr;
+  var
+    P: PByteArray;
   begin
-    if (Addr[0] = $55) and                                           // push ebp
-       (Addr[1] = $8B) and (Addr[2] = $EC) then                      // mov ebp,esp
+    Result := ProcAddr;
+    while Result < TJclAddr(CallAddr) do
     begin
-      if (Addr[3] = $83) and (Addr[4] = $C4) then                    // add esp,c8
+      P := PByteArray(Result);
+      if (P[0] and $F8) = $50 then // PUSH r32
       begin
-        Result := Pointer(INT_PTR(StackPtr) - ShortInt(Addr[5]));
-        Exit;
+        Inc(RegisterStackOffset, PointerSize);
+        Inc(Result);
+        Continue;
       end;
       Break;
     end;
+  end;
 
-    if (Addr[0] = $C2) and // ret $xxxx
-         (((Addr[3] = $90) and (Addr[4] = $90) and (Addr[5] = $90)) or // nop
-          ((Addr[3] = $CC) and (Addr[4] = $CC) and (Addr[5] = $CC))) then // int 3
-      Break;
+  function CheckRegisterRestoreBackwards(ProcAddr, CallAddr: TJclAddr; var RegisterStackOffset: Integer): Boolean;
+  var
+    Count: Integer;
+  begin
+    if RegisterStackOffset > 0 then
+    begin
+      Count := 0;
+      while (ProcAddr > CallAddr) and (PByte(ProcAddr)^ and $F8 = $58) do // POP r32
+      begin
+        Dec(ProcAddr);
+        Inc(Count);
+      end;
+      if (Count > 0) and (Cardinal(Count) <= Cardinal(RegisterStackOffset) div PointerSize) then
+      begin
+        // We may have used a "function call push" in the prolog analysis so fix this
+        RegisterStackOffset := Count * PointerSize;
+        Result := True;
+      end
+      else
+        Result := False;
+    end
+    else
+      Result := True;
+  end;
 
-    if (Addr[0] = $C3) and // ret
-         (((Addr[1] = $90) and (Addr[2] = $90) and (Addr[3] = $90)) or // nop
-          ((Addr[1] = $CC) and (Addr[2] = $CC) and (Addr[3] = $CC))) then // int 3
-      Break;
+  function ParseEspChange(ProcAddr, CallAddr: TJclAddr; var LocalVarStackOffset: Integer; var EspChangeFound: Boolean): TJclAddr;
+  var
+    P: PByteArray;
+  begin
+    Result := ProcAddr;
+    P := PByteArray(Result);
+    if (Result + 3 < TJclAddr(CallAddr)) and (P[0] = $83) and (P[1] = $C4) then // 83C4F8           add esp,imm8
+    begin
+      Inc(LocalVarStackOffset, -Integer(ShortInt(P[2])));
+      EspChangeFound := True;
+      Inc(Result, 3);
+    end
+    else if (Result + 6 < TJclAddr(CallAddr)) and (P[0] = $81) and (P[1] = $C4) then // 81C408000100     add esp,imm32
+    begin
+      Inc(LocalVarStackOffset, -PInteger(@P[2])^);
+      EspChangeFound := True;
+      Inc(Result, 6);
+    end;
+  end;
 
-    if (Addr[0] = $E9) and // jmp rel-far
-         (((Addr[5] = $90) and (Addr[6] = $90) and (Addr[7] = $90)) or // nop
-          ((Addr[5] = $CC) and (Addr[6] = $CC) and (Addr[7] = $CC))) then // int 3
-      Break;
+  function CheckEspChangeBackwards(ProcAddr, CallAddr: TJclAddr): Boolean;
+  var
+    Offset: Integer;
+  begin
+    Inc(ProcAddr);
+    Result := False;
 
-    if (Addr[0] = $EB) and // jmp rel-near
-         (((Addr[2] = $90) and (Addr[3] = $90) and (Addr[4] = $90)) or // nop
-          ((Addr[2] = $CC) and (Addr[3] = $CC) and (Addr[4] = $CC))) then // int 3
-      Break;
+    if ProcAddr - 3 >= CallAddr then
+    begin
+      ParseEspChange(ProcAddr - 3, ProcAddr + 1, Offset, Result);
+      if Result then
+        Exit;
+    end;
 
-    Dec(DWORD_TR(Addr));
-  end;}
-  Result := StackPtr;
+    if ProcAddr - 6 >= CallAddr then
+    begin
+      ParseEspChange(ProcAddr - 6, ProcAddr + 1, Offset, Result);
+      if Result then
+        Exit;
+    end;
+  end;
+
+  function CheckStackAddressValidation(ProcAddr, CallAddr: TJclAddr; var LocalVarStackOffset: Integer;
+    var EspChangeFound: Boolean): Integer;
+  var
+    P: PByteArray;
+  begin
+    // The compiler emits multiple functino prologues to probe the stack frame memory pages.
+
+    P := PByteArray(ProcAddr);
+    if (ProcAddr + 6 < CallAddr) and
+       (P[0] = $81) and (P[1] = $C4) and (PInteger(@P[2])^ = -4092) and     // 81C404F0FFFF     add esp,$fffff004
+       (P[6] = $50) then                                                    // 50               push eax
+    begin
+      Inc(LocalVarStackOffset, (4092+4));
+      EspChangeFound := True;
+      Result := 7;
+    end
+    else if (ProcAddr + 8 < CallAddr) and                                   // CompilerSpeedPack option -x-fpr
+       (P[0] = $81) and (P[1] = $C4) and (PInteger(@P[2])^ = -4096) and     // 81C404F0FFFF     add esp,$fffff000
+       (P[6] = $85) and (P[7] = $24) and (P[8] = $24) then                  // 852424           test [esp],esp
+    begin
+      Inc(LocalVarStackOffset, 4096);
+      EspChangeFound := True;
+      Result := 9;
+    end
+
+    else if (ProcAddr + 17 + 4 < CallAddr) and
+       (P[0] = $50) and                                                     // 50               push eax
+       (P[1] = $B8) and                                                     // B804000000       mov eax,imm32
+       (P[6] = $81) and (P[7] = $C4) and (PInteger(@P[8])^ = -4092) and     // 81C404F0FFFF     add esp,$fffff004
+       (P[12] = $50) and                                                    // 50               push eax
+       (P[13] = $48) and                                                    // 48               dec eax
+       (P[14] = $75) and (P[15] = $F6) and                                  // 75F6             jnz -10
+       (P[16] = $8B) and ((PWord(@P[16])^ = $2484) or (P[17] = $45)) then   // 8B842400000100   mov eax,[esp+imm32] / 8B45FC mov eax,[ebp-imm8]
+   begin
+      Inc(LocalVarStackOffset, PInteger(@P[2])^ * (4092+4));
+      EspChangeFound := True;
+      Result := 19;
+      if P[17] = $45 then
+        Inc(Result, 1)  // 8B45FC           mov eax,[ebp-imm8]
+      else
+        Inc(Result, 4); // 8B842400000100   mov eax,[esp+imm32]
+    end
+
+    else if (ProcAddr + 20 + 4 < CallAddr) and                              // CompilerSpeedPack option -x-fpr
+       (P[0] = $50) and                                                     // 50               push eax
+       (P[1] = $B8) and                                                     // B804000000       mov eax,imm32
+       (P[6] = $81) and (P[7] = $C4) and (PInteger(@P[8])^ = -4096) and     // 81C404F0FFFF     add esp,$fffff000
+       (P[12] = $85) and (P[13] = $24) and (P[14] = $24) and                // 852424           test [esp],esp
+       (P[15] = $48) and                                                    // 48               dec eax
+       (P[16] = $75) and (P[17] = $F6) and                                  // 75F6             jnz -10
+       (P[18] = $8B) and ((PWord(@P[19])^ = $2484) or (P[19] = $45)) then   // 8B842400000100   mov eax,[esp+imm32] / 8B45FC mov eax,[ebp-imm8]
+    begin
+      Inc(LocalVarStackOffset, PInteger(@P[2])^ * 4096);
+      EspChangeFound := True;
+      Result := 21;
+      if P[19] = $45 then
+        Inc(Result, 1)  // 8B45FC           mov eax,[ebp-imm8]
+      else
+        Inc(Result, 4); // 8B842400000100   mov eax,[esp+imm32]
+    end
+
+    else if (ProcAddr + 2 < CallAddr) and
+       (P[0] = $33) and (P[1] = $C9) and                                   // 33C9             xor ecx,ecx
+       (P[2] = $51) then                                                   // 51               push ecx
+    begin
+      Inc(LocalVarStackOffset, 4);
+      EspChangeFound := True;
+
+      Result := 1;
+      Inc(ProcAddr, 3);
+      while (ProcAddr + 2 < CallAddr) and (PByte(ProcAddr)^ = $51) do
+      begin
+        Inc(ProcAddr);
+        Inc(Result);
+      end;
+      Inc(LocalVarStackOffset, 4 * Result);
+
+      Inc(Result, 2); // xor ecx, ecx
+    end
+
+    // Compiler sets the stack for managed local variables to zero
+    else if (ProcAddr + 12 < CallAddr) and
+       (P[0] = $51) and                                                     // 51               push ecx
+       (P[1] = $B9) and // imm32                                            // B906000000       mov ecx,imm32
+       (P[6] = $6A) and (P[7] = $00) and                                    // 6A00             push $00
+       (P[8] = $6A) and (P[9] = $00) and                                    // 6A00             push $00
+       (P[10] = $49) and                                                    // 49               dec ecx
+       (P[11] = $75) and (P[12] = $F9) then                                 // 75F9             jnz -7
+    begin
+      Inc(LocalVarStackOffset, PInteger(@P[2])^ * PointerSize * 2);
+      EspChangeFound := True;
+      Result := 13;
+
+      // For an odd number of local DWORDs the compiler emits an additional "push ecx"
+      if (ProcAddr + 13 < CallAddr) and
+         (P[13] = $51) then                                                 // 51               push ecx
+      begin
+        Inc(LocalVarStackOffset, PointerSize);
+        Inc(Result, 1);
+      end;
+
+      if (ProcAddr + TJclAddr(Result) + 3 < CallAddr) and
+         (P[Result + 0] = $87) and (P[Result + 1] = $4D) then // imm8      // 874DFC           xchg [ebp-imm8],ecx
+      begin
+        Inc(Result, 3);
+      end
+      else if (ProcAddr + TJclAddr(Result) + 10 < CallAddr) and                        // CompilerSpeedPack option -x-fpr
+         (P[Result + 0] = $8B) and (P[Result + 1] = $4D) and //imm8                    // 8B4DFC           mov ecx,[ebp-imm8]
+         (P[Result + 3] = $C7) and (P[Result + 4] = $45) and (P[Result + 5] = $FC) and // C745FC00000000   mov [ebp-$04],$00000000
+         (PInteger(@P[Result + 6])^ = 0) then
+      begin
+        Inc(Result, 10);
+      end;
+    end
+    else
+      Result := 0;
+  end;
+
+var
+  P: PByteArray;
+  ProcAddr, CallAddr, EpilogAddr: TJclAddr;
+  StackFrameFound: Integer;
+  RegisterStackOffset: Integer;
+  EspChangeFound: Boolean;
+  Size: Integer;
+  PossibleEndFound: Boolean;
+  EpilogInfo: TJclLocationInfo;
+  RegStackOffset: Integer;
+begin
+  LocalVarStackOffset := 0;
+  ParamStackOffset := 0;
+  RegisterStackOffset := 0;
+
+  Result := False;
+  if Proc = nil then
+    Exit;
+
+  ProcAddr := TJclAddr(Proc);
+  CallAddr := TJclAddr(InstructionAddr);
+
+  // Prolog: stackframe
+  StackFrameFound := 0;
+  EspChangeFound := False;
+  if ProcAddr < CallAddr then
+  begin
+    P := PByteArray(ProcAddr);
+    if (P[0] = $55) and                                           // PUSH EBP
+       (P[1] = $8B) and (P[2] = $EC) then                         // MOV EBP,ESP
+    begin
+      LocalVarStackOffset := PointerSize; // EBP
+      StackFrameFound := 1; // Epilog must end with "POP EBP"
+      Inc(ProcAddr, 3);
+    end
+    else if (P[0] = $C8) and (ProcAddr + 4 < CallAddr) then  // ENTER Size(Word), NestingLevel(Byte)
+    begin
+      LocalVarStackOffset := PointerSize + PWord(@P[1])^ + PointerSize*P[3]; // EBP + Size + 4*NestingLevel
+      StackFrameFound := -1; // Epilog must end with "LEAVE"
+      Inc(ProcAddr, 4);
+    end;
+  end;
+
+  if StackFrameFound = 0 then
+  begin
+    // Prolog: save registers
+
+    // If we have no stackframe, then the compiler saves the registers before allocating stack variables.
+
+    // RegisterStackOffset is preliminary because it may be reset by Epilog's POP code that is more
+    // accurate because we can't distinguish between the save register and an immediatelly following
+    // function parameter "PUSH".
+    ProcAddr := ParseSaveRegisters(ProcAddr, CallAddr, {var} RegisterStackOffset);
+
+    // Prolog: no stackframe + stack address validation
+    Size := 0;
+    if RegisterStackOffset >= PointerSize then
+    begin
+      // If there is a "push eax", then the ParseSaveRegisters handled it, but it may be the
+      // stack validation's "push eax".
+      Size := CheckStackAddressValidation(ProcAddr - 1{push eax}, CallAddr, {var} LocalVarStackOffset, {var} EspChangeFound);
+      if Size > 0 then
+      begin
+        Dec(RegisterStackOffset, PointerSize);
+        Dec(ProcAddr);
+      end;
+    end;
+    if Size = 0 then
+      Size := CheckStackAddressValidation(ProcAddr, CallAddr, {var} LocalVarStackOffset, {var} EspChangeFound);
+    Inc(ProcAddr, Size);
+
+    ParseEspChange(ProcAddr, CallAddr, LocalVarStackOffset, {var} EspChangeFound);
+  end
+  else
+  begin
+    // Prolog: stackframe + stack address validation
+    Size := CheckStackAddressValidation(ProcAddr, CallAddr, {var} LocalVarStackOffset, {var} EspChangeFound);
+    Inc(ProcAddr, Size);
+
+    ProcAddr := ParseEspChange(ProcAddr, CallAddr, LocalVarStackOffset, {var} EspChangeFound);
+
+    // If we have a stackframe, then the compiler saves the registers after allocating stack variables.
+    ParseSaveRegisters(ProcAddr, CallAddr, {var} RegisterStackOffset);
+  end;
+
+  ProcAddr := CallAddr;
+
+  // Find the epilog to obtain the ParamStackOffset (would be much easier and less guess work
+  // if we knew the exact function's end address)
+  while ProcAddr < ModuleEndAddr do
+  begin
+    // fast forward find for RET / RET imm16
+    while (ProcAddr < ModuleEndAddr) and not (PByteArray(ProcAddr)[0] in [$C3, $C2]) do
+      Inc(ProcAddr);
+
+    // We may have found the RET of a finally clause
+    P := PByteArray(ProcAddr);
+    if (ProcAddr + 7 < ModuleEndAddr) and // skip "finally" code
+       (P[0] = $C3) and                            // C3               ret
+       (P[1] = $E9) and                            // E91821FAFF       jmp @HandleFinally
+       (P[6] = $EB) and (ShortInt(P[7]) < 0) then  // EBF8             jmp imm8
+    begin
+      Inc(ProcAddr, 8);
+    end
+    else if (ProcAddr + 10 < ModuleEndAddr) and // skip "finally" code
+       (P[0] = $C3) and                               // C3               ret
+       (P[1] = $E9) and                               // E91821FAFF       jmp @HandleFinally
+       (P[6] = $E9) and (PInteger(@P[7])^ < 0) then   // E9xxxxxxxx       jmp imm32
+    begin
+      Inc(ProcAddr, 11);
+    end
+    else
+    begin
+      if (P[0] = $C3) or ((P[0] = $C2) and (ProcAddr + 3 < ModuleEndAddr)) then
+      begin
+        EpilogAddr := ProcAddr;
+        PossibleEndFound := False;
+        if StackFrameFound = 1 then
+        begin
+          // If we have a stackframe, then we verify that the stackframe is cleared to check
+          // if we found a valid "RET"
+          if EspChangeFound then
+            EpilogAddr := EpilogAddr - 3
+          else
+            EpilogAddr := EpilogAddr - 1;
+
+          if EpilogAddr >= CallAddr then
+          begin
+            P := PByteArray(EpilogAddr);
+            if EspChangeFound and
+               (P[0] = $8B) and (P[1] = $E5) and  // 8BE5             mov esp,ebp
+               (P[2] = $5D) then                  // 5D               pop ebp
+            begin
+              Dec(EpilogAddr);
+              PossibleEndFound := True;
+            end
+            else if not EspChangeFound and
+               (P[0] = $5D) then                  // 5D               pop ebp
+            begin
+              Dec(EpilogAddr);
+              PossibleEndFound := True;
+            end;
+          end;
+        end
+        else if StackFrameFound = -1 then
+        begin
+          // If we have a ENTER/LEAVE stackframe, then we verify that the stackframe is cleared
+          // to check if we found a valid "RET"
+          Dec(EpilogAddr);
+          P := PByteArray(EpilogAddr);
+          if (EpilogAddr >= CallAddr) and (P[0] = $C9) then  // LEAVE
+          begin
+            Dec(EpilogAddr);
+            PossibleEndFound := True;
+          end;
+        end
+        else
+        begin
+          // If we have no stackframe, then we can't verify the validity of the "RET" here
+          EpilogAddr := EpilogAddr - 1;
+          PossibleEndFound := True;
+        end;
+
+        if PossibleEndFound then
+        begin
+          if GetLocationInfo(Pointer(EpilogAddr), EpilogInfo) and
+             (TJclAddr(EpilogInfo.OffsetFromProcName) <> EpilogAddr - TJclAddr(Proc)) then
+          begin
+            // If we didn't find a RET in the same procedure then the analysis failed
+            Exit;
+          end;
+
+          if PossibleEndFound then
+          begin
+            // If we have registers saved on the stack, we can use those to verify if the
+            // found "RET" is valid.
+            RegStackOffset := RegisterStackOffset;
+            if CheckRegisterRestoreBackwards(EpilogAddr, CallAddr, {var} RegStackOffset) then
+            begin
+              if (StackFrameFound = 0) and EspChangeFound then
+              begin
+                // If we have local variables (ESP was changed in the prolog) we can use that
+                // information to verify the "RET"
+                EpilogAddr := EpilogAddr - TJclAddr(RegStackOffset) div PointerSize;
+                if not CheckEspChangeBackwards(EpilogAddr, CallAddr) then
+                  PossibleEndFound := False;
+              end;
+
+              if PossibleEndFound then
+              begin
+                RegisterStackOffset := RegStackOffset;
+                if PByte(ProcAddr)^ = $C2 then
+                  ParamStackOffset := PWord(ProcAddr + 1)^
+                else
+                begin
+                  // TODO: if we only have a "RET" at the end we need to look at the call instruction
+                  // if it is followed by a "sub/add esp,xx" for a "cdecl" function. (What if the add/sub
+                  // is for the caller's epilog?)
+                end;
+                Break;
+              end;
+            end;
+          end;
+        end;
+      end;
+      Inc(ProcAddr);
+    end;
+  end;
+
+  Inc(LocalVarStackOffset, RegisterStackOffset);
+
+  Result := True;
 end;
 
 procedure TJclStackInfoList.TraceStackRaw;
@@ -5668,6 +6140,11 @@ var
   PrevCaller: TJclAddr;
   CallInstructionSize: Cardinal;
   StackTop: TJclAddr;
+  ProcInfo: TJclLocationInfo;
+  ProcStart: Pointer;
+  CallInstructionPtr: Pointer;
+  LocalVarStackOffset, ParamStackOffset: Integer;
+  ModuleEndAddr: TJclAddr;
 begin
   Capacity := 32; // reduce ReallocMem calls, must be > 1 because the caller's EIP register is already in the list
 
@@ -5688,37 +6165,77 @@ begin
 
   StackTop := TopOfStack;
 
-  if Count > 0 then
-    StackPtr := SearchForStackPtrManipulation(StackPtr, Pointer(Items[0].StackInfo.CallerAddr));
-
   // We will not be able to fill in all the fields in the StackInfo record,
   // so just blank it all out first
   ResetMemory(StackInfo, SizeOf(StackInfo));
   // Clear the previous call address
   PrevCaller := 0;
+  // stCleanRawStack: We don't know the number of parameters for the "initial" function
+  ParamStackOffset := 0;
+  if stCleanRawStack in JclStackTrackingOptions then
+    BeginGetLocationInfoCache; // speed up the GetLocationInfo calls
   // Loop through all of the valid stack space
-  while (TJclAddr(StackPtr) < StackTop) and (inherited Count <> MaxStackTraceItems) do
-  begin
-    // If the current DWORD on the stack refers to a valid call site...
-    if ValidCallSite(StackPtr^, CallInstructionSize) and (StackPtr^ <> PrevCaller) then
+  try
+    while (TJclAddr(StackPtr) < StackTop) and (inherited Count <> MaxStackTraceItems) do
     begin
-      // then pick up the callers address
-      StackInfo.CallerAddr := StackPtr^ - CallInstructionSize;
-      // remember to callers address so that we don't report it repeatedly
-      PrevCaller := StackPtr^;
-      // increase the stack level
-      Inc(StackInfo.Level);
-      // then report it back to our caller
-      StoreToList(StackInfo);
-      StackPtr := SearchForStackPtrManipulation(StackPtr, Pointer(StackInfo.CallerAddr));
+      // If the current DWORD on the stack refers to a valid call site...
+      if ValidCallSite(StackPtr^, CallInstructionSize) and (StackPtr^ <> PrevCaller) then
+      begin
+        // then pick up the callers address
+        StackInfo.CallerAddr := StackPtr^ - CallInstructionSize;
+        // remember to callers address so that we don't report it repeatedly
+        PrevCaller := StackPtr^;
+        // increase the stack level
+        Inc(StackInfo.Level);
+        // then report it back to our caller
+        StoreToList(StackInfo);
+
+        if stCleanRawStack in JclStackTrackingOptions then
+        begin
+          // Skip all stack parameters of the last called function
+          Inc(PByte(StackPtr), ParamStackOffset);
+          ParamStackOffset := 0;
+
+          CallInstructionPtr := Pointer(StackInfo.CallerAddr);
+          if GetLocationInfo(CallInstructionPtr, ProcInfo) then
+          begin
+            if ProcInfo.ProcedureName <> '' then
+            begin
+              if (ProcInfo.ProcedureName[1] = '@') and (ProcInfo.ProcedureName = '@RaiseExcept$qqrv') then
+              begin
+                // Special handling for _RaiseExcept because it does a lot to the stack including
+                // putting the ExceptAddr multiple times on the stack causing TraceStackInstuctions to
+                // change the StackPtr to the wrong locations.
+                LocalVarStackOffset := 17 * SizeOf(Pointer);
+                ParamStackOffset := 6 * SizeOf(Pointer);
+
+                Inc(PByte(StackPtr), LocalVarStackOffset);
+              end
+              else
+              begin
+                ProcStart := Pointer(TJclAddr(CallInstructionPtr) - TJclAddr(ProcInfo.OffsetFromProcName));
+                ModuleEndAddr := TJclAddr(ProcInfo.DebugInfo.Module) + ModuleCodeOffset + TJclAddr(ProcInfo.DebugInfo.ModuleCodeSize);
+                if TraceStackInstuctions(ProcStart, CallInstructionPtr, ModuleEndAddr, LocalVarStackOffset, ParamStackOffset) then
+                  Inc(PByte(StackPtr), LocalVarStackOffset) // skip all local variables (and saved registers)
+                else
+                  ParamStackOffset := 0; // Don't skip stack entries if TraceStackInstuctions failed
+              end;
+            end;
+          end;
+        end;
+      end;
+      // Look at the next DWORD on the stack
+      Inc(StackPtr);
     end;
-    // Look at the next DWORD on the stack
-    Inc(StackPtr);
-  end;
-  if Assigned(FStackData) then
-  begin
-    FreeMem(FStackData);
-    FStackData := nil;
+  finally
+    if stCleanRawStack in JclStackTrackingOptions then
+      EndGetLocationInfoCache;
+
+    if Assigned(FStackData) then
+    begin
+      FreeMem(FStackData);
+      FStackData := nil;
+    end;
   end;
 end;
 
@@ -7288,6 +7805,25 @@ begin
     HexMap[Ch] := Ord(Ch) - (Ord('A') - 10);
 end;
 
+procedure FreeJclDebugGlobals;
+begin
+  {$IFDEF HAS_EXCEPTION_STACKTRACE}
+  ResetExceptionProcs;
+  {$ENDIF HAS_EXCEPTION_STACKTRACE}
+
+  FreeAndNil(RegisteredThreadList);
+  FreeAndNil(DebugInfoList);
+  FreeAndNil(GlobalStackList);
+  FreeAndNil(GlobalModulesList);
+  FreeAndNil(DebugInfoCritSect);
+  FreeAndNil(InfoSourceClassList);
+  FreeAndNil(IgnoredExceptions);
+  FreeAndNil(IgnoredExceptionClassNames);
+  FreeAndNil(IgnoredExceptionClassNamesCritSect);
+
+  TJclDebugInfoSymbols.CleanupDebugSymbols;
+end;
+
 initialization
   InitHexMap;
   DebugInfoCritSect := TJclCriticalSection.Create;
@@ -7302,9 +7838,6 @@ initialization
   {$ENDIF HAS_EXCEPTION_STACKTRACE}
 
 finalization
-  {$IFDEF HAS_EXCEPTION_STACKTRACE}
-  ResetExceptionProcs;
-  {$ENDIF HAS_EXCEPTION_STACKTRACE}
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
@@ -7314,16 +7847,9 @@ finalization
     safely because we need to be covered by JclHookExcept.Notifiers critical section }
   JclStopExceptionTracking;
 
-  FreeAndNil(RegisteredThreadList);
-  FreeAndNil(DebugInfoList);
-  FreeAndNil(GlobalStackList);
-  FreeAndNil(GlobalModulesList);
-  FreeAndNil(DebugInfoCritSect);
-  FreeAndNil(InfoSourceClassList);
-  FreeAndNil(IgnoredExceptions);
-  FreeAndNil(IgnoredExceptionClassNames);
-  FreeAndNil(IgnoredExceptionClassNamesCritSect);
-
-  TJclDebugInfoSymbols.CleanupDebugSymbols;
+  GlobalStackList.Clear;
+  JclDebugFinalized := True;
+  if GlobalStackListLiveCount = 0 then
+    FreeJclDebugGlobals;
 
 end.
