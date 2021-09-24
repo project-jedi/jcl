@@ -976,11 +976,12 @@ uses
   {$IFDEF HAS_UNITSCOPE}
   Winapi.Windows, // inline of AnsiSameText
   System.Types, // inline TObjectList.Remove
+  System.Math,
   {$ELSE ~HAS_UNITSCOPE}
   Windows, // inline of AnsiSameText
+  Math,
   {$ENDIF ~HAS_UNITSCOPE}
   {$ENDIF SUPPORTS_INLINE}
-  Math,
   JclStrings;
 
 {$IFDEF RTL150_UP}
@@ -1198,7 +1199,7 @@ begin
       etPercent:
         begin
           Result := NodeFactory.Divide(Result, NodeFactory.LoadConst(100));
-          Lexer.NextTok;
+          Lexer.NextTok;             // Other operators calls NextTok via CompileExprLevel3(True)
         end;
       etIdentifier: // div, mod, and, shl, shr, band
         if AnsiSameText(Lexer.TokenAsString, 'div') then
@@ -1435,7 +1436,7 @@ begin
       etPercent:
         begin
           Result := Result / 100;
-          Lexer.NextTok;
+          Lexer.NextTok;        // Other operators calls NextTok via EvalExprLevel3(True)
         end;
       etIdentifier: // div, mod, and, shl, shr, band
         if AnsiSameText(Lexer.TokenAsString, 'div') then
