@@ -978,12 +978,15 @@ uses
   {$IFDEF HAS_UNITSCOPE}
   Winapi.Windows, // inline of AnsiSameText
   System.Types, // inline TObjectList.Remove
-  System.Math,
   {$ELSE ~HAS_UNITSCOPE}
   Windows, // inline of AnsiSameText
-  Math,
   {$ENDIF ~HAS_UNITSCOPE}
   {$ENDIF SUPPORTS_INLINE}
+  {$IFDEF HAS_UNITSCOPE}
+  System.Math,
+  {$ELSE ~HAS_UNITSCOPE}
+  Math,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclStrings;
 
 {$IFDEF RTL150_UP}
