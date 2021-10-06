@@ -257,7 +257,7 @@ type
     wvWin2003, wvWinXP64, wvWin2003R2, wvWinVista, wvWinServer2008,
     wvWin7, wvWinServer2008R2, wvWin8, wvWin8RT, wvWinServer2012,
     wvWin81, wvWin81RT, wvWinServer2012R2, wvWin10, wvWinServer2016,
-    wvWinServer2019, wvWinServer);
+    wvWinServer2019, wvWinServer, wvWin11);
   TWindowsEdition =
    (weUnknown, weWinXPHome, weWinXPPro, weWinXPHomeN, weWinXPProN, weWinXPHomeK,
     weWinXPProK, weWinXPHomeKN, weWinXPProKN, weWinXPStarter, weWinXPMediaCenter,
@@ -309,6 +309,7 @@ var
   IsWinServer2016: Boolean = False;
   IsWinServer2019: Boolean = False;
   IsWinServer: Boolean = False;
+  IsWin11: Boolean = False;
 
 const
   PROCESSOR_ARCHITECTURE_INTEL = 0;
@@ -326,6 +327,7 @@ function NtProductType: TNtProductType;
 function GetWindowsVersionString: string;
 function GetWindowsEditionString: string;
 function GetWindowsProductString: string;
+function GetWindowsProductName: string;
 function NtProductTypeString: string;
 function GetWindowsBuildNumber: Integer;
 function GetWindowsMajorVersionNumber: Integer;
@@ -3525,7 +3527,7 @@ begin
 
           if Win32MinorVersion = 2 then
           begin
-            ProductName := RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'ProductName', '');
+            ProductName := RegReadStringDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_NT, 'ProductName', '');
             if (Pos(RsOSVersionWin81, ProductName) = 1) or (Pos(RsOSVersionWinServer2012R2, ProductName) = 1) then
               Win32MinorVersionEx := 3 // Windows 8.1 and Windows Server 2012R2
             else
@@ -3617,10 +3619,14 @@ begin
               // Windows 10 (builds >= 9926), Windows Server 2016 (builds >= 10074) and beyond
               OSVersionInfoEx.dwOSVersionInfoSize := SizeOf(OSVersionInfoEx);
               if GetVersionEx(OSVersionInfoEx) and (OSVersionInfoEx.wProductType = VER_NT_WORKSTATION) then
-                Result := wvWin10
-              else
               begin
-                WindowsReleaseId := StrToIntDef(RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'ReleaseId', '0'), -1);
+                if GetWindowsBuildNumber >= 22000 then
+                  Result := wvWin11
+                else
+                  Result := wvWin10
+              end else
+              begin
+                WindowsReleaseId := StrToIntDef(RegReadStringDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_NT, 'ReleaseId', '0'), -1);
                 case WindowsReleaseId of
                   1607:
                     Result := wvWinServer2016;
@@ -3638,13 +3644,11 @@ begin
 end;
 
 function GetWindowsEdition: TWindowsEdition;
-const
-  ProductName = 'SOFTWARE\Microsoft\Windows NT\CurrentVersion';
 var
   Edition: string;
 begin
   Result := weUnknown;
-  Edition := RegReadStringDef(HKEY_LOCAL_MACHINE, ProductName, 'ProductName', '');
+  Edition := RegReadStringDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_NT, 'ProductName', '');
 
   // Remove (tm) in 'Windows (TM) Vista Ultimate'
   Edition := StringReplace(Edition, '(TM) ', '', [rfReplaceAll, rfIgnoreCase]);
@@ -3768,7 +3772,7 @@ begin
   else
   if Pos('Windows 10', Edition) = 1 then
   begin
-   // Windows 10 Editions
+   // Windows 10/11 Editions
    if Pos('Home', Edition) > 0 then
       Result := weWin10Home
    else
@@ -3861,7 +3865,7 @@ begin
   begin
     if GetVersionEx(OSVersionInfo) then
     begin
-      //if IsWinXP or IsWinVista or IsWin7 or IsWin8 or IsWin81 or IsWin10 then
+      //if IsWinXP or IsWinVista or IsWin7 or IsWin8 or IsWin81 or IsWin10 or IsWin11 then
       if OSVersionInfo.wProductType = VER_NT_WORKSTATION then // workstation
       begin
         if (OSVersionInfo.wSuiteMask and VER_SUITE_PERSONAL) = VER_SUITE_PERSONAL then
@@ -3956,6 +3960,8 @@ begin
       Result := LoadResString(@RsOSVersionWinServer2019);
     wvWinServer:
       Result := LoadResString(@RsOSVersionWinServer);
+    wvWin11:
+      Result := LoadResString(@RsOSVersionWin11);
   else
     Result := '';
   end;
@@ -4046,6 +4052,11 @@ begin
     Result := Result + ' ' + GetWindowsEditionString;
 end;
 
+function GetWindowsProductName: string;
+begin
+  Result := RegReadStringDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_NT, 'ProductName', '');
+end;
+
 function NtProductTypeString: string;
 begin
   case NtProductType of
@@ -4076,7 +4087,7 @@ begin
   // application as Windows 8 (kernel version 6.2) until an application manifest is included
   // See https://msdn.microsoft.com/en-us/library/windows/desktop/dn302074.aspx
   if ((Win32MajorVersion = 6) and (Win32MinorVersion = 2)) or (Win32MajorVersion = 10) then
-    Result := StrToInt(RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'CurrentBuildNumber', IntToStr(Win32BuildNumber)))
+    Result := StrToInt(RegReadStringDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_NT, 'CurrentBuildNumber', IntToStr(Win32BuildNumber)))
   else
     Result := Win32BuildNumber;
 end;
@@ -4092,10 +4103,10 @@ begin
   begin
     // CurrentMajorVersionNumber present in registry starting with Windows 10
     // If CurrentMajorVersionNumber not present in registry then use CurrentVersion
-    Result := RegReadIntegerDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'CurrentMajorVersionNumber', -1);
+    Result := RegReadIntegerDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_NT, 'CurrentMajorVersionNumber', -1);
     if Result = -1 then
     begin
-      Ver := RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'CurrentVersion', IntToStr(Win32MajorVersion) + '.' + IntToStr(Win32MinorVersion));
+      Ver := RegReadStringDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_NT, 'CurrentVersion', IntToStr(Win32MajorVersion) + '.' + IntToStr(Win32MinorVersion));
       Result := StrToIntDef(Copy(Ver, 1, Pos('.', Ver) - 1), 2); // don't use StrBefore because it uses StrCaseMap that may not be initialized yet
     end;
   end
@@ -4114,10 +4125,10 @@ begin
   begin
     // CurrentMinorVersionNumber present in registry starting with Windows 10
     // If CurrentMinorVersionNumber not present then use CurrentVersion
-    Result := RegReadIntegerDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'CurrentMinorVersionNumber', -1);
+    Result := RegReadIntegerDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_NT, 'CurrentMinorVersionNumber', -1);
     if Result = -1 then
     begin
-      Ver := RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'CurrentVersion', IntToStr(Win32MajorVersion) + '.' + IntToStr(Win32MinorVersion));
+      Ver := RegReadStringDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_NT, 'CurrentVersion', IntToStr(Win32MajorVersion) + '.' + IntToStr(Win32MinorVersion));
       Result := StrToIntDef(Copy(Ver, Pos('.', Ver) + 1, Length(Ver)), 2);  // don't use StrAfter because it uses StrCaseMap that may not be initialized yet
     end;
   end
@@ -4167,8 +4178,8 @@ end;
 function GetWindows10DisplayVersion: string;
 begin
   // Starting with Windows 10 20H2, the DisplayVersion registry entry is being populated ("20H2")
-  if IsWin10 then
-    Result := RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'DisplayVersion', '')
+  if IsWin10 or IsWin11 then
+    Result := RegReadStringDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_NT, 'DisplayVersion', '')
   else
     Result := '';
 end;
@@ -4177,8 +4188,8 @@ function GetWindows10ReleaseId: Integer;
 begin
   // Starting with Windows 10 21H1, the ReleaseId registry entry is no more incremented (still populated as "2009" like Windows 10 20H2)
   // and the DisplayVersion registry entry is to be used instead ("20H2")
-  if IsWin10 then
-    Result := StrToIntDef(RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'ReleaseId', '0'), -1)
+  if IsWin10 or IsWin11 then
+    Result := StrToIntDef(RegReadStringDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_NT, 'ReleaseId', '0'), -1)
   else
     Result := -1;
 end;
@@ -4187,7 +4198,7 @@ function GetWindows10ReleaseName: String;
 var
   WindowsDisplayVersion: string;
 begin
-  if IsWin10 then
+  if IsWin10 or IsWin11 then
   begin
     case GetWindows10ReleaseId of
       1507:
@@ -4231,7 +4242,7 @@ end;
 
 function GetWindows10ReleaseCodeName: String;
 begin
-  if IsWin10 then
+  if IsWin10 or IsWin11 then
   begin
     case GetWindows10ReleaseId of
       1507:
@@ -4268,7 +4279,7 @@ function GetWindows10ReleaseVersion: String;
 var
   WindowsReleaseId: Integer;
 begin
-  if IsWin10 then
+  if IsWin10 or IsWin11 then
   begin
     WindowsReleaseId := GetWindows10ReleaseId;
     if WindowsReleaseId > 0 then
@@ -4288,7 +4299,7 @@ end;
 function GetWindowsServerDisplayVersion: string;
 begin
   if IsWinServer then
-    Result := RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'DisplayVersion', '')
+    Result := RegReadStringDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_NT, 'DisplayVersion', '')
   else
     Result := '';
 end;
@@ -4296,7 +4307,7 @@ end;
 function GetWindowsServerReleaseId: Integer;
 begin
   if IsWinServer then
-    Result := StrToIntDef(RegReadStringDef(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'ReleaseId', '0'), -1)
+    Result := StrToIntDef(RegReadStringDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_NT, 'ReleaseId', '0'), -1)
   else
     Result := -1;
 end;
@@ -6440,6 +6451,8 @@ begin
       IsWinServer2019 := True;
     wvWinServer:
       IsWinServer := True;
+    wvWin11:
+      IsWin11 := True;
   end;
 end;
 
