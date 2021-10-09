@@ -237,7 +237,7 @@ var
     0:
       (Bytes: array [0..2] of Byte);
     1:
-      (DWord: LongWord);
+      (DWord: FixedUInt);
   end;
 begin
   if High(Data) < 3 then

@@ -179,7 +179,7 @@ end;
 function BinomialCoeff(N, R: Cardinal): Float;
 var
   I: Integer;
-  K: LongWord;
+  K: FixedUInt;
 begin
   if (N = 0) or (R > N) or (N > MaxFactorial) then
   begin

@@ -3368,7 +3368,7 @@ end;
 
 procedure MakeQuietNaN(var X: Single; Tag: TNaNTag);
 var
-  Bits: LongWord;
+  Bits: FixedUInt;
 begin
   CheckTag(Tag);
   if Tag = 0 then
@@ -3377,7 +3377,7 @@ begin
     Bits := Abs(Tag) or sQuietNaNBits;
   if Tag < 0 then
     Include(TSingleBits(Bits), sSignBit);
-  PLongWord(@X)^ := Bits;
+  PFixedUInt(@X)^ := Bits;
 end;
 
 procedure MakeQuietNaN(var X: Double; Tag: TNaNTag);

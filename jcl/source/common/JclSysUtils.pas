@@ -63,6 +63,9 @@ uses
   {$IFDEF HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
   Winapi.Windows,
+  {$ELSE MSWINDOWS}
+  Posix.Unistd,
+  System.IOUtils,
   {$ENDIF MSWINDOWS}
   System.SysUtils, System.Classes, System.TypInfo, System.SyncObjs,
   {$ELSE ~HAS_UNITSCOPE}
@@ -898,11 +901,7 @@ implementation
 
 uses
   {$IFDEF HAS_UNIT_LIBC}
-  //{$IFNDEF FPC}
-  //Libc,
-  //{$ELSE}
   libclite,
-  //{$ENDIF ~FPC}
   {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF MSWINDOWS}
   JclConsole,
@@ -3300,13 +3299,13 @@ begin
       else
         Options.FError := InternalExecuteMuteCRTerminatedLines(ErrorPipeInfo.Line);
 {$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
+{$IFDEF LINUX}
 var
   PipeBytesRead: Cardinal;
-{$IFDEF FPC}
-  Pipe: PIOFile;
-{$ENDIF FPC}
-  Cmd, OutLine: string;
+  Pipe: P_IO_FILE;
+  Cmd: UTF8String;
+  OutLine: string;
+  //PName, FoundName: string;
   OutBuffer: TBuffer;
 
   procedure ProcessLine(const Line: string; LineEnd: Integer);
@@ -3315,7 +3314,9 @@ var
     begin
       while (LineEnd > 0) and CharIsReturn(Line[LineEnd]) do
         Dec(LineEnd);
-      Options.OutputLineCallback(Copy(Line, 1, LineEnd));
+      Options.FOutput := Options.FOutput + Copy(Line, 1, LineEnd) + NativeCarriageReturn;
+      if Assigned(Options.OutputLineCallback) then
+        Options.OutputLineCallback(Copy(Line, 1, LineEnd));
     end;
   end;
 
@@ -3325,7 +3326,7 @@ var
       begin
         Buffer[PipeBytesRead] := #0;
         Line := Line + string(Buffer);
-        if Assigned(Options.OutputLineCallback) then
+        //if Assigned(Options.OutputLineCallback) then
         repeat
           CR := Pos(NativeCarriageReturn, Line);
           if CR = Length(Line) then
@@ -3342,11 +3343,22 @@ var
       end;
 
 begin
-  Cmd := Format('%s 2>&1', [Options.CommandLine]);
-{$IFDEF FPC}
+  {if not Options.CommandLine.StartsWith(TPath.DirectorySeparatorChar) then
+  begin
+   PName := Copy(Options.CommandLine, 1, Pos(' ', Options.CommandLine) - 1);
+   if not TFile.Exists(PName) then
+   begin
+     FoundName := System.SysUtils.FileSearch(Pname, GetEnvironmentVariable('PATH'));
+     if FoundName <> '' then
+       Options.CommandLine := FoundName + Copy(Options.CommandLine, Length(PName) + 1, MaxInt);
+   end;
+  end;}
+  Cmd := UTF8String(Format('%s 2>&1', [Options.CommandLine]));
+  //  Result := False;
+  //{$IFDEF FPC}
   Pipe := nil;
   try
-    Pipe := popen(PChar(Cmd), 'r');
+    Pipe := popen(PAnsiChar(Cmd), 'r');
     { TODO : handle Abort }
     repeat
       PipeBytesRead := fread_unlocked(@OutBuffer, 1, BufferSize, Pipe);
@@ -3361,8 +3373,8 @@ begin
       pclose(Pipe);
     wait(nil);
   end;
-{$ENDIF FPC}
-{$ENDIF UNIX}
+  //{$ENDIF FPC}
+{$ENDIF LINUX}
 end;
 
 function InternalExecute(const CommandLine: string; AbortPtr: PBoolean; AbortEvent: TJclEvent;
@@ -3578,7 +3590,9 @@ var
   SaveTerminalSettings: TTermIos;
   RawTerminalSettings: TTermIos;
 begin
+  {$IFDEF MSWINDOWS}
   Result := #0;
+  {$ENDIF}
 
   //Save Original Terminal Settings
   tcgetattr(stdin, SaveTerminalSettings);
@@ -3631,7 +3645,7 @@ end;
 {$ENDIF UNIX}
 
 function LoadModuleEx(var Module: TModuleHandle; const FileName: string; Flags:
-    Cardinal): Boolean;
+  Cardinal): Boolean;
 {$IFDEF MSWINDOWS}
 begin
   if Module = INVALID_MODULEHANDLE_VALUE then
@@ -3680,7 +3694,7 @@ end;
 {$ENDIF UNIX}
 
 function GetModuleSymbolEx(Module: TModuleHandle; const SymbolName: string; var
-    Accu: Boolean): Pointer;
+  Accu: Boolean): Pointer;
 {$IFDEF MSWINDOWS}
 begin
   Result := nil;
@@ -3699,7 +3713,7 @@ end;
 {$ENDIF UNIX}
 
 function ReadModuleData(Module: TModuleHandle; const SymbolName: string; var
-    Buffer; Size: Cardinal): Boolean;
+  Buffer; Size: Cardinal): Boolean;
 var
   Sym: Pointer;
 begin
@@ -3710,7 +3724,7 @@ begin
 end;
 
 function WriteModuleData(Module: TModuleHandle; const SymbolName: string; var
-    Buffer; Size: Cardinal): Boolean;
+  Buffer; Size: Cardinal): Boolean;
 var
   Sym: Pointer;
 begin

@@ -133,7 +133,7 @@ procedure perror(__s:Pchar);cdecl;external clib name 'perror';
 
 function fileno_unlocked(__stream:PFILE):longint;cdecl;external clib name 'fileno_unlocked';
 
-function popen(__command:PChar; __type:Pchar):PFILE;cdecl;external clib name 'popen';
+function popen(__command:PAnsiChar; __type:Pansichar):PFILE;cdecl;external clib name 'popen';
 function pclose(__stream:PFILE):longint;cdecl;external clib name 'pclose';
 function ctermid(__s:Pchar):Pchar;cdecl;external clib name 'ctermid';
 function cuserid(__s:Pchar):Pchar;cdecl;external clib name 'cuserid';

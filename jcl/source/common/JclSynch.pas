@@ -216,7 +216,7 @@ type
     SpinCount: Integer;      // number of times to try and enter the optex before
                              // waiting on kernel event, 0 on single processor
     LockCount: Integer;      // count of enter attempts
-    ThreadId: Longword;      // id of thread that owns the optex, 0 if free
+    ThreadId: FixedUInt;      // id of thread that owns the optex, 0 if free
     RecursionCount: Integer; // number of times the optex is owned, 0 if free
   end;
 
@@ -247,7 +247,7 @@ type
   TMrewPreferred = (mpReaders, mpWriters, mpEqual);
 
   TMrewThreadInfo = record
-    ThreadId: Longword;      // client-id of thread
+    ThreadId: FixedUInt;      // client-id of thread
     RecursionCount: Integer; // number of times a thread accessed the mrew
     Reader: Boolean;         // true if reader, false if writer
   end;
@@ -264,9 +264,9 @@ type
     FThreads: TMrewThreadInfoArray;
     FWaitingReaders: Integer;
     FWaitingWriters: Integer;
-    procedure AddToThreadList(ThreadId: Longword; Reader: Boolean);
+    procedure AddToThreadList(ThreadId: FixedUInt; Reader: Boolean);
     procedure RemoveFromThreadList(Index: Integer);
-    function FindThread(ThreadId: Longword): Integer;
+    function FindThread(ThreadId: FixedUInt): Integer;
     procedure ReleaseWaiters(WasReading: Boolean);
   protected
     procedure Release;
@@ -312,7 +312,7 @@ type
     constructor Create(InitialCount, MaxCount: Longint; const Name: string);
     constructor Open(const Name: string);
     destructor Destroy; override;
-    function Enter(TimeOut: Longword): TJclWaitResult;
+    function Enter(TimeOut: FixedUInt): TJclWaitResult;
     function Leave(ReleaseCount: Longint): Boolean; overload;
     function Leave(ReleaseCount: Longint; out PrevCount: Longint): Boolean; overload;
   end;
@@ -1208,7 +1208,7 @@ end;
 
 procedure TJclOptex.Enter;
 var
-  ThreadId: Longword;
+  ThreadId: FixedUInt;
 begin
   if TryEnter then
     Exit;
@@ -1271,7 +1271,7 @@ end;
 
 function TJclOptex.TryEnter: Boolean;
 var
-  ThreadId: Longword;
+  ThreadId: FixedUInt;
   ThreadOwnsOptex: Boolean;
   SpinCount: Integer;
 begin
@@ -1325,7 +1325,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJclMultiReadExclusiveWrite.AddToThreadList(ThreadId: Longword;
+procedure TJclMultiReadExclusiveWrite.AddToThreadList(ThreadId: FixedUInt;
   Reader: Boolean);
 var
   L: Integer;
@@ -1340,7 +1340,7 @@ end;
 
 procedure TJclMultiReadExclusiveWrite.BeginRead;
 var
-  ThreadId: Longword;
+  ThreadId: FixedUInt;
   Index: Integer;
   MustWait: Boolean;
 begin
@@ -1387,7 +1387,7 @@ end;
 
 procedure TJclMultiReadExclusiveWrite.BeginWrite;
 var
-  ThreadId: Longword;
+  ThreadId: FixedUInt;
   Index: Integer;
   MustWait: Boolean;
 begin
@@ -1453,7 +1453,7 @@ begin
   Release;
 end;
 
-function TJclMultiReadExclusiveWrite.FindThread(ThreadId: Longword): Integer;
+function TJclMultiReadExclusiveWrite.FindThread(ThreadId: FixedUInt): Integer;
 var
   I: Integer;
 begin
@@ -1469,7 +1469,7 @@ end;
 
 procedure TJclMultiReadExclusiveWrite.Release;
 var
-  ThreadId: Longword;
+  ThreadId: FixedUInt;
   Index: Integer;
   WasReading: Boolean;
 begin
@@ -1681,7 +1681,7 @@ begin
   end;
 end;
 
-function TJclMeteredSection.Enter(TimeOut: Longword): TJclWaitResult;
+function TJclMeteredSection.Enter(TimeOut: FixedUInt): TJclWaitResult;
 begin
   Result := wrSignaled;
   while Result = wrSignaled do

@@ -57,11 +57,7 @@ uses
   Contnrs,
   {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF HAS_UNIT_LIBC}
-  //{$IFNDEF FPC}
-  //Libc,
-  ///{$ELSE}
   libclite,
-  //{$ENDIF ~FPC}
   {$ENDIF HAS_UNIT_LIBC}
   JclBase, JclStringConversions;
 
@@ -698,16 +694,20 @@ function CompareFiles(const FileA, FileB: TFileName; BufferSize: Longint): Boole
 var
   A, B: TStream;
 begin
-  A := TFileStream.Create(FileA, fmOpenRead or fmShareDenyWrite);
   try
-    B := TFileStream.Create(FileB, fmOpenRead or fmShareDenyWrite);
+    A := TFileStream.Create(FileA, fmOpenRead or fmShareDenyWrite);
     try
-      Result := CompareStreams(A, B, BufferSize);
+      B := TFileStream.Create(FileB, fmOpenRead or fmShareDenyWrite);
+      try
+        Result := CompareStreams(A, B, BufferSize);
+      finally
+        B.Free;
+      end;
     finally
-      B.Free;
+      A.Free;
     end;
-  finally
-    A.Free;
+  except
+   Exit(False);
   end;
 end;
 

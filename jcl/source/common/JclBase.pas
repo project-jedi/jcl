@@ -107,7 +107,7 @@ type
   Int32 = Integer;
   UInt8 = Byte;
   UInt16 = Word;
-  UInt32 = LongWord;
+  UInt32 = FixedUInt;
   PCardinal = ^Cardinal;
   {$IFNDEF COMPILER7_UP}
   UInt64 = Int64;
@@ -123,6 +123,10 @@ type
 // Int64 support
 procedure I64ToCardinals(I: Int64; out LowPart, HighPart: Cardinal);
 procedure CardinalsToI64(out I: Int64; const LowPart, HighPart: Cardinal);
+
+{$IFNDEF MSWINDOWS}
+function Succeeded(Res: HResult): Boolean;
+{$ENDIF}
 
 // Redefinition of TLargeInteger to relieve dependency on Windows.pas
 
@@ -146,20 +150,24 @@ type
 // Redefinition of ULARGE_INTEGER to relieve dependency on Windows.pas
 type
   PULARGE_INTEGER = ^ULARGE_INTEGER;
-  {$IFDEF FPC}
+  //{$IFDEF FPC}
   {$EXTERNALSYM PULARGE_INTEGER}
   ULARGE_INTEGER = record
     case Integer of
     0:
-     (LowPart: LongWord;
-      HighPart: LongWord);
+     (LowPart: FixedUInt;
+      HighPart: FixedUInt);
     1:
      (QuadPart: Int64);
   end;
   {$EXTERNALSYM ULARGE_INTEGER}
-  {$ENDIF ~FPC}
+  //{$ENDIF ~FPC}
   TJclULargeInteger = ULARGE_INTEGER;
   PJclULargeInteger = PULARGE_INTEGER;
+  {$IFNDEF MSWINDOWS}
+  DWORD = FixedUInt;
+  LCID = DWORD;
+  {$ENDIF}
 
   {$IFNDEF COMPILER16_UP}
   LONG = Longint;
@@ -204,9 +212,9 @@ const
   {$IFDEF MSWINDOWS}
   NativeLineBreak      = NativeCrLf;
   {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
+  {$IFDEF LINUX}
   NativeLineBreak      = NativeLineFeed;
-  {$ENDIF UNIX}
+  {$ENDIF LINUX}
 
   HexPrefixPascal = string('$');
   HexPrefixC      = string('0x');
@@ -324,13 +332,17 @@ type // Definitions for 32 Bit Compilers
   {$EXTERNALSYM LONG_PTR}
   UINT_PTR = Cardinal;
   {$EXTERNALSYM UINT_PTR}
-  ULONG_PTR = LongWord;
+  ULONG_PTR = FixedUInt;
   {$EXTERNALSYM ULONG_PTR}
   DWORD_PTR = ULONG_PTR;
   {$EXTERNALSYM DWORD_PTR}
 {$ENDIF ~COMPILER11_UP}
 
 type
+  {$IFNDEF MSWINDOWS}
+  ULONG_PTR = NativeUInt;
+  DWORD_PTR = ULONG_PTR;
+  {$ENDIF}
   PDWORD_PTR = ^DWORD_PTR;
   {$EXTERNALSYM PDWORD_PTR}
 {$ENDIF ~FPC}
@@ -514,6 +526,13 @@ begin
   else
     Result := '';
 end;
+
+{$IFNDEF MSWINDOWS}
+function Succeeded(Res: HResult): Boolean;
+begin
+ Result := Res = S_OK;
+end;
+{$ENDIF}
 
 // Int64 support
 

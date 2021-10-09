@@ -312,9 +312,9 @@ const
   {$IFDEF MSWINDOWS}
   BZip2DefaultLibraryName = 'bzip2.dll'; // from http://gnuwin32.sourceforge.net/
   {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
+  {$IFDEF LINUX}
   BZip2DefaultLibraryName = 'libbz2.so.1';
-  {$ENDIF UNIX}
+  {$ENDIF LINUX}
   BZip2CompressInitDefaultExportName = 'BZ2_bzCompressInit';
   BZip2CompressDefaultExportName = 'BZ2_bzCompress';
   BZip2CompressEndDefaultExportName = 'BZ2_bzCompressEnd';

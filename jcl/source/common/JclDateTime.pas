@@ -70,11 +70,7 @@ uses
   SysUtils,
   {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF HAS_UNIT_LIBC}
-  //{$IFNDEF FPC}
-  //Libc,
-  //{$ELSE FPC}
   libclite,
-  //{$ENDIF ~FPC}
   {$ELSE ~HAS_UNIT_LIBC}
   {$IFDEF LINUX}
   BaseUnix,
@@ -84,9 +80,7 @@ uses
   {$ENDIF ~LINUX}
   {$ENDIF ~LINUX}
   {$ENDIF HAS_UNIT_LIBC}
-  //{$IFDEF FPC}
-  types,
-  //{$ENDIF ~FPC}
+  Types,
   JclBase, JclResources;
 
 const
@@ -189,7 +183,7 @@ function LastAccessDateTimeOfFile(const Sr: TSearchRec): TDateTime;
 function LastWriteDateTimeOfFile(const Sr: TSearchRec): TDateTime;
 
 type
-  TJclUnixTime32 = Longword;
+  TJclUnixTime32 = FixedUInt;
 
 function DateTimeToUnixTime(DateTime: TDateTime): TJclUnixTime32;
 function UnixTimeToDateTime(const UnixTime: TJclUnixTime32): TDateTime;
@@ -685,7 +679,7 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-{$IFDEF UNIX}
+{$IFDEF LINUX}
 {$IFDEF HAS_UNIT_LIBC}
 function DateTimeToLocalDateTime(DateTime: TDateTime): TDateTime;
 var
@@ -711,7 +705,7 @@ begin
   Result := {$IFDEF HAS_UniversalTimeToLocal}UniversalTimeToLocal(DateTime){$ELSE}Result{$ENDIF};
 end;
 {$ENDIF HAS_UNIT_LIBC}
-{$ENDIF UNIX}
+{$ENDIF LINUX}
 
 {$IFDEF MSWINDOWS}
 function LocalDateTimeToDateTime(DateTime: TDateTime): TDateTime;
@@ -730,7 +724,7 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-{$IFDEF UNIX}
+{$IFDEF LINUX}
 {$IFDEF HAS_UNIT_LIBC}
 function LocalDateTimeToDateTime(DateTime: TDateTime): TDateTime;
 var
@@ -756,7 +750,7 @@ begin
   Result := {$IFDEF HAS_UniversalTimeToLocal}LocalTimeToUniversal(DateTime){$ELSE}Result{$ENDIF};
 end;
 {$ENDIF HAS_UNIT_LIBC}
-{$ENDIF UNIX}
+{$ENDIF LINUX}
 
 function HoursToMSecs(Hours: Integer): Integer;
 begin

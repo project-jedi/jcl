@@ -54,11 +54,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF HAS_UNIT_LIBC}
-  {$IFNDEF FPC}
-  Libc,
-  {$ELSE FPC}
   libclite,
-  {$ENDIF ~FPC}
   {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}
@@ -79,9 +75,9 @@ uses
   ZLib,
   {$ENDIF ZLIB_RTL}
   {$ENDIF ~HAS_UNITSCOPE}
-  {$IFNDEF FPC}
+  {$IFNDEF LINUX}
   zlibh, bzip2,
-  {$ENDIF FPC}
+  {$ENDIF LINUX}
   JclWideStrings, JclBase, JclStreams;
 
 {$IFDEF RTL230_UP}
@@ -239,7 +235,7 @@ type
 
   TJclDecompressStreamClass = class of TJclDecompressStream;
 
-  {$IFNDEF FPC}
+  {$IFNDEF LINUX}
   TJclCompressionStreamFormats = class
   private
     FCompressFormats: TList;
@@ -307,7 +303,7 @@ type
     property Strategy: Integer read FStrategy write SetStrategy;
     property CompressionLevel: Integer read FCompressionLevel write SetCompressionLevel;
   end;
-  {$ENDIF FPC}
+  {$ENDIF LINUX}
 
 {$IFDEF ZLIB_RTL}
 const
@@ -321,7 +317,7 @@ type
   {$EXTERNALSYM PBytef}
 {$ENDIF ZLIB_RTL}
 
-{$IFNDEF FPC}
+{$IFNDEF LINUX}
 type
   TJclZLibDecompressStream = class(TJclDecompressStream)
   private
@@ -344,7 +340,7 @@ type
 
     property WindowBits: Integer read FWindowBits write SetWindowBits;
   end;
-  {$ENDIF FPC}
+  {$ENDIF LINUX}
 
   // GZIP Support
 
@@ -434,7 +430,7 @@ type
     gfsMac, gfsZ, gfsCPM, gfsTOPS, gfsNTFS, gfsQDOS, gfsAcorn, gfsOther, gfsUnknown);
 
   // Format is described in RFC 1952, http://www.faqs.org/rfcs/rfc1952.html
-  {$IFNDEF FPC}
+  {$IFNDEF LINUX}
   TJclGZIPCompressionStream = class(TJclCompressStream)
   private
     FFlags: TJclGZIPFlags;
@@ -581,7 +577,7 @@ type
     function Read(var Buffer; Count: Longint): Longint; override;
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
   end;
-  {$ENDIF FPC}
+  {$ENDIF LINUX}
 
   EJclCompressionError = class(EJclError);
   EJclCompressionCancelled = class(EJclCompressionError);
@@ -590,7 +586,7 @@ type
   // callback type used in helper functions below:
   TJclCompressStreamProgressCallback = procedure(FileSize, Position: Int64; UserData: Pointer) of object;
 
-{$IFNDEF FPC}
+{$IFNDEF LINUX}
 {helper functions - one liners by wpostma}
 function GZipFile(SourceFile, DestinationFile: TFileName; CompressionLevel: Integer = Z_DEFAULT_COMPRESSION;
   ProgressCallback: TJclCompressStreamProgressCallback = nil; UserData: Pointer = nil): Boolean;
@@ -609,7 +605,7 @@ procedure BZip2Stream(SourceStream, DestinationStream: TStream; CompressionLevel
   ProgressCallback: TJclCompressStreamProgressCallback = nil; UserData: Pointer = nil);
 procedure UnBZip2Stream(SourceStream, DestinationStream: TStream;
   ProgressCallback: TJclCompressStreamProgressCallback = nil; UserData: Pointer = nil);
-{$ENDIF FPC}
+{$ENDIF LINUX}
 
 // archive ancestor classes
 {$IFDEF MSWINDOWS}
@@ -2416,7 +2412,7 @@ begin
   inherited Destroy;
 end;
 
-{$IFNDEF FPC}
+{$IFNDEF LINUX}
 //=== { TJclCompressionStreamFormats } =======================================
 
 constructor TJclCompressionStreamFormats.Create;
@@ -3607,7 +3603,7 @@ begin
     ProgressCallback(SourceStreamSize, SourceStreamPosition, UserData);
 end;
 
-{$ENDIF FPC}
+{$ENDIF LINUX}
 
 procedure InternalDecompress(SourceStream, DestStream: TStream;
   DecompressStream: TJclDecompressStream;
@@ -3647,7 +3643,7 @@ end;
 
 { Compress to a .gz file - one liner - NEW MARCH 2007  }
 
-{$IFNDEF FPC}
+{$IFNDEF LINUX}
 
 function GZipFile(SourceFile, DestinationFile: TFileName; CompressionLevel: Integer;
   ProgressCallback: TJclCompressStreamProgressCallback; UserData: Pointer): Boolean;
@@ -3852,7 +3848,7 @@ begin
   end;
 end;
 
-{$ENDIF FPC}
+{$ENDIF LINUX}
 
 {$IFDEF MSWINDOWS}
 
@@ -4219,9 +4215,9 @@ begin
     {$IFDEF MSWINDOWS}
     HostOS := LoadResString(@RsCompression7zWindows);
     {$ENDIF MSWINDOWS}
-    {$IFDEF UNIX}
+    {$IFDEF LINUX}
     HostOS := LoadResString(@RsCompression7zUnix);
-    {$ENDIF UNIX}
+    {$ENDIF LINUX}
   end;
 end;
 
@@ -4537,6 +4533,7 @@ begin
   RegisterFormat(TJclCpioDecompressArchive);
   RegisterFormat(TJclTarDecompressArchive);
   RegisterFormat(TJclGZipDecompressArchive);
+  RegisterFormat(TJclXzDecompressArchive);
   RegisterFormat(TJclNtfsDecompressArchive);
   RegisterFormat(TJclFatDecompressArchive);
   RegisterFormat(TJclMbrDecompressArchive);
@@ -5348,9 +5345,9 @@ begin
     {$IFDEF MSWINDOWS}
     AItem.HostOS := LoadResString(@RsCompression7zWindows);
     {$ENDIF MSWINDOWS}
-    {$IFDEF UNIX}
+    {$IFDEF LINUX}
     AItem.HostOS := LoadResString(@RsCompression7zUnix);
-    {$ENDIF UNIX}
+    {$ENDIF LINUX}
   except
     AItem.Destroy;
     raise;
@@ -5372,11 +5369,11 @@ begin
     begin
       FPackedNames := TJclWideStringList.Create;
       FPackedNames.Sorted := True;
-      {$IFDEF UNIX}
+      {$IFDEF LINUX}
       FPackedNames.CaseSensitive := True;
-      {$ELSE ~UNIX}
+      {$ELSE ~LINUX}
       FPackedNames.CaseSensitive := False;
-      {$ENDIF ~UNIX}
+      {$ENDIF ~LINUX}
       FPackedNames.Duplicates := dupIgnore;
       for I := ItemCount - 1 downto 0 do
         FPackedNames.AddObject(Items[I].PackedName, Items[I]);

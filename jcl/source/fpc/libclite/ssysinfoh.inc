@@ -6,13 +6,13 @@ type
   PSysInfo = ^_sysInfo;
   _sysinfo = {packed} record // Renamed due to identifier conflict with sysinfo function
     uptime: Integer;                    { Seconds since boot }
-    loads: packed array[0..2] of LongWord;{ 1, 5, and 15 minute load averages }
-    totalram: LongWord;                 { Total usable main memory size }
-    freeram: LongWord;                  { Available memory size }
-    sharedram: LongWord;                { Amount of shared memory }
-    bufferram: LongWord;                { Memory used by buffers }
-    totalswap: LongWord;                { Total swap space size }
-    freeswap: LongWord;                 { swap space still available }
+    loads: packed array[0..2] of FixedUInt;{ 1, 5, and 15 minute load averages }
+    totalram: FixedUInt;                 { Total usable main memory size }
+    freeram: FixedUInt;                  { Available memory size }
+    sharedram: FixedUInt;                { Amount of shared memory }
+    bufferram: FixedUInt;                { Memory used by buffers }
+    totalswap: FixedUInt;                { Total swap space size }
+    freeswap: FixedUInt;                 { swap space still available }
     procs: Word;                        { Number of current processes }
     _f: packed array[0..21] of Char;    { Pads structure to 64 bytes }
   end;

@@ -1,4 +1,8 @@
 {**************************************************************************************************}
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
+{**************************************************************************************************}
+
+{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -42,7 +46,15 @@ interface
 
 uses
   {$IFDEF HAS_UNITSCOPE}
-  System.Types, Winapi.Windows, System.SysUtils, Vcl.Graphics,
+  System.Types,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
+  {$IFDEF MSWINDOWS}
+  Winapi.Windows,
+  {$ELSE}
+  {$ENDIF}
+  System.SysUtils, Vcl.Graphics,
   {$ELSE ~HAS_UNITSCOPE}
   Types,
   {$IFDEF FPC}
@@ -59,7 +71,7 @@ uses
 
 type
   PColor32 = ^TColor32;
-  TColor32 = type Longword;
+  TColor32 = type FixedUInt;
   PColor32Array = ^TColor32Array;
   TColor32Array = array [0..MaxInt div SizeOf(TColor32) - 1] of TColor32;
   PPalette32 = ^TPalette32;
@@ -134,7 +146,7 @@ const
   clTrGreen32   = TColor32($7F00FF00);
   clTrBlue32    = TColor32($7F0000FF);
 
-{$IFNDEF PUREPASCAL}
+{$IFNDEF LINUX}
 procedure EMMS;
 
 // Dialog Functions
@@ -142,7 +154,7 @@ function DialogUnitsToPixelsX(const DialogUnits: Word): Word;
 function DialogUnitsToPixelsY(const DialogUnits: Word): Word;
 function PixelsToDialogUnitsX(const PixelUnits: Word): Word;
 function PixelsToDialogUnitsY(const PixelUnits: Word): Word;
-{$ENDIF ~PUREPASCAL}
+{$ENDIF ~LINUX}
 
 // Points
 function NullPoint: TPoint;
@@ -161,7 +173,9 @@ function RectAssignPoints(const TopLeft, BottomRight: TPoint): TRect;
 function RectBounds(const Left, Top, Width, Height: Integer): TRect;
 function RectCenter(const R: TRect): TPoint;
 procedure RectCopy(var Dest: TRect; const Source: TRect);
+{$IFDEF MSWINDOWS}
 procedure RectFitToScreen(var R: TRect);  { TODO -cHelp : Doc }
+{$ENDIF}
 procedure RectGrow(var R: TRect; const Delta: Integer);
 procedure RectGrowX(var R: TRect; const Delta: Integer);
 procedure RectGrowY(var R: TRect; const Delta: Integer);
@@ -195,15 +209,21 @@ type
   EColorConversionError = class(EJclError);
 
 procedure GetRGBValue(const Color: TColor; out Red, Green, Blue: Byte);
+{$IFDEF MSWINDOWS}
 function SetRGBValue(const Red, Green, Blue: Byte): TColor;
+{$ENDIF}
 function GetColorBlue(const Color: TColor): Byte;
+{$IFDEF MSWINDOWS}
 function GetColorFlag(const Color: TColor): Byte;
+{$ENDIF}
 function GetColorGreen(const Color: TColor): Byte;
 function GetColorRed(const Color: TColor): Byte;
+{$IFDEF MSWINDOWS}
 function SetColorBlue(const Color: TColor; const Blue: Byte): TColor;
 function SetColorFlag(const Color: TColor; const Flag: Byte): TColor;
 function SetColorGreen(const Color: TColor; const Green: Byte): TColor;
 function SetColorRed(const Color: TColor; const Red: Byte): TColor;
+{$ENDIF}
 
 function BrightColor(const Color: TColor; const Pct: Single): TColor;
 function BrightColorChannel(const Channel: Byte; const Pct: Single): Byte;
@@ -211,8 +231,10 @@ function DarkColor(const Color: TColor; const Pct: Single): TColor;
 function DarkColorChannel(const Channel: Byte; const Pct: Single): Byte;
 
 procedure CIED65ToCIED50(var X, Y, Z: Extended);
+{$IFDEF MSWINDOWS}
 procedure CMYKToBGR(const Source, Target: Pointer; const BitsPerSample: Byte; Count: Cardinal); overload;
 procedure CMYKToBGR(const C, M, Y, K, Target: Pointer; const BitsPerSample: Byte; Count: Cardinal); overload;
+{$ENDIF}
 procedure CIELABToBGR(const Source, Target: Pointer; const Count: Cardinal); overload;
 procedure CIELABToBGR(LSource, aSource, bSource: PByte; const Target: Pointer; const Count: Cardinal); overload;
 procedure RGBToBGR(const Source, Target: Pointer; const BitsPerSample: Byte; Count: Cardinal); overload;
@@ -253,15 +275,19 @@ function RGBToHLS(const RGBColor: TColorRef): THLSVector; overload;
 function HSLToRGB(const H, S, L: Single): TColor32; overload;
 procedure RGBToHSL(const RGB: TColor32; out H, S, L: Single); overload;
 
+{$IFDEF MSWINDOWS}
 function SetBitmapColors(Bmp: TBitmap; const Colors: array of TColor; StartIndex: Integer): Integer;
+{$ENDIF}
 
 // Misc
 function ColorToHTML(const Color: TColor): string;
 
+{$IFDEF MSWINDOWS}
 // Petr Vones
 function DottedLineTo(const Canvas: TCanvas; const X, Y: Integer): Boolean; overload;
 function ShortenString(const DC: HDC; const S: WideString; const Width: Integer; const RTL: Boolean;
   EllipsisWidth: Integer = 0): WideString;
+{$ENDIF}
 
 var
   { Blending Function Variables }
@@ -302,9 +328,6 @@ uses
   Consts,
   {$ENDIF ~FPC}
   {$ENDIF ~HAS_UNITSCOPE}
-  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
-  System.UITypes,
-  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   JclVclResources, JclSysInfo, JclLogic;
 
 type
@@ -382,7 +405,7 @@ procedure GDIError;
 var
   ErrorCode: Integer;
 begin
-  ErrorCode := GetLastOSError;
+  ErrorCode := GetLastError;
   if ErrorCode <> 0 then
     raise EOutOfResources.Create(SysErrorMessage(ErrorCode))
   else
@@ -593,8 +616,8 @@ var
 procedure GenAlphaTable;
 var
   I: Integer;
-  L: Longword;
-  P: ^Longword;
+  L: FixedUInt;
+  P: ^FixedUInt;
 begin
   GetMem(AlphaTable, 257 * 8);
   if (TJclAddr(AlphaTable) mod 8) <> 0 then
@@ -983,7 +1006,7 @@ begin
 end;
 {$ENDIF}
 
-{$IFNDEF FPC}
+{$IFDEF MSWINDOWS}
 //=== Dialog functions =======================================================
 
 function DialogUnitsToPixelsX(const DialogUnits: Word): Word;
@@ -1086,6 +1109,7 @@ begin
   Dest := Source;
 end;
 
+{$IFDEF MSWINDOWS}
 procedure RectFitToScreen(var R: TRect);
 var
   X, Y: Integer;
@@ -1122,6 +1146,7 @@ begin
     end;
   end;
 end;
+{$ENDIF}
 
 procedure RectGrow(var R: TRect; const Delta: Integer);
 begin
@@ -1307,6 +1332,7 @@ begin
   Blue := Temp.B;
 end;
 
+{$IFDEF MSWINDOWS}
 function SetRGBValue(const Red, Green, Blue: Byte): {$IFDEF FPC}Graphics.{$ENDIF}TColor;
 begin
   TColorRec(Result).Red := Red;
@@ -1331,6 +1357,7 @@ begin
   Result := ColorToRGB(Color);
   TColorRec(Result).Red := Red;
 end;
+{$ENDIF}
 
 function GetColorRed(const Color: {$IFDEF FPC}Graphics.{$ENDIF}TColor): Byte;
 var
@@ -1340,11 +1367,13 @@ begin
   Result := Temp.Red;
 end;
 
+{$IFDEF MSWINDOWS}
 function SetColorGreen(const Color: {$IFDEF FPC}Graphics.{$ENDIF}TColor; const Green: Byte): {$IFDEF FPC}Graphics.{$ENDIF}TColor;
 begin
   Result := ColorToRGB(Color);
   TColorRec(Result).Green := Green;
 end;
+{$ENDIF}
 
 function GetColorGreen(const Color: {$IFDEF FPC}Graphics.{$ENDIF}TColor): Byte;
 var
@@ -1354,11 +1383,13 @@ begin
   Result := Temp.Green;
 end;
 
+{$IFDEF MSWINDOWS}
 function SetColorBlue(const Color: {$IFDEF FPC}Graphics.{$ENDIF}TColor; const Blue: Byte): {$IFDEF FPC}Graphics.{$ENDIF}TColor;
 begin
   Result := ColorToRGB(Color);
   TColorRec(Result).Blue := Blue;
 end;
+{$ENDIF}
 
 function GetColorBlue(const Color: {$IFDEF FPC}Graphics.{$ENDIF}TColor): Byte;
 var
@@ -1478,6 +1509,7 @@ type
 // CMYK is C,M,Y,K 4 byte record or 4 word record
 // Target is always 3 byte record B, R, G
 
+{$IFDEF MSWINDOWS}
 procedure CMYKToBGR(const Source, Target: Pointer; const BitsPerSample: Byte; Count: Cardinal); overload;
 var
   R, G, B, K: Integer;
@@ -1597,6 +1629,7 @@ begin
       raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
   end;
 end;
+{$ENDIF}
 
 // conversion of the CIE L*a*b color space to RGB using a two way approach assuming a D65 white point,
 // first a conversion to CIE XYZ is performed and then from there to RGB
@@ -2247,7 +2280,7 @@ begin
   Result :=  RGB(R, G, B);
 end;
 
-{$IFNDEF FPC}
+{$IFDEF MSWINDOWS}
 function SetBitmapColors(Bmp: TBitmap; const Colors: array of {$IFDEF FPC}Graphics.{$ENDIF}TColor; StartIndex: Integer): Integer;
 type
   TRGBQuadArray = array [Byte] of TRGBQuad;
@@ -2287,7 +2320,7 @@ begin
   Result := Format('#%.2x%.2x%.2x', [Temp.R, Temp.G, Temp.B]);
 end;
 
-{$IFNDEF FPC}
+{$IFDEF MSWINDOWS}
 function DottedLineTo(const Canvas: TCanvas; const X, Y: Integer): Boolean;
 const
   DotBits: array [0..7] of Word = ($AA, $55, $AA, $55, $AA, $55, $AA, $55);
@@ -2321,7 +2354,6 @@ begin
   DeleteObject(Bitmap);
   Result := True;
 end;
-{$ENDIF ~FPC}
 
 // Adjusts the given string S so that it fits into the given width. EllipsisWidth gives the width of
 // the three points to be added to the shorted string. If this value is 0 then it will be determined implicitely.
@@ -2394,6 +2426,7 @@ begin
     end;
   end;
 end;
+{$ENDIF}
 
 //=== Clipping ===============================================================
 
@@ -2577,7 +2610,9 @@ begin
 end;
 
 initialization
+  {$IFDEF MSWINDOWS}
   SetupFunctions;
+  {$ENDIF}
   if MMX_ACTIVE then
     GenAlphaTable;
   {$IFDEF UNITVERSIONING}

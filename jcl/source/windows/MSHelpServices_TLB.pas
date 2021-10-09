@@ -574,9 +574,9 @@ type
 // *********************************************************************//
   IEnumHxAttribute = interface(IUnknown)
     ['{314111AD-A502-11D2-BBCA-00C04F8EC294}']
-    function Next(celt: LongWord; out ppIHxAttribute: IHxAttribute; out pceltFetched: LongWord): HResult; stdcall;
+    function Next(celt: FixedUInt; out ppIHxAttribute: IHxAttribute; out pceltFetched: FixedUInt): HResult; stdcall;
     function Reset: HResult; stdcall;
-    function Skip(celt: LongWord): HResult; stdcall;
+    function Skip(celt: FixedUInt): HResult; stdcall;
     function Clone(out ppEnum: IEnumHxAttribute): HResult; stdcall;
   end;
 
@@ -767,9 +767,9 @@ type
 // *********************************************************************//
   IEnumHxTopic = interface(IUnknown)
     ['{31411195-A502-11D2-BBCA-00C04F8EC294}']
-    function Next(celt: LongWord; out ppIHxTopic: IHxTopic; out pceltFetched: LongWord): HResult; stdcall;
+    function Next(celt: FixedUInt; out ppIHxTopic: IHxTopic; out pceltFetched: FixedUInt): HResult; stdcall;
     function Reset: HResult; stdcall;
-    function Skip(celt: LongWord): HResult; stdcall;
+    function Skip(celt: FixedUInt): HResult; stdcall;
     function Clone(out ppEnum: IEnumHxTopic): HResult; stdcall;
   end;
 
@@ -973,9 +973,9 @@ type
 // *********************************************************************//
   IEnumHxAttrValue = interface(IUnknown)
     ['{314111D6-A502-11D2-BBCA-00C04F8EC294}']
-    function Next(celt: LongWord; out ppIHxAttrValue: IHxAttrValue; out pceltFetched: LongWord): HResult; stdcall;
+    function Next(celt: FixedUInt; out ppIHxAttrValue: IHxAttrValue; out pceltFetched: FixedUInt): HResult; stdcall;
     function Reset: HResult; stdcall;
-    function Skip(celt: LongWord): HResult; stdcall;
+    function Skip(celt: FixedUInt): HResult; stdcall;
     function Clone(out ppEnum: IEnumHxAttrValue): HResult; stdcall;
   end;
 
@@ -986,9 +986,9 @@ type
 // *********************************************************************//
   IEnumHxAttrName = interface(IUnknown)
     ['{314111D0-A502-11D2-BBCA-00C04F8EC294}']
-    function Next(celt: LongWord; out ppIHxAttrName: IHxAttrName; out pceltFetched: LongWord): HResult; stdcall;
+    function Next(celt: FixedUInt; out ppIHxAttrName: IHxAttrName; out pceltFetched: FixedUInt): HResult; stdcall;
     function Reset: HResult; stdcall;
-    function Skip(celt: LongWord): HResult; stdcall;
+    function Skip(celt: FixedUInt): HResult; stdcall;
     function Clone(out ppEnum: IEnumHxAttrName): HResult; stdcall;
   end;
 
@@ -1090,9 +1090,9 @@ type
 // *********************************************************************//
   IEnumHxRegFilter = interface(IUnknown)
     ['{3141121C-A502-11D2-BBCA-00C04F8EC294}']
-    function Next(celt: LongWord; out ppIHxRegFilter: IHxRegFilter; out pceltFetched: LongWord): HResult; stdcall;
+    function Next(celt: FixedUInt; out ppIHxRegFilter: IHxRegFilter; out pceltFetched: FixedUInt): HResult; stdcall;
     function Reset: HResult; stdcall;
-    function Skip(celt: LongWord): HResult; stdcall;
+    function Skip(celt: FixedUInt): HResult; stdcall;
     function Clone(out ppEnum: IEnumHxRegFilter): HResult; stdcall;
   end;
 
@@ -1249,9 +1249,9 @@ type
 // *********************************************************************//
   IEnumHxRegNamespace = interface(IUnknown)
     ['{314111F5-A502-11D2-BBCA-00C04F8EC294}']
-    function Next(celt: LongWord; out ppIHxRegNamespace: IHxRegNamespace; out pceltFetched: LongWord): HResult; stdcall;
+    function Next(celt: FixedUInt; out ppIHxRegNamespace: IHxRegNamespace; out pceltFetched: FixedUInt): HResult; stdcall;
     function Reset: HResult; stdcall;
-    function Skip(celt: LongWord): HResult; stdcall;
+    function Skip(celt: FixedUInt): HResult; stdcall;
     function Clone(out ppEnum: IEnumHxRegNamespace): HResult; stdcall;
   end;
 
@@ -1314,9 +1314,9 @@ type
 // *********************************************************************//
   IEnumHxRegTitle = interface(IUnknown)
     ['{31411204-A502-11D2-BBCA-00C04F8EC294}']
-    function Next(celt: LongWord; out ppIHxRegTitle: IHxRegTitle; out pceltFetched: LongWord): HResult; stdcall;
+    function Next(celt: FixedUInt; out ppIHxRegTitle: IHxRegTitle; out pceltFetched: FixedUInt): HResult; stdcall;
     function Reset: HResult; stdcall;
-    function Skip(celt: LongWord): HResult; stdcall;
+    function Skip(celt: FixedUInt): HResult; stdcall;
     function Clone(out ppEnum: IEnumHxRegTitle): HResult; stdcall;
   end;
 
@@ -1379,9 +1379,9 @@ type
 // *********************************************************************//
   IEnumHxRegPlugIn = interface(IUnknown)
     ['{3141120C-A502-11D2-BBCA-00C04F8EC294}']
-    function Next(celt: LongWord; out ppIHxRegPlugIn: IHxRegPlugIn; out pceltFetched: LongWord): HResult; stdcall;
+    function Next(celt: FixedUInt; out ppIHxRegPlugIn: IHxRegPlugIn; out pceltFetched: FixedUInt): HResult; stdcall;
     function Reset: HResult; stdcall;
-    function Skip(celt: LongWord): HResult; stdcall;
+    function Skip(celt: FixedUInt): HResult; stdcall;
     function Clone(out ppEnum: IEnumHxRegPlugIn): HResult; stdcall;
   end;
 

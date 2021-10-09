@@ -292,8 +292,8 @@ type
     xdArgBuff     : AnsiChar;       // arg stored in buffer
     xdArgCopy     : AnsiChar;       // arg copied to catch arg
 
-    xdOSESP       : LongWord;       // esp of main OS exception handler
-    xdOSERR       : LongWord;       // addr of the OS ERR on entry to _ExceptionHandler
+    xdOSESP       : FixedUInt;       // esp of main OS exception handler
+    xdOSERR       : FixedUInt;       // addr of the OS ERR on entry to _ExceptionHandler
     xdOSContext   : {PContext} Pointer;       // CPU Context for an OS exception
     xdValue       : array[0..0] of AnsiChar;  // copy of thrown value
   end;
@@ -446,8 +446,8 @@ type
 
   TAcquireExceptionProc = procedure(Obj: Pointer);
   {$IFDEF CPU32}
-  TRaiseExceptionProc = procedure(ExceptionCode, ExceptionFlags: LongWord;
-    NumberOfArguments: LongWord; Args: Pointer); stdcall;
+  TRaiseExceptionProc = procedure(ExceptionCode, ExceptionFlags: FixedUInt;
+    NumberOfArguments: FixedUInt; Args: Pointer); stdcall;
   {$ENDIF CPU32}
 
 var
@@ -464,8 +464,8 @@ begin
     TAcquireExceptionProc(OldAcquireExceptionProc)(Obj);
 end;
 
-procedure RaiseExceptionProc(ExceptionCode, ExceptionFlags: LongWord;
-    NumberOfArguments: LongWord; Args: Pointer); stdcall;
+procedure RaiseExceptionProc(ExceptionCode, ExceptionFlags: FixedUInt;
+    NumberOfArguments: FixedUInt; Args: Pointer); stdcall;
 begin
   { We make use of the fact that the RTL calls the following notifiers immediately after destroying
     the exception object. We should find the exception info in the thread-local variable defined

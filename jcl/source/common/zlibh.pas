@@ -69,11 +69,7 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   {$IFDEF HAS_UNIT_LIBC}
-  {$IFNDEF FPC}
-  Libc,
-  {$ELSE}
   libclite,
-  {$ENDIF ~FPC}
   {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
@@ -88,7 +84,7 @@ uses
 {$IFNDEF FPC}
 type
   {$IFDEF UNIX}
-  uLong = LongWord;
+  uLong = FixedUInt;
   {$EXTERNALSYM uLong}
   uInt = Cardinal;
   {$EXTERNALSYM uInt}
@@ -116,7 +112,7 @@ type
   {$EXTERNALSYM PBytef}
   PBytef = ^Bytef;
   {$EXTERNALSYM UnsignedInt}
-  UnsignedInt = LongWord;
+  UnsignedInt = FixedUInt;
   {$EXTERNALSYM uLongf}
   uLongf = ULONG;
   {$EXTERNALSYM PuLongf}

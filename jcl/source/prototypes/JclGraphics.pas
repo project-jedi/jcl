@@ -1,4 +1,8 @@
 {**************************************************************************************************}
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
+{**************************************************************************************************}
+
+{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -220,7 +224,7 @@ type
     FLock: TRTLCriticalSection;
     {$ELSE MSWINDOWS}
     FLock: TCriticalSection;
-    {$ENDIF VCL}
+    {$ENDIF MSWINDOWS}
     FLockCount: Integer;
     FUpdateCount: Integer;
     FOnChanging: TNotifyEvent;
@@ -689,7 +693,7 @@ end;
 
 //=== Internal low level routines ============================================
 
-procedure FillLongword(var X; Count: Integer; Value: Longword);
+procedure FillLongword(var X; Count: Integer; Value: FixedUInt);
 var
   P: PLongword;
 begin
@@ -936,9 +940,9 @@ var
   Data: PBGRAInt;
 begin
   Total := 0;
-  RGB.B := Total; // trick compiler into generating better code
+  RGB.R := Total; // trick compiler into generating better code
   RGB.G := Total;
-  RGB.R := Total;
+  RGB.B := Total;
   RGB.A := Total;
   Contr := @Contributor.Contributors[0];
   for J := 0 to Contributor.N - 1 do
@@ -1943,7 +1947,7 @@ var
 
   function GET_S256(X, Y: Integer; out C: TColor32): Boolean;
   var
-    flrx, flry, celx, cely: Longword;
+    flrx, flry, celx, cely: FixedUInt;
     C1, C2, C3, C4: TColor32;
     P: PColor32;
   begin
@@ -1968,7 +1972,7 @@ var
       C4 := P^;
       Dec(P);
       C3 := P^;
-      C := CombineReg(CombineReg(C1, C2, celx), CombineReg(C3, C4, celx), cely);
+      C := CombineReg(CombineReg(C1, C2, celx, nil, nil), CombineReg(C3, C4, celx, nil, nil), cely, nil, nil);
       Result := True;
     end
     else
@@ -2336,6 +2340,11 @@ begin
 end;
 
 //=== { TJclDesktopCanvas } ==================================================
+
+{$IFDEF UNIX}
+const
+  HWND_DESKTOP = 0;
+{$ENDIF}
 
 constructor TJclDesktopCanvas.Create;
 begin
@@ -3212,7 +3221,7 @@ end;
 
 procedure TJclBitmap32.SET_T256(X, Y: Integer; C: TColor32);
 var
-  flrx, flry, celx, cely: Longword;
+  flrx, flry, celx, cely: FixedUInt;
   P: PColor32;
   A: TColor32;
 begin
@@ -3242,7 +3251,7 @@ end;
 
 procedure TJclBitmap32.SET_TS256(X, Y: Integer; C: TColor32);
 var
-  flrx, flry, celx, cely: Longword;
+  flrx, flry, celx, cely: FixedUInt;
   P: PColor32;
   A: TColor32;
 begin
@@ -3352,7 +3361,7 @@ begin
     Result := CombineReg(
       FStipplePattern[PrevIndex],
       FStipplePattern[NextIndex],
-      PrevWeight);
+      PrevWeight, nil, nil);
     EMMS;
   end;
   FStippleCounter := FStippleCounter + FStippleStep;
@@ -3893,7 +3902,7 @@ begin
     end;
     A := Value shr 24;
     hyp := hyp - N shl 16;
-    A := A * Longword(hyp) shl 8 and $FF000000;
+    A := A * FixedUInt(hyp) shl 8 and $FF000000;
     SET_T256((px + ex - nx) shr 9, (py + ey - ny) shr 9, Value and _RGB + A);
   finally
     EMMS;
@@ -3940,7 +3949,7 @@ begin
         end;
         A := Value shr 24;
         hyp := hyp - N shl 16;
-        A := A * Longword(hyp) shl 8 and $FF000000;
+        A := A * FixedUInt(hyp) shl 8 and $FF000000;
         SET_TS256(Sar(Integer(px + ex - nx),9), Sar(Integer(py + ey - ny),9), Value and _RGB + A);
       finally
         EMMS;
@@ -3985,7 +3994,7 @@ begin
     C := GetStippleColor;
     A := C shr 24;
     hyp := hyp - N shl 16;
-    A := A * Longword(hyp) shl 8 and $FF000000;
+    A := A * FixedUInt(hyp) shl 8 and $FF000000;
     SET_T256((px + ex - nx) shr 9, (py + ey - ny) shr 9, C and _RGB + A);
     EMMS;
   finally
@@ -4035,7 +4044,7 @@ begin
         C := GetStippleColor;
         A := C shr 24;
         hyp := hyp - N shl 16;
-        A := A * Longword(hyp) shl 8 and $FF000000;
+        A := A * FixedUInt(hyp) shl 8 and $FF000000;
         SET_TS256(Sar(Integer(px + ex - nx),9), Sar(Integer(py + ey - ny),9), C and _RGB + A);
         EMMS;
       finally

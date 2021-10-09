@@ -130,10 +130,10 @@ type
   PUserType1 = ^TGUID; {*}
   PPUserType1 = ^ISequentialStream; {*}
   PByte1 = ^Byte; {*}
-  PUINT1 = ^LongWord; {*}
+  PUINT1 = ^FixedUInt; {*}
 
   {$IFNDEF FPC}
-  ULONG_PTR = LongWord;
+  ULONG_PTR = FixedUInt;
   {$EXTERNALSYM ULONG_PTR}
   {$ENDIF ~FPC}
 
@@ -149,30 +149,30 @@ type
   {$ENDIF RTL320_UP}
 
   _FILETIME = packed record
-    dwLowDateTime: LongWord;
-    dwHighDateTime: LongWord;
+    dwLowDateTime: FixedUInt;
+    dwHighDateTime: FixedUInt;
   end;
   {$EXTERNALSYM _FILETIME}
 
   {$IFNDEF FPC}
   tagSTATSTG = packed record
     pwcsName: PWideChar;
-    type_: LongWord;
+    type_: FixedUInt;
     cbSize: _ULARGE_INTEGER;
     mtime: _FILETIME;
     ctime: _FILETIME;
     atime: _FILETIME;
-    grfMode: LongWord;
-    grfLocksSupported: LongWord;
+    grfMode: FixedUInt;
+    grfLocksSupported: FixedUInt;
     clsid: TGUID;
-    grfStateBits: LongWord;
-    reserved: LongWord;
+    grfStateBits: FixedUInt;
+    reserved: FixedUInt;
   end;
   {$EXTERNALSYM tagSTATSTG}
   {$ENDIF ~FPC}
 
   _COR_GC_STATS = packed record
-    Flags: LongWord;
+    Flags: FixedUInt;
     ExplicitGCCount: ULONG_PTR;
     GenCollectionsTaken: array[0..2] of ULONG_PTR;
     CommittedKBytes: ULONG_PTR;
@@ -187,17 +187,17 @@ type
 
   _COR_GC_THREAD_STATS = packed record
     PerThreadAllocation: Largeuint;
-    Flags: LongWord;
+    Flags: FixedUInt;
   end;
 
   tag_VerError = packed record
-    Flags: LongWord;
-    opcode: LongWord;
-    uOffset: LongWord;
-    Token: LongWord;
-    item1_flags: LongWord;
+    Flags: FixedUInt;
+    opcode: FixedUInt;
+    uOffset: FixedUInt;
+    Token: FixedUInt;
+    item1_flags: FixedUInt;
     item1_data: ^SYSINT;
-    item2_flags: LongWord;
+    item2_flags: FixedUInt;
     item2_data: ^SYSINT;
   end;
 
@@ -242,16 +242,16 @@ type
 // *********************************************************************//
   IMarshal = interface(IUnknown)
     ['{00000003-0000-0000-C000-000000000046}']
-    function GetUnmarshalClass(var riid: TGUID; var pv: Pointer; dwDestContext: LongWord; 
-                               var pvDestContext: Pointer; mshlflags: LongWord; out pCid: TGUID): HResult; stdcall;
-    function GetMarshalSizeMax(var riid: TGUID; var pv: Pointer; dwDestContext: LongWord; 
-                               var pvDestContext: Pointer; mshlflags: LongWord; out pSize: LongWord): HResult; stdcall;
+    function GetUnmarshalClass(var riid: TGUID; var pv: Pointer; dwDestContext: FixedUInt; 
+                               var pvDestContext: Pointer; mshlflags: FixedUInt; out pCid: TGUID): HResult; stdcall;
+    function GetMarshalSizeMax(var riid: TGUID; var pv: Pointer; dwDestContext: FixedUInt; 
+                               var pvDestContext: Pointer; mshlflags: FixedUInt; out pSize: FixedUInt): HResult; stdcall;
     function MarshalInterface(var pstm: ISequentialStream; var riid: TGUID; var pv: Pointer; 
-                              dwDestContext: LongWord; var pvDestContext: Pointer; 
-                              mshlflags: LongWord): HResult; stdcall;
+                              dwDestContext: FixedUInt; var pvDestContext: Pointer; 
+                              mshlflags: FixedUInt): HResult; stdcall;
     function UnmarshalInterface(const pstm: ISequentialStream; var riid: TGUID; out ppv: Pointer): HResult; stdcall;
     function ReleaseMarshalData(const pstm: ISequentialStream): HResult; stdcall;
-    function DisconnectObject(dwReserved: LongWord): HResult; stdcall;
+    function DisconnectObject(dwReserved: FixedUInt): HResult; stdcall;
   end;
 
 // *********************************************************************//
@@ -261,10 +261,10 @@ type
 // *********************************************************************//
   ISequentialStream = interface(IUnknown)
     ['{0C733A30-2A1C-11CE-ADE5-00AA0044773D}']
-    function Read(out pv: Pointer; cb: LongWord; out pcbRead: LongWord): HResult; stdcall;
-    function RemoteRead(out pv: Byte; cb: LongWord; out pcbRead: LongWord): HResult; stdcall;
-    function Write(var pv: Pointer; cb: LongWord; out pcbWritten: LongWord): HResult; stdcall;
-    function RemoteWrite(var pv: Byte; cb: LongWord; out pcbWritten: LongWord): HResult; stdcall;
+    function Read(out pv: Pointer; cb: FixedUInt; out pcbRead: FixedUInt): HResult; stdcall;
+    function RemoteRead(out pv: Byte; cb: FixedUInt; out pcbRead: FixedUInt): HResult; stdcall;
+    function Write(var pv: Pointer; cb: FixedUInt; out pcbWritten: FixedUInt): HResult; stdcall;
+    function RemoteWrite(var pv: Byte; cb: FixedUInt; out pcbWritten: FixedUInt): HResult; stdcall;
   end;
 
 // *********************************************************************//
@@ -274,19 +274,19 @@ type
 // *********************************************************************//
   IStream = interface(ISequentialStream)
     ['{0000000C-0000-0000-C000-000000000046}']
-    function Seek(dlibMove: _LARGE_INTEGER; dwOrigin: LongWord; out plibNewPosition: _ULARGE_INTEGER): HResult; stdcall;
-    function RemoteSeek(dlibMove: _LARGE_INTEGER; dwOrigin: LongWord; 
+    function Seek(dlibMove: _LARGE_INTEGER; dwOrigin: FixedUInt; out plibNewPosition: _ULARGE_INTEGER): HResult; stdcall;
+    function RemoteSeek(dlibMove: _LARGE_INTEGER; dwOrigin: FixedUInt; 
                         out plibNewPosition: _ULARGE_INTEGER): HResult; stdcall;
     function SetSize(libNewSize: _ULARGE_INTEGER): HResult; stdcall;
     function CopyTo(const pstm: ISequentialStream; cb: _ULARGE_INTEGER; 
                     out pcbRead: _ULARGE_INTEGER; out pcbWritten: _ULARGE_INTEGER): HResult; stdcall;
     function RemoteCopyTo(const pstm: ISequentialStream; cb: _ULARGE_INTEGER; 
                           out pcbRead: _ULARGE_INTEGER; out pcbWritten: _ULARGE_INTEGER): HResult; stdcall;
-    function Commit(grfCommitFlags: LongWord): HResult; stdcall;
+    function Commit(grfCommitFlags: FixedUInt): HResult; stdcall;
     function Revert: HResult; stdcall;
-    function LockRegion(libOffset: _ULARGE_INTEGER; cb: _ULARGE_INTEGER; dwLockType: LongWord): HResult; stdcall;
-    function UnlockRegion(libOffset: _ULARGE_INTEGER; cb: _ULARGE_INTEGER; dwLockType: LongWord): HResult; stdcall;
-    function Stat(out pstatstg: tagSTATSTG; grfStatFlag: LongWord): HResult; stdcall;
+    function LockRegion(libOffset: _ULARGE_INTEGER; cb: _ULARGE_INTEGER; dwLockType: FixedUInt): HResult; stdcall;
+    function UnlockRegion(libOffset: _ULARGE_INTEGER; cb: _ULARGE_INTEGER; dwLockType: FixedUInt): HResult; stdcall;
+    function Stat(out pstatstg: tagSTATSTG; grfStatFlag: FixedUInt): HResult; stdcall;
     function Clone(out ppstm: ISequentialStream): HResult; stdcall;
   end;
   {$EXTERNALSYM IStream}
@@ -301,9 +301,9 @@ type
     ['{CB2F6722-AB3A-11D2-9C40-00C04FA30A3E}']
     function CreateLogicalThreadState: HResult; stdcall;
     function DeleteLogicalThreadState: HResult; stdcall;
-    function SwitchInLogicalThreadState(var pFiberCookie: LongWord): HResult; stdcall;
+    function SwitchInLogicalThreadState(var pFiberCookie: FixedUInt): HResult; stdcall;
     function SwitchOutLogicalThreadState(out pFiberCookie: PUINT1): HResult; stdcall;
-    function LocksHeldByLogicalThread(out pCount: LongWord): HResult; stdcall;
+    function LocksHeldByLogicalThread(out pCount: FixedUInt): HResult; stdcall;
     function MapFile(var hFile: Pointer; out hMapAddress: Pointer): HResult; stdcall;
     function GetConfiguration(out pConfiguration: ICorConfiguration): HResult; stdcall;
     function Start: HResult; stdcall;
@@ -329,10 +329,10 @@ type
 // *********************************************************************//
   IGCHost = interface(IUnknown)
     ['{FAC34F6E-0DCD-47B5-8021-531BC5ECCA63}']
-    function SetGCStartupLimits(SegmentSize: LongWord; MaxGen0Size: LongWord): HResult; stdcall;
+    function SetGCStartupLimits(SegmentSize: FixedUInt; MaxGen0Size: FixedUInt): HResult; stdcall;
     function Collect(Generation: Integer): HResult; stdcall;
     function GetStats(var pStats: _COR_GC_STATS): HResult; stdcall;
-    function GetThreadStats(var pFiberCookie: LongWord; var pStats: _COR_GC_THREAD_STATS): HResult; stdcall;
+    function GetThreadStats(var pFiberCookie: FixedUInt; var pStats: _COR_GC_THREAD_STATS): HResult; stdcall;
     function SetVirtualMemLimit(sztMaxVirtualMemMB: ULONG_PTR): HResult; stdcall;
   end;
 
@@ -346,7 +346,7 @@ type
     function SetGCThreadControl(const pGCThreadControl: IGCThreadControl): HResult; stdcall;
     function SetGCHostControl(const pGCHostControl: IGCHostControl): HResult; stdcall;
     function SetDebuggerThreadControl(const pDebuggerThreadControl: IDebuggerThreadControl): HResult; stdcall;
-    function AddDebuggerSpecialThread(dwSpecialThreadId: LongWord): HResult; stdcall;
+    function AddDebuggerSpecialThread(dwSpecialThreadId: FixedUInt): HResult; stdcall;
   end;
 
 // *********************************************************************//
@@ -358,7 +358,7 @@ type
     ['{F31D1788-C397-4725-87A5-6AF3472C2791}']
     function ThreadIsBlockingForSuspension: HResult; stdcall;
     function SuspensionStarting: HResult; stdcall;
-    function SuspensionEnding(Generation: LongWord): HResult; stdcall;
+    function SuspensionEnding(Generation: FixedUInt): HResult; stdcall;
   end;
 
 // *********************************************************************//
@@ -381,7 +381,7 @@ type
     ['{23D86786-0BB5-4774-8FB5-E3522ADD6246}']
     function ThreadIsBlockingForDebugger: HResult; stdcall;
     function ReleaseAllRuntimeThreads: HResult; stdcall;
-    function StartBlockingForDebugger(dwUnused: LongWord): HResult; stdcall;
+    function StartBlockingForDebugger(dwUnused: FixedUInt): HResult; stdcall;
   end;
 
 // *********************************************************************//
@@ -391,11 +391,11 @@ type
 // *********************************************************************//
   IValidator = interface(IUnknown)
     ['{63DF8730-DC81-4062-84A2-1FF943F59FAC}']
-    function Validate(const veh: IVEHandler; const pAppDomain: IUnknown; ulFlags: LongWord; 
-                      ulMaxError: LongWord; Token: LongWord; fileName: PWideChar; var pe: Byte; 
-                      ulSize: LongWord): HResult; stdcall;
+    function Validate(const veh: IVEHandler; const pAppDomain: IUnknown; ulFlags: FixedUInt; 
+                      ulMaxError: FixedUInt; Token: FixedUInt; fileName: PWideChar; var pe: Byte; 
+                      ulSize: FixedUInt): HResult; stdcall;
     function FormatEventInfo(hVECode: HResult; Context: tag_VerError; msg: PWideChar; 
-                             ulMaxLength: LongWord; psa: PSafeArray): HResult; stdcall;
+                             ulMaxLength: FixedUInt; psa: PSafeArray): HResult; stdcall;
   end;
 
 // *********************************************************************//

@@ -5676,8 +5676,8 @@ type
     yDlg: Longint;
     dwSubEntry: DWORD;
     dwError: DWORD;
-    reserved: Longword;
-    reserved2: Longword;
+    reserved: FixedUInt;
+    reserved2: FixedUInt;
   end;
   {$EXTERNALSYM tagRASDIALDLG}
   RASDIALDLG = tagRASDIALDLG;

@@ -43,6 +43,7 @@ begin
   else
     begin
 //!! MVC    Result:=_fp^._wide_data^._IO_read_ptr^;
+    Result := 0;
     Inc(_fp^._wide_data^._IO_read_ptr);
     end;
 end;
@@ -50,6 +51,7 @@ end;
 
 Function _IO_putwc_unlocked(_wch: wchar_t; _fp: P_IO_FILE): longint;
 begin
+  Result := 0;
 { //!! MVC
   if Cardinal(_fp^._wide_data^._IO_write_ptr)>=Cardinal(_fp^._wide_data^._IO_write_end) then
     Result:=__woverflow(_fp, _wch)

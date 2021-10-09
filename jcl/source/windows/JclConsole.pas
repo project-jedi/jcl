@@ -66,18 +66,18 @@ type
   TJclConsole = class(TObject)
   private
     FScreens: TObjectList;
-    FActiveScreenIndex: Longword;
+    FActiveScreenIndex: FixedUInt;
     FInput: TJclInputBuffer;
     FOnCtrlC: TNotifyEvent;
     FOnCtrlBreak: TNotifyEvent;
     FOnClose: TNotifyEvent;
     FOnLogOff: TNotifyEvent;
     FOnShutdown: TNotifyEvent;
-    function GetScreen(const Idx: Longword): TJclScreenBuffer;
-    function GetScreenCount: Longword;
+    function GetScreen(const Idx: FixedUInt): TJclScreenBuffer;
+    function GetScreenCount: FixedUInt;
     function GetActiveScreen: TJclScreenBuffer;
     procedure SetActiveScreen(const Value: TJclScreenBuffer);
-    procedure SetActiveScreenIndex(const Value: Longword);
+    procedure SetActiveScreenIndex(const Value: FixedUInt);
     function GetTitle: string;
     procedure SetTitle(const Value: string);
     function GetInputCodePage: DWORD;
@@ -96,15 +96,15 @@ type
     class procedure Alloc;
     class procedure Free;
     function Add(AWidth: Smallint = 0; AHeight: Smallint = 0): TJclScreenBuffer;
-    function Remove(const ScrBuf: TJclScreenBuffer): Longword;
-    procedure Delete(const Idx: Longword);
+    function Remove(const ScrBuf: TJclScreenBuffer): FixedUInt;
+    procedure Delete(const Idx: FixedUInt);
     property Title: string read GetTitle write SetTitle;
     property InputCodePage: DWORD read GetInputCodePage write SetInputCodePage;
     property OutputCodePage: DWORD read GetOutputCodePage write SetOutputCodePage;
     property Input: TJclInputBuffer read FInput;
-    property Screens[const Idx: Longword]: TJclScreenBuffer read GetScreen;
-    property ScreenCount: Longword read GetScreenCount;
-    property ActiveScreenIndex: Longword read FActiveScreenIndex write SetActiveScreenIndex;
+    property Screens[const Idx: FixedUInt]: TJclScreenBuffer read GetScreen;
+    property ScreenCount: FixedUInt read GetScreenCount;
+    property ActiveScreenIndex: FixedUInt read FActiveScreenIndex write SetActiveScreenIndex;
     property ActiveScreen: TJclScreenBuffer read GetActiveScreen write SetActiveScreen;
     property OnCtrlC: TNotifyEvent read FOnCtrlC write FOnCtrlC;
     property OnCtrlBreak: TNotifyEvent read FOnCtrlBreak write FOnCtrlBreak;
@@ -511,9 +511,9 @@ begin
   while ProcessMessage(Msg) do;
 end;
 
-procedure Wait(N: LongWord);
+procedure Wait(N: FixedUInt);
 var
-  TickCount: LongWord;
+  TickCount: FixedUInt;
 begin
   SleepEx(N, False);
   TickCount := {$IFDEF FPC} GetTickCount64 {$ELSE} GetTickCount {$ENDIF} + N;
@@ -591,13 +591,13 @@ begin
   Win32Check(FreeConsole);
 end;
 
-function TJclConsole.GetScreen(const Idx: Longword): TJclScreenBuffer;
+function TJclConsole.GetScreen(const Idx: FixedUInt): TJclScreenBuffer;
 begin
   // (rom) maybe some checks on Idx here?
   Result := TJclScreenBuffer(FScreens[Idx]);
 end;
 
-function TJclConsole.GetScreenCount: Longword;
+function TJclConsole.GetScreenCount: FixedUInt;
 begin
   Result := FScreens.Count;
 end;
@@ -612,7 +612,7 @@ begin
   SetActiveScreenIndex(FScreens.IndexOf(Value));
 end;
 
-procedure TJclConsole.SetActiveScreenIndex(const Value: Longword);
+procedure TJclConsole.SetActiveScreenIndex(const Value: FixedUInt);
 begin
   if ActiveScreenIndex <> Value then
   begin
@@ -642,13 +642,13 @@ begin
   Result := TJclScreenBuffer(FScreens[FScreens.Add(TJclScreenBuffer.Create(AWidth, AHeight))]);
 end;
 
-function TJclConsole.Remove(const ScrBuf: TJclScreenBuffer): Longword;
+function TJclConsole.Remove(const ScrBuf: TJclScreenBuffer): FixedUInt;
 begin
   Result := FScreens.IndexOf(ScrBuf);
   Delete(Result);
 end;
 
-procedure TJclConsole.Delete(const Idx: Longword);
+procedure TJclConsole.Delete(const Idx: FixedUInt);
 begin
   FScreens.Delete(Idx);
 end;

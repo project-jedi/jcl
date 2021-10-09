@@ -642,11 +642,7 @@ implementation
 
 uses
   {$IFDEF HAS_UNIT_LIBC}
-  //{$IFNDEF FPC}
-  //Libc,
-  ///{$ELSE}
   libclite,
-  //{$ENDIF ~FPC}
   {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF SUPPORTS_UNICODE}
   {$IFDEF HAS_UNITSCOPE}
@@ -3320,7 +3316,7 @@ end;
 //=== TStrings Manipulation ==================================================
 
 procedure StrToStrings(S: string; const Sep: string; const List: TStrings;
-    const AllowEmptyString: Boolean = True);
+  const AllowEmptyString: Boolean = True);
 var
   I, L: SizeInt;
   Left: string;
@@ -4438,7 +4434,7 @@ begin
 end;
 
 function TJclStringBuilder.Replace(const OldValue, NewValue: string;
-    StartIndex: SizeInt = 0; Count: SizeInt = -1): TJclStringBuilder;
+  StartIndex: SizeInt = 0; Count: SizeInt = -1): TJclStringBuilder;
 var
   I: SizeInt;
   Offset: SizeInt;

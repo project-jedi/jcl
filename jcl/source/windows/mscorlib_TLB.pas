@@ -4630,7 +4630,7 @@ type
   end;
 
   UInt32 = packed record
-    m_value: LongWord;
+    m_value: FixedUInt;
   end;
 
   {$IFNDEF FPC}
@@ -5015,7 +5015,7 @@ type
     function ToInt16(const provider: IFormatProvider): Smallint; safecall;
     function ToUInt16(const provider: IFormatProvider): Word; safecall;
     function ToInt32(const provider: IFormatProvider): Integer; safecall;
-    function ToUInt32(const provider: IFormatProvider): LongWord; safecall;
+    function ToUInt32(const provider: IFormatProvider): FixedUInt; safecall;
     function ToInt64(const provider: IFormatProvider): Int64; safecall;
     function ToUInt64(const provider: IFormatProvider): Largeuint; safecall;
     function ToSingle(const provider: IFormatProvider): Single; safecall;
@@ -5042,7 +5042,7 @@ type
     function ToInt16(const provider: IFormatProvider): Smallint; dispid 1610743813;
     function ToUInt16(const provider: IFormatProvider): {??Word}OleVariant; dispid 1610743814;
     function ToInt32(const provider: IFormatProvider): Integer; dispid 1610743815;
-    function ToUInt32(const provider: IFormatProvider): LongWord; dispid 1610743816;
+    function ToUInt32(const provider: IFormatProvider): FixedUInt; dispid 1610743816;
     function ToInt64(const provider: IFormatProvider): {??Int64}OleVariant; dispid 1610743817;
     function ToUInt64(const provider: IFormatProvider): {??Largeuint}OleVariant; dispid 1610743818;
     function ToSingle(const provider: IFormatProvider): Single; dispid 1610743819;
@@ -10635,7 +10635,7 @@ type
     function ToInt16(value: OleVariant): Smallint; safecall;
     function ToUInt16(value: OleVariant): Word; safecall;
     function ToInt32(value: OleVariant): Integer; safecall;
-    function ToUInt32(value: OleVariant): LongWord; safecall;
+    function ToUInt32(value: OleVariant): FixedUInt; safecall;
     function ToInt64(value: OleVariant): Int64; safecall;
     function ToUInt64(value: OleVariant): Largeuint; safecall;
     function ToSingle(value: OleVariant): Single; safecall;
@@ -10662,7 +10662,7 @@ type
     function ToInt16(value: OleVariant): Smallint; dispid 1610743814;
     function ToUInt16(value: OleVariant): {??Word}OleVariant; dispid 1610743815;
     function ToInt32(value: OleVariant): Integer; dispid 1610743816;
-    function ToUInt32(value: OleVariant): LongWord; dispid 1610743817;
+    function ToUInt32(value: OleVariant): FixedUInt; dispid 1610743817;
     function ToInt64(value: OleVariant): {??Int64}OleVariant; dispid 1610743818;
     function ToUInt64(value: OleVariant): {??Largeuint}OleVariant; dispid 1610743819;
     function ToSingle(value: OleVariant): Single; dispid 1610743820;

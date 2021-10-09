@@ -101,8 +101,8 @@ type
   Pre_pattern_buffer = ^re_pattern_buffer;
   re_pattern_buffer = record
     buffer: PByte;
-    allocated: LongWord;
-    used: LongWord;
+    allocated: FixedUInt;
+    used: FixedUInt;
     syntax: reg_syntax_t;
     fastmap: PChar;
     translate: RE_TRANSLATE_TYPE;

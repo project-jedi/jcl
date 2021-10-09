@@ -406,24 +406,26 @@ ALERT_jedi_inc_incompatible
       {$I jcld27win64.inc}
       {$ENDIF CPUX64}
       {$DEFINE JCL_CONFIGURED}
-      {$ELSE}
+      {$ENDIF MSWINDOWS}
+    {$ENDIF BDS21}
+    {----------------------------}
+    {$IFDEF BDS22}
+      {$IFDEF MSWINDOWS}
       {$IFDEF CPUX86}
       // This file should be located in directory jcl/source/include
       // It is automatically created by the JCL installer
       // For manual installations, copy and adjust jcl/source/include/jcl.template.inc
-      {$I jcld27win32.inc}
+      {$I jcld28win32.inc}
       {$ENDIF CPUX86}
       {$IFDEF CPUX64}
       // This file should be located in directory jcl/source/include
       // It is automatically created by the JCL installer
       // For manual installations, copy and adjust jcl/source/include/jcl.template.inc
-      {$I jcld27win64.inc}
+      {$I jcld28win64.inc}
       {$ENDIF CPUX64}
       {$DEFINE JCL_CONFIGURED}
-      //{$DEFINE PUREPASCAL}
-      //{$UNDEF HAS_UNIT_LIBC}
       {$ENDIF MSWINDOWS}
-    {$ENDIF BDS21}
+    {$ENDIF BDS22}
     {----------------------------}
     (*{$IFDEF FPC}
       // This file should be located in directory jcl/source/include

@@ -89,7 +89,7 @@ type
     FDir: string;
     FWidth: Integer;
     FHeight: Integer;
-    FStretchTime: LongWord;
+    FStretchTime: FixedUInt;
     FPreserveAspectRatio: Boolean;
     FResamplingFilter: TResamplingFilter;
     procedure AddToFileList(const Directory: string; const FileInfo: TSearchRec);
@@ -314,7 +314,7 @@ end;
 procedure TStretchDemoForm.DoStretch;
 var
   W, H: Integer;
-  T: LongWord;
+  T: FixedUInt;
 begin
   with OriginalImage.Picture do
     if (Graphic = nil) {$IFDEF VCL} or (Graphic is TMetafile) {$ENDIF} then

@@ -65,6 +65,9 @@ unit JclFileUtils;
 interface
 
 uses
+  {$IFDEF LINUX}
+  Posix.Unistd,
+  {$ENDIF}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
@@ -73,18 +76,18 @@ uses
   libclite,
   {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF HAS_UNITSCOPE}
-  {$IFDEF MSWINDOWS}
   {$IFNDEF FPC}
   System.IOUtils,
   {$ENDIF}
+  {$IFDEF MSWINDOWS}
   Winapi.Windows, JclWin32,
   {$ENDIF MSWINDOWS}
   System.Classes, System.SysUtils,
   {$ELSE ~HAS_UNITSCOPE}
-  {$IFDEF MSWINDOWS}
   {$IFNDEF FPC}
   IOUtils,
   {$ENDIF}
+  {$IFDEF MSWINDOWS}
   Windows, JclWin32,
   {$ENDIF MSWINDOWS}
   Classes, SysUtils,
@@ -222,7 +225,7 @@ function DelTree(const Path: string): Boolean;
 function DelTreeEx(const Path: string; AbortOnFailure: Boolean; Progress: TDelTreeProgress): Boolean;
 function DiskInDrive(Drive: Char): Boolean;
 {$ENDIF MSWINDOWS}
-function DirectoryExists(const Name: string {$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF}): Boolean;
+//function DirectoryExists(const Name: string {$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF}): Boolean;
 function FileCreateTemp(var Prefix: string): THandle;
 function FileBackup(const FileName: string; Move: Boolean = False): Boolean;
 function FileCopy(const ExistingFileName, NewFileName: string; ReplaceExisting: Boolean = False): Boolean;
@@ -260,7 +263,7 @@ function FileGetTempName(const Folder, Prefix: string): string; overload;
 function FileGetTypeName(const FileName: string): string;
 {$ENDIF MSWINDOWS}
 function FindUnusedFileName(FileName: string; const FileExt: string; const NumberPrefix: string = ''): string;
-function ForceDirectories(Name: string): Boolean;
+//function ForceDirectories(Name: string): Boolean;
 function GetDirectorySize(const Path: string): Int64;
 {$IFDEF MSWINDOWS}
 function GetDriveTypeStr(const Drive: Char): string;
@@ -274,7 +277,7 @@ function GetFileInformation(const FileName: string; out FileInfo: TSearchRec): B
 function GetFileInformation(const FileName: string): TSearchRec; overload;
 {$IFDEF UNIX}
 function GetFileStatus(const FileName: string; out StatBuf: TStatBuf64;
-  const ResolveSymLinks: Boolean): Integer;
+  const ResolveSymLinks: Boolean): LongInt;
 {$ENDIF UNIX}
 {$IFDEF MSWINDOWS}
 function GetFileLastWrite(const FileName: string): TFileTime; overload;
@@ -3410,23 +3413,6 @@ end;
 {$ENDIF MSWINDOWS}
 
 {$IFDEF MSWINDOWS}
-function DirectoryExists(const Name: string): Boolean;
-var
-  R: DWORD;
-begin
-  R := GetFileAttributes(PChar(Name));
-  Result := (R <> DWORD(-1)) and ((R and FILE_ATTRIBUTE_DIRECTORY) <> 0);
-end;
-{$ENDIF MSWINDOWS}
-
-{$IFDEF UNIX}
-function DirectoryExists(const Name: string; ResolveSymLinks: Boolean): Boolean;
-begin
-  Result := IsDirectory(Name, ResolveSymLinks);
-end;
-{$ENDIF UNIX}
-
-{$IFDEF MSWINDOWS}
 function DiskInDrive(Drive: Char): Boolean;
 var
   ErrorMode: Cardinal;
@@ -3906,7 +3892,10 @@ end;
 // can hardly be predicted, but when opening the file you should use the O_EXCL
 // flag. Using tmpfile or mkstemp is a safe way to avoid this problem.
 begin
-  Result := GetTempFileName(Folder, Prefix);
+  repeat
+   Result := TPath.GetTempFileName;
+   Result := Folder + Prefix + Result;
+  until not FileExists(Result);
 end;
 {$ENDIF UNIX}
 
@@ -3932,7 +3921,7 @@ end;
 {$ENDIF MSWINDOWS}
 
 function FindUnusedFileName(FileName: string; const FileExt: string; const
-    NumberPrefix: string = ''): string;
+  NumberPrefix: string = ''): string;
 var
   I: Integer;
 begin
@@ -3947,6 +3936,23 @@ begin
     Result := PathAddExtension(FileName + NumberPrefix + IntToStr(I), FileExt);
   until not FileExists(Result);
 end;
+
+{$IFDEF MSWINDOWS}
+function DirectoryExists(const Name: string): Boolean;
+var
+  R: DWORD;
+begin
+  R := GetFileAttributes(PChar(Name));
+  Result := (R <> DWORD(-1)) and ((R and FILE_ATTRIBUTE_DIRECTORY) <> 0);
+end;
+{$ENDIF MSWINDOWS}
+
+{$IFDEF UNIX}
+function DirectoryExists(const Name: string {$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF}): Boolean;
+begin
+  Result := IsDirectory(Name, ResolveSymLinks);
+end;
+{$ENDIF UNIX}
 
 // This routine is copied from FileCtrl.pas to avoid dependency on that unit.
 // See the remark at the top of this section
@@ -4163,7 +4169,7 @@ end;
 { TODO -cHelp : Author: Robert Rossmair }
 
 function GetFileStatus(const FileName: string; out StatBuf: TStatBuf64;
-  const ResolveSymLinks: Boolean): Integer;
+  const ResolveSymLinks: Boolean): LongInt;
 begin
   if ResolveSymLinks then
     Result := stat64(PChar(FileName), StatBuf)
@@ -4197,8 +4203,8 @@ function GetFileLastWrite2(const FileName: string): TDateTime;
 var
  TM: TDateTime;
 begin
- if not GetFileLastWrite(FileName, TM) then
-  Result := 0;
+ Result := 0;
+ GetFileLastWrite(FileName, TM);
 end;
 
 function GetFileLastWrite(const FileName: string; out TimeStamp: Integer; ResolveSymLinks: Boolean): Boolean; overload;
@@ -4464,12 +4470,8 @@ end;
 {$ENDIF MSWINDOWS}
 {$IFDEF UNIX}
 function IsDirectory(const FileName: string; ResolveSymLinks: Boolean): Boolean;
-var
-  Buf: TStatBuf64;
 begin
-  Result := False;
-  if GetFileStatus(FileName, Buf, ResolveSymLinks) = 0 then
-    Result := S_ISDIR(Buf.st_mode);
+ Result := TDirectory.Exists(FileName, ResolveSymLinks);
 end;
 {$ENDIF UNIX}
 

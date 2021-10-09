@@ -811,7 +811,7 @@ type
     function FindSourceModule(const AAddr: DWORD; out ASrcMod: TJclTD32SourceModuleInfo): Boolean;
     function FindProc(const AAddr: DWORD; out AProc: TJclTD32ProcSymbolInfo): Boolean;
     class function IsTD32Sign(const Sign: TJclTD32FileSignature): Boolean;
-    class function IsTD32DebugInfoValid(const DebugData: Pointer; const DebugDataSize: LongWord): Boolean;
+    class function IsTD32DebugInfoValid(const DebugData: Pointer; const DebugDataSize: FixedUInt): Boolean;
     property Data: TCustomMemoryStream read FData;
     property Names[const Idx: Integer]: string read GetName;
     property NameCount: Integer read GetNameCount;
@@ -1503,7 +1503,7 @@ begin
 end;
 
 class function TJclTD32InfoParser.IsTD32DebugInfoValid(
-  const DebugData: Pointer; const DebugDataSize: LongWord): Boolean;
+  const DebugData: Pointer; const DebugDataSize: FixedUInt): Boolean;
 var
   Sign: TJclTD32FileSignature;
   EndOfDebugData: TJclAddr;

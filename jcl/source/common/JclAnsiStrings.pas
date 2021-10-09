@@ -284,9 +284,9 @@ const
   {$IFDEF MSWINDOWS}
   AnsiLineBreak = AnsiCrLf;
   {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
+  {$IFDEF LINUX}
   AnsiLineBreak = AnsiLineFeed;
-  {$ENDIF UNIX}
+  {$ENDIF LINUX}
 
   AnsiSignMinus = AnsiChar('-');
   AnsiSignPlus  = AnsiChar('+');
@@ -597,11 +597,7 @@ implementation
 
 uses
   {$IFDEF HAS_UNIT_LIBC}
-  //{$IFNDEF FPC}
-  //Libc,
-  //{$ELSE}
   libclite,
-  //{$ENDIF ~FPC}
   {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF SUPPORTS_UNICODE}
   {$IFDEF HAS_UNIT_RTLCONSTS}
@@ -3532,7 +3528,7 @@ end;
 //=== TJclAnsiStrings Manipulation ===============================================
 
 procedure StrToStrings(S: AnsiString;const Sep: AnsiString; const List:
-    TJclAnsiStrings; const AllowEmptyString: Boolean = True);
+  TJclAnsiStrings; const AllowEmptyString: Boolean = True);
 var
   I, L: SizeInt;
   Left: AnsiString;

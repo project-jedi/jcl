@@ -97,7 +97,7 @@ function NtfsGetSparse(const FileName: string): Boolean;
 
 // NTFS - Reparse Points
 function NtfsDeleteReparsePoint(const FileName: string; ReparseTag: DWORD): Boolean;
-function NtfsSetReparsePoint(const FileName: string; var ReparseData; Size: Longword): Boolean;
+function NtfsSetReparsePoint(const FileName: string; var ReparseData; Size: FixedUInt): Boolean;
 function NtfsGetReparsePoint(const FileName: string; var ReparseData: TReparseGuidDataBuffer): Boolean;
 function NtfsGetReparseTag(const Path: string; var Tag: DWORD): Boolean;
 function NtfsReparsePointsSupported(const Volume: string): Boolean;
@@ -998,7 +998,7 @@ begin
     end;
 end;
 
-function NtfsSetReparsePoint(const FileName: string; var ReparseData; Size: Longword): Boolean;
+function NtfsSetReparsePoint(const FileName: string; var ReparseData; Size: FixedUInt): Boolean;
 var
   Handle: THandle;
   BytesReturned: DWORD;
@@ -1276,7 +1276,7 @@ var
   FullDir: array [0..1024] of Char;
   FilePart: PChar;
   ReparseData: TReparseDataBufferOverlay;
-  NameLength: Longword;
+  NameLength: FixedUInt;
 begin
   Result := False;
   // For some reason the destination string must be prefixed with \??\ otherwise

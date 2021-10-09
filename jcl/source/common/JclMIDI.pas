@@ -202,7 +202,7 @@ type
     0:
       (Key: TMIDINote; Frequency: array [0..2] of TMIDIDataByte);
     1:
-      (DWord: LongWord);
+      (DWord: FixedUInt);
   end;
 
   EJclMIDIError = class(EJclError);

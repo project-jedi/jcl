@@ -923,7 +923,7 @@ end;
 function TJclOrdinalRangeTypeInfo.GetMinValue: Int64;
 begin
   if OrdinalType = otULong then
-    Result := Longword(TypeData.MinValue)
+    Result := FixedUInt(TypeData.MinValue)
   else
     Result := TypeData.MinValue;
 end;
@@ -931,7 +931,7 @@ end;
 function TJclOrdinalRangeTypeInfo.GetMaxValue: Int64;
 begin
   if OrdinalType = otULong then
-    Result := Longword(TypeData.MaxValue)
+    Result := FixedUInt(TypeData.MaxValue)
   else
     Result := TypeData.MaxValue;
 end;
@@ -1522,12 +1522,12 @@ end;
 
 function TJclPropInfo.HasDefault: Boolean;
 begin
-  Result := Longword(Default) <> $80000000;
+  Result := FixedUInt(Default) <> $80000000;
 end;
 
 function TJclPropInfo.HasIndex: Boolean;
 begin
-  Result := Longword(Index) <> $80000000;
+  Result := FixedUInt(Index) <> $80000000;
 end;
 
 //=== { TJclObjPropInfo } ====================================================
@@ -2471,7 +2471,7 @@ begin
     otSLong:
       EnumVal := Integer(Value);
     otULong:
-      EnumVal := Longword(Value);
+      EnumVal := FixedUInt(Value);
   else
     EnumVal := 0;
   end;
@@ -2755,7 +2755,7 @@ begin
   CompType := GetTypeData(TypeInfo).CompType{$IFDEF BORLAND}^{$ENDIF};
   EnumMin := GetTypeData(CompType).MinValue;
   BitShift := EnumMin mod 8;
-  TmpInt64 := Longword(Value) shl BitShift;
+  TmpInt64 := FixedUInt(Value) shl BitShift;
   EnumMax := GetTypeData(CompType).MaxValue;
   ResBytes := (EnumMax div 8) - (EnumMin div 8) + 1;
   Move(TmpInt64, SetVar, ResBytes);

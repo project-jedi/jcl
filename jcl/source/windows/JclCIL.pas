@@ -826,7 +826,7 @@ begin
         end;
       ptToken, ptU4:
         begin
-          Stream.Read(VLongWord, SizeOf(LongWord));
+          Stream.Read(VLongWord, SizeOf(FixedUInt));
           VType := varLongWord;
         end;
       ptI8, ptU8:
@@ -872,7 +872,7 @@ begin
     ptU2:
       Stream.Write(TVarData(FParam).VWord, SizeOf(Word));
     ptToken, ptU4:
-      Stream.Write(TVarData(FParam).VLongWord, SizeOf(LongWord));
+      Stream.Write(TVarData(FParam).VLongWord, SizeOf(FixedUInt));
     ptI8, ptU8:
       Stream.Write(TVarData(FParam).VInt64, SizeOf(Int64));
     ptArray:

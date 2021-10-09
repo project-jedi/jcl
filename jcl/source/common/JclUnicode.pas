@@ -1819,6 +1819,12 @@ implementation
 //       the Unicode database file which can be compiled to the needed res file.
 //       This tool, including its source code, can be downloaded from www.lischke-online.de/Unicode.html.
 
+{$IFDEF VER340} // RAD Studio 10.4
+{$IFDEF LINUX}
+{$UNDEF UNICODE_RAW_DATA}
+{$ENDIF LINUX}
+{$ENDIF VER340}
+
 {$IFNDEF UNICODE_RTL_DATABASE}
 {$IFDEF UNICODE_RAW_DATA}
 {$R JclUnicode.res}
@@ -1950,11 +1956,15 @@ function OpenResourceStream(const ResName: string): TJclEasyStream;
 {$IFDEF UNICODE_RAW_DATA}
 var
   ResourceStream: TStream;
+{$IFDEF UNICODE_BZIP2_DATA or UNICODE_ZLIB_DATA}
   DecompressionStream: TStream;
   RawStream: TMemoryStream;
+{$ENDIF ~UNICODE_BZIP2_DATA}
 {$ENDIF ~UNICODE_RAW_DATA}
 begin
+  {$IFNDEF MSWINDOWS}
   Result := nil;
+  {$ENDIF}
   {$IFDEF UNICODE_RAW_DATA}
   ResourceStream := TResourceStream.Create(HInstance, ResName, 'UNICODEDATA');
   Result := TJclEasyStream.Create(ResourceStream, True);
@@ -8117,6 +8127,8 @@ begin
 {$IFDEF FPC}
   {$NOTE Locale ignored. Adapt when a fpc release has a codepage strings}
   Result := widestringmanager.CompareWideStringProc(W1, W2, [coIgnoreCase]);
+{$ELSE}
+  Result := 0;
 {$ENDIF FPC}
 end;
 {$ENDIF MSWINDOWS}

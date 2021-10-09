@@ -470,7 +470,7 @@ procedure TJclOpenDialogHook.HookDialogs;
 var
   Pe: TJclPeImage;
   I: Integer;
-  HookedModule: LongWord;
+  HookedModule: FixedUInt;
 {$ENDIF OLDSTYLE}
 begin
   try

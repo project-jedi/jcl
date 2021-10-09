@@ -88,10 +88,10 @@ begin
   {$IFDEF MSWINDOWS}
   cbSymLink.Visible := False;
   {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
+  {$IFDEF LINUX}
   FileList.Columns.Add.Caption := 'Link';
   cbArchive.Visible := False;
-  {$ENDIF UNIX}
+  {$ENDIF LINUX}
 end;
 
 procedure TFileSearchForm.FormDestroy(Sender: TObject);
@@ -129,10 +129,10 @@ begin
     {$ENDIF ~RTL230_UP}
     SubItems.Add(FormatDateTime(' yyyy-mm-dd hh:nn:ss ', FileDateTime));
     SubItems.Add(FileAttributesStr(FileInfo));
-    {$IFDEF UNIX}
+    {$IFDEF LINUX}
     if (FileInfo.Attr and faSymLink) <> 0 then
       SubItems.Add(SymbolicLinkTarget(Caption));
-    {$ENDIF UNIX}
+    {$ENDIF LINUX}
     SubItems.Add(FileGetOwnerName(Caption));
     SubItems.Add(FileGetGroupName(Caption));
   end;
@@ -216,9 +216,9 @@ begin
     cbSystem.State := CBState[System];
     cbDirectory.State := CBState[Directory];
     cbNormal.State := CBState[Normal];
-{$IFDEF UNIX}
+{$IFDEF LINUX}
     cbSymLink.State := CBState[SymLink];
-{$ENDIF def UNIX}
+{$ENDIF LINUX}
 {$IFDEF MSWINDOWS}
     cbArchive.State := CBState[Archive];
 {$ENDIF def MSWINDOWS}

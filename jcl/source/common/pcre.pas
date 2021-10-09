@@ -360,10 +360,10 @@ const
 type
   {$IFDEF PCRE_8}
   real_pcre = packed record
-    {magic_number: Longword;
+    {magic_number: FixedUInt;
     size: Integer;
     tables: PAnsiChar;
-    options: Longword;
+    options: FixedUInt;
     top_bracket: Word;
     top_backref: word;
     first_char: PAnsiChar;
@@ -1693,11 +1693,7 @@ implementation
 
 uses
   {$IFDEF HAS_UNIT_LIBC}
-  {$IFNDEF FPC}
-  Libc,
-  {$ELSE FPC}
   libclite,
-  {$ENDIF ~FPC}
   {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF HAS_UNITSCOPE}
   {$IFDEF MSWINDOWS}

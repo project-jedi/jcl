@@ -158,11 +158,11 @@ begin
   if FMultipleProfileMode and Result then
     LoadProfiles;
   {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
+  {$IFDEF LINUX}
   // don't know how to enumerate profiles on Linux
   Result := not FMultipleProfileMode;
   FMultipleProfileMode := False;
-  {$ENDIF UNIX}
+  {$ENDIF LINUX}
 end;
 
 function TJediProfilesManager.GetMultipleProfileMode: Boolean;

@@ -4,7 +4,7 @@
 
 type
    qword = UInt64;
-   DWORD = LongWord;
+   DWORD = FixedUInt;
    Pdword = ^DWORD;
    __u_char = byte;
    __u_short = word;
