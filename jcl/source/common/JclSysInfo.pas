@@ -1494,6 +1494,51 @@ end;
 {$ENDIF MSWINDOWS}
 {$ENDIF FPC}
 
+//=== Registry helpers =======================================================
+
+const
+  HKLM_CURRENT_VERSION_WINDOWS = 'SOFTWARE\Microsoft\Windows\CurrentVersion';
+  HKLM_CURRENT_VERSION_NT      = 'SOFTWARE\Microsoft\Windows NT\CurrentVersion';
+
+const
+  VersionKey: array[Boolean] of string =
+    (HKLM_CURRENT_VERSION_WINDOWS, HKLM_CURRENT_VERSION_NT);
+
+function ReadCurrentVersionStringValue(KeyWinNT: Boolean; const Name: string; Def: string; ForceNative: boolean = false): string;
+var
+  LastAccessMode: TJclRegWOW64Access;
+begin
+  if ForceNative then
+  begin
+    LastAccessMode := RegGetWOW64AccessMode;
+    try
+      RegSetWOW64AccessMode(raNative);
+      Result := RegReadStringDef(HKEY_LOCAL_MACHINE, VersionKey[KeyWinNT], Name, Def);
+    finally
+      RegSetWOW64AccessMode(LastAccessMode);
+    end;
+  end else
+    Result := RegReadStringDef(HKEY_LOCAL_MACHINE, VersionKey[KeyWinNT], Name, Def);
+end;
+
+function ReadCurrentVersionIntegerValue(KeyWinNT: Boolean; const Name: string; Def: Integer; ForceNative: boolean = false): Integer;
+var
+  LastAccessMode: TJclRegWOW64Access;
+begin
+  if ForceNative then
+  begin
+    LastAccessMode := RegGetWOW64AccessMode;
+    try
+      RegSetWOW64AccessMode(raNative);
+      Result := RegReadIntegerDef(HKEY_LOCAL_MACHINE, VersionKey[KeyWinNT], Name, Def);
+    finally
+      RegSetWOW64AccessMode(LastAccessMode);
+    end;
+  end else
+    Result := RegReadIntegerDef(HKEY_LOCAL_MACHINE, VersionKey[KeyWinNT], Name, Def);
+end;
+
+
 //=== Environment ============================================================
 
 function DelEnvironmentVar(const Name: string): Boolean;
@@ -1839,24 +1884,11 @@ end;
 
 //=== Common Folders =========================================================
 
-// Utility function which returns the Windows independent CurrentVersion key
-// inside HKEY_LOCAL_MACHINE
-
-const
-  HKLM_CURRENT_VERSION_WINDOWS = 'SOFTWARE\Microsoft\Windows\CurrentVersion';
-  HKLM_CURRENT_VERSION_NT      = 'SOFTWARE\Microsoft\Windows NT\CurrentVersion';
-
-function REG_CURRENT_VERSION: string;
-begin
-  if IsWinNT then
-    Result := HKLM_CURRENT_VERSION_NT
-  else
-    Result := HKLM_CURRENT_VERSION_WINDOWS;
-end;
-
 { TODO : Check for documented solution }
 function GetCommonFilesFolder: string;
 begin
+  // Don't use 'ReadCurrentVersionStringValue' with 'ForceNative' access here,
+  // as we want the platform (x86/x64) specific common folder.
   Result := RegReadStringDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_WINDOWS,
     'CommonFilesDir', '');
 end;
@@ -1908,6 +1940,8 @@ end;
 { TODO : Check for documented solution }
 function GetProgramFilesFolder: string;
 begin
+  // Don't use 'ReadCurrentVersionStringValue' with 'ForceNative' access here,
+  // as we want the platform (x86/x64) specific common folder.
   Result := RegReadStringDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_WINDOWS, 'ProgramFilesDir', '');
 end;
 
@@ -2395,31 +2429,13 @@ end;
 
 {$IFDEF MSWINDOWS}
 function GetRegisteredCompany: string;
-var
-  LastAccessMode: TJclRegWOW64Access;
 begin
-  { TODO : check for MSDN documentation }
-  LastAccessMode := RegGetWOW64AccessMode;
-  try
-    RegSetWOW64AccessMode(raNative);
-    Result := RegReadStringDef(HKEY_LOCAL_MACHINE, REG_CURRENT_VERSION, 'RegisteredOrganization', '');
-  finally
-    RegSetWOW64AccessMode(LastAccessMode);
-  end;
+  Result := ReadCurrentVersionStringValue(IsWinNT, 'RegisteredOrganization', '', True { TODO : check for MSDN documentation });
 end;
 
 function GetRegisteredOwner: string;
-var
-  LastAccessMode: TJclRegWOW64Access;
 begin
-  { TODO : check for MSDN documentation }
-  LastAccessMode := RegGetWOW64AccessMode;
-  try
-    RegSetWOW64AccessMode(raNative);
-    Result := RegReadStringDef(HKEY_LOCAL_MACHINE, REG_CURRENT_VERSION, 'RegisteredOwner', '');
-  finally
-    RegSetWOW64AccessMode(LastAccessMode);
-  end;
+  Result := ReadCurrentVersionStringValue(IsWinNT, 'RegisteredOwner', '', True { TODO : check for MSDN documentation });
 end;
 
 { TODO: Check supported platforms, maybe complete rewrite }
@@ -3406,13 +3422,14 @@ end;
 
 function GetShellProcessName: string;
 const
-  cShellKey = 'SOFTWARE\Microsoft\Windows NT\CurrentVersion\WinLogon';
+  cShellKey = HKLM_CURRENT_VERSION_NT + '\WinLogon';
   cShellValue = 'Shell';
   cShellDefault = 'explorer.exe';
   cShellSystemIniFileName = 'system.ini';
   cShellBootSection = 'boot';
 begin
   if IsWinNT then
+    { TODO: check whether we need to access the 'native' key here? }
     Result := RegReadStringDef(HKEY_LOCAL_MACHINE, cShellKey, cShellValue, '')
   else
     Result := IniReadString(PathAddSeparator(GetWindowsFolder) + cShellSystemIniFileName, cShellBootSection, cShellValue);
@@ -3527,7 +3544,7 @@ begin
 
           if Win32MinorVersion = 2 then
           begin
-            ProductName := RegReadStringDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_NT, 'ProductName', '');
+            ProductName := GetWindowsProductName;
             if (Pos(RsOSVersionWin81, ProductName) = 1) or (Pos(RsOSVersionWinServer2012R2, ProductName) = 1) then
               Win32MinorVersionEx := 3 // Windows 8.1 and Windows Server 2012R2
             else
@@ -3626,7 +3643,7 @@ begin
                   Result := wvWin10
               end else
               begin
-                WindowsReleaseId := StrToIntDef(RegReadStringDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_NT, 'ReleaseId', '0'), -1);
+                WindowsReleaseId := StrToIntDef(ReadCurrentVersionStringValue(True, 'ReleaseId', '0'), -1);
                 case WindowsReleaseId of
                   1607:
                     Result := wvWinServer2016;
@@ -3648,7 +3665,7 @@ var
   Edition: string;
 begin
   Result := weUnknown;
-  Edition := RegReadStringDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_NT, 'ProductName', '');
+  Edition := GetWindowsProductName;
 
   // Remove (tm) in 'Windows (TM) Vista Ultimate'
   Edition := StringReplace(Edition, '(TM) ', '', [rfReplaceAll, rfIgnoreCase]);
@@ -3792,7 +3809,7 @@ end;
 
 function NtProductType: TNtProductType;
 const
-  ProductType = 'SYSTEM\CurrentControlSet\Control\ProductOptions';
+  ProductTypeKey = 'SYSTEM\CurrentControlSet\Control\ProductOptions';
 var
   Product: string;
   OSVersionInfo: TOSVersionInfoEx;
@@ -3891,7 +3908,7 @@ begin
   if Result = ptUnknown then
   begin
     // Non Windows 2000/XP system or the above method failed, try registry
-    Product := RegReadStringDef(HKEY_LOCAL_MACHINE, ProductType, 'ProductType', '');
+    Product := RegReadStringDef(HKEY_LOCAL_MACHINE, ProductTypeKey, 'ProductType', '');
     if CompareText(Product, 'WINNT') = 0 then
       Result :=  ptWorkStation
     else
@@ -4054,7 +4071,11 @@ end;
 
 function GetWindowsProductName: string;
 begin
-  Result := RegReadStringDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_NT, 'ProductName', '');
+  // On Windows 10/11, the productname in the 'WOW6432Node' key differs from the value
+  // in the 'native' registry key, resulting in incorrected info en edition detection!
+  // It is not known, whether this is aldo the case for older Windows versions,
+  // which alos have the 'WOW6432Node' registry key.
+  Result := ReadCurrentVersionStringValue(True, 'ProductName', '', IsWin10 or IsWin11 { TODO : check for MSDN documentation });
 end;
 
 function NtProductTypeString: string;
@@ -4087,7 +4108,7 @@ begin
   // application as Windows 8 (kernel version 6.2) until an application manifest is included
   // See https://msdn.microsoft.com/en-us/library/windows/desktop/dn302074.aspx
   if ((Win32MajorVersion = 6) and (Win32MinorVersion = 2)) or (Win32MajorVersion = 10) then
-    Result := StrToInt(RegReadStringDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_NT, 'CurrentBuildNumber', IntToStr(Win32BuildNumber)))
+    Result := StrToInt(ReadCurrentVersionStringValue(True, 'CurrentBuildNumber', IntToStr(Win32BuildNumber)))
   else
     Result := Win32BuildNumber;
 end;
@@ -4103,10 +4124,10 @@ begin
   begin
     // CurrentMajorVersionNumber present in registry starting with Windows 10
     // If CurrentMajorVersionNumber not present in registry then use CurrentVersion
-    Result := RegReadIntegerDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_NT, 'CurrentMajorVersionNumber', -1);
+    Result := ReadCurrentVersionIntegerValue(True, 'CurrentMajorVersionNumber', -1);
     if Result = -1 then
     begin
-      Ver := RegReadStringDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_NT, 'CurrentVersion', IntToStr(Win32MajorVersion) + '.' + IntToStr(Win32MinorVersion));
+      Ver := ReadCurrentVersionStringValue(True, 'CurrentVersion', IntToStr(Win32MajorVersion) + '.' + IntToStr(Win32MinorVersion));
       Result := StrToIntDef(Copy(Ver, 1, Pos('.', Ver) - 1), 2); // don't use StrBefore because it uses StrCaseMap that may not be initialized yet
     end;
   end
@@ -4125,10 +4146,10 @@ begin
   begin
     // CurrentMinorVersionNumber present in registry starting with Windows 10
     // If CurrentMinorVersionNumber not present then use CurrentVersion
-    Result := RegReadIntegerDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_NT, 'CurrentMinorVersionNumber', -1);
+    Result := ReadCurrentVersionIntegerValue(True, 'CurrentMinorVersionNumber', -1);
     if Result = -1 then
     begin
-      Ver := RegReadStringDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_NT, 'CurrentVersion', IntToStr(Win32MajorVersion) + '.' + IntToStr(Win32MinorVersion));
+      Ver := ReadCurrentVersionStringValue(True, 'CurrentVersion', IntToStr(Win32MajorVersion) + '.' + IntToStr(Win32MinorVersion));
       Result := StrToIntDef(Copy(Ver, Pos('.', Ver) + 1, Length(Ver)), 2);  // don't use StrAfter because it uses StrCaseMap that may not be initialized yet
     end;
   end
@@ -4179,7 +4200,7 @@ function GetWindows10DisplayVersion: string;
 begin
   // Starting with Windows 10 20H2, the DisplayVersion registry entry is being populated ("20H2")
   if IsWin10 or IsWin11 then
-    Result := RegReadStringDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_NT, 'DisplayVersion', '')
+    Result := ReadCurrentVersionStringValue(True, 'DisplayVersion', '')
   else
     Result := '';
 end;
@@ -4189,7 +4210,7 @@ begin
   // Starting with Windows 10 21H1, the ReleaseId registry entry is no more incremented (still populated as "2009" like Windows 10 20H2)
   // and the DisplayVersion registry entry is to be used instead ("20H2")
   if IsWin10 or IsWin11 then
-    Result := StrToIntDef(RegReadStringDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_NT, 'ReleaseId', '0'), -1)
+    Result := StrToIntDef(ReadCurrentVersionStringValue(True, 'ReleaseId', '0'), -1)
   else
     Result := -1;
 end;
@@ -4299,7 +4320,7 @@ end;
 function GetWindowsServerDisplayVersion: string;
 begin
   if IsWinServer then
-    Result := RegReadStringDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_NT, 'DisplayVersion', '')
+    Result := ReadCurrentVersionStringValue(True, 'DisplayVersion', '')
   else
     Result := '';
 end;
@@ -4307,7 +4328,7 @@ end;
 function GetWindowsServerReleaseId: Integer;
 begin
   if IsWinServer then
-    Result := StrToIntDef(RegReadStringDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_NT, 'ReleaseId', '0'), -1)
+    Result := StrToIntDef(ReadCurrentVersionStringValue(True, 'ReleaseId', '0'), -1)
   else
     Result := -1;
 end;
