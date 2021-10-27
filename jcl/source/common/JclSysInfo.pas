@@ -321,6 +321,9 @@ const
   PROCESSOR_ARCHITECTURE_IA64 = 6;
   {$EXTERNALSYM PROCESSOR_ARCHITECTURE_IA64}
 
+const
+  Windows11InitialBuildNumber = 22000;
+
 function GetWindowsVersion: TWindowsVersion;
 function GetWindowsEdition: TWindowsEdition;
 function NtProductType: TNtProductType;
@@ -3429,7 +3432,6 @@ const
   cShellBootSection = 'boot';
 begin
   if IsWinNT then
-    { TODO: check whether we need to access the 'native' key here? }
     Result := RegReadStringDef(HKEY_LOCAL_MACHINE, cShellKey, cShellValue, '')
   else
     Result := IniReadString(PathAddSeparator(GetWindowsFolder) + cShellSystemIniFileName, cShellBootSection, cShellValue);
@@ -3637,7 +3639,7 @@ begin
               OSVersionInfoEx.dwOSVersionInfoSize := SizeOf(OSVersionInfoEx);
               if GetVersionEx(OSVersionInfoEx) and (OSVersionInfoEx.wProductType = VER_NT_WORKSTATION) then
               begin
-                if GetWindowsBuildNumber >= 22000 then
+                if GetWindowsBuildNumber >= Windows11InitialBuildNumber then
                   Result := wvWin11
                 else
                   Result := wvWin10
