@@ -338,14 +338,19 @@ function GetWindowsMinorVersionNumber: Integer;
 function GetWindowsVersionNumber: string;
 function GetWindowsServicePackVersion: Integer;
 function GetWindowsServicePackVersionString: string;
-function GetWindows10DisplayVersion: string;
-function GetWindows10ReleaseId: Integer;
-function GetWindows10ReleaseName: String;
-function GetWindows10ReleaseCodeName: String;
-function GetWindows10ReleaseVersion: String;
-function GetWindowsServerDisplayVersion: string;
-function GetWindowsServerReleaseId: Integer;
-function GetWindowsServerReleaseVersion: String;
+function GetWindowsDisplayVersion: string;
+function GetWindowsReleaseId: Integer;
+function GetWindowsReleaseName: String;
+function GetWindowsReleaseCodeName: String;
+function GetWindowsReleaseVersion: String;
+function GetWindows10DisplayVersion: string; deprecated 'Use GetWindowsDisplayVersion';
+function GetWindows10ReleaseId: Integer; deprecated 'Use GetWindowsReleaseId';
+function GetWindows10ReleaseName: String; deprecated 'Use GetWindowsReleaseName';
+function GetWindows10ReleaseCodeName: String; deprecated 'Use GetWindowsReleaseCodeName';
+function GetWindows10ReleaseVersion: String; deprecated 'Use GetWindowsReleaseVersion';
+function GetWindowsServerDisplayVersion: string; deprecated 'Use GetWindowsDisplayVersion';
+function GetWindowsServerReleaseId: Integer; deprecated 'Use GetWindowsReleaseId';
+function GetWindowsServerReleaseVersion: String; deprecated 'Use GetWindowsReleaseVersion';
 function GetOpenGLVersion(const Win: THandle; out Version, Vendor: AnsiString): Boolean;
 function GetNativeSystemInfo(var SystemInfo: TSystemInfo): Boolean;
 function GetProcessorArchitecture: TProcessorArchitecture;
@@ -4221,76 +4226,78 @@ begin
     Result := '';
 end;
 
-function GetWindows10DisplayVersion: string;
+function GetWindowsDisplayVersion: string;
 begin
   // Starting with Windows 10 20H2, the DisplayVersion registry entry is being populated ("20H2")
-  if IsWin10 or IsWin11 then
+  if IsWin10 or IsWin11 or IsWinServer then
     Result := ReadWindowsNTCurrentVersionStringValue('DisplayVersion', '')
   else
     Result := '';
 end;
 
-function GetWindows10ReleaseId: Integer;
+function GetWindowsReleaseId: Integer;
 begin
-  // Starting with Windows 10 21H1, the ReleaseId registry entry is no more incremented (still populated as "2009" like Windows 10 20H2)
+  // Starting with Windows 10 21H1, the ReleaseId registry entry is no more incremented (still populated as "2009" like Windows 10 20H2 and Windows 11)
   // and the DisplayVersion registry entry is to be used instead ("20H2")
-  if IsWin10 or IsWin11 then
+  if IsWin10 or IsWin11 or IsWinServer then
     Result := StrToIntDef(ReadWindowsNTCurrentVersionStringValue('ReleaseId', '0'), -1)
   else
     Result := -1;
 end;
 
-function GetWindows10ReleaseName: String;
+function GetWindowsReleaseName: String;
 var
   WindowsDisplayVersion: string;
 begin
-  if IsWin10 or IsWin11 then
+  if IsWin10 then
   begin
-    case GetWindows10ReleaseId of
+    case GetWindowsReleaseId of
       1507:
-         Result := 'Windows 10';
+         Result := LoadResString(@RsOSVersionWin10);
       1511:
-         Result := 'Windows 10 November Update';
+         Result := LoadResString(@RsOSVersionWin10) + ' November Update';
       1607:
-         Result := 'Windows 10 Anniversary Update';
+         Result := LoadResString(@RsOSVersionWin10) + ' Anniversary Update';
       1703:
-         Result := 'Windows 10 Creators Update';
+         Result := LoadResString(@RsOSVersionWin10) + ' Creators Update';
       1709:
-         Result := 'Windows 10 Fall Creators Update';
+         Result := LoadResString(@RsOSVersionWin10) + ' Fall Creators Update';
       1803:
-         Result := 'Windows 10 April 2018 Update';
+         Result := LoadResString(@RsOSVersionWin10) + ' April 2018 Update';
       1809:
-         Result := 'Windows 10 October 2018 Update';
+         Result := LoadResString(@RsOSVersionWin10) + ' October 2018 Update';
       1903:
-         Result := 'Windows 10 May 2019 Update';
+         Result := LoadResString(@RsOSVersionWin10) + ' May 2019 Update';
       1909:
-         Result := 'Windows 10 November 2019 Update';
+         Result := LoadResString(@RsOSVersionWin10) + ' November 2019 Update';
       2004:
-         Result := 'Windows 10 May 2020 Update';
+         Result := LoadResString(@RsOSVersionWin10) + ' May 2020 Update';
       2009:
          begin
-           WindowsDisplayVersion := GetWindows10DisplayVersion;
+           WindowsDisplayVersion := GetWindowsDisplayVersion;
            if WindowsDisplayVersion = '20H2' then
-              Result := 'Windows 10 October 2020 Update'
+              Result := LoadResString(@RsOSVersionWin10) + ' October 2020 Update'
            else
            if WindowsDisplayVersion = '21H1' then
-              Result := 'Windows 10 May 2021 Update'
+              Result := LoadResString(@RsOSVersionWin10) + ' May 2021 Update'
            else
-              Result := 'Windows 10 ' + WindowsDisplayVersion + ' Update';
+              Result := LoadResString(@RsOSVersionWin10) + ' ' + WindowsDisplayVersion + ' Update';
          end
     else
-      Result := 'Windows 10 ' + IntToStr(GetWindows10ReleaseId) + ' Update';
+      Result := LoadResString(@RsOSVersionWin10) + ' ' + IntToStr(GetWindowsReleaseId) + ' Update';
     end;
   end
+  else if IsWin11 then // And higher versions too?
+    Result := GetWindowsVersionString + ' ' + GetWindowsDisplayVersion + ' Update'
   else
     Result := '';
 end;
 
-function GetWindows10ReleaseCodeName: String;
+function GetWindowsReleaseCodeName: String;
 begin
-  if IsWin10 or IsWin11 then
+  if IsWin10 then
   begin
-    case GetWindows10ReleaseId of
+    case GetWindowsReleaseId of
       1507:
          Result := 'Threshold 1';
       1511:
@@ -4312,32 +4319,89 @@ begin
       2004:
          Result := '20H1';
       2009:
-         Result := GetWindows10DisplayVersion;
+         Result := GetWindowsDisplayVersion;
     else
-      Result := '';
+      Result := GetWindowsDisplayVersion;
     end;
   end
+  else
+    Result := GetWindowsDisplayVersion;
+end;
+
+function GetWindowsReleaseVersion: String;
+var
+  WindowsReleaseId: Integer;
+begin
+  if IsWin10 then
+  begin
+    WindowsReleaseId := GetWindowsReleaseId;
+    if WindowsReleaseId > 0 then
+    begin
+      if WindowsReleaseId < 2009 then
+        Result := LoadResString(@RsOSVersionWin10) + ', version ' + IntToStr(WindowsReleaseId)
+      else
+        Result := LoadResString(@RsOSVersionWin10) + ', version ' + GetWindowsDisplayVersion
+    end
+    else
+      Result := '';
+  end
+  else
+    if IsWinServer then
+  begin
+    WindowsReleaseId := GetWindowsReleaseId;
+    if WindowsReleaseId > 0 then
+    begin
+      if WindowsReleaseId < 2009 then
+        Result := LoadResString(@RsOSVersionWinServer) + ', version ' + IntToStr(WindowsReleaseId)
+      else
+        Result := LoadResString(@RsOSVersionWinServer) + ', version ' + GetWindowsDisplayVersion
+    end
+    else
+      Result := '';
+  end
+  else
+  if IsWin11 then // And higher versions too?
+    Result := GetWindowsVersionString + ', version ' + GetWindowsDisplayVersion
+  else
+    Result := '';
+end;
+
+function GetWindows10DisplayVersion: string;
+begin
+  if IsWin10 then
+    Result := GetWindowsDisplayVersion()
+  else
+    Result := '';
+end;
+
+function GetWindows10ReleaseId: Integer;
+begin
+  if IsWin10 then
+    Result := GetWindowsReleaseId()
+  else
+    Result := -1;
+end;
+
+function GetWindows10ReleaseName: String;
+begin
+  if IsWin10 then
+    Result := GetWindowsReleaseName()
+  else
+    Result := '';
+end;
+
+function GetWindows10ReleaseCodeName: String;
+begin
+  if IsWin10 then
+    Result := GetWindowsReleaseCodeName()
   else
     Result := '';
 end;
 
 function GetWindows10ReleaseVersion: String;
-var
-  WindowsReleaseId: Integer;
 begin
-  if IsWin10 or IsWin11 then
-  begin
-    WindowsReleaseId := GetWindows10ReleaseId;
-    if WindowsReleaseId > 0 then
-    begin
-      if WindowsReleaseId < 2009 then
-        Result := 'Windows 10, version ' + IntToStr(WindowsReleaseId)
-      else
-        Result := 'Windows 10, version ' + GetWindows10DisplayVersion
-    end
-    else
-      Result := '';
-  end
+  if IsWin10 then
+    Result := GetWindowsReleaseVersion()
   else
     Result := '';
 end;
@@ -4345,7 +4409,7 @@ end;
 function GetWindowsServerDisplayVersion: string;
 begin
   if IsWinServer then
-    Result := ReadWindowsNTCurrentVersionStringValue('DisplayVersion', '')
+    Result := GetWindowsDisplayVersion()
   else
     Result := '';
 end;
@@ -4353,28 +4417,15 @@ end;
 function GetWindowsServerReleaseId: Integer;
 begin
   if IsWinServer then
-    Result := StrToIntDef(ReadWindowsNTCurrentVersionStringValue('ReleaseId', '0'), -1)
+    Result := GetWindowsReleaseId()
   else
     Result := -1;
 end;
 
 function GetWindowsServerReleaseVersion: String;
-var
-  WindowsReleaseId: Integer;
 begin
   if IsWinServer then
-  begin
-    WindowsReleaseId := GetWindowsServerReleaseId;
-    if WindowsReleaseId > 0 then
-    begin
-      if WindowsReleaseId < 2009 then
-        Result := 'Windows Server, version ' + IntToStr(WindowsReleaseId)
-      else
-        Result := 'Windows Server, version ' + GetWindowsServerDisplayVersion
-    end
-    else
-      Result := '';
-  end
+    Result := GetWindowsReleaseVersion()
   else
     Result := '';
 end;
