@@ -4345,8 +4345,7 @@ begin
     else
       Result := '';
   end
-  else
-    if IsWinServer then
+  else if IsWinServer then
   begin
     WindowsReleaseId := GetWindowsReleaseId;
     if WindowsReleaseId > 0 then
@@ -4359,8 +4358,7 @@ begin
     else
       Result := '';
   end
-  else
-  if IsWin11 then // And higher versions too?
+  else if IsWin11 then // And higher versions too?
     Result := GetWindowsVersionString + ', version ' + GetWindowsDisplayVersion
   else
     Result := '';
