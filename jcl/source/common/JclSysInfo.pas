@@ -341,6 +341,7 @@ function GetWindowsServicePackVersionString: string;
 function GetWindowsDisplayVersion: string;
 function GetWindowsReleaseId: Integer;
 function GetWindowsReleaseName: String;
+function GetWindowsReleaseCode: String;
 function GetWindowsReleaseCodeName: String;
 function GetWindowsReleaseVersion: String;
 function GetWindows10DisplayVersion: string; deprecated 'Use GetWindowsDisplayVersion';
@@ -4291,6 +4292,28 @@ begin
     Result := GetWindowsVersionString + ' ' + GetWindowsDisplayVersion + ' Update'
   else
     Result := '';
+end;
+
+function GetWindowsReleaseCode: String;
+begin
+  // Looks much like the 'GetWindowsReleaseCodeName', except for the Windows 10 versions
+  // prior to Release Id 1903 - those have a different 'code' vs the 'code name'.
+  if IsWin10 then
+  begin
+    case GetWindowsReleaseId of
+      1903:
+        Result := '19H1';
+      1909:
+        Result := '19H2';
+      2004:
+        Result := '20H1';
+      2009:
+        Result := GetWindowsDisplayVersion;
+    else
+      Result := IntToStr(GetWindowsReleaseId);
+    end
+  end else
+    Result := GetWindowsDisplayVersion;
 end;
 
 function GetWindowsReleaseCodeName: String;
