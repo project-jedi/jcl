@@ -4309,10 +4309,11 @@ begin
         Result := '20H1';
       2009:
         Result := GetWindowsDisplayVersion;
-    else
-      Result := IntToStr(GetWindowsReleaseId);
+      else
+        Result := IntToStr(GetWindowsReleaseId);
     end
-  end else
+  end
+  else
     Result := GetWindowsDisplayVersion;
 end;
 
