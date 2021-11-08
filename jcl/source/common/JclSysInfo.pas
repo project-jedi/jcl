@@ -4295,12 +4295,18 @@ begin
 end;
 
 function GetWindowsReleaseCode: String;
+var
+  WindowsReleaseId: Integer;
 begin
   // Looks much like the 'GetWindowsReleaseCodeName', except for the Windows 10 versions
   // prior to Release Id 1903 - those have a different 'code' vs the 'code name'.
   if IsWin10 then
   begin
-    case GetWindowsReleaseId of
+    WindowsReleaseId := GetWindowsReleaseId;
+    if WindowsReleaseId < 1903 then
+      Result := IntToStr(WindowsReleaseId)
+    else
+    case WindowsReleaseId of
       1903:
         Result := '19H1';
       1909:
@@ -4310,8 +4316,8 @@ begin
       2009:
         Result := GetWindowsDisplayVersion;
       else
-        Result := IntToStr(GetWindowsReleaseId);
-    end
+        Result := '';
+    end;
   end
   else
     Result := GetWindowsDisplayVersion;
@@ -4323,29 +4329,29 @@ begin
   begin
     case GetWindowsReleaseId of
       1507:
-         Result := 'Threshold 1';
+        Result := 'Threshold 1';
       1511:
-         Result := 'Threshold 2';
+        Result := 'Threshold 2';
       1607:
-         Result := 'Redstone 1';
+        Result := 'Redstone 1';
       1703:
-         Result := 'Redstone 2';
+        Result := 'Redstone 2';
       1709:
-         Result := 'Redstone 3';
+        Result := 'Redstone 3';
       1803:
-         Result := 'Redstone 4';
+        Result := 'Redstone 4';
       1809:
-         Result := 'Redstone 5';
+        Result := 'Redstone 5';
       1903:
-         Result := '19H1';
+        Result := '19H1';
       1909:
-         Result := '19H2';
+        Result := '19H2';
       2004:
-         Result := '20H1';
+        Result := '20H1';
       2009:
-         Result := GetWindowsDisplayVersion;
-    else
-      Result := GetWindowsDisplayVersion;
+        Result := GetWindowsDisplayVersion;
+      else
+        Result := '';
     end;
   end
   else
