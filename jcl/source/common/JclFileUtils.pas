@@ -225,7 +225,7 @@ function DelTree(const Path: string): Boolean;
 function DelTreeEx(const Path: string; AbortOnFailure: Boolean; Progress: TDelTreeProgress): Boolean;
 function DiskInDrive(Drive: Char): Boolean;
 {$ENDIF MSWINDOWS}
-//function DirectoryExists(const Name: string {$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF}): Boolean;
+function DirectoryExists(const Name: string {$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF}): Boolean;
 function FileCreateTemp(var Prefix: string): THandle;
 function FileBackup(const FileName: string; Move: Boolean = False): Boolean;
 function FileCopy(const ExistingFileName, NewFileName: string; ReplaceExisting: Boolean = False): Boolean;
@@ -263,7 +263,7 @@ function FileGetTempName(const Folder, Prefix: string): string; overload;
 function FileGetTypeName(const FileName: string): string;
 {$ENDIF MSWINDOWS}
 function FindUnusedFileName(FileName: string; const FileExt: string; const NumberPrefix: string = ''): string;
-//function ForceDirectories(Name: string): Boolean;
+function ForceDirectories(Name: string): Boolean;
 function GetDirectorySize(const Path: string): Int64;
 {$IFDEF MSWINDOWS}
 function GetDriveTypeStr(const Drive: Char): string;

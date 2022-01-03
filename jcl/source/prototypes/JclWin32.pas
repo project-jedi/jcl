@@ -39,9 +39,9 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
-{ Revision:      $Rev::                                                                          $ }
-{ Author:        $Author::                                                                       $ }
+{ Last modified: $Date:: 2012-03-05 21:09:26 +0000                                               $ }
+{ Revision:      $Rev:: 92026bbb363f5fad13ddd4827edecdd45c4b9db1                                 $ }
+{ Author:        $Author:: outchy                                                                $ }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -228,9 +228,9 @@ const
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL$';
-    Revision: '$Revision$';
-    Date: '$Date$';
+    RCSfile: '$URL: jcl/source/prototypes/JclWin32.pas $';
+    Revision: '$Revision: 92026bbb363f5fad13ddd4827edecdd45c4b9db1 $';
+    Date: '$Date: 2012-03-05 21:09:26 +0000 $';
     LogPath: 'JCL\source\windows'
     );
 {$ENDIF UNITVERSIONING}
