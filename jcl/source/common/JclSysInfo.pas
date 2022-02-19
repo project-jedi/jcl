@@ -344,14 +344,14 @@ function GetWindowsReleaseName: String;
 function GetWindowsReleaseCode: String;
 function GetWindowsReleaseCodeName: String;
 function GetWindowsReleaseVersion: String;
-function GetWindows10DisplayVersion: string; deprecated 'Use GetWindowsDisplayVersion';
-function GetWindows10ReleaseId: Integer; deprecated 'Use GetWindowsReleaseId';
-function GetWindows10ReleaseName: String; deprecated 'Use GetWindowsReleaseName';
-function GetWindows10ReleaseCodeName: String; deprecated 'Use GetWindowsReleaseCodeName';
-function GetWindows10ReleaseVersion: String; deprecated 'Use GetWindowsReleaseVersion';
-function GetWindowsServerDisplayVersion: string; deprecated 'Use GetWindowsDisplayVersion';
-function GetWindowsServerReleaseId: Integer; deprecated 'Use GetWindowsReleaseId';
-function GetWindowsServerReleaseVersion: String; deprecated 'Use GetWindowsReleaseVersion';
+function GetWindows10DisplayVersion: string; {$IFDEF SUPPORTS_DEPRECATED}deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS}'Use GetWindowsDisplayVersion'{$ENDIF};{$ENDIF}
+function GetWindows10ReleaseId: Integer; {$IFDEF SUPPORTS_DEPRECATED}deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS}'Use GetWindowsReleaseId'{$ENDIF};{$ENDIF}
+function GetWindows10ReleaseName: String; {$IFDEF SUPPORTS_DEPRECATED}deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS}'Use GetWindowsReleaseName'{$ENDIF};{$ENDIF}
+function GetWindows10ReleaseCodeName: String; {$IFDEF SUPPORTS_DEPRECATED}deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS}'Use GetWindowsReleaseCodeName'{$ENDIF};{$ENDIF}
+function GetWindows10ReleaseVersion: String; {$IFDEF SUPPORTS_DEPRECATED}deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS}'Use GetWindowsReleaseVersion'{$ENDIF};{$ENDIF}
+function GetWindowsServerDisplayVersion: string; {$IFDEF SUPPORTS_DEPRECATED}deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS}'Use GetWindowsDisplayVersion'{$ENDIF};{$ENDIF}
+function GetWindowsServerReleaseId: Integer; {$IFDEF SUPPORTS_DEPRECATED}deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS}'Use GetWindowsReleaseId'{$ENDIF};{$ENDIF}
+function GetWindowsServerReleaseVersion: String; {$IFDEF SUPPORTS_DEPRECATED}deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS}'Use GetWindowsReleaseVersion'{$ENDIF};{$ENDIF}
 function GetOpenGLVersion(const Win: THandle; out Version, Vendor: AnsiString): Boolean;
 function GetNativeSystemInfo(var SystemInfo: TSystemInfo): Boolean;
 function GetProcessorArchitecture: TProcessorArchitecture;
