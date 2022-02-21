@@ -1543,22 +1543,22 @@ begin
     Result := RegReadIntegerDef(HKEY_LOCAL_MACHINE, Key, Name, Def);
 end;
 
-function ReadWindowsCurrentVersionStringValue(const Name: string; Def: string; ForceNative: boolean = false): string; inline;
+function ReadWindowsCurrentVersionStringValue(const Name: string; Def: string; ForceNative: boolean = false): string; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
 begin
   Result := RegReadHklmKeyStringValue(HKLM_CURRENT_VERSION_WINDOWS, Name, Def, ForceNative);
 end;
 
-function ReadWindowsCurrentVersionIntegerValue(const Name: string; Def: Integer; ForceNative: boolean = false): Integer; inline;
+function ReadWindowsCurrentVersionIntegerValue(const Name: string; Def: Integer; ForceNative: boolean = false): Integer; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
 begin
   Result := RegReadHklmKeyIntegerValue(HKLM_CURRENT_VERSION_WINDOWS, Name, Def, ForceNative);
 end;
 
-function ReadWindowsNTCurrentVersionStringValue(const Name: string; Def: string; ForceNative: boolean = false): string; inline;
+function ReadWindowsNTCurrentVersionStringValue(const Name: string; Def: string; ForceNative: boolean = false): string; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
 begin
   Result := RegReadHklmKeyStringValue(HKLM_CURRENT_VERSION_NT, Name, Def, ForceNative);
 end;
 
-function ReadWindowsNTCurrentVersionIntegerValue(const Name: string; Def: Integer; ForceNative: boolean = false): Integer; inline;
+function ReadWindowsNTCurrentVersionIntegerValue(const Name: string; Def: Integer; ForceNative: boolean = false): Integer; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
 begin
   Result := RegReadHklmKeyIntegerValue(HKLM_CURRENT_VERSION_NT, Name, Def, ForceNative);
 end;
