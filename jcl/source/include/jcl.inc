@@ -392,7 +392,7 @@ ALERT_jedi_inc_incompatible
     {$ENDIF BDS20}
     {----------------------------}
     {$IFDEF BDS21}
-      {$IFDEF MSWINDOWS}
+      //{$IFDEF MSWINDOWS}
       {$IFDEF CPUX86}
       // This file should be located in directory jcl/source/include
       // It is automatically created by the JCL installer
@@ -406,7 +406,7 @@ ALERT_jedi_inc_incompatible
       {$I jcld27win64.inc}
       {$ENDIF CPUX64}
       {$DEFINE JCL_CONFIGURED}
-      {$ENDIF MSWINDOWS}
+      //{$ENDIF MSWINDOWS}
     {$ENDIF BDS21}
     {----------------------------}
     {$IFDEF BDS22}

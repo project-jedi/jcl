@@ -792,7 +792,7 @@ end;
 
 function TJclHandleStream.Read(var Buffer; Count: Longint): Longint;
 begin
-  Result := 0;
+  //Result := 0;
   {$IFDEF MSWINDOWS}
   if (Count <= 0) or not ReadFile(Handle, Buffer, DWORD(Count), DWORD(Result), nil) then
     Result := 0;
@@ -810,7 +810,7 @@ end;
 
 function TJclHandleStream.Write(const Buffer; Count: Longint): Longint;
 begin
-  Result := 0;
+  //Result := 0;
   {$IFDEF MSWINDOWS}
   if (Count <= 0) or not WriteFile(Handle, Buffer, DWORD(Count), DWORD(Result), nil) then
     Result := 0;

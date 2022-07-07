@@ -1996,28 +1996,31 @@ end;
 {$IFNDEF FPC}
 function GetVirtualMethodCount(AClass: TClass): Integer;
 type
- PIntPtr = ^IntPtr;
+  {$IFNDEF MSWINDOWS}
+  INT_PTR = System.IntPtr;    // NativeInt;
+  {$ENDIF}
+  PINT_PTR = ^INT_PTR;
 var
-  BeginVMT: IntPtr;
-  EndVMT: IntPtr;
-  TablePointer: IntPtr;
+  BeginVMT: INT_PTR;
+  EndVMT: INT_PTR;
+  TablePointer: INT_PTR;
   I: Integer;
 begin
-  BeginVMT := IntPtr(AClass);
+  BeginVMT := INT_PTR(AClass);
 
   // Scan the offset entries in the class table for the various fields,
   // namely vmtIntfTable, vmtAutoTable, ..., vmtDynamicTable
   // The last entry is always the vmtClassName, so stop once we got there
   // After the last virtual method there is one of these entries.
 
-  EndVMT := PIntPtr(IntPtr(AClass) + vmtClassName)^;
+  EndVMT := PINT_PTR(INT_PTR(AClass) + vmtClassName)^;
   // Set iterator to first item behind VMT table pointer
   I := vmtSelfPtr + SizeOf(Pointer);
   repeat
-    TablePointer := PIntPtr(IntPtr(AClass) + I)^;
+    TablePointer := PINT_PTR(INT_PTR(AClass) + I)^;
     if (TablePointer <> 0) and (TablePointer >= BeginVMT) and
        (TablePointer < EndVMT) then
-      EndVMT := IntPtr(TablePointer);
+      EndVMT := INT_PTR(TablePointer);
     Inc(I, SizeOf(Pointer));
   until I >= vmtClassName;
 
