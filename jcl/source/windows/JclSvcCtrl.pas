@@ -1086,7 +1086,7 @@ procedure TJclSCManager.Refresh(const RefreshAll: Boolean);
       repeat
         ReallocMem(PBuf, BytesNeeded);
         ServicesReturned := 0;
-        Ret := EnumServicesStatus(FHandle, SERVICE_TYPE_ALL, SERVICE_STATE_ALL,
+        Ret := EnumServicesStatus(FHandle, SERVICE_WIN32 or SERVICE_ADAPTER or SERVICE_DRIVER or SERVICE_INTERACTIVE_PROCESS, SERVICE_STATE_ALL,
           PEnumServiceStatus(PBuf){$IFNDEF FPC}{$IFNDEF RTL340_UP}^{$ENDIF}{$ENDIF},
           BytesNeeded, BytesNeeded, ServicesReturned, ResumeHandle);
         LastError := GetLastError;
@@ -1423,7 +1423,7 @@ end;
 function GetServiceStatusByName(const AServer,AServiceName:string):TJclServiceState;
 var
   ServiceHandle,
-  SCMHandle: DWORD;
+  SCMHandle: SC_HANDLE;
   SCMAccess,Access:DWORD;
   ServiceStatus: TServiceStatus;
 begin
@@ -1452,7 +1452,7 @@ end;
 function StartServiceByName(const AServer,AServiceName: String):Boolean;
 var
   ServiceHandle,
-  SCMHandle: DWORD;
+  SCMHandle: SC_HANDLE;
   p: PChar;
 begin
   p:=nil;
@@ -1474,7 +1474,7 @@ end;
 function StopServiceByName(const AServer, AServiceName: String):Boolean;
 var
   ServiceHandle,
-  SCMHandle: DWORD;
+  SCMHandle: SC_HANDLE;
   SS: _Service_Status;
 begin
   Result := False;
