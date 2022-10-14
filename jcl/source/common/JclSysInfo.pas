@@ -4287,6 +4287,9 @@ begin
            if WindowsDisplayVersion = '21H1' then
               Result := LoadResString(@RsOSVersionWin10) + ' May 2021 Update'
            else
+           if WindowsDisplayVersion = '21H2' then
+              Result := LoadResString(@RsOSVersionWin10) + ' November 2021 Update'
+           else
               Result := LoadResString(@RsOSVersionWin10) + ' ' + WindowsDisplayVersion + ' Update';
          end
     else
