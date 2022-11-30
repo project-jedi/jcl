@@ -2606,8 +2606,10 @@ end;
 { TODO : the date string can be e.g. 00/00/00 }
 function GetBIOSDate: TDateTime;
 const
-  WinNT_REG_PATH = 'HARDWARE\DESCRIPTION\System';
-  WinNT_REG_KEY  = 'SystemBiosDate';
+//  WinNT_REG_PATH = 'HARDWARE\DESCRIPTION\System';
+  WinNT_REG_PATH = 'HARDWARE\DESCRIPTION\System\BIOS';
+//  WinNT_REG_KEY  = 'SystemBiosDate';
+  WinNT_REG_KEY  = 'BIOSReleaseDate';
   Win9x_REG_PATH = 'Enum\Root\*PNP0C01\0000';
   Win9x_REG_KEY  = 'BiosDate';
 var
