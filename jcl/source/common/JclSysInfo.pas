@@ -3325,13 +3325,13 @@ end;
 function GetProcessNameFromWnd(Wnd: THandle): string;
 var
   List: TStringList;
-  PID: THandle;
+  PID: DWORD;
   I: Integer;
 begin
   Result := '';
   if IsWindow(Wnd) then
   begin
-    PID := INVALID_HANDLE_VALUE;
+    PID := DWORD(-1);
     GetWindowThreadProcessId(Wnd, @PID);
     List := TStringList.Create;
     try
