@@ -2631,7 +2631,9 @@ begin
       RegStr := RegReadString(HKEY_LOCAL_MACHINE, WinNT_REG_PATH, WinNT_REG_KEY);
   end
   else
+  begin
     RegStr := RegReadString(HKEY_LOCAL_MACHINE, Win9x_REG_PATH, Win9x_REG_KEY);
+  end;
   {$IFDEF RTL150_UP}
   FillChar(FormatSettings, SizeOf(FormatSettings), 0);
   FormatSettings.DateSeparator := '/';
