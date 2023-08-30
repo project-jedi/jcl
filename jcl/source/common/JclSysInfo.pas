@@ -2606,10 +2606,10 @@ end;
 { TODO : the date string can be e.g. 00/00/00 }
 function GetBIOSDate: TDateTime;
 const
-  WinNT_REG_PATH_NEW = 'HARDWARE\DESCRIPTION\System\BIOS';
-  WinNT_REG_PATH_OLD = 'HARDWARE\DESCRIPTION\System';
-  WinNT_REG_KEY_NEW  = 'BIOSReleaseDate';
-  WinNT_REG_KEY_OLD  = 'SystemBiosDate';
+  WIN10_REG_PATH = 'HARDWARE\DESCRIPTION\System\BIOS';
+  WIN10_REG_KEY  = 'BIOSReleaseDate';
+  WinNT_REG_PATH = 'HARDWARE\DESCRIPTION\System';
+  WinNT_REG_KEY  = 'SystemBiosDate';
   Win9x_REG_PATH = 'Enum\Root\*PNP0C01\0000';
   Win9x_REG_KEY  = 'BiosDate';
 var
@@ -2621,15 +2621,14 @@ var
   RegSeparator: Char;
   {$ENDIF ~RTL150_UP}
 begin
-  if IsWinNT then begin
-    {fs 14/12/2022: location of the Bios date seems to have changed on newer systems (From windows 10 ?)
-    The new location seems to exist since a while, but older location disappeared on newer OS}
-    if RegValueExists(HKEY_LOCAL_MACHINE, WinNT_REG_PATH_NEW, WinNT_REG_KEY_NEW) then
-      {New location}
-      RegStr := RegReadString(HKEY_LOCAL_MACHINE, WinNT_REG_PATH_NEW, WinNT_REG_KEY_NEW)
+  if IsWinNT then
+  begin
+    // location of the Bios date seems to have changed on newer systems (From windows 10 ?)
+    // The new location seems to exist since a while, but older location disappeared on newer OS
+    if RegValueExists(HKEY_LOCAL_MACHINE, WIN10_REG_PATH, WIN10_REG_KEY) then
+      RegStr := RegReadString(HKEY_LOCAL_MACHINE, WIN10_REG_PATH, WIN10_REG_KEY)
     else
-      {Old location}
-      RegStr := RegReadString(HKEY_LOCAL_MACHINE, WinNT_REG_PATH_OLD, WinNT_REG_KEY_OLD);
+      RegStr := RegReadString(HKEY_LOCAL_MACHINE, WinNT_REG_PATH, WinNT_REG_KEY);
   end
   else
     RegStr := RegReadString(HKEY_LOCAL_MACHINE, Win9x_REG_PATH, Win9x_REG_KEY);
