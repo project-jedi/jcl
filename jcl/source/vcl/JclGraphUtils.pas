@@ -1477,11 +1477,11 @@ begin
           R := 255 - (SourcePtr.C - MulDiv(SourcePtr.C, K, 255) + K);
           G := 255 - (SourcePtr.M - MulDiv(SourcePtr.M, K, 255) + K);
           B := 255 - (SourcePtr.Y - MulDiv(SourcePtr.Y, K, 255) + K);
-          TargetPtr^ := Max(0, Min(255, Byte(B)));
+          TargetPtr^ := JclLogic.Max(0, JclLogic.Min(255, Byte(B)));
           Inc(TargetPtr);
-          TargetPtr^ := Max(0, Min(255, Byte(G)));
+          TargetPtr^ := JclLogic.Max(0, JclLogic.Min(255, Byte(G)));
           Inc(TargetPtr);
-          TargetPtr^ := Max(0, Min(255, Byte(R)));
+          TargetPtr^ := JclLogic.Max(0, JclLogic.Min(255, Byte(R)));
           Inc(TargetPtr);
           Inc(SourcePtr);
         end;
@@ -1497,11 +1497,11 @@ begin
           R := 255 - (SourcePtr16.C - MulDiv(SourcePtr16.C, K, 65535) + K) shr 8;
           G := 255 - (SourcePtr16.M - MulDiv(SourcePtr16.M, K, 65535) + K) shr 8;
           B := 255 - (SourcePtr16.Y - MulDiv(SourcePtr16.Y, K, 65535) + K) shr 8;
-          TargetPtr^ := Max(0, Min(255, Byte(B)));
+          TargetPtr^ := JclLogic.Max(0, JclLogic.Min(255, Byte(B)));
           Inc(TargetPtr);
-          TargetPtr^ := Max(0, Min(255, Byte(G)));
+          TargetPtr^ := JclLogic.Max(0, JclLogic.Min(255, Byte(G)));
           Inc(TargetPtr);
-          TargetPtr^ := Max(0, Min(255, Byte(R)));
+          TargetPtr^ := JclLogic.Max(0, JclLogic.Min(255, Byte(R)));
           Inc(TargetPtr);
           Inc(SourcePtr16);
         end;
@@ -1535,11 +1535,11 @@ begin
           R := 255 - (C8^ - MulDiv(C8^, K8^, 255) + K8^);
           G := 255 - (M8^ - MulDiv(M8^, K8^, 255) + K8^);
           B := 255 - (Y8^ - MulDiv(Y8^, K8^, 255) + K8^);
-          TargetPtr^ := Max(0, Min(255, Byte(B)));
+          TargetPtr^ := JclLogic.Max(0, JclLogic.Min(255, Byte(B)));
           Inc(TargetPtr);
-          TargetPtr^ := Max(0, Min(255, Byte(G)));
+          TargetPtr^ := JclLogic.Max(0, JclLogic.Min(255, Byte(G)));
           Inc(TargetPtr);
-          TargetPtr^ := Max(0, Min(255, Byte(R)));
+          TargetPtr^ := JclLogic.Max(0, JclLogic.Min(255, Byte(R)));
           Inc(TargetPtr);
           Inc(C8);
           Inc(M8);
@@ -1560,11 +1560,11 @@ begin
           R := 255 - (C16^ - MulDiv(C16^, K16^, 65535) + K16^) shr 8;
           G := 255 - (M16^ - MulDiv(M16^, K16^, 65535) + K16^) shr 8;
           B := 255 - (Y16^ - MulDiv(Y16^, K16^, 65535) + K16^) shr 8;
-          TargetPtr^ := Max(0, Min(255, Byte(B)));
+          TargetPtr^ := JclLogic.Max(0, JclLogic.Min(255, Byte(B)));
           Inc(TargetPtr);
-          TargetPtr^ := Max(0, Min(255, Byte(G)));
+          TargetPtr^ := JclLogic.Max(0, JclLogic.Min(255, Byte(G)));
           Inc(TargetPtr);
-          TargetPtr^ := Max(0, Min(255, Byte(R)));
+          TargetPtr^ := JclLogic.Max(0, JclLogic.Min(255, Byte(R)));
           Inc(TargetPtr);
           Inc(C16);
           Inc(M16);
@@ -1638,11 +1638,11 @@ begin
     FinalG := Round(255.0 * (-0.952 * X + 1.893 * Y + 0.059 * Z));
     FinalB := Round(255.0 * ( 0.099 * X - 0.198 * Y + 1.099 * Z));
 
-    TargetPtr^ := Max(0, Min(255, Byte(FinalB)));
+    TargetPtr^ := JclLogic.Max(0, JclLogic.Min(255, Byte(FinalB)));
     Inc(TargetPtr);
-    TargetPtr^ := Max(0, Min(255, Byte(FinalG)));
+    TargetPtr^ := JclLogic.Max(0, JclLogic.Min(255, Byte(FinalG)));
     Inc(TargetPtr);
-    TargetPtr^ := Max(0, Min(255, Byte(FinalR)));
+    TargetPtr^ := JclLogic.Max(0, JclLogic.Min(255, Byte(FinalR)));
     Inc(TargetPtr);
 
     Dec(PixelCount);
@@ -1709,11 +1709,11 @@ begin
     FinalG := Round(255.0 * (-0.952 * X + 1.893 * Y + 0.059 * Z));
     FinalB := Round(255.0 * ( 0.099 * X - 0.198 * Y + 1.099 * Z));
 
-    TargetPtr^ := Max(0, Min(255, Byte(FinalB)));
+    TargetPtr^ := JclLogic.Max(0, JclLogic.Min(255, Byte(FinalB)));
     Inc(TargetPtr);
-    TargetPtr^ := Max(0, Min(255, Byte(FinalG)));
+    TargetPtr^ := JclLogic.Max(0, JclLogic.Min(255, Byte(FinalG)));
     Inc(TargetPtr);
-    TargetPtr^ := Max(0, Min(255, Byte(FinalR)));
+    TargetPtr^ := JclLogic.Max(0, JclLogic.Min(255, Byte(FinalR)));
     Inc(TargetPtr);
 
     Dec(PixelCount);
