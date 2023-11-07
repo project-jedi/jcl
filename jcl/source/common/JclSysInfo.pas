@@ -4311,6 +4311,9 @@ begin
     if WindowsDisplayVersion = '22H2' then
        Result := '2022 Update'
     else
+    if WindowsDisplayVersion = '23H2' then
+       Result := '2023 Update'
+    else
        Result := WindowsDisplayVersion + ' Update';
     Result := Trim(GetWindowsVersionString + ' ' + Result);
   end
