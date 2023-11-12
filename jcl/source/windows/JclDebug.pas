@@ -273,7 +273,7 @@ type
     function ProcNameFromAddr(Addr: DWORD): string; overload;
     function ProcNameFromAddr(Addr: DWORD; out Offset: Integer): string; overload;
     function SourceNameFromAddr(Addr: DWORD): string;
-    function VAFromUnitAndProcName( UnitName, ProcName : string ): DWORD;
+    function VAFromUnitAndProcName(const UnitName, ProcName: string): DWORD;
     property LineNumberErrors: Integer read FLineNumberErrors;
     property LineNumbersCnt: Integer read FLineNumbersCnt;
     property LineNumberByIndex[Index: Integer]: TJclMapLineNumber read GetLineNumberByIndex;
@@ -308,16 +308,16 @@ type
   end;
 
   TJclBinDbgNameCache = record
-    Addr       : DWORD;
-    FirstWord  : Integer;
-    SecondWord : Integer;
-    Text       : String;
+    Addr: DWORD;
+    FirstWord: Integer;
+    SecondWord: Integer;
+    Text: string;
   end;
 
   TJclBinDebugScanner = class(TObject)
   private
     FCacheData: Boolean;
-    FCacheProcNames : Boolean;
+    FCacheProcNames: Boolean;
     FStream: TCustomMemoryStream;
     FValidFormat: Boolean;
     FLineNumbers: array of TJclMapLineNumber;
@@ -331,7 +331,7 @@ type
     function MakePtr(A: Integer): Pointer;
     class function ReadValue(var P: Pointer; var Value: Integer): Boolean; {$IFDEF SUPPORTS_STATIC}static;{$ENDIF}
   public
-    constructor Create(AStream: TCustomMemoryStream; CacheData: Boolean; CacheProcNames : boolean);
+    constructor Create(AStream: TCustomMemoryStream; CacheData, CacheProcNames: Boolean);
     function IsModuleNameValid(const Name: TFileName): Boolean;
     function LineNumberFromAddr(Addr: DWORD): Integer; overload;
     function LineNumberFromAddr(Addr: DWORD; out Offset: Integer): Integer; overload;
@@ -342,7 +342,7 @@ type
     function SourceNameFromAddr(Addr: DWORD): string;
     property ModuleName: string read GetModuleName;
     property ValidFormat: Boolean read FValidFormat;
-    function VAFromUnitAndProcName( UnitName, ProcName : string ): DWORD;
+    function VAFromUnitAndProcName(const UnitName, ProcName: string): DWORD;
   end;
 
 function ConvertMapFileToJdbgFile(const MapFileName: TFileName): Boolean; overload;
@@ -484,7 +484,7 @@ type
     constructor Create(AModule: HMODULE); virtual;
     function InitializeSource: Boolean; virtual; abstract;
     function GetLocationInfo(const Addr: Pointer; out Info: TJclLocationInfo): Boolean; virtual; abstract;
-    function GetAddress(const UnitName : string; const ProcName : String): Pointer; virtual; abstract;
+    function GetAddress(const UnitName, ProcName: string): Pointer; virtual; abstract;
     property Module: HMODULE read FModule;
     property FileName: TFileName read GetFileName;
     property ModuleCodeSize: SizeInt read FModuleCodeSize;
@@ -519,7 +519,7 @@ type
     destructor Destroy; override;
     function InitializeSource: Boolean; override;
     function GetLocationInfo(const Addr: Pointer; out Info: TJclLocationInfo): Boolean; override;
-    function GetAddress(const UnitName : string; const ProcName : String): Pointer; override;
+    function GetAddress(const UnitName, ProcName: string): Pointer; override;
   end;
 
   TJclDebugInfoBinary = class(TJclDebugInfoSource)
@@ -530,7 +530,7 @@ type
     destructor Destroy; override;
     function InitializeSource: Boolean; override;
     function GetLocationInfo(const Addr: Pointer; out Info: TJclLocationInfo): Boolean; override;
-    function GetAddress(const UnitName : string; const ProcName : String): Pointer; override;
+    function GetAddress(const UnitName, ProcName: string): Pointer; override;
   end;
 
   TJclDebugInfoExports = class(TJclDebugInfoSource)
@@ -546,7 +546,7 @@ type
     destructor Destroy; override;
     function InitializeSource: Boolean; override;
     function GetLocationInfo(const Addr: Pointer; out Info: TJclLocationInfo): Boolean; override;
-    function GetAddress(const UnitName : string; const ProcName : String): Pointer; override;
+    function GetAddress(const UnitName, ProcName: string): Pointer; override;
   end;
 
   {$IFDEF BORLAND}
@@ -558,11 +558,8 @@ type
     function InitializeSource: Boolean; override;
     procedure GenerateUnmangledNames;
     function GetLocationInfo(const Addr: Pointer; out Info: TJclLocationInfo): Boolean; override;
-    function GetAddress(const UnitName : string; const ProcName : String): Pointer; override;
+    function GetAddress(const UnitName, ProcName: string): Pointer; override;
   end;
-const
-   TJclDebugInfoTD32_GenerateUnmangledNames : boolean = True;
-type
   {$ENDIF BORLAND}
 
   TJclDebugInfoSymbols = class(TJclDebugInfoSource)
@@ -573,7 +570,7 @@ type
     class function CleanupDebugSymbols: Boolean;
     function InitializeSource: Boolean; override;
     function GetLocationInfo(const Addr: Pointer; out Info: TJclLocationInfo): Boolean; override;
-    function GetAddress(const UnitName : string; const ProcName : String): Pointer; override;
+    function GetAddress(const UnitName, ProcName: string): Pointer; override;
   end;
 
 // Source location functions
@@ -2346,23 +2343,24 @@ begin
   end;
 end;
 
-function TJclMapScanner.VAFromUnitAndProcName( UnitName, ProcName : string ): DWORD;
+function TJclMapScanner.VAFromUnitAndProcName(const UnitName, ProcName: string): DWORD;
 var
-  I : Integer;
+  I: Integer;
+  QualifiedName: string;
 begin
   Result := 0;
-  if ( UnitName = '' ) or ( ProcName = '' ) then
+  if (UnitName = '') or (ProcName = '') then
     Exit;
-  ProcName := UnitName + '.' + ProcName;
+  QualifiedName := UnitName + '.' + ProcName;
 
-  for i := Low( FProcNames ) to High( FProcNames ) do
+  for I := Low(FProcNames) to High(FProcNames) do
+  begin
+    if CompareText(MapStringCacheToStr(FProcNames[I].ProcName, True), QualifiedName) = 0 then
     begin
-    if ( CompareText( MapStringCacheToStr( FProcNames[ I ].ProcName, True ), {UnitName + '.' + }ProcName ) = 0 ) then
-      begin
       Result := FProcNames[i].VA;
-      break;
-      end;
+      Break;
     end;
+  end;
 end;
 
 // JCL binary debug format string encoding/decoding routines
@@ -3157,7 +3155,7 @@ end;
 
 //=== { TJclBinDebugScanner } ================================================
 
-constructor TJclBinDebugScanner.Create(AStream: TCustomMemoryStream; CacheData: Boolean; CacheProcNames : boolean);
+constructor TJclBinDebugScanner.Create(AStream: TCustomMemoryStream; CacheData, CacheProcNames: Boolean);
 begin
   inherited Create;
   FCacheData := CacheData;
@@ -3235,14 +3233,14 @@ begin
       FProcNames[C].FirstWord := FirstWord;
       FProcNames[C].SecondWord := SecondWord;
       if FCacheProcNames then
-        begin
-        if ( FirstWord <> 0 ) AND ( SecondWord <> 0 ) then
-          FProcNames[C].Text := DataToStr( FirstWord ) + '.' + DataToStr( SecondWord )
-        else if ( FirstWord <> 0 ) then
-          FProcNames[C].Text := DataToStr( FirstWord )
+      begin
+        if (FirstWord <> 0) and (SecondWord <> 0) then
+          FProcNames[C].Text := DataToStr(FirstWord) + '.' + DataToStr(SecondWord)
+        else if FirstWord <> 0 then
+          FProcNames[C].Text := DataToStr(FirstWord)
         else
           FProcNames[C].Text := '';
-        end
+      end
       else
         FProcNames[C].Text := '';
 
@@ -3545,71 +3543,69 @@ begin
     Result := '';
 end;
 
-function TJclBinDebugScanner.VAFromUnitAndProcName( UnitName, ProcName : string ): DWORD;
+function TJclBinDebugScanner.VAFromUnitAndProcName(const UnitName, ProcName: string): DWORD;
 var
-  P          : Pointer;
-  VA         : Cardinal;
-  i,
-  Value,
-  FirstWord,
-  SecondWord : Integer;
-  S          : string;
+  P: Pointer;
+  VA: DWORD;
+  I, Value: Integer;
+  FirstWord, SecondWord: Integer;
+  QualifiedName, S: string;
 begin
   Result := 0;
-  if ( UnitName = '' ) or ( ProcName = '' ) then
+  if (UnitName = '') or (ProcName = '') then
     Exit;
-  ProcName := UnitName + '.' + ProcName;
+  QualifiedName := UnitName + '.' + ProcName;
 
   if FCacheData then
-    begin
+  begin
     CacheProcNames;
-    for i := Low( FProcNames ) to High( FProcNames ) do
-      begin
-      if ( FProcNames[ I ].Text <> '' ) then
-        S := FProcNames[ I ].Text
-      else
-        begin
-        if ( FProcNames[ I ].FirstWord = 0 ) then
-          Continue;
-        if ( FProcNames[ I ].FirstWord <> 0 ) AND ( FProcNames[ I ].SecondWord <> 0 ) then
-          FProcNames[ I ].Text := DataToStr( FProcNames[ I ].FirstWord ) + '.' + DataToStr( FProcNames[ I ].SecondWord )
-        else if ( FProcNames[ I ].FirstWord <> 0 ) then
-          FProcNames[ I ].Text := DataToStr( FProcNames[ I ].FirstWord )
-        else
-          FProcNames[ I ].Text := '';
-        end;
-      if ( CompareText( FProcNames[ I ].Text, {UnitName + '.' + }ProcName ) = 0 ) then
-        begin
-        Result := FProcNames[i].Addr;
-        break;
-        end;
-      end;
-    end
-  else
+    for I := Low(FProcNames) to High(FProcNames) do
     begin
-    P := MakePtr( PJclDbgHeader( FStream.Memory )^.Symbols );
-    VA         := 0;
-    FirstWord  := 0;
+      if FProcNames[I].Text <> '' then
+        S := FProcNames[I].Text
+      else
+      begin
+        if FProcNames[I].FirstWord = 0 then
+          Continue;
+        if (FProcNames[I].FirstWord <> 0) and (FProcNames[I].SecondWord <> 0) then
+          FProcNames[I].Text := DataToStr(FProcNames[I].FirstWord ) + '.' + DataToStr(FProcNames[I].SecondWord)
+        else if FProcNames[I].FirstWord <> 0 then
+          FProcNames[I].Text := DataToStr(FProcNames[I].FirstWord)
+        else
+          FProcNames[I].Text := '';
+      end;
+      if CompareText(FProcNames[I].Text, QualifiedName) = 0 then
+      begin
+        Result := FProcNames[i].Addr;
+        Break;
+      end;
+    end;
+  end
+  else
+  begin
+    P := MakePtr(PJclDbgHeader(FStream.Memory)^.Symbols);
+    VA := 0;
+    FirstWord := 0;
     SecondWord := 0;
     while ReadValue(P, Value) do
-      begin
+    begin
       Inc(VA, Value);
       ReadValue(P, Value);
       Inc(FirstWord, Value);
       ReadValue(P, Value);
       Inc(SecondWord, Value);
-      if ( FirstWord = 0 ) then
+      if FirstWord = 0 then
         Continue;
-      S := DataToStr( FirstWord );
-      if ( SecondWord <> 0 ) then
-        S := S + '.' + DataToStr( SecondWord );
-      if ( CompareText( S, {UnitName + '.' + }ProcName ) = 0 ) then
-        begin
-        result := VA;
-        break;
-        end;
+      S := DataToStr(FirstWord);
+      if SecondWord <> 0 then
+        S := S + '.' + DataToStr(SecondWord);
+      if CompareText(S, QualifiedName) = 0 then
+      begin
+        Result := VA;
+        Break;
       end;
     end;
+  end;
 end;
 
 //=== { TJclLocationInfoEx } =================================================
@@ -4083,14 +4079,14 @@ begin
   end;
 end;
 
-function TJclDebugInfoMap.GetAddress(const UnitName : string; const ProcName : String): Pointer;
+function TJclDebugInfoMap.GetAddress(const UnitName, ProcName: string): Pointer;
 var
-  VA : Cardinal;
+  VA: DWORD;
 begin
-  result := nil;
-  VA := FScanner.VAFromUnitAndProcName( UnitName, ProcName );
-  if ( VA <> 0 ) then
-    result := AddrFromVA( VA );
+  Result := nil;
+  VA := FScanner.VAFromUnitAndProcName(UnitName, ProcName);
+  if VA <> 0 then
+    Result := AddrFromVA(VA);
 end;
 
 function TJclDebugInfoMap.InitializeSource: Boolean;
@@ -4133,14 +4129,14 @@ begin
   end;
 end;
 
-function TJclDebugInfoBinary.GetAddress(const UnitName : string; const ProcName : String): Pointer;
+function TJclDebugInfoBinary.GetAddress(const UnitName, ProcName: string): Pointer;
 var
-  VA : Cardinal;
+  VA: DWORD;
 begin
-  result := nil;
-  VA := FScanner.VAFromUnitAndProcName( UnitName, ProcName );
-  if ( VA <> 0 ) then
-    result := AddrFromVA( VA );
+  Result := nil;
+  VA := FScanner.VAFromUnitAndProcName(UnitName, ProcName);
+  if VA <> 0 then
+    Result := AddrFromVA(VA);
 end;
 
 function TJclDebugInfoBinary.InitializeSource: Boolean;
@@ -4285,14 +4281,13 @@ begin
   end;
 end;
 
-function TJclDebugInfoExports.GetAddress(const UnitName : string; const ProcName : String): Pointer;
+function TJclDebugInfoExports.GetAddress(const UnitName, ProcName: string): Pointer;
 var
   I, BasePos: Integer;
-  Desc      : TJclBorUmDescription;
-  RawName   : Boolean;
-  tUnitName : string;
-  Unmangled : string;
-  B         : Boolean;
+  Desc: TJclBorUmDescription;
+  RawName: Boolean;
+  ItemUnitName: string;
+  Unmangled: string;
 begin
   Result := nil;
   {$IFDEF BORLAND}
@@ -4305,39 +4300,37 @@ begin
   begin
 //    SortList(esAddress, False);
     for I := 0 to Count - 1 do
-      begin
+    begin
       if RawName then
-        begin
-        tUnitName := '';
-        Unmangled := Items[I].Name
-        end
+      begin
+        ItemUnitName := '';
+        Unmangled := Items[I].Name;
+      end
       else
-        begin
+      begin
         case PeBorUnmangleName(Items[I].Name, Unmangled, Desc, BasePos) of
-          urOk: begin
-                tUnitName := Copy(Unmangled, 1, BasePos - 2);
-                if not (Desc.Kind in [skRTTI, skVTable]) then
-                  begin
-                  Unmangled := Copy(Unmangled, BasePos, Length(Unmangled));
-                  if smLinkProc in Desc.Modifiers then
-                    Unmangled := '@' + Unmangled;
-                  end;
-                end;
-          urNotMangled : Unmangled := Items[I].Name;
-        end;
-        end;
+          urOk:
+            begin
+              ItemUnitName := Copy(Unmangled, 1, BasePos - 2);
+              if not (Desc.Kind in [skRTTI, skVTable]) then
+              begin
+                Unmangled := Copy(Unmangled, BasePos, Length(Unmangled));
+                if smLinkProc in Desc.Modifiers then
+                  Unmangled := '@' + Unmangled;
+              end;
+            end;
 
-      if ( tUnitName <> '' ) then
-        B := ( CompareStr( tUnitName, UnitName ) = 0 )
-      else
-        B := True;
-
-      if B AND ( CompareStr( Unmangled, ProcName ) = 0 ) then
-        begin
-        result := AddrFromVA( Items[I].Address );
-        Break;
+          urNotMangled:
+            Unmangled := Items[I].Name;
         end;
       end;
+
+      if ((ItemUnitName = '') or (CompareStr(ItemUnitName, UnitName) = 0)) and (CompareStr(Unmangled, ProcName) = 0) then
+      begin
+        Result := AddrFromVA(Items[I].Address);
+        Break;
+      end;
+    end;
   end;
 end;
 
@@ -4382,14 +4375,14 @@ begin
     end;
 end;
 
-function TJclDebugInfoTD32.GetAddress(const UnitName : string; const ProcName : String): Pointer;
+function TJclDebugInfoTD32.GetAddress(const UnitName, ProcName: string): Pointer;
 var
-  VA : Cardinal;
+  VA: DWORD;
 begin
-  result := nil;
-  VA := FImage.TD32Scanner.VAFromUnitAndProcName( UnitName, ProcName );
-  if ( VA <> 0 ) then
-    result := AddrFromVA( VA );
+  Result := nil;
+  VA := FImage.TD32Scanner.VAFromUnitAndProcName(UnitName, ProcName);
+  if VA <> 0 then
+    Result := AddrFromVA(VA);
 end;
 
 function TJclDebugInfoTD32.InitializeSource: Boolean;
@@ -4694,14 +4687,14 @@ begin
   end;
 end;
 
-function TJclDebugInfoSymbols.GetAddress(const UnitName : string; const ProcName : String): Pointer;
+function TJclDebugInfoSymbols.GetAddress(const UnitName, ProcName: string): Pointer;
 var
-  VA : Cardinal;
+  VA: DWORD;
 begin
-  result := nil;
-  VA := 0; // FScanner.VAFromUnitAndProcName( UnitName, ProcName );
-  if ( VA <> 0 ) then
-    result := AddrFromVA( VA );
+  Result := nil;
+  VA := 0; // FScanner.VAFromUnitAndProcName(UnitName, ProcName);
+  if VA <> 0 then
+    Result := AddrFromVA(VA);
 end;
 
 function TJclDebugInfoSymbols.InitializeSource: Boolean;
@@ -7430,7 +7423,7 @@ begin
   InternalRegisterThread(Thread, Thread.ThreadID, ThreadName);
 end;
 
-procedure TJclDebugThreadList.RegisterThreadID(AThreadID: DWORD; const ThreadName: string = '');
+procedure TJclDebugThreadList.RegisterThreadID(AThreadID: DWORD; const ThreadName: string);
 begin
   InternalRegisterThread(nil, AThreadID, ThreadName);
 end;

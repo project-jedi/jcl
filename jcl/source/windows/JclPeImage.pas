@@ -6935,25 +6935,20 @@ begin
     Result := '';
 end;
 
-function PeIsNameMangled(const Name: string): TJclPeUmResult; {$IF CompilerVersion >= 23}inline;{$IFEND}
+function PeIsNameMangled(const Name: string): TJclPeUmResult; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 begin
   Result := umNotMangled;
-  {$IFDEF Win64}
-  if (Length(Name) > 3) then
-    begin
-    if (Name[1] = '_') and (Name[2] = 'Z') and (Name[3] = 'N') then
-      begin
-      Result := umBorland;
-      Exit;
-      end;
-    end;
-  {$ENDIF}
   if Length(Name) > 0 then
     case Name[1] of
       '@':
         Result := umBorland;
       '?':
         Result := umMicrosoft;
+      {$IFDEF CPU64}
+      '_':
+        if (Length(Name) > 3) and (Name[2] = 'Z') and (Name[3] = 'N') then
+          Result := umBorland;
+      {$ENDIF CPU64}
     end;
 end;
 
