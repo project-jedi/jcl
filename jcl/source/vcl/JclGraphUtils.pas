@@ -132,8 +132,6 @@ const
   clTrGreen32   = TColor32($7F00FF00);
   clTrBlue32    = TColor32($7F0000FF);
 
-procedure EMMS;
-
 // Dialog Functions
 function DialogUnitsToPixelsX(const DialogUnits: Word): Word;
 function DialogUnitsToPixelsY(const DialogUnits: Word): Word;
@@ -365,7 +363,6 @@ const
   Bias = $00800080;
 
 var
-  MMX_ACTIVE: Boolean;
   SSE2_ACTIVE: Boolean;
 
 
@@ -664,16 +661,6 @@ procedure FreeAlphaTable;
 begin
   FreeMem(AlphaTable);
   AlphaTable := nil;
-end;
-
-procedure EMMS;
-begin
-  {$IFDEF CPU32}
-  if MMX_ACTIVE then
-    asm
-          db      $0F, $77               // EMMS
-    end;
-  {$ENDIF CPU32}
 end;
 
 function SSE2_CombineReg(X, Y, W: TColor32): TColor32; assembler;
@@ -1106,7 +1093,6 @@ var
 begin
   //WIMDC
   CpuInfo := CPUID;
-  MMX_ACTIVE := (CpuInfo.Features and MMX_FLAG) = MMX_FLAG;
   SSE2_ACTIVE := (CpuInfo.Features and SSE2_FLAG) = SSE2_FLAG;
   if SSE2_ACTIVE then
   begin
