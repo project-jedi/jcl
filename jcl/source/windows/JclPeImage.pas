@@ -6935,7 +6935,7 @@ begin
     Result := '';
 end;
 
-function PeIsNameMangled(const Name: string): TJclPeUmResult;
+function PeIsNameMangled(const Name: string): TJclPeUmResult; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 begin
   Result := umNotMangled;
   if Length(Name) > 0 then
@@ -6944,6 +6944,11 @@ begin
         Result := umBorland;
       '?':
         Result := umMicrosoft;
+      {$IFDEF CPU64}
+      '_':
+        if (Length(Name) > 3) and (Name[2] = 'Z') and (Name[3] = 'N') then
+          Result := umBorland;
+      {$ENDIF CPU64}
     end;
 end;
 
