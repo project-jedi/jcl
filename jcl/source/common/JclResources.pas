@@ -1213,10 +1213,10 @@ resourcestring
   RsCannotCreateDir = 'Unable to create directory';
   RsDelTreePathIsEmpty = 'DelTree: Path is empty';
   RsFileSearchAttrInconsistency = 'Some file search attributes are required AND rejected!';
-  RsEWindowsVersionNotSupported = 'This windows version is not supported';
+  RsEWindowsVersionNotSupported = 'This Windows version is not supported';
   RsEWindowNotValid = 'The window with handle %d is not valid';
   RsEProcessNotValid = 'The process with ID %d is not valid';
-  RsEModuleNotValid = 'The Module with handle %d is not valid';
+  RsEModuleNotValid = 'The module with handle %d is not valid';
 
   // TJclFileVersionInfo
   RsFileUtilsNoVersionInfo = 'File contains no version information';

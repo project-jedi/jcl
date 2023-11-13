@@ -363,9 +363,9 @@ type
 function GetServiceStatus(ServiceHandle: SC_HANDLE): DWORD;
 function GetServiceStatusWaitingIfPending(ServiceHandle: SC_HANDLE): DWORD;
 
-function GetServiceStatusByName(const AServer,AServiceName:string):TJclServiceState;
-function StopServiceByName(const AServer, AServiceName: String):Boolean;
-function StartServiceByName(const AServer,AServiceName: String):Boolean;
+function GetServiceStatusByName(const AServer,AServiceName:string): TJclServiceState;
+function StopServiceByName(const AServer, AServiceName: string): Boolean;
+function StartServiceByName(const AServer,AServiceName: string): Boolean;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -1424,23 +1424,23 @@ function GetServiceStatusByName(const AServer,AServiceName:string):TJclServiceSt
 var
   ServiceHandle,
   SCMHandle: SC_HANDLE;
-  SCMAccess,Access:DWORD;
+  SCMAccess, Access: DWORD;
   ServiceStatus: TServiceStatus;
 begin
-  Result:=ssUnknown;
+  Result := ssUnknown;
 
-  SCMAccess:=SC_MANAGER_CONNECT or SC_MANAGER_ENUMERATE_SERVICE or SC_MANAGER_QUERY_LOCK_STATUS;
-  Access:=SERVICE_INTERROGATE or GENERIC_READ;
+  SCMAccess := SC_MANAGER_CONNECT or SC_MANAGER_ENUMERATE_SERVICE or SC_MANAGER_QUERY_LOCK_STATUS;
+  Access := SERVICE_INTERROGATE or GENERIC_READ;
 
-  SCMHandle:= OpenSCManager(PChar(AServer), Nil, SCMAccess);
+  SCMHandle := OpenSCManager(PChar(AServer), nil, SCMAccess);
   if SCMHandle <> 0 then
   try
-    ServiceHandle:=OpenService(SCMHandle,PChar(AServiceName),Access);
+    ServiceHandle := OpenService(SCMHandle,PChar(AServiceName),Access);
     if ServiceHandle <> 0 then
     try
       ResetMemory(ServiceStatus, SizeOf(ServiceStatus));
-      if QueryServiceStatus(ServiceHandle,ServiceStatus) then
-        Result:=TJclServiceState(ServiceStatus.dwCurrentState);
+      if QueryServiceStatus(ServiceHandle, ServiceStatus) then
+        Result := TJclServiceState(ServiceStatus.dwCurrentState);
     finally
       CloseServiceHandle(ServiceHandle);
     end;
@@ -1453,17 +1453,17 @@ function StartServiceByName(const AServer,AServiceName: String):Boolean;
 var
   ServiceHandle,
   SCMHandle: SC_HANDLE;
-  p: PChar;
+  P: PChar;
 begin
-  p:=nil;
-  Result:=False;
+  P := nil;
+  Result := False;
 
-  SCMHandle:= OpenSCManager(PChar(AServer), nil, SC_MANAGER_ALL_ACCESS);
+  SCMHandle := OpenSCManager(PChar(AServer), nil, SC_MANAGER_ALL_ACCESS);
   if SCMHandle <> 0 then
   try
-    ServiceHandle:=OpenService(SCMHandle,PChar(AServiceName),SERVICE_ALL_ACCESS);
+    ServiceHandle := OpenService(SCMHandle, PChar(AServiceName), SERVICE_ALL_ACCESS);
     if ServiceHandle <> 0 then
-      Result:=StartService(ServiceHandle,0,p);
+      Result := StartService(ServiceHandle, 0, P);
 
     CloseServiceHandle(ServiceHandle);
   finally

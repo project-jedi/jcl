@@ -785,6 +785,7 @@ type
     FSymbols: TObjectList;
     FProcSymbols: TList;
     FValidData: Boolean;
+    FUnmangledNames: TStrings;
     function GetName(const Idx: Integer): string;
     function GetNameCount: Integer;
     function GetSymbol(const Idx: Integer): TJclTD32SymbolInfo;
@@ -795,6 +796,7 @@ type
     function GetModuleCount: Integer;
     function GetSourceModule(const Idx: Integer): TJclTD32SourceModuleInfo;
     function GetSourceModuleCount: Integer;
+    function FormatProcName(const ProcName: string): string;
   protected
     procedure Analyse;
     procedure AnalyseNames(const pSubsection: Pointer; const Size: DWORD); virtual;
@@ -810,6 +812,7 @@ type
     function FindModule(const AAddr: DWORD; out AMod: TJclTD32ModuleInfo): Boolean;
     function FindSourceModule(const AAddr: DWORD; out ASrcMod: TJclTD32SourceModuleInfo): Boolean;
     function FindProc(const AAddr: DWORD; out AProc: TJclTD32ProcSymbolInfo): Boolean;
+    procedure GenerateUnmangledNames;
     class function IsTD32Sign(const Sign: TJclTD32FileSignature): Boolean;
     class function IsTD32DebugInfoValid(const DebugData: Pointer; const DebugDataSize: LongWord): Boolean;
     property Data: TCustomMemoryStream read FData;
@@ -835,6 +838,7 @@ type
     function ProcNameFromAddr(AAddr: DWORD; out Offset: Integer): string; overload;
     function ModuleNameFromAddr(AAddr: DWORD): string;
     function SourceNameFromAddr(AAddr: DWORD): string;
+    function VAFromUnitAndProcName(const UnitName, ProcName: string): DWORD;
   end;
 
   {$IFDEF BORLAND}
@@ -1118,6 +1122,7 @@ begin
   FData := ATD32Data;
   FBase := FData.Memory;
   FValidData := IsTD32DebugInfoValid(FBase, FData.Size);
+  FUnmangledNames := TStringList.Create;
   if FValidData then
     Analyse;
 end;
@@ -1129,6 +1134,7 @@ begin
   FreeAndNil(FSourceModules);
   FreeAndNil(FModules);
   FreeAndNil(FNames);
+  FreeAndNil(FUnmangledNames);
   inherited Destroy;
 end;
 
@@ -1391,6 +1397,44 @@ begin
   // do nothing
 end;
 
+function TJclTD32InfoParser.FormatProcName(const ProcName: string): string;
+var
+  SecondAtChar, P: PChar;
+begin
+  Result := ProcName;
+  if (Length(ProcName) > 1) and (ProcName[1] = '@') then
+  begin
+    SecondAtChar := StrScan(PChar(ProcName) + 1, '@');
+    if SecondAtChar <> nil then
+    begin
+      Inc(SecondAtChar);
+      Result := SecondAtChar;
+      P := PChar(Result);
+      while P^ <> #0 do
+      begin
+        if (SecondAtChar^ = '@') and ((SecondAtChar - 1)^ <> '@') then
+          P^ := '.';
+        Inc(P);
+        Inc(SecondAtChar);
+      end;
+    end;
+  end;
+
+  if PeIsNameMangled(Result) <> umNotMangled then
+    Result := PeBorUnmangleName(Result);
+end;
+
+procedure TJclTD32InfoParser.GenerateUnmangledNames;
+var
+  I: Integer;
+begin
+  if FUnmangledNames.Count <> 0 then
+    Exit;
+//  FUnmangledNames.Capacity := NameCount;
+  for I := 0 to NameCount - 1 do
+    FUnmangledNames.Add(FormatProcName(UTF8ToString(PAnsiChar(FNames.Items[I]))));
+end;
+
 function TJclTD32InfoParser.GetModule(const Idx: Integer): TJclTD32ModuleInfo;
 begin
   Result := TJclTD32ModuleInfo(FModules.Items[Idx]);
@@ -1403,7 +1447,10 @@ end;
 
 function TJclTD32InfoParser.GetName(const Idx: Integer): string;
 begin
-  Result := UTF8ToString(PAnsiChar(FNames.Items[Idx]));
+  if FUnmangledNames.Count > Idx then
+    Result := FUnmangledNames[Idx]
+  else
+    Result := UTF8ToString(PAnsiChar(FNames.Items[Idx]));
 end;
 
 function TJclTD32InfoParser.GetNameCount: Integer;
@@ -1576,31 +1623,6 @@ end;
 function TJclTD32InfoScanner.ProcNameFromAddr(AAddr: DWORD; out Offset: Integer): string;
 var
   AProc: TJclTD32ProcSymbolInfo;
-
-  function FormatProcName(const ProcName: string): string;
-  var
-    pchSecondAt, P: PChar;
-  begin
-    Result := ProcName;
-    if (Length(ProcName) > 0) and (ProcName[1] = '@') then
-    begin
-      pchSecondAt := StrScan(PChar(Copy(ProcName, 2, Length(ProcName) - 1)), '@');
-      if pchSecondAt <> nil then
-      begin
-        Inc(pchSecondAt);
-        Result := pchSecondAt;
-        P := PChar(Result);
-        while P^ <> #0 do
-        begin
-          if (pchSecondAt^ = '@') and ((pchSecondAt - 1)^ <> '@') then
-            P^ := '.';
-          Inc(P);
-          Inc(pchSecondAt);
-        end;
-      end;
-    end;
-  end;
-
 begin
   if FindProc(AAddr, AProc) then
   begin
@@ -1620,6 +1642,26 @@ var
 begin
   if FindSourceModule(AAddr, ASrcMod) then
     Result := Names[ASrcMod.NameIndex];
+end;
+
+function TJclTD32InfoScanner.VAFromUnitAndProcName(const UnitName, ProcName: string): DWORD;
+var
+  I: Integer;
+  QualifiedName: string;
+begin
+  Result := 0;
+  if (UnitName = '') or (ProcName = '') then
+    Exit;
+  QualifiedName := UnitName + '.' + ProcName;
+
+  for I := 0 to ProcSymbolCount - 1 do
+  begin
+    if CompareText(FormatProcName(Names[ProcSymbols[I].FNameIndex]), QualifiedName) = 0 then
+    begin
+      Result := ProcSymbols[I].FOffset;
+      Break;
+    end;
+  end;
 end;
 
 {$IFDEF BORLAND}
