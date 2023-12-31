@@ -6203,7 +6203,7 @@ begin
       Size := CheckStackAddressValidation(ProcAddr, CallAddr, {var} LocalVarStackOffset, {var} EspChangeFound);
     Inc(ProcAddr, Size);
 
-    ParseEspChange(ProcAddr, CallAddr, LocalVarStackOffset, {var} EspChangeFound);
+    ProcAddr := ParseEspChange(ProcAddr, CallAddr, LocalVarStackOffset, {var} EspChangeFound);
   end
   else
   begin
@@ -6214,21 +6214,65 @@ begin
     ProcAddr := ParseEspChange(ProcAddr, CallAddr, LocalVarStackOffset, {var} EspChangeFound);
 
     // If we have a stackframe, then the compiler saves the registers after allocating stack variables.
-    ParseSaveRegisters(ProcAddr, CallAddr, {var} RegisterStackOffset);
+    ProcAddr := ParseSaveRegisters(ProcAddr, CallAddr, {var} RegisterStackOffset);
   end;
 
-  ProcAddr := CallAddr;
+  // Find not closed try/finally/except blocks and add them the LocalVarStackOffset
+  while (ProcAddr < CallAddr) and (ProcAddr < ModuleEndAddr) do
+  begin
+    // fast forward find for XOR EAX,EAX
+    while (ProcAddr < CallAddr) and (ProcAddr < ModuleEndAddr) and (PByteArray(ProcAddr)[0] <> $33) do
+      Inc(ProcAddr);
+
+    P := PByteArray(ProcAddr);
+    // Find all occurences above the CallAddr and add to LocalVarStackOffset (3*PointerSize)
+    // "try"
+    // 33C0             xor eax,eax
+    // 55               push ebp
+    // 68E9E05000       push $0050e0e9
+    // 64FF30           push dword ptr fs:[eax]
+    // 648920           mov fs:[eax],esp
+    if (ProcAddr + 13 < CallAddr) and
+       (P[0] = $33) and (P[1] = $C0) and
+       (P[2] = $55) and
+       (P[3] = $68) and
+       (P[8] = $64) and (P[9] = $FF) and (P[10] = $30) and
+       (P[11] = $64) and (P[12] = $89) and (P[13] = $20) then
+    begin
+      Inc(LocalVarStackOffset, 3 * PointerSize);
+    end
+    // "finally"/"except"
+    // Find all occurences above the CallAddr and substract from LocalVarStackOffset (3*PointerSize)
+    // 33C0             xor eax,eax
+    // 5A               pop edx
+    // 59               pop ecx
+    // 59               pop ecx
+    // 648910           mov fs:[eax],edx
+    else if (ProcAddr + 7 < CallAddr) and
+       (P[0] = $33) and (P[1] = $C0) and
+       (P[2] = $5A) and
+       (P[3] = $59) and
+       (P[4] = $59) and
+       (P[5] = $64) and (P[6] = $89) and (P[7] = $10) then
+    begin
+      Dec(LocalVarStackOffset, 3 * PointerSize);
+    end;
+
+    Inc(ProcAddr);
+  end;
+
 
   // Find the epilog to obtain the ParamStackOffset (would be much easier and less guess work
   // if we knew the exact function's end address)
+  ProcAddr := CallAddr;
   while ProcAddr < ModuleEndAddr do
   begin
     // fast forward find for RET / RET imm16
     while (ProcAddr < ModuleEndAddr) and not (PByteArray(ProcAddr)[0] in [$C3, $C2]) do
       Inc(ProcAddr);
 
-    // We may have found the RET of a finally clause
     P := PByteArray(ProcAddr);
+    // We may have found the RET of a finally clause
     if (ProcAddr + 7 < ModuleEndAddr) and // skip "finally" code
        (P[0] = $C3) and                            // C3               ret
        (P[1] = $E9) and                            // E91821FAFF       jmp @HandleFinally
@@ -6243,102 +6287,99 @@ begin
     begin
       Inc(ProcAddr, 11);
     end
-    else
+    else if (P[0] = $C3) or ((P[0] = $C2) and (ProcAddr + 3 < ModuleEndAddr)) then
     begin
-      if (P[0] = $C3) or ((P[0] = $C2) and (ProcAddr + 3 < ModuleEndAddr)) then
+      EpilogAddr := ProcAddr;
+      PossibleEndFound := False;
+      if StackFrameFound = 1 then
       begin
-        EpilogAddr := ProcAddr;
-        PossibleEndFound := False;
-        if StackFrameFound = 1 then
-        begin
-          // If we have a stackframe, then we verify that the stackframe is cleared to check
-          // if we found a valid "RET"
-          if EspChangeFound then
-            EpilogAddr := EpilogAddr - 3
-          else
-            EpilogAddr := EpilogAddr - 1;
+        // If we have a stackframe, then we verify that the stackframe is cleared to check
+        // if we found a valid "RET"
+        if EspChangeFound then
+          EpilogAddr := EpilogAddr - 3
+        else
+          EpilogAddr := EpilogAddr - 1;
 
-          if EpilogAddr >= CallAddr then
-          begin
-            P := PByteArray(EpilogAddr);
-            if EspChangeFound and
-               (P[0] = $8B) and (P[1] = $E5) and  // 8BE5             mov esp,ebp
-               (P[2] = $5D) then                  // 5D               pop ebp
-            begin
-              Dec(EpilogAddr);
-              PossibleEndFound := True;
-            end
-            else if not EspChangeFound and
-               (P[0] = $5D) then                  // 5D               pop ebp
-            begin
-              Dec(EpilogAddr);
-              PossibleEndFound := True;
-            end;
-          end;
-        end
-        else if StackFrameFound = -1 then
+        if EpilogAddr >= CallAddr then
         begin
-          // If we have a ENTER/LEAVE stackframe, then we verify that the stackframe is cleared
-          // to check if we found a valid "RET"
-          Dec(EpilogAddr);
           P := PByteArray(EpilogAddr);
-          if (EpilogAddr >= CallAddr) and (P[0] = $C9) then  // LEAVE
+          if EspChangeFound and
+             (P[0] = $8B) and (P[1] = $E5) and  // 8BE5             mov esp,ebp
+             (P[2] = $5D) then                  // 5D               pop ebp
+          begin
+            Dec(EpilogAddr);
+            PossibleEndFound := True;
+          end
+          else if not EspChangeFound and
+             (P[0] = $5D) then                  // 5D               pop ebp
           begin
             Dec(EpilogAddr);
             PossibleEndFound := True;
           end;
-        end
-        else
+        end;
+      end
+      else if StackFrameFound = -1 then
+      begin
+        // If we have a ENTER/LEAVE stackframe, then we verify that the stackframe is cleared
+        // to check if we found a valid "RET"
+        Dec(EpilogAddr);
+        P := PByteArray(EpilogAddr);
+        if (EpilogAddr >= CallAddr) and (P[0] = $C9) then  // LEAVE
         begin
-          // If we have no stackframe, then we can't verify the validity of the "RET" here
-          EpilogAddr := EpilogAddr - 1;
+          Dec(EpilogAddr);
           PossibleEndFound := True;
+        end;
+      end
+      else
+      begin
+        // If we have no stackframe, then we can't verify the validity of the "RET" here
+        EpilogAddr := EpilogAddr - 1;
+        PossibleEndFound := True;
+      end;
+
+      if PossibleEndFound then
+      begin
+        if GetLocationInfo(Pointer(EpilogAddr), EpilogInfo) and
+           (TJclAddr(EpilogInfo.OffsetFromProcName) <> EpilogAddr - TJclAddr(Proc)) then
+        begin
+          // If we didn't find a RET in the same procedure then the analysis failed
+          Exit;
         end;
 
         if PossibleEndFound then
         begin
-          if GetLocationInfo(Pointer(EpilogAddr), EpilogInfo) and
-             (TJclAddr(EpilogInfo.OffsetFromProcName) <> EpilogAddr - TJclAddr(Proc)) then
+          // If we have registers saved on the stack, we can use those to verify if the
+          // found "RET" is valid.
+          RegStackOffset := RegisterStackOffset;
+          if CheckRegisterRestoreBackwards(EpilogAddr, CallAddr, {var} RegStackOffset) then
           begin
-            // If we didn't find a RET in the same procedure then the analysis failed
-            Exit;
-          end;
-
-          if PossibleEndFound then
-          begin
-            // If we have registers saved on the stack, we can use those to verify if the
-            // found "RET" is valid.
-            RegStackOffset := RegisterStackOffset;
-            if CheckRegisterRestoreBackwards(EpilogAddr, CallAddr, {var} RegStackOffset) then
+            if (StackFrameFound = 0) and EspChangeFound then
             begin
-              if (StackFrameFound = 0) and EspChangeFound then
-              begin
-                // If we have local variables (ESP was changed in the prolog) we can use that
-                // information to verify the "RET"
-                EpilogAddr := EpilogAddr - TJclAddr(RegStackOffset) div PointerSize;
-                if not CheckEspChangeBackwards(EpilogAddr, CallAddr) then
-                  PossibleEndFound := False;
-              end;
+              // If we have local variables (ESP was changed in the prolog) we can use that
+              // information to verify the "RET"
+              EpilogAddr := EpilogAddr - TJclAddr(RegStackOffset) div PointerSize;
+              if not CheckEspChangeBackwards(EpilogAddr, CallAddr) then
+                PossibleEndFound := False;
+            end;
 
-              if PossibleEndFound then
+            if PossibleEndFound then
+            begin
+              RegisterStackOffset := RegStackOffset;
+              if PByte(ProcAddr)^ = $C2 then
+                ParamStackOffset := PWord(ProcAddr + 1)^
+              else
               begin
-                RegisterStackOffset := RegStackOffset;
-                if PByte(ProcAddr)^ = $C2 then
-                  ParamStackOffset := PWord(ProcAddr + 1)^
-                else
-                begin
-                  // TODO: if we only have a "RET" at the end we need to look at the call instruction
-                  // if it is followed by a "sub/add esp,xx" for a "cdecl" function. (What if the add/sub
-                  // is for the caller's epilog?)
-                end;
-                Break;
+                // TODO: if we only have a "RET" at the end we need to look at the call instruction
+                // if it is followed by a "sub/add esp,xx" for a "cdecl" function. (What if the add/sub
+                // is for the caller's epilog?)
               end;
+              Break;
             end;
           end;
         end;
       end;
-      Inc(ProcAddr);
     end;
+    Inc(ProcAddr);
   end;
 
   Inc(LocalVarStackOffset, RegisterStackOffset);
