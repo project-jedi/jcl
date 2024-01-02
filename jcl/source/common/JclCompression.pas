@@ -6285,12 +6285,13 @@ var
   Solid: IJclArchiveSolid;
   PropNames: array of PWideChar;
   PropValues: array of TPropVariant;
+  I: Integer;
 
   procedure AddProperty(const Name: PWideChar; const Value: TPropVariant);
   begin
-    SetLength(PropNames, Length(PropNames)+1);
+    SetLength(PropNames, Length(PropNames) + 1);
     PropNames[High(PropNames)] := Name;
-    SetLength(PropValues, Length(PropValues)+1);
+    SetLength(PropValues, Length(PropValues) + 1);
     PropValues[High(PropValues)] := Value;
   end;
 
@@ -6316,12 +6317,13 @@ var
   var
     PropValue: TPropVariant;
   const
-    BooleanValues: array [False..True] of WideString = ( 'OFF', 'ON' );
+    BooleanValues: array [False..True] of WideString = ('OFF', 'ON');
   begin
     PropValue.vt := VT_BSTR;
-      PropValue.bstrVal := SysAllocString(PWideChar(BooleanValues[Value]));
+    PropValue.bstrVal := SysAllocString(PWideChar(BooleanValues[Value]));
     AddProperty(Name, PropValue);
   end;
+
 const
   EncryptionMethodNames: array [TJclEncryptionMethod] of WideString =
     ( '' {emNone},
@@ -6346,66 +6348,73 @@ begin
       and Assigned(MultiThreadStrategy) and (MultiThreadStrategy.NumberOfThreads > 1) then
       AddCardinalProperty('MT', MultiThreadStrategy.NumberOfThreads);
 
-    if OutArchive then
-    begin
-      if Supports(AJclArchive, IJclArchiveCompressionMethod, CompressionMethod) and Assigned(CompressionMethod) then
-        AddWideStringProperty('M', CompressionMethodNames[CompressionMethod.CompressionMethod]);
-
-      if Supports(AJclArchive, IJclArchiveCompressionLevel, CompressionLevel) and Assigned(CompressionLevel) then
-        AddCardinalProperty('X', CompressionLevel.CompressionLevel);
-
-      if Supports(AJclArchive, IJclArchiveEncryptionMethod, EncryptionMethod) and Assigned(EncryptionMethod)
-        and (EncryptionMethod.EncryptionMethod <> emNone) then
-        AddWideStringProperty('EM', EncryptionMethodNames[EncryptionMethod.EncryptionMethod]);
-
-      if Supports(AJclArchive, IJclArchiveDictionarySize, DictionarySize) and Assigned(DictionarySize) and
-        Supports(AJclArchive, IJclArchiveCompressionMethod, CompressionMethod) and Assigned(CompressionMethod) and
-        (CompressionMethod.CompressionMethod in [cmBZip2,cmLZMA,cmLZMA2]) then
-        AddWideStringProperty('D', IntToStr(DictionarySize.DictionarySize) + 'B');
-
-      if Supports(AJclArchive, IJclArchiveNumberOfPasses, NumberOfPasses) and Assigned(NumberOfPasses) then
-        AddCardinalProperty('PASS', NumberOfPasses.NumberOfPasses);
-
-      if Supports(AJclArchive, IJclArchiveRemoveSfxBlock, RemoveSfxBlock) and Assigned(RemoveSfxBlock) then
-        AddBooleanProperty('RSFX', RemoveSfxBlock.RemoveSfxBlock);
-
-      if Supports(AJclArchive, IJclArchiveCompressHeader, CompressHeader) and Assigned(CompressHeader) then
+    try
+      if OutArchive then
       begin
-        AddBooleanProperty('HC', CompressHeader.CompressHeader);
-        if CompressHeader.CompressHeaderFull then
-          AddBooleanProperty('HCF', CompressHeader.CompressHeaderFull);
+        if Supports(AJclArchive, IJclArchiveCompressionMethod, CompressionMethod) and Assigned(CompressionMethod) then
+          AddWideStringProperty('M', CompressionMethodNames[CompressionMethod.CompressionMethod]);
+
+        if Supports(AJclArchive, IJclArchiveCompressionLevel, CompressionLevel) and Assigned(CompressionLevel) then
+          AddCardinalProperty('X', CompressionLevel.CompressionLevel);
+
+        if Supports(AJclArchive, IJclArchiveEncryptionMethod, EncryptionMethod) and Assigned(EncryptionMethod)
+          and (EncryptionMethod.EncryptionMethod <> emNone) then
+          AddWideStringProperty('EM', EncryptionMethodNames[EncryptionMethod.EncryptionMethod]);
+
+        if Supports(AJclArchive, IJclArchiveDictionarySize, DictionarySize) and Assigned(DictionarySize) and
+          Supports(AJclArchive, IJclArchiveCompressionMethod, CompressionMethod) and Assigned(CompressionMethod) and
+          (CompressionMethod.CompressionMethod in [cmBZip2,cmLZMA,cmLZMA2]) then
+          AddWideStringProperty('D', IntToStr(DictionarySize.DictionarySize) + 'B');
+
+        if Supports(AJclArchive, IJclArchiveNumberOfPasses, NumberOfPasses) and Assigned(NumberOfPasses) then
+          AddCardinalProperty('PASS', NumberOfPasses.NumberOfPasses);
+
+        if Supports(AJclArchive, IJclArchiveRemoveSfxBlock, RemoveSfxBlock) and Assigned(RemoveSfxBlock) then
+          AddBooleanProperty('RSFX', RemoveSfxBlock.RemoveSfxBlock);
+
+        if Supports(AJclArchive, IJclArchiveCompressHeader, CompressHeader) and Assigned(CompressHeader) then
+        begin
+          AddBooleanProperty('HC', CompressHeader.CompressHeader);
+          if CompressHeader.CompressHeaderFull then
+            AddBooleanProperty('HCF', CompressHeader.CompressHeaderFull);
+        end;
+
+        if Supports(AJclArchive, IJclArchiveEncryptHeader, EncryptHeader) and Assigned(EncryptHeader) then
+          AddBooleanProperty('HE', EncryptHeader.EncryptHeader);
+
+        if Supports(AJclArchive, IJclArchiveSaveCreationDateTime, SaveCreationDateTime)
+          and Assigned(SaveCreationDateTime) then
+          AddBooleanProperty('TC', SaveCreationDateTime.SaveCreationDateTime);
+
+        if Supports(AJclArchive, IJclArchiveSaveLastAccessDateTime, SaveLastAccessDateTime)
+          and Assigned(SaveLastAccessDateTime) then
+          AddBooleanProperty('TA', SaveLastAccessDateTime.SaveLastAccessDateTime);
+
+        if Supports(AJclArchive, IJclArchiveSaveLastWriteDateTime, SaveLastWriteDateTime)
+          and Assigned(SaveLastWriteDateTime) then
+          AddBooleanProperty('TM', SaveLastWriteDateTime.SaveLastWriteDateTime);
+
+        if Supports(AJclArchive, IJclArchiveAlgorithm, Algorithm) and Assigned(Algorithm) then
+          AddCardinalProperty('A', Algorithm.Algorithm);
+
+        if Supports(AJclArchive, IJclArchiveSolid, Solid) and Assigned(Solid) then
+        begin
+          if Solid.SolidExtension then
+            AddWideStringProperty('S', 'E');
+          if Solid.SolidBlockSize > 0 then
+            AddWideStringProperty('S', IntToStr(Solid.SolidBlockSize) + 'B')
+          else
+            AddWideStringProperty('S', IntToStr(Solid.SolidBlockSize) + 'F');
+        end;
       end;
-
-      if Supports(AJclArchive, IJclArchiveEncryptHeader, EncryptHeader) and Assigned(EncryptHeader) then
-        AddBooleanProperty('HE', EncryptHeader.EncryptHeader);
-
-      if Supports(AJclArchive, IJclArchiveSaveCreationDateTime, SaveCreationDateTime)
-        and Assigned(SaveCreationDateTime) then
-        AddBooleanProperty('TC', SaveCreationDateTime.SaveCreationDateTime);
-
-      if Supports(AJclArchive, IJclArchiveSaveLastAccessDateTime, SaveLastAccessDateTime)
-        and Assigned(SaveLastAccessDateTime) then
-        AddBooleanProperty('TA', SaveLastAccessDateTime.SaveLastAccessDateTime);
-
-      if Supports(AJclArchive, IJclArchiveSaveLastWriteDateTime, SaveLastWriteDateTime)
-        and Assigned(SaveLastWriteDateTime) then
-        AddBooleanProperty('TM', SaveLastWriteDateTime.SaveLastWriteDateTime);
-
-      if Supports(AJclArchive, IJclArchiveAlgorithm, Algorithm) and Assigned(Algorithm) then
-        AddCardinalProperty('A', Algorithm.Algorithm);
-
-      if Supports(AJclArchive, IJclArchiveSolid, Solid) and Assigned(Solid) then
-      begin
-        if Solid.SolidExtension then
-          AddWideStringProperty('S', 'E');
-        if Solid.SolidBlockSize > 0 then
-          AddWideStringProperty('S', IntToStr(Solid.SolidBlockSize) + 'B')
-        else
-          AddWideStringProperty('S', IntToStr(Solid.SolidBlockSize) + 'F');
-      end;
+      if Length(PropNames) > 0 then
+        PropertySetter.SetProperties(@PropNames[0], @PropValues[0], Length(PropNames));
+    finally
+      // Release BSTR strings. VariantPropClear() would do that, but it is only available Delphi XE3+
+      for I := 0 to Length(PropValues) do
+        if (PropValues[I].vt = VT_BSTR) and (PropValues[I].bstrVal <> nil) then
+          SysFreeString(PropValues[I].bstrVal);
     end;
-    if Length(PropNames) > 0 then
-      PropertySetter.SetProperties(@PropNames[0], @PropValues[0], Length(PropNames));
   end;
 end;
 
