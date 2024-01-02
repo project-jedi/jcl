@@ -203,6 +203,7 @@ function GetDomainName: string;
 {$IFDEF MSWINDOWS}
 function GetRegisteredCompany: string;
 function GetRegisteredOwner: string;
+function GetWindowsProductId: string;
 function GetBIOSName: string;
 function GetBIOSCopyright: string;
 function GetBIOSExtendedInfo: string;
@@ -2469,6 +2470,15 @@ begin
     Result := ReadWindowsNTCurrentVersionStringValue('RegisteredOwner', '', True)
   else
     Result := ReadWindowsCurrentVersionStringValue('RegisteredOwner', '', True);
+end;
+
+function GetWindowsProductId: string;
+begin
+  { TODO : check for MSDN documentation }
+  if IsWinNT then
+    Result := ReadWindowsNTCurrentVersionStringValue('ProductId', '', True)
+  else
+    Result := ReadWindowsCurrentVersionStringValue('ProductId', '', True);
 end;
 
 { TODO: Check supported platforms, maybe complete rewrite }
