@@ -2262,7 +2262,7 @@ function UnicodeToUpper(Code: UCS4): TUCS4Array;
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
   SetLength(Result, 1);
-  Result[0] := Ord(TCharacter.ToUpper(Chr(Code)));
+  Result[0] := Ord(Chr(Code).ToUpper);
   {$ELSE ~UNICODE_RTL_DATABASE}
   SetLength(Result, 0);
   if not CaseLookup(Code, ctUpper, Result) then
@@ -2277,7 +2277,7 @@ function UnicodeToLower(Code: UCS4): TUCS4Array;
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
   SetLength(Result, 1);
-  Result[0] := Ord(TCharacter.ToLower(Chr(Code)));
+  Result[0] := Ord(Chr(Code).ToLower);
   {$ELSE ~UNICODE_RTL_DATABASE}
   SetLength(Result, 0);
   if not CaseLookup(Code, ctLower, Result) then
@@ -7125,7 +7125,7 @@ end;
 function WideLowerCase(C: WideChar): WideString;
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.ToLower(C);
+  Result := C.ToLower;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result:= WideCaseConvert(C, ctLower);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7134,7 +7134,7 @@ end;
 function WideLowerCase(const S: WideString): WideString;
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.ToLower(S);
+  Result := string(S).ToLower;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result:= WideCaseConvert(S, ctLower);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7157,7 +7157,7 @@ end;
 function WideUpperCase(C: WideChar): WideString;
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.ToUpper(C);
+  Result := C.ToUpper;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result:= WideCaseConvert(C, ctUpper);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7166,7 +7166,7 @@ end;
 function WideUpperCase(const S: WideString): WideString;
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.ToUpper(S);
+  Result := string(S).ToUpper;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result:= WideCaseConvert(S, ctUpper);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7177,7 +7177,7 @@ end;
 function UnicodeIsAlpha(C: UCS4): Boolean; // Is the character alphabetic?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.IsLetter(Chr(C));
+  Result := Chr(C).IsLetter;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, ClassLetter);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7186,7 +7186,7 @@ end;
 function UnicodeIsDigit(C: UCS4): Boolean; // Is the character a digit?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.IsDigit(Chr(C));
+  Result := Chr(C).IsDigit;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, [ccNumberDecimalDigit]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7195,7 +7195,7 @@ end;
 function UnicodeIsAlphaNum(C: UCS4): Boolean; // Is the character alphabetic or a number?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.IsLetterOrDigit(Chr(C));
+  Result := Chr(C).IsLetterOrDigit;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, ClassLetter + [ccNumberDecimalDigit]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7204,7 +7204,7 @@ end;
 function UnicodeIsNumberOther(C: UCS4): Boolean;
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) = TUnicodeCategory.ucOtherNumber;
+  Result := Chr(C).GetUnicodeCategory = TUnicodeCategory.ucOtherNumber;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, [ccNumberOther]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7214,7 +7214,7 @@ function UnicodeIsCased(C: UCS4): Boolean;
 // Is the character a "cased" character, i.e. either lower case, title case or upper case
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) in
+  Result := Chr(C).GetUnicodeCategory in
     [TUnicodeCategory.ucLowercaseLetter, TUnicodeCategory.ucTitlecaseLetter, TUnicodeCategory.ucUppercaseLetter];
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, [ccLetterLowercase, ccLetterTitleCase, ccLetterUppercase]);
@@ -7225,7 +7225,7 @@ function UnicodeIsControl(C: UCS4): Boolean;
 // Is the character a control character?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) in
+  Result := Chr(C).GetUnicodeCategory in
     [TUnicodeCategory.ucControl, TUnicodeCategory.ucFormat];
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, [ccOtherControl, ccOtherFormat]);
@@ -7236,7 +7236,7 @@ function UnicodeIsSpace(C: UCS4): Boolean;
 // Is the character a spacing character?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) = TUnicodeCategory.ucSpaceSeparator;
+  Result := Chr(C).GetUnicodeCategory = TUnicodeCategory.ucSpaceSeparator;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, ClassSpace);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7247,7 +7247,7 @@ function UnicodeIsWhiteSpace(C: UCS4): Boolean;
 // tabulator, new line etc.)?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.IsWhiteSpace(Chr(C));
+  Result := Chr(C).IsWhiteSpace;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, ClassSpace + [ccWhiteSpace, ccSegmentSeparator]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7257,7 +7257,7 @@ function UnicodeIsBlank(C: UCS4): Boolean;
 // Is the character a space separator?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) = TUnicodeCategory.ucSpaceSeparator;
+  Result := Chr(C).GetUnicodeCategory = TUnicodeCategory.ucSpaceSeparator;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, [ccSeparatorSpace]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7267,7 +7267,7 @@ function UnicodeIsPunctuation(C: UCS4): Boolean;
 // Is the character a punctuation mark?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) in
+  Result := Chr(C).GetUnicodeCategory in
     [TUnicodeCategory.ucConnectPunctuation, TUnicodeCategory.ucDashPunctuation,
      TUnicodeCategory.ucClosePunctuation, TUnicodeCategory.ucFinalPunctuation,
      TUnicodeCategory.ucInitialPunctuation, TUnicodeCategory.ucOtherPunctuation,
@@ -7281,7 +7281,7 @@ function UnicodeIsGraph(C: UCS4): Boolean;
 // Is the character graphical?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) in
+  Result := Chr(C).GetUnicodeCategory in
     [TUnicodeCategory.ucCombiningMark, TUnicodeCategory.ucEnclosingMark,
      TUnicodeCategory.ucNonSpacingMark,
      TUnicodeCategory.ucDecimalNumber, TUnicodeCategory.ucLetterNumber,
@@ -7304,7 +7304,7 @@ function UnicodeIsPrintable(C: UCS4): Boolean;
 // Is the character printable?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) in
+  Result := Chr(C).GetUnicodeCategory in
     [TUnicodeCategory.ucCombiningMark, TUnicodeCategory.ucEnclosingMark,
      TUnicodeCategory.ucNonSpacingMark,
      TUnicodeCategory.ucDecimalNumber, TUnicodeCategory.ucLetterNumber,
@@ -7329,7 +7329,7 @@ function UnicodeIsUpper(C: UCS4): Boolean;
 // Is the character already upper case?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) = TUnicodeCategory.ucUppercaseLetter;
+  Result := Chr(C).GetUnicodeCategory = TUnicodeCategory.ucUppercaseLetter;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, [ccLetterUppercase]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7339,7 +7339,7 @@ function UnicodeIsLower(C: UCS4): Boolean;
 // Is the character already lower case?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) = TUnicodeCategory.ucLowercaseLetter;
+  Result := Chr(C).GetUnicodeCategory = TUnicodeCategory.ucLowercaseLetter;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, [ccLetterLowercase]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7349,7 +7349,7 @@ function UnicodeIsTitle(C: UCS4): Boolean;
 // Is the character already title case?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) = TUnicodeCategory.ucTitlecaseLetter;
+  Result := Chr(C).GetUnicodeCategory = TUnicodeCategory.ucTitlecaseLetter;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, [ccLetterTitlecase]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7367,7 +7367,7 @@ function UnicodeIsIsoControl(C: UCS4): Boolean;
 // Is the character a C0 control character (< 32)?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) = TUnicodeCategory.ucControl;
+  Result := Chr(C).GetUnicodeCategory = TUnicodeCategory.ucControl;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, [ccOtherControl]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7377,7 +7377,7 @@ function UnicodeIsFormatControl(C: UCS4): Boolean;
 // Is the character a format control character?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) = TUnicodeCategory.ucFormat;
+  Result := Chr(C).GetUnicodeCategory = TUnicodeCategory.ucFormat;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, [ccOtherFormat]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7387,7 +7387,7 @@ function UnicodeIsSymbol(C: UCS4): Boolean;
 // Is the character a symbol?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) in
+  Result := Chr(C).GetUnicodeCategory in
     [TUnicodeCategory.ucCurrencySymbol, TUnicodeCategory.ucModifierSymbol,
      TUnicodeCategory.ucMathSymbol, TUnicodeCategory.ucOtherSymbol];
   {$ELSE ~UNICODE_RTL_DATABASE}
@@ -7399,7 +7399,7 @@ function UnicodeIsNumber(C: UCS4): Boolean;
 // Is the character a number or digit?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) in
+  Result := Chr(C).GetUnicodeCategory in
     [TUnicodeCategory.ucDecimalNumber, TUnicodeCategory.ucLetterNumber,
      TUnicodeCategory.ucOtherNumber];
   {$ELSE ~UNICODE_RTL_DATABASE}
@@ -7411,7 +7411,7 @@ function UnicodeIsNonSpacing(C: UCS4): Boolean;
 // Is the character non-spacing?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) = TUnicodeCategory.ucNonSpacingMark;
+  Result := Chr(C).GetUnicodeCategory = TUnicodeCategory.ucNonSpacingMark;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, [ccMarkNonSpacing]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7421,7 +7421,7 @@ function UnicodeIsOpenPunctuation(C: UCS4): Boolean;
 // Is the character an open/left punctuation (e.g. '[')?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) = TUnicodeCategory.ucOpenPunctuation;
+  Result := Chr(C).GetUnicodeCategory = TUnicodeCategory.ucOpenPunctuation;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, [ccPunctuationOpen]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7431,7 +7431,7 @@ function UnicodeIsClosePunctuation(C: UCS4): Boolean;
 // Is the character an close/right punctuation (e.g. ']')?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) = TUnicodeCategory.ucClosePunctuation;
+  Result := Chr(C).GetUnicodeCategory = TUnicodeCategory.ucClosePunctuation;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, [ccPunctuationClose]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7441,7 +7441,7 @@ function UnicodeIsInitialPunctuation(C: UCS4): Boolean;
 // Is the character an initial punctuation (e.g. U+2018 LEFT SINGLE QUOTATION MARK)?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) = TUnicodeCategory.ucInitialPunctuation;
+  Result := Chr(C).GetUnicodeCategory = TUnicodeCategory.ucInitialPunctuation;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, [ccPunctuationInitialQuote]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7451,7 +7451,7 @@ function UnicodeIsFinalPunctuation(C: UCS4): Boolean;
 // Is the character a final punctuation (e.g. U+2019 RIGHT SINGLE QUOTATION MARK)?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) = TUnicodeCategory.ucFinalPunctuation;
+  Result := Chr(C).GetUnicodeCategory = TUnicodeCategory.ucFinalPunctuation;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, [ccPunctuationFinalQuote]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7541,7 +7541,7 @@ function UnicodeIsLetterNumber(C: UCS4): Boolean;
 // Is the character a number represented by a letter?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) = TUnicodeCategory.ucLetterNumber;
+  Result := Chr(C).GetUnicodeCategory = TUnicodeCategory.ucLetterNumber;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, [ccNumberLetter]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7551,7 +7551,7 @@ function UnicodeIsConnectionPunctuation(C: UCS4): Boolean;
 // Is the character connecting punctuation?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) = TUnicodeCategory.ucConnectPunctuation;
+  Result := Chr(C).GetUnicodeCategory = TUnicodeCategory.ucConnectPunctuation;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, [ccPunctuationConnector]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7561,7 +7561,7 @@ function UnicodeIsDash(C: UCS4): Boolean;
 // Is the character a dash punctuation?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) = TUnicodeCategory.ucDashPunctuation;
+  Result := Chr(C).GetUnicodeCategory = TUnicodeCategory.ucDashPunctuation;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, [ccPunctuationDash]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7571,7 +7571,7 @@ function UnicodeIsMath(C: UCS4): Boolean;
 // Is the character a math character?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) = TUnicodeCategory.ucMathSymbol;
+  Result := Chr(C).GetUnicodeCategory = TUnicodeCategory.ucMathSymbol;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, [ccSymbolMath]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7581,7 +7581,7 @@ function UnicodeIsCurrency(C: UCS4): Boolean;
 // Is the character a currency character?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) = TUnicodeCategory.ucCurrencySymbol;
+  Result := Chr(C).GetUnicodeCategory = TUnicodeCategory.ucCurrencySymbol;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, [ccSymbolCurrency]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7591,7 +7591,7 @@ function UnicodeIsModifierSymbol(C: UCS4): Boolean;
 // Is the character a modifier symbol?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) = TUnicodeCategory.ucModifierSymbol;
+  Result := Chr(C).GetUnicodeCategory = TUnicodeCategory.ucModifierSymbol;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, [ccSymbolModifier]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7601,7 +7601,7 @@ function UnicodeIsSpacingMark(C: UCS4): Boolean;
 // Is the character a spacing mark?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) in
+  Result := Chr(C).GetUnicodeCategory in
     [TUnicodeCategory.ucLineSeparator, TUnicodeCategory.ucParagraphSeparator,
      TUnicodeCategory.ucSpaceSeparator];
   {$ELSE ~UNICODE_RTL_DATABASE}
@@ -7613,7 +7613,7 @@ function UnicodeIsEnclosing(C: UCS4): Boolean;
 // Is the character enclosing (i.e. enclosing box)?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) = TUnicodeCategory.ucEnclosingMark;
+  Result := Chr(C).GetUnicodeCategory = TUnicodeCategory.ucEnclosingMark;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, [ccMarkEnclosing]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7623,7 +7623,7 @@ function UnicodeIsPrivate(C: UCS4): Boolean;
 // Is the character from the Private Use Area?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) = TUnicodeCategory.ucPrivateUse;
+  Result := Chr(C).GetUnicodeCategory = TUnicodeCategory.ucPrivateUse;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, [ccOtherPrivate]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7633,7 +7633,7 @@ function UnicodeIsSurrogate(C: UCS4): Boolean;
 // Is the character one of the surrogate codes?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) = TUnicodeCategory.ucSurrogate;
+  Result := Chr(C).GetUnicodeCategory = TUnicodeCategory.ucSurrogate;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, [ccOtherSurrogate]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7643,7 +7643,7 @@ function UnicodeIsLineSeparator(C: UCS4): Boolean;
 // Is the character a line separator?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) = TUnicodeCategory.ucLineSeparator;
+  Result := Chr(C).GetUnicodeCategory = TUnicodeCategory.ucLineSeparator;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, [ccSeparatorLine]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7653,7 +7653,7 @@ function UnicodeIsParagraphSeparator(C: UCS4): Boolean;
 // Is th character a paragraph separator;
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) = TUnicodeCategory.ucParagraphSeparator;
+  Result := Chr(C).GetUnicodeCategory = TUnicodeCategory.ucParagraphSeparator;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, [ccSeparatorParagraph]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7663,7 +7663,7 @@ function UnicodeIsIdentifierStart(C: UCS4): Boolean;
 // Can the character begin an identifier?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) in
+  Result := Chr(C).GetUnicodeCategory in
     [TUnicodeCategory.ucLowercaseLetter, TUnicodeCategory.ucModifierLetter,
      TUnicodeCategory.ucOtherLetter, TUnicodeCategory.ucTitlecaseLetter,
      TUnicodeCategory.ucUppercaseLetter,
@@ -7677,7 +7677,7 @@ function UnicodeIsIdentifierPart(C: UCS4): Boolean;
 // Can the character appear in an identifier?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) in
+  Result := Chr(C).GetUnicodeCategory in
     [TUnicodeCategory.ucLowercaseLetter, TUnicodeCategory.ucModifierLetter,
      TUnicodeCategory.ucOtherLetter, TUnicodeCategory.ucTitlecaseLetter,
      TUnicodeCategory.ucUppercaseLetter,
@@ -7695,7 +7695,7 @@ function UnicodeIsDefined(C: UCS4): Boolean;
 // Is the character defined (appears in one of the data files)?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) <> TUnicodeCategory.ucUnassigned;
+  Result := Chr(C).GetUnicodeCategory <> TUnicodeCategory.ucUnassigned;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, [ccAssigned]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7705,7 +7705,7 @@ function UnicodeIsUndefined(C: UCS4): Boolean;
 // Is the character undefined (not assigned in the Unicode database)?
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) = TUnicodeCategory.ucUnassigned;
+  Result := Chr(C).GetUnicodeCategory = TUnicodeCategory.ucUnassigned;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := not CategoryLookup(C, [ccAssigned]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7726,7 +7726,7 @@ end;
 function UnicodeIsUnassigned(C: UCS4): Boolean;
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) = TUnicodeCategory.ucUnassigned;
+  Result := Chr(C).GetUnicodeCategory = TUnicodeCategory.ucUnassigned;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, [ccOtherUnassigned]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7735,7 +7735,7 @@ end;
 function UnicodeIsLetterOther(C: UCS4): Boolean;
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) = TUnicodeCategory.ucOtherLetter;
+  Result := Chr(C).GetUnicodeCategory = TUnicodeCategory.ucOtherLetter;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, [ccLetterOther]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7744,7 +7744,7 @@ end;
 function UnicodeIsConnector(C: UCS4): Boolean;
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) = TUnicodeCategory.ucConnectPunctuation;
+  Result := Chr(C).GetUnicodeCategory = TUnicodeCategory.ucConnectPunctuation;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, [ccPunctuationConnector]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7753,7 +7753,7 @@ end;
 function UnicodeIsPunctuationOther(C: UCS4): Boolean;
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) = TUnicodeCategory.ucOtherPunctuation;
+  Result := Chr(C).GetUnicodeCategory = TUnicodeCategory.ucOtherPunctuation;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, [ccPunctuationOther]);
   {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -7762,7 +7762,7 @@ end;
 function UnicodeIsSymbolOther(C: UCS4): Boolean;
 begin
   {$IFDEF UNICODE_RTL_DATABASE}
-  Result := TCharacter.GetUnicodeCategory(Chr(C)) = TUnicodeCategory.ucOtherSymbol;
+  Result := Chr(C).GetUnicodeCategory = TUnicodeCategory.ucOtherSymbol;
   {$ELSE ~UNICODE_RTL_DATABASE}
   Result := CategoryLookup(C, [ccSymbolOther]);
   {$ENDIF ~UNICODE_RTL_DATABASE}

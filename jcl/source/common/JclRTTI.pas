@@ -60,6 +60,7 @@ uses
   {$ENDIF MSWINDOWS}
   Classes, SysUtils, TypInfo,
   {$ENDIF ~HAS_UNITSCOPE}
+  System.Character,
   JclBase;
 
 type

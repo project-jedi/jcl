@@ -277,7 +277,7 @@ function GetFileInformation(const FileName: string; out FileInfo: TSearchRec): B
 function GetFileInformation(const FileName: string): TSearchRec; overload;
 {$IFDEF UNIX}
 function GetFileStatus(const FileName: string; out StatBuf: TStatBuf64;
-  const ResolveSymLinks: Boolean): LongInt;
+  const ResolveSymLinks: Boolean): Integer;
 {$ENDIF UNIX}
 {$IFDEF MSWINDOWS}
 function GetFileLastWrite(const FileName: string): TFileTime; overload;
@@ -3413,6 +3413,23 @@ end;
 {$ENDIF MSWINDOWS}
 
 {$IFDEF MSWINDOWS}
+function DirectoryExists(const Name: string): Boolean;
+var
+  R: DWORD;
+begin
+  R := GetFileAttributes(PChar(Name));
+  Result := (R <> DWORD(-1)) and ((R and FILE_ATTRIBUTE_DIRECTORY) <> 0);
+end;
+{$ENDIF MSWINDOWS}
+
+{$IFDEF UNIX}
+function DirectoryExists(const Name: string {$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF}): Boolean;
+begin
+  Result := IsDirectory(Name, ResolveSymLinks);
+end;
+{$ENDIF UNIX}
+
+{$IFDEF MSWINDOWS}
 function DiskInDrive(Drive: Char): Boolean;
 var
   ErrorMode: Cardinal;
@@ -3937,23 +3954,6 @@ begin
   until not FileExists(Result);
 end;
 
-{$IFDEF MSWINDOWS}
-function DirectoryExists(const Name: string): Boolean;
-var
-  R: DWORD;
-begin
-  R := GetFileAttributes(PChar(Name));
-  Result := (R <> DWORD(-1)) and ((R and FILE_ATTRIBUTE_DIRECTORY) <> 0);
-end;
-{$ENDIF MSWINDOWS}
-
-{$IFDEF UNIX}
-function DirectoryExists(const Name: string {$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF}): Boolean;
-begin
-  Result := IsDirectory(Name, ResolveSymLinks);
-end;
-{$ENDIF UNIX}
-
 // This routine is copied from FileCtrl.pas to avoid dependency on that unit.
 // See the remark at the top of this section
 
@@ -4169,7 +4169,7 @@ end;
 { TODO -cHelp : Author: Robert Rossmair }
 
 function GetFileStatus(const FileName: string; out StatBuf: TStatBuf64;
-  const ResolveSymLinks: Boolean): LongInt;
+  const ResolveSymLinks: Boolean): Integer;
 begin
   if ResolveSymLinks then
     Result := stat64(PChar(FileName), StatBuf)

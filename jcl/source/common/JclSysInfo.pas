@@ -204,6 +204,7 @@ function GetDomainName: string;
 {$IFDEF MSWINDOWS}
 function GetRegisteredCompany: string;
 function GetRegisteredOwner: string;
+function GetWindowsProductId: string;
 function GetBIOSName: string;
 function GetBIOSCopyright: string;
 function GetBIOSExtendedInfo: string;
@@ -258,7 +259,7 @@ type
     wvWin2003, wvWinXP64, wvWin2003R2, wvWinVista, wvWinServer2008,
     wvWin7, wvWinServer2008R2, wvWin8, wvWin8RT, wvWinServer2012,
     wvWin81, wvWin81RT, wvWinServer2012R2, wvWin10, wvWinServer2016,
-    wvWinServer2019, wvWinServer, wvWin11);
+    wvWinServer2019, wvWinServer, wvWin11, wvWinServer2022);
   TWindowsEdition =
    (weUnknown, weWinXPHome, weWinXPPro, weWinXPHomeN, weWinXPProN, weWinXPHomeK,
     weWinXPProK, weWinXPHomeKN, weWinXPProKN, weWinXPStarter, weWinXPMediaCenter,
@@ -309,6 +310,7 @@ var
   IsWin10: Boolean = False;
   IsWinServer2016: Boolean = False;
   IsWinServer2019: Boolean = False;
+  IsWinServer2022: Boolean = False;
   IsWinServer: Boolean = False;
   IsWin11: Boolean = False;
 
@@ -2487,6 +2489,15 @@ begin
     Result := ReadWindowsCurrentVersionStringValue('RegisteredOwner', '', True);
 end;
 
+function GetWindowsProductId: string;
+begin
+  { TODO : check for MSDN documentation }
+  if IsWinNT then
+    Result := ReadWindowsNTCurrentVersionStringValue('ProductId', '', True)
+  else
+    Result := ReadWindowsCurrentVersionStringValue('ProductId', '', True);
+end;
+
 { TODO: Check supported platforms, maybe complete rewrite }
 
 function GetUserDomainName(const CurUser: string): string;
@@ -2622,6 +2633,8 @@ end;
 { TODO : the date string can be e.g. 00/00/00 }
 function GetBIOSDate: TDateTime;
 const
+  WIN10_REG_PATH = 'HARDWARE\DESCRIPTION\System\BIOS';
+  WIN10_REG_KEY  = 'BIOSReleaseDate';
   WinNT_REG_PATH = 'HARDWARE\DESCRIPTION\System';
   WinNT_REG_KEY  = 'SystemBiosDate';
   Win9x_REG_PATH = 'Enum\Root\*PNP0C01\0000';
@@ -2636,9 +2649,18 @@ var
   {$ENDIF ~RTL150_UP}
 begin
   if IsWinNT then
-    RegStr := RegReadString(HKEY_LOCAL_MACHINE, WinNT_REG_PATH, WinNT_REG_KEY)
+  begin
+    // location of the Bios date seems to have changed on newer systems (From windows 10 ?)
+    // The new location seems to exist since a while, but older location disappeared on newer OS
+    if RegValueExists(HKEY_LOCAL_MACHINE, WIN10_REG_PATH, WIN10_REG_KEY) then
+      RegStr := RegReadString(HKEY_LOCAL_MACHINE, WIN10_REG_PATH, WIN10_REG_KEY)
+    else
+      RegStr := RegReadString(HKEY_LOCAL_MACHINE, WinNT_REG_PATH, WinNT_REG_KEY);
+  end
   else
+  begin
     RegStr := RegReadString(HKEY_LOCAL_MACHINE, Win9x_REG_PATH, Win9x_REG_KEY);
+  end;
   {$IFDEF RTL150_UP}
   FillChar(FormatSettings, SizeOf(FormatSettings), 0);
   FormatSettings.DateSeparator := '/';
@@ -3337,13 +3359,13 @@ end;
 function GetProcessNameFromWnd(Wnd: THandle): string;
 var
   List: TStringList;
-  PID: THandle;
+  PID: DWORD;
   I: Integer;
 begin
   Result := '';
   if IsWindow(Wnd) then
   begin
-    PID := INVALID_HANDLE_VALUE;
+    PID := DWORD(-1);
     GetWindowThreadProcessId(Wnd, @PID);
     List := TStringList.Create;
     try
@@ -3611,7 +3633,7 @@ begin
                  Win32MinorVersionEx := 4 // Windows 10 (builds < 9926) and Windows Server 2016 (builds < 10074)
               else
               if Win32MajorVersionEx = 10 then
-                 Win32MinorVersionEx := -1 // Windows 10 (builds >= 9926) and Windows Server 2016/2019 (builds >= 10074), set to -1 to escape case block
+                 Win32MinorVersionEx := -1 // Windows 10 (builds >= 9926) and Windows Server 2016/2019/2022 (builds >= 10074), set to -1 to escape case block
               else
                  Win32MinorVersionEx := Win32MinorVersion;
             end;
@@ -3703,6 +3725,8 @@ begin
                     Result := wvWinServer2016;
                   1809:
                     Result := wvWinServer2019;
+                  2009:
+                    Result := wvWinServer2022;
                 else
                     Result := wvWinServer;
                 end;
@@ -4029,6 +4053,8 @@ begin
       Result := LoadResString(@RsOSVersionWinServer2016);
     wvWinServer2019:
       Result := LoadResString(@RsOSVersionWinServer2019);
+    wvWinServer2022:
+      Result := LoadResString(@RsOSVersionWinServer2022);
     wvWinServer:
       Result := LoadResString(@RsOSVersionWinServer);
     wvWin11:
@@ -4304,6 +4330,9 @@ begin
            else
            if WindowsDisplayVersion = '21H1' then
               Result := LoadResString(@RsOSVersionWin10) + ' May 2021 Update'
+           else
+           if WindowsDisplayVersion = '21H2' then
+              Result := LoadResString(@RsOSVersionWin10) + ' November 2021 Update'
            else
               Result := LoadResString(@RsOSVersionWin10) + ' ' + WindowsDisplayVersion + ' Update';
          end
@@ -6584,6 +6613,8 @@ begin
       IsWinServer2016 := True;
     wvWinServer2019:
       IsWinServer2019 := True;
+    wvWinServer2022:
+      IsWinServer2022 := True;
     wvWinServer:
       IsWinServer := True;
     wvWin11:

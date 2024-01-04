@@ -3722,6 +3722,10 @@ begin
     if DefaultCodePage = CP_ACP then
       DefaultCodePage := GetAcp;
     {$ENDIF MSWINDOWS}
+    {$IFDEF LINUX}
+    if DefaultCodePage = CP_ACP then
+      DefaultCodePage := CP_UTF8;
+    {$ENDIF MSWINDOWS}
   end
   else
     {$IFDEF UNICODE}

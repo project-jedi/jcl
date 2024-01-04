@@ -318,7 +318,8 @@ var
   end;
 
 begin
-  if JclDisablePostCompilationProcess or (Project = nil) then
+  // There are no ProjectOptions if we have a Language Ressouce DLL project (Mantis #5740)
+  if JclDisablePostCompilationProcess or (Project = nil) or (Project.ProjectOptions = nil) then
     Exit;
 
   OTAMessageServices := GetOTAMessageServices;

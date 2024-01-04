@@ -1025,7 +1025,7 @@ begin
   begin
     C.C := UTF8GetNextChar(AString, I);
     {$IFDEF UNICODE_RTL_DATABASE}
-    CA[0] := Ord(TCharacter.ToLower(Chr(C.C)));
+    CA[0] := Ord(Chr(C.C).ToLower);
     {$ELSE ~UNICODE_RTL_DATABASE}
     CA := UnicodeCaseFold(C.C);
     {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -1089,7 +1089,7 @@ begin
   begin
     C.C := UTF16GetNextChar(AString, I);
     {$IFDEF UNICODE_RTL_DATABASE}
-    CA[0] := Ord(TCharacter.ToLower(Chr(C.C)));
+    CA[0] := Ord(Chr(C.C).ToLower);
     {$ELSE ~UNICODE_RTL_DATABASE}
     CA := UnicodeCaseFold(C.C);
     {$ENDIF ~UNICODE_RTL_DATABASE}
@@ -1154,7 +1154,7 @@ begin
   begin
     C.C := UTF16GetNextChar(AString, I);
     {$IFDEF UNICODE_RTL_DATABASE}
-    CA[0] := Ord(TCharacter.ToLower(Chr(C.C)));
+    CA[0] := Ord(Chr(C.C).ToLower);
     {$ELSE ~UNICODE_RTL_DATABASE}
     CA := UnicodeCaseFold(C.C);
     {$ENDIF ~UNICODE_RTL_DATABASE}

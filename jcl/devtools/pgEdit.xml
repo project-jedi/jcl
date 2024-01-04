@@ -16,6 +16,8 @@
     <jsgFiles_Height>168</jsgFiles_Height>
     <odlAddFiles_InitialDir>..\..\run</odlAddFiles_InitialDir>
     <cmbModel_ItemIndex>-1</cmbModel_ItemIndex>
+    <MinMaxPos_3840x1080_>-1,-1,-1,-1</MinMaxPos_3840x1080_>
+    <NormPos_3840x1080_>428,199,1251,820</NormPos_3840x1080_>
   </pgEdit>
   <!--
     The nodes below are read by the generation process.
@@ -102,28 +104,29 @@
         <target name="d26" defines="BCB" IsBds="1"/>
         <target name="d27" defines="BCB" IsBds="1"/>
         <target name="d28" defines="BCB" IsBds="1"/>
+        <target name="d29" defines="BCB" IsBds="1"/>
       </targets>
       <aliases>
         <!-- language aliases -->
-        <alias name="Delphi" value="d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28"/>
-        <alias name="Bcb" value="c6,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28"/>
-        <alias name="Pascal" value="fpc,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28"/>
+        <alias name="Delphi" value="d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28,d29"/>
+        <alias name="Bcb" value="c6,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28,d29"/>
+        <alias name="Pascal" value="fpc,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28,d29"/>
         <!-- platform aliases -->
-        <alias name="Windows" value="help,fpc,c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28"/>
+        <alias name="Windows" value="help,fpc,c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28,d29"/>
         <alias name="Linux" value="help,fpc"/>
         <!-- package aliases -->
-        <alias name="allv11up" value="d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28"/>
-        <alias name="allv14up" value="d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28"/>
-        <alias name="allv15up" value="d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28"/>
+        <alias name="allv11up" value="d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28,d29"/>
+        <alias name="allv14up" value="d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28,d29"/>
+        <alias name="allv15up" value="d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28,d29"/>
         <!-- GUI aliases -->
         <alias name="Clx" value="help,c6,d6,d7"/>
-        <alias name="Vcl" value="help,c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28"/>
+        <alias name="Vcl" value="help,c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28,d29"/>
         <!-- IDE aliases -->
-        <alias name="BDS" value="cs1,d8,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28"/>
-        <alias name="runtimeBDS" value="d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28"/>
+        <alias name="BDS" value="cs1,d8,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28,d29"/>
+        <alias name="runtimeBDS" value="d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28,d29"/>
         <alias name="OldStyleIDE" value="c6,d6,d7"/>
-        <alias name="runtimeIDE" value="c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28"/>
-        <alias name="designtimeIDE" value="c6,d6,d7,d8,d9,d10,cs1,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28"/>
+        <alias name="runtimeIDE" value="c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28,d29"/>
+        <alias name="designtimeIDE" value="c6,d6,d7,d8,d9,d10,cs1,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28,d29"/>
       </aliases>
       <ProjectProperties>
         <ProjectProperty name="VersionMajorNumber" value="2"/>

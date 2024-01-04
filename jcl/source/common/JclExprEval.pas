@@ -61,7 +61,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF HAS_UNITSCOPE}
-  System.SysUtils, System.Classes,
+  System.SysUtils, System.Classes, System.Character,
   {$ELSE ~HAS_UNITSCOPE}
   SysUtils, Classes,
   {$ENDIF ~HAS_UNITSCOPE}
