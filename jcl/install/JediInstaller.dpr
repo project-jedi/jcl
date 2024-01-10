@@ -32,7 +32,7 @@ uses
 
 begin
   // By default, indicate an error.
-  // If (un)installation goes succesfully to completion, it will be set to 0, indicating success
+  // If (un)installation goes successfully to completion, it will be set to 0, indicating success
   ExitCode := 1;
 
   InstallCore.Execute;

@@ -671,7 +671,7 @@ var
 begin
   if Assigned(FFormCompile) then
   begin
-    if FFormCompile.Errors > 0 then // do not make the dialog modal when no error occured
+    if FFormCompile.Errors > 0 then // do not make the dialog modal when no error occurred
       FFormCompile.Done(' ')
     else
       FFormCompile.Done;

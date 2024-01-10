@@ -1402,7 +1402,7 @@ begin
       etIdentifier: // or, xor, bor, bxor
         if AnsiSameText(Lexer.TokenAsString, 'or') then
         begin
-          if (EvalExprLevel2(True) <> 0) or (Result <> 0) then // prevent boolean optimisations, EvalTerm must be called
+          if (EvalExprLevel2(True) <> 0) or (Result <> 0) then // prevent boolean optimizations, EvalTerm must be called
             Result := 1.0
           else
             Result := 0.0;
@@ -1454,7 +1454,7 @@ begin
         else
         if AnsiSameText(Lexer.TokenAsString, 'and') then
         begin
-          if (EvalExprLevel3(True) <> 0) and (Result <> 0) then // prevent boolean optimisations, EvalTerm must be called
+          if (EvalExprLevel3(True) <> 0) and (Result <> 0) then // prevent boolean optimizations, EvalTerm must be called
             Result := 1.0
           else
             Result := 0.0;

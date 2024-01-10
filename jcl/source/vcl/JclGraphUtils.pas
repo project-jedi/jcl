@@ -2137,7 +2137,7 @@ var
     else
       Result := M1;
   end;
-    
+
 begin
   if S = 0 then
   begin
@@ -2681,7 +2681,7 @@ begin
       Y := Round(Y2);
       Canvas.LineTo(X, Y);
       if Codes2 <> [] then
-        // Draw end point if neccessary
+        // Draw end point if necessary
         Canvas.LineTo(X + 1, Y);
     end;
     with Points[I] do

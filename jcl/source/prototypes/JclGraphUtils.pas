@@ -1996,7 +1996,7 @@ var
     else
       Result := M1;
   end;
-    
+
 begin
   if S = 0 then
   begin
@@ -2547,7 +2547,7 @@ begin
       Canvas.LineTo(X, Y);
       {$IFDEF VCL}
       if Codes2 <> [] then
-        // Draw end point if neccessary
+        // Draw end point if necessary
         Canvas.LineTo(X + 1, Y);
       {$ENDIF VCL}
     end;
