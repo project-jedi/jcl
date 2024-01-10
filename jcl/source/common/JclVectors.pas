@@ -11749,7 +11749,7 @@ begin
       for I := 0 to ToIndex - FromIndex - 1 do
         List[FromIndex + I] := Default(T)
     else
-      // independant
+      // independent
       for I := 0 to Count - 1 do
         List[FromIndex + I] := Default(T);
   end
@@ -11763,7 +11763,7 @@ begin
       for I := Count - FromIndex + ToIndex to Count - 1 do
         List[FromIndex + I] := Default(T)
     else
-      // independant
+      // independent
       for I := 0 to Count - 1 do
         List[FromIndex + I] := Default(T);
   end; 

@@ -6225,7 +6225,7 @@ begin
       Inc(ProcAddr);
 
     P := PByteArray(ProcAddr);
-    // Find all occurences above the CallAddr and add to LocalVarStackOffset (3*PointerSize)
+    // Find all occurrences above the CallAddr and add to LocalVarStackOffset (3*PointerSize)
     // "try"
     // 33C0             xor eax,eax
     // 55               push ebp
@@ -6242,7 +6242,7 @@ begin
       Inc(LocalVarStackOffset, 3 * PointerSize);
     end
     // "finally"/"except"
-    // Find all occurences above the CallAddr and substract from LocalVarStackOffset (3*PointerSize)
+    // Find all occurrences above the CallAddr and substract from LocalVarStackOffset (3*PointerSize)
     // 33C0             xor eax,eax
     // 5A               pop edx
     // 59               pop ecx
