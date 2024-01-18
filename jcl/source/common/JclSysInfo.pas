@@ -203,6 +203,7 @@ function GetDomainName: string;
 {$IFDEF MSWINDOWS}
 function GetRegisteredCompany: string;
 function GetRegisteredOwner: string;
+function GetWindowsProductId: string;
 function GetBIOSName: string;
 function GetBIOSCopyright: string;
 function GetBIOSExtendedInfo: string;
@@ -2471,6 +2472,15 @@ begin
     Result := ReadWindowsCurrentVersionStringValue('RegisteredOwner', '', True);
 end;
 
+function GetWindowsProductId: string;
+begin
+  { TODO : check for MSDN documentation }
+  if IsWinNT then
+    Result := ReadWindowsNTCurrentVersionStringValue('ProductId', '', True)
+  else
+    Result := ReadWindowsCurrentVersionStringValue('ProductId', '', True);
+end;
+
 { TODO: Check supported platforms, maybe complete rewrite }
 
 function GetUserDomainName(const CurUser: string): string;
@@ -2606,6 +2616,8 @@ end;
 { TODO : the date string can be e.g. 00/00/00 }
 function GetBIOSDate: TDateTime;
 const
+  WIN10_REG_PATH = 'HARDWARE\DESCRIPTION\System\BIOS';
+  WIN10_REG_KEY  = 'BIOSReleaseDate';
   WinNT_REG_PATH = 'HARDWARE\DESCRIPTION\System';
   WinNT_REG_KEY  = 'SystemBiosDate';
   Win9x_REG_PATH = 'Enum\Root\*PNP0C01\0000';
@@ -2620,9 +2632,18 @@ var
   {$ENDIF ~RTL150_UP}
 begin
   if IsWinNT then
-    RegStr := RegReadString(HKEY_LOCAL_MACHINE, WinNT_REG_PATH, WinNT_REG_KEY)
+  begin
+    // location of the Bios date seems to have changed on newer systems (From windows 10 ?)
+    // The new location seems to exist since a while, but older location disappeared on newer OS
+    if RegValueExists(HKEY_LOCAL_MACHINE, WIN10_REG_PATH, WIN10_REG_KEY) then
+      RegStr := RegReadString(HKEY_LOCAL_MACHINE, WIN10_REG_PATH, WIN10_REG_KEY)
+    else
+      RegStr := RegReadString(HKEY_LOCAL_MACHINE, WinNT_REG_PATH, WinNT_REG_KEY);
+  end
   else
+  begin
     RegStr := RegReadString(HKEY_LOCAL_MACHINE, Win9x_REG_PATH, Win9x_REG_KEY);
+  end;
   {$IFDEF RTL150_UP}
   FillChar(FormatSettings, SizeOf(FormatSettings), 0);
   FormatSettings.DateSeparator := '/';

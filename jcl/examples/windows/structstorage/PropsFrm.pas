@@ -67,7 +67,7 @@ resourcestring
   SRoot = 'Document Root';
   SConfirmConversion = 'Confirm Conversion';
   SConvertFilePrompt = 'This file doesn''t appear to be a compound file. Would you like to convert it?';
-  SConvertSuccess = 'File was converted succesfully.';
+  SConvertSuccess = 'File was converted successfully.';
   SConvertFailFmt = 'Unable to convert file:'#13#10'%s';
   SBytesFloatFmt = '%0.n bytes';
   SConfirmSaveChanges = 'Do you want to save your changes?';

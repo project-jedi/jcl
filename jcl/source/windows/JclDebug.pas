@@ -273,6 +273,7 @@ type
     function ProcNameFromAddr(Addr: DWORD): string; overload;
     function ProcNameFromAddr(Addr: DWORD; out Offset: Integer): string; overload;
     function SourceNameFromAddr(Addr: DWORD): string;
+    function VAFromUnitAndProcName(const UnitName, ProcName: string): DWORD;
     property LineNumberErrors: Integer read FLineNumberErrors;
     property LineNumbersCnt: Integer read FLineNumbersCnt;
     property LineNumberByIndex[Index: Integer]: TJclMapLineNumber read GetLineNumberByIndex;
@@ -310,11 +311,13 @@ type
     Addr: DWORD;
     FirstWord: Integer;
     SecondWord: Integer;
+    Text: string;
   end;
 
   TJclBinDebugScanner = class(TObject)
   private
     FCacheData: Boolean;
+    FCacheProcNames: Boolean;
     FStream: TCustomMemoryStream;
     FValidFormat: Boolean;
     FLineNumbers: array of TJclMapLineNumber;
@@ -328,7 +331,7 @@ type
     function MakePtr(A: Integer): Pointer;
     class function ReadValue(var P: Pointer; var Value: Integer): Boolean; {$IFDEF SUPPORTS_STATIC}static;{$ENDIF}
   public
-    constructor Create(AStream: TCustomMemoryStream; CacheData: Boolean);
+    constructor Create(AStream: TCustomMemoryStream; CacheData, CacheProcNames: Boolean);
     function IsModuleNameValid(const Name: TFileName): Boolean;
     function LineNumberFromAddr(Addr: DWORD): Integer; overload;
     function LineNumberFromAddr(Addr: DWORD; out Offset: Integer): Integer; overload;
@@ -339,6 +342,7 @@ type
     function SourceNameFromAddr(Addr: DWORD): string;
     property ModuleName: string read GetModuleName;
     property ValidFormat: Boolean read FValidFormat;
+    function VAFromUnitAndProcName(const UnitName, ProcName: string): DWORD;
   end;
 
 function ConvertMapFileToJdbgFile(const MapFileName: TFileName): Boolean; overload;
@@ -475,10 +479,12 @@ type
     function GetFileName: TFileName;
   protected
     function VAFromAddr(const Addr: Pointer): DWORD; virtual;
+    function AddrFromVA(const VA: DWORD): Pointer; virtual;
   public
     constructor Create(AModule: HMODULE); virtual;
     function InitializeSource: Boolean; virtual; abstract;
     function GetLocationInfo(const Addr: Pointer; out Info: TJclLocationInfo): Boolean; virtual; abstract;
+    function GetAddress(const UnitName, ProcName: string): Pointer; virtual; abstract;
     property Module: HMODULE read FModule;
     property FileName: TFileName read GetFileName;
     property ModuleCodeSize: SizeInt read FModuleCodeSize;
@@ -513,6 +519,7 @@ type
     destructor Destroy; override;
     function InitializeSource: Boolean; override;
     function GetLocationInfo(const Addr: Pointer; out Info: TJclLocationInfo): Boolean; override;
+    function GetAddress(const UnitName, ProcName: string): Pointer; override;
   end;
 
   TJclDebugInfoBinary = class(TJclDebugInfoSource)
@@ -523,6 +530,7 @@ type
     destructor Destroy; override;
     function InitializeSource: Boolean; override;
     function GetLocationInfo(const Addr: Pointer; out Info: TJclLocationInfo): Boolean; override;
+    function GetAddress(const UnitName, ProcName: string): Pointer; override;
   end;
 
   TJclDebugInfoExports = class(TJclDebugInfoSource)
@@ -538,6 +546,7 @@ type
     destructor Destroy; override;
     function InitializeSource: Boolean; override;
     function GetLocationInfo(const Addr: Pointer; out Info: TJclLocationInfo): Boolean; override;
+    function GetAddress(const UnitName, ProcName: string): Pointer; override;
   end;
 
   {$IFDEF BORLAND}
@@ -547,7 +556,9 @@ type
   public
     destructor Destroy; override;
     function InitializeSource: Boolean; override;
+    procedure GenerateUnmangledNames;
     function GetLocationInfo(const Addr: Pointer; out Info: TJclLocationInfo): Boolean; override;
+    function GetAddress(const UnitName, ProcName: string): Pointer; override;
   end;
   {$ENDIF BORLAND}
 
@@ -559,6 +570,7 @@ type
     class function CleanupDebugSymbols: Boolean;
     function InitializeSource: Boolean; override;
     function GetLocationInfo(const Addr: Pointer; out Info: TJclLocationInfo): Boolean; override;
+    function GetAddress(const UnitName, ProcName: string): Pointer; override;
   end;
 
 // Source location functions
@@ -877,7 +889,7 @@ type
     destructor Destroy; override;
     function AddStackListToLocationInfoList(ThreadID: DWORD; AList: TJclLocationInfoList): Boolean;
     procedure RegisterThread(Thread: TThread; const ThreadName: string);
-    procedure RegisterThreadID(AThreadID: DWORD);
+    procedure RegisterThreadID(AThreadID: DWORD; const ThreadName: string = '');
     procedure UnregisterThread(Thread: TThread);
     procedure UnregisterThreadID(AThreadID: DWORD);
     property Lock: TJclCriticalSection read FLock;
@@ -2331,6 +2343,26 @@ begin
   end;
 end;
 
+function TJclMapScanner.VAFromUnitAndProcName(const UnitName, ProcName: string): DWORD;
+var
+  I: Integer;
+  QualifiedName: string;
+begin
+  Result := 0;
+  if (UnitName = '') or (ProcName = '') then
+    Exit;
+  QualifiedName := UnitName + '.' + ProcName;
+
+  for I := Low(FProcNames) to High(FProcNames) do
+  begin
+    if CompareText(MapStringCacheToStr(FProcNames[I].ProcName, True), QualifiedName) = 0 then
+    begin
+      Result := FProcNames[i].VA;
+      Break;
+    end;
+  end;
+end;
+
 // JCL binary debug format string encoding/decoding routines
 { Strings are compressed to following 6bit format (A..D represents characters) and terminated with }
 { 6bit #0 char. First char = #1 indicates non compressed text, #2 indicates compressed text with   }
@@ -3123,10 +3155,11 @@ end;
 
 //=== { TJclBinDebugScanner } ================================================
 
-constructor TJclBinDebugScanner.Create(AStream: TCustomMemoryStream; CacheData: Boolean);
+constructor TJclBinDebugScanner.Create(AStream: TCustomMemoryStream; CacheData, CacheProcNames: Boolean);
 begin
   inherited Create;
   FCacheData := CacheData;
+  FCacheProcNames := CacheProcNames;
   FStream := AStream;
   CheckFormat;
 end;
@@ -3199,6 +3232,18 @@ begin
       FProcNames[C].Addr := CurrAddr;
       FProcNames[C].FirstWord := FirstWord;
       FProcNames[C].SecondWord := SecondWord;
+      if FCacheProcNames then
+      begin
+        if (FirstWord <> 0) and (SecondWord <> 0) then
+          FProcNames[C].Text := DataToStr(FirstWord) + '.' + DataToStr(SecondWord)
+        else if FirstWord <> 0 then
+          FProcNames[C].Text := DataToStr(FirstWord)
+        else
+          FProcNames[C].Text := '';
+      end
+      else
+        FProcNames[C].Text := '';
+
       Inc(C);
     end;
     SetLength(FProcNames, C);
@@ -3496,6 +3541,71 @@ begin
     Result := DataToStr(Name)
   else
     Result := '';
+end;
+
+function TJclBinDebugScanner.VAFromUnitAndProcName(const UnitName, ProcName: string): DWORD;
+var
+  P: Pointer;
+  VA: DWORD;
+  I, Value: Integer;
+  FirstWord, SecondWord: Integer;
+  QualifiedName, S: string;
+begin
+  Result := 0;
+  if (UnitName = '') or (ProcName = '') then
+    Exit;
+  QualifiedName := UnitName + '.' + ProcName;
+
+  if FCacheData then
+  begin
+    CacheProcNames;
+    for I := Low(FProcNames) to High(FProcNames) do
+    begin
+      if FProcNames[I].Text <> '' then
+        S := FProcNames[I].Text
+      else
+      begin
+        if FProcNames[I].FirstWord = 0 then
+          Continue;
+        if (FProcNames[I].FirstWord <> 0) and (FProcNames[I].SecondWord <> 0) then
+          FProcNames[I].Text := DataToStr(FProcNames[I].FirstWord ) + '.' + DataToStr(FProcNames[I].SecondWord)
+        else if FProcNames[I].FirstWord <> 0 then
+          FProcNames[I].Text := DataToStr(FProcNames[I].FirstWord)
+        else
+          FProcNames[I].Text := '';
+      end;
+      if CompareText(FProcNames[I].Text, QualifiedName) = 0 then
+      begin
+        Result := FProcNames[i].Addr;
+        Break;
+      end;
+    end;
+  end
+  else
+  begin
+    P := MakePtr(PJclDbgHeader(FStream.Memory)^.Symbols);
+    VA := 0;
+    FirstWord := 0;
+    SecondWord := 0;
+    while ReadValue(P, Value) do
+    begin
+      Inc(VA, Value);
+      ReadValue(P, Value);
+      Inc(FirstWord, Value);
+      ReadValue(P, Value);
+      Inc(SecondWord, Value);
+      if FirstWord = 0 then
+        Continue;
+      S := DataToStr(FirstWord);
+      if SecondWord <> 0 then
+        S := S + '.' + DataToStr(SecondWord);
+      if CompareText(S, QualifiedName) = 0 then
+      begin
+        Result := VA;
+        Break;
+      end;
+    end;
+  end;
 end;
 
 //=== { TJclLocationInfoEx } =================================================
@@ -3812,6 +3922,11 @@ begin
   Result := DWORD(TJclAddr(Addr) - TJclAddr(FModule) - ModuleCodeOffset);
 end;
 
+function TJclDebugInfoSource.AddrFromVA(const VA: DWORD): Pointer;
+begin
+  Result := Pointer(TJclAddr(VA) + TJclAddr(FModule) + ModuleCodeOffset);
+end;
+
 //=== { TJclDebugInfoList } ==================================================
 
 var
@@ -3964,6 +4079,16 @@ begin
   end;
 end;
 
+function TJclDebugInfoMap.GetAddress(const UnitName, ProcName: string): Pointer;
+var
+  VA: DWORD;
+begin
+  Result := nil;
+  VA := FScanner.VAFromUnitAndProcName(UnitName, ProcName);
+  if VA <> 0 then
+    Result := AddrFromVA(VA);
+end;
+
 function TJclDebugInfoMap.InitializeSource: Boolean;
 var
   MapFileName: TFileName;
@@ -4004,6 +4129,16 @@ begin
   end;
 end;
 
+function TJclDebugInfoBinary.GetAddress(const UnitName, ProcName: string): Pointer;
+var
+  VA: DWORD;
+begin
+  Result := nil;
+  VA := FScanner.VAFromUnitAndProcName(UnitName, ProcName);
+  if VA <> 0 then
+    Result := AddrFromVA(VA);
+end;
+
 function TJclDebugInfoBinary.InitializeSource: Boolean;
 var
   JdbgFileName: TFileName;
@@ -4025,7 +4160,7 @@ begin
   end;
   if Result then
   begin
-    FScanner := TJclBinDebugScanner.Create(FStream, True);
+    FScanner := TJclBinDebugScanner.Create(FStream, True, False);
     Result := FScanner.ValidFormat and
       (not VerifyFileName or FScanner.IsModuleNameValid(FileName));
   end;
@@ -4146,6 +4281,59 @@ begin
   end;
 end;
 
+function TJclDebugInfoExports.GetAddress(const UnitName, ProcName: string): Pointer;
+var
+  I, BasePos: Integer;
+  Desc: TJclBorUmDescription;
+  RawName: Boolean;
+  ItemUnitName: string;
+  Unmangled: string;
+begin
+  Result := nil;
+  {$IFDEF BORLAND}
+  RawName := not FImage.IsPackage;
+  {$ENDIF BORLAND}
+  {$IFDEF FPC}
+  RawName := True;
+  {$ENDIF FPC}
+  with FImage.ExportList do
+  begin
+//    SortList(esAddress, False);
+    for I := 0 to Count - 1 do
+    begin
+      if RawName then
+      begin
+        ItemUnitName := '';
+        Unmangled := Items[I].Name;
+      end
+      else
+      begin
+        case PeBorUnmangleName(Items[I].Name, Unmangled, Desc, BasePos) of
+          urOk:
+            begin
+              ItemUnitName := Copy(Unmangled, 1, BasePos - 2);
+              if not (Desc.Kind in [skRTTI, skVTable]) then
+              begin
+                Unmangled := Copy(Unmangled, BasePos, Length(Unmangled));
+                if smLinkProc in Desc.Modifiers then
+                  Unmangled := '@' + Unmangled;
+              end;
+            end;
+
+          urNotMangled:
+            Unmangled := Items[I].Name;
+        end;
+      end;
+
+      if ((ItemUnitName = '') or (CompareStr(ItemUnitName, UnitName) = 0)) and (CompareStr(Unmangled, ProcName) = 0) then
+      begin
+        Result := AddrFromVA(Items[I].Address);
+        Break;
+      end;
+    end;
+  end;
+end;
+
 function TJclDebugInfoExports.InitializeSource: Boolean;
 begin
   {$IFDEF BORLAND}
@@ -4187,6 +4375,16 @@ begin
     end;
 end;
 
+function TJclDebugInfoTD32.GetAddress(const UnitName, ProcName: string): Pointer;
+var
+  VA: DWORD;
+begin
+  Result := nil;
+  VA := FImage.TD32Scanner.VAFromUnitAndProcName(UnitName, ProcName);
+  if VA <> 0 then
+    Result := AddrFromVA(VA);
+end;
+
 function TJclDebugInfoTD32.InitializeSource: Boolean;
 begin
   FImage := TJclPeBorTD32Image.Create(True);
@@ -4196,6 +4394,11 @@ begin
   except
     Result := False;
   end;
+end;
+
+procedure TJclDebugInfoTD32.GenerateUnmangledNames;
+begin
+  FImage.TD32Scanner.GenerateUnmangledNames;
 end;
 
 {$ENDIF BORLAND}
@@ -4482,6 +4685,16 @@ begin
       Info.OffsetFromLineNumber := Displacement;
     end;
   end;
+end;
+
+function TJclDebugInfoSymbols.GetAddress(const UnitName, ProcName: string): Pointer;
+var
+  VA: DWORD;
+begin
+  Result := nil;
+  VA := 0; // FScanner.VAFromUnitAndProcName(UnitName, ProcName);
+  if VA <> 0 then
+    Result := AddrFromVA(VA);
 end;
 
 function TJclDebugInfoSymbols.InitializeSource: Boolean;
@@ -5990,7 +6203,7 @@ begin
       Size := CheckStackAddressValidation(ProcAddr, CallAddr, {var} LocalVarStackOffset, {var} EspChangeFound);
     Inc(ProcAddr, Size);
 
-    ParseEspChange(ProcAddr, CallAddr, LocalVarStackOffset, {var} EspChangeFound);
+    ProcAddr := ParseEspChange(ProcAddr, CallAddr, LocalVarStackOffset, {var} EspChangeFound);
   end
   else
   begin
@@ -6001,21 +6214,65 @@ begin
     ProcAddr := ParseEspChange(ProcAddr, CallAddr, LocalVarStackOffset, {var} EspChangeFound);
 
     // If we have a stackframe, then the compiler saves the registers after allocating stack variables.
-    ParseSaveRegisters(ProcAddr, CallAddr, {var} RegisterStackOffset);
+    ProcAddr := ParseSaveRegisters(ProcAddr, CallAddr, {var} RegisterStackOffset);
   end;
 
-  ProcAddr := CallAddr;
+  // Find not closed try/finally/except blocks and add them the LocalVarStackOffset
+  while (ProcAddr < CallAddr) and (ProcAddr < ModuleEndAddr) do
+  begin
+    // fast forward find for XOR EAX,EAX
+    while (ProcAddr < CallAddr) and (ProcAddr < ModuleEndAddr) and (PByteArray(ProcAddr)[0] <> $33) do
+      Inc(ProcAddr);
+
+    P := PByteArray(ProcAddr);
+    // Find all occurrences above the CallAddr and add to LocalVarStackOffset (3*PointerSize)
+    // "try"
+    // 33C0             xor eax,eax
+    // 55               push ebp
+    // 68E9E05000       push $0050e0e9
+    // 64FF30           push dword ptr fs:[eax]
+    // 648920           mov fs:[eax],esp
+    if (ProcAddr + 13 < CallAddr) and
+       (P[0] = $33) and (P[1] = $C0) and
+       (P[2] = $55) and
+       (P[3] = $68) and
+       (P[8] = $64) and (P[9] = $FF) and (P[10] = $30) and
+       (P[11] = $64) and (P[12] = $89) and (P[13] = $20) then
+    begin
+      Inc(LocalVarStackOffset, 3 * PointerSize);
+    end
+    // "finally"/"except"
+    // Find all occurrences above the CallAddr and substract from LocalVarStackOffset (3*PointerSize)
+    // 33C0             xor eax,eax
+    // 5A               pop edx
+    // 59               pop ecx
+    // 59               pop ecx
+    // 648910           mov fs:[eax],edx
+    else if (ProcAddr + 7 < CallAddr) and
+       (P[0] = $33) and (P[1] = $C0) and
+       (P[2] = $5A) and
+       (P[3] = $59) and
+       (P[4] = $59) and
+       (P[5] = $64) and (P[6] = $89) and (P[7] = $10) then
+    begin
+      Dec(LocalVarStackOffset, 3 * PointerSize);
+    end;
+
+    Inc(ProcAddr);
+  end;
+
 
   // Find the epilog to obtain the ParamStackOffset (would be much easier and less guess work
   // if we knew the exact function's end address)
+  ProcAddr := CallAddr;
   while ProcAddr < ModuleEndAddr do
   begin
     // fast forward find for RET / RET imm16
     while (ProcAddr < ModuleEndAddr) and not (PByteArray(ProcAddr)[0] in [$C3, $C2]) do
       Inc(ProcAddr);
 
-    // We may have found the RET of a finally clause
     P := PByteArray(ProcAddr);
+    // We may have found the RET of a finally clause
     if (ProcAddr + 7 < ModuleEndAddr) and // skip "finally" code
        (P[0] = $C3) and                            // C3               ret
        (P[1] = $E9) and                            // E91821FAFF       jmp @HandleFinally
@@ -6030,102 +6287,99 @@ begin
     begin
       Inc(ProcAddr, 11);
     end
-    else
+    else if (P[0] = $C3) or ((P[0] = $C2) and (ProcAddr + 3 < ModuleEndAddr)) then
     begin
-      if (P[0] = $C3) or ((P[0] = $C2) and (ProcAddr + 3 < ModuleEndAddr)) then
+      EpilogAddr := ProcAddr;
+      PossibleEndFound := False;
+      if StackFrameFound = 1 then
       begin
-        EpilogAddr := ProcAddr;
-        PossibleEndFound := False;
-        if StackFrameFound = 1 then
-        begin
-          // If we have a stackframe, then we verify that the stackframe is cleared to check
-          // if we found a valid "RET"
-          if EspChangeFound then
-            EpilogAddr := EpilogAddr - 3
-          else
-            EpilogAddr := EpilogAddr - 1;
+        // If we have a stackframe, then we verify that the stackframe is cleared to check
+        // if we found a valid "RET"
+        if EspChangeFound then
+          EpilogAddr := EpilogAddr - 3
+        else
+          EpilogAddr := EpilogAddr - 1;
 
-          if EpilogAddr >= CallAddr then
-          begin
-            P := PByteArray(EpilogAddr);
-            if EspChangeFound and
-               (P[0] = $8B) and (P[1] = $E5) and  // 8BE5             mov esp,ebp
-               (P[2] = $5D) then                  // 5D               pop ebp
-            begin
-              Dec(EpilogAddr);
-              PossibleEndFound := True;
-            end
-            else if not EspChangeFound and
-               (P[0] = $5D) then                  // 5D               pop ebp
-            begin
-              Dec(EpilogAddr);
-              PossibleEndFound := True;
-            end;
-          end;
-        end
-        else if StackFrameFound = -1 then
+        if EpilogAddr >= CallAddr then
         begin
-          // If we have a ENTER/LEAVE stackframe, then we verify that the stackframe is cleared
-          // to check if we found a valid "RET"
-          Dec(EpilogAddr);
           P := PByteArray(EpilogAddr);
-          if (EpilogAddr >= CallAddr) and (P[0] = $C9) then  // LEAVE
+          if EspChangeFound and
+             (P[0] = $8B) and (P[1] = $E5) and  // 8BE5             mov esp,ebp
+             (P[2] = $5D) then                  // 5D               pop ebp
+          begin
+            Dec(EpilogAddr);
+            PossibleEndFound := True;
+          end
+          else if not EspChangeFound and
+             (P[0] = $5D) then                  // 5D               pop ebp
           begin
             Dec(EpilogAddr);
             PossibleEndFound := True;
           end;
-        end
-        else
+        end;
+      end
+      else if StackFrameFound = -1 then
+      begin
+        // If we have a ENTER/LEAVE stackframe, then we verify that the stackframe is cleared
+        // to check if we found a valid "RET"
+        Dec(EpilogAddr);
+        P := PByteArray(EpilogAddr);
+        if (EpilogAddr >= CallAddr) and (P[0] = $C9) then  // LEAVE
         begin
-          // If we have no stackframe, then we can't verify the validity of the "RET" here
-          EpilogAddr := EpilogAddr - 1;
+          Dec(EpilogAddr);
           PossibleEndFound := True;
+        end;
+      end
+      else
+      begin
+        // If we have no stackframe, then we can't verify the validity of the "RET" here
+        EpilogAddr := EpilogAddr - 1;
+        PossibleEndFound := True;
+      end;
+
+      if PossibleEndFound then
+      begin
+        if GetLocationInfo(Pointer(EpilogAddr), EpilogInfo) and
+           (TJclAddr(EpilogInfo.OffsetFromProcName) <> EpilogAddr - TJclAddr(Proc)) then
+        begin
+          // If we didn't find a RET in the same procedure then the analysis failed
+          Exit;
         end;
 
         if PossibleEndFound then
         begin
-          if GetLocationInfo(Pointer(EpilogAddr), EpilogInfo) and
-             (TJclAddr(EpilogInfo.OffsetFromProcName) <> EpilogAddr - TJclAddr(Proc)) then
+          // If we have registers saved on the stack, we can use those to verify if the
+          // found "RET" is valid.
+          RegStackOffset := RegisterStackOffset;
+          if CheckRegisterRestoreBackwards(EpilogAddr, CallAddr, {var} RegStackOffset) then
           begin
-            // If we didn't find a RET in the same procedure then the analysis failed
-            Exit;
-          end;
-
-          if PossibleEndFound then
-          begin
-            // If we have registers saved on the stack, we can use those to verify if the
-            // found "RET" is valid.
-            RegStackOffset := RegisterStackOffset;
-            if CheckRegisterRestoreBackwards(EpilogAddr, CallAddr, {var} RegStackOffset) then
+            if (StackFrameFound = 0) and EspChangeFound then
             begin
-              if (StackFrameFound = 0) and EspChangeFound then
-              begin
-                // If we have local variables (ESP was changed in the prolog) we can use that
-                // information to verify the "RET"
-                EpilogAddr := EpilogAddr - TJclAddr(RegStackOffset) div PointerSize;
-                if not CheckEspChangeBackwards(EpilogAddr, CallAddr) then
-                  PossibleEndFound := False;
-              end;
+              // If we have local variables (ESP was changed in the prolog) we can use that
+              // information to verify the "RET"
+              EpilogAddr := EpilogAddr - TJclAddr(RegStackOffset) div PointerSize;
+              if not CheckEspChangeBackwards(EpilogAddr, CallAddr) then
+                PossibleEndFound := False;
+            end;
 
-              if PossibleEndFound then
+            if PossibleEndFound then
+            begin
+              RegisterStackOffset := RegStackOffset;
+              if PByte(ProcAddr)^ = $C2 then
+                ParamStackOffset := PWord(ProcAddr + 1)^
+              else
               begin
-                RegisterStackOffset := RegStackOffset;
-                if PByte(ProcAddr)^ = $C2 then
-                  ParamStackOffset := PWord(ProcAddr + 1)^
-                else
-                begin
-                  // TODO: if we only have a "RET" at the end we need to look at the call instruction
-                  // if it is followed by a "sub/add esp,xx" for a "cdecl" function. (What if the add/sub
-                  // is for the caller's epilog?)
-                end;
-                Break;
+                // TODO: if we only have a "RET" at the end we need to look at the call instruction
+                // if it is followed by a "sub/add esp,xx" for a "cdecl" function. (What if the add/sub
+                // is for the caller's epilog?)
               end;
+              Break;
             end;
           end;
         end;
       end;
-      Inc(ProcAddr);
     end;
+    Inc(ProcAddr);
   end;
 
   Inc(LocalVarStackOffset, RegisterStackOffset);
@@ -7210,9 +7464,9 @@ begin
   InternalRegisterThread(Thread, Thread.ThreadID, ThreadName);
 end;
 
-procedure TJclDebugThreadList.RegisterThreadID(AThreadID: DWORD);
+procedure TJclDebugThreadList.RegisterThreadID(AThreadID: DWORD; const ThreadName: string);
 begin
-  InternalRegisterThread(nil, AThreadID, '');
+  InternalRegisterThread(nil, AThreadID, ThreadName);
 end;
 
 procedure TJclDebugThreadList.UnregisterThread(Thread: TThread);
