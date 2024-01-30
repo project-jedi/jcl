@@ -6410,8 +6410,8 @@ begin
       if Length(PropNames) > 0 then
         PropertySetter.SetProperties(@PropNames[0], @PropValues[0], Length(PropNames));
     finally
-      // Release BSTR strings. VariantPropClear() would do that, but it is only available Delphi XE3+
-      for I := 0 to Length(PropValues) do
+      // Release BSTR strings. VariantPropClear() would do that, but it is only available in Delphi XE3 and newer
+      for I := 0 to Length(PropValues) - 1 do
         if (PropValues[I].vt = VT_BSTR) and (PropValues[I].bstrVal <> nil) then
           SysFreeString(PropValues[I].bstrVal);
     end;
