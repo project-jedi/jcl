@@ -2649,6 +2649,10 @@ begin
       if I < J then
       begin
         List.Exchange(I, J);
+        if M = I then
+          M := J
+        else if M = J then
+          M := I;
         Inc(I);
         Dec(J);
       end
