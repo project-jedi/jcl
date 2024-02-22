@@ -334,6 +334,12 @@ var
   Unused: Cardinal;
 begin
   inherited FileDialogCreate(AFileDialog);
+  FComboboxListItem := False;
+  FComboboxAddItem := False;
+  FComboboxDeleteItem := False;
+  FComboboxVirtualItem := False;
+  FComboboxCount := 0;
+
   FileDialogCustomize := AFileDialog as IFileDialogCustomize;
   //CheckOSError(FileDialogCustomize.StartVisualGroup(CTRLID_GROUP, PWideChar(WideString(LoadResString(@RsOpenDialogFavorites)))));
   CheckOSError(FileDialogCustomize.AddComboBox(CTRLID_COMBOBOX));

@@ -3301,11 +3301,11 @@ procedure InitExceptObjProc;
 begin
   if LockedExchange(ExceptObjProcInitialized, 1) = 0 then
     if Win32Platform = VER_PLATFORM_WIN32_NT then
-      {$IFDEF FPC}
-      PrevExceptObjProc := Pointer(InterlockedExchange(TJclAddr(ExceptObjProc), TJclAddr(@GetExceptionObject)));
-      {$ELSE ~FPC}
+      {$IFDEF RTL200_UP} // Delphi 2009+
+      PrevExceptObjProc := InterlockedExchangePointer(ExceptObjProc, @GetExceptionObject);
+      {$ELSE}
       PrevExceptObjProc := Pointer(InterlockedExchange(Integer(ExceptObjProc), Integer(@GetExceptionObject)));
-      {$ENDIF ~FPC}
+      {$ENDIF RTL200_UP}
 end;
 {$ENDIF ~FPC}
 {$ENDIF MSWINDOWS}

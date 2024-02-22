@@ -803,12 +803,30 @@ function TJclInstallation.GetTargetSupportsCBuilder: Boolean;
 begin
   Result := ((bpBCBuilder32 in Target.Personalities) and (TargetPlatform = bpWin32)) or
             ((bpBCBuilder64 in Target.Personalities) and (TargetPlatform = bpWin64));
+  if Result then
+  begin
+    // If we don't have a command line C++ compiler we can't compile
+    // (fake BCB Personality from the Web Installer)
+    if TargetPlatform = bpWin32 then
+      Result := clBcc32 in Target.CommandLineTools
+    else if TargetPlatform = bpWin64 then
+      Result := clBcc64 in Target.CommandLineTools;
+  end;
 end;
 
 function TJclInstallation.GetTargetSupportsDelphi: Boolean;
 begin
   Result := ((bpDelphi32 in Target.Personalities) and (TargetPlatform = bpWin32)) or
             ((bpDelphi64 in Target.Personalities) and (TargetPlatform = bpWin64));
+  if Result then
+  begin
+    // If we don't have a command line C++ compiler we can't compile
+    // (fake Delphi Personality from the Web Installer)
+    if TargetPlatform = bpWin32 then
+      Result := clDcc32 in Target.CommandLineTools
+    else if TargetPlatform = bpWin64 then
+      Result := clDcc64 in Target.CommandLineTools;
+  end;
 end;
 
 procedure TJclInstallation.MarkOptionBegin(Id: Integer);
@@ -1634,6 +1652,12 @@ var
           UnitList.Delete(UnitList.IndexOf('JclDotNet.pas'));
           UnitList.Delete(UnitList.IndexOf('JclNTFS.pas'));
           UnitList.Delete(UnitList.IndexOf('mscorlib_TLB.pas'));
+          if FTargetPlatform = bpWin64 then
+          begin
+            UnitList.Delete(UnitList.IndexOf('pcre.pas')); // compiler: 'PCRE not supported on WIN64: use standard header'
+            UnitList.Delete(UnitList.IndexOf('JclPCRE.pas')); // uses pcre.pas => same "not supported" error
+            UnitList.Delete(UnitList.IndexOf('JclStringLists.pas')); // uses JclPCRE.pas => same "not supported" error
+          end;
 
           SetCurrentDir(Format('%sinstall%sHeaderTest', [Distribution.JclPath, DirDelimiter]));
 
@@ -1672,6 +1696,7 @@ var
           Target.BCC.Options.Add('-w-par'); // warning
           Target.BCC.Options.Add('-w-aus'); // warning
           Target.BCC.AddPathOption('I', Format('%s%s%s%sinclude%s%s', [Distribution.JclSourcePath, DirSeparator, Target.RootDir, DirDelimiter, DirSeparator, Target.VclIncludeDir[FTargetPlatform]]));
+          Target.BCC.AddPathOption('I', ExcludeTrailingPathDelimiter(GetHppPath));
         end
         else
         begin
@@ -1686,22 +1711,30 @@ var
           Target.BCC.Options.Add('-fno-spell-checking');
           Target.BCC.Options.Add('-fno-use-cxa-atexit');
           Target.BCC.Options.Add('-x c++');
-          Target.BCC.Options.Add('-std=c++11');
+          if Target.IDEVersionNumber >= 20 then
+            Target.BCC.Options.Add('-std=c++17')
+          else
+            Target.BCC.Options.Add('-std=c++11');
           Target.BCC.Options.Add('-O0');
           Target.BCC.Options.Add('-tC');
           Target.BCC.Options.Add('-tM');
 
           Target.BCC.Options.Add('-I "' + Distribution.JclSourcePath + '"');
           Target.BCC.Options.Add('-I "' + Target.RootDir + '"');
+          Target.BCC.Options.Add('-I "' + ExcludeTrailingPathDelimiter(GetHppPath) + '"');
           Target.BCC.Options.Add('-isystem "' + Target.VclIncludeDir[FTargetPlatform] + '"');
         end;
         Options := StringsToStr(Target.BCC.Options, NativeSpace);
         Result := Target.BCC.Execute(Options + ' "jcl_a2z.cpp"')
           and Target.BCC.Execute(Options + ' "jcl_z2a.cpp"');
       finally
+        DeleteFile('jcl_a2z.cpp');
+        DeleteFile('jcl_a2z.obj');
+        DeleteFile('jcl_z2a.cpp');
+        DeleteFile('jcl_z2a.obj');
         SetCurrentDir(SaveDir);
       end;
-      if (not Result) and Assigned(GUI) then
+      if not Result and Assigned(GUI) then
         Result := GUI.Dialog(LoadResString(@RsHppCheckFailure), dtWarning, [drYes, drNo]) = drYes;
     end;
   var
@@ -1741,10 +1774,14 @@ var
 
       if Result and OptionChecked[joJCLCheckHppFiles] then
       begin
-        MarkOptionBegin(joJCLCheckHppFiles);
-        WriteLog('Checking .hpp files');
-        Result := Result and CheckHppFiles;
-        MarkOptionEnd(joJCLCheckHppFiles, Result);
+        // Only check the HPP files if we have a C++ Compiler
+        if FileExists(Target.BCC.BinDirectory + Target.BCC.GetExeName) then
+        begin
+          MarkOptionBegin(joJCLCheckHppFiles);
+          WriteLog('Checking .hpp files');
+          Result := Result and CheckHppFiles;
+          MarkOptionEnd(joJCLCheckHppFiles, Result);
+        end;
       end;
 
       MarkOptionEnd(joJCLMake, Result);
@@ -3297,7 +3334,7 @@ function TJclDistribution.CreateInstall(Target: TJclBorRADToolInstallation): Boo
         Result := Target.VersionNumber in [6];
       brBorlandDevStudio :
         Result := ((Target.VersionNumber in [1, 2]) and (bpDelphi32 in Target.Personalities))
-          or (Target.VersionNumber in [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17]);
+          or (Target.VersionNumber in [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]);
       else
         Result := False;
     end;
@@ -3549,7 +3586,7 @@ begin
   try
     KeepSettings := True;
 
-    if RadToolInstallations.AnyInstanceRunning {$IFDEF MSWINDOWS} and not IsDebuggerAttached {$ENDIF} then
+    if RadToolInstallations.AnyInstanceRunning and (not Assigned(GUI) or not GUI.IgnoreRunningIDE) {$IFDEF MSWINDOWS} and not IsDebuggerAttached {$ENDIF} then
     begin
       if Assigned(GUI) then
         GUI.Dialog(LoadResString(@RsCloseRADTool), dtError, [drCancel]);
@@ -3557,7 +3594,7 @@ begin
       Exit;
     end;
 
-    if Assigned(LicensePage) and not LicensePage.Options[0] and not GUI.AutoAcceptMPL then
+    if Assigned(LicensePage) and not LicensePage.Options[0] and (not Assigned(GUI) or not GUI.AutoAcceptMPL) then
     begin
       if Assigned(GUI) then
         GUI.Dialog(LoadResString(@RsMissingLicenseAgreement), dtError, [drCancel]);
@@ -3866,7 +3903,7 @@ var
   I: Integer;
   AInstallation: TJclInstallation;
 begin
-  if RadToolInstallations.AnyInstanceRunning {$IFDEF MSWINDOWS} and not IsDebuggerAttached {$ENDIF} then
+  if RadToolInstallations.AnyInstanceRunning and (not Assigned(GUI) or not GUI.IgnoreRunningIDE) {$IFDEF MSWINDOWS} and not IsDebuggerAttached {$ENDIF} then
   begin
     if Assigned(GUI) then
       GUI.Dialog(LoadResString(@RsCloseRADTool), dtError, [drCancel]);

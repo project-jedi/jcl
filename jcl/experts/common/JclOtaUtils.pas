@@ -596,8 +596,8 @@ begin
     end;
     Inc(Position);
   until (BufferCount = 0) or (PropMatches = PropCount);
-  if InsideLineComment or InsideComment or InsideBrace then
-    raise EJclExpertException.CreateRes(@RsEUnterminatedComment);
+//  if InsideLineComment or InsideComment or InsideBrace then
+//    raise EJclExpertException.CreateRes(@RsEUnterminatedComment);  Don't throw an exception if the source isn't correct (Mantis #6425)
   for PropIndex := 0 to PropCount - 1 do
     if Result[PropIndex] = -1 then
       Result[PropIndex] := -Position;
@@ -756,7 +756,7 @@ begin
     raise EJclExpertException.CreateRes(@RsENoOTAServices);
 
   FBaseKeyName := StrEnsureSuffix(NativeBackSlash, OTAServices.GetBaseRegistryKey);
-  
+
   FKeyName := BaseKeyName + RegJclIDEKey + ExpertName;
 end;
 
@@ -889,7 +889,7 @@ begin
   //no resourcestring here, because this message will be removed
   if MessageBox(0, 'The JCL options can now be found in the Third party section of the environment options and ' +
     'this menu item will be removed some time in the future.' + #13#10#13#10 +
-    'Press ENTER/Yes to open the enviroment options or No to open the old options dialog.',
+    'Press ENTER/Yes to open the environment options or No to open the old options dialog.',
     'JCL', MB_ICONASTERISK or MB_YESNO or MB_DEFBUTTON1) = IDYES then
   begin
     (BorlandIDEServices as IOTAServices).GetEnvironmentOptions.EditOptions('',
