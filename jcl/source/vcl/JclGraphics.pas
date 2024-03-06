@@ -1422,58 +1422,52 @@ begin
   SetLength(MapX, DstW);
   SetLength(MapY, DstH);
 
-  try
-    for I := 0 to DstW - 1 do
-      MapX[I] := I * (SrcW) div (DstW) + SrcRect.Left;
+  for I := 0 to DstW - 1 do
+    MapX[I] := I * (SrcW) div (DstW) + SrcRect.Left;
 
-    // build Y coord mapping table
-    for J := 0 to DstH - 1 do
-      MapY[J] := J * (SrcH) div (DstH) + SrcRect.Top;
+  // build Y coord mapping table
+  for J := 0 to DstH - 1 do
+    MapY[J] := J * (SrcH) div (DstH) + SrcRect.Top;
 
-    // transfer pixels
-    case CombineOp of
-      dmOpaque:
-        for J := R.Top to R.Bottom - 1 do
+  // transfer pixels
+  case CombineOp of
+    dmOpaque:
+      for J := R.Top to R.Bottom - 1 do
+      begin
+        Y := MapY[J - DstY];
+        P := Dst.PixelPtr[R.Left, J];
+        for I := R.Left to R.Right - 1 do
         begin
-          Y := MapY[J - DstY];
-          P := Dst.PixelPtr[R.Left, J];
-          for I := R.Left to R.Right - 1 do
-          begin
-            P^ := Src[MapX[I - DstX], Y];
-            Inc(P);
-          end;
+          P^ := Src[MapX[I - DstX], Y];
+          Inc(P);
         end;
-      dmBlend:
-        begin
-          MstrAlpha := Src.MasterAlpha;
-          if MstrAlpha = 255 then
-            for J := R.Top to R.Bottom - 1 do
-            begin
-              Y := MapY[J - DstY];
-              P := Dst.PixelPtr[R.Left, J];
-              for I := R.Left to R.Right - 1 do
-              begin
-                BlendMem(Src[MapX[I - DstX], Y], P^);
-                Inc(P);
-              end;
-            end
-          else // Master Alpha is in [1..254] range
-            for J := R.Top to R.Bottom - 1 do
-            begin
-              Y := MapY[J - DstY];
-              P := Dst.PixelPtr[R.Left, J];
-              for I := R.Left to R.Right - 1 do
-              begin
-                BlendMemEx(Src[MapX[I - DstX], Y], P^, MstrAlpha);
-                Inc(P);
-              end;
-            end;
       end;
+    dmBlend:
+      begin
+        MstrAlpha := Src.MasterAlpha;
+        if MstrAlpha = 255 then
+          for J := R.Top to R.Bottom - 1 do
+          begin
+            Y := MapY[J - DstY];
+            P := Dst.PixelPtr[R.Left, J];
+            for I := R.Left to R.Right - 1 do
+            begin
+              BlendMem(Src[MapX[I - DstX], Y], P^);
+              Inc(P);
+            end;
+          end
+        else // Master Alpha is in [1..254] range
+          for J := R.Top to R.Bottom - 1 do
+          begin
+            Y := MapY[J - DstY];
+            P := Dst.PixelPtr[R.Left, J];
+            for I := R.Left to R.Right - 1 do
+            begin
+              BlendMemEx(Src[MapX[I - DstX], Y], P^, MstrAlpha);
+              Inc(P);
+            end;
+          end;
     end;
-  finally
-    EMMS;
-    MapX := nil;
-    MapY := nil;
   end;
 end;
 
@@ -1510,24 +1504,20 @@ begin
   MstrAlpha := Src.MasterAlpha;
   N := D.Right - D.Left;
 
-  try
-    if MstrAlpha = 255 then
-      for J := D.Top to D.Bottom - 1 do
-      begin
-        Ps := Src.PixelPtr[D.Left + SrcX - DstX, J + SrcY - DstY];
-        Pd := Dst.PixelPtr[D.Left, J];
-        BlendLine(Ps, Pd, N);
-      end
-    else
-      for J := D.Top to D.Bottom - 1 do
-      begin
-        Ps := Src.PixelPtr[D.Left + SrcX - DstX, J + SrcY - DstY];
-        Pd := Dst.PixelPtr[D.Left, J];
-        BlendLineEx(Ps, Pd, N, MstrAlpha);
-      end;
-  finally
-    EMMS;
-  end;
+  if MstrAlpha = 255 then
+    for J := D.Top to D.Bottom - 1 do
+    begin
+      Ps := Src.PixelPtr[D.Left + SrcX - DstX, J + SrcY - DstY];
+      Pd := Dst.PixelPtr[D.Left, J];
+      BlendLine(Ps, Pd, N);
+    end
+  else
+    for J := D.Top to D.Bottom - 1 do
+    begin
+      Ps := Src.PixelPtr[D.Left + SrcX - DstX, J + SrcY - DstY];
+      Pd := Dst.PixelPtr[D.Left, J];
+      BlendLineEx(Ps, Pd, N, MstrAlpha);
+    end;
 end;
 
 procedure StretchTransfer(Dst: TJclBitmap32; DstRect: TRect; Src: TJclBitmap32; SrcRect: TRect;
@@ -1585,58 +1575,52 @@ begin
   // mapping tables
   MapX := BuildMappingTable(DstW, SrcRect.Left, SrcW, StretchFilter);
   MapY := BuildMappingTable(DstH, SrcRect.Top, SrcH, StretchFilter);
-  try
-    ClusterX := nil;
-    ClusterY := nil;
-    if (MapX = nil) or (MapY = nil) then
-      Exit;
+  ClusterX := nil;
+  ClusterY := nil;
+  if (MapX = nil) or (MapY = nil) then
+    Exit;
 
-    // transfer pixels
-    for J := R.Top to R.Bottom - 1 do
+  // transfer pixels
+  for J := R.Top to R.Bottom - 1 do
+  begin
+    ClusterY := MapY[J - DstY];
+    P := Dst.PixelPtr[R.Left, J];
+    for I := R.Left to R.Right - 1 do
     begin
-      ClusterY := MapY[J - DstY];
-      P := Dst.PixelPtr[R.Left, J];
-      for I := R.Left to R.Right - 1 do
-      begin
-        ClusterX := MapX[I - DstX];
+      ClusterX := MapX[I - DstX];
 
-        // reset color accumulators
-        Ca := 0;
-        Cr := 0;
-        Cg := 0;
-        Cb := 0;
+      // reset color accumulators
+      Ca := 0;
+      Cr := 0;
+      Cg := 0;
+      Cb := 0;
 
-        // now iterate through each cluster
-        for Y := 0 to High(ClusterY) do
-          for X := 0 to High(ClusterX) do
-          begin
-            C := Src[ClusterX[X].Pos, ClusterY[Y].Pos];
-            Wt := ClusterX[X].Weight * ClusterY[Y].Weight;
-            Inc(Ca, C shr 24 * Wt);
-            Inc(Cr, (C and $00FF0000) shr 16 * Wt);
-            Inc(Cg, (C and $0000FF00) shr 8 * Wt);
-            Inc(Cb, (C and $000000FF) * Wt);
-          end;
-        Ca := Ca and $00FF0000;
-        Cr := Cr and $00FF0000;
-        Cg := Cg and $00FF0000;
-        Cb := Cb and $00FF0000;
-        C := (Ca shl 8) or Cr or (Cg shr 8) or (Cb shr 16);
-
-        // combine it with the background
-        case CombineOp of
-          dmOpaque:
-            P^ := C;
-          dmBlend:
-            BlendMemEx(C, P^, MstrAlpha);
+      // now iterate through each cluster
+      for Y := 0 to High(ClusterY) do
+        for X := 0 to High(ClusterX) do
+        begin
+          C := Src[ClusterX[X].Pos, ClusterY[Y].Pos];
+          Wt := ClusterX[X].Weight * ClusterY[Y].Weight;
+          Inc(Ca, C shr 24 * Wt);
+          Inc(Cr, (C and $00FF0000) shr 16 * Wt);
+          Inc(Cg, (C and $0000FF00) shr 8 * Wt);
+          Inc(Cb, (C and $000000FF) * Wt);
         end;
-        Inc(P);
+      Ca := Ca and $00FF0000;
+      Cr := Cr and $00FF0000;
+      Cg := Cg and $00FF0000;
+      Cb := Cb and $00FF0000;
+      C := (Ca shl 8) or Cr or (Cg shr 8) or (Cb shr 16);
+
+      // combine it with the background
+      case CombineOp of
+        dmOpaque:
+          P^ := C;
+        dmBlend:
+          BlendMemEx(C, P^, MstrAlpha);
       end;
+      Inc(P);
     end;
-  finally
-    EMMS;
-    MapX := nil;
-    MapY := nil;
   end;
 end;
 
@@ -1972,7 +1956,7 @@ var
       C4 := P^;
       Dec(P);
       C3 := P^;
-      C := CombineReg(CombineReg(C1, C2, celx, nil, nil), CombineReg(C3, C4, celx, nil, nil), cely, nil, nil);
+      C := CombineReg(CombineReg(C1, C2, celx), CombineReg(C3, C4, celx), cely);
       Result := True;
     end
     else
@@ -1998,41 +1982,37 @@ begin
   if IsRectEmpty(DstRect) then
     Exit;
 
-  try
-    if Src.StretchFilter <> sfNearest then
-      for J := DstRect.Top to DstRect.Bottom - 1 do
+  if Src.StretchFilter <> sfNearest then
+    for J := DstRect.Top to DstRect.Bottom - 1 do
+    begin
+      Pixels := Dst.ScanLine[J];
+      for I := DstRect.Left to DstRect.Right - 1 do
       begin
-        Pixels := Dst.ScanLine[J];
-        for I := DstRect.Left to DstRect.Right - 1 do
-        begin
-          Transformation.Transform256(I, J, X, Y);
-          if GET_S256(X, Y, C) then
-            if SrcBlend then
-              BlendMemEx(C, Pixels[I], SrcAlpha)
-            else
-              Pixels[I] := C;
-        end;
-      end
-    else // nearest filter
-      for J := DstRect.Top to DstRect.Bottom - 1 do
+        Transformation.Transform256(I, J, X, Y);
+        if GET_S256(X, Y, C) then
+          if SrcBlend then
+            BlendMemEx(C, Pixels[I], SrcAlpha)
+          else
+            Pixels[I] := C;
+      end;
+    end
+  else // nearest filter
+    for J := DstRect.Top to DstRect.Bottom - 1 do
+    begin
+      Pixels := Dst.ScanLine[J];
+      for I := DstRect.Left to DstRect.Right - 1 do
       begin
-        Pixels := Dst.ScanLine[J];
-        for I := DstRect.Left to DstRect.Right - 1 do
+        Transformation.Transform(I, J, X, Y);
+        if (X >= SrcRect.Left) and (X < SrcRect.Right) and
+          (Y >= SrcRect.Top) and (Y < SrcRect.Bottom) then
         begin
-          Transformation.Transform(I, J, X, Y);
-          if (X >= SrcRect.Left) and (X < SrcRect.Right) and
-            (Y >= SrcRect.Top) and (Y < SrcRect.Bottom) then
-          begin
-            if SrcBlend then
-              BlendMemEx(Src.Pixel[X, Y], Pixels[I], SrcAlpha)
-            else
-              Pixels[I] := Src.Pixel[X, Y];
-          end;
+          if SrcBlend then
+            BlendMemEx(Src.Pixel[X, Y], Pixels[I], SrcAlpha)
+          else
+            Pixels[I] := Src.Pixel[X, Y];
         end;
       end;
-  finally
-    EMMS;
-  end;
+    end;
   Dst.Changed;
 end;
 
@@ -3200,23 +3180,18 @@ end;
 procedure TJclBitmap32.SetPixelT(X, Y: Integer; Value: TColor32);
 begin
   BlendMem(Value, Bits[X + Y * Width]);
-  EMMS;
 end;
 
 procedure TJclBitmap32.SetPixelT(var Ptr: PColor32; Value: TColor32);
 begin
   BlendMem(Value, Ptr^);
-  EMMS;
   Inc(Ptr);
 end;
 
 procedure TJclBitmap32.SetPixelTS(X, Y: Integer; Value: TColor32);
 begin
   if (X >= 0) and (X < Width) and (Y >= 0) and (Y < Width) then
-  begin
     BlendMem(Value, Bits[X + Y * Width]);
-    EMMS;
-  end;
 end;
 
 procedure TJclBitmap32.SET_T256(X, Y: Integer; C: TColor32);
@@ -3305,13 +3280,11 @@ end;
 procedure TJclBitmap32.SetPixelF(X, Y: Single; Value: TColor32);
 begin
   SET_T256(Round(X * 256), Round(Y * 256), Value);
-  EMMS;
 end;
 
 procedure TJclBitmap32.SetPixelFS(X, Y: Single; Value: TColor32);
 begin
   SET_TS256(Round(X * 256), Round(Y * 256), Value);
-  EMMS;
 end;
 
 procedure TJclBitmap32.SetStipple(NewStipple: TArrayOfColor32);
@@ -3361,8 +3334,7 @@ begin
     Result := CombineReg(
       FStipplePattern[PrevIndex],
       FStipplePattern[NextIndex],
-      PrevWeight, nil, nil);
-    EMMS;
+      PrevWeight);
   end;
   FStippleCounter := FStippleCounter + FStippleStep;
 end;
@@ -3401,7 +3373,6 @@ begin
     BlendMem(Value, P^);
     Inc(P);
   end;
-  EMMS;
 end;
 
 procedure TJclBitmap32.DrawHorzLineTS(X1, Y, X2: Integer; Value: TColor32);
@@ -3472,7 +3443,6 @@ begin
     BlendMem(Value, P^);
     Inc(P, Width);
   end;
-  EMMS;
 end;
 
 procedure TJclBitmap32.DrawVertLineTS(X, Y1, Y2: Integer; Value: TColor32);
@@ -3822,42 +3792,38 @@ begin
     P := PixelPtr[X1, Y1];
     Sy := Sy * Width;
 
-    try
-      if Dx > Dy then
+    if Dx > Dy then
+    begin
+      Delta := Dx shr 1;
+      for I := 0 to Dx - 1 do
       begin
-        Delta := Dx shr 1;
-        for I := 0 to Dx - 1 do
+        BlendMem(Value, P^);
+        Inc(P, Sx);
+        Delta := Delta + Dy;
+        if Delta > Dx then
         begin
-          BlendMem(Value, P^);
-          Inc(P, Sx);
-          Delta := Delta + Dy;
-          if Delta > Dx then
-          begin
-            Inc(P, Sy);
-            Delta := Delta - Dx;
-          end;
-        end;
-      end
-      else // Dx < Dy
-      begin
-        Delta := Dy shr 1;
-        for I := 0 to Dy - 1 do
-        begin
-          BlendMem(Value, P^);
           Inc(P, Sy);
-          Delta := Delta + Dx;
-          if Delta > Dy then
-          begin
-            Inc(P, Sx);
-            Delta := Delta - Dy;
-          end;
+          Delta := Delta - Dx;
         end;
       end;
-      if L then
+    end
+    else // Dx < Dy
+    begin
+      Delta := Dy shr 1;
+      for I := 0 to Dy - 1 do
+      begin
         BlendMem(Value, P^);
-    finally
-      EMMS;
+        Inc(P, Sy);
+        Delta := Delta + Dx;
+        if Delta > Dy then
+        begin
+          Inc(P, Sx);
+          Delta := Delta - Dy;
+        end;
+      end;
     end;
+    if L then
+      BlendMem(Value, P^);
   finally
     Changed;
   end;
@@ -3905,7 +3871,6 @@ begin
     A := A * FixedUInt(hyp) shl 8 and $FF000000;
     SET_T256((px + ex - nx) shr 9, (py + ey - ny) shr 9, Value and _RGB + A);
   finally
-    EMMS;
     Changed;
   end;
 end;
@@ -3952,7 +3917,6 @@ begin
         A := A * FixedUInt(hyp) shl 8 and $FF000000;
         SET_TS256(Sar(Integer(px + ex - nx),9), Sar(Integer(py + ey - ny),9), Value and _RGB + A);
       finally
-        EMMS;
         Changed;
       end;
     end;
@@ -3986,7 +3950,6 @@ begin
       begin
         C := GetStippleColor;
         SET_T256(px shr 8, py shr 8, C);
-        EMMS;
         px := px + nx;
         py := py + ny;
       end;
@@ -3996,7 +3959,6 @@ begin
     hyp := hyp - N shl 16;
     A := A * FixedUInt(hyp) shl 8 and $FF000000;
     SET_T256((px + ex - nx) shr 9, (py + ey - ny) shr 9, C and _RGB + A);
-    EMMS;
   finally
     Changed;
   end;
@@ -4036,7 +3998,6 @@ begin
           begin
             C := GetStippleColor;
             SET_TS256(px div 256, py div 256, C);
-            EMMS;
             px := px + nx;
             py := py + ny;
           end;
@@ -4046,7 +4007,6 @@ begin
         hyp := hyp - N shl 16;
         A := A * FixedUInt(hyp) shl 8 and $FF000000;
         SET_TS256(Sar(Integer(px + ex - nx),9), Sar(Integer(py + ey - ny),9), C and _RGB + A);
-        EMMS;
       finally
         Changed;
       end;
@@ -4134,7 +4094,6 @@ begin
       end;
     end;
   finally
-    EMMS;
     Changed;
   end;
 end;
@@ -4228,7 +4187,6 @@ begin
       end;
     end;
     finally
-      EMMS;
       Changed;
     end;
   end;
@@ -5422,26 +5380,22 @@ begin
 
     // draw it to the screen
     P := Bitmap.PixelPtr[MinX, Y];
-    try
-      if DoAlpha then
-        for I := 0 to High(Buffer) do
-        begin
+    if DoAlpha then
+      for I := 0 to High(Buffer) do
+      begin
+        BlendMemEx(Color, P^, Buffer[I]);
+        Inc(P);
+      end
+    else
+      for I := 0 to High(Buffer) do
+      begin
+        N := Buffer[I];
+        if N = 255 then
+          P^ := Color
+        else
           BlendMemEx(Color, P^, Buffer[I]);
-          Inc(P);
-        end
-      else
-        for I := 0 to High(Buffer) do
-        begin
-          N := Buffer[I];
-          if N = 255 then
-            P^ := Color
-          else
-            BlendMemEx(Color, P^, Buffer[I]);
-          Inc(P);
-        end;
-    finally
-      EMMS;
-    end;
+        Inc(P);
+      end;
 
     Inc(Y);
   end;
