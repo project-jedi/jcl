@@ -1266,7 +1266,7 @@ end;
 
 function TExprCompileParser.CompileFactor: TExprNode;
 var
-  number : TFloat;
+  Number: TFloat;
 begin
   case Lexer.CurrTok of
     etIdentifier:
@@ -1280,14 +1280,14 @@ begin
       end;
     etNumber:
       begin
-        number := Lexer.TokenAsNumber;
+        Number := Lexer.TokenAsNumber;
         Lexer.NextTok;
         while Lexer.CurrTok = etPercent do
         begin
-          number := number / 100;
+          Number := Number / 100;
           Lexer.NextTok;
         end;
-        Result := NodeFactory.LoadConst(number);
+        Result := NodeFactory.LoadConst(Number);
       end;
   else
     raise EJclExprEvalError.CreateRes(@RsExprEvalFactorExpected);
