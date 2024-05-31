@@ -4021,8 +4021,15 @@ begin
   CheckPlatform(APlatform);
 
   if IDEVersionNumber >= 8 then
+  begin
     // use EnvOptions.proj
-    Result := GetMsBuildEnvOption(MsBuildDelphiDebugDCUPathNodeName, APlatform, False)
+    Result := GetMsBuildEnvOption(MsBuildDelphiDebugDCUPathNodeName, APlatform, False);
+    if Result = '' then
+    begin
+      //Fallback to registry when EnvOptions.prj is not updated
+      Result := ConfigData.ReadString(LibraryKeyName + '\' + GetBDSPlatformStr(APlatform), BDSDebugDCUPathValueName, '');
+    end;
+  end
   else
   if IDEVersionNumber >= 5 then
     // use EnvOptions.proj
@@ -4271,8 +4278,15 @@ begin
   CheckPlatform(APlatform);
 
   if IDEVersionNumber >= 8 then
+  begin
     // use EnvOptions.proj
-    Result := GetMsBuildEnvOption(MsBuildDelphiBrowsingPathNodeName, APlatform, False)
+    Result := GetMsBuildEnvOption(MsBuildDelphiBrowsingPathNodeName, APlatform, False);
+    if Result = '' then
+    begin
+      //Fallback to registry when EnvOptions.prj is not updated
+      Result := ConfigData.ReadString(LibraryKeyName + '\' + GetBDSPlatformStr(APlatform), LibraryBrowsingPathValueName, '');
+    end;
+  end
   else
   if IDEVersionNumber >= 5 then
     // use EnvOptions.proj
@@ -4287,8 +4301,15 @@ begin
   CheckPlatform(APlatform);
 
   if IDEVersionNumber >= 8 then
+  begin
     // use EnvOptions.proj
-    Result := GetMsBuildEnvOption(MsBuildDelphiLibraryPathNodeName, APlatform, False)
+    Result := GetMsBuildEnvOption(MsBuildDelphiLibraryPathNodeName, APlatform, False);
+    if Result = '' then
+    begin
+      //Fallback to registry when EnvOptions.prj is not updated
+      Result := ConfigData.ReadString(LibraryKeyName + '\' + GetBDSPlatformStr(APlatform), LibrarySearchPathValueName, '');
+    end;
+  end
   else
   if IDEVersionNumber >= 5 then
     // use EnvOptions.proj
@@ -4423,8 +4444,15 @@ begin
   CheckPlatform(APlatform);
 
   if IDEVersionNumber >= 8 then
+  begin
     // use EnvOptions.proj
-    Result := GetMsBuildEnvOption(MsBuildDelphiDebugDCUPathNodeName, APlatform, True)
+    Result := GetMsBuildEnvOption(MsBuildDelphiDebugDCUPathNodeName, APlatform, True);
+    if Result = '' then
+    begin
+      //Fallback to registry when EnvOptions.prj is not updated
+      Result := ConfigData.ReadString(LibraryKeyName + '\' + GetBDSPlatformStr(APlatform), BDSDebugDCUPathValueName, '');
+    end;
+  end
   else
   if IDEVersionNumber >= 5 then
     // use EnvOptions.proj
@@ -4439,8 +4467,15 @@ begin
   CheckPlatform(APlatform);
 
   if IDEVersionNumber >= 8 then
+  begin
     // use EnvOptions.proj
-    Result := GetMsBuildEnvOption(MsBuildDelphiBrowsingPathNodeName, APlatform, True)
+    Result := GetMsBuildEnvOption(MsBuildDelphiBrowsingPathNodeName, APlatform, True);
+    if Result = '' then
+    begin
+      //Fallback to registry when EnvOptions.prj is not updated
+      Result := ConfigData.ReadString(LibraryKeyName + '\' + GetBDSPlatformStr(APlatform), LibraryBrowsingPathValueName, '');
+    end;
+  end
   else
   if IDEVersionNumber >= 5 then
     // use EnvOptions.proj
@@ -4455,8 +4490,15 @@ begin
   CheckPlatform(APlatform);
 
   if IDEVersionNumber >= 8 then
+  begin
     // use EnvOptions.proj
-    Result := GetMsBuildEnvOption(MsBuildDelphiLibraryPathNodeName, APlatform, True)
+    Result := GetMsBuildEnvOption(MsBuildDelphiLibraryPathNodeName, APlatform, True);
+    if Result = '' then
+    begin
+      //Fallback to registry when EnvOptions.prj is not updated
+      Result := ConfigData.ReadString(LibraryKeyName + '\' + GetBDSPlatformStr(APlatform), LibrarySearchPathValueName, '');
+    end;
+  end
   else
   if IDEVersionNumber >= 5 then
     // use EnvOptions.proj
