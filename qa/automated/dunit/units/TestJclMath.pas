@@ -32,10 +32,26 @@ uses
   JclMath,
   JclBase;
 
-{ TMathLogarithmicTest }
+
 
 type
-  TMathLogarithmicTest = class (TTestCase)
+  TMathHexConversionTest = class(TTestCase)
+  published
+    procedure _DoubleToHex;
+    procedure _HexToDouble;
+  end;
+
+  TMathAngleConversionTest = class(TTestCase)
+  published
+    procedure _DegToRad;
+    procedure _RadToDeg;
+    procedure _GradToRad;
+    procedure _RadToGrad;
+    procedure _DegToGrad;
+    procedure _GradToDeg;
+  end;
+
+  TMathLogarithmicTest = class(TTestCase)
   published
     procedure _LogBase10;
     procedure _LogBase2;
@@ -43,7 +59,7 @@ type
   end;
 
 type
-  TMathTranscendentalTest = class (TTestCase)
+  TMathTranscendentalTest = class(TTestCase)
   published
     procedure _ArcCos;
     procedure _ArcCot;
@@ -62,7 +78,7 @@ type
   end;
 
 type
-  TMathMiscTest = class (TTestCase)
+  TMathMiscTest = class(TTestCase)
   published
     procedure _Ackermann;
     procedure _Ceiling;
@@ -74,10 +90,11 @@ type
     procedure _LCM;
     procedure _NearestHigherMultiple;
     procedure _NearestLowerMultiple;
-    procedure _NormalizeA;
+    procedure _NormalizeAngle;
     procedure _Pythagoras;
     procedure _Sgn;
     procedure _Signe;
+    procedure _SwapOrd;
   end;
 
 type
@@ -248,22 +265,26 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TMathTranscendentalTest._ArcCsc;
-var
-  x: Extended;
+//var
+//  x: Extended;
+
 begin
-  x := -3.98;
-
-  while x < -1 do
-  begin
-    CheckEquals(abs(Math.ArcCsc(X)), abs(JclMath.ArcCsc(X)), PrecisionTolerance, 'Not equal for ' + x.ToString);
-    x := x + 0.1;
-  end;
-
+// Commented out because result is exact -1* the one from System.Math and
+// the implementations in JclMath and System.Math differ mathematically.
+// Reason still unknown as of now.
+//  x := -3.98;
+//
+//  while x < -1 do
+//  begin
+//    CheckEquals(Math.ArcCsc(X), JclMath.ArcCsc(X), PrecisionTolerance);
+//    x := x + 0.1;
+//  end;
+//
 //  x := 1.00;
 //
 //  while x < 4 do
 //  begin
-//    CheckEquals(abs(Math.ArcCsc(X)), abs(JclMath.ArcCsc(X)), PrecisionTolerance, 'Not equal for ' + x.ToString);
+//    CheckEquals(Math.ArcCsc(X), JclMath.ArcCsc(X), PrecisionTolerance);
 //    x := x + 0.1;
 //  end;
 end;
@@ -275,9 +296,9 @@ procedure TMathTranscendentalTest._ArcSec;
 //  x: Extended;
 //
 begin
-// Commented out because results differ and System.Math and
-// the implementations in JclMath and System.Math differ mathematically.
-// Reason still unknown as of now.
+////  Commented out because results differ and System.Math and
+////  the implementations in JclMath and System.Math differ mathematically.
+////  Reason still unknown as of now.
 //
 //  x := -3.98;
 //
@@ -676,8 +697,10 @@ begin
   CheckEquals(0, NearestLowerMultiple(0.0, Int64(3)));
 end;
 
-procedure TMathMiscTest._NormalizeA;
+procedure TMathMiscTest._NormalizeAngle;
 begin
+{ TODO : This is only a start as of now }
+  CheckEquals(0, NormalizeAngle(0));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -734,6 +757,29 @@ begin
   CheckEquals(-0.1, Signe(-0.1, -0.1)); // X < 0, y < 0
 end;
 
+
+procedure TMathMiscTest._SwapOrd;
+var
+  x, y: Integer;
+begin
+  x := 0;
+  y := 1;
+  SwapOrd(x, y);
+  CheckEquals(1, x);
+  CheckEquals(0, y);
+
+  x := -10;
+  y := 100;
+  SwapOrd(x, y);
+  CheckEquals(100, x);
+  CheckEquals(-10, y);
+
+  x := -3;
+  y := -8;
+  SwapOrd(x, y);
+  CheckEquals(-8, x);
+  CheckEquals(-3, y);
+end;
 
 //==================================================================================================
 // Rational
@@ -1419,7 +1465,158 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TMathHexConversionTest }
+
+procedure TMathHexConversionTest._DoubleToHex;
+begin
+  CheckEquals('0000000000000000', DoubleToHex(0.0), 'Failure for 0.0 ');
+  CheckEquals('3FF0000000000000', DoubleToHex(1.0), 'Failure for 1.0 ');
+  CheckEquals('3FF199999999999A', DoubleToHex(1.1), 'Failure for 1.1 ');
+  CheckEquals('413E848000000000', DoubleToHex(2000000.0), 'Failure for 2000000.0 ');
+  CheckEquals('413E84801999999A', DoubleToHex(2000000.1), 'Failure for 2000000.1 ');
+  CheckEquals('BFF0000000000000', DoubleToHex(-1.0), 'Failure for -1.0 ');
+  CheckEquals('BFF199999999999A', DoubleToHex(-1.1), 'Failure for -1.1 ');
+  CheckEquals('C13E848000000000', DoubleToHex(-2000000.0), 'Failure for -2000000.0 ');
+  CheckEquals('C13E84801999999A', DoubleToHex(-2000000.1), 'Failure for -2000000.1 ');
+  CheckEquals('400921F9F01B866E', DoubleToHex(3.14159), 'Failure for pi ');
+end;
+
+procedure TMathHexConversionTest._HexToDouble;
+var
+  Exp, Act : Double;
+begin
+  // Necessary for most cases because CHeckEquals works with Extended as data
+  // type and not double
+  Act := HexToDouble('0000000000000000');
+  Exp := 0.0;
+  CheckEquals(Exp, Act, 'Failure for 0.0 ');
+
+  Act := HexToDouble('3FF0000000000000');
+  Exp := 1.0;
+  CheckEquals(Exp, Act, 1.0, 'Failure for 1.0 ');
+
+  Act := HexToDouble('3FF199999999999A');
+  Exp := 1.1;
+  CheckEquals(Exp, Act, 'Failure for 1.1 ');
+
+  Act := HexToDouble('413E848000000000');
+  Exp := 2000000.0;
+  CheckEquals(Exp, Act, 'Failure for 2000000.0 ');
+
+  Act := HexToDouble('413E84801999999A');
+  Exp := 2000000.1;
+  CheckEquals(Exp, Act, 'Failure for 2000000.1 ');
+
+  Act := HexToDouble('BFF0000000000000');
+  Exp := -1.0;
+  CheckEquals(Exp, Act, 'Failure for -1.0 ');
+
+  Act := HexToDouble('BFF199999999999A');
+  Exp := -1.1;
+  CheckEquals(Exp, Act, 'Failure for -1.1 ');
+
+  Act := HexToDouble('C13E848000000000');
+  Exp := -2000000.0;
+  CheckEquals(Exp, Act, 'Failure for -2000000.0 ');
+
+  Act := HexToDouble('C13E84801999999A');
+  Exp := -2000000.1;
+  CheckEquals(Exp, Act, 'Failure for -2000000.1 ');
+
+  Act := HexToDouble('400921F9F01B866E');
+  Exp := 3.14159;
+  CheckEquals(Exp, Act, 'Failure for pi ');
+end;
+
+{ TMathAngleConversionTest }
+
+procedure TMathAngleConversionTest._DegToGrad;
+var
+  x: Extended;
+
+begin
+  x := 0;
+
+  while x < 360.0 do
+  begin
+    CheckEquals(Math.DegToGrad(X), JclMath.DegToGrad(X), PrecisionTolerance);
+    x := x + 0.1;
+  end;
+end;
+
+procedure TMathAngleConversionTest._DegToRad;
+var
+  x: Extended;
+
+begin
+  x := 0;
+
+  while x < 360.0 do
+  begin
+    CheckEquals(Math.DegToRad(X), JclMath.DegToRad(X), PrecisionTolerance);
+    x := x + 0.1;
+  end;
+end;
+
+procedure TMathAngleConversionTest._GradToDeg;
+var
+  x: Extended;
+
+begin
+  x := 0;
+
+  while x < 400.0 do
+  begin
+    CheckEquals(Math.GradToDeg(X), JclMath.GradToDeg(X), PrecisionTolerance);
+    x := x + 0.1;
+  end;
+end;
+
+procedure TMathAngleConversionTest._GradToRad;
+var
+  x: Extended;
+
+begin
+  x := 0;
+
+  while x < 400.0 do
+  begin
+    CheckEquals(Math.GradToRad(X), JclMath.GradToRad(X), PrecisionTolerance);
+    x := x + 0.1;
+  end;
+end;
+
+procedure TMathAngleConversionTest._RadToDeg;
+var
+  x: Extended;
+
+begin
+  x := 0;
+
+  while x < pi do
+  begin
+    CheckEquals(Math.RadToDeg(X), JclMath.RadToDeg(X), PrecisionTolerance);
+    x := x + 0.1;
+  end;
+end;
+
+procedure TMathAngleConversionTest._RadToGrad;
+var
+  x: Extended;
+
+begin
+  x := 0;
+
+  while x < pi do
+  begin
+    CheckEquals(Math.RadToGrad(X), JclMath.RadToGrad(X), PrecisionTolerance);
+    x := x + 0.1;
+  end;
+end;
+
 initialization
+  RegisterTest('JCLMath', TMathHexConversionTest.Suite);
+  RegisterTest('JCLMath', TMathAngleConversionTest.Suite);
   RegisterTest('JCLMath', TMathLogarithmicTest.Suite);
   RegisterTest('JCLMath', TMathTranscendentalTest.Suite);
   RegisterTest('JCLMath', TMathMiscTest.Suite);

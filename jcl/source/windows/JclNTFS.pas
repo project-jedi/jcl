@@ -928,7 +928,7 @@ var
   Info: TByHandleFileInformation;
 begin
   Result := False;
-  Handle := CreateFile(PChar(FileName), 0, FILE_SHARE_READ or FILE_SHARE_WRITE,
+  Handle := CreateFile(PChar(FileName), FILE_READ_ATTRIBUTES, FILE_SHARE_READ or FILE_SHARE_WRITE,
     nil, OPEN_EXISTING, 0, 0);
   if Handle <> INVALID_HANDLE_VALUE then
     try
@@ -1160,7 +1160,7 @@ type
     True:
       (Buffer: array [0..MAXIMUM_REPARSE_DATA_BUFFER_SIZE] of Char;);
   end;
-  
+
 function IsReparseTagValid(Tag: DWORD): Boolean;
 begin
   Result := (Tag and (not IO_REPARSE_TAG_VALID_VALUES) = 0) and
@@ -1546,7 +1546,7 @@ end;
 //
 // LinkName:          Name of the hard link to create
 // ExistingFileName:  Fully qualified path of the file for which to create a hard link
-// Result:            True if successfull,
+// Result:            True if successful,
 //                    False if failed.
 //                    In the latter case use GetLastError to obtain the reason of failure.
 //
@@ -1587,7 +1587,9 @@ var
   FileInfo: TByHandleFileInformation;
 begin
   Result := False;
-  F := CreateFile(PChar(FileName), GENERIC_READ, FILE_SHARE_READ or FILE_SHARE_WRITE, nil, OPEN_EXISTING, 0, 0);
+  // GENERIC_READ triggers anti virus scanners to scan the file. But we are not interested
+  // in the file's content, only its attributes.
+  F := CreateFile(PChar(FileName), FILE_READ_ATTRIBUTES, FILE_SHARE_READ or FILE_SHARE_WRITE, nil, OPEN_EXISTING, 0, 0);
   if F <> INVALID_HANDLE_VALUE then
   try
     ResetMemory(FileInfo, SizeOf(FileInfo));
@@ -1676,7 +1678,7 @@ begin
         if not NtfsFindHardLinks(FullPathName[1] + ':', Info.FileIndexHigh, Info.FileIndexLow, Files) then
           Exit;
         // first delete the originally specified file from the list, we don't delete that one until all hard links
-        // are succesfully deleted so we can use it to restore them if anything goes wrong. Theoretically one could
+        // are successfully deleted so we can use it to restore them if anything goes wrong. Theoretically one could
         // use any of the hard links but in case the restore goes wrong, at least the specified file still exists...
         for I := 0 to Files.Count - 1 do
         begin
@@ -1696,7 +1698,7 @@ begin
         end;
         if I = Files.Count then
         begin
-          // all hard links succesfully deleted, now delete the originally specified file. if this fails we set
+          // all hard links successfully deleted, now delete the originally specified file. if this fails we set
           // I to Files.Count - 1 so that the next code block will restore all hard links we just deleted.
           Result := DeleteFile(FullPathName);
           if not Result then
@@ -1730,7 +1732,7 @@ const
   ShareModes: array [TJclFileSummaryShare] of DWORD =
     ( STGM_SHARE_DENY_NONE, STGM_SHARE_DENY_READ, STGM_SHARE_DENY_WRITE,
       STGM_SHARE_EXCLUSIVE );
-      
+
 constructor TJclFileSummary.Create(AFileName: WideString; AAccessMode: TJclFileSummaryAccess;
   AShareMode: TJclFileSummaryShare; AsDocument: Boolean; ACreate: Boolean);
 var

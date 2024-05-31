@@ -318,7 +318,8 @@ var
   end;
 
 begin
-  if JclDisablePostCompilationProcess or (Project = nil) then
+  // There are no ProjectOptions if we have a Language Ressouce DLL project (Mantis #5740)
+  if JclDisablePostCompilationProcess or (Project = nil) or (Project.ProjectOptions = nil) then
     Exit;
 
   OTAMessageServices := GetOTAMessageServices;
@@ -359,7 +360,10 @@ begin
         // insertion of JEDI Debug Information into the binary
         if Succ and (deInsertJdbg in EnabledActions) then
         begin
-          Succ := FindExecutableName(MapFileName, OutputDirectory, ExecutableFileName);
+          ExecutableFileName := GetTargetFileName(Project);
+          Succ := ExecutableFileName <> '';
+          if not Succ then
+            Succ := FindExecutableName(MapFileName, OutputDirectory, ExecutableFileName);
           if Succ then
           begin
             Succ := InsertDebugDataIntoExecutableFile(ExecutableFileName, MapFileName,
@@ -367,7 +371,8 @@ begin
             if Succ then
             begin
               if not FQuiet then
-                OutputToolMessage(Format(LoadResString(@RsInsertedJdbg), [MapFileName, MapFileSize, JclDebugDataSize]));
+                OutputToolMessage(Format(LoadResString(@RsInsertedJdbg),
+                  [MapFileName, MapFileSize, JclDebugDataSize, ExecutableFileName]));
             end
             else
               OutputToolMessage(Format(LoadResString(@RsEMapInsertion), [MapFileName]));

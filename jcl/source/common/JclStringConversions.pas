@@ -2646,7 +2646,7 @@ begin
   Result := StreamReadByte(S, B);
   if Result then
   begin
-    UTF16Buffer := WideString(AnsiString(Chr(B)));
+    UTF16Buffer := WideString(AnsiString(AnsiChar(B)));
     TmpPos := 1;
     Ch := UTF16GetNextChar(UTF16Buffer, TmpPos);
     Result := TmpPos <> -1;

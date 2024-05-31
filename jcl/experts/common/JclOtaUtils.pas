@@ -202,6 +202,7 @@ type
       var ExecutableFileName: TFileName): Boolean;
     function GetDrcFileName(const Project: IOTAProject): TFileName;
     function GetMapFileName(const Project: IOTAProject): TFileName;
+    function GetTargetFileName(const Project: IOTAProject): TFileName;
     function GetOutputDirectory(const Project: IOTAProject): string;
     function IsInstalledPackage(const Project: IOTAProject): Boolean;
     function IsPackage(const Project: IOTAProject): Boolean;
@@ -756,7 +757,7 @@ begin
     raise EJclExpertException.CreateRes(@RsENoOTAServices);
 
   FBaseKeyName := StrEnsureSuffix(NativeBackSlash, OTAServices.GetBaseRegistryKey);
-  
+
   FKeyName := BaseKeyName + RegJclIDEKey + ExpertName;
 end;
 
@@ -889,7 +890,7 @@ begin
   //no resourcestring here, because this message will be removed
   if MessageBox(0, 'The JCL options can now be found in the Third party section of the environment options and ' +
     'this menu item will be removed some time in the future.' + #13#10#13#10 +
-    'Press ENTER/Yes to open the enviroment options or No to open the old options dialog.',
+    'Press ENTER/Yes to open the environment options or No to open the old options dialog.',
     'JCL', MB_ICONASTERISK or MB_YESNO or MB_DEFBUTTON1) = IDYES then
   begin
     (BorlandIDEServices as IOTAServices).GetEnvironmentOptions.EditOptions('',
@@ -1175,6 +1176,19 @@ begin
     raise EJclExpertException.CreateRes(@RsENoActiveProject);
 
   Result := ChangeFileExt(Project.FileName, CompilerExtensionDRC);
+end;
+
+function TJclOTAExpertBase.GetTargetFileName(const Project: IOTAProject): TFileName;
+begin
+  if not Assigned(Project) then
+    raise EJclExpertException.CreateRes(@RsENoActiveProject);
+  if not Assigned(Project.ProjectOptions) then
+    raise EJclExpertException.CreateRes(@RsENoProjectOptions);
+{$IFDEF BDS2_UP}
+  Result := Project.ProjectOptions.TargetName;
+{$ELSE ~BDS2_UP}
+  Result := '';
+{$ENDIF ~BDS2_UP}
 end;
 
 function TJclOTAExpertBase.GetMapFileName(const Project: IOTAProject): TFileName;

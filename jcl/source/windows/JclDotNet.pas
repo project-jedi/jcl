@@ -917,8 +917,8 @@ var
   Enumerator: IEnumUnknown;
   RuntimeInfo: ICLRRuntimeInfo;
 
-  Version: string;
-  Directory: string;
+  Version: WideString;
+  Directory: WideString;
   RequiredSize: DWORD;
   Err: HRESULT;
 begin
