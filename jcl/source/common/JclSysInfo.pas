@@ -4280,45 +4280,64 @@ begin
   begin
     case GetWindowsReleaseId of
       1507:
-         Result := LoadResString(@RsOSVersionWin10);
+         Result := ''; // RTM
       1511:
-         Result := LoadResString(@RsOSVersionWin10) + ' November Update';
+         Result := 'November Update';
       1607:
-         Result := LoadResString(@RsOSVersionWin10) + ' Anniversary Update';
+         Result := 'Anniversary Update';
       1703:
-         Result := LoadResString(@RsOSVersionWin10) + ' Creators Update';
+         Result := 'Creators Update';
       1709:
-         Result := LoadResString(@RsOSVersionWin10) + ' Fall Creators Update';
+         Result := 'Fall Creators Update';
       1803:
-         Result := LoadResString(@RsOSVersionWin10) + ' April 2018 Update';
+         Result := 'April 2018 Update';
       1809:
-         Result := LoadResString(@RsOSVersionWin10) + ' October 2018 Update';
+         Result := 'October 2018 Update';
       1903:
-         Result := LoadResString(@RsOSVersionWin10) + ' May 2019 Update';
+         Result := 'May 2019 Update';
       1909:
-         Result := LoadResString(@RsOSVersionWin10) + ' November 2019 Update';
+         Result := 'November 2019 Update';
       2004:
-         Result := LoadResString(@RsOSVersionWin10) + ' May 2020 Update';
+         Result := 'May 2020 Update';
       2009:
          begin
            WindowsDisplayVersion := GetWindowsDisplayVersion;
            if WindowsDisplayVersion = '20H2' then
-              Result := LoadResString(@RsOSVersionWin10) + ' October 2020 Update'
+              Result := 'October 2020 Update'
            else
            if WindowsDisplayVersion = '21H1' then
-              Result := LoadResString(@RsOSVersionWin10) + ' May 2021 Update'
+              Result := 'May 2021 Update'
            else
            if WindowsDisplayVersion = '21H2' then
-              Result := LoadResString(@RsOSVersionWin10) + ' November 2021 Update'
+              Result := 'November 2021 Update'
            else
-              Result := LoadResString(@RsOSVersionWin10) + ' ' + WindowsDisplayVersion + ' Update';
+           if WindowsDisplayVersion = '22H2' then
+              Result := '2022 Update'
+           else
+              Result := WindowsDisplayVersion + ' Update';
          end
     else
-      Result := LoadResString(@RsOSVersionWin10) + ' ' + IntToStr(GetWindowsReleaseId) + ' Update';
+      Result := IntToStr(GetWindowsReleaseId) + ' Update';
     end;
+    Result := Trim(GetWindowsVersionString + ' ' + Result);
   end
   else if IsWin11 then // And higher versions too?
-    Result := GetWindowsVersionString + ' ' + GetWindowsDisplayVersion + ' Update'
+  begin
+    // WindowsReleaseId = 2009 for Win 11
+    Result := '';
+    WindowsDisplayVersion := GetWindowsDisplayVersion;
+    if WindowsDisplayVersion = '21H2' then
+       Result := '' // RTM
+    else
+    if WindowsDisplayVersion = '22H2' then
+       Result := '2022 Update'
+    else
+    if WindowsDisplayVersion = '23H2' then
+       Result := '2023 Update'
+    else
+       Result := WindowsDisplayVersion + ' Update';
+    Result := Trim(GetWindowsVersionString + ' ' + Result);
+  end
   else
     Result := '';
 end;
