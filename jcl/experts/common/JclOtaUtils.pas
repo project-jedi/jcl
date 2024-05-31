@@ -202,6 +202,7 @@ type
       var ExecutableFileName: TFileName): Boolean;
     function GetDrcFileName(const Project: IOTAProject): TFileName;
     function GetMapFileName(const Project: IOTAProject): TFileName;
+    function GetTargetFileName(const Project: IOTAProject): TFileName;
     function GetOutputDirectory(const Project: IOTAProject): string;
     function IsInstalledPackage(const Project: IOTAProject): Boolean;
     function IsPackage(const Project: IOTAProject): Boolean;
@@ -1175,6 +1176,19 @@ begin
     raise EJclExpertException.CreateRes(@RsENoActiveProject);
 
   Result := ChangeFileExt(Project.FileName, CompilerExtensionDRC);
+end;
+
+function TJclOTAExpertBase.GetTargetFileName(const Project: IOTAProject): TFileName;
+begin
+  if not Assigned(Project) then
+    raise EJclExpertException.CreateRes(@RsENoActiveProject);
+  if not Assigned(Project.ProjectOptions) then
+    raise EJclExpertException.CreateRes(@RsENoProjectOptions);
+{$IFDEF BDS2_UP}
+  Result := Project.ProjectOptions.TargetName;
+{$ELSE ~BDS2_UP}
+  Result := '';
+{$ENDIF ~BDS2_UP}
 end;
 
 function TJclOTAExpertBase.GetMapFileName(const Project: IOTAProject): TFileName;
