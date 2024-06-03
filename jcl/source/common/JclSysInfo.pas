@@ -276,7 +276,9 @@ type
    (paUnknown, // unknown processor
     pax8632,   // x86 32 bit processors (some P4, Celeron, Athlon and older)
     pax8664,   // x86 64 bit processors (latest P4, Celeron and Athlon64)
-    paIA64);   // Itanium processors
+    paIA64,    // Itanium processors
+    paARM,     // ARM 32 bit processors
+    paARM64);  // ARM 64 bit processors
 
 var
   { in case of additions, don't forget to update initialization section! }
@@ -322,6 +324,12 @@ const
   {$EXTERNALSYM PROCESSOR_ARCHITECTURE_IA32_ON_WIN64}
   PROCESSOR_ARCHITECTURE_IA64 = 6;
   {$EXTERNALSYM PROCESSOR_ARCHITECTURE_IA64}
+  PROCESSOR_ARCHITECTURE_ARM = 5;
+  {$EXTERNALSYM PROCESSOR_ARCHITECTURE_ARM}
+  PROCESSOR_ARCHITECTURE_ARM64 = 12;
+  {$EXTERNALSYM PROCESSOR_ARCHITECTURE_ARM64}
+  PROCESSOR_ARCHITECTURE_UNKNOWN = $FFFF;
+  {$EXTERNALSYM PROCESSOR_ARCHITECTURE_UNKNOWN}
 
 const
   Windows11InitialBuildNumber = 22000;
@@ -4750,6 +4758,10 @@ begin
       Result := paIA64;
     PROCESSOR_ARCHITECTURE_AMD64:
       Result := pax8664;
+    PROCESSOR_ARCHITECTURE_ARM:
+      Result := paARM;
+    PROCESSOR_ARCHITECTURE_ARM64:
+      Result := paARM64;
     else
       Result := paUnknown;
   end;
@@ -4757,7 +4769,7 @@ end;
 
 function IsWindows64: Boolean;
 begin
-  Result := GetProcessorArchitecture in [paIA64, pax8664];
+  Result := GetProcessorArchitecture in [paIA64, pax8664, paARM64];
 end;
 
 function JclCheckWinVersion(Major, Minor: Integer): Boolean;
