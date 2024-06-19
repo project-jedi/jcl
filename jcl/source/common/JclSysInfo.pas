@@ -5231,7 +5231,16 @@ begin
     EnabledFeatures := $FFFFFFFF;
     EnabledFeatures := EnabledFeatures shl 32;
     EnabledFeatures := EnabledFeatures or $FFFFFFFF;
-    EnabledFeatures := GetEnabledExtendedFeatures(EnabledFeatures);
+    try
+      EnabledFeatures := GetEnabledExtendedFeatures(EnabledFeatures);
+    except
+      on EJclError do
+      begin
+        // If the function doesn't exist (anymore) we shouldn't crash.
+        Result := [];
+        Exit;
+      end;
+    end;
     Result := [];
     if (EnabledFeatures and XSTATE_MASK_LEGACY_FLOATING_POINT) <> 0 then
       Include(Result, oefFPU);
