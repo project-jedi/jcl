@@ -173,7 +173,7 @@ type
     property YearMonthFormat: string index LOCALE_SYEARMONTH read GetStringInfo write SetStringInfo;
     // Calendar
     property CalendarType: Integer index LOCALE_ICALENDARTYPE read GetIntegerInfo write SetIntegerInfo;
-    property AdditionalCaledarTypes: Integer index LOCALE_IOPTIONALCALENDAR read GetIntegerInfo;
+    property AdditionalCalendarTypes: Integer index LOCALE_IOPTIONALCALENDAR read GetIntegerInfo;
     property FirstDayOfWeek: Integer index LOCALE_IFIRSTDAYOFWEEK read GetIntegerInfo write SetIntegerInfo;
     property FirstWeekOfYear: Integer index LOCALE_IFIRSTWEEKOFYEAR read GetIntegerInfo write SetIntegerInfo;
     // Day and month names

@@ -1,5 +1,8 @@
 JEDI Code Library
 =================
+![](https://tokei.rs/b1/github/project-jedi/jcl?category=code)
+![](https://tokei.rs/b1/github/project-jedi/jcl?category=files)
+
 
 The JEDI Code Library (JCL) consists of a set of thoroughly tested and fully documented
 utility functions and non-visual classes which can be instantly reused in your Delphi
@@ -26,7 +29,7 @@ jcl\jcl\source\include\jedi directory.
 Clone with GIT
 --------------
 ```
-> git clone git://github.com/project-jedi/jcl.git jcl
+> git clone https://github.com/project-jedi/jcl.git jcl
 > cd jcl
 > git submodule update --init
 ```
@@ -36,10 +39,6 @@ This will get you the JCL repository and initializes the submodule that contains
 How to install
 --------------
 Start the **jcl\install.bat**
-
-Release version
----------------
-You can download the latest released version from <https://sourceforge.net/projects/jcl/files/>
 
 Daily snapshots
 ---------------
