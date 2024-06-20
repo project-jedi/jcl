@@ -903,7 +903,7 @@ const
   EAMD2_LAHF          = BIT_0;  // LAHF/SAHF available in 64-bit mode
   EAMD2_CMPLEGACY     = BIT_1;  // core multi-processing legacy mode
   EAMD2_SVM           = BIT_2;  // Secure Virtual Machine
-  EAMD2_EXTAPICSPACE  = BIT_3;  // This bit indicates the presence of extended APIC register space starting at offset 400h from the “APIC Base Address Register,” as specified in the BKDG.
+  EAMD2_EXTAPICSPACE  = BIT_3;  // This bit indicates the presence of extended APIC register space starting at offset 400h from the Â“APIC Base Address Register,Â” as specified in the BKDG.
   EAMD2_ALTMOVCR8     = BIT_4;  // LOCK MOV CR0 means MOV CR8
   EAMD2_ABM           = BIT_5;  // ABM: Advanced bit manipulation. LZCNT instruction support.
   EAMD2_SSE4A         = BIT_6;  // EXTRQ, INSERTQ, MOVNTSS, and MOVNTSD instruction support.
@@ -5709,34 +5709,34 @@ function CPUID: TCpuInfo;
             3:
               CPUInfo.CpuName := 'AMD-K5 (Model 3)';
             6:
-              CPUInfo.CpuName := 'AMD-K6® (Model 6)';
+              CPUInfo.CpuName := 'AMD-K6Â® (Model 6)';
             7:
-              CPUInfo.CpuName := 'AMD-K6® (Model 7)';
+              CPUInfo.CpuName := 'AMD-K6Â® (Model 7)';
             8:
-              CPUInfo.CpuName := 'AMD-K6®-2 (Model 8)';
+              CPUInfo.CpuName := 'AMD-K6Â®-2 (Model 8)';
             9:
-              CPUInfo.CpuName := 'AMD-K6®-III (Model 9)';
+              CPUInfo.CpuName := 'AMD-K6Â®-III (Model 9)';
             else
               StrFmtA(CPUInfo.CpuName, PAnsiChar(AnsiString(LoadResString(@RsUnknownAMDModel))), [CPUInfo.Model]);
           end;
         6:
           case CPUInfo.Model of
             1:
-              CPUInfo.CpuName := 'AMD Athlon™ (Model 1)';
+              CPUInfo.CpuName := 'AMD AthlonÂ™ (Model 1)';
             2:
-              CPUInfo.CpuName := 'AMD Athlon™ (Model 2)';
+              CPUInfo.CpuName := 'AMD AthlonÂ™ (Model 2)';
             3:
-              CPUInfo.CpuName := 'AMD Duron™ (Model 3)';
+              CPUInfo.CpuName := 'AMD DuronÂ™ (Model 3)';
             4:
-              CPUInfo.CpuName := 'AMD Athlon™ (Model 4)';
+              CPUInfo.CpuName := 'AMD AthlonÂ™ (Model 4)';
             6:
-              CPUInfo.CpuName := 'AMD Athlon™ XP (Model 6)';
+              CPUInfo.CpuName := 'AMD AthlonÂ™ XP (Model 6)';
             7:
-              CPUInfo.CpuName := 'AMD Duron™ (Model 7)';
+              CPUInfo.CpuName := 'AMD DuronÂ™ (Model 7)';
             8:
-              CPUInfo.CpuName := 'AMD Athlon™ XP (Model 8)';
+              CPUInfo.CpuName := 'AMD AthlonÂ™ XP (Model 8)';
             10:
-              CPUInfo.CpuName := 'AMD Athlon™ XP (Model 10)';
+              CPUInfo.CpuName := 'AMD AthlonÂ™ XP (Model 10)';
             else
               StrFmtA(CPUInfo.CpuName, PAnsiChar(AnsiString(LoadResString(@RsUnknownAMDModel))), [CPUInfo.Model]);
           end;
@@ -6685,17 +6685,20 @@ begin
 end;
 
 initialization
-  InitSysInfo;
-  {$IFDEF UNITVERSIONING}
-  RegisterUnitVersion(HInstance, UnitVersioning);
-  {$ENDIF UNITVERSIONING}
-
+  try
+    InitSysInfo;
+    {$IFDEF UNITVERSIONING}
+    RegisterUnitVersion(HInstance, UnitVersioning);
+    {$ENDIF UNITVERSIONING}
+  except end;
+  
 finalization
-  {$IFDEF UNITVERSIONING}
-  UnregisterUnitVersion(HInstance);
-  {$ENDIF UNITVERSIONING}
-  FinalizeSysInfo;
-
+  try
+    {$IFDEF UNITVERSIONING}
+    UnregisterUnitVersion(HInstance);
+    {$ENDIF UNITVERSIONING}
+    FinalizeSysInfo;
+  except end;
 {$ENDIF MSWINDOWS}
 
 end.
