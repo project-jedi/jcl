@@ -40,6 +40,12 @@ How to install
 --------------
 Start the **jcl\install.bat**
 
+**Instalation notes**
+As the installer uses the command line compiler of the installed Delphi version, the installer will only
+function with Delphi versions/edition that have the command line compile (ddc32).
+
+Neither the community version, nor the trial version provide the command line compiler.
+
 Daily snapshots
 ---------------
 You can download daily snapshots from <http://jcl.sourceforge.net/daily>
