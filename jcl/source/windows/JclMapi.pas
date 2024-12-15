@@ -178,7 +178,7 @@ type
   TJclEmailRecips = class(TObjectList)
   private
     FAddressesType: AnsiString;
-    function GetItems(Index: Integer): TJclEmailRecip;
+    function GetItems(Index: TJclListSize): TJclEmailRecip;
     function GetOriginator: TJclEmailRecip;
   public
     function Add(const Address: AnsiString;
@@ -187,7 +187,7 @@ type
       const AddressType: AnsiString = ''): Integer;
     procedure SortRecips;
     property AddressesType: AnsiString read FAddressesType write FAddressesType;
-    property Items[Index: Integer]: TJclEmailRecip read GetItems; default;
+    property Items[Index: TJclListSize]: TJclEmailRecip read GetItems; default;
     property Originator: TJclEmailRecip read GetOriginator;
   end;
 
@@ -801,7 +801,7 @@ begin
   end;
 end;
 
-function TJclEmailRecips.GetItems(Index: Integer): TJclEmailRecip;
+function TJclEmailRecips.GetItems(Index: TJclListSize): TJclEmailRecip;
 begin
   Result := TJclEmailRecip(Get(Index));
 end;

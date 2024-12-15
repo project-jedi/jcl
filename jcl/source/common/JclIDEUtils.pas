@@ -481,7 +481,8 @@ type
     // package functions
       // install = package compile + registration
       // uninstall = unregistration + deletion
-    function CompilePackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
+    function CompilePackage(const PackageName, BPLPath, DCPPath: string): Boolean; overload; virtual;
+    function CompilePackage(const PackageName, BPLPath, DCPPath, ExtraOptions: string): Boolean; overload; virtual;
     function InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
     function UninstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
     function InstallIDEPackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
@@ -2125,6 +2126,12 @@ end;
 
 function TJclBorRADToolInstallation.CompilePackage(const PackageName, BPLPath,
   DCPPath: string): Boolean;
+begin
+  Result := CompilePackage(PackageName, BPLPath, DCPPath, '');
+end;
+
+function TJclBorRADToolInstallation.CompilePackage(const PackageName, BPLPath,
+  DCPPath, ExtraOptions: string): Boolean;
 var
   PackageExtension: string;
 begin
@@ -2133,7 +2140,7 @@ begin
     Result := CompileBCBPackage(PackageName, BPLPath, DCPPath)
   else
   if SameText(PackageExtension, SourceExtensionDelphiPackage) then
-    Result := CompileDelphiPackage(PackageName, BPLPath, DCPPath)
+    Result := CompileDelphiPackage(PackageName, BPLPath, DCPPath, ExtraOptions)
   else
     raise EJclBorRadException.CreateResFmt(@RsEUnknownPackageExtension, [PackageExtension]);
 end;

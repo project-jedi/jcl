@@ -210,7 +210,7 @@ type
     function GetItemFromLangID(LangID: LANGID): TJclLocaleInfo;
     function GetItemFromLangIDPrimary(LangIDPrimary: Word): TJclLocaleInfo;
     function GetItemFromLocaleID(LocaleID: LCID): TJclLocaleInfo;
-    function GetItems(Index: Integer): TJclLocaleInfo;
+    function GetItems(Index: TJclListSize): TJclLocaleInfo;
     function GetCodePages: TStrings;
   protected
     procedure CreateList;
@@ -222,7 +222,7 @@ type
     property ItemFromLangID[LangID: LANGID]: TJclLocaleInfo read GetItemFromLangID;
     property ItemFromLangIDPrimary[LangIDPrimary: Word]: TJclLocaleInfo read GetItemFromLangIDPrimary;
     property ItemFromLocaleID[LocaleID: LCID]: TJclLocaleInfo read GetItemFromLocaleID;
-    property Items[Index: Integer]: TJclLocaleInfo read GetItems; default;
+    property Items[Index: TJclListSize]: TJclLocaleInfo read GetItems; default;
     property Kind: TJclLocalesKind read FKind;
   end;
 
@@ -766,7 +766,7 @@ begin
     end;
 end;
 
-function TJclLocalesList.GetItems(Index: Integer): TJclLocaleInfo;
+function TJclLocalesList.GetItems(Index: TJclListSize): TJclLocaleInfo;
 begin
   Result := TJclLocaleInfo(inherited Items[Index]);
 end;
