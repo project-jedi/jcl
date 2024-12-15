@@ -186,7 +186,8 @@ type
     constructor Create(JclDistribution: TJclDistribution;
       InstallTarget: TJclBorRADToolInstallation; ATargetPlatform: TJclBDSPlatform;
       const AGUIPage: IJediInstallPage);
-    function CompileLibraryUnits(const SubDir: string; Debug: Boolean): Boolean;
+    function CompileLibraryUnits(const SubDir: string; Debug: Boolean): Boolean; overload;
+    function CompileLibraryUnits(const SubDir: string; Debug: Boolean; Win64x: Boolean): Boolean; overload;
     function CompilePackage(const Name: string): Boolean;
     function CompileApplication(FileName: string): Boolean;
     function DeletePackage(const Name: string): Boolean;
@@ -810,7 +811,7 @@ begin
     if TargetPlatform = bpWin32 then
       Result := clBcc32 in Target.CommandLineTools
     else if TargetPlatform = bpWin64 then
-      Result := clBcc64 in Target.CommandLineTools;
+      Result := [clBcc64, clBcc64x] * Target.CommandLineTools <> [];
   end;
 end;
 
@@ -2694,6 +2695,14 @@ begin
 end;
 
 function TJclInstallation.CompileLibraryUnits(const SubDir: string; Debug: Boolean): Boolean;
+begin
+  Result := CompileLibraryUnits(SubDir, Debug, False);
+
+  if (TargetPlatform = bpWin64) and (clBcc64x in Target.CommandLineTools) then
+    Result := Result and CompileLibraryUnits(SubDir, Debug, True);
+end;
+
+function TJclInstallation.CompileLibraryUnits(const SubDir: string; Debug: Boolean; Win64x: Boolean): Boolean;
 
   function CopyFiles(Files: TStrings; const TargetDir: string; Overwrite: Boolean = True): Boolean;
   var
@@ -2846,6 +2855,12 @@ begin
 
     if TargetSupportsCBuilder then
     begin
+      if Win64x then
+      begin
+        UnitOutputDir := StringReplace(UnitOutputDir, '\win64', '\win64x', [rfIgnoreCase]);
+        Compiler.Options.Add('-jf:coffi');
+      end;
+
       Compiler.Options.Add('-D_RTLDLL' + DirSeparator + 'NO_STRICT' + DirSeparator + 'USEPACKAGES'); // $(SYSDEFINES)
 
       if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 4) then
