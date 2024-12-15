@@ -2,7 +2,7 @@
     <PropertyGroup>
         <ProjectGuid>%GUID%</ProjectGuid>
         <MainSource>%NAME%%SOURCEEXTENSION%</MainSource>
-        <ProjectVersion>20.0</ProjectVersion>
+        <ProjectVersion>20.2</ProjectVersion>
         <Config Condition="'$(Config)'==''">Release</Config>
         <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
         <DCC_Define>%DEFINES%</DCC_Define>
@@ -10,7 +10,7 @@
         <AppType>Package</AppType>
         <FrameworkType>None</FrameworkType>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
-        <TargetedPlatforms>3</TargetedPlatforms>
+        <TargetedPlatforms>1048579</TargetedPlatforms>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
         <Base>true</Base>
@@ -27,6 +27,13 @@
         <Base>true</Base>
     </PropertyGroup>
 <%%% END PLATFORM WIN64 %%%>
+<%%% START PLATFORM WIN64X %%%>
+    <PropertyGroup Condition="('$(Platform)'=='Win64x' and '$(Base)'=='true') or '$(Base_Win64x)'!=''">
+        <Base_Win64x>true</Base_Win64x>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
+<%%% END PLATFORM WIN64X %%%>
     <PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_1)'!=''">
         <Cfg_1>true</Cfg_1>
         <CfgParent>Base</CfgParent>
@@ -46,6 +53,14 @@
         <Base>true</Base>
     </PropertyGroup>
 <%%% END PLATFORM WIN64 %%%>
+<%%% START PLATFORM WIN64X %%%>
+    <PropertyGroup Condition="('$(Platform)'=='Win64x' and '$(Cfg_1)'=='true') or '$(Cfg_1_Win64x)'!=''">
+        <Cfg_1_Win64x>true</Cfg_1_Win64x>
+        <CfgParent>Cfg_1</CfgParent>
+        <Cfg_1>true</Cfg_1>
+        <Base>true</Base>
+    </PropertyGroup>
+<%%% END PLATFORM WIN64X %%%>
     <PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_2)'!=''">
         <Cfg_2>true</Cfg_2>
         <CfgParent>Base</CfgParent>
@@ -65,6 +80,14 @@
         <Base>true</Base>
     </PropertyGroup>
 <%%% END PLATFORM WIN64 %%%>
+<%%% START PLATFORM WIN64X %%%>
+    <PropertyGroup Condition="('$(Platform)'=='Win64x' and '$(Cfg_2)'=='true') or '$(Cfg_2_Win64x)'!=''">
+        <Cfg_2_Win64x>true</Cfg_2_Win64x>
+        <CfgParent>Cfg_2</CfgParent>
+        <Cfg_2>true</Cfg_2>
+        <Base>true</Base>
+    </PropertyGroup>
+<%%% END PLATFORM WIN64X %%%>
     <PropertyGroup Condition="'$(Base)'!=''">
         <SanitizedProjectName>%NAME%</SanitizedProjectName>
         <VerInfo_MajorVer>%VERSION_MAJOR_NUMBER%</VerInfo_MajorVer>
@@ -102,6 +125,12 @@
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
     </PropertyGroup>
 <%%% END PLATFORM WIN64 %%%>
+<%%% START PLATFORM WIN64X %%%>
+    <PropertyGroup Condition="'$(Base_Win64x)'!=''">
+        <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
+        <BCC_EnableBatchCompilation>true</BCC_EnableBatchCompilation>
+    </PropertyGroup>
+<%%% END PLATFORM WIN64X %%%>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
         <DCC_DebugInformation>0</DCC_DebugInformation>
         <DCC_LocalDebugSymbols>True</DCC_LocalDebugSymbols>
@@ -133,6 +162,20 @@
         <VerInfo_Locale>1033</VerInfo_Locale>
     </PropertyGroup>
 <%%% END PLATFORM WIN64 %%%>
+<%%% START PLATFORM WIN64X %%%>
+    <PropertyGroup Condition="'$(Cfg_1_Win64x)'!=''">
+        <DCC_DcuOutput>..\..\lib\d29\win64x\debug</DCC_DcuOutput>
+        <DCC_ObjOutput>..\..\lib\d29\win64x\debug</DCC_ObjOutput>
+        <DCC_HppOutput>..\..\lib\d29\win64x\debug</DCC_HppOutput>
+        <DCC_DcpOutput>..\..\lib\d29\win64x\debug</DCC_DcpOutput>
+        <DCC_UnitSearchPath>..\..\lib\d29\win64x\debug;..\..\source\include;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_ResourcePath>..\..\lib\d29\win64x\debug;..\..\source\include;$(DCC_ResourcePath)</DCC_ResourcePath>
+        <DCC_ObjPath>..\..\lib\d29\win64x\debug;..\..\source\include;$(DCC_ObjPath)</DCC_ObjPath>
+        <DCC_IncludePath>..\..\lib\d29\win64x\debug;..\..\source\include;$(DCC_IncludePath)</DCC_IncludePath>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+    </PropertyGroup>
+<%%% END PLATFORM WIN64X %%%>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_AssertionsAtRuntime>false</DCC_AssertionsAtRuntime>
         <DCC_DebugInformation>0</DCC_DebugInformation>
@@ -165,6 +208,20 @@
         <VerInfo_Locale>1033</VerInfo_Locale>
     </PropertyGroup>
 <%%% END PLATFORM WIN64 %%%>
+<%%% START PLATFORM WIN64X %%%>
+    <PropertyGroup Condition="'$(Cfg_2_Win64x)'!=''">
+        <DCC_DcuOutput>..\..\lib\d29\win64x</DCC_DcuOutput>
+        <DCC_ObjOutput>..\..\lib\d29\win64x</DCC_ObjOutput>
+        <DCC_HppOutput>..\..\lib\d29\win64x</DCC_HppOutput>
+        <DCC_DcpOutput>..\..\lib\d29\win64x</DCC_DcpOutput>
+        <DCC_UnitSearchPath>..\..\lib\d29\win64x;..\..\source\include;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_ResourcePath>..\..\lib\d29\win64x;..\..\source\include;$(DCC_ResourcePath)</DCC_ResourcePath>
+        <DCC_ObjPath>..\..\lib\d29\win64x;..\..\source\include;$(DCC_ObjPath)</DCC_ObjPath>
+        <DCC_IncludePath>..\..\lib\d29\win64x;..\..\source\include;$(DCC_IncludePath)</DCC_IncludePath>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+    </PropertyGroup>
+<%%% END PLATFORM WIN64X %%%>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
@@ -230,6 +287,7 @@
                 <Platform value="OSX32">False</Platform>
                 <Platform value="Win32">True</Platform>
                 <Platform value="Win64">%WIN64ENABLED%</Platform>
+                <Platform value="Win64x">%WIN64XENABLED%</Platform>
             </Platforms>
         </BorlandProject>
         <ProjectFileVersion>12</ProjectFileVersion>

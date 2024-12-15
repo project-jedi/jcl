@@ -2,15 +2,15 @@
     <PropertyGroup>
         <ProjectGuid>{FC16FA9B-0429-42EB-9B53-30D19AAB3EE4}</ProjectGuid>
         <MainSource>JclDebugExpert.dpk</MainSource>
-        <ProjectVersion>20.0</ProjectVersion>
+        <ProjectVersion>20.2</ProjectVersion>
         <Config Condition="'$(Config)'==''">Release</Config>
         <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-        <DCC_Define>BCB;WIN32;CONDITIONALEXPRESSIONS;RELEASE</DCC_Define>
+        <DCC_Define>BCB;WIN32;CONDITIONALEXPRESSIONS;VER360;RELEASE</DCC_Define>
         <Base>True</Base>
         <AppType>Package</AppType>
         <FrameworkType>None</FrameworkType>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
-        <TargetedPlatforms>3</TargetedPlatforms>
+        <TargetedPlatforms>1048579</TargetedPlatforms>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
         <Base>true</Base>
@@ -57,7 +57,7 @@
         <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
         <DCC_Description>JCL Debug IDE extension</DCC_Description>
-        <DCC_Define>BCB;BCB;WIN32;CONDITIONALEXPRESSIONS;RELEASE;$(DCC_Define)</DCC_Define>
+        <DCC_Define>BCB;BCB;WIN32;CONDITIONALEXPRESSIONS;VER360;RELEASE;$(DCC_Define)</DCC_Define>
         <DCC_WriteableConstants>true</DCC_WriteableConstants>
         <DCC_OutputNeverBuildDcps>true</DCC_OutputNeverBuildDcps>
         <DllSuffix>290</DllSuffix>
@@ -172,6 +172,7 @@
                 <Platform value="OSX32">False</Platform>
                 <Platform value="Win32">True</Platform>
                 <Platform value="Win64">False</Platform>
+                <Platform value="Win64x">False</Platform>
             </Platforms>
         </BorlandProject>
         <ProjectFileVersion>12</ProjectFileVersion>
