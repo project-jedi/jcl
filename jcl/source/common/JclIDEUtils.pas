@@ -156,6 +156,7 @@ const
 
   BDSPlatformWin32        = 'Win32';
   BDSPlatformWin64        = 'Win64';
+  BDSPlatformWin64x       = 'Win64x';
   BDSPlatformOSX32        = 'OSX32';
   BDSPlatformOSX64        = 'OSX64';
   BDSPlatformiOSSimulator = 'iOSSimulator';
@@ -179,7 +180,7 @@ type
 
   TJclBorDesigners = set of TJClBorDesigner;
 
-  TJclBDSPlatform = (bpWin32, bpWin64, bpOSX32, bpOSX64, bpAndroid32, bpAndroid64, bpiOSDevice32,
+  TJclBDSPlatform = (bpWin32, bpWin64, bpWin64x, bpOSX32, bpOSX64, bpAndroid32, bpAndroid64, bpiOSDevice32,
     bpiOSDevice64, bpiOSSimulator, bpLinux64);
 
 const
@@ -335,7 +336,7 @@ type
     property Pages: TStrings read GetPages;
   end;
 
-  TCommandLineTool = (clAsm, clBcc32, clBcc64, clDcc32, clDcc64, clDccOSX32, clDccOSX64, clDcciOSSimulator,
+  TCommandLineTool = (clAsm, clBcc32, clBcc64, clBcc64x, clDcc32, clDcc64, clDccOSX32, clDccOSX64, clDcciOSSimulator,
     clDcciOS32, clDcciOS64, clDccArm32, clDccArm64, clDccLinux64, clDccIL, clMake, clProj2Mak);
   TCommandLineTools = set of TCommandLineTool;
 
@@ -632,6 +633,7 @@ type
     FDCCArm64: TJclDCCArm64;
     FDCCLinux64: TJclDCCLinux64;
     FBCC64: TJclBCC64;
+    FBCC64X: TJclBCC64X;
     FPdbCreate: Boolean;
     procedure SetDualPackageInstallation(const Value: Boolean);
     function GetCppPathsKeyName: string;
@@ -659,6 +661,7 @@ type
     function GetDCCLinux64: TJclDCCLinux64;
     function GetDCCIL: TJclDCCIL;
     function GetBCC64: TJclBCC64;
+    function GetBCC64x: TJclBCC64x;
 
     function GetMsBuildEnvOptionsFileName: string;
     function GetMsBuildEnvironmentFileName: string;
@@ -744,6 +747,7 @@ type
     property DCCArm64: TJclDCCArm64 read GetDCCArm64;
     property DCCLinux64: TJclDCCLinux64 read GetDCCLinux64;
     property BCC64: TJclBCC64 read GetBCC64;
+    property BCC64X: TJclBCC64X read GetBCC64X;
     property DCCIL: TJclDCCIL read GetDCCIL;
     property MaxDelphiCLRVersion: string read GetMaxDelphiCLRVersion;
     property PdbCreate: Boolean read FPdbCreate write FPdbCreate;
@@ -1841,6 +1845,8 @@ begin
     Include(FCommandLineTools, clBcc32);
   if FileExists(BinFolderName + BCC64ExeName) then
     Include(FCommandLineTools, clBcc64);
+  if FileExists(PathAddSeparator(PathRemoveSeparator(BinFolderName) + '64') + BCC64XExeName) then
+    Include(FCommandLineTools, clBcc64x);
   if FileExists(BinFolderName + DCC32ExeName) then
     Include(FCommandLineTools, clDcc32);
   if FileExists(BinFolderName + DCC64ExeName) then
@@ -1970,7 +1976,8 @@ end;
 procedure TJclBorRADToolInstallation.CheckCBuilderPlatform(APlatform: TJclBDSPlatform);
 begin
   if ((APlatform = bpWin32) and not (bpBCBuilder32 in Personalities)) or
-     ((APlatform = bpWin64) and not (bpBCBuilder64 in Personalities)) then
+     ((APlatform = bpWin64) and not (bpBCBuilder64 in Personalities)) or
+     ((APlatform = bpWin64x) and not (bpBCBuilder64 in Personalities)) then
     raise EJclBorRADException.CreateRes(@RsEPlatformNotValid);
 end;
 
@@ -1978,6 +1985,7 @@ procedure TJclBorRADToolInstallation.CheckPlatform(APlatform: TJclBDSPlatform);
 begin
   if ((APlatform = bpWin32) and ([bpDelphi32,bpBCBuilder32] * Personalities = [])) or
      ((APlatform = bpWin64) and ([bpDelphi64,bpBCBuilder64] * Personalities = [])) or
+     ((APlatform = bpWin64x) and ([bpDelphi64, bpBCBuilder64] * Personalities = [])) or
      ((APlatform = bpOSX32) and ([bpDelphiOSX32] * Personalities = [])) or
      ((APlatform = bpOSX64) and ([bpDelphiOSX64] * Personalities = [])) or
      ((APlatform = bpiOSSimulator) and ([bpDelphiiOSSimulator] * Personalities = [])) or
@@ -3511,6 +3519,8 @@ begin
     Include(FPersonalities, bpDelphiLinux64);
   if clBcc64 in CommandLineTools then
     Include(FPersonalities, bpBCBuilder64);
+  if clBcc64x in CommandLineTools then
+    Include(FPersonalities, bpBCBuilder64);
 end;
 
 destructor TJclBDSInstallation.Destroy;
@@ -3518,6 +3528,7 @@ begin
   FreeAndNil(FDCCIL);
   FreeAndNil(FDCC64);
   FreeAndNil(FBCC64);
+  FreeAndNil(FBCC64X);
   FreeAndNil(FDCCOSX32);
   FreeAndNil(FDCCOSX64);
   FreeAndNil(FDCCiOSSimulator);
@@ -3729,6 +3740,8 @@ begin
       Result := BDSPlatformWin32;
     bpWin64:
       Result := BDSPlatformWin64;
+    bpWin64x:
+      Result := BDSPlatformWin64x;
     bpOSX32:
       Result := BDSPlatformOSX32;
     bpOSX64:
@@ -3982,6 +3995,19 @@ begin
                                //LibDebugFolderName[bpWin64], ObjFolderName[bpWin64]);
   end;
   Result := FBCC64;
+end;
+
+function TJclBDSInstallation.GetBCC64X: TJclBCC64X;
+begin
+  if not Assigned(FBCC64X) then
+  begin
+    if not (clBcc64x in CommandLineTools) then
+      raise EJclBorRadException.CreateResFmt(@RsENotFound, [Bcc64xExeName]);
+    FBCC64X := TJclBCC64X.Create(PathAddSeparator(PathRemoveSeparator(BinFolderName) + '64'), LongPathBug, CompilerSettingsFormat);
+                               //SupportsNoConfig, SupportsPlatform, DCPOutputPath[bpWin64x], LibFolderName[bpWin64x],
+                               //LibDebugFolderName[bpWin64x], ObjFolderName[bpWin64x]);
+  end;
+  Result := FBCC64X;
 end;
 
 function TJclBDSInstallation.GetDCCIL: TJclDCCIL;

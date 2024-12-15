@@ -113,6 +113,12 @@ type
     function GetExeName: string; override;
   end;
 
+  TJclBCC64X = class(TJclBCC64)
+  public
+    class function GetPlatform: string; override;
+    function GetExeName: string; override;
+  end;
+
   TProjectOptions = record
     UsePackages: Boolean;
     UnitOutputDir: string;
@@ -246,6 +252,7 @@ const
   AsmExeName                = 'tasm32.exe';
   BCC32ExeName              = 'bcc32.exe';
   BCC64ExeName              = 'bcc64.exe';
+  BCC64XExeName             = 'bcc64x.exe';
   DCC32ExeName              = 'dcc32.exe';
   DCC64ExeName              = 'dcc64.exe';
   DCCOSX32ExeName           = 'dccosx.exe';
@@ -875,6 +882,18 @@ end;
 class function TJclBCC64.GetPlatform: string;
 begin
   Result := BDSPlatformWin64;
+end;
+
+//=== { TJclBCC64X } ============================================================
+
+function TJclBCC64X.GetExeName: string;
+begin
+  Result := BCC64XExeName;
+end;
+
+class function TJclBCC64X.GetPlatform: string;
+begin
+  Result := BDSPlatformWin64x;
 end;
 
 //=== { TJclDCC32 } ============================================================
