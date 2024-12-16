@@ -2866,7 +2866,7 @@ begin
     begin
       if Win64x then
       begin
-        UnitOutputDir := StringReplace(UnitOutputDir, '\win64', '\win64x', [rfIgnoreCase]);
+        UnitOutputDir := Target.AdjustPathForWin64X(UnitOutputDir);
         Compiler.Options.Add('-jf:coffi');
       end;
 
@@ -2947,7 +2947,7 @@ begin
   if Win64x then
   begin
     // Do not adjust BplPath as the BPLs are not platform specific
-    DcpPath := StringReplace(DcpPath, '\win64', '\win64x', [ rfIgnoreCase ]);
+    DcpPath := Target.AdjustPathForWin64X(DcpPath);
     ExtraOptions := '-jf:coffi';
   end;
 
