@@ -479,7 +479,7 @@ type
     function AddToLibraryBrowsingPath(const Path: string; APlatform: TJclBDSPlatform): Boolean;
     function FindFolderInPath(Folder: string; List: TStrings): Integer;
 
-    function AdjustPathForWin64X(const Path: string): string;
+    class function AdjustPathForWin64X(const Path: string): string;
 
     // package functions
       // install = package compile + registration
@@ -1941,7 +1941,7 @@ begin
     Result := False;
 end;
 
-function TJclBorRADToolInstallation.AdjustPathForWin64X(
+class function TJclBorRADToolInstallation.AdjustPathForWin64X(
   const Path: string): string;
 begin
   Result := StringReplace(Path, '\win64', '\win64x', [rfIgnoreCase]);
