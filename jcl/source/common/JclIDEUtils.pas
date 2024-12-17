@@ -180,7 +180,7 @@ type
 
   TJclBorDesigners = set of TJClBorDesigner;
 
-  TJclBDSPlatform = (bpWin32, bpWin64, bpWin64x, bpOSX32, bpOSX64, bpAndroid32, bpAndroid64, bpiOSDevice32,
+  TJclBDSPlatform = (bpWin32, bpWin32c, bpWin64, bpWin64x, bpOSX32, bpOSX64, bpAndroid32, bpAndroid64, bpiOSDevice32,
     bpiOSDevice64, bpiOSSimulator, bpLinux64);
 
 const
@@ -336,7 +336,7 @@ type
     property Pages: TStrings read GetPages;
   end;
 
-  TCommandLineTool = (clAsm, clBcc32, clBcc64, clBcc64x, clDcc32, clDcc64, clDccOSX32, clDccOSX64, clDcciOSSimulator,
+  TCommandLineTool = (clAsm, clBcc32, clBcc32c, clBcc64, clBcc64x, clDcc32, clDcc64, clDccOSX32, clDccOSX64, clDcciOSSimulator,
     clDcciOS32, clDcciOS64, clDccArm32, clDccArm64, clDccLinux64, clDccIL, clMake, clProj2Mak);
   TCommandLineTools = set of TCommandLineTool;
 
@@ -636,6 +636,7 @@ type
     FDCCArm32: TJclDCCArm32;
     FDCCArm64: TJclDCCArm64;
     FDCCLinux64: TJclDCCLinux64;
+    FBCC32C: TJclBCC32C;
     FBCC64: TJclBCC64;
     FBCC64X: TJclBCC64X;
     FPdbCreate: Boolean;
@@ -664,6 +665,7 @@ type
     function GetDCCArm64: TJclDCCArm64;
     function GetDCCLinux64: TJclDCCLinux64;
     function GetDCCIL: TJclDCCIL;
+    function GetBCC32c: TJclBCC32C;
     function GetBCC64: TJclBCC64;
     function GetBCC64x: TJclBCC64x;
 
@@ -672,6 +674,7 @@ type
     function GetMsBuildEnvOption(const OptionName: string; APlatform: TJclBDSPlatform; Raw: Boolean): string;
     procedure SetMsBuildEnvOption(const OptionName, Value: string; APlatform: TJclBDSPlatform);
     function GetBDSPlatformStr(APlatform: TJclBDSPlatform): string;
+    function GetBDSPlatformValueNameSuffixStr(APlatform: TJclBDSPlatform): string;
     class procedure InterpretSetVariable(const Line: string; Variables: TStrings);
   protected
     function GetDCPOutputPath(APlatform: TJclBDSPlatform): string; override;
@@ -750,6 +753,7 @@ type
     property DCCArm32: TJclDCCArm32 read GetDCCArm32;
     property DCCArm64: TJclDCCArm64 read GetDCCArm64;
     property DCCLinux64: TJclDCCLinux64 read GetDCCLinux64;
+    property BCC32C: TJclBCC32C read GetBCC32C;
     property BCC64: TJclBCC64 read GetBCC64;
     property BCC64X: TJclBCC64X read GetBCC64X;
     property DCCIL: TJclDCCIL read GetDCCIL;
@@ -1112,6 +1116,8 @@ const
   MsBuildCBuilderBrowsingPathNodeName = 'CBuilderBrowsingPath';
   MsBuildCBuilderLibraryPathNodeName = 'CBuilderLibraryPath';
   MsBuildCBuilderIncludePathNodeName = 'CBuilderIncludePath';
+
+  Clang32Suffix = '_Clang32';
 
 {$IFDEF MSWINDOWS}
 
@@ -1847,6 +1853,8 @@ begin
   {$ENDIF ~MSWINDOWS}
   if FileExists(BinFolderName + BCC32ExeName) then
     Include(FCommandLineTools, clBcc32);
+  if FileExists(BinFolderName + BCC32CExeName) then
+    Include(FCommandLineTools, clBcc32c);
   if FileExists(BinFolderName + BCC64ExeName) then
     Include(FCommandLineTools, clBcc64);
   if FileExists(PathAddSeparator(PathRemoveSeparator(BinFolderName) + '64') + BCC64XExeName) then
@@ -1911,9 +1919,6 @@ begin
     PathListIncludeItems(TempRawDebugDCUPath, Path);
     Result := True;
     RawDebugDCUPath[APlatform] := TempRawDebugDCUPath;
-
-    if (APlatform = bpWin64) and (clBcc64x in CommandLineTools) then
-      Result := Result and AddToDebugDCUPath(AdjustPathForWin64X(Path), bpWin64x);
   end
   else
     Result := False;
@@ -1931,9 +1936,6 @@ begin
     PathListIncludeItems(TempRawLibraryPath, Path);
     Result := True;
     RawLibrarySearchPath[APlatform] := TempRawLibraryPath;
-
-    if (APlatform = bpWin64) and (clBcc64x in CommandLineTools) then
-      Result := Result and AddToLibrarySearchPath(AdjustPathForWin64X(Path), bpWin64x);
   end
   else
     Result := False;
@@ -1958,8 +1960,14 @@ begin
     Result := True;
     RawLibraryBrowsingPath[APlatform] := TempRawLibraryPath;
 
-    if (APlatform = bpWin64) and (clBcc64x in CommandLineTools) then
-      Result := Result and AddToLibraryBrowsingPath(Path, bpWin64x);
+    case APlatform of
+      bpWin32:
+        if clBcc32c in CommandLineTools then
+          Result := Result and AddToLibraryBrowsingPath(Path, bpWin32c);
+      bpWin64:
+        if clBcc64x in CommandLineTools then
+          Result := Result and AddToLibraryBrowsingPath(AdjustPathForWin64X(Path), bpWin64x);
+    end;
   end
   else
     Result := False;
@@ -2003,8 +2011,9 @@ end;
 procedure TJclBorRADToolInstallation.CheckPlatform(APlatform: TJclBDSPlatform);
 begin
   if ((APlatform = bpWin32) and ([bpDelphi32,bpBCBuilder32] * Personalities = [])) or
+     ((APlatform = bpWin32c) and ([bpBCBuilder32] * Personalities = [])) or
      ((APlatform = bpWin64) and ([bpDelphi64,bpBCBuilder64] * Personalities = [])) or
-     ((APlatform = bpWin64x) and ([bpDelphi64, bpBCBuilder64] * Personalities = [])) or
+     ((APlatform = bpWin64x) and ([bpBCBuilder64] * Personalities = [])) or
      ((APlatform = bpOSX32) and ([bpDelphiOSX32] * Personalities = [])) or
      ((APlatform = bpOSX64) and ([bpDelphiOSX64] * Personalities = [])) or
      ((APlatform = bpiOSSimulator) and ([bpDelphiiOSSimulator] * Personalities = [])) or
@@ -2968,9 +2977,6 @@ begin
   TempRawDebugDCUPath := RawDebugDCUPath[APlatform];
   Result := RemoveFromPath(TempRawDebugDCUPath, Path);
   RawDebugDCUPath[APlatform] := TempRawDebugDCUPath;
-
-  if (APlatform = bpWin64) and (clBcc64x in CommandLineTools) then
-    Result := Result and RemoveFromDebugDCUPath(AdjustPathForWin64X(Path), bpWin64x);
 end;
 
 function TJclBorRADToolInstallation.RemoveFromLibrarySearchPath(const Path: string; APlatform: TJclBDSPlatform): Boolean;
@@ -2982,9 +2988,6 @@ begin
   TempRawLibraryPath := RawLibrarySearchPath[APlatform];
   Result := RemoveFromPath(TempRawLibraryPath, Path);
   RawLibrarySearchPath[APlatform] := TempRawLibraryPath;
-
-  if (APlatform = bpWin64) and (clBcc64x in CommandLineTools) then
-    Result := Result and RemoveFromLibrarySearchPath(AdjustPathForWin64X(Path), bpWin64x);
 end;
 
 function TJclBorRADToolInstallation.RemoveFromLibraryBrowsingPath(const Path: string; APlatform: TJclBDSPlatform): Boolean;
@@ -2996,9 +2999,6 @@ begin
   TempRawLibraryPath := RawLibraryBrowsingPath[APlatform];
   Result := RemoveFromPath(TempRawLibraryPath, Path);
   RawLibraryBrowsingPath[APlatform] := TempRawLibraryPath;
-
-  if (APlatform = bpWin64) and (clBcc64x in CommandLineTools) then
-    Result := Result and RemoveFromLibraryBrowsingPath(Path, bpWin64x);
 end;
 
 function TJclBorRADToolInstallation.RemoveFromPath(var Path: string; const ItemsToRemove: string): Boolean;
@@ -3588,8 +3588,14 @@ begin
     Result := True;
     RawCppBrowsingPath[APlatform] := TempRawCppPath;
 
-    if (APlatform = bpWin64) and (clBcc64x in CommandLineTools) then
-      Result := Result and AddToCppBrowsingPath(Path, bpWin64x);
+    case APlatform of
+      bpWin32:
+        if clBcc32c in CommandLineTools then
+          Result := Result and AddToCppBrowsingPath(Path, bpWin32c);
+      bpWin64:
+        if clBcc64x in CommandLineTools then
+          Result := Result and AddToCppBrowsingPath(Path, bpWin64x);
+    end;
   end
   else
     Result := False;
@@ -3608,8 +3614,14 @@ begin
     Result := True;
     RawCppSearchPath[APlatform] := TempRawCppPath;
 
-    if (APlatform = bpWin64) and (clBcc64x in CommandLineTools) then
-      Result := Result and AddToCppSearchPath(AdjustPathForWin64X(Path), bpWin64x);
+    case APlatform of
+      bpWin32:
+        if clBcc32c in CommandLineTools then
+          Result := Result and AddToCppSearchPath(Path, bpWin32c);
+      bpWin64:
+        if clBcc64x in CommandLineTools then
+          Result := Result and AddToCppSearchPath(AdjustPathForWin64X(Path), bpWin64x);
+    end;
   end
   else
     Result := False;
@@ -3628,8 +3640,14 @@ begin
     Result := True;
     RawCppLibraryPath[APlatform] := TempRawLibraryPath;
 
-    if (APlatform = bpWin64) and (clBcc64x in CommandLineTools) then
-      Result := Result and AddToCppLibraryPath(AdjustPathForWin64X(Path), bpWin64x);
+    case APlatform of
+      bpWin32:
+        if clBcc32c in CommandLineTools then
+          Result := Result and AddToCppLibraryPath(Path, bpWin32c);
+      bpWin64:
+        if clBcc64x in CommandLineTools then
+          Result := Result and AddToCppLibraryPath(AdjustPathForWin64X(Path), bpWin64x);
+    end;
   end
   else
     Result := False;
@@ -3648,8 +3666,14 @@ begin
     Result := True;
     RawCppIncludePath[APlatform] := TempRawIncludePath;
 
-    if (APlatform = bpWin64) and (clBcc64x in CommandLineTools) then
-      Result := Result and AddToCppIncludePath(Path, bpWin64x);
+    case APlatform of
+      bpWin32:
+        if clBcc32c in CommandLineTools then
+          Result := Result and AddToCppIncludePath(Path, bpWin32c);
+      bpWin64:
+        if clBcc64x in CommandLineTools then
+          Result := Result and AddToCppIncludePath(Path, bpWin64x);
+    end;
   end
   else
     Result := False;
@@ -3778,12 +3802,27 @@ begin
     Result := inherited CompileDelphiProject(ProjectName, DcpSearchPath, OutputDir);
 end;
 
+function TJclBDSInstallation.GetBDSPlatformValueNameSuffixStr(APlatform: TJclBDSPlatform): string;
+begin
+  Result := '';
+  case APlatform of
+    bpWin32, bpWin64, bpWin64x, bpOSX32, bpOSX64, bpAndroid32, bpAndroid64, bpiOSDevice32, bpiOSDevice64, bpiOSSimulator, bpLinux64:
+      Result := '';
+    bpWin32c:
+      Result := Clang32Suffix;
+  else
+    raise EJclBorRADException.CreateRes(@RsEPlatformNotValid);
+  end;
+end;
+
 function TJclBDSInstallation.GetBDSPlatformStr(APlatform: TJclBDSPlatform): string;
 begin
   Result := '';
   case APlatform of
     bpWin32:
       Result := BDSPlatformWin32;
+    bpWin32c:
+      Result := BDSPlatformWin32;  // same key name, the IDE uses the Clang32Suffix suffix in value names
     bpWin64:
       Result := BDSPlatformWin64;
     bpWin64x:
@@ -3873,8 +3912,8 @@ begin
   if IDEVersionNumber >= 5 then
   begin
     Result := CppPathsV5UpperKeyName;
-    if (IDEVersionNumber >= 9) and (APlatform = bpWin64x) then
-      Result := PathAddSeparator(Result) + 'Win64x';
+    if (IDEVersionNumber >= 9) then
+      Result := PathAddSeparator(Result) + GetBDSPlatformStr(APlatform);
   end
   else
   begin
@@ -4034,6 +4073,19 @@ begin
                                      LibDebugFolderName[bpLinux64], ObjFolderName[bpLinux64]);
   end;
   Result := FDCCLinux64;
+end;
+
+function TJclBDSInstallation.GetBCC32C: TJclBCC32C;
+begin
+  if not Assigned(FBCC32C) then
+  begin
+    if not (clBcc32c in CommandLineTools) then
+      raise EJclBorRadException.CreateResFmt(@RsENotFound, [Bcc32cExeName]);
+    FBCC32C := TJclBCC32C.Create(BinFolderName, LongPathBug, CompilerSettingsFormat);
+                               //SupportsNoConfig, SupportsPlatform, DCPOutputPath[bpWin32c], LibFolderName[bpWin32c],
+                               //LibDebugFolderName[bpWin32c], ObjFolderName[bpWin32c]);
+  end;
+  Result := FBCC32C;
 end;
 
 function TJclBDSInstallation.GetBCC64: TJclBCC64;
@@ -4483,9 +4535,9 @@ begin
 
   if IDEVersionNumber >= 5 then
     // use EnvOptions.proj
-    Result := GetMsBuildEnvOption(MsBuildCBuilderBrowsingPathNodeName, APlatform, True)
+    Result := GetMsBuildEnvOption(MsBuildCBuilderBrowsingPathNodeName + GetBDSPlatformValueNameSuffixStr(APlatform), APlatform, True)
   else
-    Result := ConfigData.ReadString(GetCppPathsKeyName(APlatform), CppBrowsingPathValueName, '');
+    Result := ConfigData.ReadString(GetCppPathsKeyName(APlatform), CppBrowsingPathValueName + GetBDSPlatformValueNameSuffixStr(APlatform), '');
 end;
 
 function TJclBDSInstallation.GetRawCppSearchPath(APlatform: TJclBDSPlatform): TJclBorRADToolPath;
@@ -4501,9 +4553,9 @@ begin
 
   if IDEVersionNumber >= 5 then
     // use EnvOptions.proj
-    Result := GetMsBuildEnvOption(MsBuildCBuilderLibraryPathNodeName, APlatform, True)
+    Result := GetMsBuildEnvOption(MsBuildCBuilderLibraryPathNodeName + GetBDSPlatformValueNameSuffixStr(APlatform), APlatform, True)
   else
-    Result := ConfigData.ReadString(GetCppPathsKeyName(APlatform), CppLibraryPathValueName, '');
+    Result := ConfigData.ReadString(GetCppPathsKeyName(APlatform), CppLibraryPathValueName + GetBDSPlatformValueNameSuffixStr(APlatform), '');
 end;
 
 function TJclBDSInstallation.GetRawCppIncludePath(APlatform: TJclBDSPlatform): TJclBorRADToolPath;
@@ -4512,9 +4564,9 @@ begin
 
   if IDEVersionNumber >= 5 then
     // use EnvOptions.proj
-    Result := GetMsBuildEnvOption(MsBuildCBuilderIncludePathNodeName, APlatform, True)
+    Result := GetMsBuildEnvOption(MsBuildCBuilderIncludePathNodeName + GetBDSPlatformValueNameSuffixStr(APlatform), APlatform, True)
   else
-    Result := ConfigData.ReadString(GetCppPathsKeyName(APlatform), CppIncludePathValueName, '');
+    Result := ConfigData.ReadString(GetCppPathsKeyName(APlatform), CppIncludePathValueName + GetBDSPlatformValueNameSuffixStr(APlatform), '');
 end;
 
 function TJclBDSInstallation.GetRawDebugDCUPath(APlatform: TJclBDSPlatform): TJclBorRADToolPath;
@@ -4663,8 +4715,14 @@ begin
     Result := RemoveFromPath(TempRawCppPath, Path);
     RawCppBrowsingPath[APlatform] := TempRawCppPath;
 
-    if (APlatform = bpWin64) and (clBcc64x in CommandLineTools) then
-      Result := Result and RemoveFromCppBrowsingPath(Path, bpWin64x);
+    case APlatform of
+      bpWin32:
+        if clBcc32c in CommandLineTools then
+          Result := Result and RemoveFromCppBrowsingPath(Path, bpWin32c);
+      bpWin64:
+        if clBcc64x in CommandLineTools then
+          Result := Result and RemoveFromCppBrowsingPath(Path, bpWin64x);
+    end;
   end
   else
     Result := False;
@@ -4682,8 +4740,14 @@ begin
     Result := RemoveFromPath(TempRawCppPath, Path);
     RawCppSearchPath[APlatform] := TempRawCppPath;
 
-    if (APlatform = bpWin64) and (clBcc64x in CommandLineTools) then
-      Result := Result and RemoveFromCppSearchPath(AdjustPathForWin64X(Path), bpWin64x);
+    case APlatform of
+      bpWin32:
+        if clBcc32c in CommandLineTools then
+          Result := Result and RemoveFromCppSearchPath(Path, bpWin32c);
+      bpWin64:
+        if clBcc64x in CommandLineTools then
+          Result := Result and RemoveFromCppSearchPath(AdjustPathForWin64X(Path), bpWin64x);
+    end;
   end
   else
     Result := False;
@@ -4701,8 +4765,14 @@ begin
     Result := RemoveFromPath(TempRawLibraryPath, Path);
     RawCppLibraryPath[APlatform] := TempRawLibraryPath;
 
-    if (APlatform = bpWin64) and (clBcc64x in CommandLineTools) then
-      Result := Result and RemoveFromCppLibraryPath(AdjustPathForWin64X(Path), bpWin64x);
+    case APlatform of
+      bpWin32:
+        if clBcc32c in CommandLineTools then
+          Result := Result and RemoveFromCppLibraryPath(Path, bpWin32c);
+      bpWin64:
+        if clBcc64x in CommandLineTools then
+          Result := Result and RemoveFromCppLibraryPath(AdjustPathForWin64X(Path), bpWin64x);
+    end;
   end
   else
     Result := False;
@@ -4720,8 +4790,14 @@ begin
     Result := RemoveFromPath(TempRawIncludePath, Path);
     RawCppIncludePath[APlatform] := TempRawIncludePath;
 
-    if (APlatform = bpWin64) and (clBcc64x in CommandLineTools) then
-      Result := Result and RemoveFromCppIncludePath(Path, bpWin64x);
+    case APlatform of
+      bpWin32:
+        if clBcc32c in CommandLineTools then
+          Result := Result and RemoveFromCppIncludePath(Path, bpWin32c);
+      bpWin64:
+        if clBcc64x in CommandLineTools then
+          Result := Result and RemoveFromCppIncludePath(Path, bpWin64x);
+    end;
   end
   else
     Result := False;
@@ -4806,10 +4882,10 @@ begin
   CheckCBuilderPlatform(APlatform);
 
   // update registry
-  ConfigData.WriteString(GetCppPathsKeyName(APlatform), CppBrowsingPathValueName, Value);
+  ConfigData.WriteString(GetCppPathsKeyName(APlatform), CppBrowsingPathValueName + GetBDSPlatformValueNameSuffixStr(APlatform), Value);
   // update EnvOptions.dproj
   if IDEVersionNumber >= 5 then
-    SetMsBuildEnvOption(MsBuildCBuilderBrowsingPathNodeName, Value, APlatform);
+    SetMsBuildEnvOption(MsBuildCBuilderBrowsingPathNodeName + GetBDSPlatformValueNameSuffixStr(APlatform), Value, APlatform);
 end;
 
 procedure TJclBDSInstallation.SetRawCppSearchPath(APlatform: TJclBDSPlatform; const Value: TJclBorRADToolPath);
@@ -4823,10 +4899,10 @@ begin
   CheckCBuilderPlatform(APlatform);
 
   // update registry
-  ConfigData.WriteString(GetCppPathsKeyName(APlatform), CppLibraryPathValueName, Value);
+  ConfigData.WriteString(GetCppPathsKeyName(APlatform), CppLibraryPathValueName + GetBDSPlatformValueNameSuffixStr(APlatform), Value);
   // update EnvOptions.dproj
   if IDEVersionNumber >= 5 then
-    SetMsBuildEnvOption(MsBuildCBuilderLibraryPathNodeName, Value, APlatform);
+    SetMsBuildEnvOption(MsBuildCBuilderLibraryPathNodeName + GetBDSPlatformValueNameSuffixStr(APlatform), Value, APlatform);
 end;
 
 procedure TJclBDSInstallation.SetRawCppIncludePath(APlatform: TJclBDSPlatform; const Value: TJclBorRADToolPath);
@@ -4836,9 +4912,9 @@ begin
   if IDEVersionNumber >= 5 then
   begin
     // update registry
-    ConfigData.WriteString(GetCppPathsKeyName(APlatform), CppIncludePathValueName, Value);
+    ConfigData.WriteString(GetCppPathsKeyName(APlatform), CppIncludePathValueName + GetBDSPlatformValueNameSuffixStr(APlatform), Value);
     // update EnvOptions.dproj
-    SetMsBuildEnvOption(MsBuildCBuilderIncludePathNodeName, Value, APlatform);
+    SetMsBuildEnvOption(MsBuildCBuilderIncludePathNodeName + GetBDSPlatformValueNameSuffixStr(APlatform), Value, APlatform);
   end;
 end;
 
