@@ -1904,8 +1904,8 @@ asm
   {$IFDEF CPU64}
   // --> CX Value
   // <-- AX Value
-  MOV    CL, AH
-  MOV    CH, AL
+  MOV    AH, CL
+  MOV    AL, CH
   {$ENDIF CPU64}
 end;
 {$ENDIF ~PUREPASCAL}
@@ -1925,8 +1925,8 @@ asm
   {$IFDEF CPU64}
   // --> CX Value
   // <-- AX Value
-  MOV    CL, AH
-  MOV    CH, AL
+  MOV    AH, CL
+  MOV    AL, CH
   {$ENDIF CPU64}
 end;
 {$ENDIF ~PUREPASCAL}

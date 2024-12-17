@@ -19,6 +19,7 @@
   <Platforms>
     <Platform Name="Win32" Condition=""/>
     <Platform Name="Win64" Condition=""/>
+    <Platform Name="Win64x" Condition=""/>
   </Platforms>
   <Contains>
     <File Name="..\..\source\common\JclCompilerUtils.pas" Targets="all" Formname="" Condition=""/>
