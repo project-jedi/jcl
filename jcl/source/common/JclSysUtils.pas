@@ -2380,7 +2380,7 @@ begin
   FSignChars[False] := '-';
   FSignChars[True] := '+';
   FPaddingChar := ' ';
-  FMultiplier := '×';
+  FMultiplier := 'Ã—';
   FFractionalPartSeparator := JclFormatSettings.DecimalSeparator;
   FDigitBlockSeparator := JclFormatSettings.ThousandSeparator;
 end;
@@ -4528,7 +4528,7 @@ finalization
   {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
   {$IFDEF THREADSAFE}
-  // The user must release shared memory blocks himself. We don't clean up their
+  // The user must release shared memory blocks themself. We don't clean up their
   // memory leaks and make it impossible to release the shared memory in other
   // unit's finalization blocks.
   MMFFinalized := True;
