@@ -86,9 +86,9 @@ type
   TJclBorRADToolPath = string;
 
 const
-  SupportedDelphiVersions = [5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29];
-  SupportedBCBVersions    = [5, 6, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29];
-  SupportedBDSVersions    = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
+  SupportedDelphiVersions = [5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 37];
+  SupportedBCBVersions    = [5, 6, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 37];
+  SupportedBDSVersions    = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 37];
 
   // Object Repository
   BorRADToolRepositoryPagesSection    = 'Repository Pages';
@@ -862,6 +862,7 @@ type
     CoreIdeVersion: string;
     Supported: Boolean;
   end;
+  PBDSVersionInfo = ^TBDSVersionInfo;
 {$ENDIF MSWINDOWS}
 
 const
@@ -875,7 +876,7 @@ const
   RADStudioDirName = 'RAD Studio';
   RADStudio14UpDirName = 'Embarcadero\Studio';
 
-  BDSVersions: array [1..23] of TBDSVersionInfo = (
+  BDSVersions: array [1..24] of TBDSVersionInfo = (
     (
       Name: @RsCSharpName;
       VersionStr: '1.0';
@@ -1059,6 +1060,14 @@ const
       IDEPkgVersion: 29;
       PkgVersion: 29;
       CoreIdeVersion: '290';
+      Supported: True),
+    (
+      Name: @RsRSName;
+      VersionStr: '13';
+      DCCVersion: 37.0;
+      IDEPkgVersion: 37;
+      PkgVersion: 37;
+      CoreIdeVersion: '370';
       Supported: True)
   );
   {$ENDIF MSWINDOWS}
@@ -1265,6 +1274,20 @@ begin
   end
   else
     Result := LoadResRec.EnglishStr;
+end;
+
+function GetBDSVersionByIDEPkgVersion(IDEPkgVersion: Integer): PBDSVersionInfo;
+var
+  BDSVersionIndex: Integer;
+  BDSVersion: PBDSVersionInfo;
+begin
+  Result := nil;
+  for BDSVersionIndex := Low(BDSVersions) to High(BDSVersions) do
+  begin
+    BDSVersion := @BDSVersions[BDSVersionIndex];
+    if IDEPkgVersion = BDSVersion.IDEPkgVersion then
+      Result := BDSVersion;
+  end;
 end;
 
 {$ENDIF MSWINDOWS}
@@ -2932,7 +2955,9 @@ procedure TJclBorRADToolInstallation.ReadInformation;
           1:
             Result := 'cs1';
         else
-          if (Num < 7) or (Num > 12) then
+          if Num >= 37 then
+            Result := Format('d%d', [Num])      // BDS37 is now all synchronized again
+          else if (Num < 7) or (Num > 12) then
             Result := Format('d%d', [Num + 6])  // BDS 2 goes to D8 and BDS 14 goes to D20
           else
             Result := Format('d%d', [Num + 7]); // BDS 7 goes to D14
@@ -2950,6 +2975,7 @@ var
   Ed: TJclBorRADToolEdition;
   GlobalsBuffer: TStrings;
   Version: Extended;
+  BDSVersion: PBDSVersionInfo;
 begin
   Key := ConfigData.FileName;
   GlobalKey := StrEnsureSuffix('\', Key) + GlobalsKeyName;
@@ -2983,11 +3009,12 @@ begin
 
   if RadToolKind = brBorlandDevStudio then
   begin
-    if IDEVersionNumber in [Low(BDSVersions)..High(BDSVersions)] then
+    BDSVersion := GetBDSVersionByIDEPkgVersion(IDEVersionNumber);
+    if Assigned(BDSVersion) then
     begin
-      FPackageVersionNumber := BDSVersions[IDEVersionNumber].PkgVersion;
-      FIDEPackageVersionNumber := BDSVersions[IDEVersionNumber].IDEPkgVersion;
-      FDCCVersion := BDSVersions[IDEVersionNumber].DCCVersion;
+      FPackageVersionNumber := BDSVersion.PkgVersion;
+      FIDEPackageVersionNumber := BDSVersion.IDEPkgVersion;
+      FDCCVersion := BDSVersion.DCCVersion;
     end;
   end
   else
@@ -4594,12 +4621,19 @@ begin
 end;
 
 function TJclBDSInstallation.GetName: string;
+var
+  BDSVersionIndex: Integer;
+  BDSVersion: TBDSVersionInfo;
 begin
-  // The name comes from the IDEVersionNumber
-  if IDEVersionNumber in [Low(BDSVersions)..High(BDSVersions)] then
-    Result := Format('%s %s', [RadToolName, BDSVersions[IDEVersionNumber].VersionStr])
-  else
-    Result := Format('%s ***%s***', [RadToolName, IDEVersionNumber]);
+  Result := Format('%s ***%d***', [RadToolName, IDEVersionNumber]);
+
+  // The name comes from the IDEVersionNumber, which is not contiguous
+  for BDSVersionIndex := Low(BDSVersions) to High(BDSVersions) do
+  begin
+    BDSVersion := BDSVersions[BDSVersionIndex];
+    if IDEVersionNumber = BDSVersion.IDEPkgVersion then
+      Result := Format('%s %s', [RadToolName, BDSVersion.VersionStr])
+  end;
 end;
 
 function TJclBDSInstallation.GetMsBuildEnvironmentFileName: string;
@@ -4809,18 +4843,25 @@ end;
 
 class function TJclBDSInstallation.RadToolName(
   IDEVersionNumber: Integer): string;
+var
+  BDSVersion: PBDSVersionInfo;
 begin
-  if IDEVersionNumber in [Low(BDSVersions)..High(BDSVersions)] then
-    Result := LoadResString(BDSVersions[IDEVersionNumber].Name)
+  BDSVersion := GetBDSVersionByIDEPkgVersion(IDEVersionNumber);
+  if Assigned(BDSVersion) then
+    Result := LoadResString(BDSVersion.Name)
   else
     Result := LoadResString(@RsBDSName);
 end;
 
 function TJclBDSInstallation.RadToolName: string;
+var
+  BDSVersion: PBDSVersionInfo;
 begin
   // The name comes from IDEVersionNumber
   Result := RadToolName(IDEVersionNumber);
-  if IDEVersionNumber in [Low(BDSVersions)..High(BDSVersions)] then
+
+  BDSVersion := GetBDSVersionByIDEPkgVersion(IDEVersionNumber);
+  if Assigned(BDSVersion) then
   begin
     // IDE Version 5 comes in three flavors:
     // - Delphi only  (Spacely)
