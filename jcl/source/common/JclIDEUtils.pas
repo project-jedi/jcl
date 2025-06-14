@@ -857,6 +857,7 @@ type
     Name: PResStringRec;
     VersionStr: string;
     DCCVersion: Single;
+    IDEVersion: Integer;
     IDEPkgVersion: Integer;
     PkgVersion: Integer;
     CoreIdeVersion: string;
@@ -876,11 +877,12 @@ const
   RADStudioDirName = 'RAD Studio';
   RADStudio14UpDirName = 'Embarcadero\Studio';
 
-  BDSVersions: array [1..24] of TBDSVersionInfo = (
+  BDSVersions: array [0..22] of TBDSVersionInfo = (
     (
       Name: @RsCSharpName;
       VersionStr: '1.0';
       DCCVersion: 0.0;
+      IDEVersion: 1;
       IDEPkgVersion: 1;
       PkgVersion: 1;
       CoreIdeVersion: '71';
@@ -889,6 +891,7 @@ const
       Name: @RsDelphiName;
       VersionStr: '8';
       DCCVersion: 15.0; // Delphi 8 used the Delphi 7 compiler
+      IDEVersion: 2;
       IDEPkgVersion: 8;
       PkgVersion: 7;
       CoreIdeVersion: '71';
@@ -897,6 +900,7 @@ const
       Name: @RsDelphiName;
       VersionStr: '2005';
       DCCVersion: 17.0;
+      IDEVersion: 3;
       IDEPkgVersion: 9;
       PkgVersion: 9;
       CoreIdeVersion: '90';
@@ -905,6 +909,7 @@ const
       Name: @RsBDSName;
       VersionStr: '2006';
       DCCVersion: 18.0;
+      IDEVersion: 4;
       IDEPkgVersion: 10;
       PkgVersion: 10;
       CoreIdeVersion: '100';
@@ -913,6 +918,7 @@ const
       Name: @RsRSName;
       VersionStr: '2007';
       DCCVersion: 18.5;
+      IDEVersion: 5;
       IDEPkgVersion: 11; // Delphi 2007 IDE is 11 but runtime are 10
       PkgVersion: 10;
       CoreIdeVersion: '100';
@@ -921,6 +927,7 @@ const
       Name: @RsRSName;
       VersionStr: '2009';
       DCCVersion: 20.0; // Delphi.NET 2009 is 19.0
+      IDEVersion: 6;
       IDEPkgVersion: 12;
       PkgVersion: 12;
       CoreIdeVersion: '120';
@@ -929,6 +936,7 @@ const
       Name: @RsRSName;
       VersionStr: '2010';
       DCCVersion: 21.0;
+      IDEVersion: 7;
       IDEPkgVersion: 14;
       PkgVersion: 14;
       CoreIdeVersion: '140';
@@ -937,6 +945,7 @@ const
       Name: @RsRSName;
       VersionStr: 'XE';
       DCCVersion: 22.0;
+      IDEVersion: 8;
       IDEPkgVersion: 15;
       PkgVersion: 15;
       CoreIdeVersion: '150';
@@ -945,6 +954,7 @@ const
       Name: @RsRSName;
       VersionStr: 'XE2';
       DCCVersion: 23.0;
+      IDEVersion: 9;
       IDEPkgVersion: 16;
       PkgVersion: 16;
       CoreIdeVersion: '160';
@@ -953,6 +963,7 @@ const
       Name: @RsRSName;
       VersionStr: 'XE3';
       DCCVersion: 24.0;
+      IDEVersion: 10;
       IDEPkgVersion: 17;
       PkgVersion: 17;
       CoreIdeVersion: '170';
@@ -961,6 +972,7 @@ const
       Name: @RsRSName;
       VersionStr: 'XE4';
       DCCVersion: 25.0;
+      IDEVersion: 11;
       IDEPkgVersion: 18;
       PkgVersion: 18;
       CoreIdeVersion: '180';
@@ -969,22 +981,16 @@ const
       Name: @RsRSName;
       VersionStr: 'XE5';
       DCCVersion: 26.0;
+      IDEVersion: 12;
       IDEPkgVersion: 19;
       PkgVersion: 19;
       CoreIdeVersion: '190';
       Supported: True),
     (
-      Name: nil; // "Appmethod"
-      VersionStr: '';
-      DCCVersion: 0.0;
-      IDEPkgVersion: 0;
-      PkgVersion: 0;
-      CoreIdeVersion: '';
-      Supported: False),
-    (
       Name: @RsRSName;
       VersionStr: 'XE6';
       DCCVersion: 27.0;
+      IDEVersion: 14;
       IDEPkgVersion: 20;
       PkgVersion: 20;
       CoreIdeVersion: '200';
@@ -993,6 +999,7 @@ const
       Name: @RsRSName;
       VersionStr: 'XE7';
       DCCVersion: 28.0;
+      IDEVersion: 15;
       IDEPkgVersion: 21;
       PkgVersion: 21;
       CoreIdeVersion: '210';
@@ -1001,6 +1008,7 @@ const
       Name: @RsRSName;
       VersionStr: 'XE8';
       DCCVersion: 29.0;
+      IDEVersion: 16;
       IDEPkgVersion: 22;
       PkgVersion: 22;
       CoreIdeVersion: '220';
@@ -1009,6 +1017,7 @@ const
       Name: @RsRSName;
       VersionStr: '10';
       DCCVersion: 30.0;
+      IDEVersion: 17;
       IDEPkgVersion: 23;
       PkgVersion: 23;
       CoreIdeVersion: '230';
@@ -1017,6 +1026,7 @@ const
       Name: @RsRSName;
       VersionStr: '10.1';
       DCCVersion: 31.0;
+      IDEVersion: 18;
       IDEPkgVersion: 24;
       PkgVersion: 24;
       CoreIdeVersion: '240';
@@ -1025,6 +1035,7 @@ const
       Name: @RsRSName;
       VersionStr: '10.2';
       DCCVersion: 32.0;
+      IDEVersion: 19;
       IDEPkgVersion: 25;
       PkgVersion: 25;
       CoreIdeVersion: '250';
@@ -1033,6 +1044,7 @@ const
       Name: @RsRSName;
       VersionStr: '10.3';
       DCCVersion: 33.0;
+      IDEVersion: 20;
       IDEPkgVersion: 26;
       PkgVersion: 26;
       CoreIdeVersion: '260';
@@ -1041,6 +1053,7 @@ const
       Name: @RsRSName;
       VersionStr: '10.4';
       DCCVersion: 34.0;
+      IDEVersion: 21;
       IDEPkgVersion: 27;
       PkgVersion: 27;
       CoreIdeVersion: '270';
@@ -1049,6 +1062,7 @@ const
       Name: @RsRSName;
       VersionStr: '11';
       DCCVersion: 35.0;
+      IDEVersion: 22;
       IDEPkgVersion: 28;
       PkgVersion: 28;
       CoreIdeVersion: '280';
@@ -1057,6 +1071,7 @@ const
       Name: @RsRSName;
       VersionStr: '12';
       DCCVersion: 36.0;
+      IDEVersion: 23;
       IDEPkgVersion: 29;
       PkgVersion: 29;
       CoreIdeVersion: '290';
@@ -1065,6 +1080,7 @@ const
       Name: @RsRSName;
       VersionStr: '13';
       DCCVersion: 37.0;
+      IDEVersion: 37;
       IDEPkgVersion: 37;
       PkgVersion: 37;
       CoreIdeVersion: '370';
@@ -1276,7 +1292,7 @@ begin
     Result := LoadResRec.EnglishStr;
 end;
 
-function GetBDSVersionByIDEPkgVersion(IDEPkgVersion: Integer): PBDSVersionInfo;
+function GetBDSVersionByIDEVersion(IDEVersion: Integer): PBDSVersionInfo;
 var
   BDSVersionIndex: Integer;
   BDSVersion: PBDSVersionInfo;
@@ -1285,7 +1301,7 @@ begin
   for BDSVersionIndex := Low(BDSVersions) to High(BDSVersions) do
   begin
     BDSVersion := @BDSVersions[BDSVersionIndex];
-    if IDEPkgVersion = BDSVersion.IDEPkgVersion then
+    if IDEVersion = BDSVersion.IDEVersion then
       Result := BDSVersion;
   end;
 end;
@@ -3009,7 +3025,7 @@ begin
 
   if RadToolKind = brBorlandDevStudio then
   begin
-    BDSVersion := GetBDSVersionByIDEPkgVersion(IDEVersionNumber);
+    BDSVersion := GetBDSVersionByIDEVersion(IDEVersionNumber);
     if Assigned(BDSVersion) then
     begin
       FPackageVersionNumber := BDSVersion.PkgVersion;
@@ -4042,6 +4058,7 @@ class function TJclBDSInstallation.GetCommonProjectsDirectory(const RootDir: str
   IDEVersionNumber: Integer): string;
 var
   Variables: TStrings;
+  BDSVersion: PBDSVersionInfo;
 begin
   if IDEVersionNumber >= 5 then
   begin
@@ -4057,7 +4074,8 @@ begin
 
     if Result = '' then
     begin
-      Result := LoadResStrings(RootDir + '\Bin\coreide' + BDSVersions[IDEVersionNumber].CoreIdeVersion + '.',
+      BDSVersion := GetBDSVersionByIDEVersion(IDEVersionNumber);
+      Result := LoadResStrings(RootDir + '\Bin\coreide' + BDSVersion.CoreIdeVersion + '.',
         ['RAD Studio'])[0];
 
       Result := Format('%s%s%d.0',
@@ -4339,8 +4357,10 @@ class function TJclBDSInstallation.GetDefaultProjectsDirectory(const RootDir: st
   IDEVersionNumber: Integer): string;
 var
   LocStr: WideStringArray;
+  BDSVersion: PBDSVersionInfo;
 begin
-  LocStr := LoadResStrings(RootDir + '\Bin\coreide' + BDSVersions[IDEVersionNumber].CoreIdeVersion + '.',
+  BDSVersion := GetBDSVersionByIDEVersion(IDEVersionNumber);
+  LocStr := LoadResStrings(RootDir + '\Bin\coreide' + BDSVersion.CoreIdeVersion + '.',
     ['Borland Studio Projects', 'RAD Studio', 'Projects']);
 
   if IDEVersionNumber < 5 then
@@ -4622,18 +4642,13 @@ end;
 
 function TJclBDSInstallation.GetName: string;
 var
-  BDSVersionIndex: Integer;
-  BDSVersion: TBDSVersionInfo;
+  BDSVersion: PBDSVersionInfo;
 begin
-  Result := Format('%s ***%d***', [RadToolName, IDEVersionNumber]);
-
-  // The name comes from the IDEVersionNumber, which is not contiguous
-  for BDSVersionIndex := Low(BDSVersions) to High(BDSVersions) do
-  begin
-    BDSVersion := BDSVersions[BDSVersionIndex];
-    if IDEVersionNumber = BDSVersion.IDEPkgVersion then
-      Result := Format('%s %s', [RadToolName, BDSVersion.VersionStr])
-  end;
+  BDSVersion := GetBDSVersionByIDEVersion(IDEVersionNumber);
+  if Assigned(BDSVersion) then
+    Result := Format('%s %s', [RadToolName, BDSVersion.VersionStr])
+  else
+    Result := Format('%s ***%d***', [RadToolName, IDEVersionNumber]);
 end;
 
 function TJclBDSInstallation.GetMsBuildEnvironmentFileName: string;
@@ -4846,7 +4861,7 @@ class function TJclBDSInstallation.RadToolName(
 var
   BDSVersion: PBDSVersionInfo;
 begin
-  BDSVersion := GetBDSVersionByIDEPkgVersion(IDEVersionNumber);
+  BDSVersion := GetBDSVersionByIDEVersion(IDEVersionNumber);
   if Assigned(BDSVersion) then
     Result := LoadResString(BDSVersion.Name)
   else
@@ -4860,7 +4875,7 @@ begin
   // The name comes from IDEVersionNumber
   Result := RadToolName(IDEVersionNumber);
 
-  BDSVersion := GetBDSVersionByIDEPkgVersion(IDEVersionNumber);
+  BDSVersion := GetBDSVersionByIDEVersion(IDEVersionNumber);
   if Assigned(BDSVersion) then
   begin
     // IDE Version 5 comes in three flavors:
