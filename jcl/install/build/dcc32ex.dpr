@@ -562,8 +562,12 @@ begin
           8: Result.Name := 'Embarcadero RAD Studio XE';
          17: Result.Name := 'Embarcadero RAD Studio 10 Seattle';
        else
-         if Result.IDEVersion > 17 then
-           Result.Name := 'Embarcadero RAD Studio 10.' + IntToStr(Result.IDEVersion - 17) // just a guess
+         if Result.IDEVersion >= 37 then
+           Result.Name := 'Embarcadero RAD Studio ' + IntToStr(Result.IDEVersion - 37 + 13)
+         else if Result.IDEVersion >= 22 then
+           Result.Name := 'Embarcadero RAD Studio ' + IntToStr(Result.IDEVersion - 22 + 11)
+         else if Result.IDEVersion > 17 then
+           Result.Name := 'Embarcadero RAD Studio 10.' + IntToStr(Result.IDEVersion - 17)
          else if Result.IDEVersion > 13 then
            Result.Name := 'Embarcadero RAD Studio XE' + IntToStr(2 + (Result.IDEVersion - 10))
          else
@@ -879,7 +883,7 @@ begin
   InvalidFound := False;
   for Typ := ttFirst to High(TTargetType) do
   begin
-    for IDEVersion := 1 to 40 do
+    for IDEVersion := 1 to 50 do
     begin
       Target := ReadTargetInfo(Typ, IDEVersion);
       if (Target.Typ <> ttNone) and (Target.Version >= 5) then
