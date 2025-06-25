@@ -3531,6 +3531,11 @@ begin
       Include(FPersonalities, bpDelphiNet64);
   end;
 
+  // It may happen that some updates deploy bcc32c.exe even when the C++ Builder 32 bit personality is not available
+  // in which case we consider that the exe is absent to avoid inconsistency in the build process
+  if not (bpBCBuilder32 in Personalities) then
+    Exclude(FCommandLineTools, clBcc32c);
+
   if clDcc32 in CommandLineTools then
     Include(FPersonalities, bpDelphi32);
   if clDcc64 in CommandLineTools then
