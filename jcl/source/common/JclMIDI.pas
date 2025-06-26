@@ -605,7 +605,7 @@ var
   BufSize, Count: Integer;
   Buf: array of Byte;
 begin
-  Count := High(TuningData) - Low(TuningData) + 1;
+  Count := Length(TuningData);
   BufSize := 8 + Count * SizeOf(TSingleNoteTuningData);
   SetLength(Buf, BufSize);
   Buf[0] := MIDIMsgSysEx;      // Universal Real Time SysEx header, first byte
