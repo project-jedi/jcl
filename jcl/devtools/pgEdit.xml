@@ -76,7 +76,7 @@
     be available.
   -->
   <models>
-    <Model format="%p%n" name="JCL" prefix="Jcl" packages="..\packages" incfile="" nolibsuffixformat="%p%n%e%v0" dotnetprefix="Jedi.Jcl">
+    <Model format="%p%n" name="JCL" prefix="Jcl" packages="..\packages" incfile="%t" incdeffile="..\source\include\jedi\jedi.inc" nolibsuffixformat="%p%n%e%v0" dotnetprefix="Jedi.Jcl">
       <targets>
         <target name="help"/>
         <target name="fpc"/>
