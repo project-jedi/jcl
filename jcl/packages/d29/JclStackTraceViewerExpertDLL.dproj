@@ -5,7 +5,7 @@
         <ProjectVersion>20.2</ProjectVersion>
         <Config Condition="'$(Config)'==''">Release</Config>
         <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-        <DCC_Define>BCB;WIN32;CONDITIONALEXPRESSIONS;VER360;RELEASE</DCC_Define>
+        <DCC_Define>BCB;RELEASE</DCC_Define>
         <Base>True</Base>
         <AppType>Package</AppType>
         <FrameworkType>None</FrameworkType>
@@ -56,7 +56,7 @@
         <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
         <DCC_Description>JCL Stack Trace Viewer</DCC_Description>
-        <DCC_Define>BCB;BCB;WIN32;CONDITIONALEXPRESSIONS;VER360;RELEASE;$(DCC_Define)</DCC_Define>
+        <DCC_Define>BCB;BCB;RELEASE;$(DCC_Define)</DCC_Define>
         <DCC_WriteableConstants>true</DCC_WriteableConstants>
         <DCC_OutputNeverBuildDcps>true</DCC_OutputNeverBuildDcps>
         <DllSuffix>290</DllSuffix>
