@@ -496,12 +496,15 @@ var
 
   function FormatReg(const AReg: TJclFPUData; Index: Cardinal): string; overload;
   var
+    {$IFDEF WIN32}
     I: Integer;
+    {$ENDIF WIN32}
     Value: TJclSIMDValue;
   begin
     Result := '';
     Value.Display := Display;
 
+    {$IFDEF WIN32}
     if (AReg.Reserved = $FFFF) and ((NewJclContext.ExtendedContext.SaveArea.FTW and (1 shl Index)) <> 0) then
       case Display of
         pctBytes:
@@ -537,6 +540,7 @@ var
           Result := LoadResString(@RsNotSupportedFormat);
       end
     else
+    {$ENDIF WIN32}
       Result := LoadResString(@RsNoPackedData);
   end;
 
@@ -575,12 +579,14 @@ begin
           end;
         ListBoxMXCSR.Invalidate;
 
+        {$IFDEF WIN32}
         for Index := 0 to NbMMRegister - 1 do
         begin
           FRegisterChanged[Index] := ChangedFlag(NewJclContext.ExtendedContext.SaveArea.FPURegisters[Index].Data.MMRegister,
             FJclContext.ExtendedContext.SaveArea.FPURegisters[Index].Data.MMRegister);
           ListBoxRegs.Items.Strings[Index] := FormatReg(NewJclContext.ExtendedContext.SaveArea.FPURegisters[Index].Data, Index);
         end;
+        {$ENDIF WIN32}
 
         if FNbXMMRegister > 0 then
         begin
@@ -927,6 +933,7 @@ begin
 
       if AItemIndex < NbMMRegister then
       begin
+        {$IFDEF WIN32}
         FModifyForm.Caption := SysUtils.Format(LoadResString(@RsModifyMM), [AItemIndex]);
         if FModifyForm.Execute(DebuggerServices.CurrentProcess.CurrentThread, Display,
           Format, FJclContext.ExtendedContext.SaveArea.FPURegisters[AItemIndex].Data.MMRegister ,FCpuInfo, YMMEnabled) then
@@ -938,6 +945,7 @@ begin
           FRegisterChanged[AItemIndex] := True;
           ListBoxRegs.Invalidate;
         end;
+        {$ENDIF WIN32}
       end else
       begin
         if YMMEnabled then
@@ -989,10 +997,16 @@ begin
     AItemIndex := ListBoxRegs.ItemIndex;
     if Assigned(AProcess) then
       AThread := AProcess.CurrentThread;
-    (Sender as TAction).Enabled := Assigned(AThread) and (AThread.State = tsStopped) and
+    (Sender as TAction).Enabled :=
+      {$IFDEF WIN32}
+      Assigned(AThread) and (AThread.State = tsStopped) and
       (AItemIndex >= 0) and (AItemIndex < NbMMRegister) and
       ((FJclContext.ExtendedContext.SaveArea.FTW and (1 shl AItemIndex)) <> 0) and
-      (FJclContext.ExtendedContext.SaveArea.FPURegisters[AItemIndex].Data.Reserved = $FFFF);
+      (FJclContext.ExtendedContext.SaveArea.FPURegisters[AItemIndex].Data.Reserved = $FFFF)
+      {$ELSE}
+      False
+      {$ENDIF WIN32}
+      ;
   except
     on ExceptionObj: TObject do
     begin
@@ -1007,8 +1021,10 @@ var
 begin
   try
     AItemIndex := ListBoxRegs.ItemIndex;
+    {$IFDEF WIN32}
     FJclContext.ExtendedContext.SaveArea.FTW := FJclContext.ExtendedContext.SaveArea.FTW and not (1 shl AItemIndex);
     FJclContext.ExtendedContext.SaveArea.FPURegisters[AItemIndex].Data.FloatValue := 0.0;
+    {$ENDIF WIN32}
     SetThreadValues;
     GetThreadValues;
     FRegisterChanged[AItemIndex] := True;
@@ -1047,9 +1063,11 @@ var
   Index: Integer;
 begin
   try
+    {$IFDEF WIN32}
     FJclContext.ExtendedContext.SaveArea.FTW := 0;
     for Index := Low(FJclContext.ExtendedContext.SaveArea.FPURegisters) to High(FJclContext.ExtendedContext.SaveArea.FPURegisters) do
       FJclContext.ExtendedContext.SaveArea.FPURegisters[Index].Data.FloatValue := 0.0;
+    {$ENDIF WIN32}
     SetThreadValues;
     GetThreadValues;
   except

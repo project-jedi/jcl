@@ -1306,7 +1306,7 @@ begin
     AddPackageOptions(joJCLPackages);
 
     {$IFDEF MSWINDOWS}
-    if TargetPlatform = bpWin32 then //there is no 64-bit IDE yet
+    if (TargetPlatform = bpWin32) or ((TargetPlatform = bpWin64) and (Target.VersionNumber >= 23)) then // 64-bit IDE appeared with Delphi 12 update 3
       AddExpertOptions(joJCLPackages);
     {$ENDIF MSWINDOWS}
     if RunTimeInstallation then
@@ -2366,9 +2366,9 @@ function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
       Index: Integer;
       FileName, ShortFileName: string;
     begin
-      for Index := ATarget.IdePackages.Count - 1 downto 0 do
+      for Index := ATarget.IdePackages.Count[ATarget.IsDcc64] - 1 downto 0 do
       begin
-        FileName := ATarget.IdePackages.PackageFileNames[Index];
+        FileName := ATarget.IdePackages.PackageFileNames[Index, ATarget.IsDcc64];
         ShortFileName := ChangeFileExt(ExtractFileName(FileName), '');
         if StrMatches(Name, ShortFileName)
           or StrMatches(Format('%sDLL%s', [Name, StrUpper(ATarget.VersionNumberStr)]), ShortFileName)
@@ -2377,9 +2377,9 @@ function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
           or StrMatches(Format('%sDLL%d0', [Name, ATarget.VersionNumber]), ShortFileName) then
           ATarget.UnregisterPackage(FileName);
       end;
-      for Index := ATarget.IdePackages.ExpertCount - 1 downto 0 do
+      for Index := ATarget.IdePackages.ExpertCount[ATarget.IsDcc64] - 1 downto 0 do
       begin
-        FileName := ATarget.IdePackages.ExpertFileNames[Index];
+        FileName := ATarget.IdePackages.ExpertFileNames[Index, ATarget.IsDcc64];
         ShortFileName := ChangeFileExt(ExtractFileName(FileName), '');
         if StrMatches(Name, ShortFileName)
           or StrMatches(Format('%sDLL%s', [Name, StrUpper(ATarget.VersionNumberStr)]), ShortFileName)
