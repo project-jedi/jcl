@@ -1913,6 +1913,7 @@ begin
     FRootKey := Cardinal(HKCU)
   else
     FRootKey := ARootKey;
+  TRegistryIniFile(FConfigData).RegIniFile.Access := TRegistryIniFile(FConfigData).RegIniFile.Access or KEY_WOW64_32KEY;
   TRegistryIniFile(FConfigData).RegIniFile.RootKey := RootKey;
   TRegistryIniFile(FConfigData).RegIniFile.OpenKey(AConfigDataLocation, True);
   FGlobals := TStringList.Create;
@@ -5248,6 +5249,7 @@ end;
 procedure TJclBorRADToolInstallations.ReadInstallations;
 var
   VersionNumbers: TStringList;
+  PreviousRegWOW64AccessMode: TJclRegWOW64Access;
 
   function EnumVersions(const KeyName: string; const Personalities: array of string;
     CreateClass: TJclBorRADToolInstallationClass): Boolean;
@@ -5308,14 +5310,17 @@ var
 
 begin
   FList.Clear;
+  PreviousRegWOW64AccessMode := RegGetWOW64AccessMode;
   VersionNumbers := TStringList.Create;
   try
+    RegSetWOW64AccessMode(ra32Key);
     EnumVersions(DelphiKeyName, [], TJclDelphiInstallation);
     EnumVersions(BCBKeyName, [], TJclBCBInstallation);
     EnumVersions(BDSKeyName, ['Delphi.Win32', 'BCB', 'Delphi8', 'C#Builder'], TJclBDSInstallation);
     EnumVersions(CDSKeyName, ['Delphi.Win32', 'BCB', 'Delphi8', 'C#Builder'], TJclBDSInstallation);
     EnumVersions(EDSKeyName, ['Delphi.Win32', 'BCB', 'Delphi8', 'C#Builder'], TJclBDSInstallation);
   finally
+    RegSetWOW64AccessMode(PreviousRegWOW64AccessMode);
     VersionNumbers.Free;
   end;
 end;
