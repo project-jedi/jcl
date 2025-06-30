@@ -254,7 +254,8 @@ type
 
   TJclBorRADToolIdePackages = class(TJclBorRADToolInstallationObject)
   private
-    FDisabledPackages: TStringList;
+    FDisabledPackages32: TStringList;
+    FDisabledPackages64: TStringList;
     FKnownPackages32: TStringList;
     FKnownIDEPackages32: TStringList;
     FExperts32: TStringList;
@@ -271,17 +272,19 @@ type
     function GetPackageFileNames(Index: Integer; x64: Boolean): string;
     function GetIDEPackageFileNames(Index: Integer; x64: Boolean): string;
     function GetExpertFileNames(Index: Integer; x64: Boolean): string;
+    function GetDisabledPackagesKeyName(x64: Boolean): string;
     function GetKnownPackagesKeyName(x64: Boolean): string;
     function GetKnownIDEPackagesKeyName(x64: Boolean): string;
     function GetExpertsKeyName(x64: Boolean): string;
 
+    function GetDisabledPackages(x64: Boolean): TStringList;
     function GetExperts(x64: Boolean): TStringList;
     function GetKnownIDEPackages(x64: Boolean): TStringList;
     function GetKnownPackages(x64: Boolean): TStringList;
   protected
     function PackageEntryToFileName(const Entry: string): string;
     procedure ReadPackages;
-    procedure RemoveDisabled(const FileName: string);
+    procedure RemoveDisabled(const FileName: string; x64: Boolean);
   public
     constructor Create(AInstallation: TJclBorRADToolInstallation);
     destructor Destroy; override;
@@ -1091,7 +1094,8 @@ const
   TransferTitleValueName     = 'Title%d';
   TransferWorkDirValueName   = 'WorkingDir%d';
 
-  DisabledPackagesKeyName    = 'Disabled Packages';
+  DisabledPackagesBaseKeyName    = 'Disabled Packages';
+  DisabledPackagesx64keyNameSuffix = ' x64';
   EnvVariablesKeyName        = 'Environment Variables';
   EnvVariableBDSValueName    = 'BDS';
   EnvVariableBDSPROJDIRValueName = 'BDSPROJECTSDIR';
@@ -1390,9 +1394,12 @@ end;
 constructor TJclBorRADToolIdePackages.Create(AInstallation: TJclBorRADToolInstallation);
 begin
   inherited Create(AInstallation);
-  FDisabledPackages := TStringList.Create;
-  FDisabledPackages.Sorted := True;
-  FDisabledPackages.Duplicates := dupIgnore;
+  FDisabledPackages32 := TStringList.Create;
+  FDisabledPackages32.Sorted := True;
+  FDisabledPackages32.Duplicates := dupIgnore;
+  FDisabledPackages64 := TStringList.Create;
+  FDisabledPackages64.Sorted := True;
+  FDisabledPackages64.Duplicates := dupIgnore;
   FKnownPackages32 := TStringList.Create;
   FKnownPackages32.Sorted := True;
   FKnownPackages32.Duplicates := dupIgnore;
@@ -1416,7 +1423,8 @@ end;
 
 destructor TJclBorRADToolIdePackages.Destroy;
 begin
-  FreeAndNil(FDisabledPackages);
+  FreeAndNil(FDisabledPackages32);
+  FreeAndNil(FDisabledPackages64);
   FreeAndNil(FKnownPackages32);
   FreeAndNil(FKnownIDEPackages32);
   FreeAndNil(FExperts32);
@@ -1429,7 +1437,7 @@ end;
 function TJclBorRADToolIdePackages.AddPackage(const FileName, Description: string; x64: Boolean): Boolean;
 begin
   Result := True;
-  RemoveDisabled(FileName);
+  RemoveDisabled(FileName, x64);
   Installation.ConfigData.WriteString(GetKnownPackagesKeyName(x64), FileName, Description);
   ReadPackages;
 end;
@@ -1437,7 +1445,7 @@ end;
 function TJclBorRADToolIdePackages.AddExpert(const FileName, Description: string; x64: Boolean): Boolean;
 begin
   Result := True;
-  RemoveDisabled(FileName);
+  RemoveDisabled(FileName, x64);
   Installation.ConfigData.WriteString(GetExpertsKeyName(x64), Description, FileName);
   ReadPackages;
 end;
@@ -1445,7 +1453,7 @@ end;
 function TJclBorRADToolIdePackages.AddIDEPackage(const FileName, Description: string; x64: Boolean): Boolean;
 begin
   Result := True;
-  RemoveDisabled(FileName);
+  RemoveDisabled(FileName, x64);
   Installation.ConfigData.WriteString(GetKnownIDEPackagesKeyName(x64), FileName, Description);
   ReadPackages;
 end;
@@ -1453,6 +1461,21 @@ end;
 function TJclBorRADToolIdePackages.GetCount(x64: Boolean): Integer;
 begin
   Result := GetKnownPackages(x64).Count;
+end;
+
+function TJclBorRADToolIdePackages.GetDisabledPackages(
+  x64: Boolean): TStringList;
+begin
+  if x64 then
+    Result := FDisabledPackages64
+  else
+    Result := FDisabledPackages32;
+end;
+
+function TJclBorRADToolIdePackages.GetDisabledPackagesKeyName(
+  x64: Boolean): string;
+begin
+  Result := DisabledPackagesBaseKeyName + Iff(x64, DisabledPackagesx64KeyNameSuffix, '');
 end;
 
 function TJclBorRADToolIdePackages.GetExpertCount(x64: Boolean): Integer;
@@ -1565,33 +1588,36 @@ begin
     ReadPackageList(GetKnownIDEPackagesKeyName(False), FKnownIDEPackages32);
   ReadPackageList(GetKnownPackagesKeyName(False), FKnownPackages32);
 
-  ReadPackageList(DisabledPackagesKeyName, FDisabledPackages);
+  ReadPackageList(GetDisabledPackagesKeyName(False), FDisabledPackages32);
   ReadPackageList(GetExpertsKeyName(False), FExperts32);
   for I := 0 to GetCount(False) - 1 do
-    if FDisabledPackages.IndexOfName(FKnownPackages32.Names[I]) <> -1 then
+    if FDisabledPackages32.IndexOfName(FKnownPackages32.Names[I]) <> -1 then
       FKnownPackages32.Objects[I] := Pointer(True);
 
   if Installation.IDEVersionNumber >= 23 then
   begin
     ReadPackageList(GetKnownIDEPackagesKeyName(True), FKnownIDEPackages64);
     ReadPackageList(GetKnownPackagesKeyName(True), FKnownPackages64);
+    ReadPackageList(GetDisabledPackagesKeyName(True), FDisabledPackages64);
     ReadPackageList(GetExpertsKeyName(True), FExperts64);
 
     for I := 0 to GetCount(True) - 1 do
-      if FDisabledPackages.IndexOfName(FKnownPackages64.Names[I]) <> -1 then
+      if FDisabledPackages64.IndexOfName(FKnownPackages64.Names[I]) <> -1 then
         FKnownPackages64.Objects[I] := Pointer(True);
   end;
 
 end;
 
-procedure TJclBorRADToolIdePackages.RemoveDisabled(const FileName: string);
+procedure TJclBorRADToolIdePackages.RemoveDisabled(const FileName: string; x64: Boolean);
 var
+  DisabledPackages: TStringList;
   I: Integer;
 begin
-  for I := 0 to FDisabledPackages.Count - 1 do
-    if SamePath(FileName, PackageEntryToFileName(FDisabledPackages.Names[I])) then
+  DisabledPackages := GetDisabledPackages(x64);
+  for I := 0 to DisabledPackages.Count - 1 do
+    if SamePath(FileName, PackageEntryToFileName(DisabledPackages.Names[I])) then
     begin
-      Installation.ConfigData.DeleteKey(DisabledPackagesKeyName, FDisabledPackages.Names[I]);
+      Installation.ConfigData.DeleteKey(GetDisabledPackagesKeyName(x64), DisabledPackages.Names[I]);
       ReadPackages;
       Break;
     end;
@@ -1613,7 +1639,7 @@ begin
     KnownExpertFileName := PackageEntryToFileName(KnownExpert);
     if SamePath(FileName, KnownExpertFileName) then
     begin
-      RemoveDisabled(KnownExpertFileName);
+      RemoveDisabled(KnownExpertFileName, x64);
       Installation.ConfigData.DeleteKey(GetExpertsKeyName(x64), KnownExpertDescription);
       ReadPackages;
       Result := True;
@@ -1637,7 +1663,7 @@ begin
     KnownPackageFileName := PackageEntryToFileName(KnownPackage);
     if SamePath(FileName, KnownPackageFileName) then
     begin
-      RemoveDisabled(KnownPackageFileName);
+      RemoveDisabled(KnownPackageFileName, x64);
       Installation.ConfigData.DeleteKey(GetKnownPackagesKeyName(x64), KnownPackage);
       ReadPackages;
       Result := True;
@@ -1661,7 +1687,7 @@ begin
     KnownIDEPackageFileName := PackageEntryToFileName(KnownIDEPackage);
     if SamePath(FileName, KnownIDEPackageFileName) then
     begin
-      RemoveDisabled(KnownIDEPackageFileName);
+      RemoveDisabled(KnownIDEPackageFileName, x64);
       Installation.ConfigData.DeleteKey(GetKnownIDEPackagesKeyName(x64), KnownIDEPackage);
       ReadPackages;
       Result := True;
