@@ -1,5 +1,6 @@
 JEDI Code Library
 =================
+[![Build details](https://github.com/project-jedi/tools/blob/master/build_results/badges/jcl.svg)](https://github.com/project-jedi/tools/blob/master/build_results/jcl.md)
 ![](https://tokei.rs/b1/github/project-jedi/jcl?category=code)
 ![](https://tokei.rs/b1/github/project-jedi/jcl?category=files)
 
