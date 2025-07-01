@@ -1939,7 +1939,7 @@ begin
     FRootKey := Cardinal(HKCU)
   else
     FRootKey := ARootKey;
-  TRegistryIniFile(FConfigData).RegIniFile.Access := TRegistryIniFile(FConfigData).RegIniFile.Access or KEY_WOW64_32KEY;
+  TRegistryIniFile(FConfigData).RegIniFile.Access := TRegistryIniFile(FConfigData).RegIniFile.Access {$IFDEF RTL210_UP}or KEY_WOW64_32KEY{$ENDIF RTL210_UP};
   TRegistryIniFile(FConfigData).RegIniFile.RootKey := RootKey;
   TRegistryIniFile(FConfigData).RegIniFile.OpenKey(AConfigDataLocation, True);
   FGlobals := TStringList.Create;
