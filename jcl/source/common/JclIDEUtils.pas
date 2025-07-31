@@ -875,7 +875,7 @@ const
   RADStudioDirName = 'RAD Studio';
   RADStudio14UpDirName = 'Embarcadero\Studio';
 
-  BDSVersions: array [1..23] of TBDSVersionInfo = (
+  BDSVersions: array [1..24] of TBDSVersionInfo = (
     (
       Name: @RsCSharpName;
       VersionStr: '1.0';
@@ -1059,6 +1059,14 @@ const
       IDEPkgVersion: 29;
       PkgVersion: 29;
       CoreIdeVersion: '290';
+      Supported: True),
+    (
+      Name: @RsRSName;
+      VersionStr: '13';
+      DCCVersion: 37.0;
+      IDEPkgVersion: 37;
+      PkgVersion: 37;
+      CoreIdeVersion: '370';
       Supported: True)
   );
   {$ENDIF MSWINDOWS}
