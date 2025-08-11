@@ -109,7 +109,7 @@ uses Global, TLHelp32, ToolsUtils, FindDlg, JclBase;
 resourcestring
   sAllocations = 'Allocations';
   sCaption = 'Virtual Memory list - %s';
-  sCommited = 'Comitted: %.0n';
+  sCommitted = 'Committed: %.0n';
   sCount = 'Count: %d';
   sModules = 'Modules';
   sReserved = 'Reserved: %.0n';
@@ -280,7 +280,7 @@ begin
       with StatusBar do
       begin
         Panels[0].Text := Format(sCount, [Length(FMemoryInfo)]);
-        Panels[1].Text := Format(sCommited, [IntToExtended(TotalCommit)]);
+        Panels[1].Text := Format(sCommitted, [IntToExtended(TotalCommit)]);
         Panels[2].Text := Format(sReserved, [IntToExtended(TotalReserve)]);
       end;
 
@@ -480,7 +480,7 @@ procedure TMemoryDumpForm.ViewAsText1Execute(Sender: TObject);
 begin
   with ViewAsText1 do
     Checked := not Checked;
-  UpdateDumpList;  
+  UpdateDumpList;
 end;
 
 procedure TMemoryDumpForm.SaveData1Update(Sender: TObject);
