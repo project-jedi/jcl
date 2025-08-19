@@ -61,6 +61,15 @@ type
     property AncestorName: string read GetAncestorName write FAncestorName stored IsAncestorNameStored;
   end;
 
+  TJclContainerIntfAncestor2DParams = class(TJclContainerIntf2DParams)
+  protected
+    FAncestorName: string;
+    function GetAncestorName: string; virtual;
+    function IsAncestorNameStored: Boolean;
+  public
+    property AncestorName: string read GetAncestorName write FAncestorName stored IsAncestorNameStored;
+  end;
+
   TJclContainerIntfFlatAncestorParams = class(TJclContainerIntfAncestorParams)
   protected
     function GetAncestorName: string; override;
@@ -235,6 +244,19 @@ type
     property AncestorName: string index taTreeIteratorInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property GUID: string index taBinaryTreeIteratorInterfaceGUID read GetTypeAttribute write SetTypeAttribute stored IsTypeAttributeStored;
     property TypeName: string index taTypeName read GetTypeAttribute write SetTypeAttribute stored False;
+  end;
+
+  (* SORTEDMAPENTRYITERATOR(INTERFACENAME, ANCESTORNAME, GUID, TYPENAME) *)
+  TJclSortedMapEntryIteratorParams = class(TJclContainerIntfAncestor2DParams)
+  protected
+    function GetAncestorName: string; override;
+  public
+    function AliasAttributeIDs: TAllTypeAttributeIDs; override;
+  published
+    property InterfaceName: string index maSortedMapEntryIteratorInterfaceName read GetMapAttribute write SetMapAttribute stored IsMapAttributeStored;
+    property AncestorName;
+    property GUID: string index maSortedMapEntryIteratorInterfaceGUID read GetMapAttribute write SetMapAttribute stored IsMapAttributeStored;
+    property TypeName: string index maSortedMapEntryTypeName read GetMapAttribute write SetMapAttribute stored False;
   end;
 
   (* COLLECTION(INTERFACENAME, ANCESTORNAME, GUID, CONSTKEYWORD, PARAMETERNAME, TYPENAME, ITRNAME) *)
@@ -412,6 +434,7 @@ begin
   RegisterContainerParams('ITERATOR', TJclIteratorParams);
   RegisterContainerParams('TREEITERATOR', TJclTreeIteratorParams);
   RegisterContainerParams('BINTREEITERATOR', TJclBinaryTreeIteratorParams);
+  RegisterContainerParams('SORTEDMAPENTRYITERATOR', TJclSortedMapEntryIteratorParams);
   RegisterContainerParams('COLLECTION', TJclCollectionParams);
   RegisterContainerParams('LIST', TJclListParams);
   RegisterContainerParams('ARRAY', TJclArrayParams);
@@ -436,6 +459,22 @@ begin
 end;
 
 function TJclContainerIntfAncestorParams.IsAncestorNameStored: Boolean;
+begin
+  Result := FAncestorName <> '';
+end;
+
+//=== { TJclContainerIntfAncestor2DParams } ==================================
+
+function TJclContainerIntfAncestor2DParams.GetAncestorName: string;
+begin
+  Result := FAncestorName;
+  if Result = '' then
+    Result := MapInfo.MapAttributes[maMapInterfaceAncestorName];
+  if Result = '' then
+    Result := 'IJclBaseContainer';
+end;
+
+function TJclContainerIntfAncestor2DParams.IsAncestorNameStored: Boolean;
 begin
   Result := FAncestorName <> '';
 end;
@@ -572,6 +611,20 @@ end;
 function TJclBinaryTreeIteratorParams.AliasAttributeIDs: TAllTypeAttributeIDs;
 begin
   Result := [taBinaryTreeIteratorInterfaceName];
+end;
+
+//=== { TJclSortedMapEntryIteratorParams } ===================================
+
+function TJclSortedMapEntryIteratorParams.AliasAttributeIDs: TAllTypeAttributeIDs;
+begin
+  Result := [maSortedMapEntryIteratorInterfaceName];
+end;
+
+function TJclSortedMapEntryIteratorParams.GetAncestorName: string;
+begin
+  Result := FAncestorName;
+  if Result = '' then
+    Result := 'IJclAbstractIterator';
 end;
 
 //=== { TJclCollectionParams } ===============================================
