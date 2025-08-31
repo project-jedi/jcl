@@ -905,13 +905,13 @@ begin
               WriteLn('Missing dependencies for ', Target.Name);
 
               if RequireJcl and not Target.InstalledJcl then
-                WriteLn(' - JCL  is required but not installed. (http://jcl.sourceforge.net)')
+                WriteLn(' - JCL  is required but not installed. (https://github.com/project-jedi/jcl)')
               else if RequireJcl and Target.InstalledJcl and
                       not IsVersionCompatible(RequireJclVersion, Target.JclVersion) then
                 WriteLn(' - JCL  version ', Target.JclVersion, ' is too old. Version ', RequireJclVersion, ' is required.');
 
               if RequireJvcl and not Target.InstalledJvcl then
-                WriteLn(' - JVCL is required but not installed. (http://jvcl.sourceforge.net)')
+                WriteLn(' - JVCL is required but not installed. (https://github.com/project-jedi/jcl)')
               else if RequireJvcl and Target.InstalledJvcl and
                       not IsVersionCompatible(RequireJvclVersion, Target.JvclVersion) then
                 WriteLn(' - JVCL version ', Target.JvclVersion, ' is too old. Version ', RequireJvclVersion, ' is required.');
@@ -1207,7 +1207,7 @@ begin
   begin
     WriteLn;
     WriteLn('Additional options (must be specified before any dcc32 parameter):');
-    WriteLn('  --delphi-version=d23   Prefer this version, overrides environment variable');
+    WriteLn('  --delphi-version=d29   Prefer this version, overrides environment variable');
     WriteLn('  --verbose              Show warnings and errors during the compiler detection');
     WriteLn('  --use-search-paths     Use the IDE''s search paths');
     WriteLn('  --preserve-config      Keep the dcc32.cfg file and create a dcc32_command.cmd');
@@ -1219,8 +1219,8 @@ begin
     WriteLn('  --runtime-package-vcl  Link the executable against the vcl package');
     WriteLn;
     WriteLn('Environment variables:');
-    WriteLn('  DELPHIVERSION = d23    Prefer this Delphi/BCB/BDS version');
-    WriteLn('                         (d6, d7, c6, d9, d10, d11, d12, d14, ..., d23, ...)');
+    WriteLn('  DELPHIVERSION = d29    Prefer this Delphi/BCB/BDS version');
+    WriteLn('                         (d6, d7, c6, d9, d10, d11, d12, d14, ..., d29, ...)');
   end;
 
   ExitCode := Status;
