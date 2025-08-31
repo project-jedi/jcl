@@ -121,7 +121,7 @@ resourcestring
                    'The application might become unstable and even useless.' + NativeLineBreak +
                    'It''s recommended that you save your work and close this application.' + NativeLineBreak + NativeLineBreak;
   RsDetailsIntro = 'Exception log with detailed tech info. Generated on %s.' + NativeLineBreak +
-                   'You may send it to the application vendor, helping him to understand what had happened.' + NativeLineBreak +
+                   'You may send it to the application vendor, helping them to understand what had happened.' + NativeLineBreak +
                    ' Application title: %s' + NativeLineBreak +
                    ' Application file: %s';
   RsUnitVersioningIntro = 'Unit versioning information:';
