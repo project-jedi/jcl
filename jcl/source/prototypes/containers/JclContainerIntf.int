@@ -10,6 +10,13 @@ EQUALITYCOMPAREFUNCTIONTYPENAME = function(CONSTKEYWORDObj1, Obj2: TYPENAME): Bo
 HASHCONVERTFUNCTIONTYPENAME = function(CONSTKEYWORDPARAMETERNAME: TYPENAME): Integer;*)
 (*$JPPDEFINEMACRO SORTPROC(SORTPROCEDURETYPENAME, LISTINTERFACENAME, COMPAREFUNCTIONTYPENAME)
 SORTPROCEDURETYPENAME = procedure(const AList: LISTINTERFACENAME; L, R: Integer; AComparator: COMPAREFUNCTIONTYPENAME);*)
+(*$JPPDEFINEMACRO JCLSORTEDMAPTYPESINT(ENTRYTYPENAME, ENTRYARRAYTYPENAME, KEYTYPENAME, VALUETYPENAME)
+ENTRYTYPENAME = record
+  Key: KEYTYPENAME;
+  Value: VALUETYPENAME;
+end;
+
+ENTRYARRAYTYPENAME = array of ENTRYTYPENAME;*)
 (*$JPPDEFINEMACRO CONTAINER(INTERFACENAME, GUID)
 INTERFACENAME = interface(IJclBaseContainer)
   ['GUID']
@@ -105,6 +112,28 @@ INTERFACENAME = interface(ANCESTORNAME)
   function HasRight: Boolean;
   function Left: TYPENAME;
   function Right: TYPENAME;
+end;*)
+(*$JPPDEFINEMACRO SORTEDMAPENTRYITERATOR(INTERFACENAME, ANCESTORNAME, GUID, TYPENAME)
+INTERFACENAME = interface(ANCESTORNAME)
+  ['GUID']
+  function Add(const AEntry: TYPENAME): Boolean;
+  procedure Extract;
+  function GetEntry: TYPENAME;
+  function HasNext: Boolean;
+  function HasPrevious: Boolean;
+  function Insert(const AEntry: TYPENAME): Boolean;
+  function IteratorEquals(const AIterator: INTERFACENAME): Boolean;
+  function Next: TYPENAME;
+  function NextIndex: Integer;
+  function Previous: TYPENAME;
+  function PreviousIndex: Integer;
+  procedure Remove;
+  procedure Reset;
+  procedure SetEntry(const AEntry: TYPENAME);
+  {$IFDEF SUPPORTS_FOR_IN}
+  function MoveNext: Boolean;
+  property Current: TYPENAME read GetEntry;
+  {$ENDIF SUPPORTS_FOR_IN}
 end;*)
 (*$JPPDEFINEMACRO COLLECTION(INTERFACENAME, ANCESTORNAME, GUID, CONSTKEYWORD, PARAMETERNAME, TYPENAME, ITRNAME)
 INTERFACENAME = interface(ANCESTORNAME)

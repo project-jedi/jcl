@@ -55,25 +55,20 @@ uses
 {$I containers\JclAlgorithms.imp}
 type
 (*$JPPLOOP ALLMAPINDEX ALLMAPCOUNT
-  {$JPPEXPANDMACRO JCLSORTEDMAPTYPESINT(,,,)}
+  {$JPPEXPANDMACRO JCLSORTEDMAPINT(,,,,,,,,,,,,,,,,)}
 
-  {$JPPEXPANDMACRO JCLSORTEDMAPINT(,,,,,,,,,,,,,,,)}
+  {$JPPEXPANDMACRO JCLSORTEDMAPITRINT(,,,)}
 
 *)
   {$IFDEF SUPPORTS_GENERICS}{$JPPDEFINE KEYGENERIC}{$JPPDEFINE VALUEGENERIC}{$JPPUNDEF KEYREFCOUNTED}{$JPPUNDEF VALUEREFCOUNTED}{$JPPUNDEF KEYZEROINIT}{$JPPUNDEF VALUEZEROINIT}
   //DOM-IGNORE-BEGIN
 
-  TJclSortedEntry<TKey,TValue> = record
-    Key: TKey;
-    Value: TValue;
-  end;
-
-  (*$JPPEXPANDMACRO JCLSORTEDMAPINT(TSortedEntry,TSortedEntryArray,TJclSortedMap<TKey\,TValue>,TJclAbstractContainerBase,IJclMap<TKey\,TValue>,IJclSortedMap<TKey\,TValue>,IJclSet<TKey>,IJclCollection<TValue>, IJclPairOwner<TKey\,TValue>\,,
+  (*$JPPEXPANDMACRO JCLSORTEDMAPINT(TMapEntry,TMapEntryArray,TJclSortedMap<TKey\,TValue>,TJclAbstractContainerBase,IJclMap<TKey\,TValue>,IJclSortedMap<TKey\,TValue>,IJclSortedMapIterator<TKey\,TValue>,IJclSet<TKey>,IJclCollection<TValue>, IJclPairOwner<TKey\,TValue>\,,
 
 protected
   type
-    TSortedEntry = TJclSortedEntry<TKey\,TValue>;
-    TSortedEntryArray = array of TSortedEntry;
+    TMapEntry = TJclMapEntry<TKey\,TValue>;
+    TMapEntryArray = array of TMapEntry;
 private
   FOwnsKeys: Boolean;
   FOwnsValues: Boolean;
@@ -90,6 +85,8 @@ public
   function GetOwnsValues: Boolean;
   property OwnsKeys: Boolean read FOwnsKeys;
   property OwnsValues: Boolean read FOwnsValues;,; AOwnsKeys: Boolean,; AOwnsValues: Boolean,const ,TKey,const ,TValue)*)
+
+  {$JPPEXPANDMACRO JCLSORTEDMAPITRINT(TJclSortedMapIterator<TKey\,TValue>,IJclSortedMapIterator<TKey\,TValue>,TJclSortedMap<TKey\,TValue>,TJclMapEntry<TKey\,TValue>)}
 
   // E = external helper to compare items
   TJclSortedMapE<TKey, TValue> = class(TJclSortedMap<TKey,TValue>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -201,14 +198,15 @@ uses
   {$ENDIF ~HAS_UNITSCOPE}
 
 (*$JPPLOOP TRUEMAPINDEX TRUEMAPCOUNT
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(,,,,,,,,,,,,,,,,,,)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(,,,,,,,,,,,,,,,,,,,,)}
 
+{$JPPEXPANDMACRO JCLSORTEDMAPITRIMP(,,,)}
 *)
 
 {$IFDEF SUPPORTS_GENERICS}{$JPPDEFINE KEYGENERIC}{$JPPDEFINE VALUEGENERIC}{$JPPUNDEF KEYREFCOUNTED}{$JPPUNDEF VALUEREFCOUNTED}{$JPPUNDEF KEYZEROINIT}{$JPPUNDEF VALUEZEROINIT}
 //DOM-IGNORE-BEGIN
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPIMP(TSortedEntry,TSortedEntryArray,TJclSortedMap<TKey\,TValue>,IJclMap<TKey\,TValue>,IJclSortedMap<TKey\,TValue>,IJclSet<TKey>,IJclIterator<TKey>,IJclCollection<TValue>,; AOwnsKeys: Boolean,; AOwnsValues: Boolean,
+(*$JPPEXPANDMACRO JCLSORTEDMAPIMP(TMapEntry,TMapEntryArray,TJclSortedMap<TKey\,TValue>,IJclMap<TKey\,TValue>,IJclSortedMap<TKey\,TValue>,IJclSortedMapIterator<TKey\,TValue>,TJclSortedMapIterator<TKey\,TValue>,IJclSet<TKey>,IJclIterator<TKey>,IJclCollection<TValue>,; AOwnsKeys: Boolean,; AOwnsValues: Boolean,
 
   FOwnsKeys := AOwnsKeys;
   FOwnsValues := AOwnsValues;,const ,TKey,Default(TKey),const ,TValue,Default(TValue),CreateEmptyArraySet(FSize, False),CreateEmptyArrayList(FSize, False))*)
@@ -250,6 +248,8 @@ function TJclSortedMap<TKey,TValue>.GetOwnsValues: Boolean;
 begin
   Result := FOwnsValues;
 end;
+
+{$JPPEXPANDMACRO JCLSORTEDMAPITRIMP(TJclSortedMapIterator<TKey\,TValue>,IJclSortedMapIterator<TKey\,TValue>,TJclSortedMap<TKey\,TValue>,TJclMapEntry<TKey\,TValue>)}
 
 //=== { TJclSortedMapE<TKey, TValue> } =======================================
 
