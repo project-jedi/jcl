@@ -99,6 +99,7 @@ const
   JclVersionCtrlGITDirectory1 = '.git\';
   JclVersionCtrlGITIndexFile = 'index';
   JclVersionCtrlGITIgnoreFile = '.gitignore';
+  JclVersionCtrlGITLinkFile = '.git';
 
   JclVersionCtrlGITDirectories: array [0 .. 0] of string = (JclVersionCtrlGITDirectory1);
 
@@ -251,7 +252,14 @@ begin
             Result := DirectoryName;
             Exit;
           end;
+
+        //Account for submodules and multiple worktree's
+        if FileExists(DirectoryName + JclVersionCtrlGITLinkFile) then
+        begin
+          Result := DirectoryName;
+          Exit;
         end;
+      end;
 end;
 
 function TJclVersionControlGIT.GetName: string;
@@ -290,6 +298,14 @@ begin
               Found := True;
               break;
             end;
+
+          if FileExists(DirectoryName + DirDelimiter + JclVersionCtrlGITLinkFile) then
+          begin
+            // When the first .git file is found stop searching
+            Found := True;
+            Break;
+          end;
+
         end;
         if not Found then // if no direcory is found delete the list
           SdBxNames.Clear;

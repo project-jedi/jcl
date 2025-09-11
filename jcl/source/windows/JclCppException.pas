@@ -315,10 +315,16 @@ function CppGetBase(var Obj: Pointer; TypeDesc: PCppTypeId;
 function EJclCppException.AsCppClass<TCppClass>: TPointerType<TCppClass>.TPointer;
 begin
   Assert(False);
+  {$IFDEF COMPILER37_UP}
+  Result := nil;
+  {$ENDIF COMPILER37_UP}
 end;
 function EJclCppException.IsCppClass<TCppClass>: Boolean;
 begin
   Assert(False);
+  {$IFDEF COMPILER37_UP}
+  Result := False;
+  {$ENDIF COMPILER37_UP}
 end;
 {$ENDIF ~WIN64}
 {$ENDIF COMPILER15_UP}

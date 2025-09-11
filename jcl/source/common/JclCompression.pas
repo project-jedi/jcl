@@ -164,6 +164,14 @@ uses
    |         |-- TJclUEFIsDecompressArchive    handled by sevenzip http://sevenzip.sourceforge.net/
    |         |-- TJclSquashFSDecompressArchive handled by sevenzip http://sevenzip.sourceforge.net/
    |         |-- TJclCramFSDecompressArchive   handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJclExtDecompressArchive      handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJclVMDKDecompressArchive     handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJclVDIDecompressArchive      handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJclQcowDecompressArchive     handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJclGPTDecompressArchive      handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJclRar5DecompressArchive     handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJclIHexDecompressArchive     handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJclHxsDecompressArchive      handled by sevenzip http://sevenzip.sourceforge.net/
    |
    |-- TJclUpdateArchive
         |
@@ -1836,6 +1844,62 @@ type
   end;
 
   TJclCramFSDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
+  public
+    class function ArchiveExtensions: string; override;
+    class function ArchiveName: string; override;
+    class function ArchiveCLSID: TGUID; override;
+  end;
+
+  TJclExtDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
+  public
+    class function ArchiveExtensions: string; override;
+    class function ArchiveName: string; override;
+    class function ArchiveCLSID: TGUID; override;
+  end;
+
+  TJclVMDKDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
+  public
+    class function ArchiveExtensions: string; override;
+    class function ArchiveName: string; override;
+    class function ArchiveCLSID: TGUID; override;
+  end;
+
+  TJclVDIDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
+  public
+    class function ArchiveExtensions: string; override;
+    class function ArchiveName: string; override;
+    class function ArchiveCLSID: TGUID; override;
+  end;
+
+  TJclQcowDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
+  public
+    class function ArchiveExtensions: string; override;
+    class function ArchiveName: string; override;
+    class function ArchiveCLSID: TGUID; override;
+  end;
+
+  TJclGPTDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
+  public
+    class function ArchiveExtensions: string; override;
+    class function ArchiveName: string; override;
+    class function ArchiveCLSID: TGUID; override;
+  end;
+
+  TJclRar5DecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
+  public
+    class function ArchiveExtensions: string; override;
+    class function ArchiveName: string; override;
+    class function ArchiveCLSID: TGUID; override;
+  end;
+
+  TJclIHexDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
+  public
+    class function ArchiveExtensions: string; override;
+    class function ArchiveName: string; override;
+    class function ArchiveCLSID: TGUID; override;
+  end;
+
+  TJclHxsDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
   public
     class function ArchiveExtensions: string; override;
     class function ArchiveName: string; override;
@@ -3824,7 +3888,7 @@ begin
     // EFCreateError/EFOpenError don't save the error code, so access denied
     // and the like become generic "Unknown error" HRESULTs.  If GetLastError
     // matches the error message, use it.
-    if AnsiEndsStr(EStreamError(ExceptObject).Message, SysErrorMessage(GetLastError)) then
+    if AnsiEndsStr(SysErrorMessage(GetLastError), EStreamError(ExceptObject).Message) then
         Result := HResultFromWin32(GetLastError)
     else
         Result := E_FAIL
@@ -4285,7 +4349,7 @@ function TJclCompressionItem.UpdateFileTimes: Boolean;
 const
   FILE_WRITE_ATTRIBUTES = $00000100;
 var
-  FileHandle: HFILE;
+  FileHandle: THandle;
   ACreationTime, ALastAccessTime, ALastWriteTime: PFileTime;
 begin
   ReleaseStream;
@@ -4451,6 +4515,7 @@ begin
   RegisterFormat(TJclCpioDecompressArchive);
   RegisterFormat(TJclTarDecompressArchive);
   RegisterFormat(TJclGZipDecompressArchive);
+  RegisterFormat(TJclXzDecompressArchive);
   RegisterFormat(TJclNtfsDecompressArchive);
   RegisterFormat(TJclFatDecompressArchive);
   RegisterFormat(TJclMbrDecompressArchive);
@@ -4466,6 +4531,14 @@ begin
   RegisterFormat(TJclUEFIsDecompressArchive);
   RegisterFormat(TJclSquashFSDecompressArchive);
   RegisterFormat(TJclCramFSDecompressArchive);
+  RegisterFormat(TJclExtDecompressArchive); 
+  RegisterFormat(TJclVMDKDecompressArchive);
+  RegisterFormat(TJclVDIDecompressArchive);
+  RegisterFormat(TJclQcowDecompressArchive);
+  RegisterFormat(TJclGPTDecompressArchive);
+  RegisterFormat(TJclRar5DecompressArchive);
+  RegisterFormat(TJclIHexDecompressArchive);
+  RegisterFormat(TJclHxsDecompressArchive);
   // register update archives
   RegisterFormat(TJclZipUpdateArchive);
   RegisterFormat(TJclBZ2UpdateArchive);
@@ -4917,6 +4990,7 @@ end;
 procedure TJclCompressionArchive.ClearItems;
 begin
   FItems.Clear;
+  FCurrentItemIndex := -1;
 end;
 
 procedure TJclCompressionArchive.ClearOperationSuccess;
@@ -6211,12 +6285,13 @@ var
   Solid: IJclArchiveSolid;
   PropNames: array of PWideChar;
   PropValues: array of TPropVariant;
+  I: Integer;
 
   procedure AddProperty(const Name: PWideChar; const Value: TPropVariant);
   begin
-    SetLength(PropNames, Length(PropNames)+1);
+    SetLength(PropNames, Length(PropNames) + 1);
     PropNames[High(PropNames)] := Name;
-    SetLength(PropValues, Length(PropValues)+1);
+    SetLength(PropValues, Length(PropValues) + 1);
     PropValues[High(PropValues)] := Value;
   end;
 
@@ -6242,12 +6317,13 @@ var
   var
     PropValue: TPropVariant;
   const
-    BooleanValues: array [False..True] of WideString = ( 'OFF', 'ON' );
+    BooleanValues: array [False..True] of WideString = ('OFF', 'ON');
   begin
     PropValue.vt := VT_BSTR;
-      PropValue.bstrVal := SysAllocString(PWideChar(BooleanValues[Value]));
+    PropValue.bstrVal := SysAllocString(PWideChar(BooleanValues[Value]));
     AddProperty(Name, PropValue);
   end;
+
 const
   EncryptionMethodNames: array [TJclEncryptionMethod] of WideString =
     ( '' {emNone},
@@ -6272,66 +6348,73 @@ begin
       and Assigned(MultiThreadStrategy) and (MultiThreadStrategy.NumberOfThreads > 1) then
       AddCardinalProperty('MT', MultiThreadStrategy.NumberOfThreads);
 
-    if OutArchive then
-    begin
-      if Supports(AJclArchive, IJclArchiveCompressionMethod, CompressionMethod) and Assigned(CompressionMethod) then
-        AddWideStringProperty('M', CompressionMethodNames[CompressionMethod.CompressionMethod]);
-
-      if Supports(AJclArchive, IJclArchiveCompressionLevel, CompressionLevel) and Assigned(CompressionLevel) then
-        AddCardinalProperty('X', CompressionLevel.CompressionLevel);
-
-      if Supports(AJclArchive, IJclArchiveEncryptionMethod, EncryptionMethod) and Assigned(EncryptionMethod)
-        and (EncryptionMethod.EncryptionMethod <> emNone) then
-        AddWideStringProperty('EM', EncryptionMethodNames[EncryptionMethod.EncryptionMethod]);
-
-      if Supports(AJclArchive, IJclArchiveDictionarySize, DictionarySize) and Assigned(DictionarySize) and
-        Supports(AJclArchive, IJclArchiveCompressionMethod, CompressionMethod) and Assigned(CompressionMethod) and
-        (CompressionMethod.CompressionMethod in [cmBZip2,cmLZMA,cmLZMA2]) then
-        AddWideStringProperty('D', IntToStr(DictionarySize.DictionarySize) + 'B');
-
-      if Supports(AJclArchive, IJclArchiveNumberOfPasses, NumberOfPasses) and Assigned(NumberOfPasses) then
-        AddCardinalProperty('PASS', NumberOfPasses.NumberOfPasses);
-
-      if Supports(AJclArchive, IJclArchiveRemoveSfxBlock, RemoveSfxBlock) and Assigned(RemoveSfxBlock) then
-        AddBooleanProperty('RSFX', RemoveSfxBlock.RemoveSfxBlock);
-
-      if Supports(AJclArchive, IJclArchiveCompressHeader, CompressHeader) and Assigned(CompressHeader) then
+    try
+      if OutArchive then
       begin
-        AddBooleanProperty('HC', CompressHeader.CompressHeader);
-        if CompressHeader.CompressHeaderFull then
-          AddBooleanProperty('HCF', CompressHeader.CompressHeaderFull);
+        if Supports(AJclArchive, IJclArchiveCompressionMethod, CompressionMethod) and Assigned(CompressionMethod) then
+          AddWideStringProperty('M', CompressionMethodNames[CompressionMethod.CompressionMethod]);
+
+        if Supports(AJclArchive, IJclArchiveCompressionLevel, CompressionLevel) and Assigned(CompressionLevel) then
+          AddCardinalProperty('X', CompressionLevel.CompressionLevel);
+
+        if Supports(AJclArchive, IJclArchiveEncryptionMethod, EncryptionMethod) and Assigned(EncryptionMethod)
+          and (EncryptionMethod.EncryptionMethod <> emNone) then
+          AddWideStringProperty('EM', EncryptionMethodNames[EncryptionMethod.EncryptionMethod]);
+
+        if Supports(AJclArchive, IJclArchiveDictionarySize, DictionarySize) and Assigned(DictionarySize) and
+          Supports(AJclArchive, IJclArchiveCompressionMethod, CompressionMethod) and Assigned(CompressionMethod) and
+          (CompressionMethod.CompressionMethod in [cmBZip2,cmLZMA,cmLZMA2]) then
+          AddWideStringProperty('D', IntToStr(DictionarySize.DictionarySize) + 'B');
+
+        if Supports(AJclArchive, IJclArchiveNumberOfPasses, NumberOfPasses) and Assigned(NumberOfPasses) then
+          AddCardinalProperty('PASS', NumberOfPasses.NumberOfPasses);
+
+        if Supports(AJclArchive, IJclArchiveRemoveSfxBlock, RemoveSfxBlock) and Assigned(RemoveSfxBlock) then
+          AddBooleanProperty('RSFX', RemoveSfxBlock.RemoveSfxBlock);
+
+        if Supports(AJclArchive, IJclArchiveCompressHeader, CompressHeader) and Assigned(CompressHeader) then
+        begin
+          AddBooleanProperty('HC', CompressHeader.CompressHeader);
+          if CompressHeader.CompressHeaderFull then
+            AddBooleanProperty('HCF', CompressHeader.CompressHeaderFull);
+        end;
+
+        if Supports(AJclArchive, IJclArchiveEncryptHeader, EncryptHeader) and Assigned(EncryptHeader) then
+          AddBooleanProperty('HE', EncryptHeader.EncryptHeader);
+
+        if Supports(AJclArchive, IJclArchiveSaveCreationDateTime, SaveCreationDateTime)
+          and Assigned(SaveCreationDateTime) then
+          AddBooleanProperty('TC', SaveCreationDateTime.SaveCreationDateTime);
+
+        if Supports(AJclArchive, IJclArchiveSaveLastAccessDateTime, SaveLastAccessDateTime)
+          and Assigned(SaveLastAccessDateTime) then
+          AddBooleanProperty('TA', SaveLastAccessDateTime.SaveLastAccessDateTime);
+
+        if Supports(AJclArchive, IJclArchiveSaveLastWriteDateTime, SaveLastWriteDateTime)
+          and Assigned(SaveLastWriteDateTime) then
+          AddBooleanProperty('TM', SaveLastWriteDateTime.SaveLastWriteDateTime);
+
+        if Supports(AJclArchive, IJclArchiveAlgorithm, Algorithm) and Assigned(Algorithm) then
+          AddCardinalProperty('A', Algorithm.Algorithm);
+
+        if Supports(AJclArchive, IJclArchiveSolid, Solid) and Assigned(Solid) then
+        begin
+          if Solid.SolidExtension then
+            AddWideStringProperty('S', 'E');
+          if Solid.SolidBlockSize > 0 then
+            AddWideStringProperty('S', IntToStr(Solid.SolidBlockSize) + 'B')
+          else
+            AddWideStringProperty('S', IntToStr(Solid.SolidBlockSize) + 'F');
+        end;
       end;
-
-      if Supports(AJclArchive, IJclArchiveEncryptHeader, EncryptHeader) and Assigned(EncryptHeader) then
-        AddBooleanProperty('HE', EncryptHeader.EncryptHeader);
-
-      if Supports(AJclArchive, IJclArchiveSaveCreationDateTime, SaveCreationDateTime)
-        and Assigned(SaveCreationDateTime) then
-        AddBooleanProperty('TC', SaveCreationDateTime.SaveCreationDateTime);
-
-      if Supports(AJclArchive, IJclArchiveSaveLastAccessDateTime, SaveLastAccessDateTime)
-        and Assigned(SaveLastAccessDateTime) then
-        AddBooleanProperty('TA', SaveLastAccessDateTime.SaveLastAccessDateTime);
-
-      if Supports(AJclArchive, IJclArchiveSaveLastWriteDateTime, SaveLastWriteDateTime)
-        and Assigned(SaveLastWriteDateTime) then
-        AddBooleanProperty('TM', SaveLastWriteDateTime.SaveLastWriteDateTime);
-
-      if Supports(AJclArchive, IJclArchiveAlgorithm, Algorithm) and Assigned(Algorithm) then
-        AddCardinalProperty('A', Algorithm.Algorithm);
-
-      if Supports(AJclArchive, IJclArchiveSolid, Solid) and Assigned(Solid) then
-      begin
-        if Solid.SolidExtension then
-          AddWideStringProperty('S', 'E');
-        if Solid.SolidBlockSize > 0 then
-          AddWideStringProperty('S', IntToStr(Solid.SolidBlockSize) + 'B')
-        else
-          AddWideStringProperty('S', IntToStr(Solid.SolidBlockSize) + 'F');
-      end;
+      if Length(PropNames) > 0 then
+        PropertySetter.SetProperties(@PropNames[0], @PropValues[0], Length(PropNames));
+    finally
+      // Release BSTR strings. VariantPropClear() would do that, but it is only available in Delphi XE3 and newer
+      for I := 0 to Length(PropValues) - 1 do
+        if (PropValues[I].vt = VT_BSTR) and (PropValues[I].bstrVal <> nil) then
+          SysFreeString(PropValues[I].bstrVal);
     end;
-    if Length(PropNames) > 0 then
-      PropertySetter.SetProperties(@PropNames[0], @PropValues[0], Length(PropNames));
   end;
 end;
 
@@ -6408,7 +6491,9 @@ var
   Found: Boolean;
   Data: PAnsiChar;
 begin
+  {$IFNDEF COMPILER25_UP}
   Found := False;
+  {$ENDIF ~COMPILER25_UP}
   SetLength(Result, 0);
   SevenzipCheck(Sevenzip.GetNumberOfFormats(@NumberOfFormats));
   for I := 0 to NumberOfFormats - 1 do
@@ -8822,6 +8907,142 @@ begin
   Result := CLSID_CFormatCramFS;
 end;
 
+//=== { TJclExtDecompressArchive } ===========================================
+
+class function TJclExtDecompressArchive.ArchiveCLSID: TGUID;
+begin
+  Result := CLSID_CFormatExt;
+end;
+
+class function TJclExtDecompressArchive.ArchiveExtensions: string;
+begin
+  Result := LoadResString(@RsCompressionExtExtensions);
+end;
+
+class function TJclExtDecompressArchive.ArchiveName: string;
+begin
+  Result := LoadResString(@RsCompressionExtName);
+end;
+
+//=== { TJclVMDKDecompressArchive } ==========================================
+
+class function TJclVMDKDecompressArchive.ArchiveCLSID: TGUID;
+begin
+  Result := CLSID_CFormatVMDK;
+end;
+
+class function TJclVMDKDecompressArchive.ArchiveExtensions: string;
+begin
+  Result := LoadResString(@RsCompressionVMDKExtensions);
+end;
+
+class function TJclVMDKDecompressArchive.ArchiveName: string;
+begin
+  Result := LoadResString(@RsCompressionVMDKName);
+end;
+
+//=== { TJclVDIDecompressArchive } ===========================================
+
+class function TJclVDIDecompressArchive.ArchiveCLSID: TGUID;
+begin
+  Result := CLSID_CFormatVDI;
+end;
+
+class function TJclVDIDecompressArchive.ArchiveExtensions: string;
+begin
+  Result := LoadResString(@RsCompressionVDIExtensions);
+end;
+
+class function TJclVDIDecompressArchive.ArchiveName: string;
+begin
+  Result := LoadResString(@RsCompressionVDIName);
+end;
+
+//=== { TJclQcowDecompressArchive } ==========================================
+
+class function TJclQcowDecompressArchive.ArchiveCLSID: TGUID;
+begin
+  Result := CLSID_CFormatQcow;
+end;
+
+class function TJclQcowDecompressArchive.ArchiveExtensions: string;
+begin
+  Result := LoadResString(@RsCompressionQcowExtensions);
+end;
+
+class function TJclQcowDecompressArchive.ArchiveName: string;
+begin
+  Result := LoadResString(@RsCompressionQcowName);
+end;
+
+//=== { TJclGPTDecompressArchive } ===========================================
+
+class function TJclGPTDecompressArchive.ArchiveCLSID: TGUID;
+begin
+  Result := CLSID_CFormatGPT;
+end;
+
+class function TJclGPTDecompressArchive.ArchiveExtensions: string;
+begin
+  Result := LoadResString(@RsCompressionGPTExtensions);
+end;
+
+class function TJclGPTDecompressArchive.ArchiveName: string;
+begin
+  Result := LoadResString(@RsCompressionGPTName);
+end;
+
+//=== { TJclRar5DecompressArchive } ==========================================
+
+class function TJclRar5DecompressArchive.ArchiveCLSID: TGUID;
+begin
+  Result := CLSID_CFormatRar5;
+end;
+
+class function TJclRar5DecompressArchive.ArchiveExtensions: string;
+begin
+  Result := LoadResString(@RsCompressionRar5Extensions);
+end;
+
+class function TJclRar5DecompressArchive.ArchiveName: string;
+begin
+  Result := LoadResString(@RsCompressionRar5Name);
+end;
+
+//=== { TJclIHexDecompressArchive } ==========================================
+
+class function TJclIHexDecompressArchive.ArchiveCLSID: TGUID;
+begin
+  Result := CLSID_CFormatIHex;
+end;
+
+class function TJclIHexDecompressArchive.ArchiveExtensions: string;
+begin
+  Result := LoadResString(@RsCompressionIHexExtensions);
+end;
+
+class function TJclIHexDecompressArchive.ArchiveName: string;
+begin
+  Result := LoadResString(@RsCompressionIHexName);
+end;
+
+//=== { TJclHxsDecompressArchive } ===========================================
+
+class function TJclHxsDecompressArchive.ArchiveCLSID: TGUID;
+begin
+  Result := CLSID_CFormatHxs;
+end;
+
+class function TJclHxsDecompressArchive.ArchiveExtensions: string;
+begin
+  Result := LoadResString(@RsCompressionHxsExtensions);
+end;
+
+class function TJclHxsDecompressArchive.ArchiveName: string;
+begin
+  Result := LoadResString(@RsCompressionHxsName);
+end;
+
 //=== { TJclSevenzipUpdateArchive } ==========================================
 
 class function TJclSevenzipUpdateArchive.ArchiveCLSID: TGUID;
@@ -9211,7 +9432,7 @@ end;
 
 function TJclZipUpdateArchive.GetSupportedCompressionMethods: TJclCompressionMethods;
 begin
-  Result := [cmCopy,cmDeflate,cmDeflate64,cmBZip2,cmLZMA];
+  Result := [cmCopy,cmDeflate,cmDeflate64,cmBZip2,cmLZMA,cmPPMd];
 end;
 
 function TJclZipUpdateArchive.GetSupportedEncryptionMethods: TJclEncryptionMethods;

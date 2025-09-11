@@ -75,7 +75,7 @@ protected
     TVectorIterator = TJclVectorIterator<T>;
   {$JPPDEFINE GENERIC}{$JPPEXPANDMACRO MOVEARRAYINT(MoveArray,TDynArray,)},,; AOwnsItems: Boolean,const ,AItem,T,TDynArray,GetItem,SetItem)*)
 
-  (*$JPPEXPANDMACRO JCLVECTORITRINT(TJclVectorIterator<T>,IJclIterator<T>,IJclList<T>,const ,AItem,T,GetItem,SetItem)*)
+  (*$JPPEXPANDMACRO JCLVECTORITRINT(TJclVectorIterator<T>,IJclIterator<T>,TJclVector<T>,const ,AItem,T,GetItem,SetItem)*)
 
   // E = External helper to compare items for equality (GetHashCode is not used)
   TJclVectorE<T> = class(TJclVector<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -165,7 +165,7 @@ uses
 
 {$JPPDEFINE GENERIC}{$JPPEXPANDMACRO MOVEARRAYIMP(MoveArray,TDynArray,Default(T),TJclVector<T>.,)}
 
-(*$JPPEXPANDMACRO JCLVECTORITRIMP(TJclVectorIterator<T>,IJclIterator<T>,IJclList<T>,const ,AItem,T,GetItem,SetItem)*)
+(*$JPPEXPANDMACRO JCLVECTORITRIMP(TJclVectorIterator<T>,IJclIterator<T>,TJclVector<T>,const ,AItem,T,GetItem,SetItem)*)
 
 //=== { TJclVectorE<T> } =====================================================
 

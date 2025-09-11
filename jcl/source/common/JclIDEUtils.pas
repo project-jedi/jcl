@@ -86,9 +86,9 @@ type
   TJclBorRADToolPath = string;
 
 const
-  SupportedDelphiVersions = [5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
-  SupportedBCBVersions    = [5, 6, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
-  SupportedBDSVersions    = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17];
+  SupportedDelphiVersions = [5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 37];
+  SupportedBCBVersions    = [5, 6, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 37];
+  SupportedBDSVersions    = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 37];
 
   // Object Repository
   BorRADToolRepositoryPagesSection    = 'Repository Pages';
@@ -139,6 +139,10 @@ const
   Personality64Bit        = '64 bit';
   PersonalityDelphi       = 'Delphi';
   PersonalityDelphiOSX    = 'Delphi for OSX';
+  PersonalityDelphiiOSSimulator = 'Delphi for iOSSimulator';
+  PersonalityDelphiiOSDevice    = 'Delphi for iOS';
+  PersonalityDelphiAndroid      = 'Delphi for Android';
+  PersonalityDelphiLinux        = 'Delphi for Linux';
   PersonalityDelphiDotNet = 'Delphi.net';
   PersonalityBCB          = 'C++Builder';
   PersonalityCSB          = 'C#Builder';
@@ -152,11 +156,21 @@ const
 
   BDSPlatformWin32        = 'Win32';
   BDSPlatformWin64        = 'Win64';
+  BDSPlatformWin64x       = 'Win64x';
   BDSPlatformOSX32        = 'OSX32';
+  BDSPlatformOSX64        = 'OSX64';
+  BDSPlatformiOSSimulator = 'iOSSimulator';
+  BDSPlatformiOSDevice32  = 'iOSDevice32';
+  BDSPlatformiOSDevice64  = 'iOSDevice64';
+  BDSPlatformAndroid32    = 'Android32';
+  BDSPlatformAndroid64    = 'Android64';
+  BDSPlatformLinux64      = 'Linux64';
 
 // Installed versions information classes
 type
-  TJclBorPersonality = (bpDelphi32, bpDelphi64, bpDelphiOSX32, bpBCBuilder32, bpBCBuilder64,
+  TJclBorPersonality = (bpDelphi32, bpDelphi64, bpDelphiOSX32, bpDelphiOSX64,
+    bpDelphiAndroid32, bpDelphiAndroid64, bpDelphiiOSDevice32, bpDelphiiOSDevice64, bpDelphiiOSSimulator,
+    bpDelphiLinux64, bpBCBuilder32, bpBCBuilder64,
     bpDelphiNet32, bpDelphiNet64, bpCSBuilder32, bpCSBuilder64,
     bpVisualBasic32, bpVisualBasic64, bpDesign, bpUnknown);
 
@@ -166,7 +180,8 @@ type
 
   TJclBorDesigners = set of TJClBorDesigner;
 
-  TJclBDSPlatform = (bpWin32, bpWin64, bpOSX32);
+  TJclBDSPlatform = (bpWin32, bpWin32c, bpWin64, bpWin64x, bpOSX32, bpOSX64, bpAndroid32, bpAndroid64, bpiOSDevice32,
+    bpiOSDevice64, bpiOSSimulator, bpLinux64);
 
 const
   JclBorPersonalityDescription: array [TJclBorPersonality] of string =
@@ -174,6 +189,13 @@ const
     Personality32Bit + ' ' + PersonalityDelphi,
     Personality64Bit + ' ' + PersonalityDelphi,
     Personality32Bit + ' ' + PersonalityDelphiOSX,
+    Personality64Bit + ' ' + PersonalityDelphiOSX,
+    Personality32Bit + ' ' + PersonalityDelphiAndroid,
+    Personality64Bit + ' ' + PersonalityDelphiAndroid,
+    Personality32Bit + ' ' + PersonalityDelphiiOSDevice,
+    Personality64Bit + ' ' + PersonalityDelphiiOSDevice,
+    Personality32Bit + ' ' + PersonalityDelphiiOSSimulator,
+    Personality64Bit + ' ' + PersonalityDelphiLinux,
     Personality32Bit + ' ' + PersonalityBCB,
     Personality64Bit + ' ' + PersonalityBCB,
     Personality32Bit + ' ' + PersonalityDelphiDotNet,
@@ -232,43 +254,56 @@ type
 
   TJclBorRADToolIdePackages = class(TJclBorRADToolInstallationObject)
   private
-    FDisabledPackages: TStringList;
-    FKnownPackages: TStringList;
-    FKnownIDEPackages: TStringList;
-    FExperts: TStringList;
-    function GetCount: Integer;
-    function GetIDECount: Integer;
-    function GetExpertCount: Integer;
-    function GetPackageDescriptions(Index: Integer): string;
-    function GetIDEPackageDescriptions(Index: Integer): string;
-    function GetExpertDescriptions(Index: Integer): string;
-    function GetPackageDisabled(Index: Integer): Boolean;
-    function GetPackageFileNames(Index: Integer): string;
-    function GetIDEPackageFileNames(Index: Integer): string;
-    function GetExpertFileNames(Index: Integer): string;
+    FDisabledPackages32: TStringList;
+    FDisabledPackages64: TStringList;
+    FKnownPackages32: TStringList;
+    FKnownIDEPackages32: TStringList;
+    FExperts32: TStringList;
+    FKnownPackages64: TStringList;
+    FKnownIDEPackages64: TStringList;
+    FExperts64: TStringList;
+    function GetCount(x64: Boolean): Integer;
+    function GetIDECount(x64: Boolean): Integer;
+    function GetExpertCount(x64: Boolean): Integer;
+    function GetPackageDescriptions(Index: Integer; x64: Boolean): string;
+    function GetIDEPackageDescriptions(Index: Integer; x64: Boolean): string;
+    function GetExpertDescriptions(Index: Integer; x64: Boolean): string;
+    function GetPackageDisabled(Index: Integer; x64: Boolean): Boolean;
+    function GetPackageFileNames(Index: Integer; x64: Boolean): string;
+    function GetIDEPackageFileNames(Index: Integer; x64: Boolean): string;
+    function GetExpertFileNames(Index: Integer; x64: Boolean): string;
+    function GetDisabledPackagesKeyName(x64: Boolean): string;
+    function GetKnownPackagesKeyName(x64: Boolean): string;
+    function GetKnownIDEPackagesKeyName(x64: Boolean): string;
+    function GetExpertsKeyName(x64: Boolean): string;
+
+    function GetDisabledPackages(x64: Boolean): TStringList;
+    function GetExperts(x64: Boolean): TStringList;
+    function GetKnownIDEPackages(x64: Boolean): TStringList;
+    function GetKnownPackages(x64: Boolean): TStringList;
   protected
     function PackageEntryToFileName(const Entry: string): string;
     procedure ReadPackages;
-    procedure RemoveDisabled(const FileName: string);
+    procedure RemoveDisabled(const FileName: string; x64: Boolean);
   public
     constructor Create(AInstallation: TJclBorRADToolInstallation);
     destructor Destroy; override;
-    function AddPackage(const FileName, Description: string): Boolean;
-    function AddIDEPackage(const FileName, Description: string): Boolean;
-    function AddExpert(const FileName, Description: string): Boolean;
-    function RemovePackage(const FileName: string): Boolean;
-    function RemoveIDEPackage(const FileName: string): Boolean;
-    function RemoveExpert(const FileName: string): Boolean;
-    property Count: Integer read GetCount;
-    property IDECount: Integer read GetIDECount;
-    property ExpertCount: Integer read GetExpertCount;
-    property PackageDescriptions[Index: Integer]: string read GetPackageDescriptions;
-    property IDEPackageDescriptions[Index: Integer]: string read GetIDEPackageDescriptions;
-    property ExpertDescriptions[Index: Integer]: string read GetExpertDescriptions;
-    property PackageFileNames[Index: Integer]: string read GetPackageFileNames;
-    property IDEPackageFileNames[Index: Integer]: string read GetIDEPackageFileNames;
-    property ExpertFileNames[Index: Integer]: string read GetExpertFileNames;
-    property PackageDisabled[Index: Integer]: Boolean read GetPackageDisabled;
+    function AddPackage(const FileName, Description: string; x64: Boolean): Boolean;
+    function AddIDEPackage(const FileName, Description: string; x64: Boolean): Boolean;
+    function AddExpert(const FileName, Description: string; x64: Boolean): Boolean;
+    function RemovePackage(const FileName: string; x64: Boolean): Boolean;
+    function RemoveIDEPackage(const FileName: string; x64: Boolean): Boolean;
+    function RemoveExpert(const FileName: string; x64: Boolean): Boolean;
+    property Count[x64: Boolean]: Integer read GetCount;
+    property IDECount[x64: Boolean]: Integer read GetIDECount;
+    property ExpertCount[x64: Boolean]: Integer read GetExpertCount;
+    property PackageDescriptions[Index: Integer; x64: Boolean]: string read GetPackageDescriptions;
+    property IDEPackageDescriptions[Index: Integer; x64: Boolean]: string read GetIDEPackageDescriptions;
+    property ExpertDescriptions[Index: Integer; x64: Boolean]: string read GetExpertDescriptions;
+    property PackageFileNames[Index: Integer; x64: Boolean]: string read GetPackageFileNames;
+    property IDEPackageFileNames[Index: Integer; x64: Boolean]: string read GetIDEPackageFileNames;
+    property ExpertFileNames[Index: Integer; x64: Boolean]: string read GetExpertFileNames;
+    property PackageDisabled[Index: Integer; x64: Boolean]: Boolean read GetPackageDisabled;
   end;
 
   TJclBorRADToolPalette = class(TJclBorRADToolInstallationObject)
@@ -314,7 +349,8 @@ type
     property Pages: TStrings read GetPages;
   end;
 
-  TCommandLineTool = (clAsm, clBcc32, clBcc64, clDcc32, clDcc64, clDccOSX32, clDccIL, clMake, clProj2Mak);
+  TCommandLineTool = (clAsm, clBcc32, clBcc32c, clBcc64, clBcc64x, clDcc32, clDcc64, clDccOSX32, clDccOSX64, clDcciOSSimulator,
+    clDcciOS32, clDcciOS64, clDccArm32, clDccArm64, clDccLinux64, clDccIL, clMake, clProj2Mak);
   TCommandLineTools = set of TCommandLineTool;
 
   TJclBorRADToolInstallationClass = class of TJclBorRADToolInstallation;
@@ -433,6 +469,7 @@ type
     function GetLibDebugFolderName(APlatform: TJclBDSPlatform): string; virtual;
 
     function GetValid: Boolean; virtual;
+    function GetIsDcc64: Boolean; virtual;
     function GetLongPathBug: Boolean;
     function GetCompilerSettingsFormat: TJclCompilerSettingsFormat;
     function GetSupportsNoConfig: Boolean;
@@ -455,10 +492,14 @@ type
     function AddToLibrarySearchPath(const Path: string; APlatform: TJclBDSPlatform): Boolean;
     function AddToLibraryBrowsingPath(const Path: string; APlatform: TJclBDSPlatform): Boolean;
     function FindFolderInPath(Folder: string; List: TStrings): Integer;
+
+    class function AdjustPathForWin64X(const Path: string): string;
+
     // package functions
       // install = package compile + registration
       // uninstall = unregistration + deletion
-    function CompilePackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
+    function CompilePackage(const PackageName, BPLPath, DCPPath: string): Boolean; overload; virtual;
+    function CompilePackage(const PackageName, BPLPath, DCPPath, ExtraOptions: string): Boolean; overload; virtual;
     function InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
     function UninstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
     function InstallIDEPackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
@@ -565,6 +606,7 @@ type
     property CompilerSettingsFormat: TJclCompilerSettingsFormat read GetCompilerSettingsFormat;
     property SupportsNoConfig: Boolean read GetSupportsNoConfig;
     property SupportsPlatform: Boolean read GetSupportsPlatform;
+    property IsDcc64: Boolean read GetIsDcc64;
   end;
 
   TJclBCBInstallation = class(TJclBorRADToolInstallation)
@@ -602,10 +644,19 @@ type
     FDCCIL: TJclDCCIL;
     FDCC64: TJclDCC64;
     FDCCOSX32: TJclDCCOSX32;
+    FDCCOSX64: TJclDCCOSX64;
+    FDCCiOSSimulator: TJclDCCiOSSimulator;
+    FDCCiOS32: TJclDCCiOS32;
+    FDCCiOS64: TJclDCCiOS64;
+    FDCCArm32: TJclDCCArm32;
+    FDCCArm64: TJclDCCArm64;
+    FDCCLinux64: TJclDCCLinux64;
+    FBCC32C: TJclBCC32C;
     FBCC64: TJclBCC64;
+    FBCC64X: TJclBCC64X;
     FPdbCreate: Boolean;
     procedure SetDualPackageInstallation(const Value: Boolean);
-    function GetCppPathsKeyName: string;
+    function GetCppPathsKeyName(APlatform: TJclBDSPlatform): string;
     function GetCppBrowsingPath(APlatform: TJclBDSPlatform): TJclBorRADToolPath;
     function GetRawCppBrowsingPath(APlatform: TJclBDSPlatform): TJclBorRADToolPath;
     function GetCppSearchPath(APlatform: TJclBDSPlatform): TJclBorRADToolPath;
@@ -621,14 +672,24 @@ type
     function GetMaxDelphiCLRVersion: string;
     function GetDCC64: TJclDCC64;
     function GetDCCOSX32: TJclDCCOSX32;
+    function GetDCCOSX64: TJclDCCOSX64;
+    function GetDCCiOSSimulator: TJclDCCiOSSimulator;
+    function GetDCCiOS32: TJclDCCiOS32;
+    function GetDCCiOS64: TJclDCCiOS64;
+    function GetDCCArm32: TJclDCCArm32;
+    function GetDCCArm64: TJclDCCArm64;
+    function GetDCCLinux64: TJclDCCLinux64;
     function GetDCCIL: TJclDCCIL;
+    function GetBCC32c: TJclBCC32C;
     function GetBCC64: TJclBCC64;
+    function GetBCC64x: TJclBCC64x;
 
     function GetMsBuildEnvOptionsFileName: string;
     function GetMsBuildEnvironmentFileName: string;
     function GetMsBuildEnvOption(const OptionName: string; APlatform: TJclBDSPlatform; Raw: Boolean): string;
     procedure SetMsBuildEnvOption(const OptionName, Value: string; APlatform: TJclBDSPlatform);
     function GetBDSPlatformStr(APlatform: TJclBDSPlatform): string;
+    function GetBDSPlatformValueNameSuffixStr(APlatform: TJclBDSPlatform): string;
     class procedure InterpretSetVariable(const Line: string; Variables: TStrings);
   protected
     function GetDCPOutputPath(APlatform: TJclBDSPlatform): string; override;
@@ -654,6 +715,7 @@ type
     procedure SetRawLibraryBrowsingPath(APlatform: TJclBDSPlatform; const Value: TJclBorRADToolPath); override;
 
     function GetValid: Boolean; override;
+    function GetIsDcc64: Boolean; override;
   public
     constructor Create(const AConfigDataLocation: string; ARootKey: Cardinal = 0); override;
     destructor Destroy; override;
@@ -700,7 +762,16 @@ type
     property Help2Manager: TJclHelp2Manager read FHelp2Manager;
     property DCC64: TJclDCC64 read GetDCC64;
     property DCCOSX32: TJclDCCOSX32 read GetDCCOSX32;
+    property DCCOSX64: TJclDCCOSX64 read GetDCCOSX64;
+    property DCCiOSSimulator: TJclDCCiOSSimulator read GetDCCiOSSimulator;
+    property DCCiOS32: TJclDCCiOS32 read GetDCCiOS32;
+    property DCCiOS64: TJclDCCiOS64 read GetDCCiOS64;
+    property DCCArm32: TJclDCCArm32 read GetDCCArm32;
+    property DCCArm64: TJclDCCArm64 read GetDCCArm64;
+    property DCCLinux64: TJclDCCLinux64 read GetDCCLinux64;
+    property BCC32C: TJclBCC32C read GetBCC32C;
     property BCC64: TJclBCC64 read GetBCC64;
+    property BCC64X: TJclBCC64X read GetBCC64X;
     property DCCIL: TJclDCCIL read GetDCCIL;
     property MaxDelphiCLRVersion: string read GetMaxDelphiCLRVersion;
     property PdbCreate: Boolean read FPdbCreate write FPdbCreate;
@@ -786,11 +857,13 @@ type
     Name: PResStringRec;
     VersionStr: string;
     DCCVersion: Single;
+    IDEVersion: Integer;
     IDEPkgVersion: Integer;
     PkgVersion: Integer;
     CoreIdeVersion: string;
     Supported: Boolean;
   end;
+  PBDSVersionInfo = ^TBDSVersionInfo;
 {$ENDIF MSWINDOWS}
 
 const
@@ -804,11 +877,12 @@ const
   RADStudioDirName = 'RAD Studio';
   RADStudio14UpDirName = 'Embarcadero\Studio';
 
-  BDSVersions: array [1..17] of TBDSVersionInfo = (
+  BDSVersions: array [0..22] of TBDSVersionInfo = (
     (
       Name: @RsCSharpName;
       VersionStr: '1.0';
       DCCVersion: 0.0;
+      IDEVersion: 1;
       IDEPkgVersion: 1;
       PkgVersion: 1;
       CoreIdeVersion: '71';
@@ -817,6 +891,7 @@ const
       Name: @RsDelphiName;
       VersionStr: '8';
       DCCVersion: 15.0; // Delphi 8 used the Delphi 7 compiler
+      IDEVersion: 2;
       IDEPkgVersion: 8;
       PkgVersion: 7;
       CoreIdeVersion: '71';
@@ -825,6 +900,7 @@ const
       Name: @RsDelphiName;
       VersionStr: '2005';
       DCCVersion: 17.0;
+      IDEVersion: 3;
       IDEPkgVersion: 9;
       PkgVersion: 9;
       CoreIdeVersion: '90';
@@ -833,6 +909,7 @@ const
       Name: @RsBDSName;
       VersionStr: '2006';
       DCCVersion: 18.0;
+      IDEVersion: 4;
       IDEPkgVersion: 10;
       PkgVersion: 10;
       CoreIdeVersion: '100';
@@ -841,6 +918,7 @@ const
       Name: @RsRSName;
       VersionStr: '2007';
       DCCVersion: 18.5;
+      IDEVersion: 5;
       IDEPkgVersion: 11; // Delphi 2007 IDE is 11 but runtime are 10
       PkgVersion: 10;
       CoreIdeVersion: '100';
@@ -849,6 +927,7 @@ const
       Name: @RsRSName;
       VersionStr: '2009';
       DCCVersion: 20.0; // Delphi.NET 2009 is 19.0
+      IDEVersion: 6;
       IDEPkgVersion: 12;
       PkgVersion: 12;
       CoreIdeVersion: '120';
@@ -857,6 +936,7 @@ const
       Name: @RsRSName;
       VersionStr: '2010';
       DCCVersion: 21.0;
+      IDEVersion: 7;
       IDEPkgVersion: 14;
       PkgVersion: 14;
       CoreIdeVersion: '140';
@@ -865,6 +945,7 @@ const
       Name: @RsRSName;
       VersionStr: 'XE';
       DCCVersion: 22.0;
+      IDEVersion: 8;
       IDEPkgVersion: 15;
       PkgVersion: 15;
       CoreIdeVersion: '150';
@@ -873,6 +954,7 @@ const
       Name: @RsRSName;
       VersionStr: 'XE2';
       DCCVersion: 23.0;
+      IDEVersion: 9;
       IDEPkgVersion: 16;
       PkgVersion: 16;
       CoreIdeVersion: '160';
@@ -881,6 +963,7 @@ const
       Name: @RsRSName;
       VersionStr: 'XE3';
       DCCVersion: 24.0;
+      IDEVersion: 10;
       IDEPkgVersion: 17;
       PkgVersion: 17;
       CoreIdeVersion: '170';
@@ -889,6 +972,7 @@ const
       Name: @RsRSName;
       VersionStr: 'XE4';
       DCCVersion: 25.0;
+      IDEVersion: 11;
       IDEPkgVersion: 18;
       PkgVersion: 18;
       CoreIdeVersion: '180';
@@ -897,22 +981,16 @@ const
       Name: @RsRSName;
       VersionStr: 'XE5';
       DCCVersion: 26.0;
+      IDEVersion: 12;
       IDEPkgVersion: 19;
       PkgVersion: 19;
       CoreIdeVersion: '190';
       Supported: True),
     (
-      Name: nil; // "Appmethod"
-      VersionStr: '';
-      DCCVersion: 0.0;
-      IDEPkgVersion: 0;
-      PkgVersion: 0;
-      CoreIdeVersion: '';
-      Supported: False),
-    (
       Name: @RsRSName;
       VersionStr: 'XE6';
       DCCVersion: 27.0;
+      IDEVersion: 14;
       IDEPkgVersion: 20;
       PkgVersion: 20;
       CoreIdeVersion: '200';
@@ -921,6 +999,7 @@ const
       Name: @RsRSName;
       VersionStr: 'XE7';
       DCCVersion: 28.0;
+      IDEVersion: 15;
       IDEPkgVersion: 21;
       PkgVersion: 21;
       CoreIdeVersion: '210';
@@ -929,6 +1008,7 @@ const
       Name: @RsRSName;
       VersionStr: 'XE8';
       DCCVersion: 29.0;
+      IDEVersion: 16;
       IDEPkgVersion: 22;
       PkgVersion: 22;
       CoreIdeVersion: '220';
@@ -937,9 +1017,73 @@ const
       Name: @RsRSName;
       VersionStr: '10';
       DCCVersion: 30.0;
+      IDEVersion: 17;
       IDEPkgVersion: 23;
       PkgVersion: 23;
       CoreIdeVersion: '230';
+      Supported: True),
+    (
+      Name: @RsRSName;
+      VersionStr: '10.1';
+      DCCVersion: 31.0;
+      IDEVersion: 18;
+      IDEPkgVersion: 24;
+      PkgVersion: 24;
+      CoreIdeVersion: '240';
+      Supported: True),
+    (
+      Name: @RsRSName;
+      VersionStr: '10.2';
+      DCCVersion: 32.0;
+      IDEVersion: 19;
+      IDEPkgVersion: 25;
+      PkgVersion: 25;
+      CoreIdeVersion: '250';
+      Supported: True),
+    (
+      Name: @RsRSName;
+      VersionStr: '10.3';
+      DCCVersion: 33.0;
+      IDEVersion: 20;
+      IDEPkgVersion: 26;
+      PkgVersion: 26;
+      CoreIdeVersion: '260';
+      Supported: True),
+    (
+      Name: @RsRSName;
+      VersionStr: '10.4';
+      DCCVersion: 34.0;
+      IDEVersion: 21;
+      IDEPkgVersion: 27;
+      PkgVersion: 27;
+      CoreIdeVersion: '270';
+      Supported: True),
+    (
+      Name: @RsRSName;
+      VersionStr: '11';
+      DCCVersion: 35.0;
+      IDEVersion: 22;
+      IDEPkgVersion: 28;
+      PkgVersion: 28;
+      CoreIdeVersion: '280';
+      Supported: True),
+    (
+      Name: @RsRSName;
+      VersionStr: '12';
+      DCCVersion: 36.0;
+      IDEVersion: 23;
+      IDEPkgVersion: 29;
+      PkgVersion: 29;
+      CoreIdeVersion: '290';
+      Supported: True),
+    (
+      Name: @RsRSName;
+      VersionStr: '13';
+      DCCVersion: 37.0;
+      IDEVersion: 37;
+      IDEPkgVersion: 37;
+      PkgVersion: 37;
+      CoreIdeVersion: '370';
       Supported: True)
   );
   {$ENDIF MSWINDOWS}
@@ -975,14 +1119,17 @@ const
   TransferTitleValueName     = 'Title%d';
   TransferWorkDirValueName   = 'WorkingDir%d';
 
-  DisabledPackagesKeyName    = 'Disabled Packages';
+  DisabledPackagesBaseKeyName    = 'Disabled Packages';
+  DisabledPackagesx64keyNameSuffix = ' x64';
   EnvVariablesKeyName        = 'Environment Variables';
   EnvVariableBDSValueName    = 'BDS';
   EnvVariableBDSPROJDIRValueName = 'BDSPROJECTSDIR';
-  EnvVariableBDSCOMDIRValueName = 'BDSCOMMONDIR';
-  KnownPackagesKeyName       = 'Known Packages';
-  KnownIDEPackagesKeyName    = 'Known IDE Packages';
-  ExpertsKeyName             = 'Experts';
+  EnvVariableBDSCOMDIRValueName  = 'BDSCOMMONDIR';
+  KnownPackagesBaseKeyName       = 'Known Packages';
+  KnownIDEPackagesBaseKeyName    = 'Known IDE Packages';
+  KnownPackagesx64KeyNameSuffix  = ' x64';
+  ExpertsBaseKeyName             = 'Experts';
+  Expertsx64KeyNameSuffix        = ' x64';
   PackageCacheKeyName        = 'Package Cache';
 
   PaletteKeyName             = 'Palette';
@@ -1013,6 +1160,8 @@ const
   MsBuildCBuilderBrowsingPathNodeName = 'CBuilderBrowsingPath';
   MsBuildCBuilderLibraryPathNodeName = 'CBuilderLibraryPath';
   MsBuildCBuilderIncludePathNodeName = 'CBuilderIncludePath';
+
+  Clang32Suffix = '_Clang32';
 
 {$IFDEF MSWINDOWS}
 
@@ -1108,7 +1257,7 @@ begin
   FileName := '';
 
   ResetMemory(LocaleName, SizeOf(LocaleName));
-  GetLocaleInfo(GetThreadLocale, LOCALE_SABBREVLANGNAME, LocaleName, SizeOf(LocaleName));
+  GetLocaleInfo(GetThreadLocale, LOCALE_SABBREVLANGNAME, LocaleName, Length(LocaleName));
   if LocaleName[0] <> #0 then
   begin
     FileName := BaseBinName;
@@ -1141,6 +1290,20 @@ begin
   end
   else
     Result := LoadResRec.EnglishStr;
+end;
+
+function GetBDSVersionByIDEVersion(IDEVersion: Integer): PBDSVersionInfo;
+var
+  BDSVersionIndex: Integer;
+  BDSVersion: PBDSVersionInfo;
+begin
+  Result := nil;
+  for BDSVersionIndex := Low(BDSVersions) to High(BDSVersions) do
+  begin
+    BDSVersion := @BDSVersions[BDSVersionIndex];
+    if IDEVersion = BDSVersion.IDEVersion then
+      Result := BDSVersion;
+  end;
 end;
 
 {$ENDIF MSWINDOWS}
@@ -1270,102 +1433,173 @@ end;
 constructor TJclBorRADToolIdePackages.Create(AInstallation: TJclBorRADToolInstallation);
 begin
   inherited Create(AInstallation);
-  FDisabledPackages := TStringList.Create;
-  FDisabledPackages.Sorted := True;
-  FDisabledPackages.Duplicates := dupIgnore;
-  FKnownPackages := TStringList.Create;
-  FKnownPackages.Sorted := True;
-  FKnownPackages.Duplicates := dupIgnore;
-  FKnownIDEPackages := TStringList.Create;
-  FKnownIDEPackages.Sorted := True;
-  FKnownIDEPackages.Duplicates := dupIgnore;
-  FExperts := TStringList.Create;
-  FExperts.Sorted := True;
-  FExperts.Duplicates := dupIgnore;
+  FDisabledPackages32 := TStringList.Create;
+  FDisabledPackages32.Sorted := True;
+  FDisabledPackages32.Duplicates := dupIgnore;
+  FDisabledPackages64 := TStringList.Create;
+  FDisabledPackages64.Sorted := True;
+  FDisabledPackages64.Duplicates := dupIgnore;
+  FKnownPackages32 := TStringList.Create;
+  FKnownPackages32.Sorted := True;
+  FKnownPackages32.Duplicates := dupIgnore;
+  FKnownIDEPackages32 := TStringList.Create;
+  FKnownIDEPackages32.Sorted := True;
+  FKnownIDEPackages32.Duplicates := dupIgnore;
+  FExperts32 := TStringList.Create;
+  FExperts32.Sorted := True;
+  FExperts32.Duplicates := dupIgnore;
+  FKnownPackages64 := TStringList.Create;
+  FKnownPackages64.Sorted := True;
+  FKnownPackages64.Duplicates := dupIgnore;
+  FKnownIDEPackages64 := TStringList.Create;
+  FKnownIDEPackages64.Sorted := True;
+  FKnownIDEPackages64.Duplicates := dupIgnore;
+  FExperts64 := TStringList.Create;
+  FExperts64.Sorted := True;
+  FExperts64.Duplicates := dupIgnore;
   ReadPackages;
 end;
 
 destructor TJclBorRADToolIdePackages.Destroy;
 begin
-  FreeAndNil(FDisabledPackages);
-  FreeAndNil(FKnownPackages);
-  FreeAndNil(FKnownIDEPackages);
-  FreeAndNil(FExperts);
+  FreeAndNil(FDisabledPackages32);
+  FreeAndNil(FDisabledPackages64);
+  FreeAndNil(FKnownPackages32);
+  FreeAndNil(FKnownIDEPackages32);
+  FreeAndNil(FExperts32);
+  FreeAndNil(FKnownPackages64);
+  FreeAndNil(FKnownIDEPackages64);
+  FreeAndNil(FExperts64);
   inherited Destroy;
 end;
 
-function TJclBorRADToolIdePackages.AddPackage(const FileName, Description: string): Boolean;
+function TJclBorRADToolIdePackages.AddPackage(const FileName, Description: string; x64: Boolean): Boolean;
 begin
   Result := True;
-  RemoveDisabled(FileName);
-  Installation.ConfigData.WriteString(KnownPackagesKeyName, FileName, Description);
+  RemoveDisabled(FileName, x64);
+  Installation.ConfigData.WriteString(GetKnownPackagesKeyName(x64), FileName, Description);
   ReadPackages;
 end;
 
-function TJclBorRADToolIdePackages.AddExpert(const FileName, Description: string): Boolean;
+function TJclBorRADToolIdePackages.AddExpert(const FileName, Description: string; x64: Boolean): Boolean;
 begin
   Result := True;
-  RemoveDisabled(FileName);
-  Installation.ConfigData.WriteString(ExpertsKeyName, Description, FileName);
+  RemoveDisabled(FileName, x64);
+  Installation.ConfigData.WriteString(GetExpertsKeyName(x64), Description, FileName);
   ReadPackages;
 end;
 
-function TJclBorRADToolIdePackages.AddIDEPackage(const FileName, Description: string): Boolean;
+function TJclBorRADToolIdePackages.AddIDEPackage(const FileName, Description: string; x64: Boolean): Boolean;
 begin
   Result := True;
-  RemoveDisabled(FileName);
-  Installation.ConfigData.WriteString(KnownIDEPackagesKeyName, FileName, Description);
+  RemoveDisabled(FileName, x64);
+  Installation.ConfigData.WriteString(GetKnownIDEPackagesKeyName(x64), FileName, Description);
   ReadPackages;
 end;
 
-function TJclBorRADToolIdePackages.GetCount: Integer;
+function TJclBorRADToolIdePackages.GetCount(x64: Boolean): Integer;
 begin
-  Result := FKnownPackages.Count;
+  Result := GetKnownPackages(x64).Count;
 end;
 
-function TJclBorRADToolIdePackages.GetExpertCount: Integer;
+function TJclBorRADToolIdePackages.GetDisabledPackages(
+  x64: Boolean): TStringList;
 begin
-  Result := FExperts.Count;
+  if x64 then
+    Result := FDisabledPackages64
+  else
+    Result := FDisabledPackages32;
 end;
 
-function TJclBorRADToolIdePackages.GetExpertDescriptions(Index: Integer): string;
+function TJclBorRADToolIdePackages.GetDisabledPackagesKeyName(
+  x64: Boolean): string;
 begin
-  Result := FExperts.Names[Index];
+  Result := DisabledPackagesBaseKeyName + Iff(x64, DisabledPackagesx64KeyNameSuffix, '');
 end;
 
-function TJclBorRADToolIdePackages.GetExpertFileNames(Index: Integer): string;
+function TJclBorRADToolIdePackages.GetExpertCount(x64: Boolean): Integer;
 begin
-  Result := PackageEntryToFileName(FExperts.Values[FExperts.Names[Index]]);
+  Result := GetExperts(x64).Count;
 end;
 
-function TJclBorRADToolIdePackages.GetIDECount: Integer;
+function TJclBorRADToolIdePackages.GetExpertDescriptions(Index: Integer; x64: Boolean): string;
 begin
-  Result := FKnownIDEPackages.Count;
+  Result := GetExperts(x64).Names[Index];
 end;
 
-function TJclBorRADToolIdePackages.GetPackageDescriptions(Index: Integer): string;
+function TJclBorRADToolIdePackages.GetExpertFileNames(Index: Integer; x64: Boolean): string;
 begin
-  Result := FKnownPackages.Values[FKnownPackages.Names[Index]];
+  Result := PackageEntryToFileName(GetExperts(x64).Values[GetExperts(x64).Names[Index]]);
 end;
 
-function TJclBorRADToolIdePackages.GetIDEPackageDescriptions(Index: Integer): string;
+function TJclBorRADToolIdePackages.GetExperts(x64: Boolean): TStringList;
 begin
-  Result := FKnownPackages.Values[FKnownIDEPackages.Names[Index]];
+  if x64 then
+    Result := FExperts64
+  else
+    Result := FExperts32;
 end;
 
-function TJclBorRADToolIdePackages.GetPackageDisabled(Index: Integer): Boolean;
+function TJclBorRADToolIdePackages.GetExpertsKeyName(x64: Boolean): string;
 begin
-  Result := Boolean(FKnownPackages.Objects[Index]);
+  Result := ExpertsBaseKeyName + Iff(x64, Expertsx64KeyNameSuffix, '');
 end;
 
-function TJclBorRADToolIdePackages.GetPackageFileNames(Index: Integer): string;
+function TJclBorRADToolIdePackages.GetIDECount(x64: Boolean): Integer;
 begin
-  Result := PackageEntryToFileName(FKnownPackages.Names[Index]);
+  Result := GetKnownIDEPackages(x64).Count;
 end;
 
-function TJclBorRADToolIdePackages.GetIDEPackageFileNames(Index: Integer): string;
+function TJclBorRADToolIdePackages.GetPackageDescriptions(Index: Integer; x64: Boolean): string;
 begin
-  Result := PackageEntryToFileName(FKnownIDEPackages.Names[Index]);
+  Result := GetKnownPackages(x64).Values[GetKnownPackages(x64).Names[Index]];
+end;
+
+function TJclBorRADToolIdePackages.GetIDEPackageDescriptions(Index: Integer; x64: Boolean): string;
+begin
+  Result := GetKnownIDEPackages(x64).Values[GetKnownIDEPackages(x64).Names[Index]];
+end;
+
+function TJclBorRADToolIdePackages.GetPackageDisabled(Index: Integer; x64: Boolean): Boolean;
+begin
+  Result := Boolean(GetKnownPackages(x64).Objects[Index]);
+end;
+
+function TJclBorRADToolIdePackages.GetPackageFileNames(Index: Integer; x64: Boolean): string;
+begin
+  Result := PackageEntryToFileName(GetKnownPackages(x64).Names[Index]);
+end;
+
+function TJclBorRADToolIdePackages.GetIDEPackageFileNames(Index: Integer; x64: Boolean): string;
+begin
+  Result := PackageEntryToFileName(GetKnownIDEPackages(x64).Names[Index]);
+end;
+
+function TJclBorRADToolIdePackages.GetKnownIDEPackages(
+  x64: Boolean): TStringList;
+begin
+  if x64 then
+    Result := FKnownIDEPackages64
+  else
+    Result := FKnownIDEPackages32;
+end;
+
+function TJclBorRADToolIdePackages.GetKnownIDEPackagesKeyName(x64: Boolean): string;
+begin
+  Result := KnownIDEPackagesBaseKeyName + Iff(x64, KnownPackagesx64KeyNameSuffix, '');
+end;
+
+function TJclBorRADToolIdePackages.GetKnownPackages(x64: Boolean): TStringList;
+begin
+  if x64 then
+    Result := FKnownPackages64
+  else
+    Result := FKnownPackages32;
+end;
+
+function TJclBorRADToolIdePackages.GetKnownPackagesKeyName(x64: Boolean): string;
+begin
+  Result := KnownPackagesBaseKeyName + Iff(x64, KnownPackagesx64KeyNameSuffix, '');
 end;
 
 function TJclBorRADToolIdePackages.PackageEntryToFileName(const Entry: string): string;
@@ -1390,43 +1624,62 @@ var
 
 begin
   if Installation.RadToolKind = brBorlandDevStudio then
-    ReadPackageList(KnownIDEPackagesKeyName, FKnownIDEPackages);
-  ReadPackageList(KnownPackagesKeyName, FKnownPackages);
-  ReadPackageList(DisabledPackagesKeyName, FDisabledPackages);
-  ReadPackageList(ExpertsKeyName, FExperts);
-  for I := 0 to Count - 1 do
-    if FDisabledPackages.IndexOfName(FKnownPackages.Names[I]) <> -1 then
-      FKnownPackages.Objects[I] := Pointer(True);
+    ReadPackageList(GetKnownIDEPackagesKeyName(False), FKnownIDEPackages32);
+  ReadPackageList(GetKnownPackagesKeyName(False), FKnownPackages32);
+
+  ReadPackageList(GetDisabledPackagesKeyName(False), FDisabledPackages32);
+  ReadPackageList(GetExpertsKeyName(False), FExperts32);
+  for I := 0 to GetCount(False) - 1 do
+    if FDisabledPackages32.IndexOfName(FKnownPackages32.Names[I]) <> -1 then
+      FKnownPackages32.Objects[I] := Pointer(True);
+
+  if Installation.IDEVersionNumber >= 23 then
+  begin
+    ReadPackageList(GetKnownIDEPackagesKeyName(True), FKnownIDEPackages64);
+    ReadPackageList(GetKnownPackagesKeyName(True), FKnownPackages64);
+    ReadPackageList(GetDisabledPackagesKeyName(True), FDisabledPackages64);
+    ReadPackageList(GetExpertsKeyName(True), FExperts64);
+
+    for I := 0 to GetCount(True) - 1 do
+      if FDisabledPackages64.IndexOfName(FKnownPackages64.Names[I]) <> -1 then
+        FKnownPackages64.Objects[I] := Pointer(True);
+  end;
+
 end;
 
-procedure TJclBorRADToolIdePackages.RemoveDisabled(const FileName: string);
+procedure TJclBorRADToolIdePackages.RemoveDisabled(const FileName: string; x64: Boolean);
 var
+  DisabledPackages: TStringList;
   I: Integer;
 begin
-  for I := 0 to FDisabledPackages.Count - 1 do
-    if SamePath(FileName, PackageEntryToFileName(FDisabledPackages.Names[I])) then
+  DisabledPackages := GetDisabledPackages(x64);
+  for I := 0 to DisabledPackages.Count - 1 do
+    if SamePath(FileName, PackageEntryToFileName(DisabledPackages.Names[I])) then
     begin
-      Installation.ConfigData.DeleteKey(DisabledPackagesKeyName, FDisabledPackages.Names[I]);
+      Installation.ConfigData.DeleteKey(GetDisabledPackagesKeyName(x64), DisabledPackages.Names[I]);
       ReadPackages;
       Break;
     end;
 end;
 
-function TJclBorRADToolIdePackages.RemoveExpert(const FileName: string): Boolean;
+function TJclBorRADToolIdePackages.RemoveExpert(const FileName: string; x64: Boolean): Boolean;
 var
+  Experts: TStringList;
   I: Integer;
   KnownExpertDescription, KnownExpert, KnownExpertFileName: string;
 begin
   Result := False;
-  for I := 0 to FExperts.Count - 1 do
+
+  Experts := GetExperts(x64);
+  for I := 0 to Experts.Count - 1 do
   begin
-    KnownExpertDescription := FExperts.Names[I];
-    KnownExpert := FExperts.Values[KnownExpertDescription];
+    KnownExpertDescription := Experts.Names[I];
+    KnownExpert := Experts.Values[KnownExpertDescription];
     KnownExpertFileName := PackageEntryToFileName(KnownExpert);
     if SamePath(FileName, KnownExpertFileName) then
     begin
-      RemoveDisabled(KnownExpertFileName);
-      Installation.ConfigData.DeleteKey(ExpertsKeyName, KnownExpertDescription);
+      RemoveDisabled(KnownExpertFileName, x64);
+      Installation.ConfigData.DeleteKey(GetExpertsKeyName(x64), KnownExpertDescription);
       ReadPackages;
       Result := True;
       Break;
@@ -1434,20 +1687,23 @@ begin
   end;
 end;
 
-function TJclBorRADToolIdePackages.RemovePackage(const FileName: string): Boolean;
+function TJclBorRADToolIdePackages.RemovePackage(const FileName: string; x64: Boolean): Boolean;
 var
+  KnownPackages: TStringList;
   I: Integer;
   KnownPackage, KnownPackageFileName: string;
 begin
   Result := False;
-  for I := 0 to FKnownPackages.Count - 1 do
+
+  KnownPackages := GetKnownPackages(x64);
+  for I := 0 to KnownPackages.Count - 1 do
   begin
-    KnownPackage := FKnownPackages.Names[I];
+    KnownPackage := KnownPackages.Names[I];
     KnownPackageFileName := PackageEntryToFileName(KnownPackage);
     if SamePath(FileName, KnownPackageFileName) then
     begin
-      RemoveDisabled(KnownPackageFileName);
-      Installation.ConfigData.DeleteKey(KnownPackagesKeyName, KnownPackage);
+      RemoveDisabled(KnownPackageFileName, x64);
+      Installation.ConfigData.DeleteKey(GetKnownPackagesKeyName(x64), KnownPackage);
       ReadPackages;
       Result := True;
       Break;
@@ -1455,20 +1711,23 @@ begin
   end;
 end;
 
-function TJclBorRADToolIdePackages.RemoveIDEPackage(const FileName: string): Boolean;
+function TJclBorRADToolIdePackages.RemoveIDEPackage(const FileName: string; x64: Boolean): Boolean;
 var
+  KnownIDEPackages: TStringList;
   I: Integer;
   KnownIDEPackage, KnownIDEPackageFileName: string;
 begin
   Result := False;
-  for I := 0 to FKnownIDEPackages.Count - 1 do
+
+  KnownIDEPackages := GetKnownIDEPackages(x64);
+  for I := 0 to KnownIDEPackages.Count - 1 do
   begin
-    KnownIDEPackage := FKnownIDEPackages.Names[I];
+    KnownIDEPackage := KnownIDEPackages.Names[I];
     KnownIDEPackageFileName := PackageEntryToFileName(KnownIDEPackage);
     if SamePath(FileName, KnownIDEPackageFileName) then
     begin
-      RemoveDisabled(KnownIDEPackageFileName);
-      Installation.ConfigData.DeleteKey(KnownIDEPackagesKeyName, KnownIDEPackage);
+      RemoveDisabled(KnownIDEPackageFileName, x64);
+      Installation.ConfigData.DeleteKey(GetKnownIDEPackagesKeyName(x64), KnownIDEPackage);
       ReadPackages;
       Result := True;
       Break;
@@ -1719,6 +1978,7 @@ begin
     FRootKey := Cardinal(HKCU)
   else
     FRootKey := ARootKey;
+  TRegistryIniFile(FConfigData).RegIniFile.Access := TRegistryIniFile(FConfigData).RegIniFile.Access {$IFDEF RTL210_UP}or KEY_WOW64_32KEY{$ENDIF RTL210_UP};
   TRegistryIniFile(FConfigData).RegIniFile.RootKey := RootKey;
   TRegistryIniFile(FConfigData).RegIniFile.OpenKey(AConfigDataLocation, True);
   FGlobals := TStringList.Create;
@@ -1748,14 +2008,32 @@ begin
   {$ENDIF ~MSWINDOWS}
   if FileExists(BinFolderName + BCC32ExeName) then
     Include(FCommandLineTools, clBcc32);
+  if FileExists(BinFolderName + BCC32CExeName) then
+    Include(FCommandLineTools, clBcc32c);
   if FileExists(BinFolderName + BCC64ExeName) then
     Include(FCommandLineTools, clBcc64);
+  if FileExists(PathAddSeparator(PathRemoveSeparator(BinFolderName) + '64') + BCC64XExeName) then
+    Include(FCommandLineTools, clBcc64x);
   if FileExists(BinFolderName + DCC32ExeName) then
     Include(FCommandLineTools, clDcc32);
   if FileExists(BinFolderName + DCC64ExeName) then
     Include(FCommandLineTools, clDcc64);
   if FileExists(BinFolderName + DCCOSX32ExeName) then
     Include(FCommandLineTools, clDccOSX32);
+  if FileExists(BinFolderName + DCCOSX64ExeName) then
+    Include(FCommandLineTools, clDccOSX64);
+  if FileExists(BinFolderName + DCCiOSSimulatorExeName) then
+    Include(FCommandLineTools, clDcciOSSimulator);
+  if FileExists(BinFolderName + DCCiOS32ExeName) then
+    Include(FCommandLineTools, clDcciOS32);
+  if FileExists(BinFolderName + DCCiOS64ExeName) then
+    Include(FCommandLineTools, clDcciOS64);
+  if FileExists(BinFolderName + DCCArm32ExeName) then
+    Include(FCommandLineTools, clDccArm32);
+  if FileExists(BinFolderName + DCCArm64ExeName) then
+    Include(FCommandLineTools, clDccArm64);
+  if FileExists(BinFolderName + DCCLinux64ExeName) then
+    Include(FCommandLineTools, clDccLinux64);
   {$IFDEF MSWINDOWS}
   if FileExists(BinFolderName + DCCILExeName) then
     Include(FCommandLineTools, clDccIL);
@@ -1818,6 +2096,12 @@ begin
     Result := False;
 end;
 
+class function TJclBorRADToolInstallation.AdjustPathForWin64X(
+  const Path: string): string;
+begin
+  Result := StringReplace(Path, '\win64', '\win64x', [rfIgnoreCase]);
+end;
+
 function TJclBorRADToolInstallation.AddToLibraryBrowsingPath(const Path: string; APlatform: TJclBDSPlatform): Boolean;
 var
   TempRawLibraryPath: TJclBorRADToolPath;
@@ -1830,6 +2114,15 @@ begin
     PathListIncludeItems(TempRawLibraryPath, Path);
     Result := True;
     RawLibraryBrowsingPath[APlatform] := TempRawLibraryPath;
+
+    case APlatform of
+      bpWin32:
+        if clBcc32c in CommandLineTools then
+          Result := Result and AddToLibraryBrowsingPath(Path, bpWin32c);
+      bpWin64:
+        if clBcc64x in CommandLineTools then
+          Result := Result and AddToLibraryBrowsingPath(AdjustPathForWin64X(Path), bpWin64x);
+    end;
   end
   else
     Result := False;
@@ -1865,15 +2158,25 @@ end;
 procedure TJclBorRADToolInstallation.CheckCBuilderPlatform(APlatform: TJclBDSPlatform);
 begin
   if ((APlatform = bpWin32) and not (bpBCBuilder32 in Personalities)) or
-     ((APlatform = bpWin64) and not (bpBCBuilder64 in Personalities)) then
+     ((APlatform = bpWin64) and not (bpBCBuilder64 in Personalities)) or
+     ((APlatform = bpWin64x) and not (bpBCBuilder64 in Personalities)) then
     raise EJclBorRADException.CreateRes(@RsEPlatformNotValid);
 end;
 
 procedure TJclBorRADToolInstallation.CheckPlatform(APlatform: TJclBDSPlatform);
 begin
   if ((APlatform = bpWin32) and ([bpDelphi32,bpBCBuilder32] * Personalities = [])) or
+     ((APlatform = bpWin32c) and ([bpBCBuilder32] * Personalities = [])) or
      ((APlatform = bpWin64) and ([bpDelphi64,bpBCBuilder64] * Personalities = [])) or
-     ((APlatform = bpOSX32) and ([bpDelphiOSX32] * Personalities = [])) then
+     ((APlatform = bpWin64x) and ([bpBCBuilder64] * Personalities = [])) or
+     ((APlatform = bpOSX32) and ([bpDelphiOSX32] * Personalities = [])) or
+     ((APlatform = bpOSX64) and ([bpDelphiOSX64] * Personalities = [])) or
+     ((APlatform = bpiOSSimulator) and ([bpDelphiiOSSimulator] * Personalities = [])) or
+     ((APlatform = bpiOSDevice32) and ([bpDelphiiOSDevice32] * Personalities = [])) or
+     ((APlatform = bpiOSDevice64) and ([bpDelphiiOSDevice64] * Personalities = [])) or
+     ((APlatform = bpAndroid32) and ([bpDelphiAndroid32] * Personalities = [])) or
+     ((APlatform = bpAndroid64) and ([bpDelphiAndroid64] * Personalities = [])) or
+     ((APlatform = bpLinux64) and ([bpDelphiLinux64] * Personalities = [])) then
     raise EJclBorRADException.CreateRes(@RsEPlatformNotValid);
 end;
 
@@ -2005,6 +2308,12 @@ end;
 
 function TJclBorRADToolInstallation.CompilePackage(const PackageName, BPLPath,
   DCPPath: string): Boolean;
+begin
+  Result := CompilePackage(PackageName, BPLPath, DCPPath, '');
+end;
+
+function TJclBorRADToolInstallation.CompilePackage(const PackageName, BPLPath,
+  DCPPath, ExtraOptions: string): Boolean;
 var
   PackageExtension: string;
 begin
@@ -2013,7 +2322,7 @@ begin
     Result := CompileBCBPackage(PackageName, BPLPath, DCPPath)
   else
   if SameText(PackageExtension, SourceExtensionDelphiPackage) then
-    Result := CompileDelphiPackage(PackageName, BPLPath, DCPPath)
+    Result := CompileDelphiPackage(PackageName, BPLPath, DCPPath, ExtraOptions)
   else
     raise EJclBorRadException.CreateResFmt(@RsEUnknownPackageExtension, [PackageExtension]);
 end;
@@ -2248,6 +2557,11 @@ begin
   if not Assigned(FIdePackages) then
     FIdePackages := TJclBorRADToolIdePackages.Create(Self);
   Result := FIdePackages;
+end;
+
+function TJclBorRADToolInstallation.GetIsDcc64: Boolean;
+begin
+  Result := False;
 end;
 
 function TJclBorRADToolInstallation.GetIsTurboExplorer: Boolean;
@@ -2657,7 +2971,9 @@ procedure TJclBorRADToolInstallation.ReadInformation;
           1:
             Result := 'cs1';
         else
-          if (Num < 7) or (Num > 12) then
+          if Num >= 37 then
+            Result := Format('d%d', [Num])      // BDS37 is now all synchronized again
+          else if (Num < 7) or (Num > 12) then
             Result := Format('d%d', [Num + 6])  // BDS 2 goes to D8 and BDS 14 goes to D20
           else
             Result := Format('d%d', [Num + 7]); // BDS 7 goes to D14
@@ -2675,6 +2991,7 @@ var
   Ed: TJclBorRADToolEdition;
   GlobalsBuffer: TStrings;
   Version: Extended;
+  BDSVersion: PBDSVersionInfo;
 begin
   Key := ConfigData.FileName;
   GlobalKey := StrEnsureSuffix('\', Key) + GlobalsKeyName;
@@ -2708,11 +3025,12 @@ begin
 
   if RadToolKind = brBorlandDevStudio then
   begin
-    if IDEVersionNumber in [Low(BDSVersions)..High(BDSVersions)] then
+    BDSVersion := GetBDSVersionByIDEVersion(IDEVersionNumber);
+    if Assigned(BDSVersion) then
     begin
-      FPackageVersionNumber := BDSVersions[IDEVersionNumber].PkgVersion;
-      FIDEPackageVersionNumber := BDSVersions[IDEVersionNumber].IDEPkgVersion;
-      FDCCVersion := BDSVersions[IDEVersionNumber].DCCVersion;
+      FPackageVersionNumber := BDSVersion.PkgVersion;
+      FIDEPackageVersionNumber := BDSVersion.IDEPkgVersion;
+      FDCCVersion := BDSVersion.DCCVersion;
     end;
   end
   else
@@ -2761,7 +3079,7 @@ begin
   else
     InternalDescription := Description;
 
-  Result := IdePackages.AddExpert(BinaryFileName, InternalDescription);
+  Result := IdePackages.AddExpert(BinaryFileName, InternalDescription, GetIsDcc64);
   if Result then
     OutputString(LoadResString(@RsRegistrationOk))
   else
@@ -2784,7 +3102,7 @@ begin
   else
     InternalDescription := Description;
 
-  Result := IdePackages.AddIDEPackage(BinaryFileName, InternalDescription);
+  Result := IdePackages.AddIDEPackage(BinaryFileName, InternalDescription, GetIsDcc64);
   if Result then
     OutputString(LoadResString(@RsRegistrationOk))
   else
@@ -2807,7 +3125,7 @@ begin
   else
     InternalDescription := Description;
 
-  Result := IdePackages.AddPackage(BinaryFileName, InternalDescription);
+  Result := IdePackages.AddPackage(BinaryFileName, InternalDescription, GetIsDcc64);
   if Result then
     OutputString(LoadResString(@RsRegistrationOk))
   else
@@ -3198,7 +3516,7 @@ function TJclBorRADToolInstallation.UnregisterExpert(const BinaryFileName: strin
 begin
   OutputString(Format(LoadResString(@RsUnregisteringExpert), [BinaryFileName]));
 
-  Result := IdePackages.RemoveExpert(BinaryFileName);
+  Result := IdePackages.RemoveExpert(BinaryFileName, GetIsDcc64);
   if Result then
     OutputString(LoadResString(@RsUnregistrationOk))
   else
@@ -3214,7 +3532,7 @@ function TJclBorRADToolInstallation.UnregisterIDEPackage(const BinaryFileName: s
 begin
   OutputString(Format(LoadResString(@RsUnregisteringIDEPackage), [BinaryFileName]));
 
-  Result := IdePackages.RemoveIDEPackage(BinaryFileName);
+  Result := IdePackages.RemoveIDEPackage(BinaryFileName, GetIsDcc64);
   if Result then
     OutputString(LoadResString(@RsUnregistrationOk))
   else
@@ -3230,7 +3548,7 @@ function TJclBorRADToolInstallation.UnregisterPackage(const BinaryFileName: stri
 begin
   OutputString(Format(LoadResString(@RsUnregisteringPackage), [BinaryFileName]));
 
-  Result := IdePackages.RemovePackage(BinaryFileName);
+  Result := IdePackages.RemovePackage(BinaryFileName, GetIsDcc64);
   if Result then
     OutputString(LoadResString(@RsUnregistrationOk))
   else
@@ -3377,13 +3695,42 @@ begin
       Include(FPersonalities, bpDelphiNet64);
   end;
 
+  // It may happen that some updates deploy bcc32c.exe even when the C++ Builder personality is not available
+  // in which case we consider that the exe is absent to avoid inconsistency in the build process
+  // Also, it is not possible to have C++ Builder 64 without installing the 32 bit personality, we then also
+  // exclude anything C++x64 related in that case as bcc64(x).exe can also be deployed by an update.
+  if not (bpBCBuilder32 in Personalities) then
+  begin
+    Exclude(FCommandLineTools, clBcc32c);
+    Exclude(FCommandLineTools, clBcc64);
+    Exclude(FCommandLineTools, clBcc64x);
+
+    Exclude(FPersonalities, bpBCBuilder64);
+  end;
+
   if clDcc32 in CommandLineTools then
     Include(FPersonalities, bpDelphi32);
   if clDcc64 in CommandLineTools then
     Include(FPersonalities, bpDelphi64);
   if clDccOSX32 in CommandLineTools then
     Include(FPersonalities, bpDelphiOSX32);
+  if clDccOSX64 in CommandLineTools then
+    Include(FPersonalities, bpDelphiOSX64);
+  if clDcciOSSimulator in CommandLineTools then
+    Include(FPersonalities, bpDelphiiOSSimulator);
+  if clDcciOS32 in CommandLineTools then
+    Include(FPersonalities, bpDelphiiOSDevice32);
+  if clDcciOS64 in CommandLineTools then
+    Include(FPersonalities, bpDelphiiOSDevice64);
+  if clDccArm32 in CommandLineTools then
+    Include(FPersonalities, bpDelphiAndroid32);
+  if clDccArm64 in CommandLineTools then
+    Include(FPersonalities, bpDelphiAndroid64);
+  if clDccLinux64 in CommandLineTools then
+    Include(FPersonalities, bpDelphiLinux64);
   if clBcc64 in CommandLineTools then
+    Include(FPersonalities, bpBCBuilder64);
+  if clBcc64x in CommandLineTools then
     Include(FPersonalities, bpBCBuilder64);
 end;
 
@@ -3392,7 +3739,15 @@ begin
   FreeAndNil(FDCCIL);
   FreeAndNil(FDCC64);
   FreeAndNil(FBCC64);
+  FreeAndNil(FBCC64X);
   FreeAndNil(FDCCOSX32);
+  FreeAndNil(FDCCOSX64);
+  FreeAndNil(FDCCiOSSimulator);
+  FreeAndNil(FDCCiOS32);
+  FreeAndNil(FDCCiOS64);
+  FreeAndNil(FDCCArm32);
+  FreeAndNil(FDCCArm64);
+  FreeAndNil(FDCCLinux64);
   FreeAndNil(FHelp2Manager);
   inherited Destroy;
 end;
@@ -3409,6 +3764,15 @@ begin
     PathListIncludeItems(TempRawCppPath, Path);
     Result := True;
     RawCppBrowsingPath[APlatform] := TempRawCppPath;
+
+    case APlatform of
+      bpWin32:
+        if clBcc32c in CommandLineTools then
+          Result := Result and AddToCppBrowsingPath(Path, bpWin32c);
+      bpWin64:
+        if clBcc64x in CommandLineTools then
+          Result := Result and AddToCppBrowsingPath(Path, bpWin64x);
+    end;
   end
   else
     Result := False;
@@ -3426,6 +3790,15 @@ begin
     PathListIncludeItems(TempRawCppPath, Path);
     Result := True;
     RawCppSearchPath[APlatform] := TempRawCppPath;
+
+    case APlatform of
+      bpWin32:
+        if clBcc32c in CommandLineTools then
+          Result := Result and AddToCppSearchPath(Path, bpWin32c);
+      bpWin64:
+        if clBcc64x in CommandLineTools then
+          Result := Result and AddToCppSearchPath(AdjustPathForWin64X(Path), bpWin64x);
+    end;
   end
   else
     Result := False;
@@ -3443,6 +3816,15 @@ begin
     PathListIncludeItems(TempRawLibraryPath, Path);
     Result := True;
     RawCppLibraryPath[APlatform] := TempRawLibraryPath;
+
+    case APlatform of
+      bpWin32:
+        if clBcc32c in CommandLineTools then
+          Result := Result and AddToCppLibraryPath(Path, bpWin32c);
+      bpWin64:
+        if clBcc64x in CommandLineTools then
+          Result := Result and AddToCppLibraryPath(AdjustPathForWin64X(Path), bpWin64x);
+    end;
   end
   else
     Result := False;
@@ -3460,6 +3842,15 @@ begin
     PathListIncludeItems(TempRawIncludePath, Path);
     Result := True;
     RawCppIncludePath[APlatform] := TempRawIncludePath;
+
+    case APlatform of
+      bpWin32:
+        if clBcc32c in CommandLineTools then
+          Result := Result and AddToCppIncludePath(Path, bpWin32c);
+      bpWin64:
+        if clBcc64x in CommandLineTools then
+          Result := Result and AddToCppIncludePath(Path, bpWin64x);
+    end;
   end
   else
     Result := False;
@@ -3588,16 +3979,47 @@ begin
     Result := inherited CompileDelphiProject(ProjectName, DcpSearchPath, OutputDir);
 end;
 
+function TJclBDSInstallation.GetBDSPlatformValueNameSuffixStr(APlatform: TJclBDSPlatform): string;
+begin
+  Result := '';
+  case APlatform of
+    bpWin32, bpWin64, bpWin64x, bpOSX32, bpOSX64, bpAndroid32, bpAndroid64, bpiOSDevice32, bpiOSDevice64, bpiOSSimulator, bpLinux64:
+      Result := '';
+    bpWin32c:
+      Result := Clang32Suffix;
+  else
+    raise EJclBorRADException.CreateRes(@RsEPlatformNotValid);
+  end;
+end;
+
 function TJclBDSInstallation.GetBDSPlatformStr(APlatform: TJclBDSPlatform): string;
 begin
   Result := '';
   case APlatform of
     bpWin32:
       Result := BDSPlatformWin32;
+    bpWin32c:
+      Result := BDSPlatformWin32;  // same key name, the IDE uses the Clang32Suffix suffix in value names
     bpWin64:
       Result := BDSPlatformWin64;
+    bpWin64x:
+      Result := BDSPlatformWin64x;
     bpOSX32:
       Result := BDSPlatformOSX32;
+    bpOSX64:
+      Result := BDSPlatformOSX64;
+    bpAndroid32:
+      Result := BDSPlatformAndroid32;
+    bpAndroid64:
+      Result := BDSPlatformAndroid64;
+    bpiOSDevice32:
+      Result := BDSPlatformiOSDevice32;
+    bpiOSDevice64:
+      Result := BDSPlatformiOSDevice64;
+    bpiOSSimulator:
+      Result := BDSPlatformiOSSimulator;
+    bpLinux64:
+      Result := BDSPlatformLinux64;
   else
     raise EJclBorRADException.CreateRes(@RsEPlatformNotValid);
   end;
@@ -3636,6 +4058,7 @@ class function TJclBDSInstallation.GetCommonProjectsDirectory(const RootDir: str
   IDEVersionNumber: Integer): string;
 var
   Variables: TStrings;
+  BDSVersion: PBDSVersionInfo;
 begin
   if IDEVersionNumber >= 5 then
   begin
@@ -3651,7 +4074,8 @@ begin
 
     if Result = '' then
     begin
-      Result := LoadResStrings(RootDir + '\Bin\coreide' + BDSVersions[IDEVersionNumber].CoreIdeVersion + '.',
+      BDSVersion := GetBDSVersionByIDEVersion(IDEVersionNumber);
+      Result := LoadResStrings(RootDir + '\Bin\coreide' + BDSVersion.CoreIdeVersion + '.',
         ['RAD Studio'])[0];
 
       Result := Format('%s%s%d.0',
@@ -3662,12 +4086,18 @@ begin
     Result := GetDefaultProjectsDirectory(RootDir, IDEVersionNumber);
 end;
 
-function TJclBDSInstallation.GetCppPathsKeyName: string;
+function TJclBDSInstallation.GetCppPathsKeyName(APlatform: TJclBDSPlatform): string;
 begin
   if IDEVersionNumber >= 5 then
-    Result := CppPathsV5UpperKeyName
+  begin
+    Result := CppPathsV5UpperKeyName;
+    if (IDEVersionNumber >= 9) then
+      Result := PathAddSeparator(Result) + GetBDSPlatformStr(APlatform);
+  end
   else
+  begin
     Result := CppPathsKeyName;
+  end;
 end;
 
 function TJclBDSInstallation.GetCppBrowsingPath(APlatform: TJclBDSPlatform): TJclBorRADToolPath;
@@ -3677,14 +4107,14 @@ begin
     // use EnvOptions.proj
     Result := GetMsBuildEnvOption(MsBuildCBuilderBrowsingPathNodeName, APlatform, False)
   else
-    Result := ConfigData.ReadString(GetCppPathsKeyName, CppBrowsingPathValueName, '');
+    Result := ConfigData.ReadString(GetCppPathsKeyName(APlatform), CppBrowsingPathValueName, '');
 end;
 
 function TJclBDSInstallation.GetCppSearchPath(APlatform: TJclBDSPlatform): TJclBorRADToolPath;
 begin
   CheckCBuilderPlatform(APlatform);
   // CPP search path is only in the registry
-  Result := ConfigData.ReadString(GetCppPathsKeyName, CppSearchPathValueName, '');
+  Result := ConfigData.ReadString(GetCppPathsKeyName(APlatform), CppSearchPathValueName, '');
 end;
 
 function TJclBDSInstallation.GetCppLibraryPath(APlatform: TJclBDSPlatform): TJclBorRADToolPath;
@@ -3694,7 +4124,7 @@ begin
     // use EnvOptions.proj
     Result := GetMsBuildEnvOption(MsBuildCBuilderLibraryPathNodeName, APlatform, False)
   else
-    Result := ConfigData.ReadString(GetCppPathsKeyName, CppLibraryPathValueName, '');
+    Result := ConfigData.ReadString(GetCppPathsKeyName(APlatform), CppLibraryPathValueName, '');
 end;
 
 function TJclBDSInstallation.GetCppIncludePath(APlatform: TJclBDSPlatform): TJclBorRADToolPath;
@@ -3704,7 +4134,7 @@ begin
     // use EnvOptions.proj
     Result := GetMsBuildEnvOption(MsBuildCBuilderIncludePathNodeName, APlatform, False)
   else
-    Result := ConfigData.ReadString(GetCppPathsKeyName, CppIncludePathValueName, '');
+    Result := ConfigData.ReadString(GetCppPathsKeyName(APlatform), CppIncludePathValueName, '');
 end;
 
 function TJclBDSInstallation.GetDCC64: TJclDCC64;
@@ -3733,6 +4163,110 @@ begin
   Result := FDCCOSX32;
 end;
 
+function TJclBDSInstallation.GetDCCOSX64: TJclDCCOSX64;
+begin
+  if not Assigned(FDCCOSX64) then
+  begin
+    if not (clDccOSX64 in CommandLineTools) then
+      raise EJclBorRadException.CreateResFmt(@RsENotFound, [DccOSX64ExeName]);
+    FDCCOSX64 := TJclDCCOSX64.Create(BinFolderName, LongPathBug, DCCVersion, CompilerSettingsFormat,
+                                     SupportsNoConfig, SupportsPlatform, DCPOutputPath[bpOSX64], LibFolderName[bpOSX64],
+                                     LibDebugFolderName[bpOSX64], ObjFolderName[bpOSX64]);
+  end;
+  Result := FDCCOSX64;
+end;
+
+function TJclBDSInstallation.GetDCCiOSSimulator: TJclDCCiOSSimulator;
+begin
+  if not Assigned(FDCCiOSSimulator) then
+  begin
+    if not (clDcciOSSimulator in CommandLineTools) then
+      raise EJclBorRadException.CreateResFmt(@RsENotFound, [DCCiOSSimulatorExeName]);
+    FDCCiOSSimulator := TJclDCCiOSSimulator.Create(BinFolderName, LongPathBug, DCCVersion, CompilerSettingsFormat,
+                                     SupportsNoConfig, SupportsPlatform, DCPOutputPath[bpiOSSimulator], LibFolderName[bpiOSSimulator],
+                                     LibDebugFolderName[bpiOSSimulator], ObjFolderName[bpiOSSimulator]);
+  end;
+  Result := FDCCiOSSimulator;
+end;
+
+function TJclBDSInstallation.GetDCCiOS32: TJclDCCiOS32;
+begin
+  if not Assigned(FDCCiOS32) then
+  begin
+    if not (clDcciOS32 in CommandLineTools) then
+      raise EJclBorRadException.CreateResFmt(@RsENotFound, [DCCiOS32ExeName]);
+    FDCCiOS32 := TJclDCCiOS32.Create(BinFolderName, LongPathBug, DCCVersion, CompilerSettingsFormat,
+                                     SupportsNoConfig, SupportsPlatform, DCPOutputPath[bpiOSDevice32], LibFolderName[bpiOSDevice32],
+                                     LibDebugFolderName[bpiOSDevice32], ObjFolderName[bpiOSDevice32]);
+  end;
+  Result := FDCCiOS32;
+end;
+
+function TJclBDSInstallation.GetDCCiOS64: TJclDCCiOS64;
+begin
+  if not Assigned(FDCCiOS64) then
+  begin
+    if not (clDcciOS64 in CommandLineTools) then
+      raise EJclBorRadException.CreateResFmt(@RsENotFound, [DCCiOS64ExeName]);
+    FDCCiOS64 := TJclDCCiOS64.Create(BinFolderName, LongPathBug, DCCVersion, CompilerSettingsFormat,
+                                     SupportsNoConfig, SupportsPlatform, DCPOutputPath[bpiOSDevice64], LibFolderName[bpiOSDevice64],
+                                     LibDebugFolderName[bpiOSDevice64], ObjFolderName[bpiOSDevice64]);
+  end;
+  Result := FDCCiOS64;
+end;
+
+function TJclBDSInstallation.GetDCCArm32: TJclDCCArm32;
+begin
+  if not Assigned(FDCCArm32) then
+  begin
+    if not (clDccArm32 in CommandLineTools) then
+      raise EJclBorRadException.CreateResFmt(@RsENotFound, [DCCArm32ExeName]);
+    FDCCArm32 := TJclDCCArm32.Create(BinFolderName, LongPathBug, DCCVersion, CompilerSettingsFormat,
+                                     SupportsNoConfig, SupportsPlatform, DCPOutputPath[bpAndroid32], LibFolderName[bpAndroid32],
+                                     LibDebugFolderName[bpAndroid32], ObjFolderName[bpAndroid32]);
+  end;
+  Result := FDCCArm32;
+end;
+
+function TJclBDSInstallation.GetDCCArm64: TJclDCCArm64;
+begin
+  if not Assigned(FDCCArm64) then
+  begin
+    if not (clDccArm64 in CommandLineTools) then
+      raise EJclBorRadException.CreateResFmt(@RsENotFound, [DCCArm64ExeName]);
+    FDCCArm64 := TJclDCCArm64.Create(BinFolderName, LongPathBug, DCCVersion, CompilerSettingsFormat,
+                                     SupportsNoConfig, SupportsPlatform, DCPOutputPath[bpAndroid64], LibFolderName[bpAndroid64],
+                                     LibDebugFolderName[bpAndroid64], ObjFolderName[bpAndroid64]);
+  end;
+  Result := FDCCArm64;
+end;
+
+function TJclBDSInstallation.GetDCCLinux64: TJclDCCLinux64;
+begin
+  if not Assigned(FDCCLinux64) then
+  begin
+    if not (clDccLinux64 in CommandLineTools) then
+      raise EJclBorRadException.CreateResFmt(@RsENotFound, [DCCLinux64ExeName]);
+    FDCCLinux64 := TJclDCCLinux64.Create(BinFolderName, LongPathBug, DCCVersion, CompilerSettingsFormat,
+                                     SupportsNoConfig, SupportsPlatform, DCPOutputPath[bpLinux64], LibFolderName[bpLinux64],
+                                     LibDebugFolderName[bpLinux64], ObjFolderName[bpLinux64]);
+  end;
+  Result := FDCCLinux64;
+end;
+
+function TJclBDSInstallation.GetBCC32C: TJclBCC32C;
+begin
+  if not Assigned(FBCC32C) then
+  begin
+    if not (clBcc32c in CommandLineTools) then
+      raise EJclBorRadException.CreateResFmt(@RsENotFound, [Bcc32cExeName]);
+    FBCC32C := TJclBCC32C.Create(BinFolderName, LongPathBug, CompilerSettingsFormat);
+                               //SupportsNoConfig, SupportsPlatform, DCPOutputPath[bpWin32c], LibFolderName[bpWin32c],
+                               //LibDebugFolderName[bpWin32c], ObjFolderName[bpWin32c]);
+  end;
+  Result := FBCC32C;
+end;
+
 function TJclBDSInstallation.GetBCC64: TJclBCC64;
 begin
   if not Assigned(FBCC64) then
@@ -3744,6 +4278,19 @@ begin
                                //LibDebugFolderName[bpWin64], ObjFolderName[bpWin64]);
   end;
   Result := FBCC64;
+end;
+
+function TJclBDSInstallation.GetBCC64X: TJclBCC64X;
+begin
+  if not Assigned(FBCC64X) then
+  begin
+    if not (clBcc64x in CommandLineTools) then
+      raise EJclBorRadException.CreateResFmt(@RsENotFound, [Bcc64xExeName]);
+    FBCC64X := TJclBCC64X.Create(PathAddSeparator(PathRemoveSeparator(BinFolderName) + '64'), LongPathBug, CompilerSettingsFormat);
+                               //SupportsNoConfig, SupportsPlatform, DCPOutputPath[bpWin64x], LibFolderName[bpWin64x],
+                               //LibDebugFolderName[bpWin64x], ObjFolderName[bpWin64x]);
+  end;
+  Result := FBCC64X;
 end;
 
 function TJclBDSInstallation.GetDCCIL: TJclDCCIL;
@@ -3783,8 +4330,15 @@ begin
   CheckPlatform(APlatform);
 
   if IDEVersionNumber >= 8 then
+  begin
     // use EnvOptions.proj
-    Result := GetMsBuildEnvOption(MsBuildDelphiDebugDCUPathNodeName, APlatform, False)
+    Result := GetMsBuildEnvOption(MsBuildDelphiDebugDCUPathNodeName, APlatform, False);
+    if Result = '' then
+    begin
+      //Fallback to registry when EnvOptions.prj is not updated
+      Result := ConfigData.ReadString(LibraryKeyName + '\' + GetBDSPlatformStr(APlatform), BDSDebugDCUPathValueName, '');
+    end;
+  end
   else
   if IDEVersionNumber >= 5 then
     // use EnvOptions.proj
@@ -3803,8 +4357,10 @@ class function TJclBDSInstallation.GetDefaultProjectsDirectory(const RootDir: st
   IDEVersionNumber: Integer): string;
 var
   LocStr: WideStringArray;
+  BDSVersion: PBDSVersionInfo;
 begin
-  LocStr := LoadResStrings(RootDir + '\Bin\coreide' + BDSVersions[IDEVersionNumber].CoreIdeVersion + '.',
+  BDSVersion := GetBDSVersionByIDEVersion(IDEVersionNumber);
+  LocStr := LoadResStrings(RootDir + '\Bin\coreide' + BDSVersion.CoreIdeVersion + '.',
     ['Borland Studio Projects', 'RAD Studio', 'Projects']);
 
   if IDEVersionNumber < 5 then
@@ -3856,6 +4412,11 @@ begin
   end
   else
     Result := FEnvironmentVariables;
+end;
+
+function TJclBDSInstallation.GetIsDcc64: Boolean;
+begin
+  Result := FDCC = FDCC64;
 end;
 
 class function TJclBDSInstallation.GetLatestUpdatePackForVersion(Version: Integer): Integer;
@@ -4016,7 +4577,7 @@ end;
 class function TJclBDSInstallation.GetRADStudioVarsFileName(const RootDir: string; IDEVersionNumber: Integer): TFileName;
 begin
   if IDEVersionNumber >= 5 then
-    Result := Format('%s%sbin%srsvars.bat', [ExtractShortPathName(RootDir), DirDelimiter, DirDelimiter])
+    Result := Format('%s%sbin%srsvars.bat', [RootDir, DirDelimiter, DirDelimiter])
   else
     raise EJclBorRADException.CreateResFmt(@RsERsVars, [RadToolName(IDEVersionNumber), IDEVersionNumber, LoadResString(@RsMsBuildNotSupported)]);
 end;
@@ -4033,8 +4594,15 @@ begin
   CheckPlatform(APlatform);
 
   if IDEVersionNumber >= 8 then
+  begin
     // use EnvOptions.proj
-    Result := GetMsBuildEnvOption(MsBuildDelphiBrowsingPathNodeName, APlatform, False)
+    Result := GetMsBuildEnvOption(MsBuildDelphiBrowsingPathNodeName, APlatform, False);
+    if Result = '' then
+    begin
+      //Fallback to registry when EnvOptions.prj is not updated
+      Result := ConfigData.ReadString(LibraryKeyName + '\' + GetBDSPlatformStr(APlatform), LibraryBrowsingPathValueName, '');
+    end;
+  end
   else
   if IDEVersionNumber >= 5 then
     // use EnvOptions.proj
@@ -4049,8 +4617,15 @@ begin
   CheckPlatform(APlatform);
 
   if IDEVersionNumber >= 8 then
+  begin
     // use EnvOptions.proj
-    Result := GetMsBuildEnvOption(MsBuildDelphiLibraryPathNodeName, APlatform, False)
+    Result := GetMsBuildEnvOption(MsBuildDelphiLibraryPathNodeName, APlatform, False);
+    if Result = '' then
+    begin
+      //Fallback to registry when EnvOptions.prj is not updated
+      Result := ConfigData.ReadString(LibraryKeyName + '\' + GetBDSPlatformStr(APlatform), LibrarySearchPathValueName, '');
+    end;
+  end
   else
   if IDEVersionNumber >= 5 then
     // use EnvOptions.proj
@@ -4066,12 +4641,14 @@ begin
 end;
 
 function TJclBDSInstallation.GetName: string;
+var
+  BDSVersion: PBDSVersionInfo;
 begin
-  // The name comes from the IDEVersionNumber
-  if IDEVersionNumber in [Low(BDSVersions)..High(BDSVersions)] then
-    Result := Format('%s %s', [RadToolName, BDSVersions[IDEVersionNumber].VersionStr])
+  BDSVersion := GetBDSVersionByIDEVersion(IDEVersionNumber);
+  if Assigned(BDSVersion) then
+    Result := Format('%s %s', [RadToolName, BDSVersion.VersionStr])
   else
-    Result := Format('%s ***%s***', [RadToolName, IDEVersionNumber]);
+    Result := Format('%s ***%d***', [RadToolName, IDEVersionNumber]);
 end;
 
 function TJclBDSInstallation.GetMsBuildEnvironmentFileName: string;
@@ -4146,9 +4723,9 @@ begin
 
   if IDEVersionNumber >= 5 then
     // use EnvOptions.proj
-    Result := GetMsBuildEnvOption(MsBuildCBuilderBrowsingPathNodeName, APlatform, True)
+    Result := GetMsBuildEnvOption(MsBuildCBuilderBrowsingPathNodeName + GetBDSPlatformValueNameSuffixStr(APlatform), APlatform, True)
   else
-    Result := ConfigData.ReadString(GetCppPathsKeyName, CppBrowsingPathValueName, '');
+    Result := ConfigData.ReadString(GetCppPathsKeyName(APlatform), CppBrowsingPathValueName + GetBDSPlatformValueNameSuffixStr(APlatform), '');
 end;
 
 function TJclBDSInstallation.GetRawCppSearchPath(APlatform: TJclBDSPlatform): TJclBorRADToolPath;
@@ -4164,9 +4741,9 @@ begin
 
   if IDEVersionNumber >= 5 then
     // use EnvOptions.proj
-    Result := GetMsBuildEnvOption(MsBuildCBuilderLibraryPathNodeName, APlatform, True)
+    Result := GetMsBuildEnvOption(MsBuildCBuilderLibraryPathNodeName + GetBDSPlatformValueNameSuffixStr(APlatform), APlatform, True)
   else
-    Result := ConfigData.ReadString(GetCppPathsKeyName, CppLibraryPathValueName, '');
+    Result := ConfigData.ReadString(GetCppPathsKeyName(APlatform), CppLibraryPathValueName + GetBDSPlatformValueNameSuffixStr(APlatform), '');
 end;
 
 function TJclBDSInstallation.GetRawCppIncludePath(APlatform: TJclBDSPlatform): TJclBorRADToolPath;
@@ -4175,9 +4752,9 @@ begin
 
   if IDEVersionNumber >= 5 then
     // use EnvOptions.proj
-    Result := GetMsBuildEnvOption(MsBuildCBuilderIncludePathNodeName, APlatform, True)
+    Result := GetMsBuildEnvOption(MsBuildCBuilderIncludePathNodeName + GetBDSPlatformValueNameSuffixStr(APlatform), APlatform, True)
   else
-    Result := ConfigData.ReadString(GetCppPathsKeyName, CppIncludePathValueName, '');
+    Result := ConfigData.ReadString(GetCppPathsKeyName(APlatform), CppIncludePathValueName + GetBDSPlatformValueNameSuffixStr(APlatform), '');
 end;
 
 function TJclBDSInstallation.GetRawDebugDCUPath(APlatform: TJclBDSPlatform): TJclBorRADToolPath;
@@ -4185,8 +4762,15 @@ begin
   CheckPlatform(APlatform);
 
   if IDEVersionNumber >= 8 then
+  begin
     // use EnvOptions.proj
-    Result := GetMsBuildEnvOption(MsBuildDelphiDebugDCUPathNodeName, APlatform, True)
+    Result := GetMsBuildEnvOption(MsBuildDelphiDebugDCUPathNodeName, APlatform, True);
+    if Result = '' then
+    begin
+      //Fallback to registry when EnvOptions.prj is not updated
+      Result := ConfigData.ReadString(LibraryKeyName + '\' + GetBDSPlatformStr(APlatform), BDSDebugDCUPathValueName, '');
+    end;
+  end
   else
   if IDEVersionNumber >= 5 then
     // use EnvOptions.proj
@@ -4201,8 +4785,15 @@ begin
   CheckPlatform(APlatform);
 
   if IDEVersionNumber >= 8 then
+  begin
     // use EnvOptions.proj
-    Result := GetMsBuildEnvOption(MsBuildDelphiBrowsingPathNodeName, APlatform, True)
+    Result := GetMsBuildEnvOption(MsBuildDelphiBrowsingPathNodeName, APlatform, True);
+    if Result = '' then
+    begin
+      //Fallback to registry when EnvOptions.prj is not updated
+      Result := ConfigData.ReadString(LibraryKeyName + '\' + GetBDSPlatformStr(APlatform), LibraryBrowsingPathValueName, '');
+    end;
+  end
   else
   if IDEVersionNumber >= 5 then
     // use EnvOptions.proj
@@ -4217,8 +4808,15 @@ begin
   CheckPlatform(APlatform);
 
   if IDEVersionNumber >= 8 then
+  begin
     // use EnvOptions.proj
-    Result := GetMsBuildEnvOption(MsBuildDelphiLibraryPathNodeName, APlatform, True)
+    Result := GetMsBuildEnvOption(MsBuildDelphiLibraryPathNodeName, APlatform, True);
+    if Result = '' then
+    begin
+      //Fallback to registry when EnvOptions.prj is not updated
+      Result := ConfigData.ReadString(LibraryKeyName + '\' + GetBDSPlatformStr(APlatform), LibrarySearchPathValueName, '');
+    end;
+  end
   else
   if IDEVersionNumber >= 5 then
     // use EnvOptions.proj
@@ -4260,18 +4858,25 @@ end;
 
 class function TJclBDSInstallation.RadToolName(
   IDEVersionNumber: Integer): string;
+var
+  BDSVersion: PBDSVersionInfo;
 begin
-  if IDEVersionNumber in [Low(BDSVersions)..High(BDSVersions)] then
-    Result := LoadResString(BDSVersions[IDEVersionNumber].Name)
+  BDSVersion := GetBDSVersionByIDEVersion(IDEVersionNumber);
+  if Assigned(BDSVersion) then
+    Result := LoadResString(BDSVersion.Name)
   else
     Result := LoadResString(@RsBDSName);
 end;
 
 function TJclBDSInstallation.RadToolName: string;
+var
+  BDSVersion: PBDSVersionInfo;
 begin
   // The name comes from IDEVersionNumber
   Result := RadToolName(IDEVersionNumber);
-  if IDEVersionNumber in [Low(BDSVersions)..High(BDSVersions)] then
+
+  BDSVersion := GetBDSVersionByIDEVersion(IDEVersionNumber);
+  if Assigned(BDSVersion) then
   begin
     // IDE Version 5 comes in three flavors:
     // - Delphi only  (Spacely)
@@ -4304,6 +4909,15 @@ begin
     TempRawCppPath := RawCppBrowsingPath[APlatform];
     Result := RemoveFromPath(TempRawCppPath, Path);
     RawCppBrowsingPath[APlatform] := TempRawCppPath;
+
+    case APlatform of
+      bpWin32:
+        if clBcc32c in CommandLineTools then
+          Result := Result and RemoveFromCppBrowsingPath(Path, bpWin32c);
+      bpWin64:
+        if clBcc64x in CommandLineTools then
+          Result := Result and RemoveFromCppBrowsingPath(Path, bpWin64x);
+    end;
   end
   else
     Result := False;
@@ -4320,6 +4934,15 @@ begin
     TempRawCppPath := RawCppSearchPath[APlatform];
     Result := RemoveFromPath(TempRawCppPath, Path);
     RawCppSearchPath[APlatform] := TempRawCppPath;
+
+    case APlatform of
+      bpWin32:
+        if clBcc32c in CommandLineTools then
+          Result := Result and RemoveFromCppSearchPath(Path, bpWin32c);
+      bpWin64:
+        if clBcc64x in CommandLineTools then
+          Result := Result and RemoveFromCppSearchPath(AdjustPathForWin64X(Path), bpWin64x);
+    end;
   end
   else
     Result := False;
@@ -4336,6 +4959,15 @@ begin
     TempRawLibraryPath := RawCppLibraryPath[APlatform];
     Result := RemoveFromPath(TempRawLibraryPath, Path);
     RawCppLibraryPath[APlatform] := TempRawLibraryPath;
+
+    case APlatform of
+      bpWin32:
+        if clBcc32c in CommandLineTools then
+          Result := Result and RemoveFromCppLibraryPath(Path, bpWin32c);
+      bpWin64:
+        if clBcc64x in CommandLineTools then
+          Result := Result and RemoveFromCppLibraryPath(AdjustPathForWin64X(Path), bpWin64x);
+    end;
   end
   else
     Result := False;
@@ -4352,6 +4984,15 @@ begin
     TempRawIncludePath := RawCppIncludePath[APlatform];
     Result := RemoveFromPath(TempRawIncludePath, Path);
     RawCppIncludePath[APlatform] := TempRawIncludePath;
+
+    case APlatform of
+      bpWin32:
+        if clBcc32c in CommandLineTools then
+          Result := Result and RemoveFromCppIncludePath(Path, bpWin32c);
+      bpWin64:
+        if clBcc64x in CommandLineTools then
+          Result := Result and RemoveFromCppIncludePath(Path, bpWin64x);
+    end;
   end
   else
     Result := False;
@@ -4411,6 +5052,20 @@ begin
     DCC64.OutputCallback := Value;
   if clDccOSX32 in CommandLineTools then
     DCCOSX32.OutputCallback := Value;
+  if clDccOSX64 in CommandLineTools then
+    DCCOSX64.OutputCallback := Value;
+  if clDcciOSSimulator in CommandLineTools then
+    DCCiOSSimulator.OutputCallback := Value;
+  if clDcciOS32 in CommandLineTools then
+    DCCiOS32.OutputCallback := Value;
+  if clDcciOS64 in CommandLineTools then
+    DCCiOS64.OutputCallback := Value;
+  if clDccArm32 in CommandLineTools then
+    DCCArm32.OutputCallback := Value;
+  if clDccArm64 in CommandLineTools then
+    DCCArm64.OutputCallback := Value;
+  if clDccLinux64 in CommandLineTools then
+    DCCLinux64.OutputCallback := Value;
   if clBcc64 in CommandLineTools then
     BCC64.OutputCallback := Value;
   if clDccIL in CommandLineTools then
@@ -4422,16 +5077,16 @@ begin
   CheckCBuilderPlatform(APlatform);
 
   // update registry
-  ConfigData.WriteString(GetCppPathsKeyName, CppBrowsingPathValueName, Value);
+  ConfigData.WriteString(GetCppPathsKeyName(APlatform), CppBrowsingPathValueName + GetBDSPlatformValueNameSuffixStr(APlatform), Value);
   // update EnvOptions.dproj
   if IDEVersionNumber >= 5 then
-    SetMsBuildEnvOption(MsBuildCBuilderBrowsingPathNodeName, Value, APlatform);
+    SetMsBuildEnvOption(MsBuildCBuilderBrowsingPathNodeName + GetBDSPlatformValueNameSuffixStr(APlatform), Value, APlatform);
 end;
 
 procedure TJclBDSInstallation.SetRawCppSearchPath(APlatform: TJclBDSPlatform; const Value: TJclBorRADToolPath);
 begin
   CheckCBuilderPlatform(APlatform);
-  ConfigData.WriteString(GetCppPathsKeyName, CppSearchPathValueName, Value);
+  ConfigData.WriteString(GetCppPathsKeyName(APlatform), CppSearchPathValueName, Value);
 end;
 
 procedure TJclBDSInstallation.SetRawCppLibraryPath(APlatform: TJclBDSPlatform; const Value: TJclBorRADToolPath);
@@ -4439,10 +5094,10 @@ begin
   CheckCBuilderPlatform(APlatform);
 
   // update registry
-  ConfigData.WriteString(GetCppPathsKeyName, CppLibraryPathValueName, Value);
+  ConfigData.WriteString(GetCppPathsKeyName(APlatform), CppLibraryPathValueName + GetBDSPlatformValueNameSuffixStr(APlatform), Value);
   // update EnvOptions.dproj
   if IDEVersionNumber >= 5 then
-    SetMsBuildEnvOption(MsBuildCBuilderLibraryPathNodeName, Value, APlatform);
+    SetMsBuildEnvOption(MsBuildCBuilderLibraryPathNodeName + GetBDSPlatformValueNameSuffixStr(APlatform), Value, APlatform);
 end;
 
 procedure TJclBDSInstallation.SetRawCppIncludePath(APlatform: TJclBDSPlatform; const Value: TJclBorRADToolPath);
@@ -4452,9 +5107,9 @@ begin
   if IDEVersionNumber >= 5 then
   begin
     // update registry
-    ConfigData.WriteString(GetCppPathsKeyName, CppIncludePathValueName, Value);
+    ConfigData.WriteString(GetCppPathsKeyName(APlatform), CppIncludePathValueName + GetBDSPlatformValueNameSuffixStr(APlatform), Value);
     // update EnvOptions.dproj
-    SetMsBuildEnvOption(MsBuildCBuilderIncludePathNodeName, Value, APlatform);
+    SetMsBuildEnvOption(MsBuildCBuilderIncludePathNodeName + GetBDSPlatformValueNameSuffixStr(APlatform), Value, APlatform);
   end;
 end;
 
@@ -4676,6 +5331,7 @@ end;
 procedure TJclBorRADToolInstallations.ReadInstallations;
 var
   VersionNumbers: TStringList;
+  PreviousRegWOW64AccessMode: TJclRegWOW64Access;
 
   function EnumVersions(const KeyName: string; const Personalities: array of string;
     CreateClass: TJclBorRADToolInstallationClass): Boolean;
@@ -4736,14 +5392,17 @@ var
 
 begin
   FList.Clear;
+  PreviousRegWOW64AccessMode := RegGetWOW64AccessMode;
   VersionNumbers := TStringList.Create;
   try
+    RegSetWOW64AccessMode(ra32Key);
     EnumVersions(DelphiKeyName, [], TJclDelphiInstallation);
     EnumVersions(BCBKeyName, [], TJclBCBInstallation);
     EnumVersions(BDSKeyName, ['Delphi.Win32', 'BCB', 'Delphi8', 'C#Builder'], TJclBDSInstallation);
     EnumVersions(CDSKeyName, ['Delphi.Win32', 'BCB', 'Delphi8', 'C#Builder'], TJclBDSInstallation);
     EnumVersions(EDSKeyName, ['Delphi.Win32', 'BCB', 'Delphi8', 'C#Builder'], TJclBDSInstallation);
   finally
+    RegSetWOW64AccessMode(PreviousRegWOW64AccessMode);
     VersionNumbers.Free;
   end;
 end;
