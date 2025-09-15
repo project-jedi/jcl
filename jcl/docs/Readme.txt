@@ -2,9 +2,9 @@
 
 
 JEDI Code Library
-Release 2.9
-Build YYYY
-XX-January-2016
+Release 2.8
+Build 9330
+15-September-2025
 
 
 --------------------------------------------------------------------------------
@@ -26,7 +26,7 @@ Getting involved in JCL development
 
 
 About this release
-JCL release 2.9 provides support for RAD Studio 13 (including Delphi and C++Builder) an updated support for all targets.
+JCL release 2.8 provides support for RAD Studio 13 (including Delphi and C++Builder) and updated support for all targets.
 
 Multiple bugs have been fixed; for detailed change logs, use the facilities of our Subversion repository at Sourceforge.net  http://sourceforge.net/projects/jcl/ , see below.
 
