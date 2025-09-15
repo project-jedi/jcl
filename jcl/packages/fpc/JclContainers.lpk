@@ -38,8 +38,8 @@
       </Other>
     </CompilerOptions>
     <Description Value="JEDI Code Library Containers package"/>
-    <License Value="Copyright (C) 1999, 2014 Project JEDI"/>
-    <Version Major="2" Minor="7" Release="0" Build="5300"/>
+    <License Value="Copyright (C) 1999, 2025 Project JEDI"/>
+    <Version Major="2" Minor="9" Release="0" Build="9331"/>
     <Files Count="15">
       <Item1>
         <Filename Value="..\..\source\common\JclAbstractContainers.pas"/>

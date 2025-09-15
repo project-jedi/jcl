@@ -1,4 +1,4 @@
 [Directories]
 OutputDir=..
 UsePackages=0
-SearchPath=..\..\source\include
+SearchPath=..\..\source\include;..\..\source\common;..\..\source\windows

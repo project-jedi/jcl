@@ -806,7 +806,7 @@ const
      {taFillProcedureName} 'Fill',
      {taReverseProcedureName} 'Reverse',
      {taArrayInterfaceName} 'IJclExtendedArray',
-     {taArrayInterfaceGUID} '{D43E8D18-26B3-41A2-8D52-ED7EA2FE1AB7}',
+     {taArrayInterfaceGUID} '{A3693A89-3E57-41B3-9A92-F6CBB64F89AB}',
      {taArrayListClassName} 'TJclExtendedArrayList',
      {taArrayIteratorClassName} 'TJclExtendedArrayIterator',
      {taLinkedListItemClassName} 'TJclExtendedLinkedListItem',

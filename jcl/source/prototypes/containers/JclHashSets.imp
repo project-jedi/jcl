@@ -476,7 +476,7 @@ begin
   {$ENDIF THREADSAFE}
     CheckValid;
     Result := DEFAULTVALUE;
-    ABucket := FOwnHashSet.FBuckets[FBucketIndex - 1];
+    ABucket := FOwnHashSet.FBuckets[FBucketIndex];
     if (ABucket <> nil) and (FItemIndex < ABucket.Size) then
       Result := ABucket.Entries[FItemIndex]
     else

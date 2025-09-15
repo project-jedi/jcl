@@ -279,67 +279,67 @@ end;
 procedure TPeDumpChild.UpdateView;
 
   procedure BuildImageTree;
-var
-  Category: TPeDumpViewCategory;
-  TempNode: TTreeNode;
+  var
+    Category: TPeDumpViewCategory;
+    TempNode: TTreeNode;
 
-  function AddCategoryNode(ImageIndex: Integer): TTreeNode;
-begin
-  Result := SectionTreeView.Items.AddChildObject(nil, GetCategoryName(Category),
-    Pointer(Category));
-  Result.ImageIndex := ImageIndex;
-  Result.SelectedIndex := ImageIndex;
-end;
+    function AddCategoryNode(ImageIndex: Integer): TTreeNode;
+    begin
+      Result := SectionTreeView.Items.AddChildObject(nil, GetCategoryName(Category),
+        Pointer(Category));
+      Result.ImageIndex := ImageIndex;
+      Result.SelectedIndex := ImageIndex;
+    end;
 
-begin
-  FPeImage.TryGetNamesForOrdinalImports;
-  with SectionTreeView do
   begin
-    Items.BeginUpdate;
-    try
-      Items.Clear;
-      for Category := Low(Category) to High(Category) do
-        case Category of
-          vcHeader:
-            AddCategoryNode(icoHeader);
-          vcDirectory:
-            AddCategoryNode(icoDirectory);
-          vcSection:
-            AddCategoryNode(icoSection);
-          vcLoadConfig:
-            if FPeImage.DirectoryExists[IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG] then
-              AddCategoryNode(icoLoadConfig);
-          vcImport:
-            if FPeImage.DirectoryExists[IMAGE_DIRECTORY_ENTRY_IMPORT] then
-            begin
-              TempNode := AddCategoryNode(icoImports);
-              TempNode.HasChildren := True;
-            end;
-          vcExport:
-            if FPeImage.DirectoryExists[IMAGE_DIRECTORY_ENTRY_EXPORT] then
-              AddCategoryNode(icoExports);
-          vcRelocation:
-            if FPeImage.DirectoryExists[IMAGE_DIRECTORY_ENTRY_BASERELOC] then
-            begin
-              TempNode := AddCategoryNode(icoRelocation);
-              TempNode.HasChildren := True;
-            end;
-          vcResource:
-            if FPeImage.DirectoryExists[IMAGE_DIRECTORY_ENTRY_RESOURCE] then
-            begin
-              TempNode := AddCategoryNode(icoResources);
-              TempNode.HasChildren := True;
-            end;
-          vcDebug:
-            if FPeImage.DirectoryExists[IMAGE_DIRECTORY_ENTRY_DEBUG] then
-              AddCategoryNode(icoDebug);
-        end;
-      Selected := Items.GetFirstNode;
-    finally
-      Items.EndUpdate;
+    FPeImage.TryGetNamesForOrdinalImports;
+    with SectionTreeView do
+    begin
+      Items.BeginUpdate;
+      try
+        Items.Clear;
+        for Category := Low(Category) to High(Category) do
+          case Category of
+            vcHeader:
+              AddCategoryNode(icoHeader);
+            vcDirectory:
+              AddCategoryNode(icoDirectory);
+            vcSection:
+              AddCategoryNode(icoSection);
+            vcLoadConfig:
+              if FPeImage.DirectoryExists[IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG] then
+                AddCategoryNode(icoLoadConfig);
+            vcImport:
+              if FPeImage.DirectoryExists[IMAGE_DIRECTORY_ENTRY_IMPORT] then
+              begin
+                TempNode := AddCategoryNode(icoImports);
+                TempNode.HasChildren := True;
+              end;
+            vcExport:
+              if FPeImage.DirectoryExists[IMAGE_DIRECTORY_ENTRY_EXPORT] then
+                AddCategoryNode(icoExports);
+            vcRelocation:
+              if FPeImage.DirectoryExists[IMAGE_DIRECTORY_ENTRY_BASERELOC] then
+              begin
+                TempNode := AddCategoryNode(icoRelocation);
+                TempNode.HasChildren := True;
+              end;
+            vcResource:
+              if FPeImage.DirectoryExists[IMAGE_DIRECTORY_ENTRY_RESOURCE] then
+              begin
+                TempNode := AddCategoryNode(icoResources);
+                TempNode.HasChildren := True;
+              end;
+            vcDebug:
+              if FPeImage.DirectoryExists[IMAGE_DIRECTORY_ENTRY_DEBUG] then
+                AddCategoryNode(icoDebug);
+          end;
+        Selected := Items.GetFirstNode;
+      finally
+        Items.EndUpdate;
+      end;
     end;
   end;
-end;
 
 begin
   BuildImageTree;
@@ -376,7 +376,7 @@ begin
            Caption := LoadConfigNames(TJclLoadConfig(Index));
            SubItems.Add(LoadConfigValues[TJclLoadConfig(Index)]);
          end;
-   end;      
+   end;
 end;
 
 procedure TPeDumpChild.SectionTreeViewExpanding(Sender: TObject;

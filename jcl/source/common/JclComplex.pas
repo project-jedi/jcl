@@ -327,14 +327,22 @@ begin
       if FCoord.X = 0.0 then
       begin
         FCoord.R := Abs(FCoord.Y);
-        FCoord.Theta := PiOn2 * Sgn(FCoord.Y);
+        if FCoord.Y <> 0 then
+          FCoord.Theta := PiOn2 * Sgn(FCoord.Y)
+        else
+          FCoord.Theta := PiOn2; // Fixes corner case where Sgn(0) = 0
       end
       else
       begin
         FCoord.R := AbsoluteValue;
         FCoord.Theta := System.ArcTan(FCoord.Y / FCoord.X);
         if FCoord.X < 0.0 then
-          FCoord.Theta := FCoord.Theta + Pi * Sgn(FCoord.Y);
+        begin
+          if FCoord.Y <> 0 then
+            FCoord.Theta := FCoord.Theta + Pi * Sgn(FCoord.Y)
+          else
+            FCoord.Theta := FCoord.Theta + Pi; // Fixes corner case where Sgn(0) = 0
+        end;
       end;
   end;
   MiscalcComplex;

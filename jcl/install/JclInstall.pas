@@ -186,8 +186,10 @@ type
     constructor Create(JclDistribution: TJclDistribution;
       InstallTarget: TJclBorRADToolInstallation; ATargetPlatform: TJclBDSPlatform;
       const AGUIPage: IJediInstallPage);
-    function CompileLibraryUnits(const SubDir: string; Debug: Boolean): Boolean;
-    function CompilePackage(const Name: string): Boolean;
+    function CompileLibraryUnits(const SubDir: string; Debug: Boolean): Boolean; overload;
+    function CompileLibraryUnits(const SubDir: string; Debug: Boolean; Win64x: Boolean): Boolean; overload;
+    function CompilePackage(const Name: string): Boolean; overload;
+    function CompilePackage(const Name: string; Win64x: Boolean): Boolean; overload;
     function CompileApplication(FileName: string): Boolean;
     function DeletePackage(const Name: string): Boolean;
     procedure ConfigureBpr2Mak(const PackageFileName: string);
@@ -803,12 +805,30 @@ function TJclInstallation.GetTargetSupportsCBuilder: Boolean;
 begin
   Result := ((bpBCBuilder32 in Target.Personalities) and (TargetPlatform = bpWin32)) or
             ((bpBCBuilder64 in Target.Personalities) and (TargetPlatform = bpWin64));
+  if Result then
+  begin
+    // If we don't have a command line C++ compiler we can't compile
+    // (fake BCB Personality from the Web Installer)
+    if TargetPlatform = bpWin32 then
+      Result := clBcc32 in Target.CommandLineTools
+    else if TargetPlatform = bpWin64 then
+      Result := [clBcc64, clBcc64x] * Target.CommandLineTools <> [];
+  end;
 end;
 
 function TJclInstallation.GetTargetSupportsDelphi: Boolean;
 begin
   Result := ((bpDelphi32 in Target.Personalities) and (TargetPlatform = bpWin32)) or
             ((bpDelphi64 in Target.Personalities) and (TargetPlatform = bpWin64));
+  if Result then
+  begin
+    // If we don't have a command line C++ compiler we can't compile
+    // (fake Delphi Personality from the Web Installer)
+    if TargetPlatform = bpWin32 then
+      Result := clDcc32 in Target.CommandLineTools
+    else if TargetPlatform = bpWin64 then
+      Result := clDcc64 in Target.CommandLineTools;
+  end;
 end;
 
 procedure TJclInstallation.MarkOptionBegin(Id: Integer);
@@ -1286,7 +1306,7 @@ begin
     AddPackageOptions(joJCLPackages);
 
     {$IFDEF MSWINDOWS}
-    if TargetPlatform = bpWin32 then //there is no 64-bit IDE yet
+    if (TargetPlatform = bpWin32) or ((TargetPlatform = bpWin64) and (Target.VersionNumber >= 23)) then // 64-bit IDE appeared with Delphi 12 update 3
       AddExpertOptions(joJCLPackages);
     {$ENDIF MSWINDOWS}
     if RunTimeInstallation then
@@ -1634,6 +1654,12 @@ var
           UnitList.Delete(UnitList.IndexOf('JclDotNet.pas'));
           UnitList.Delete(UnitList.IndexOf('JclNTFS.pas'));
           UnitList.Delete(UnitList.IndexOf('mscorlib_TLB.pas'));
+          if FTargetPlatform = bpWin64 then
+          begin
+            UnitList.Delete(UnitList.IndexOf('pcre.pas')); // compiler: 'PCRE not supported on WIN64: use standard header'
+            UnitList.Delete(UnitList.IndexOf('JclPCRE.pas')); // uses pcre.pas => same "not supported" error
+            UnitList.Delete(UnitList.IndexOf('JclStringLists.pas')); // uses JclPCRE.pas => same "not supported" error
+          end;
 
           SetCurrentDir(Format('%sinstall%sHeaderTest', [Distribution.JclPath, DirDelimiter]));
 
@@ -1672,6 +1698,7 @@ var
           Target.BCC.Options.Add('-w-par'); // warning
           Target.BCC.Options.Add('-w-aus'); // warning
           Target.BCC.AddPathOption('I', Format('%s%s%s%sinclude%s%s', [Distribution.JclSourcePath, DirSeparator, Target.RootDir, DirDelimiter, DirSeparator, Target.VclIncludeDir[FTargetPlatform]]));
+          Target.BCC.AddPathOption('I', ExcludeTrailingPathDelimiter(GetHppPath));
         end
         else
         begin
@@ -1686,22 +1713,30 @@ var
           Target.BCC.Options.Add('-fno-spell-checking');
           Target.BCC.Options.Add('-fno-use-cxa-atexit');
           Target.BCC.Options.Add('-x c++');
-          Target.BCC.Options.Add('-std=c++11');
+          if Target.IDEVersionNumber >= 20 then
+            Target.BCC.Options.Add('-std=c++17')
+          else
+            Target.BCC.Options.Add('-std=c++11');
           Target.BCC.Options.Add('-O0');
           Target.BCC.Options.Add('-tC');
           Target.BCC.Options.Add('-tM');
 
           Target.BCC.Options.Add('-I "' + Distribution.JclSourcePath + '"');
           Target.BCC.Options.Add('-I "' + Target.RootDir + '"');
+          Target.BCC.Options.Add('-I "' + ExcludeTrailingPathDelimiter(GetHppPath) + '"');
           Target.BCC.Options.Add('-isystem "' + Target.VclIncludeDir[FTargetPlatform] + '"');
         end;
         Options := StringsToStr(Target.BCC.Options, NativeSpace);
         Result := Target.BCC.Execute(Options + ' "jcl_a2z.cpp"')
           and Target.BCC.Execute(Options + ' "jcl_z2a.cpp"');
       finally
+        DeleteFile('jcl_a2z.cpp');
+        DeleteFile('jcl_a2z.obj');
+        DeleteFile('jcl_z2a.cpp');
+        DeleteFile('jcl_z2a.obj');
         SetCurrentDir(SaveDir);
       end;
-      if (not Result) and Assigned(GUI) then
+      if not Result and Assigned(GUI) then
         Result := GUI.Dialog(LoadResString(@RsHppCheckFailure), dtWarning, [drYes, drNo]) = drYes;
     end;
   var
@@ -1741,17 +1776,31 @@ var
 
       if Result and OptionChecked[joJCLCheckHppFiles] then
       begin
-        MarkOptionBegin(joJCLCheckHppFiles);
-        WriteLog('Checking .hpp files');
-        Result := Result and CheckHppFiles;
-        MarkOptionEnd(joJCLCheckHppFiles, Result);
+        // Only check the HPP files if we have a C++ Compiler
+        if FileExists(Target.BCC.BinDirectory + Target.BCC.GetExeName) then
+        begin
+          MarkOptionBegin(joJCLCheckHppFiles);
+          WriteLog('Checking .hpp files');
+          Result := Result and CheckHppFiles;
+          MarkOptionEnd(joJCLCheckHppFiles, Result);
+        end;
       end;
 
       MarkOptionEnd(joJCLMake, Result);
     end;
   end;
 
-  function CompilePackages: Boolean;
+  function CompilePackages(Win64x: Boolean): Boolean; overload;
+  begin
+    Result := CompilePackage(FullPackageFileName(Target, JclPackage), Win64x)
+      and CompilePackage(FullPackageFileName(Target, JclContainersPackage), Win64x)
+      and CompilePackage(FullPackageFileName(Target, JclDeveloperToolsPackage), Win64x);
+
+    if Result and Target.SupportsVCL then
+      Result := Result and CompilePackage(FullPackageFileName(Target, JclVclPackage), Win64x);
+  end;
+
+  function CompilePackages: Boolean; overload;
   begin
     Result := True;
     if OptionChecked[joJCLPackages] then
@@ -1762,12 +1811,10 @@ var
         Target.DCC := (Target as TJclBDSInstallation).DCC64
       else
         Target.DCC := Target.DCC32;
-      Result := CompilePackage(FullPackageFileName(Target, JclPackage))
-        and CompilePackage(FullPackageFileName(Target, JclContainersPackage))
-        and CompilePackage(FullPackageFileName(Target, JclDeveloperToolsPackage));
 
-      if Result and Target.SupportsVCL then
-        Result := Result and CompilePackage(FullPackageFileName(Target, JclVclPackage));
+      Result := CompilePackages(False);
+      if (TargetPlatform = bpWin64) and (clBcc64x in Target.CommandLineTools) then
+        Result := Result and CompilePackages(True);
 
       MarkOptionEnd(joJCLPackages, Result);
     end;
@@ -2319,9 +2366,9 @@ function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
       Index: Integer;
       FileName, ShortFileName: string;
     begin
-      for Index := ATarget.IdePackages.Count - 1 downto 0 do
+      for Index := ATarget.IdePackages.Count[ATarget.IsDcc64] - 1 downto 0 do
       begin
-        FileName := ATarget.IdePackages.PackageFileNames[Index];
+        FileName := ATarget.IdePackages.PackageFileNames[Index, ATarget.IsDcc64];
         ShortFileName := ChangeFileExt(ExtractFileName(FileName), '');
         if StrMatches(Name, ShortFileName)
           or StrMatches(Format('%sDLL%s', [Name, StrUpper(ATarget.VersionNumberStr)]), ShortFileName)
@@ -2330,9 +2377,9 @@ function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
           or StrMatches(Format('%sDLL%d0', [Name, ATarget.VersionNumber]), ShortFileName) then
           ATarget.UnregisterPackage(FileName);
       end;
-      for Index := ATarget.IdePackages.ExpertCount - 1 downto 0 do
+      for Index := ATarget.IdePackages.ExpertCount[ATarget.IsDcc64] - 1 downto 0 do
       begin
-        FileName := ATarget.IdePackages.ExpertFileNames[Index];
+        FileName := ATarget.IdePackages.ExpertFileNames[Index, ATarget.IsDcc64];
         ShortFileName := ChangeFileExt(ExtractFileName(FileName), '');
         if StrMatches(Name, ShortFileName)
           or StrMatches(Format('%sDLL%s', [Name, StrUpper(ATarget.VersionNumberStr)]), ShortFileName)
@@ -2657,6 +2704,14 @@ begin
 end;
 
 function TJclInstallation.CompileLibraryUnits(const SubDir: string; Debug: Boolean): Boolean;
+begin
+  Result := CompileLibraryUnits(SubDir, Debug, False);
+
+  if (TargetPlatform = bpWin64) and (clBcc64x in Target.CommandLineTools) then
+    Result := Result and CompileLibraryUnits(SubDir, Debug, True);
+end;
+
+function TJclInstallation.CompileLibraryUnits(const SubDir: string; Debug: Boolean; Win64x: Boolean): Boolean;
 
   function CopyFiles(Files: TStrings; const TargetDir: string; Overwrite: Boolean = True): Boolean;
   var
@@ -2809,6 +2864,12 @@ begin
 
     if TargetSupportsCBuilder then
     begin
+      if Win64x then
+      begin
+        UnitOutputDir := Target.AdjustPathForWin64X(UnitOutputDir);
+        Compiler.Options.Add('-jf:coffi');
+      end;
+
       Compiler.Options.Add('-D_RTLDLL' + DirSeparator + 'NO_STRICT' + DirSeparator + 'USEPACKAGES'); // $(SYSDEFINES)
 
       if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 4) then
@@ -2865,12 +2926,30 @@ begin
 end;
 
 function TJclInstallation.CompilePackage(const Name: string): Boolean;
+begin
+  Result := CompilePackage(Name, False);
+end;
+
+function TJclInstallation.CompilePackage(const Name: string; Win64x: Boolean): Boolean;
 var
   PackageFileName: string;
   DpkPackageFileName: string;
+  BplPath: string;
+  DcpPath: string;
+  ExtraOptions: string;
 begin
   PackageFileName := PathAddSeparator(Distribution.JclPath) + Name;
   WriteLog(Format(LoadResString(@RsLogBuilding), [PackageFileName]));
+  BplPath := GetBplPath;
+  DcpPath := GetDcpPath;
+  ExtraOptions := '';
+
+  if Win64x then
+  begin
+    // Do not adjust BplPath as the BPLs are not platform specific
+    DcpPath := Target.AdjustPathForWin64X(DcpPath);
+    ExtraOptions := '-jf:coffi';
+  end;
 
   if Assigned(GUIPage) then
     GUIPage.CompilationStart(ExtractFileName(Name));
@@ -2878,22 +2957,22 @@ begin
   if IsDelphiPackage(PackageFileName) and TargetSupportsDelphi then
   begin
     if Target.RadToolKind = brBorlandDevStudio then
-      (Target as TJclBDSInstallation).CleanPackageCache(BinaryFileName(GetBplPath, PackageFileName));
-    Result := Target.CompilePackage(PackageFileName, GetBplPath, GetDcpPath);
+      (Target as TJclBDSInstallation).CleanPackageCache(BinaryFileName(BplPath, PackageFileName));
+    Result := Target.CompilePackage(PackageFileName, BplPath, DcpPath, ExtraOptions);
   end
   else
   if IsBCBPackage(PackageFileName) and TargetSupportsCBuilder then
   begin
     ConfigureBpr2Mak(PackageFileName);
     if Target.RadToolKind = brBorlandDevStudio then
-      (Target as TJclBDSInstallation).CleanPackageCache(BinaryFileName(GetBplPath, PackageFileName));
+      (Target as TJclBDSInstallation).CleanPackageCache(BinaryFileName(BplPath, PackageFileName));
 
     // to satisfy JVCL (and eventually other libraries), create a .dcp file;
     // Note: it is put out to .bpl path to make life easier for JVCL
     DpkPackageFileName := ChangeFileExt(PackageFileName, SourceExtensionDelphiPackage);
     Result := ((not FileExists(DpkPackageFileName))
-               or Target.CompilePackage(DpkPackageFileName, GetBplPath, GetDcpPath))
-              and Target.CompilePackage(PackageFileName, GetBplPath, GetDcpPath);
+               or Target.CompilePackage(DpkPackageFileName, BplPath, DcpPath))
+              and Target.CompilePackage(PackageFileName, BplPath, DcpPath);
   end
   else
   begin
@@ -3297,7 +3376,7 @@ function TJclDistribution.CreateInstall(Target: TJclBorRADToolInstallation): Boo
         Result := Target.VersionNumber in [6];
       brBorlandDevStudio :
         Result := ((Target.VersionNumber in [1, 2]) and (bpDelphi32 in Target.Personalities))
-          or (Target.VersionNumber in [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17]);
+          or (Target.VersionNumber in [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 37]);
       else
         Result := False;
     end;
@@ -3549,7 +3628,7 @@ begin
   try
     KeepSettings := True;
 
-    if RadToolInstallations.AnyInstanceRunning {$IFDEF MSWINDOWS} and not IsDebuggerAttached {$ENDIF} then
+    if RadToolInstallations.AnyInstanceRunning and (not Assigned(GUI) or not GUI.IgnoreRunningIDE) {$IFDEF MSWINDOWS} and not IsDebuggerAttached {$ENDIF} then
     begin
       if Assigned(GUI) then
         GUI.Dialog(LoadResString(@RsCloseRADTool), dtError, [drCancel]);
@@ -3557,7 +3636,7 @@ begin
       Exit;
     end;
 
-    if Assigned(LicensePage) and not LicensePage.Options[0] and not GUI.AutoAcceptMPL then
+    if Assigned(LicensePage) and not LicensePage.Options[0] and (not Assigned(GUI) or not GUI.AutoAcceptMPL) then
     begin
       if Assigned(GUI) then
         GUI.Dialog(LoadResString(@RsMissingLicenseAgreement), dtError, [drCancel]);
@@ -3866,7 +3945,7 @@ var
   I: Integer;
   AInstallation: TJclInstallation;
 begin
-  if RadToolInstallations.AnyInstanceRunning {$IFDEF MSWINDOWS} and not IsDebuggerAttached {$ENDIF} then
+  if RadToolInstallations.AnyInstanceRunning and (not Assigned(GUI) or not GUI.IgnoreRunningIDE) {$IFDEF MSWINDOWS} and not IsDebuggerAttached {$ENDIF} then
   begin
     if Assigned(GUI) then
       GUI.Dialog(LoadResString(@RsCloseRADTool), dtError, [drCancel]);

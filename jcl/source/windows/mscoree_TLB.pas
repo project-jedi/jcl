@@ -144,6 +144,9 @@ type
   _ULARGE_INTEGER = packed record
     QuadPart: Largeuint;
   end;
+  {$IFDEF RTL320_UP}
+  {$EXTERNALSYM _ULARGE_INTEGER}
+  {$ENDIF RTL320_UP}
 
   _FILETIME = packed record
     dwLowDateTime: LongWord;

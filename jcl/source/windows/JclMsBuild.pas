@@ -1512,10 +1512,10 @@ begin
   Properties.ReservedProperties.Values['MSBuildProjectDirectoryNoRoot'] := Path;
 
   // MSBuildThisFile
-  Properties.ReservedProperties.Values['MSBuildProjectDirectoryNoRoot'] := CurrentFileName;
+  Properties.ReservedProperties.Values['MSBuildThisFile'] := CurrentFileName;
 
   // MSBuildThisFileDirectory
-  Properties.ReservedProperties.Values['MSBuildProjectDirectoryNoRoot'] := PathRemoveSeparator(ExtractFilePath(CurrentFileName));
+  Properties.ReservedProperties.Values['MSBuildThisFileDirectory'] := PathRemoveSeparator(ExtractFilePath(CurrentFileName));
 end;
 
 procedure TJclMsBuildParser.Parse;
@@ -2386,8 +2386,13 @@ begin
   for Index := 0 to XmlElem.ItemCount - 1 do
   begin
     SubElem := XmlElem.Items.Item[Index];
-    if not (SubElem is TJclSimpleXMLElemComment) then
-      raise EJclMsBuildError.CreateResFmt(@RsEUnknownElement, [SubElem.Name]);
+    if not (SubElem is TJclSimpleXMLElemComment) and not (SubElem is TJclSimpleXMLElemText) then
+    begin
+      if SubElem.Name <> '' then
+        raise EJclMsBuildError.CreateResFmt(@RsEUnknownElement, [SubElem.Name])
+      else
+        raise EJclMsBuildError.CreateResFmt(@RsEUnsupportedChildTypeInElement, [SubElem.ClassName, XMLElem.Name])
+    end;
   end;
 
   if Condition then

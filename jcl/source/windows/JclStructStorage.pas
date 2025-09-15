@@ -128,10 +128,10 @@ type
     // of the move. That is, you cannot move an element to itself.
     function MoveTo(const OldName, NewName: string; Dest: TJclStructStorageFolder): Boolean;
     // Commits any changes when smTransacted is true
-    // When smTransacted  is false, changes are comitted immediately and thus cannot be comitted
+    // When smTransacted  is false, changes are committed immediately and thus cannot be committed
     function Commit: Boolean;
     // Reverts any changes when smTransacted is true
-    // When smTransacted  is false, changes are comitted immediately and thus cannot be reverted
+    // When smTransacted  is false, changes are committed immediately and thus cannot be reverted
     function Revert: Boolean;
     // Create a new or open an existing structured file (or subfolder) depending on AccessMode.
     // NOTE that the file will not actually be opened or created until you call

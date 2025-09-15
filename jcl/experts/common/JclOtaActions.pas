@@ -206,6 +206,8 @@ begin
   try
     ConfigurationDialog('');
   except
+    on EAbort do
+      raise;
     on ExceptionObj: TObject do
     begin
       JclExpertShowExceptionDialog(ExceptionObj);

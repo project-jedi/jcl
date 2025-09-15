@@ -55,9 +55,9 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF HAS_UNITSCOPE}
-  Winapi.Windows, System.SysUtils, Winapi.ShlObj,
+  Winapi.Windows, System.SysUtils, System.Classes, Winapi.ShlObj,
   {$ELSE ~HAS_UNITSCOPE}
-  Windows, SysUtils, ShlObj,
+  Windows, SysUtils, Classes, ShlObj,
   {$ENDIF ~HAS_UNITSCOPE}
   JclBase, JclWin32, JclSysUtils;
 
@@ -146,7 +146,7 @@ type
     Description: string;
     IconLocation: string;
     IconIndex: Integer;
-    HotKey: Word;
+    HotKey: Word; // Use ShellLinkShortCut() to convert it to a TShortCut
   end;
 
 procedure ShellLinkFree(var Link: TShellLink);
@@ -157,6 +157,7 @@ function ShellLinkCreate(const Link: TShellLink; const FileName: string): HRESUL
 function ShellLinkCreateSystem(const Link: TShellLink; const Folder: Integer; const FileName: string): HRESULT;
 function ShellLinkIcon(const Link: TShellLink): HICON; overload;
 function ShellLinkIcon(const FileName: string): HICON; overload;
+function ShellLinkShortCut(const Link: TShellLink): TShortCut;
 
 // Miscellaneous
 function SHDllGetVersion(const FileName: string; var Version: TDllVersionInfo): Boolean;
@@ -1261,6 +1262,28 @@ begin
   else
     Result := 0;
 end;
+
+function ShellLinkShortCut(const Link: TShellLink): TShortCut;
+type
+  THotKeyModifiers = set of (hkShift, hkCtrl, hkAlt, hkExt);
+var
+  Modifiers: THotKeyModifiers;
+begin
+  if Link.HotKey = 0 then
+    Result := scNone
+  else
+  begin
+    Modifiers := THotKeyModifiers(HiByte(Link.HotKey));
+    Result := LoWord(LoByte(Link.HotKey));
+    if hkShift in Modifiers then
+      Result := Result or scShift;
+    if hkCtrl in Modifiers then
+      Result := Result or scCtrl;
+    if hkAlt in Modifiers then
+      Result := Result or scAlt;
+  end;
+end;
+
 
 //=== Miscellaneous ==========================================================
 

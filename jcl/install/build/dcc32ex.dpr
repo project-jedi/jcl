@@ -562,8 +562,12 @@ begin
           8: Result.Name := 'Embarcadero RAD Studio XE';
          17: Result.Name := 'Embarcadero RAD Studio 10 Seattle';
        else
-         if Result.IDEVersion > 17 then
-           Result.Name := 'Embarcadero RAD Studio 10.' + IntToStr(Result.IDEVersion - 17) // just a guess
+         if Result.IDEVersion >= 37 then
+           Result.Name := 'Embarcadero RAD Studio ' + IntToStr(Result.IDEVersion - 37 + 13)
+         else if Result.IDEVersion >= 22 then
+           Result.Name := 'Embarcadero RAD Studio ' + IntToStr(Result.IDEVersion - 22 + 11)
+         else if Result.IDEVersion > 17 then
+           Result.Name := 'Embarcadero RAD Studio 10.' + IntToStr(Result.IDEVersion - 17)
          else if Result.IDEVersion > 13 then
            Result.Name := 'Embarcadero RAD Studio XE' + IntToStr(2 + (Result.IDEVersion - 10))
          else
@@ -879,7 +883,7 @@ begin
   InvalidFound := False;
   for Typ := ttFirst to High(TTargetType) do
   begin
-    for IDEVersion := 1 to 40 do
+    for IDEVersion := 1 to 50 do
     begin
       Target := ReadTargetInfo(Typ, IDEVersion);
       if (Target.Typ <> ttNone) and (Target.Version >= 5) then
@@ -905,13 +909,13 @@ begin
               WriteLn('Missing dependencies for ', Target.Name);
 
               if RequireJcl and not Target.InstalledJcl then
-                WriteLn(' - JCL  is required but not installed. (http://jcl.sourceforge.net)')
+                WriteLn(' - JCL  is required but not installed. (https://github.com/project-jedi/jcl)')
               else if RequireJcl and Target.InstalledJcl and
                       not IsVersionCompatible(RequireJclVersion, Target.JclVersion) then
                 WriteLn(' - JCL  version ', Target.JclVersion, ' is too old. Version ', RequireJclVersion, ' is required.');
 
               if RequireJvcl and not Target.InstalledJvcl then
-                WriteLn(' - JVCL is required but not installed. (http://jvcl.sourceforge.net)')
+                WriteLn(' - JVCL is required but not installed. (https://github.com/project-jedi/jcl)')
               else if RequireJvcl and Target.InstalledJvcl and
                       not IsVersionCompatible(RequireJvclVersion, Target.JvclVersion) then
                 WriteLn(' - JVCL version ', Target.JvclVersion, ' is too old. Version ', RequireJvclVersion, ' is required.');
@@ -1207,7 +1211,7 @@ begin
   begin
     WriteLn;
     WriteLn('Additional options (must be specified before any dcc32 parameter):');
-    WriteLn('  --delphi-version=d23   Prefer this version, overrides environment variable');
+    WriteLn('  --delphi-version=d37   Prefer this version, overrides environment variable');
     WriteLn('  --verbose              Show warnings and errors during the compiler detection');
     WriteLn('  --use-search-paths     Use the IDE''s search paths');
     WriteLn('  --preserve-config      Keep the dcc32.cfg file and create a dcc32_command.cmd');
@@ -1219,8 +1223,8 @@ begin
     WriteLn('  --runtime-package-vcl  Link the executable against the vcl package');
     WriteLn;
     WriteLn('Environment variables:');
-    WriteLn('  DELPHIVERSION = d23    Prefer this Delphi/BCB/BDS version');
-    WriteLn('                         (d6, d7, c6, d9, d10, d11, d12, d14, ..., d23, ...)');
+    WriteLn('  DELPHIVERSION = d30    Prefer this Delphi/BCB/BDS version');
+    WriteLn('                         (d6, d7, c6, d9, d10, d11, d12, d14, ..., d29, d37, ...)');
   end;
 
   ExitCode := Status;

@@ -9,10 +9,14 @@ private
   FHead: Integer;
   FTail: Integer;
 protected
+  procedure AutoGrow; override;
+  procedure AutoPack; override;
   procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
 public
   constructor Create(ACapacity: IntegerOWNERSHIPDECLARATION);
   destructor Destroy; override;
+  { IJclGrowable }
+  procedure Grow; override;
   { IJclPackable }
   procedure Pack; override;
   procedure SetCapacity(Value: Integer); override;

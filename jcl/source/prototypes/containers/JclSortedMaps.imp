@@ -21,13 +21,16 @@ end;
 procedure SELFCLASSNAME.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   MyDest: SELFCLASSNAME;
+  Index: Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is SELFCLASSNAME then
   begin
     MyDest := SELFCLASSNAME(Dest);
+    MyDest.Clear;
     MyDest.SetCapacity(FSize);
-    MyDest.FEntries := FEntries;
+    for Index := 0 to FSize - 1 do
+      MyDest.FEntries[Index] := FEntries[Index];
     MyDest.FSize := FSize;
   end;
 end;
@@ -222,9 +225,7 @@ end;
 
 function SELFCLASSNAME.MapEquals(const AMap: STDMAPINTERFACENAME): Boolean;
 var
-  It: KEYITRINTERFACENAME;
   Index: Integer;
-  AKey: KEYTYPENAME;
 begin
   {$JPPUNDEF WRITE}{$JPPEXPANDMACRO LOCK}
     Result := False;
@@ -232,16 +233,15 @@ begin
       Exit;
     if FSize <> AMap.Size then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
+    for Index := 0 to FSize - 1 do
     begin
-      if Index >= FSize then
+      if AMap.ContainsKey(FEntries[Index].Key) then
+      begin
+        if ValuesCompare(AMap.GetValue(FEntries[Index].Key), FEntries[Index].Value) <> 0 then
+          Exit;
+      end
+      else
         Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
     end;
     Result := True;
   {$JPPEXPANDMACRO UNLOCK}

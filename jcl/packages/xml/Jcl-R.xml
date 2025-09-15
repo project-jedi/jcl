@@ -14,6 +14,7 @@
   <Platforms>
     <Platform Name="Win32" Condition=""/>
     <Platform Name="Win64" Condition=""/>
+    <Platform Name="Win64x" Condition=""/>
   </Platforms>
   <Requires>
     <Package Name="rtl" Targets="Delphi,Bcb,Bds" Condition=""/>
