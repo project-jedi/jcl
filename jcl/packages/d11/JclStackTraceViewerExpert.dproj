@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
     <DCC_UsePackage>rtl;vcl;designide;Jcl;JclBaseExpert</DCC_UsePackage>
-    <DCC_Define>BCB;WIN32;CONDITIONALEXPRESSIONS;VER180;VER185;RELEASE</DCC_Define>
+    <DCC_Define>BCB;RELEASE</DCC_Define>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Version>7.0</Version>
@@ -48,9 +48,9 @@
            <VersionInfo Name="IncludeVerInfo">True</VersionInfo>
            <VersionInfo Name="AutoIncBuild">False</VersionInfo>
            <VersionInfo Name="MajorVer">2</VersionInfo>
-           <VersionInfo Name="MinorVer">7</VersionInfo>
+           <VersionInfo Name="MinorVer">9</VersionInfo>
            <VersionInfo Name="Release">0</VersionInfo>
-           <VersionInfo Name="Build">5300</VersionInfo>
+           <VersionInfo Name="Build">9331</VersionInfo>
            <VersionInfo Name="Debug">False</VersionInfo>
            <VersionInfo Name="PreRelease">False</VersionInfo>
            <VersionInfo Name="Special">False</VersionInfo>
@@ -62,13 +62,13 @@
          <VersionInfoKeys>
           <VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
           <VersionInfoKeys Name="FileDescription">JCL Stack Trace Viewer</VersionInfoKeys>
-          <VersionInfoKeys Name="FileVersion">2.7.0.5300</VersionInfoKeys>
+          <VersionInfoKeys Name="FileVersion">2.9.0.9331</VersionInfoKeys>
           <VersionInfoKeys Name="InternalName">JclStackTraceViewerExpert</VersionInfoKeys>
-          <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2014 Project JEDI</VersionInfoKeys>
+          <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2025 Project JEDI</VersionInfoKeys>
           <VersionInfoKeys Name="LegalTrademarks"/>
           <VersionInfoKeys Name="OriginalFilename">JclStackTraceViewerExpert110.bpl</VersionInfoKeys>
           <VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
-          <VersionInfoKeys Name="ProductVersion">2.7 Build 5300</VersionInfoKeys>
+          <VersionInfoKeys Name="ProductVersion">2.9 Build 9331</VersionInfoKeys>
          </VersionInfoKeys>
          <Source>
            <Source Name="MainSource">JclStackTraceViewerExpert.dpk</Source>

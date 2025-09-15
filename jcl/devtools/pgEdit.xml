@@ -131,10 +131,10 @@
       </aliases>
       <ProjectProperties>
         <ProjectProperty name="VersionMajorNumber" value="2"/>
-        <ProjectProperty name="VersionMinorNumber" value="7"/>
+        <ProjectProperty name="VersionMinorNumber" value="9"/>
         <ProjectProperty name="ReleaseNumber" value="0"/>
-        <ProjectProperty name="BuildNumber" value="5300"/>
-        <ProjectProperty name="Copyright" value="Copyright (C) 1999, 2014 Project JEDI"/>
+        <ProjectProperty name="BuildNumber" value="9331"/>
+        <ProjectProperty name="Copyright" value="Copyright (C) 1999, 2025 Project JEDI"/>
       </ProjectProperties>
     </Model>
   </models>

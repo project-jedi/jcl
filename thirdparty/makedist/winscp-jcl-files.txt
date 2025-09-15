@@ -2,6 +2,6 @@ option batch continue
 option confirm off
 option transfer binary
 open jcl.frs.sourceforge.net
-mkdir "/home/pfs/project/jcl/JCL Releases/JCL 2.8 Build 9330"
-synchronize remote %CURDIR%\files "/home/pfs/project/jcl/JCL Releases/JCL 2.8 Build 9330"
+mkdir "/home/pfs/project/jcl/JCL Releases/JCL 2.9 Build 9331"
+synchronize remote %CURDIR%\files "/home/pfs/project/jcl/JCL Releases/JCL 2.9 Build 9331"
 close

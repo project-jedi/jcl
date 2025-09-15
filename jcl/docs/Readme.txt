@@ -3,8 +3,8 @@
 
 JEDI Code Library
 Release 2.9
-Build YYYY
-XX-January-2016
+Build ????
+dd-mmmmmmmm-yyyy
 
 
 --------------------------------------------------------------------------------
