@@ -511,7 +511,11 @@ begin
   if UseMapi then
     Result := MapiDll
   else
+  begin
+    if (FSelectedClientIndex < 0) or (FSelectedClientIndex >= Length(FClients)) then
+      raise EJclMapiError.CreateRes(@RsMapiMailNoClient);
     Result := FClients[FSelectedClientIndex].ClientPath;
+  end;
 end;
 
 function TJclSimpleMapi.GetClients(Index: Integer): TJclMapiClient;
@@ -605,6 +609,13 @@ var
     I: Integer;
     LibHandle: THandle;
   begin
+    // Blacklist known non-functional "mail clients"
+    // hmmapi.dll is Windows Live Hotmail handler that just opens a browser, not a real MAPI client
+    if (Pos('hmmapi.dll', LowerCase(Client.ClientPath)) > 0) then
+    begin
+      Result := False;
+      Exit;
+    end;
     LibHandle := LoadLibraryEx(PChar(Client.ClientPath), 0, DONT_RESOLVE_DLL_REFERENCES);
     Result := (LibHandle <> 0);
     if Result then
@@ -633,7 +644,9 @@ begin
       FSimpleMapiInstalled := RegReadStringDef(HKEY_LOCAL_MACHINE, MessageSubsytemKey, 'MAPI', '') = '1';
       FMapiVersion := RegReadStringDef(HKEY_LOCAL_MACHINE, MessageSubsytemKey, 'MAPIXVER', '');
     end;
-    FAnyClientInstalled := FMapiInstalled;
+    // Don't assume MAPI installed means a client is available
+    // We'll verify actual clients below
+    FAnyClientInstalled := False;
     if RegKeyExists(HKEY_CURRENT_USER, MailClientsKey) then
       DefaultValue := RegReadStringDef(HKEY_CURRENT_USER, MailClientsKey, '', '');
     if RegKeyExists(HKEY_LOCAL_MACHINE, MailClientsKey) then
@@ -666,6 +679,34 @@ begin
         end;
         FDefaultClientIndex := SL.IndexOf(DefaultValue);
         FSelectedClientIndex := FDefaultClientIndex;
+        // If we found clients but none is selected as default, try to select the first valid one
+        if (FSelectedClientIndex < 0) and FAnyClientInstalled then
+        begin
+          for I := 0 to Length(FClients) - 1 do
+            if FClients[I].Valid then
+            begin
+              FSelectedClientIndex := I;
+              Break;
+            end;
+        end;
+      end;
+    end;
+    // Check if standard MAPI is actually available and working
+    if FSimpleMapiInstalled and not FAnyClientInstalled then
+    begin
+      // Try to verify MAPI32.dll is actually present and loadable
+      I := LoadLibraryEx(PChar(MapiDll), 0, DONT_RESOLVE_DLL_REFERENCES);
+      if I <> 0 then
+      begin
+        // Check if it has the required exports
+        FAnyClientInstalled := True; // Assume true, will set false if exports missing
+        for DefaultValue := Low(MapiExportNames) to High(MapiExportNames) do
+          if GetProcAddress(I, PChar(MapiExportNames[DefaultValue])) = nil then
+          begin
+            FAnyClientInstalled := False;
+            Break;
+          end;
+        FreeLibrary(I);
       end;
     end;
     if RegKeyExists(HKEY_CURRENT_USER, ProfilesRegKey) then
