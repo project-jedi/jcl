@@ -1360,7 +1360,9 @@ function ArcTan(X: Float): Float;
 begin
   {$IFDEF USE_MATH_UNIT}
   System.Error(rePlatformNotImplemented);
-  Result := NaN; 
+  {$IFNDEF SUPPORTS_NORETURN}
+  Result := NaN;
+  {$ENDIF ~SUPPORTS_NORETURN}
   {$ELSE ~USE_MATH_UNIT}
   asm
           FLD     X
@@ -1405,7 +1407,9 @@ begin
   DomainCheck(Abs(X) > MaxAngle);
   {$IFDEF USE_MATH_UNIT}
   System.Error(rePlatformNotImplemented);
+  {$IFNDEF SUPPORTS_NORETURN}
   Result := NaN;
+  {$ENDIF ~SUPPORTS_NORETURN}
   {$ELSE ~USE_MATH_UNIT}
   asm
           FLD     X
@@ -1484,7 +1488,9 @@ begin
   {$ENDIF ~MATH_EXT_SPECIALVALUES}
   {$IFDEF USE_MATH_UNIT}
   System.Error(rePlatformNotImplemented);
+  {$IFNDEF SUPPORTS_NORETURN}
   Result := NaN;
+  {$ENDIF ~SUPPORTS_NORETURN}
   {$ELSE ~USE_MATH_UNIT}
   asm
           FLD     X
@@ -4742,7 +4748,9 @@ begin
   {$IFDEF DELPHI64_TEMPORARY}
   //IsInfinite is disabled for 64-bit, because BASM is not 64-bit compatible (see logmessage of public repo @3070)
   System.Error(rePlatformNotImplemented);
+  {$IFNDEF SUPPORTS_NORETURN}
   Result := False;
+  {$ENDIF ~SUPPORTS_NORETURN}
   {$ELSE ~DELPHI64_TEMPORARY}
   Result := JclMath.IsInfinite(Self);
   {$ENDIF ~DELPHI64_TEMPORARY}
@@ -4837,7 +4845,9 @@ begin
   {$IFDEF DELPHI64_TEMPORARY}
   //IsInfinite is disabled for 64-bit, because BASM is not 64-bit compatible (see logmessage of public repo @3070)
   System.Error(rePlatformNotImplemented);
+  {$IFNDEF SUPPORTS_NORETURN}
   Result := False;
+  {$ENDIF ~SUPPORTS_NORETURN}
   {$ELSE ~DELPHI64_TEMPORARY}
   Result := JclMath.IsInfinite(Self);
   {$ENDIF ~DELPHI64_TEMPORARY}
