@@ -338,6 +338,7 @@ type
   TDynamicAddressList = array [0..MaxInt div 16] of Pointer;
   PDynamicAddressList = ^TDynamicAddressList;
 
+{$IFDEF CPUINTEL}
 function GetDynamicMethodCount(AClass: TClass): Integer;
 function GetDynamicIndexList(AClass: TClass): PDynamicIndexList;
 function GetDynamicAddressList(AClass: TClass): PDynamicAddressList;
@@ -375,6 +376,7 @@ type
   end;
 
 function GetFieldTable(AClass: TClass): PFieldTable;
+{$ENDIF CPUINTEL}
 
 { method table }
 
@@ -393,7 +395,9 @@ type
    {Entries: array [1..65534] of TMethodEntry;}
   end;
 
+{$IFDEF CPUINTEL}
 function GetMethodTable(AClass: TClass): PMethodTable;
+{$ENDIF CPUINTEL}
 function GetMethodEntry(MethodTable: PMethodTable; Index: Integer): PMethodEntry;
 
 // Function to compare if two methods/event handlers are equal
@@ -402,11 +406,15 @@ function NotifyEventEquals(aMethod1, aMethod2: TNotifyEvent): boolean;
 
 // Class Parent
 procedure SetClassParent(AClass: TClass; NewClassParent: TClass);
+{$IFDEF CPUINTEL}
 function GetClassParent(AClass: TClass): TClass;
+{$ENDIF CPUINTEL}
 
 {$IFNDEF FPC}
+{$IFDEF CPUINTEL}
 function IsClass(Address: Pointer): Boolean;
 function IsObject(Address: Pointer): Boolean;
+{$ENDIF CPUINTEL}
 {$ENDIF ~FPC}
 
 function InheritsFromByName(AClass: TClass; const AClassName: string): Boolean;
@@ -1996,6 +2004,7 @@ begin
   SetVMTPointer(AClass, Index * SizeOf(Pointer), Method);
 end;
 
+{$IFDEF CPUINTEL}
 function GetDynamicMethodCount(AClass: TClass): Integer; assembler;
 asm
         {$IFDEF CPU32}
@@ -2171,6 +2180,7 @@ asm
         MOV     RAX, [RCX].vmtMethodTable
         {$ENDIF CPU64}
 end;
+{$ENDIF CPUINTEL}
 
 function GetMethodEntry(MethodTable: PMethodTable; Index: Integer): PMethodEntry;
 begin
@@ -2211,6 +2221,7 @@ begin
   // FlushInstructionCache{$IFDEF MSWINDOWS}(GetCurrentProcess, PatchAddress, SizeOf(Pointer)){$ENDIF};
 end;
 
+{$IFDEF CPUINTEL}
 function GetClassParent(AClass: TClass): TClass; assembler;
 asm
         {$IFDEF CPU32}
@@ -2259,6 +2270,7 @@ asm
 @Exit:
 end;
 {$ENDIF BORLAND}
+{$ENDIF CPUINTEL}
 
 function InheritsFromByName(AClass: TClass; const AClassName: string): Boolean;
 begin

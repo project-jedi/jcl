@@ -377,6 +377,7 @@ function GetOSVersionString: string;
 {$IFDEF MSWINDOWS}
 function GetMacAddresses(const Machine: string; const Addresses: TStrings): Integer;
 {$ENDIF MSWINDOWS}
+{$IFDEF CPUINTEL}
 function ReadTimeStampCounter: Int64;
 {$IFDEF WIN64}
 {$EXTERNALSYM ReadTimeStampCounter}
@@ -1370,6 +1371,7 @@ function GetOSEnabledFeatures: TOSEnabledFeatures;
 {$ENDIF MSWINDOWS}
 function CPUID: TCpuInfo;
 function TestFDIVInstruction: Boolean;
+{$ENDIF CPUINTEL}
 
 // Memory Information
 {$IFDEF MSWINDOWS}
@@ -1476,7 +1478,10 @@ uses
   JclRegistry, JclWin32,
   {$ENDIF MSWINDOWS}
   {$ENDIF ~HAS_UNITSCOPE}
-  Jcl8087, JclIniFiles,
+  {$IFDEF CPUINTEL}
+  Jcl8087,
+  {$ENDIF CPUINTEL}
+  JclIniFiles,
   JclSysUtils, JclFileUtils, JclAnsiStrings, JclStrings;
 
 {$IFDEF FPC}
@@ -4594,7 +4599,9 @@ var
   glErr: Cardinal;
   bError: Boolean;
   sOpenGLVersion, sOpenGLVendor: AnsiString;
+  {$IFDEF CPUINTEL}
   Save8087CW: Word;
+  {$ENDIF}
 
   procedure FunctionFailedError(Name: string);
   begin
@@ -4640,9 +4647,13 @@ begin
 
     { To call for the version information string we must first have an active
       context established for use.  We can, of course, close this after use }
+    {$IFDEF CPUINTEL}
     Save8087CW := Get8087ControlWord;
+    {$ENDIF CPUINTEL}
     try
+      {$IFDEF CPUINTEL}
       Set8087CW($133F);
+      {$ENDIF CPUINTEL}
       hGLContext := 0;
       Result := False;
       bError := False;
@@ -4731,7 +4742,9 @@ begin
           wglDeleteContextFunc(hGLContext);
       end;
     finally
+      {$IFDEF CPUINTEL}
       Set8087CW(Save8087CW);
+      {$ENDIF CPUINTEL}
     end;
   finally
     if (OpenGlLib <> 0) then
@@ -5048,6 +5061,7 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
+{$IFDEF CPUINTEL}
 function ReadTimeStampCounter: Int64; assembler;
 asm
         DW      $310F
@@ -6056,6 +6070,7 @@ begin
   Result := True;
 end;
 {$ENDIF CPU64}
+{$ENDIF CPUINTEL}
 
 //=== Alloc granularity ======================================================
 
