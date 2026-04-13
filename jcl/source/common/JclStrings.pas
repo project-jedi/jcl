@@ -2282,6 +2282,18 @@ end;
 
 procedure StrFillChar(var S; Count: SizeInt; C: Char);
 {$IFDEF SUPPORTS_UNICODE}
+{$IFDEF PUREPASCAL}
+var
+  P: PWideChar;
+begin
+  P := Pointer(@S);
+  while Count > 0 do
+  begin
+    Dec(Count);
+    P[Count] := C;
+  end;
+end;
+{$ELSE ~PUREPASCAL}
 asm
         // 32 --> EAX S
         //        EDX Count
@@ -2309,6 +2321,7 @@ asm
         {$ENDIF CPU64}
 @@Leave:
 end;
+{$ENDIF ~PUREPASCAL}
 {$ELSE ~SUPPORTS_UNICODE}
 begin
   if Count > 0 then
