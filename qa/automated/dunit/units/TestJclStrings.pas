@@ -30,7 +30,7 @@ uses
   {$ENDIF}
   Classes,
   SysUtils,
-  JclSysUtils,
+  JclBase, JclSysUtils,
   JclAnsiStrings, JclStrings;
 
 { TJclStringCharacterTestRoutines }
@@ -216,13 +216,13 @@ implementation
 uses
   LibC;
 {$ENDIF LINUX}
-{$IFDEF WIN32}
+{$IFDEF MSWINDOWS}
 const
-  LibC = 'msvcrt40.dll';
+  LibC = 'msvcrt.dll';
 
 function isalnum(C: Integer): LongBool; cdecl; external LibC;
 function isalpha(C: Integer): LongBool; cdecl; external LibC;
-{$ENDIF WIN32}
+{$ENDIF MSWINDOWS}
 
 //-----------------------------------------------------------------------------------------------
 // Generators
@@ -2640,8 +2640,8 @@ end;
 procedure TJclStringTabSet._OptimalFill;
 var
   tabs: TJclTabSet;
-  tabCount: Integer;
-  spaceCount: Integer;
+  tabCount: SizeInt;
+  spaceCount: SizeInt;
 begin
   tabs := TJclTabSet.Create([17, 22, 32], False, 4);
   try
@@ -2897,8 +2897,8 @@ end;
 procedure TJclStringTabSet._UpdatePosition;
 var
   tabs: TJclTabSet;
-  column: Integer;
-  line: Integer;
+  column: SizeInt;
+  line: SizeInt;
 begin
   tabs := TJclTabSet.Create([17, 22, 32], False, 4);
   try
