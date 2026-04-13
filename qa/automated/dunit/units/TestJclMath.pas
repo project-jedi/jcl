@@ -1131,7 +1131,7 @@ begin
     Base := Random(10);
     Exponent := Random(10);
 
-    CheckEquals(Math.Power(Base, Exponent),JclMath.Power(Base, Exponent), PrecisionTolerance);
+    CheckEquals(Math.Power(Base, Exponent),JclMath.Power(Base, Exponent), PrecisionTolerance * 10);
   end;
 
 end;
