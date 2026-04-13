@@ -218,7 +218,7 @@ uses
 {$ENDIF LINUX}
 {$IFDEF MSWINDOWS}
 const
-  LibC = 'msvcrt.dll';
+  LibC = {$IFDEF CPUINTEL}'msvcrt.dll'{$ELSE}'ucrtbase.dll'{$ENDIF ~CPUINTEL};
 
 function isalnum(C: Integer): LongBool; cdecl; external LibC;
 function isalpha(C: Integer): LongBool; cdecl; external LibC;
