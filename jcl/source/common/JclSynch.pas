@@ -373,6 +373,11 @@ const
 
 // Locked Integer manipulation
 function LockedAdd(var Target: Integer; Value: Integer): Integer;
+{$IFDEF PUREPASCAL}
+begin
+  Result := InterlockedAdd(Target, Value);
+end;
+{$ELSE ~PUREPASCAL}
 asm
         {$IFDEF CPU32}
         // --> EAX Target
@@ -392,8 +397,14 @@ asm
         ADD     EAX, EDX
         {$ENDIF CPU64}
 end;
+{$ENDIF}
 
 function LockedCompareExchange(var Target: Integer; Exch, Comp: Integer): Integer;
+{$IFDEF PUREPASCAL}
+begin
+  Result := InterlockedCompareExchange(Target, Exch, Comp);
+end;
+{$ELSE ~PUREPASCAL}
 asm
         {$IFDEF CPU32}
         // --> EAX Target
@@ -418,8 +429,14 @@ asm
         LOCK CMPXCHG [RCX], EDX
         {$ENDIF CPU64}
 end;
+{$ENDIF}
 
 function LockedCompareExchange(var Target: Pointer; Exch, Comp: Pointer): Pointer;
+{$IFDEF PUREPASCAL}
+begin
+  Result := InterlockedCompareExchangePointer(Target, Exch, Comp)
+end;
+{$ELSE ~PUREPASCAL}
 asm
         {$IFDEF CPU32}
         // --> EAX Target
@@ -444,8 +461,15 @@ asm
         LOCK CMPXCHG [RCX], RDX
         {$ENDIF CPU64}
 end;
+{$ENDIF ~PUREPASCAL}
 
 function LockedCompareExchange(var Target: TObject; Exch, Comp: TObject): TObject;
+{$IFDEF PUREPASCAL}
+begin
+  Result := TObject(InterlockedCompareExchangePointer(Pointer(Target),
+    Pointer(Exch), Pointer(Comp)));
+end;
+{$ELSE ~PUREPASCAL}
 asm
         {$IFDEF CPU32}
         // --> EAX Target
@@ -470,8 +494,14 @@ asm
         LOCK CMPXCHG [RCX], RDX
         {$ENDIF CPU64}
 end;
+{$ENDIF ~PUREPASCAL}
 
 function LockedDec(var Target: Integer): Integer;
+{$IFDEF PUREPASCAL}
+begin
+  Result := InterlockedDecrement(Target);
+end;
+{$ELSE ~PUREPASCAL}
 asm
         {$IFDEF CPU32}
         // --> EAX Target
@@ -489,8 +519,14 @@ asm
         DEC     EAX
         {$ENDIF CPU64}
 end;
+{$ENDIF ~PUREPASCAL}
 
 function LockedExchange(var Target: Integer; Value: Integer): Integer;
+{$IFDEF PUREPASCAL}
+begin
+  Result := InterlockedExchange(Target, Value);
+end;
+{$ELSE ~PUREPASCAL}
 asm
         {$IFDEF CPU32}
         // --> EAX Target
@@ -512,8 +548,14 @@ asm
         LOCK XCHG [RCX], EAX
         {$ENDIF CPU64}
 end;
+{$ENDIF ~PUREPASCAL}
 
 function LockedExchangeAdd(var Target: Integer; Value: Integer): Integer;
+{$IFDEF PUREPASCAL}
+begin
+  Result := InterlockedExchangeAdd(Target, Value);
+end;
+{$ELSE ~PUREPASCAL}
 asm
         {$IFDEF CPU32}
         // --> EAX Target
@@ -535,8 +577,14 @@ asm
         LOCK XADD [RCX], EAX
         {$ENDIF CPU64}
 end;
+{$ENDIF ~PUREPASCAL}
 
 function LockedExchangeDec(var Target: Integer): Integer;
+{$IFDEF PUREPASCAL}
+begin
+  Result := InterlockedExchangeSubtract(Target, 1);
+end;
+{$ELSE ~PUREPASCAL}
 asm
         {$IFDEF CPU32}
         // --> EAX Target
@@ -552,8 +600,14 @@ asm
         LOCK XADD [RCX], EAX
         {$ENDIF CPU64}
 end;
+{$ENDIF ~PUREPASCAL}
 
 function LockedExchangeInc(var Target: Integer): Integer;
+{$IFDEF PUREPASCAL}
+begin
+  Result := InterlockedExchangeAdd(Target, 1);
+end;
+{$ELSE ~PUREPASCAL}
 asm
         {$IFDEF CPU32}
         // --> EAX Target
@@ -569,8 +623,14 @@ asm
         LOCK XADD [RCX], EAX
         {$ENDIF CPU64}
 end;
+{$ENDIF}
 
 function LockedExchangeSub(var Target: Integer; Value: Integer): Integer;
+{$IFDEF PUREPASCAL}
+begin
+  Result := InterlockedExchangeSubtract(Target, Value);
+end;
+{$ELSE ~PUREPASCAL}
 asm
         {$IFDEF CPU32}
         // --> EAX Target
@@ -594,8 +654,14 @@ asm
         LOCK XADD [RCX], EAX
         {$ENDIF CPU64}
 end;
+{$ENDIF ~PUREPASCAL}
 
 function LockedInc(var Target: Integer): Integer;
+{$IFDEF PUREPASCAL}
+begin
+  Result := InterlockedIncrement(Target);
+end;
+{$ELSE ~PUREPASCAL}
 asm
         {$IFDEF CPU32}
         // --> EAX Target
@@ -613,8 +679,14 @@ asm
         INC     EAX
         {$ENDIF CPU64}
 end;
+{$ENDIF ~PUREPASCAL}
 
 function LockedSub(var Target: Integer; Value: Integer): Integer;
+{$IFDEF PUREPASCAL}
+begin
+  Result := InterlockedAdd(Target, -Value);
+end;
+{$ELSE ~PUREPASCAL}
 asm
         {$IFDEF CPU32}
         // --> EAX Target
@@ -636,11 +708,17 @@ asm
         ADD     EAX, EDX
         {$ENDIF CPU64}
 end;
+{$ENDIF}
 
 {$IFDEF CPU64}
 
 // Locked Int64 manipulation
 function LockedAdd(var Target: Int64; Value: Int64): Int64;
+{$IFDEF PUREPASCAL}
+begin
+  Result := InterlockedAdd64(Target, Value);
+end;
+{$ELSE ~PUREPASCAL}
 asm
         // --> RCX Target
         //     RDX Value
@@ -649,8 +727,14 @@ asm
         LOCK XADD [RCX], RAX
         ADD     RAX, RDX
 end;
+{$ENDIF ~PUREPASCAL}
 
 function LockedCompareExchange(var Target: Int64; Exch, Comp: Int64): Int64;
+{$IFDEF PUREPASCAL}
+begin
+  Result := InterlockedCompareExchange64(Target, Exch, Comp);
+end;
+{$ELSE ~PUREPASCAL}
 asm
         // --> RCX Target
         //     RDX Exch
@@ -659,8 +743,14 @@ asm
         MOV     RAX, R8
         LOCK CMPXCHG [RCX], RDX
 end;
+{$ENDIF ~PUREPASCAL}
 
 function LockedDec(var Target: Int64): Int64;
+{$IFDEF PUREPASCAL}
+begin
+  Result := InterlockedDecrement64(Target);
+end;
+{$ELSE}
 asm
         // --> RCX Target
         // <-- RAX Result
@@ -668,8 +758,14 @@ asm
         LOCK XADD [RCX], RAX
         DEC     RAX
 end;
+{$ENDIF ~PUREPASCAL}
 
 function LockedExchange(var Target: Int64; Value: Int64): Int64;
+{$IFDEF PUREPASCAL}
+begin
+  Result := InterlockedExchange64(Target, Value);
+end;
+{$ELSE ~PUREPASCAL}
 asm
         // --> RCX Target
         //     RDX Value
@@ -677,8 +773,14 @@ asm
         MOV     RAX, RDX
         LOCK XCHG [RCX], RAX
 end;
+{$ENDIF ~PUREPASCAL}
 
 function LockedExchangeAdd(var Target: Int64; Value: Int64): Int64;
+{$IFDEF PUREPASCAL}
+begin
+  Result := InterlockedExchangeAdd64(Target, Value);
+end;
+{$ELSE ~PUREPASCAL}
 asm
         // --> RCX Target
         //     RDX Value
@@ -686,24 +788,42 @@ asm
         MOV     RAX, RDX
         LOCK XADD [RCX], RAX
 end;
+{$ENDIF ~PUREPASCAL}
 
 function LockedExchangeDec(var Target: Int64): Int64;
+{$IFDEF PUREPASCAL}
+begin
+  Result := InterlockedExchangeAdd64(Target, -1);
+end;
+{$ELSE ~PUREPASCAL}
 asm
         // --> RCX Target
         // <-- RAX Result
         MOV     RAX, -1
         LOCK XADD [RCX], RAX
 end;
+{$ENDIF ~PUREPASCAL}
 
 function LockedExchangeInc(var Target: Int64): Int64;
+{$IFDEF PUREPASCAL}
+begin
+  Result := InterlockedExchangeAdd64(Target, 1);
+end;
+{$ELSE ~PUREPASCAL}
 asm
         // --> RCX Target
         // <-- RAX Result
         MOV     RAX, 1
         LOCK XADD [RCX], RAX
 end;
+{$ENDIF ~PUREPASCAL}
 
 function LockedExchangeSub(var Target: Int64; Value: Int64): Int64;
+{$IFDEF PUREPASCAL}
+begin
+  Result := InterlockedExchangeAdd64(Target, -Value);
+end;
+{$ELSE ~PUREPASCAL}
 asm
         // --> RCX Target
         //     RDX Value
@@ -712,8 +832,14 @@ asm
         MOV     RAX, RDX
         LOCK XADD [RCX], RAX
 end;
+{$ENDIF ~PUREPASCAL}
 
 function LockedInc(var Target: Int64): Int64;
+{$IFDEF PUREPASCAL}
+begin
+  Result := InterlockedIncrement64(Target);
+end;
+{$ELSE ~PUREPASCAL}
 asm
         // --> RCX Target
         // <-- RAX Result
@@ -721,8 +847,14 @@ asm
         LOCK XADD [RCX], RAX
         INC     RAX
 end;
+{$ENDIF ~PUREPASCAL}
 
 function LockedSub(var Target: Int64; Value: Int64): Int64;
+{$IFDEF PUREPASCAL}
+begin
+  Result := InterlockedAdd64(Target, -Value);
+end;
+{$ELSE ~PUREPASCAL}
 asm
         // --> RCX Target
         //     RDX Value
@@ -732,6 +864,7 @@ asm
         LOCK XADD [RCX], RAX
         ADD     RAX, RDX
 end;
+{$ENDIF ~PUREPASCAL}
 
 {$IFDEF BORLAND}
 
