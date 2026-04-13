@@ -5569,7 +5569,7 @@ begin
 end;
 
 procedure TWideStrings.Error(const Msg: string; Data: Integer);
-
+  {$IFDEF CPUINTEL}
   function ReturnAddr: Pointer;
   asm
           {$IFDEF CPU32}
@@ -5581,9 +5581,10 @@ procedure TWideStrings.Error(const Msg: string; Data: Integer);
           MOV     RAX, [RAX + 8]
           {$ENDIF CPU64}
   end;
+  {$ENDIF CPUINTEL}
 
 begin
-  raise EStringListError.CreateFmt(Msg, [Data]) at ReturnAddr;
+  raise EStringListError.CreateFmt(Msg, [Data]) {$IFDEF CPUINTEL}at ReturnAddr{$ENDIF CPUINTEL};
 end;
 
 procedure TWideStrings.Exchange(Index1, Index2: Integer);
