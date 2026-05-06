@@ -619,14 +619,14 @@ type
 
 function CallersCallerAddress: Pointer;
 asm
-        {$IFDEF CPU32}
+        {$IFDEF CPU386}
         MOV     EAX, [EBP]
         MOV     EAX, TStackFrame([EAX]).CallerAddress
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
+        {$ENDIF CPU386}
+        {$IFDEF CPUX64}
         MOV     RAX, [RBP]
         MOV     RAX, TStackFrame([RAX]).CallerAddress
-        {$ENDIF CPU64}
+        {$ENDIF CPUX64}
 end;
 
 {$STACKFRAMES ON}

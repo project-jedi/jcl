@@ -2827,7 +2827,7 @@ end;
 
 function JclIsClass(const AnObj: TObject; const AClass: TClass): Boolean;
 asm
-        {$IFDEF CPU32}
+        {$IFDEF CPU386}
         // 32 --> EAX AnObj
         //        EDX AClass
         //    <-- AL  Result
@@ -2839,8 +2839,8 @@ asm
         JE      @@success
         MOV     EAX,[EAX].vmtParent
         TEST    EAX,EAX
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
+        {$ENDIF CPU386}
+        {$IFDEF CPUX64}
         // 64 --> RCX AnObj
         //        RDX AClass
         //    <-- AL  Result
@@ -2853,7 +2853,7 @@ asm
         JE      @@success
         MOV     RAX,[RAX].vmtParent
         TEST    RAX,RAX
-        {$ENDIF CPU64}
+        {$ENDIF CPUX64}
         JNE     @@loop
         JMP     @@exit
 @@success:

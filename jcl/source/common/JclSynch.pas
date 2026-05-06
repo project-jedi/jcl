@@ -379,7 +379,7 @@ begin
 end;
 {$ELSE ~PUREPASCAL}
 asm
-        {$IFDEF CPU32}
+        {$IFDEF CPU386}
         // --> EAX Target
         //     EDX Value
         // <-- EAX Result
@@ -387,15 +387,15 @@ asm
         MOV     EAX, EDX
         LOCK XADD [ECX], EAX
         ADD     EAX, EDX
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
+        {$ENDIF CPU386}
+        {$IFDEF CPUX64}
         // --> RCX Target
         //     EDX Value
         // <-- EAX Result
         MOV     EAX, EDX
         LOCK XADD [RCX], EAX
         ADD     EAX, EDX
-        {$ENDIF CPU64}
+        {$ENDIF CPUX64}
 end;
 {$ENDIF}
 
@@ -406,7 +406,7 @@ begin
 end;
 {$ELSE ~PUREPASCAL}
 asm
-        {$IFDEF CPU32}
+        {$IFDEF CPU386}
         // --> EAX Target
         //     EDX Exch
         //     ECX Comp
@@ -416,8 +416,8 @@ asm
         //     EDX Exch
         //     ECX Target
         LOCK CMPXCHG [ECX], EDX
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
+        {$ENDIF CPU386}
+        {$IFDEF CPUX64}
         // --> RCX Target
         //     EDX Exch
         //     R8  Comp
@@ -427,7 +427,7 @@ asm
         //     EDX Exch
         //     RAX Comp
         LOCK CMPXCHG [RCX], EDX
-        {$ENDIF CPU64}
+        {$ENDIF CPUX64}
 end;
 {$ENDIF}
 
@@ -438,7 +438,7 @@ begin
 end;
 {$ELSE ~PUREPASCAL}
 asm
-        {$IFDEF CPU32}
+        {$IFDEF CPU386}
         // --> EAX Target
         //     EDX Exch
         //     ECX Comp
@@ -448,8 +448,8 @@ asm
         //     EDX Exch
         //     ECX Target
         LOCK CMPXCHG [ECX], EDX
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
+        {$ENDIF CPU386}
+        {$IFDEF CPUX64}
         // --> RCX Target
         //     RDX Exch
         //     R8  Comp
@@ -459,7 +459,7 @@ asm
         //     RDX Exch
         //     RAX Comp
         LOCK CMPXCHG [RCX], RDX
-        {$ENDIF CPU64}
+        {$ENDIF CPUX64}
 end;
 {$ENDIF ~PUREPASCAL}
 
@@ -471,7 +471,7 @@ begin
 end;
 {$ELSE ~PUREPASCAL}
 asm
-        {$IFDEF CPU32}
+        {$IFDEF CPU386}
         // --> EAX Target
         //     EDX Exch
         //     ECX Comp
@@ -481,8 +481,8 @@ asm
         //     EDX Exch
         //     ECX Target
         LOCK CMPXCHG [ECX], EDX
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
+        {$ENDIF CPU386}
+        {$IFDEF CPUX64}
         // --> RCX Target
         //     RDX Exch
         //     R8  Comp
@@ -492,7 +492,7 @@ asm
         //     RDX Exch
         //     RAX Comp
         LOCK CMPXCHG [RCX], RDX
-        {$ENDIF CPU64}
+        {$ENDIF CPUX64}
 end;
 {$ENDIF ~PUREPASCAL}
 
@@ -503,21 +503,21 @@ begin
 end;
 {$ELSE ~PUREPASCAL}
 asm
-        {$IFDEF CPU32}
+        {$IFDEF CPU386}
         // --> EAX Target
         // <-- EAX Result
         MOV     ECX, EAX
         MOV     EAX, -1
         LOCK XADD [ECX], EAX
         DEC     EAX
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
+        {$ENDIF CPU386}
+        {$IFDEF CPUX64}
         // --> RCX Target
         // <-- EAX Result
         MOV     EAX, -1
         LOCK XADD [RCX], EAX
         DEC     EAX
-        {$ENDIF CPU64}
+        {$ENDIF CPUX64}
 end;
 {$ENDIF ~PUREPASCAL}
 
@@ -528,7 +528,7 @@ begin
 end;
 {$ELSE ~PUREPASCAL}
 asm
-        {$IFDEF CPU32}
+        {$IFDEF CPU386}
         // --> EAX Target
         //     EDX Value
         // <-- EAX Result
@@ -537,8 +537,8 @@ asm
         //     ECX Target
         //     EAX Value
         LOCK XCHG [ECX], EAX
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
+        {$ENDIF CPU386}
+        {$IFDEF CPUX64}
         // --> RCX Target
         //     EDX Value
         // <-- EAX Result
@@ -546,7 +546,7 @@ asm
         //     RCX Target
         //     EAX Value
         LOCK XCHG [RCX], EAX
-        {$ENDIF CPU64}
+        {$ENDIF CPUX64}
 end;
 {$ENDIF ~PUREPASCAL}
 
@@ -557,7 +557,7 @@ begin
 end;
 {$ELSE ~PUREPASCAL}
 asm
-        {$IFDEF CPU32}
+        {$IFDEF CPU386}
         // --> EAX Target
         //     EDX Value
         // <-- EAX Result
@@ -566,8 +566,8 @@ asm
         //     ECX Target
         //     EAX Value
         LOCK XADD [ECX], EAX
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
+        {$ENDIF CPU386}
+        {$IFDEF CPUX64}
         // --> RCX Target
         //     EDX Value
         // <-- EAX Result
@@ -575,7 +575,7 @@ asm
         //     RCX Target
         //     EAX Value
         LOCK XADD [RCX], EAX
-        {$ENDIF CPU64}
+        {$ENDIF CPUX64}
 end;
 {$ENDIF ~PUREPASCAL}
 
@@ -586,19 +586,19 @@ begin
 end;
 {$ELSE ~PUREPASCAL}
 asm
-        {$IFDEF CPU32}
+        {$IFDEF CPU386}
         // --> EAX Target
         // <-- EAX Result
         MOV     ECX, EAX
         MOV     EAX, -1
         LOCK XADD [ECX], EAX
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
+        {$ENDIF CPU386}
+        {$IFDEF CPUX64}
         // --> RCX Target
         // <-- EAX Result
         MOV     EAX, -1
         LOCK XADD [RCX], EAX
-        {$ENDIF CPU64}
+        {$ENDIF CPUX64}
 end;
 {$ENDIF ~PUREPASCAL}
 
@@ -609,19 +609,19 @@ begin
 end;
 {$ELSE ~PUREPASCAL}
 asm
-        {$IFDEF CPU32}
+        {$IFDEF CPU386}
         // --> EAX Target
         // <-- EAX Result
         MOV     ECX, EAX
         MOV     EAX, 1
         LOCK XADD [ECX], EAX
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
+        {$ENDIF CPU386}
+        {$IFDEF CPUX64}
         // --> RCX Target
         // <-- EAX Result
         MOV     EAX, 1
         LOCK XADD [RCX], EAX
-        {$ENDIF CPU64}
+        {$ENDIF CPUX64}
 end;
 {$ENDIF}
 
@@ -632,7 +632,7 @@ begin
 end;
 {$ELSE ~PUREPASCAL}
 asm
-        {$IFDEF CPU32}
+        {$IFDEF CPU386}
         // --> EAX Target
         //     EDX Value
         // <-- EAX Result
@@ -642,8 +642,8 @@ asm
         //     ECX Target
         //     EAX -Value
         LOCK XADD [ECX], EAX
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
+        {$ENDIF CPU386}
+        {$IFDEF CPUX64}
         // --> RCX Target
         //     EDX Value
         // <-- EAX Result
@@ -652,7 +652,7 @@ asm
         //     RCX Target
         //     EAX -Value
         LOCK XADD [RCX], EAX
-        {$ENDIF CPU64}
+        {$ENDIF CPUX64}
 end;
 {$ENDIF ~PUREPASCAL}
 
@@ -663,21 +663,21 @@ begin
 end;
 {$ELSE ~PUREPASCAL}
 asm
-        {$IFDEF CPU32}
+        {$IFDEF CPU386}
         // --> EAX Target
         // <-- EAX Result
         MOV     ECX, EAX
         MOV     EAX, 1
         LOCK XADD [ECX], EAX
         INC     EAX
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
+        {$ENDIF CPU386}
+        {$IFDEF CPUX64}
         // --> RCX Target
         // <-- EAX Result
         MOV     EAX, 1
         LOCK XADD [RCX], EAX
         INC     EAX
-        {$ENDIF CPU64}
+        {$ENDIF CPUX64}
 end;
 {$ENDIF ~PUREPASCAL}
 
@@ -688,7 +688,7 @@ begin
 end;
 {$ELSE ~PUREPASCAL}
 asm
-        {$IFDEF CPU32}
+        {$IFDEF CPU386}
         // --> EAX Target
         //     EDX Value
         // <-- EAX Result
@@ -697,8 +697,8 @@ asm
         MOV     EAX, EDX
         LOCK XADD [ECX], EAX
         ADD     EAX, EDX
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
+        {$ENDIF CPU386}
+        {$IFDEF CPUX64}
         // --> RCX Target
         //     EDX Value
         // <-- EAX Result
@@ -706,7 +706,7 @@ asm
         MOV     EAX, EDX
         LOCK XADD [RCX], EAX
         ADD     EAX, EDX
-        {$ENDIF CPU64}
+        {$ENDIF CPUX64}
 end;
 {$ENDIF}
 

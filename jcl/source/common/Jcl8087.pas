@@ -115,7 +115,7 @@ begin
   Result := T8087Rounding((Get8087ControlWord and $0C00) shr 10);
 end;
 
-{$IFDEF CPU64}
+{$IFDEF CPUX64}
 function Get8087StatusWord(ClearExceptions: Boolean): Word;
 asm
           TEST    ClearExceptions, ClearExceptions
@@ -138,7 +138,7 @@ begin
           FNSTSW  Result                    //   get status word (without clearing exceptions)
   end;
 end;
-{$ENDIF CPU64}
+{$ENDIF CPUX64}
 
 function Set8087Infinity(const Infinity: T8087Infinity): T8087Infinity;
 var

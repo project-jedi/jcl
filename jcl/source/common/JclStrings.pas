@@ -2301,7 +2301,7 @@ asm
         // 64 --> RCX S
         //        RDX Count
         //        R8W C
-        {$IFDEF CPU32}
+        {$IFDEF CPU386}
         DEC     EDX
         JS      @@Leave
 @@Loop:
@@ -2309,8 +2309,8 @@ asm
         ADD     EAX, 2
         DEC     EDX
         JNS     @@Loop
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
+        {$ENDIF CPU386}
+        {$IFDEF CPUX64}
         DEC     RDX
         JS      @@Leave
 @@Loop:
@@ -2318,7 +2318,7 @@ asm
         ADD     RCX, 2
         DEC     RDX
         JNS     @@Loop
-        {$ENDIF CPU64}
+        {$ENDIF CPUX64}
 @@Leave:
 end;
 {$ENDIF ~PUREPASCAL}

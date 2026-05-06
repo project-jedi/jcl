@@ -1724,7 +1724,7 @@ procedure _pcre16_jit_compile; external;
 procedure _pcre16_jit_free; external;
 {$ENDIF PCRE_16}
 
-{$IFDEF CPU32}
+{$IFDEF CPU386}
 
 {$IFDEF PCRE_8}
 
@@ -1772,8 +1772,8 @@ procedure _pcre16_jit_free; external;
 {$LINK ..\windows\obj\pcre\win32\pcre16_string_utils.obj}
 {$ENDIF PCRE_16}
 
-{$ENDIF CPU32}
-{$IFDEF CPU64}
+{$ENDIF CPU386}
+{$IFDEF CPUX64}
 
 {$IFDEF PCRE_8}
 
@@ -1822,7 +1822,7 @@ procedure _pcre16_jit_free; external;
 
 {$ENDIF PCRE_16}
 
-{$ENDIF CPU64}
+{$ENDIF CPUX64}
 
 // user's defined callbacks
 var

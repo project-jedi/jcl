@@ -832,7 +832,7 @@ begin
 end;
 {$ELSE ~PUREPASCAL}
 asm
-       {$IFDEF CPU32}
+       {$IFDEF CPU386}
        // --> EAX Str
        PUSH    ESI
        PUSH    EDI
@@ -849,8 +849,8 @@ asm
 @@2:
        POP     EDI
        POP     ESI
-       {$ENDIF CPU32}
-       {$IFDEF CPU64}
+       {$ENDIF CPU386}
+       {$IFDEF CPUX64}
        // --> RCX Str
        XOR     RAX, RAX // clear high order byte to be able to use 64bit operand below
 @@1:
@@ -862,7 +862,7 @@ asm
        ADD     ECX, 2
        JMP     @@1
 @@2:
-       {$ENDIF CPU64}
+       {$ENDIF CPUX64}
 end;
 {$ENDIF ~PUREPASCAL}
 
