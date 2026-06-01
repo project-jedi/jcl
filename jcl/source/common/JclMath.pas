@@ -289,6 +289,48 @@ function Floor(const X: Float): Integer;
 function GCD(X, Y: Cardinal): Cardinal;
 function ISqrt(const I: Smallint): Smallint;
 function LCM(const X, Y: Cardinal): Cardinal;
+
+/// <summary>
+///   Get the next multiple of a given multiplicator which is higher than
+///   the number given. Example: Num = 21, Multiplicator = 5, Result is 25
+/// </summary>
+function NearestHigherMultiple(Num, Multiplicator: Integer): Integer; overload;
+/// <summary>
+///   Get the next multiple of a given multiplicator which is higher than
+///   the number given. Example: Num = 21, Multiplicator = 5, Result is 25
+/// </summary>
+function NearestHigherMultiple(Num, Multiplicator: Int64): Int64; overload;
+/// <summary>
+///   Get the next multiple of a given multiplicator which is higher than
+///   the number given. Example: Num = 21, Multiplicator = 5, Result is 25
+/// </summary>
+function NearestHigherMultiple(Num: Float; Multiplicator: Integer): Integer; overload
+/// <summary>
+///   Get the next multiple of a given multiplicator which is higher than
+///   the number given. Example: Num = 21, Multiplicator = 5, Result is 25
+/// </summary>
+function NearestHigherMultiple(Num: Float; Multiplicator: Int64): Int64; overload;
+/// <summary>
+///   Get the next multiple of a given multiplicator which is lower than
+///   the number given. Example: Num = 24, Multiplicator = 5, Result is 20
+/// </summary>
+function NearestLowerMultiple(Num, Multiplicator: Integer): Integer; overload;
+/// <summary>
+///   Get the next multiple of a given multiplicator which is lower than
+///   the number given. Example: Num = 24, Multiplicator = 5, Result is 20
+/// </summary>
+function NearestLowerMultiple(Num, Multiplicator: Int64): Int64; overload;
+/// <summary>
+///   Get the next multiple of a given multiplicator which is lower than
+///   the number given. Example: Num = 24, Multiplicator = 5, Result is 20
+/// </summary>
+function NearestLowerMultiple(Num: Float; Multiplicator: Integer): Integer; overload;
+/// <summary>
+///   Get the next multiple of a given multiplicator which is lower than
+///   the number given. Example: Num = 24, Multiplicator = 5, Result is 20
+/// </summary>
+function NearestLowerMultiple(Num: Float; Multiplicator: Int64): Int64; overload;
+
 function NormalizeAngle(const Angle: Float): Float;
 function Pythagoras(const X, Y: Float): Float;
 function Sgn(const X: Float): Integer;
@@ -1318,7 +1360,9 @@ function ArcTan(X: Float): Float;
 begin
   {$IFDEF USE_MATH_UNIT}
   System.Error(rePlatformNotImplemented);
-  Result := NaN; 
+  {$IFNDEF SUPPORTS_NORETURN}
+  Result := NaN;
+  {$ENDIF ~SUPPORTS_NORETURN}
   {$ELSE ~USE_MATH_UNIT}
   asm
           FLD     X
@@ -1363,7 +1407,9 @@ begin
   DomainCheck(Abs(X) > MaxAngle);
   {$IFDEF USE_MATH_UNIT}
   System.Error(rePlatformNotImplemented);
+  {$IFNDEF SUPPORTS_NORETURN}
   Result := NaN;
+  {$ENDIF ~SUPPORTS_NORETURN}
   {$ELSE ~USE_MATH_UNIT}
   asm
           FLD     X
@@ -1442,7 +1488,9 @@ begin
   {$ENDIF ~MATH_EXT_SPECIALVALUES}
   {$IFDEF USE_MATH_UNIT}
   System.Error(rePlatformNotImplemented);
+  {$IFNDEF SUPPORTS_NORETURN}
   Result := NaN;
+  {$ENDIF ~SUPPORTS_NORETURN}
   {$ELSE ~USE_MATH_UNIT}
   asm
           FLD     X
@@ -2368,6 +2416,46 @@ begin
     Result := (X div E) * Y
   else
     Result := 0;
+end;
+
+function NearestHigherMultiple(Num, Multiplicator: Integer): Integer;
+begin
+  Result := Ceiling(Num / Multiplicator)*Multiplicator;
+end;
+
+function NearestHigherMultiple(Num, Multiplicator: Int64): Int64;
+begin
+  Result := Ceiling(Num / Multiplicator)*Multiplicator;
+end;
+
+function NearestHigherMultiple(Num: Float; Multiplicator: Integer): Integer;
+begin
+  Result := Ceiling(Num / Multiplicator)*Multiplicator;
+end;
+
+function NearestHigherMultiple(Num: Float; Multiplicator: Int64): Int64;
+begin
+  Result := Ceiling(Num / Multiplicator)*Multiplicator;
+end;
+
+function NearestLowerMultiple(Num, Multiplicator: Integer): Integer;
+begin
+  Result := Floor(Num / Multiplicator)*Multiplicator;
+end;
+
+function NearestLowerMultiple(Num, Multiplicator: Int64): Int64;
+begin
+  Result := Floor(Num / Multiplicator)*Multiplicator;
+end;
+
+function NearestLowerMultiple(Num: Float; Multiplicator: Integer): Integer;
+begin
+  Result := Floor(Num / Multiplicator)*Multiplicator;
+end;
+
+function NearestLowerMultiple(Num: Float; Multiplicator: Int64): Int64;
+begin
+  Result := Floor(Num / Multiplicator)*Multiplicator;
 end;
 
 function NormalizeAngle(const Angle: Float): Float;
@@ -4660,7 +4748,9 @@ begin
   {$IFDEF DELPHI64_TEMPORARY}
   //IsInfinite is disabled for 64-bit, because BASM is not 64-bit compatible (see logmessage of public repo @3070)
   System.Error(rePlatformNotImplemented);
+  {$IFNDEF SUPPORTS_NORETURN}
   Result := False;
+  {$ENDIF ~SUPPORTS_NORETURN}
   {$ELSE ~DELPHI64_TEMPORARY}
   Result := JclMath.IsInfinite(Self);
   {$ENDIF ~DELPHI64_TEMPORARY}
@@ -4755,7 +4845,9 @@ begin
   {$IFDEF DELPHI64_TEMPORARY}
   //IsInfinite is disabled for 64-bit, because BASM is not 64-bit compatible (see logmessage of public repo @3070)
   System.Error(rePlatformNotImplemented);
+  {$IFNDEF SUPPORTS_NORETURN}
   Result := False;
+  {$ENDIF ~SUPPORTS_NORETURN}
   {$ELSE ~DELPHI64_TEMPORARY}
   Result := JclMath.IsInfinite(Self);
   {$ENDIF ~DELPHI64_TEMPORARY}

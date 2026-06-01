@@ -1,7 +1,7 @@
 {**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
-{ DUnit Test                                                                                  }
+{ DUnit Test                                                                                       }
 {                                                                                                  }
 { Last Update: 19-Jan-2002                                                                         }
 {                                                                                                  }
@@ -29,7 +29,8 @@ uses
   Classes,
   SysUtils,
   Math,
-  JclMath;
+  JclMath,
+  JclBase;
 
 
 
@@ -87,6 +88,8 @@ type
     procedure _GCD;
     procedure _ISqrt;
     procedure _LCM;
+    procedure _NearestHigherMultiple;
+    procedure _NearestLowerMultiple;
     procedure _NormalizeAngle;
     procedure _Pythagoras;
     procedure _Sgn;
@@ -607,6 +610,92 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
+
+procedure TMathMiscTest._NearestHigherMultiple;
+begin
+  // 32 bit integer
+  CheckEquals(25, NearestHigherMultiple(Integer(21), 5));
+  CheckEquals(25, NearestHigherMultiple(Integer(24), 5));
+  CheckEquals(-20, NearestHigherMultiple(Integer(-24), 5));
+  CheckEquals(-20, NearestHigherMultiple(Integer(-21), 5));
+  CheckEquals(-15, NearestHigherMultiple(Integer(-19), 5));
+
+  CheckEquals(21, NearestHigherMultiple(Integer(21), 3));
+  CheckEquals(0, NearestHigherMultiple(Integer(0), 3));
+
+  // 64 bit integer
+  CheckEquals(25, NearestHigherMultiple(Int64(21), 5));
+  CheckEquals(25, NearestHigherMultiple(Int64(24), 5));
+  CheckEquals(-20, NearestHigherMultiple(Int64(-24), 5));
+  CheckEquals(-20, NearestHigherMultiple(Int64(-21), 5));
+  CheckEquals(-15, NearestHigherMultiple(Int64(-19), 5));
+
+  CheckEquals(21, NearestHigherMultiple(Int64(21), 3));
+  CheckEquals(0, NearestHigherMultiple(Int64(0), 3));
+
+  // float 32 bit multiplier
+  CheckEquals(25, NearestHigherMultiple(21.2, 5));
+  CheckEquals(25, NearestHigherMultiple(24.2, 5));
+  CheckEquals(-20, NearestHigherMultiple(-24.2, 5));
+  CheckEquals(-20, NearestHigherMultiple(-21.2, 5));
+  CheckEquals(-15, NearestHigherMultiple(-19.9, 5));
+
+  CheckEquals(21, NearestHigherMultiple(21.0, 3));
+  CheckEquals(0, NearestHigherMultiple(0.0, 3));
+
+  // float 64 bit multiplier
+  CheckEquals(25, NearestHigherMultiple(21.2, Int64(5)));
+  CheckEquals(25, NearestHigherMultiple(24.2, Int64(5)));
+  CheckEquals(-20, NearestHigherMultiple(-24.2, Int64(5)));
+  CheckEquals(-20, NearestHigherMultiple(-21.2, Int64(5)));
+  CheckEquals(-15, NearestHigherMultiple(-19.9, Int64(5)));
+
+  CheckEquals(21, NearestHigherMultiple(21.0, Int64(3)));
+  CheckEquals(0, NearestHigherMultiple(0.0, Int64(3)));
+end;
+
+procedure TMathMiscTest._NearestLowerMultiple;
+begin
+  // 32 bit integer
+  CheckEquals(20, NearestLowerMultiple(Integer(21), 5));
+  CheckEquals(20, NearestLowerMultiple(Integer(24), 5));
+  CheckEquals(-25, NearestLowerMultiple(Integer(-24), 5));
+  CheckEquals(-25, NearestLowerMultiple(Integer(-21), 5));
+  CheckEquals(-20, NearestLowerMultiple(Integer(-19), 5));
+
+  CheckEquals(21, NearestLowerMultiple(Integer(21), 3));
+  CheckEquals(0, NearestLowerMultiple(Integer(0), 3));
+
+  // 64 bit integer
+  CheckEquals(20, NearestLowerMultiple(Int64(21), 5));
+  CheckEquals(20, NearestLowerMultiple(Int64(24), 5));
+  CheckEquals(-25, NearestLowerMultiple(Int64(-24), 5));
+  CheckEquals(-25, NearestLowerMultiple(Int64(-21), 5));
+  CheckEquals(-20, NearestLowerMultiple(Int64(-19), 5));
+
+  CheckEquals(21, NearestLowerMultiple(Int64(21), 3));
+  CheckEquals(0, NearestLowerMultiple(Int64(0), 3));
+
+  // float 32 bit multiplier
+  CheckEquals(20, NearestLowerMultiple(21.2, 5));
+  CheckEquals(20, NearestLowerMultiple(24.2, 5));
+  CheckEquals(-25, NearestLowerMultiple(-24.2, 5));
+  CheckEquals(-25, NearestLowerMultiple(-21.2, 5));
+  CheckEquals(-20, NearestLowerMultiple(-19.9, 5));
+
+  CheckEquals(21, NearestLowerMultiple(21.0, 3));
+  CheckEquals(0, NearestLowerMultiple(0.0, 3));
+
+  // float 64 bit multiplier
+  CheckEquals(20, NearestLowerMultiple(21.2, Int64(5)));
+  CheckEquals(20, NearestLowerMultiple(24.2, Int64(5)));
+  CheckEquals(-25, NearestLowerMultiple(-24.2, Int64(5)));
+  CheckEquals(-25, NearestLowerMultiple(-21.2, Int64(5)));
+  CheckEquals(-20, NearestLowerMultiple(-19.9, Int64(5)));
+
+  CheckEquals(21, NearestLowerMultiple(21.0, Int64(3)));
+  CheckEquals(0, NearestLowerMultiple(0.0, Int64(3)));
+end;
 
 procedure TMathMiscTest._NormalizeAngle;
 begin

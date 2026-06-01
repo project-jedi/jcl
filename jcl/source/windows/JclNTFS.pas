@@ -928,7 +928,7 @@ var
   Info: TByHandleFileInformation;
 begin
   Result := False;
-  Handle := CreateFile(PChar(FileName), 0, FILE_SHARE_READ or FILE_SHARE_WRITE,
+  Handle := CreateFile(PChar(FileName), FILE_READ_ATTRIBUTES, FILE_SHARE_READ or FILE_SHARE_WRITE,
     nil, OPEN_EXISTING, 0, 0);
   if Handle <> INVALID_HANDLE_VALUE then
     try
@@ -1587,7 +1587,9 @@ var
   FileInfo: TByHandleFileInformation;
 begin
   Result := False;
-  F := CreateFile(PChar(FileName), GENERIC_READ, FILE_SHARE_READ or FILE_SHARE_WRITE, nil, OPEN_EXISTING, 0, 0);
+  // GENERIC_READ triggers anti virus scanners to scan the file. But we are not interested
+  // in the file's content, only its attributes.
+  F := CreateFile(PChar(FileName), FILE_READ_ATTRIBUTES, FILE_SHARE_READ or FILE_SHARE_WRITE, nil, OPEN_EXISTING, 0, 0);
   if F <> INVALID_HANDLE_VALUE then
   try
     ResetMemory(FileInfo, SizeOf(FileInfo));

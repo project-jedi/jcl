@@ -662,9 +662,9 @@ begin
     with ImageSectionHeaders[Item.Index] do
     begin
       if FPeImage.Target = taWin64 then
-        Percent := SizeOfRawData * 100 / OptionalHeader64.SizeOfImage
+        Percent := (SizeOfRawData / OptionalHeader64.SizeOfImage) * 100
       else
-        Percent := SizeOfRawData * 100 / OptionalHeader32.SizeOfImage;
+        Percent := (SizeOfRawData / OptionalHeader32.SizeOfImage) * 100;
       SubItems.Add(Format('%.8x', [Misc.VirtualSize]));
       SubItems.Add(Format('%.8x', [VirtualAddress]));
       SubItems.Add(Format('%.8x', [SizeOfRawData]));

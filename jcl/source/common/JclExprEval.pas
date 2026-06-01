@@ -487,6 +487,7 @@ type
     function CompileExprLevel1(ASkip: Boolean): TExprNode; virtual;
     function CompileExprLevel2(ASkip: Boolean): TExprNode; virtual;
     function CompileExprLevel3(ASkip: Boolean): TExprNode; virtual;
+    function CompileExprLevel4(ASkip: Boolean): TExprNode; virtual;
     function CompileFactor: TExprNode; virtual;
     function CompileIdentFactor: TExprNode; virtual;
   public
@@ -506,6 +507,7 @@ type
     function EvalExprLevel1(ASkip: Boolean): TFloat; virtual;
     function EvalExprLevel2(ASkip: Boolean): TFloat; virtual;
     function EvalExprLevel3(ASkip: Boolean): TFloat; virtual;
+    function EvalExprLevel4(ASkip: Boolean): TFloat; virtual;
     function EvalFactor: TFloat; virtual;
     function EvalIdentFactor: TFloat; virtual;
   public
@@ -1201,13 +1203,6 @@ begin
         Result := NodeFactory.Multiply(Result, CompileExprLevel3(True));
       etForwardSlash:
         Result := NodeFactory.Divide(Result, CompileExprLevel3(True));
-      etArrow:
-        Result := NodeFactory.Power(Result, CompileExprLevel3(True));
-      etPercent:
-        begin
-          Result := NodeFactory.Divide(Result, NodeFactory.LoadConst(100));
-          Lexer.NextTok;             // Other operators calls NextTok via CompileExprLevel3(True)
-        end;
       etIdentifier: // div, mod, and, shl, shr, band
         if AnsiSameText(Lexer.TokenAsString, 'div') then
           Result := NodeFactory.IntegerDivide(Result, CompileExprLevel3(True))
@@ -1235,20 +1230,33 @@ end;
 
 function TExprCompileParser.CompileExprLevel3(ASkip: Boolean): TExprNode;
 begin
+  Result := CompileExprLevel4(ASkip);
+
+  while True do
+    case Lexer.CurrTok of
+      etArrow:
+        Result := NodeFactory.Power(Result, CompileExprLevel4(True));
+    else
+      Break;
+    end;
+end;
+
+function TExprCompileParser.CompileExprLevel4(ASkip: Boolean): TExprNode;
+begin
   if ASkip then
     Lexer.NextTok;
 
   case Lexer.CurrTok of
     etPlus:
-      Result := CompileExprLevel3(True);
+      Result := CompileExprLevel4(True);
     etMinus:
-      Result := NodeFactory.Negate(CompileExprLevel3(True));
+      Result := NodeFactory.Negate(CompileExprLevel4(True));
     etIdentifier: // not, bnot
       if AnsiSameText(Lexer.TokenAsString, 'not') then
-        Result := NodeFactory.LogicalNot(CompileExprLevel3(True))
+        Result := NodeFactory.LogicalNot(CompileExprLevel4(True))
       else
       if AnsiSameText(Lexer.TokenAsString, 'bnot') then
-        Result := NodeFactory.BitwiseNot(CompileExprLevel3(True))
+        Result := NodeFactory.BitwiseNot(CompileExprLevel4(True))
       else
         Result := CompileFactor;
   else
@@ -1257,6 +1265,8 @@ begin
 end;
 
 function TExprCompileParser.CompileFactor: TExprNode;
+var
+  Number: TFloat;
 begin
   case Lexer.CurrTok of
     etIdentifier:
@@ -1270,8 +1280,14 @@ begin
       end;
     etNumber:
       begin
-        Result := NodeFactory.LoadConst(Lexer.TokenAsNumber);
+        Number := Lexer.TokenAsNumber;
         Lexer.NextTok;
+        while Lexer.CurrTok = etPercent do
+        begin
+          Number := Number / 100;
+          Lexer.NextTok;
+        end;
+        Result := NodeFactory.LoadConst(Number);
       end;
   else
     raise EJclExprEvalError.CreateRes(@RsExprEvalFactorExpected);
@@ -1438,13 +1454,6 @@ begin
         Result := Result * EvalExprLevel3(True);
       etForwardSlash:
         Result := Result / EvalExprLevel3(True);
-      etArrow:
-        Result := Power(Result, EvalExprLevel3(True));
-      etPercent:
-        begin
-          Result := Result / 100;
-          Lexer.NextTok;        // Other operators calls NextTok via EvalExprLevel3(True)
-        end;
       etIdentifier: // div, mod, and, shl, shr, band
         if AnsiSameText(Lexer.TokenAsString, 'div') then
           Result := Round(Result) div Round(EvalExprLevel3(True))
@@ -1477,25 +1486,39 @@ end;
 
 function TExprEvalParser.EvalExprLevel3(ASkip: Boolean): TFloat;
 begin
+  Result := EvalExprLevel4(ASkip);
+
+  while True do
+    case Lexer.CurrTok of
+      etArrow:
+        Result := Power(Result, EvalExprLevel4(True));
+    else
+      Break;
+    end;
+end;
+
+
+function TExprEvalParser.EvalExprLevel4(ASkip: Boolean): TFloat;
+begin
   if ASkip then
     Lexer.NextTok;
 
   case Lexer.CurrTok of
     etPlus:
-      Result := EvalExprLevel3(True);
+      Result := EvalExprLevel4(True);
     etMinus:
-      Result := -EvalExprLevel3(True);
+      Result := -EvalExprLevel4(True);
     etIdentifier: // not, bnot
       if AnsiSameText(Lexer.TokenAsString, 'not') then
       begin
-        if EvalExprLevel3(True) <> 0.0 then
+        if EvalExprLevel4(True) <> 0.0 then
           Result := 0.0
         else
           Result := 1.0;
       end
       else
       if AnsiSameText(Lexer.TokenAsString, 'bnot') then
-        Result := not Round(EvalExprLevel3(True))
+        Result := not Round(EvalExprLevel4(True))
       else
         Result := EvalFactor;
   else
@@ -1519,6 +1542,11 @@ begin
       begin
         Result := Lexer.TokenAsNumber;
         Lexer.NextTok;
+        while Lexer.CurrTok = etPercent do
+        begin
+          Result := Result / 100;
+          Lexer.NextTok;
+        end;
       end;
   else
     raise EJclExprEvalError.CreateRes(@RsExprEvalFactorExpected);

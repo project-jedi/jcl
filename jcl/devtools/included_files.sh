@@ -41,6 +41,8 @@ cp ../source/include/jcl.template.inc ../source/include/jcld28win32.inc
 cp ../source/include/jcl.template.inc ../source/include/jcld28win64.inc
 cp ../source/include/jcl.template.inc ../source/include/jcld29win32.inc
 cp ../source/include/jcl.template.inc ../source/include/jcld29win64.inc
+cp ../source/include/jcl.template.inc ../source/include/jcld37win32.inc
+cp ../source/include/jcl.template.inc ../source/include/jcld37win64.inc
 
 
 cp ../source/include/jcl.template.inc ../source/include/jclfpc.inc

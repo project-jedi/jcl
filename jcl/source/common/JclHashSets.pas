@@ -1905,7 +1905,7 @@ begin
   {$ENDIF THREADSAFE}
     CheckValid;
     Result := nil;
-    ABucket := FOwnHashSet.FBuckets[FBucketIndex - 1];
+    ABucket := FOwnHashSet.FBuckets[FBucketIndex];
     if (ABucket <> nil) and (FItemIndex < ABucket.Size) then
       Result := ABucket.Entries[FItemIndex]
     else
@@ -2885,7 +2885,7 @@ begin
   {$ENDIF THREADSAFE}
     CheckValid;
     Result := '';
-    ABucket := FOwnHashSet.FBuckets[FBucketIndex - 1];
+    ABucket := FOwnHashSet.FBuckets[FBucketIndex];
     if (ABucket <> nil) and (FItemIndex < ABucket.Size) then
       Result := ABucket.Entries[FItemIndex]
     else
@@ -3865,7 +3865,7 @@ begin
   {$ENDIF THREADSAFE}
     CheckValid;
     Result := '';
-    ABucket := FOwnHashSet.FBuckets[FBucketIndex - 1];
+    ABucket := FOwnHashSet.FBuckets[FBucketIndex];
     if (ABucket <> nil) and (FItemIndex < ABucket.Size) then
       Result := ABucket.Entries[FItemIndex]
     else
@@ -4849,7 +4849,7 @@ begin
   {$ENDIF THREADSAFE}
     CheckValid;
     Result := '';
-    ABucket := FOwnHashSet.FBuckets[FBucketIndex - 1];
+    ABucket := FOwnHashSet.FBuckets[FBucketIndex];
     if (ABucket <> nil) and (FItemIndex < ABucket.Size) then
       Result := ABucket.Entries[FItemIndex]
     else
@@ -5831,7 +5831,7 @@ begin
   {$ENDIF THREADSAFE}
     CheckValid;
     Result := 0.0;
-    ABucket := FOwnHashSet.FBuckets[FBucketIndex - 1];
+    ABucket := FOwnHashSet.FBuckets[FBucketIndex];
     if (ABucket <> nil) and (FItemIndex < ABucket.Size) then
       Result := ABucket.Entries[FItemIndex]
     else
@@ -6811,7 +6811,7 @@ begin
   {$ENDIF THREADSAFE}
     CheckValid;
     Result := 0.0;
-    ABucket := FOwnHashSet.FBuckets[FBucketIndex - 1];
+    ABucket := FOwnHashSet.FBuckets[FBucketIndex];
     if (ABucket <> nil) and (FItemIndex < ABucket.Size) then
       Result := ABucket.Entries[FItemIndex]
     else
@@ -7791,7 +7791,7 @@ begin
   {$ENDIF THREADSAFE}
     CheckValid;
     Result := 0.0;
-    ABucket := FOwnHashSet.FBuckets[FBucketIndex - 1];
+    ABucket := FOwnHashSet.FBuckets[FBucketIndex];
     if (ABucket <> nil) and (FItemIndex < ABucket.Size) then
       Result := ABucket.Entries[FItemIndex]
     else
@@ -8771,7 +8771,7 @@ begin
   {$ENDIF THREADSAFE}
     CheckValid;
     Result := 0;
-    ABucket := FOwnHashSet.FBuckets[FBucketIndex - 1];
+    ABucket := FOwnHashSet.FBuckets[FBucketIndex];
     if (ABucket <> nil) and (FItemIndex < ABucket.Size) then
       Result := ABucket.Entries[FItemIndex]
     else
@@ -9751,7 +9751,7 @@ begin
   {$ENDIF THREADSAFE}
     CheckValid;
     Result := 0;
-    ABucket := FOwnHashSet.FBuckets[FBucketIndex - 1];
+    ABucket := FOwnHashSet.FBuckets[FBucketIndex];
     if (ABucket <> nil) and (FItemIndex < ABucket.Size) then
       Result := ABucket.Entries[FItemIndex]
     else
@@ -10731,7 +10731,7 @@ begin
   {$ENDIF THREADSAFE}
     CheckValid;
     Result := 0;
-    ABucket := FOwnHashSet.FBuckets[FBucketIndex - 1];
+    ABucket := FOwnHashSet.FBuckets[FBucketIndex];
     if (ABucket <> nil) and (FItemIndex < ABucket.Size) then
       Result := ABucket.Entries[FItemIndex]
     else
@@ -11711,7 +11711,7 @@ begin
   {$ENDIF THREADSAFE}
     CheckValid;
     Result := nil;
-    ABucket := FOwnHashSet.FBuckets[FBucketIndex - 1];
+    ABucket := FOwnHashSet.FBuckets[FBucketIndex];
     if (ABucket <> nil) and (FItemIndex < ABucket.Size) then
       Result := ABucket.Entries[FItemIndex]
     else
@@ -12691,7 +12691,7 @@ begin
   {$ENDIF THREADSAFE}
     CheckValid;
     Result := nil;
-    ABucket := FOwnHashSet.FBuckets[FBucketIndex - 1];
+    ABucket := FOwnHashSet.FBuckets[FBucketIndex];
     if (ABucket <> nil) and (FItemIndex < ABucket.Size) then
       Result := ABucket.Entries[FItemIndex]
     else
@@ -13704,7 +13704,7 @@ begin
   {$ENDIF THREADSAFE}
     CheckValid;
     Result := Default(T);
-    ABucket := FOwnHashSet.FBuckets[FBucketIndex - 1];
+    ABucket := FOwnHashSet.FBuckets[FBucketIndex];
     if (ABucket <> nil) and (FItemIndex < ABucket.Size) then
       Result := ABucket.Entries[FItemIndex]
     else

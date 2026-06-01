@@ -107,7 +107,19 @@ type
     function GetExeName: string; override;
   end;
 
+  TJclBCC32C = class(TJclBorlandCommandLineTool)
+  public
+    class function GetPlatform: string; virtual;
+    function GetExeName: string; override;
+  end;
+
   TJclBCC64 = class(TJclBCC32)
+  public
+    class function GetPlatform: string; override;
+    function GetExeName: string; override;
+  end;
+
+  TJclBCC64X = class(TJclBCC64)
   public
     class function GetPlatform: string; override;
     function GetExeName: string; override;
@@ -245,7 +257,9 @@ type
 const
   AsmExeName                = 'tasm32.exe';
   BCC32ExeName              = 'bcc32.exe';
+  BCC32CExeName             = 'bcc32c.exe';
   BCC64ExeName              = 'bcc64.exe';
+  BCC64XExeName             = 'bcc64x.exe';
   DCC32ExeName              = 'dcc32.exe';
   DCC64ExeName              = 'dcc64.exe';
   DCCOSX32ExeName           = 'dccosx.exe';
@@ -865,6 +879,18 @@ begin
   Result := BDSPlatformWin32;
 end;
 
+//=== { TJclBCC32 } ============================================================
+
+function TJclBCC32C.GetExeName: string;
+begin
+  Result := BCC32CExeName;
+end;
+
+class function TJclBCC32C.GetPlatform: string;
+begin
+  Result := BDSPlatformWin32; // same name as bcc32, the IDE uses the Clang32Suffix suffix in value names
+end;
+
 //=== { TJclBCC64 } ============================================================
 
 function TJclBCC64.GetExeName: string;
@@ -875,6 +901,18 @@ end;
 class function TJclBCC64.GetPlatform: string;
 begin
   Result := BDSPlatformWin64;
+end;
+
+//=== { TJclBCC64X } ============================================================
+
+function TJclBCC64X.GetExeName: string;
+begin
+  Result := BCC64XExeName;
+end;
+
+class function TJclBCC64X.GetPlatform: string;
+begin
+  Result := BDSPlatformWin64x;
 end;
 
 //=== { TJclDCC32 } ============================================================
