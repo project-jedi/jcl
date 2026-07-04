@@ -18,8 +18,10 @@
 
 unit TestJclDebug;
 
-interface
+{$I jcl.inc}
 
+interface
+{$IFDEF CPUINTEL}
 uses
   Windows, SysUtils, Classes, TestFramework, JclDebug;
 
@@ -28,9 +30,11 @@ type
   published
     procedure ScanCPP4096;
   end;
+{$ENDIF CPUINTEL}
 
 implementation
 
+{$IFDEF CPUINTEL}
 {$R TestJclDebug.res}
 
 //==================================================================================================
@@ -83,4 +87,5 @@ end;
 initialization
   RegisterTest('JclDebug', TJclMapScannerTest.Suite);
 
+{$ENDIF CPUINTEL}
 end.

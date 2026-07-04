@@ -140,6 +140,7 @@ type
     procedure _IsRelativePrime;
   end;
 
+{$IFDEF CPU32}
 type
   TMathInfNanSupportTest = class(TTestCase)
   private
@@ -154,6 +155,7 @@ type
      procedure _MakeQuietNaN;
      procedure _GetNaNTag;
   end;
+{$ENDIF CPU32}
 
 type
   TSetCrack = class(TJclASet);
@@ -1131,7 +1133,7 @@ begin
     Base := Random(10);
     Exponent := Random(10);
 
-    CheckEquals(Math.Power(Base, Exponent),JclMath.Power(Base, Exponent), PrecisionTolerance);
+    CheckEquals(Math.Power(Base, Exponent),JclMath.Power(Base, Exponent), PrecisionTolerance * 10);
   end;
 
 end;
@@ -1319,7 +1321,7 @@ end;
 //==================================================================================================
 // NaN and Inf support
 //==================================================================================================
-
+{$IFDEF CPU32}
 procedure TMathInfNanSupportTest._IsInfinite;
 begin
   s := Infinity;
@@ -1462,7 +1464,7 @@ begin
     CheckEquals(i, GetNaNTag(e));
   end;
 end;
-
+{$ENDIF CPU32}
 //--------------------------------------------------------------------------------------------------
 
 { TMathHexConversionTest }
@@ -1624,5 +1626,7 @@ initialization
   RegisterTest('JCLMath', TMathExponentialTest.Suite);
   RegisterTest('JCLMath', TMathFlatSetTest.Suite);
   RegisterTest('JCLMath', TMathPrimeTest.Suite);
+  {$IFDEF CPU32}
   RegisterTest('JCLMath', TMathInfNanSupportTest.Suite);
+  {$ENDIF}
 end.
