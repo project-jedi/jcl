@@ -31,7 +31,11 @@ interface
 
 uses
   SHDocVw_TLB,
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, Messages,
+  {$IFDEF HAS_UNIT_TYPES}
+  Types,
+  {$ENDIF HAS_UNIT_TYPES}
+  SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   JclPeImage, PeResource, JclLogic, JclGraphUtils, ComCtrls, StdCtrls,
   ExtCtrls, Grids, ToolWin, ActnList, OleCtrls, Menus;
 

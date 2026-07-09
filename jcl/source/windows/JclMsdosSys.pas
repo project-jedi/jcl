@@ -19,7 +19,7 @@
 { Contributor(s): Robert Rossmair (IJclMsdosSys interface)                                         }
 {                                                                                                  }
 { You may retrieve the latest version of this file at the Project JEDI's Code Library home page,   }
-{ located at http://sourceforge.net/projects/jcl/                                                  }
+{ located at https://github.com/project-jedi/jcl                                                   }
 {                                                                                                  }
 { Known Issues: None                                                                               }
 {                                                                                                  }

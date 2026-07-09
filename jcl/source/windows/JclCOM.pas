@@ -179,7 +179,7 @@ begin
   if not Result then
   begin
     OLE32 := SafeLoadLibrary(pcOLE32);
-    if OLE32 > 0 then
+    if OLE32 <> 0 then
     try
       Result := GetProcAddress(OLE32, PChar('CoCreateInstanceEx')) <> nil;
     finally

@@ -58,6 +58,7 @@ var
   frmMain: TfrmMain;
 
 implementation
+
 uses
   ShellAPI;
 
@@ -181,7 +182,7 @@ begin
   i := DragQueryFile(Message.Drop, $FFFFFFFF, nil, 0);
   if i > 0 then
   try
-    DragQueryFile(Message.Drop, 0, buf, sizeof(buf));
+    DragQueryFile(Message.Drop, 0, buf, Length(buf));
     if FileExists(buf) then
      LoadFromFile(buf);
   finally

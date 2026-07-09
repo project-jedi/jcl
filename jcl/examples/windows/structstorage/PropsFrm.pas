@@ -19,7 +19,7 @@ Contributor(s):
 Last Modified: $Date$
 
 You may retrieve the latest version of this file at the Project JEDI's Code Library home page,
-located at http://jcl.sourceforge.net
+located at https://github.com/project-jedi/jcl
 
 Description:
 Displays statistics for a TStatStg record
@@ -67,7 +67,7 @@ resourcestring
   SRoot = 'Document Root';
   SConfirmConversion = 'Confirm Conversion';
   SConvertFilePrompt = 'This file doesn''t appear to be a compound file. Would you like to convert it?';
-  SConvertSuccess = 'File was converted succesfully.';
+  SConvertSuccess = 'File was converted successfully.';
   SConvertFailFmt = 'Unable to convert file:'#13#10'%s';
   SBytesFloatFmt = '%0.n bytes';
   SConfirmSaveChanges = 'Do you want to save your changes?';
@@ -86,7 +86,7 @@ resourcestring
     'Note that all changes made to files with this program will be committed'#13#10 +
     'directly (unless running in Transacted mode) and cannot be undone'#13#10 +
     ' - use backup data for testing!'#13#10#13#10 +
-    'The latest version of JCL is always available at http://jcl.sourceforge.net';
+    'The latest version of JCL is always available at https://github.com/project-jedi/jcl';
   SAboutCaption = 'About Compound Document Editor...';
   SStorage = 'Storage';
   SStream = 'Stream';

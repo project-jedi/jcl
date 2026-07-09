@@ -191,7 +191,7 @@ uses
   {$ENDIF MSWINDOWS}
   {$IFDEF HAS_UNIT_RTLCONSTS}
   System.RTLConsts,
-  {$ENDIF HAS_UNIT_RTLCONTST}
+  {$ENDIF HAS_UNIT_RTLCONSTS}
   System.TypInfo,
   System.SysUtils,
   Winapi.ActiveX,
@@ -202,7 +202,7 @@ uses
   {$ENDIF MSWINDOWS}
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
-  {$ENDIF HAS_UNIT_RTLCONTST}
+  {$ENDIF HAS_UNIT_RTLCONSTS}
   TypInfo,
   SysUtils,
   ActiveX,

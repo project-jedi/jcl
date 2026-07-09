@@ -50,9 +50,9 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF HAS_UNITSCOPE}
-  Winapi.Windows, System.Classes, Vcl.StdCtrls, System.SysUtils, System.IniFiles,
+  Winapi.Windows, System.Classes, Vcl.StdCtrls, Vcl.Printers, System.SysUtils, System.IniFiles,
   {$ELSE ~HAS_UNITSCOPE}
-  Windows, Classes, StdCtrls, SysUtils, IniFiles,
+  Windows, Classes, StdCtrls, Printers, SysUtils, IniFiles,
   {$ENDIF ~HAS_UNITSCOPE}
   JclBase;
 
@@ -71,9 +71,9 @@ type
 
   TJclPrintSet = class(TObject)
   private
-    FDevice: PChar;  { TODO : change to string }
-    FDriver: PChar;
-    FPort: PChar;
+    FDevice: string;
+    FDriver: string;
+    FPort: string;
     FHandle: THandle;
     FPrinter: Integer;
     FBinArray: PWordArray;
@@ -194,6 +194,8 @@ function GetDefaultPrinterName: string;
 function DPGetDefaultPrinter(out PrinterName: string): Boolean;
 function DPSetDefaultPrinter(const PrinterName: string): Boolean;
 
+procedure GetPrinterDetails(APrinter: TPrinter; var ADevice, ADriver, APort: string; var ADeviceMode: THandle);
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -210,9 +212,9 @@ implementation
 
 uses
   {$IFDEF HAS_UNITSCOPE}
-  Vcl.Graphics, Winapi.Messages, Vcl.Printers, Winapi.WinSpool,
+  Vcl.Graphics, Winapi.Messages, Winapi.WinSpool,
   {$ELSE ~HAS_UNITSCOPE}
-  Graphics, Messages, Printers, WinSpool,
+  Graphics, Messages, WinSpool,
   {$ENDIF ~HAS_UNITSCOPE}
   JclSysInfo, JclVclResources;
 
@@ -539,6 +541,26 @@ begin
   end;
 end;
 
+procedure GetPrinterDetails(APrinter: TPrinter; var ADevice, ADriver, APort: string; var ADeviceMode: THandle);
+{$IFDEF RTL360_UP}
+begin
+  APrinter.GetPrinter(ADevice, ADriver, APort, ADeviceMode);
+end;
+{$ELSE}
+var
+  DeviceBuffer: array [0..255] of Char;
+  DriverBuffer: array [0..255] of Char;
+  PortBuffer: array [0..255] of Char;
+begin
+  APrinter.GetPrinter(DeviceBuffer, DriverBuffer, PortBuffer, ADeviceMode);
+
+  ADevice := DeviceBuffer;
+  ADriver := DriverBuffer;
+  APort := PortBuffer;
+end;
+{$ENDIF ~RTL360_UP}
+
+
 // TJclPrintSet
 constructor TJclPrintSet.Create;
 begin
@@ -546,9 +568,6 @@ begin
   FBinArray := nil;
   FPaperArray := nil;
   FPrinter := -99;         { TODO : why -99 }
-  GetMem(FDevice, 255);
-  GetMem(FDriver, 255);
-  GetMem(FPort, 255);
   FHandle := 0;
 end;
 
@@ -558,12 +577,6 @@ begin
     FreeMem(FBinArray, FNumBins * SizeOf(Word));
   if FPaperArray <> nil then
     FreeMem(FPaperArray, FNumPapers * SizeOf(Word));
-  if FDevice <> nil then
-    FreeMem(FDevice, 255);
-  if FDriver <> nil then
-    FreeMem(FDriver, 255);
-  if FPort <> nil then
-    FreeMem(FPort, 255);
   inherited Destroy;
 end;
 
@@ -577,12 +590,12 @@ begin
   LastDriver := FDriver;
   LastPort := FPort;
   
-  Printer.GetPrinter(FDevice, FDriver, FPort, NewHandle);
+  GetPrinterDetails(Printer, FDevice, FDriver, FPort, NewHandle);
   PrinterChanged := (FHandle <> NewHandle) or (LastDevice <> FDevice)
     or (LastDriver <> FDriver) or (LastPort <> FPort) or (FPrinter <> Printer.PrinterIndex);
   FHandle := NewHandle;
   FPrinter := Printer.PrinterIndex;
-  Printer.SetPrinter(FDevice, FDriver, FPort, FHandle);
+  Printer.SetPrinter(PChar(FDevice), PChar(FDriver), PChar(FPort), FHandle);
   if PrinterChanged then
     SetDeviceMode(False);
 end;
@@ -597,11 +610,11 @@ begin
   FBinArray := nil;
   ADeviceMode := LockDeviceMode;
   try
-    FNumBins := DeviceCapabilities(FDevice, FPort, DC_Bins, nil, ADeviceMode);
+    FNumBins := DeviceCapabilities(PChar(FDevice), PChar(FPort), DC_Bins, nil, ADeviceMode);
     if FNumBins > 0 then
     begin
       GetMem(FBinArray, FNumBins * SizeOf(Word));
-      NumBinsRec := DeviceCapabilities(FDevice, FPort, DC_Bins,
+      NumBinsRec := DeviceCapabilities(PChar(FDevice), PChar(FPort), DC_Bins,
         PChar(FBinArray), ADeviceMode);
       if NumBinsRec <> FNumBins then
         raise EJclPrinterError.CreateRes(@RsRetrievingSource);
@@ -620,11 +633,11 @@ begin
     FreeMem(FPaperArray, FNumPapers * SizeOf(Word));
   ADeviceMode := LockDeviceMode;
   try
-    FNumPapers := DeviceCapabilities(FDevice, FPort, DC_Papers, nil, ADeviceMode);
+    FNumPapers := DeviceCapabilities(PChar(FDevice), PChar(FPort), DC_Papers, nil, ADeviceMode);
     if FNumPapers > 0 then
     begin
       GetMem(FPaperArray, FNumPapers * SizeOf(Word));
-      NumPapersRec := DeviceCapabilities(FDevice, FPort, DC_Papers,
+      NumPapersRec := DeviceCapabilities(PChar(FDevice), PChar(FPort), DC_Papers,
         PChar(FPaperArray), ADeviceMode);
       if NumPapersRec <> FNumPapers then
         raise EJclPrinterError.CreateRes(@RsRetrievingPaperSource);
@@ -723,7 +736,7 @@ begin
     List.Clear;
     ADeviceMode := LockDeviceMode;
     try
-      NumBinsRec := DeviceCapabilities(FDevice, FPort, DC_BinNames,
+      NumBinsRec := DeviceCapabilities(PChar(FDevice), PChar(FPort), DC_BinNames,
         PChar(BinArray), ADeviceMode);
     finally
       UnlockDeviceMode;
@@ -764,7 +777,7 @@ begin
     GetMem(PaperArray, FNumPapers * SizeOf(TPaperName));
     ADeviceMode := LockDeviceMode;
     try
-      NumPaperRec := DeviceCapabilities(FDevice, FPort, DC_PaperNames,
+      NumPaperRec := DeviceCapabilities(PChar(FDevice), PChar(FPort), DC_PaperNames,
         PChar(PaperArray), ADeviceMode);
     finally
       UnlockDeviceMode;
@@ -798,11 +811,11 @@ var
   ADeviceMode: PDeviceMode;
   NewHandle: THandle;
 begin
-  Printer.GetPrinter(FDevice, FDriver, FPort, NewHandle);
+  GetPrinterDetails(Printer, FDevice, FDriver, FPort, NewHandle);
   if NewHandle = 0 then
   begin
     Printer.PrinterIndex := Printer.PrinterIndex;
-    Printer.GetPrinter(FDevice, FDriver, FPort, NewHandle);
+    GetPrinterDetails(Printer, FDevice, FDriver, FPort, NewHandle);
   end;
   FHandle := NewHandle;
   if FHandle <> 0 then
@@ -836,7 +849,7 @@ begin
   // ONLY CALL when ADeviceMode is locked by caller!!!
 
   //CheckPrinter;
-  if OpenPrinter(FDevice, DrvHandle, nil) then
+  if OpenPrinter(PChar(FDevice), DrvHandle, nil) then
   try
     ADeviceMode^.dmFields := dm_Orientation or dm_PaperSize or
       dm_PaperLength or dm_PaperWidth or
@@ -844,7 +857,7 @@ begin
       dm_DefaultSource or dm_PrintQuality or
       dm_Color or dm_Duplex or
       dm_YResolution or dm_TTOption;
-    ExtDevCode := DocumentProperties(0, DrvHandle, FDevice,
+    ExtDevCode := DocumentProperties(0, DrvHandle, PChar(FDevice),
       ADeviceMode^, ADeviceMode^,
       DM_IN_BUFFER or DM_OUT_BUFFER);
     if ExtDevCode <> IDOK then
@@ -861,10 +874,10 @@ var
   ADeviceMode: PDeviceMode;
 begin
   CheckPrinter;
-  OpenPrinter(FDevice, DrvHandle, nil);
+  OpenPrinter(PChar(FDevice), DrvHandle, nil);
   ADeviceMode := LockDeviceMode;
   try
-    ExtDevCode := DocumentProperties(0, DrvHandle, FDevice,
+    ExtDevCode := DocumentProperties(0, DrvHandle, PChar(FDevice),
       ADeviceMode^, ADeviceMode^, DM_IN_BUFFER or DM_UPDATE);
   finally
     UnlockDeviceMode;
@@ -884,8 +897,8 @@ end;
 
 procedure TJclPrintSet.ResetPrinterDialogs;
 begin
-  Printer.GetPrinter(FDevice, FDriver, FPort, FHandle);
-  Printer.SetPrinter(FDevice, FDriver, FPort, FHandle);
+  GetPrinterDetails(Printer, FDevice, FDriver, FPort, FHandle);
+  Printer.SetPrinter(PChar(FDevice), PChar(FDriver), PChar(FPort), FHandle);
   SetDeviceMode(False);
 end;
 
@@ -998,7 +1011,7 @@ begin
           GlobalUnlock(NewHandle);
         end;
 
-      Printer.SetPrinter(FDevice, FDriver, FPort, NewHandle);
+      Printer.SetPrinter(PChar(FDevice), PChar(FDriver), PChar(FPort), NewHandle);
       FHandle := NewHandle;
       SetDeviceMode(False);
     finally
@@ -1370,19 +1383,19 @@ end;
 function TJclPrintSet.GetPrinterName: string;
 begin
   CheckPrinter;
-  Result := StrPas(FDevice);
+  Result := FDevice;
 end;
 
 function TJclPrintSet.GetPrinterPort: string;
 begin
   CheckPrinter;
-  Result := StrPas(FPort);
+  Result := FPort;
 end;
 
 function TJclPrintSet.GetPrinterDriver: string;
 begin
   CheckPrinter;
-  Result := StrPas(FDriver);
+  Result := FDriver;
 end;
 
 procedure TJclPrintSet.SetBinFromList(BinNum: Word);
@@ -1474,9 +1487,8 @@ end;
 procedure TJclPrintSet.SetPort(Port: string);
 begin
   CheckPrinter;
-  Port := Port + #0;
-  Move(Port[1], FPort^, Length(Port));
-  Printer.SetPrinter(FDevice, FDriver, FPort, FHandle);
+  FPort := Port;
+  Printer.SetPrinter(PChar(FDevice), PChar(FDriver), PChar(FPort), FHandle);
 end;
 
 function TJclPrintSet.GetPaperIndex: Word;

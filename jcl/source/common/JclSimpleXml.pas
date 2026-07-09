@@ -2274,6 +2274,7 @@ begin
     if NamedIndex >= 0 then
       TJclSimpleXMLNamedElems(FNamedElems.SimpleItems[NamedIndex]).FItems.Add(Value);
   end;
+  FElems.InvalidateHash;
 end;
 
 function TJclSimpleXMLElems.FloatValue(const Name: string;
@@ -2430,9 +2431,9 @@ begin
                 begin
                   lElem := TJclSimpleXMLElemText.Create;
                   CreateElems;
-                  Notify(lElem,opInsert);
-                  lElem.LoadFromStringStream(StringStream);
                   FElems.Add(lElem);
+                  Notify(lElem, opInsert);
+                  lElem.LoadFromStringStream(StringStream);
                 end;
                 Break;
               end
@@ -2488,9 +2489,9 @@ begin
           if lElem <> nil then
           begin
             CreateElems;
+            FElems.Add(lElem);
             Notify(lElem, opInsert);
             lElem.LoadFromStringStream(StringStream);
-            FElems.Add(lElem);
           end;
         end;
     end;
@@ -2648,6 +2649,10 @@ begin
       if I < J then
       begin
         List.Exchange(I, J);
+        if M = I then
+          M := J
+        else if M = J then
+          M := I;
         Inc(I);
         Dec(J);
       end

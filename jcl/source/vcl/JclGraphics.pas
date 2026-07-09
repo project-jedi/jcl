@@ -513,11 +513,7 @@ function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
   RegionBitmapMode: TJclRegionBitmapMode; UseAlphaChannel: Boolean = False): HRGN;
 procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer; Window: THandle = HWND_DESKTOP); overload;
 procedure ScreenShot(bm: TBitmap; IncludeTaskBar: Boolean = True); overload;
-procedure ScreenShot(bm: TBitmap; ControlToPrint: TWinControl); overload;
-procedure ScreenShot(bm: TBitmap; ControlToPrint: string); overload;
-procedure ScreenShot(bm: TBitmap; FormToPrint: TCustomForm; ControlToPrint: TWinControl); overload;
 procedure ScreenShot(bm: TBitmap; FormToPrint: TCustomForm); overload;
-procedure ScreenShot(bm: TBitmap; FormToPrint: TCustomForm; ControlToPrint: String); overload;
 function MapWindowRect(hWndFrom, hWndTo: THandle; ARect: TRect):TRect;
 
 // PolyLines and Polygons
@@ -586,6 +582,7 @@ uses
   JclLogic;
 
 type
+  PBGRAInt = ^TBGRAInt;
   TBGRAInt = record
     R: Integer;
     G: Integer;
@@ -601,23 +598,21 @@ type
     A: Byte;
   end;
 
-  PPixelArray = ^TPixelArray;
-  TPixelArray = array [0..0] of TBGRA;
-
   TBitmapFilterFunction = function(Value: Single): Single;
 
   PContributor = ^TContributor;
   TContributor = record
-   Weight: Integer; // Pixel Weight
-   Pixel: Integer;  // Source Pixel
+    Weight: Integer; // Pixel Weight
+    Pixel: Integer;  // Source Pixel
   end;
 
   TContributors = array of TContributor;
 
   // list of source pixels contributing to a destination pixel
+  PContributorEntry = ^TContributorEntry;
   TContributorEntry = record
-   N: Integer;
-   Contributors: TContributors;
+    N: Integer;
+    Contributors: TContributors;
   end;
 
   TContributorList = array of TContributorEntry;
@@ -632,18 +627,21 @@ var
   { Gamma bias for line/pixel antialiasing/shape correction }
   GAMMA_TABLE: TGamma;
 
-threadvar
-  // globally used cache for current image (speeds up resampling about 10%)
-  CurrentLineR: array of Integer;
-  CurrentLineG: array of Integer;
-  CurrentLineB: array of Integer;
-  CurrentLineA: array of Integer;
+type
+  TBGRAIntArray = array of TBGRAInt;
 
 //=== Helper functions =======================================================
 
-function IntToByte(Value: Integer): Byte;
+function IntToByte(Value: Integer): Byte; {$IFDEF SUPPORTS_INLINE} inline;{$ENDIF}
 begin
-  Result := {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}Math.Max(0, {$IFDEF HAS_UNITSCOPE}System.{$ENDIF}Math.Min(255, Value));
+  Result := 255;
+  if Value >= 0 then
+  begin
+    if Value <= 255 then
+      Result := Value;
+  end
+  else
+    Result := 0;
 end;
 
 procedure CheckBitmaps(Dst, Src: TJclBitmap32);
@@ -799,6 +797,8 @@ begin
 end;
 
 function BitmapLanczos3Filter(Value: Single): Single;
+const
+  OneThird = 1.0 / 3.0;
 
   function SinC(Value: Single): Single;
   begin
@@ -815,7 +815,7 @@ begin
   if Value < 0.0 then
     Value := -Value;
   if Value < 3.0 then
-    Result := SinC(Value) * SinC(Value / 3.0)
+    Result := SinC(Value) * SinC(Value * OneThird)
   else
     Result := 0.0;
 end;
@@ -824,6 +824,7 @@ function BitmapMitchellFilter(Value: Single): Single;
 const
   B = 1.0 / 3.0;
   C = 1.0 / 3.0;
+  OneSixth = 1.0 / 6.0;
 var
   Temp: Single;
 begin
@@ -835,7 +836,7 @@ begin
     Value := (((12.0 - 9.0 * B - 6.0 * C) * (Value * Temp)) +
       ((-18.0 + 12.0 * B + 6.0 * C) * Temp) +
       (6.0 - 2.0 * B));
-    Result := Value / 6.0;
+    Result := Value * OneSixth;
   end
   else
   if Value < 2.0 then
@@ -844,7 +845,7 @@ begin
       ((6.0 * B + 30.0 * C) * Temp) +
       ((-12.0 * B - 48.0 * C) * Value) +
       (8.0 * B + 24.0 * C));
-    Result := Value / 6.0;
+    Result := Value * OneSixth;
   end
   else
     Result := 0.0;
@@ -862,62 +863,85 @@ const
     BitmapMitchellFilter
    );
 
-procedure FillLineCache(N, Delta: Integer; Line: Pointer);
+procedure FillLineCacheHorz(N: Integer; Line: Pointer; const ACurrentLine: TBGRAIntArray);
 var
-  I: Integer;
   Run: PBGRA;
+  Data: PBGRAInt;
 begin
   Run := Line;
-  for I := 0 to N - 1 do
+  Data := @ACurrentLine[0];
+  Dec(N);
+  while N >= 0 do
   begin
-    CurrentLineR[I] := Run.R;
-    CurrentLineG[I] := Run.G;
-    CurrentLineB[I] := Run.B;
-    CurrentLineA[I] := Run.A;
-    Inc(PByte(Run), Delta);
+    Data.B := Run.B;
+    Data.G := Run.G;
+    Data.R := Run.R;
+    Data.A := Run.A;
+    Inc(Run);
+    Inc(Data);
+    Dec(N);
   end;
 end;
 
-function ApplyContributors(N: Integer; Contributors: TContributors): TBGRA;
+procedure FillLineCacheVert(N, Delta: Integer; Line: Pointer; const ACurrentLine: TBGRAIntArray);
+var
+  Run: PBGRA;
+  Data: PBGRAInt;
+begin
+  Run := Line;
+  Data := @ACurrentLine[0];
+  Dec(N);
+  while N >= 0 do
+  begin
+    Data.B := Run.B;
+    Data.G := Run.G;
+    Data.R := Run.R;
+    Data.A := Run.A;
+    Inc(PByte(Run), Delta);
+    Inc(Data);
+    Dec(N);
+  end;
+end;
+
+function ApplyContributors(Contributor: PContributorEntry; const ACurrentLine: TBGRAIntArray): TBGRA;
 var
   J: Integer;
   RGB: TBGRAInt;
-  Total,
-  Weight: Integer;
-  Pixel: Cardinal;
+  Total, Weight: Integer;
   Contr: PContributor;
+  Data: PBGRAInt;
 begin
-  RGB.R := 0;
-  RGB.G := 0;
-  RGB.B := 0;
-  RGB.A := 0;
   Total := 0;
-  Contr := @Contributors[0];
-  for J := 0 to N - 1 do
+  RGB.R := Total; // trick compiler into generating better code
+  RGB.G := Total;
+  RGB.B := Total;
+  RGB.A := Total;
+  Contr := @Contributor.Contributors[0];
+  for J := 0 to Contributor.N - 1 do
   begin
     Weight := Contr.Weight;
     Inc(Total, Weight);
-    Pixel := Contr.Pixel;
-    Inc(RGB.R, CurrentLineR[Pixel] * Weight);
-    Inc(RGB.G, CurrentLineG[Pixel] * Weight);
-    Inc(RGB.B, CurrentLineB[Pixel] * Weight);
-    Inc(RGB.A, CurrentLineA[Pixel] * Weight);
+    Data := @ACurrentLine[Contr.Pixel];
+    Inc(RGB.R, Data.R * Weight);
+    Inc(RGB.G, Data.G * Weight);
+    Inc(RGB.B, Data.B * Weight);
+    Inc(RGB.A, Data.A * Weight);
     Inc(Contr);
   end;
 
-  if Total = 0 then
+  if Total <> 0 then
   begin
-    Result.R := IntToByte(RGB.R shr 8);
-    Result.G := IntToByte(RGB.G shr 8);
-    Result.B := IntToByte(RGB.B shr 8);
-    Result.A := IntToByte(RGB.A shr 8);
+    Result.B := IntToByte(RGB.B div Total);
+    Result.G := IntToByte(RGB.G div Total);
+    Result.R := IntToByte(RGB.R div Total);
+    Result.A := IntToByte(RGB.A div Total);
   end
   else
   begin
-    Result.R := IntToByte(RGB.R div Total);
-    Result.G := IntToByte(RGB.G div Total);
-    Result.B := IntToByte(RGB.B div Total);
-    Result.A := IntToByte(RGB.A div Total);
+    Result.B := IntToByte(RGB.B shr 8);
+    Result.G := IntToByte(RGB.G shr 8);
+    Result.R := IntToByte(RGB.R shr 8);
+    Result.A := IntToByte(RGB.A shr 8);
   end;
 end;
 
@@ -935,11 +959,12 @@ var
   Left, Right: Integer;   // Filter calculation variables
   Work: TBitmap;
   ContributorList: TContributorList;
-  SourceLine, DestLine: PPixelArray;
+  SourceLine, DestLine: PBGRA;
   DestPixel: PBGRA;
   Delta, DestDelta: Integer;
   SourceHeight, SourceWidth: Integer;
   TargetHeight, TargetWidth: Integer;
+  CurrentLine: TBGRAIntArray;
 begin
   // shortcut variables
   SourceHeight := Source.Height;
@@ -1027,24 +1052,23 @@ begin
       end;
     end;
 
-    // now apply filter to sample horizontally from Src to Work
+    if SourceWidth > SourceHeight then
+      SetLength(CurrentLine, SourceWidth)
+    else
+      SetLength(CurrentLine, SourceHeight);
 
-    SetLength(CurrentLineR, SourceWidth);
-    SetLength(CurrentLineG, SourceWidth);
-    SetLength(CurrentLineB, SourceWidth);
-    SetLength(CurrentLineA, SourceWidth);
+    // now apply filter to sample horizontally from Src to Work
     for K := 0 to SourceHeight - 1 do
     begin
       SourceLine := Source.ScanLine[K];
-      FillLineCache(SourceWidth, SizeOf(TBGRA), SourceLine);
+      FillLineCacheHorz(SourceWidth, SourceLine, CurrentLine);
       DestPixel := Work.ScanLine[K];
       for I := 0 to TargetWidth - 1 do
-        with ContributorList[I] do
-        begin
-          DestPixel^ := ApplyContributors(N, ContributorList[I].Contributors);
-          // move on to next column
-          Inc(DestPixel);
-        end;
+      begin
+        DestPixel^ := ApplyContributors(@ContributorList[I], CurrentLine);
+        // move on to next column
+        Inc(DestPixel);
+      end;
     end;
 
     // free the memory allocated for horizontal filter weights, since we need
@@ -1120,25 +1144,20 @@ begin
     end;
 
     // apply filter to sample vertically from Work to Target
-    SetLength(CurrentLineR, SourceHeight);
-    SetLength(CurrentLineG, SourceHeight);
-    SetLength(CurrentLineB, SourceHeight);
-    SetLength(CurrentLineA, SourceHeight);
-
     SourceLine := Work.ScanLine[0];
-    Delta := Integer(Work.ScanLine[1]) - Integer(SourceLine);
+    Delta := PAnsiChar(Work.ScanLine[1]) - PAnsiChar(SourceLine); // don't use TJclAddr here because of IntOverflow
     DestLine := Target.ScanLine[0];
-    DestDelta := Integer(Target.ScanLine[1]) - Integer(DestLine);
+    DestDelta := PAnsiChar(Target.ScanLine[1]) - PAnsiChar(DestLine); // don't use TJclAddr here because of IntOverflow
     for K := 0 to TargetWidth - 1 do
     begin
       DestPixel := Pointer(DestLine);
-      FillLineCache(SourceHeight, Delta, SourceLine);
+      FillLineCacheVert(SourceHeight, Delta, SourceLine, CurrentLine);
       for I := 0 to TargetHeight - 1 do
-        with ContributorList[I] do
-        begin
-          DestPixel^ := ApplyContributors(N, ContributorList[I].Contributors);
-          Inc(INT_PTR(DestPixel), DestDelta);
-        end;
+      begin
+        DestPixel^ := ApplyContributors(@ContributorList[I], CurrentLine);
+        // move on to next row
+        Inc(INT_PTR(DestPixel), DestDelta);
+      end;
       Inc(SourceLine);
       Inc(DestLine);
     end;
@@ -1151,10 +1170,6 @@ begin
 
   finally
     Work.Free;
-    CurrentLineR := nil;
-    CurrentLineG := nil;
-    CurrentLineB := nil;
-    CurrentLineA := nil;
     Target.Modified := True;
   end;
 end;
@@ -1379,58 +1394,52 @@ begin
   SetLength(MapX, DstW);
   SetLength(MapY, DstH);
 
-  try
-    for I := 0 to DstW - 1 do
-      MapX[I] := I * (SrcW) div (DstW) + SrcRect.Left;
+  for I := 0 to DstW - 1 do
+    MapX[I] := I * (SrcW) div (DstW) + SrcRect.Left;
 
-    // build Y coord mapping table
-    for J := 0 to DstH - 1 do
-      MapY[J] := J * (SrcH) div (DstH) + SrcRect.Top;
+  // build Y coord mapping table
+  for J := 0 to DstH - 1 do
+    MapY[J] := J * (SrcH) div (DstH) + SrcRect.Top;
 
-    // transfer pixels
-    case CombineOp of
-      dmOpaque:
-        for J := R.Top to R.Bottom - 1 do
+  // transfer pixels
+  case CombineOp of
+    dmOpaque:
+      for J := R.Top to R.Bottom - 1 do
+      begin
+        Y := MapY[J - DstY];
+        P := Dst.PixelPtr[R.Left, J];
+        for I := R.Left to R.Right - 1 do
         begin
-          Y := MapY[J - DstY];
-          P := Dst.PixelPtr[R.Left, J];
-          for I := R.Left to R.Right - 1 do
-          begin
-            P^ := Src[MapX[I - DstX], Y];
-            Inc(P);
-          end;
+          P^ := Src[MapX[I - DstX], Y];
+          Inc(P);
         end;
-      dmBlend:
-        begin
-          MstrAlpha := Src.MasterAlpha;
-          if MstrAlpha = 255 then
-            for J := R.Top to R.Bottom - 1 do
-            begin
-              Y := MapY[J - DstY];
-              P := Dst.PixelPtr[R.Left, J];
-              for I := R.Left to R.Right - 1 do
-              begin
-                BlendMem(Src[MapX[I - DstX], Y], P^);
-                Inc(P);
-              end;
-            end
-          else // Master Alpha is in [1..254] range
-            for J := R.Top to R.Bottom - 1 do
-            begin
-              Y := MapY[J - DstY];
-              P := Dst.PixelPtr[R.Left, J];
-              for I := R.Left to R.Right - 1 do
-              begin
-                BlendMemEx(Src[MapX[I - DstX], Y], P^, MstrAlpha);
-                Inc(P);
-              end;
-            end;
       end;
+    dmBlend:
+      begin
+        MstrAlpha := Src.MasterAlpha;
+        if MstrAlpha = 255 then
+          for J := R.Top to R.Bottom - 1 do
+          begin
+            Y := MapY[J - DstY];
+            P := Dst.PixelPtr[R.Left, J];
+            for I := R.Left to R.Right - 1 do
+            begin
+              BlendMem(Src[MapX[I - DstX], Y], P^);
+              Inc(P);
+            end;
+          end
+        else // Master Alpha is in [1..254] range
+          for J := R.Top to R.Bottom - 1 do
+          begin
+            Y := MapY[J - DstY];
+            P := Dst.PixelPtr[R.Left, J];
+            for I := R.Left to R.Right - 1 do
+            begin
+              BlendMemEx(Src[MapX[I - DstX], Y], P^, MstrAlpha);
+              Inc(P);
+            end;
+          end;
     end;
-  finally
-    EMMS;
-    MapX := nil;
-    MapY := nil;
   end;
 end;
 
@@ -1467,24 +1476,20 @@ begin
   MstrAlpha := Src.MasterAlpha;
   N := D.Right - D.Left;
 
-  try
-    if MstrAlpha = 255 then
-      for J := D.Top to D.Bottom - 1 do
-      begin
-        Ps := Src.PixelPtr[D.Left + SrcX - DstX, J + SrcY - DstY];
-        Pd := Dst.PixelPtr[D.Left, J];
-        BlendLine(Ps, Pd, N);
-      end
-    else
-      for J := D.Top to D.Bottom - 1 do
-      begin
-        Ps := Src.PixelPtr[D.Left + SrcX - DstX, J + SrcY - DstY];
-        Pd := Dst.PixelPtr[D.Left, J];
-        BlendLineEx(Ps, Pd, N, MstrAlpha);
-      end;
-  finally
-    EMMS;
-  end;
+  if MstrAlpha = 255 then
+    for J := D.Top to D.Bottom - 1 do
+    begin
+      Ps := Src.PixelPtr[D.Left + SrcX - DstX, J + SrcY - DstY];
+      Pd := Dst.PixelPtr[D.Left, J];
+      BlendLine(Ps, Pd, N);
+    end
+  else
+    for J := D.Top to D.Bottom - 1 do
+    begin
+      Ps := Src.PixelPtr[D.Left + SrcX - DstX, J + SrcY - DstY];
+      Pd := Dst.PixelPtr[D.Left, J];
+      BlendLineEx(Ps, Pd, N, MstrAlpha);
+    end;
 end;
 
 procedure StretchTransfer(Dst: TJclBitmap32; DstRect: TRect; Src: TJclBitmap32; SrcRect: TRect;
@@ -1542,58 +1547,52 @@ begin
   // mapping tables
   MapX := BuildMappingTable(DstW, SrcRect.Left, SrcW, StretchFilter);
   MapY := BuildMappingTable(DstH, SrcRect.Top, SrcH, StretchFilter);
-  try
-    ClusterX := nil;
-    ClusterY := nil;
-    if (MapX = nil) or (MapY = nil) then
-      Exit;
+  ClusterX := nil;
+  ClusterY := nil;
+  if (MapX = nil) or (MapY = nil) then
+    Exit;
 
-    // transfer pixels
-    for J := R.Top to R.Bottom - 1 do
+  // transfer pixels
+  for J := R.Top to R.Bottom - 1 do
+  begin
+    ClusterY := MapY[J - DstY];
+    P := Dst.PixelPtr[R.Left, J];
+    for I := R.Left to R.Right - 1 do
     begin
-      ClusterY := MapY[J - DstY];
-      P := Dst.PixelPtr[R.Left, J];
-      for I := R.Left to R.Right - 1 do
-      begin
-        ClusterX := MapX[I - DstX];
+      ClusterX := MapX[I - DstX];
 
-        // reset color accumulators
-        Ca := 0;
-        Cr := 0;
-        Cg := 0;
-        Cb := 0;
+      // reset color accumulators
+      Ca := 0;
+      Cr := 0;
+      Cg := 0;
+      Cb := 0;
 
-        // now iterate through each cluster
-        for Y := 0 to High(ClusterY) do
-          for X := 0 to High(ClusterX) do
-          begin
-            C := Src[ClusterX[X].Pos, ClusterY[Y].Pos];
-            Wt := ClusterX[X].Weight * ClusterY[Y].Weight;
-            Inc(Ca, C shr 24 * Wt);
-            Inc(Cr, (C and $00FF0000) shr 16 * Wt);
-            Inc(Cg, (C and $0000FF00) shr 8 * Wt);
-            Inc(Cb, (C and $000000FF) * Wt);
-          end;
-        Ca := Ca and $00FF0000;
-        Cr := Cr and $00FF0000;
-        Cg := Cg and $00FF0000;
-        Cb := Cb and $00FF0000;
-        C := (Ca shl 8) or Cr or (Cg shr 8) or (Cb shr 16);
-
-        // combine it with the background
-        case CombineOp of
-          dmOpaque:
-            P^ := C;
-          dmBlend:
-            BlendMemEx(C, P^, MstrAlpha);
+      // now iterate through each cluster
+      for Y := 0 to High(ClusterY) do
+        for X := 0 to High(ClusterX) do
+        begin
+          C := Src[ClusterX[X].Pos, ClusterY[Y].Pos];
+          Wt := ClusterX[X].Weight * ClusterY[Y].Weight;
+          Inc(Ca, C shr 24 * Wt);
+          Inc(Cr, (C and $00FF0000) shr 16 * Wt);
+          Inc(Cg, (C and $0000FF00) shr 8 * Wt);
+          Inc(Cb, (C and $000000FF) * Wt);
         end;
-        Inc(P);
+      Ca := Ca and $00FF0000;
+      Cr := Cr and $00FF0000;
+      Cg := Cg and $00FF0000;
+      Cb := Cb and $00FF0000;
+      C := (Ca shl 8) or Cr or (Cg shr 8) or (Cb shr 16);
+
+      // combine it with the background
+      case CombineOp of
+        dmOpaque:
+          P^ := C;
+        dmBlend:
+          BlendMemEx(C, P^, MstrAlpha);
       end;
+      Inc(P);
     end;
-  finally
-    EMMS;
-    MapX := nil;
-    MapY := nil;
   end;
 end;
 
@@ -1951,41 +1950,37 @@ begin
   if IsRectEmpty(DstRect) then
     Exit;
 
-  try
-    if Src.StretchFilter <> sfNearest then
-      for J := DstRect.Top to DstRect.Bottom - 1 do
+  if Src.StretchFilter <> sfNearest then
+    for J := DstRect.Top to DstRect.Bottom - 1 do
+    begin
+      Pixels := Dst.ScanLine[J];
+      for I := DstRect.Left to DstRect.Right - 1 do
       begin
-        Pixels := Dst.ScanLine[J];
-        for I := DstRect.Left to DstRect.Right - 1 do
-        begin
-          Transformation.Transform256(I, J, X, Y);
-          if GET_S256(X, Y, C) then
-            if SrcBlend then
-              BlendMemEx(C, Pixels[I], SrcAlpha)
-            else
-              Pixels[I] := C;
-        end;
-      end
-    else // nearest filter
-      for J := DstRect.Top to DstRect.Bottom - 1 do
+        Transformation.Transform256(I, J, X, Y);
+        if GET_S256(X, Y, C) then
+          if SrcBlend then
+            BlendMemEx(C, Pixels[I], SrcAlpha)
+          else
+            Pixels[I] := C;
+      end;
+    end
+  else // nearest filter
+    for J := DstRect.Top to DstRect.Bottom - 1 do
+    begin
+      Pixels := Dst.ScanLine[J];
+      for I := DstRect.Left to DstRect.Right - 1 do
       begin
-        Pixels := Dst.ScanLine[J];
-        for I := DstRect.Left to DstRect.Right - 1 do
+        Transformation.Transform(I, J, X, Y);
+        if (X >= SrcRect.Left) and (X < SrcRect.Right) and
+          (Y >= SrcRect.Top) and (Y < SrcRect.Bottom) then
         begin
-          Transformation.Transform(I, J, X, Y);
-          if (X >= SrcRect.Left) and (X < SrcRect.Right) and
-            (Y >= SrcRect.Top) and (Y < SrcRect.Bottom) then
-          begin
-            if SrcBlend then
-              BlendMemEx(Src.Pixel[X, Y], Pixels[I], SrcAlpha)
-            else
-              Pixels[I] := Src.Pixel[X, Y];
-          end;
+          if SrcBlend then
+            BlendMemEx(Src.Pixel[X, Y], Pixels[I], SrcAlpha)
+          else
+            Pixels[I] := Src.Pixel[X, Y];
         end;
       end;
-  finally
-    EMMS;
-  end;
+    end;
   Dst.Changed;
 end;
 
@@ -2129,23 +2124,24 @@ begin
   WinDC := GetDC(Window);
   if WinDC = 0 then
     raise EJclGraphicsError.CreateRes(@RsNoDeviceContextForWindow);
+  try
+    // Palette-device?
+    if (GetDeviceCaps(WinDC, RASTERCAPS) and RC_PALETTE) = RC_PALETTE then
+    begin
+      ResetMemory(Pal, SizeOf(TMaxLogPalette));  // fill the structure with zeros
+      Pal.palVersion := $300;                     // fill in the palette version
 
-  // Palette-device?
-  if (GetDeviceCaps(WinDC, RASTERCAPS) and RC_PALETTE) = RC_PALETTE then
-  begin
-    ResetMemory(Pal, SizeOf(TMaxLogPalette));  // fill the structure with zeros
-    Pal.palVersion := $300;                     // fill in the palette version
+      // grab the system palette entries...
+      Pal.palNumEntries := GetSystemPaletteEntries(WinDC, 0, 256, Pal.palPalEntry);
+      if Pal.PalNumEntries <> 0 then
+        bm.Palette := CreatePalette(PLogPalette(@Pal)^);
+    end;
 
-    // grab the system palette entries...
-    Pal.palNumEntries := GetSystemPaletteEntries(WinDC, 0, 256, Pal.palPalEntry);
-    if Pal.PalNumEntries <> 0 then
-      bm.Palette := CreatePalette(PLogPalette(@Pal)^);
+    // copy from the screen to our bitmap...
+    BitBlt(bm.Canvas.Handle, 0, 0, Width, Height, WinDC, Left, Top, SRCCOPY);
+  finally
+    ReleaseDC(Window, WinDC);        // finally, relase the DC of the window
   end;
-
-  // copy from the screen to our bitmap...
-  BitBlt(bm.Canvas.Handle, 0, 0, Width, Height, WinDC, Left, Top, SRCCOPY);
-
-  ReleaseDC(Window, WinDC);        // finally, relase the DC of the window
 end;
 
 procedure ScreenShot(bm: TBitmap; IncludeTaskBar: Boolean = True); overload;
@@ -2164,72 +2160,11 @@ begin
   ScreenShot(bm, R.Left, R.Top, R.Right, R.Bottom, HWND_DESKTOP);
 end;
 
-procedure ScreenShot(bm: TBitmap; ControlToPrint: TWinControl); overload;
-begin
-  //uses the ActiveForm property of TScreen to determine on which form the control will be searched for.
-  if ControlToPrint <> nil then
-    ScreenShot(bm, Screen.ActiveForm, ControlToPrint)
-  else
-    raise EJclGraphicsError.CreateResFmt(@RSInvalidFormOrComponent, ['form'])
-end;
-
-procedure ScreenShot(bm: TBitmap; ControlToPrint: string); overload;
-begin
-  //uses the ActiveForm property of TScreen to determine on which form the control will be searched for.
-  if Length(ControlToPrint) > 0 then
-    ScreenShot(bm, Screen.ActiveForm, ControlToPrint)
-  else
-    raise EJclGraphicsError.CreateResFmt(@RSInvalidFormOrComponent, ['Component'])
-end;
-
-procedure ScreenShot(bm: TBitmap; FormToPrint: TCustomForm; ControlToPrint: TWinControl); overload;
-begin
-  if FormToPrint <> nil then
-  begin
-    if (ControlToPrint is TWinControl) then
-      ScreenShot(bm, FormToPrint, ControlToPrint.Name)
-    else
-      raise EJclGraphicsError.CreateResFmt(@RSInvalidControlType,[ControlToPrint.Name])
-  end
-  else
-  if ControlToPrint <> nil then
-    raise EJclGraphicsError.CreateResFmt(@RSInvalidFormOrComponent, ['form'])
-  else
-    raise EJclGraphicsError.CreateResFmt(@RSInvalidFormOrComponent, ['form'])
-end;
-
 procedure ScreenShot(bm: TBitmap; FormToPrint: TCustomForm); overload;
 begin
   //Prints the entire forms area.
   if FormToPrint <> nil then
     ScreenShot(bm, FormToPrint.Left, FormToPrint.Top, FormToPrint.Width, FormToPrint.Height, FormToPrint.Handle)
-  else
-    raise EJclGraphicsError.CreateResFmt(@RSInvalidFormOrComponent, ['form'])
-end;
-
-procedure ScreenShot(bm: TBitmap; FormToPrint: TCustomForm; ControlToPrint: String); overload;
-var
-  Component: TComponent;
-begin
-  if FormToPrint <> nil then
-  begin
-    if Length(ControlToPrint) =0 then
-      raise EJclGraphicsError.CreateResFmt(@RSInvalidFormOrComponent, ['component'])
-    else
-    begin
-      Component :=nil;
-      FormToPrint.FindComponent(ControlToPrint);
-      if Component =nil then
-        raise EJclGraphicsError.CreateResFmt(@RsComponentDoesNotExist,[ControlToPrint, FormToPrint.Name])
-      else
-      begin
-        if Component is TWinControl then
-          ScreenShot(bm, TWinControl(Component).Left, TWinControl(Component).Top, TWinControl(Component).Width, TWinControl(Component).Height, TWinControl(Component).Handle)
-        else
-          raise EJclGraphicsError.CreateResFmt(@RSInvalidControlType,[ControlToPrint]);
-      end;
-    end;
-  end
   else
     raise EJclGraphicsError.CreateResFmt(@RSInvalidFormOrComponent, ['form'])
 end;
@@ -3143,23 +3078,18 @@ end;
 procedure TJclBitmap32.SetPixelT(X, Y: Integer; Value: TColor32);
 begin
   BlendMem(Value, Bits[X + Y * Width]);
-  EMMS;
 end;
 
 procedure TJclBitmap32.SetPixelT(var Ptr: PColor32; Value: TColor32);
 begin
   BlendMem(Value, Ptr^);
-  EMMS;
   Inc(Ptr);
 end;
 
 procedure TJclBitmap32.SetPixelTS(X, Y: Integer; Value: TColor32);
 begin
   if (X >= 0) and (X < Width) and (Y >= 0) and (Y < Width) then
-  begin
     BlendMem(Value, Bits[X + Y * Width]);
-    EMMS;
-  end;
 end;
 
 procedure TJclBitmap32.SET_T256(X, Y: Integer; C: TColor32);
@@ -3248,13 +3178,11 @@ end;
 procedure TJclBitmap32.SetPixelF(X, Y: Single; Value: TColor32);
 begin
   SET_T256(Round(X * 256), Round(Y * 256), Value);
-  EMMS;
 end;
 
 procedure TJclBitmap32.SetPixelFS(X, Y: Single; Value: TColor32);
 begin
   SET_TS256(Round(X * 256), Round(Y * 256), Value);
-  EMMS;
 end;
 
 procedure TJclBitmap32.SetStipple(NewStipple: TArrayOfColor32);
@@ -3305,7 +3233,6 @@ begin
       FStipplePattern[PrevIndex],
       FStipplePattern[NextIndex],
       PrevWeight);
-    EMMS;
   end;
   FStippleCounter := FStippleCounter + FStippleStep;
 end;
@@ -3344,7 +3271,6 @@ begin
     BlendMem(Value, P^);
     Inc(P);
   end;
-  EMMS;
 end;
 
 procedure TJclBitmap32.DrawHorzLineTS(X1, Y, X2: Integer; Value: TColor32);
@@ -3415,7 +3341,6 @@ begin
     BlendMem(Value, P^);
     Inc(P, Width);
   end;
-  EMMS;
 end;
 
 procedure TJclBitmap32.DrawVertLineTS(X, Y1, Y2: Integer; Value: TColor32);
@@ -3765,42 +3690,38 @@ begin
     P := PixelPtr[X1, Y1];
     Sy := Sy * Width;
 
-    try
-      if Dx > Dy then
+    if Dx > Dy then
+    begin
+      Delta := Dx shr 1;
+      for I := 0 to Dx - 1 do
       begin
-        Delta := Dx shr 1;
-        for I := 0 to Dx - 1 do
+        BlendMem(Value, P^);
+        Inc(P, Sx);
+        Delta := Delta + Dy;
+        if Delta > Dx then
         begin
-          BlendMem(Value, P^);
-          Inc(P, Sx);
-          Delta := Delta + Dy;
-          if Delta > Dx then
-          begin
-            Inc(P, Sy);
-            Delta := Delta - Dx;
-          end;
-        end;
-      end
-      else // Dx < Dy
-      begin
-        Delta := Dy shr 1;
-        for I := 0 to Dy - 1 do
-        begin
-          BlendMem(Value, P^);
           Inc(P, Sy);
-          Delta := Delta + Dx;
-          if Delta > Dy then
-          begin
-            Inc(P, Sx);
-            Delta := Delta - Dy;
-          end;
+          Delta := Delta - Dx;
         end;
       end;
-      if L then
+    end
+    else // Dx < Dy
+    begin
+      Delta := Dy shr 1;
+      for I := 0 to Dy - 1 do
+      begin
         BlendMem(Value, P^);
-    finally
-      EMMS;
+        Inc(P, Sy);
+        Delta := Delta + Dx;
+        if Delta > Dy then
+        begin
+          Inc(P, Sx);
+          Delta := Delta - Dy;
+        end;
+      end;
     end;
+    if L then
+      BlendMem(Value, P^);
   finally
     Changed;
   end;
@@ -3848,7 +3769,6 @@ begin
     A := A * Longword(hyp) shl 8 and $FF000000;
     SET_T256((px + ex - nx) shr 9, (py + ey - ny) shr 9, Value and _RGB + A);
   finally
-    EMMS;
     Changed;
   end;
 end;
@@ -3895,7 +3815,6 @@ begin
         A := A * Longword(hyp) shl 8 and $FF000000;
         SET_TS256(Sar(px + ex - nx,9), Sar(py + ey - ny,9), Value and _RGB + A);
       finally
-        EMMS;
         Changed;
       end;
     end;
@@ -3929,7 +3848,6 @@ begin
       begin
         C := GetStippleColor;
         SET_T256(px shr 8, py shr 8, C);
-        EMMS;
         px := px + nx;
         py := py + ny;
       end;
@@ -3939,7 +3857,6 @@ begin
     hyp := hyp - N shl 16;
     A := A * Longword(hyp) shl 8 and $FF000000;
     SET_T256((px + ex - nx) shr 9, (py + ey - ny) shr 9, C and _RGB + A);
-    EMMS;
   finally
     Changed;
   end;
@@ -3979,7 +3896,6 @@ begin
           begin
             C := GetStippleColor;
             SET_TS256(px div 256, py div 256, C);
-            EMMS;
             px := px + nx;
             py := py + ny;
           end;
@@ -3989,7 +3905,6 @@ begin
         hyp := hyp - N shl 16;
         A := A * Longword(hyp) shl 8 and $FF000000;
         SET_TS256(Sar(px + ex - nx,9), Sar(py + ey - ny,9), C and _RGB + A);
-        EMMS;
       finally
         Changed;
       end;
@@ -4077,7 +3992,6 @@ begin
       end;
     end;
   finally
-    EMMS;
     Changed;
   end;
 end;
@@ -4171,7 +4085,6 @@ begin
       end;
     end;
     finally
-      EMMS;
       Changed;
     end;
   end;
@@ -5365,26 +5278,22 @@ begin
 
     // draw it to the screen
     P := Bitmap.PixelPtr[MinX, Y];
-    try
-      if DoAlpha then
-        for I := 0 to High(Buffer) do
-        begin
+    if DoAlpha then
+      for I := 0 to High(Buffer) do
+      begin
+        BlendMemEx(Color, P^, Buffer[I]);
+        Inc(P);
+      end
+    else
+      for I := 0 to High(Buffer) do
+      begin
+        N := Buffer[I];
+        if N = 255 then
+          P^ := Color
+        else
           BlendMemEx(Color, P^, Buffer[I]);
-          Inc(P);
-        end
-      else
-        for I := 0 to High(Buffer) do
-        begin
-          N := Buffer[I];
-          if N = 255 then
-            P^ := Color
-          else
-            BlendMemEx(Color, P^, Buffer[I]);
-          Inc(P);
-        end;
-    finally
-      EMMS;
-    end;
+        Inc(P);
+      end;
 
     Inc(Y);
   end;

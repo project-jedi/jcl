@@ -1164,7 +1164,7 @@ function GetMciErrorMessage(const MciErrNo: MCIERROR): string;
 var
   Buffer: array [0..{$IFDEF HAS_UNITSCOPE}Winapi.{$ENDIF}MMSystem.MAXERRORLENGTH - 1] of Char;
 begin
-  if mciGetErrorString(MciErrNo, Buffer, SizeOf(Buffer)) then
+  if mciGetErrorString(MciErrNo, Buffer, Length(Buffer)) then
     Result := Buffer
   else
     Result := Format(LoadResString(@RsMmUnknownError), [MciErrNo]);
@@ -1250,7 +1250,7 @@ begin
     ResetMemory(Buffer, SizeOf(Buffer));
     InfoParams.dwCallback := 0;
     InfoParams.lpstrReturn := Buffer;
-    InfoParams.dwRetSize := SizeOf(Buffer) - 1;
+    InfoParams.dwRetSize := Length(Buffer) - 1;
     if mciSendCommand(Mci.wDeviceID, MCI_INFO, InfoConsts[InfoType], TJclAddr(@InfoParams)) = MMSYSERR_NOERROR then
       Result := Buffer;
   finally

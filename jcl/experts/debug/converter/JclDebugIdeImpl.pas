@@ -303,7 +303,7 @@ end;
 procedure TJclDebugExtension.AfterCompile(const Project: IOTAProject; Succeeded: Boolean);
 var
   ProjectFileName, MapFileName, DrcFileName, ExecutableFileName, JdbgFileName: TFileName;
-  OutputDirectory, LinkerBugUnit: string;
+  OutputDirectory, LinkerBugUnit, ErrorMsg: string;
   Succ: Boolean;
   MapFileSize, JclDebugDataSize, LineNumberErrors, C: Integer;
   EnabledActions: TDebugExpertActions;
@@ -318,7 +318,8 @@ var
   end;
 
 begin
-  if JclDisablePostCompilationProcess or (Project = nil) then
+  // There are no ProjectOptions if we have a Language Ressouce DLL project (Mantis #5740)
+  if JclDisablePostCompilationProcess or (Project = nil) or (Project.ProjectOptions = nil) then
     Exit;
 
   OTAMessageServices := GetOTAMessageServices;
@@ -359,7 +360,10 @@ begin
         // insertion of JEDI Debug Information into the binary
         if Succ and (deInsertJdbg in EnabledActions) then
         begin
-          Succ := FindExecutableName(MapFileName, OutputDirectory, ExecutableFileName);
+          ExecutableFileName := GetTargetFileName(Project);
+          Succ := ExecutableFileName <> '';
+          if not Succ then
+            Succ := FindExecutableName(MapFileName, OutputDirectory, ExecutableFileName);
           if Succ then
           begin
             Succ := InsertDebugDataIntoExecutableFile(ExecutableFileName, MapFileName,
@@ -367,7 +371,8 @@ begin
             if Succ then
             begin
               if not FQuiet then
-                OutputToolMessage(Format(LoadResString(@RsInsertedJdbg), [MapFileName, MapFileSize, JclDebugDataSize]));
+                OutputToolMessage(Format(LoadResString(@RsInsertedJdbg),
+                  [MapFileName, MapFileSize, JclDebugDataSize, ExecutableFileName]));
             end
             else
               OutputToolMessage(Format(LoadResString(@RsEMapInsertion), [MapFileName]));
@@ -387,10 +392,18 @@ begin
           end
           else
             OutputToolMessage(Format(LoadResString(@RsEFailedToDeleteMapFile), ['MAP', MapFileName]));
+
+          if not FileExists(DrcFileName) then // Mantis #6488
+            DrcFileName := ChangeFileExt(MapFileName, CompilerExtensionDRC);
+
           if DeleteFile(DrcFileName) then
             OutputToolMessage(Format(LoadResString(@RsDeletedMapFile), ['DRC', DrcFileName]))
           else
+          begin
+            ErrorMsg := SysErrorMessage(GetLastError);
             OutputToolMessage(Format(LoadResString(@RsEFailedToDeleteMapFile), ['DRC', DrcFileName]));
+            OutputToolMessage(ErrorMsg);
+          end;
         end;
 
         Screen.Cursor := crDefault;
@@ -536,13 +549,13 @@ begin
       FSaveBuildAllProjectsActionExecute(Sender);
       DisplayResults;
     except
+      on EAbort do
+        raise;
+      on EFOpenError do // when ".ridl" files are not found by IDE, reraise the exception
+        raise;
       on ExceptionObj: TObject do
       begin
-        if ExceptionObj is EFOpenError then
-          // when ".ridl" files are not found by IDE, reraise the exception
-          raise
-        else
-          JclExpertShowExceptionDialog(ExceptionObj);
+        JclExpertShowExceptionDialog(ExceptionObj);
       end;
     end;
   finally
@@ -558,13 +571,13 @@ begin
       FSaveBuildProjectActionExecute(Sender);
       DisplayResults;
     except
+      on EAbort do
+        raise;
+      on EFOpenError do // when ".ridl" files are not found by IDE, reraise the exception
+        raise;
       on ExceptionObj: TObject do
       begin
-        if ExceptionObj is EFOpenError then
-          // when ".ridl" files are not found by IDE, reraise the exception
-          raise
-        else
-          JclExpertShowExceptionDialog(ExceptionObj);
+        JclExpertShowExceptionDialog(ExceptionObj);
       end;
     end;
   finally
@@ -597,6 +610,10 @@ var
 begin
   if FBuildError or (Length(FResultInfo) = 0) then
     Exit;
+
+  if Assigned(Settings) and (Settings.LoadBool(JclDebugQuietSetting, false)) then
+    Exit;
+
   with TJclDebugResultForm.Create(Application, Settings) do
   try
     for I := 0 to Length(FResultInfo) - 1 do
@@ -1472,6 +1489,8 @@ begin
       FCurrentProject := nil;
     end;
   except
+    on EAbort do
+      raise;
     on ExceptionObj: Exception do
       JclExpertShowExceptionDialog(ExceptionObj);
   end;
@@ -1484,6 +1503,8 @@ begin
     if not IsCodeInsight then
       FDebugExtension.AfterCompile(Project, Succeeded);
   except
+    on EAbort do
+      raise;
     on ExceptionObj: Exception do
       JclExpertShowExceptionDialog(ExceptionObj);
   end;
@@ -1500,6 +1521,8 @@ begin
       FDebugExtension.BeforeCompile(Project, Cancel);
     end;
   except
+    on EAbort do
+      raise;
     on ExceptionObj: TObject do
       JclExpertShowExceptionDialog(ExceptionObj);
   end;
