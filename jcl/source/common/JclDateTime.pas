@@ -508,7 +508,7 @@ var
   January4th: TDateTime;
   FirstMonday: TDateTime;
 begin
-  // Applying the rule: The first calender week is the week that includes January, 4th
+  // Applying the rule: The first calendar week is the week that includes January, 4th
   TmpYear := YearOfDate(DateTime);
   WeekDay := ISODayOfWeek(DateTime);
   // adjust if we are between 12/29 and 12/31
@@ -575,7 +575,7 @@ end;
 
 function Make4DigitYear(Year, Pivot: Integer): Integer;
 begin
-  { TODO : Make4DigitYear }                                                                                                  
+  { TODO : Make4DigitYear }
   Assert((Year >= 0) and (Year <= 100) and (Pivot >= 0) and (Pivot <= 100));
   if Year = 100 then
     Year := 0;
@@ -628,7 +628,7 @@ begin
   { Number of years in which leap year was dropped in order... }
   { to keep in step with the sun: }
   Corx := (3 * Cent) div 4 - 12;
-  { Special correction to syncronize Easter with moon's orbit: }
+  { Special correction to synchronize Easter with moon's orbit: }
   Corz := (8 * Cent + 5) div 25 - 5;
   { Find Sunday: }
   Sunday := (Longint(5) * Year) div 4 - Corx - 10;

@@ -205,7 +205,7 @@ const
   AnsiStringAnsiStringKnownMap: TKnownMapAttributes =
     (MapAttributes:
       ( {maMapInterfaceName} 'IJclAnsiStrAnsiStrMap',
-        {maMapInterfaceGUID} '{A4788A96-281A-4924-AA24-03776DDAAD8A}',
+        {maMapInterfaceGUID} '{B01D6C80-E120-4BC2-AA93-3DEE18A19B7A}',
         {maMapInterfaceAncestorName} 'IJclAnsiStrContainer',
         {maSortedMapInterfaceName} 'IJclAnsiStrAnsiStrSortedMap',
         {maSortedMapInterfaceGUID} '{4F457799-5D03-413D-A46C-067DC4200CC3}',

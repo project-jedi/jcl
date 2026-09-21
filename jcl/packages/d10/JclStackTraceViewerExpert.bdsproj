@@ -125,7 +125,7 @@
       <Directories Name="PackageDLLOutputDir"></Directories>
       <Directories Name="PackageDCPOutputDir">..\..\lib\d10</Directories>
       <Directories Name="Packages">rtl;vcl;designide;Jcl;JclBaseExpert</Directories>
-      <Directories Name="Conditionals">BCB;WIN32;CONDITIONALEXPRESSIONS;VER180;RELEASE</Directories>
+      <Directories Name="Conditionals">BCB;RELEASE</Directories>
       <Directories Name="DebugSourceDirs"></Directories>
       <Directories Name="UsePackages">True</Directories>
     </Directories>
@@ -137,9 +137,9 @@
       <VersionInfo Name="IncludeVerInfo">True</VersionInfo>
       <VersionInfo Name="AutoIncBuild">False</VersionInfo>
       <VersionInfo Name="MajorVer">2</VersionInfo>
-      <VersionInfo Name="MinorVer">7</VersionInfo>
+      <VersionInfo Name="MinorVer">9</VersionInfo>
       <VersionInfo Name="Release">0</VersionInfo>
-      <VersionInfo Name="Build">5300</VersionInfo>
+      <VersionInfo Name="Build">9331</VersionInfo>
       <VersionInfo Name="Debug">False</VersionInfo>
       <VersionInfo Name="PreRelease">False</VersionInfo>
       <VersionInfo Name="Special">False</VersionInfo>
@@ -151,13 +151,13 @@
     <VersionInfoKeys>
       <VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
       <VersionInfoKeys Name="FileDescription">JCL Stack Trace Viewer</VersionInfoKeys>
-      <VersionInfoKeys Name="FileVersion">2.7.0.5300</VersionInfoKeys>
+      <VersionInfoKeys Name="FileVersion">2.9.0.9331</VersionInfoKeys>
       <VersionInfoKeys Name="InternalName">JclStackTraceViewerExpert</VersionInfoKeys>
-      <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2014 Project JEDI</VersionInfoKeys>
+      <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2025 Project JEDI</VersionInfoKeys>
       <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
       <VersionInfoKeys Name="OriginalFilename">JclStackTraceViewerExpert100.bpl</VersionInfoKeys>
       <VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
-      <VersionInfoKeys Name="ProductVersion">2.7 Build 5300</VersionInfoKeys>
+      <VersionInfoKeys Name="ProductVersion">2.9 Build 9331</VersionInfoKeys>
     </VersionInfoKeys>
   </Delphi.Personality>
 </BorlandProject>

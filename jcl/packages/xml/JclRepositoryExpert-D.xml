@@ -6,6 +6,10 @@
   <C6Libs/>
   <CompilerDefines>RELEASE</CompilerDefines>
   <ImageBase>58180000</ImageBase>
+  <Platforms>
+    <Platform Name="Win32" Condition=""/>
+    <Platform Name="Win64" Condition="BDS23_UP"/>
+  </Platforms>
   <Requires>
     <Package Name="rtl" Targets="Delphi,Bcb,Bds" Condition=""/>
     <Package Name="vcl" Targets="Delphi,Bcb,Bds" Condition=""/>

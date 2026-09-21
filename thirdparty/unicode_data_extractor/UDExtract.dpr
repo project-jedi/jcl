@@ -45,7 +45,7 @@ type
 
   TNumber = record
     Numerator,
-    Denominator: Integer;
+    Denominator: Int64;
   end;
 
   // start and stop of a range of code points
@@ -60,7 +60,7 @@ type
   TRangeArray = array of TRange;
 
   CategoryString = record
-    Name: AnsiString;
+    Name: string;
     Category: TCharacterCategory;
   end;
 
@@ -72,7 +72,7 @@ const
   //       These are:
   //       - Mn, NSM for non-spacing mark
   //       - Zp, B for paragraph separator
-  CategoriesStrings: array[0..87] of CategoryString = (
+  CategoriesStrings: array[0..94] of CategoryString = (
     // normative categories
     (Name: 'Lu';  Category: ccLetterUppercase),           // letter, upper case
     (Name: 'Ll';  Category: ccLetterLowercase),           // letter, lower case
@@ -127,6 +127,10 @@ const
     (Name: 'WS';  Category: ccWhiteSpace),                // white space
     (Name: 'White_Space'; Category: ccWhiteSpace),
     (Name: 'ON';  Category: ccOtherNeutrals),             // other neutrals
+    (Name: 'LRI'; Category: ccLeftToRightIsolate),
+    (Name: 'RLI'; Category: ccRightToLeftIsolate),
+    (Name: 'FSI'; Category: ccFirstStrongIsolate),
+    (Name: 'PDI'; Category: ccPopDirectionalIsolate),
     // self defined categories, they do not appear in the Unicode data file
     (Name: 'Cm';  Category: ccComposed),                  // composed (can be decomposed)
     (Name: 'Nb';  Category: ccNonBreaking),               // non-breaking
@@ -165,7 +169,10 @@ const
     (Name: 'STerm'; Category: ccSTerm),
     (Name: 'Variation_Selector'; Category: ccVariationSelector),
     (Name: 'Pattern_White_Space'; Category: ccPatternWhiteSpace),
-    (Name: 'Pattern_Syntax'; Category: ccPatternSyntax)
+    (Name: 'Pattern_Syntax'; Category: ccPatternSyntax),
+    (Name: 'Sentence_Terminal'; Category: ccSentenceTerminal),
+    (Name: 'Prepended_Concatenation_Mark'; Category: ccPrependedQuotationMark),
+    (Name: 'Regional_Indicator'; Category: ccRegionalIndicator)
     );
 
 const
@@ -343,7 +350,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure AddRangeToCategories(Start, Stop: Cardinal; CategoryID: AnsiString); overload;
+procedure AddRangeToCategories(Start, Stop: Cardinal; CategoryID: string); overload;
 
 // Adds a range of code points to the categories structure.
 
@@ -370,7 +377,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure AddToCategories(Code: Cardinal; CategoryID: AnsiString); overload;
+procedure AddToCategories(Code: Cardinal; CategoryID: string); overload;
 
 // Adds a range of code points to the categories structure.
 
@@ -400,7 +407,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function MakeNumber(Num, Denom: Integer): Integer;
+function MakeNumber(Num, Denom: Int64): Integer;
 
 // adds a number if it does not already exist and returns its index value
 
@@ -429,7 +436,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure AddNumber(Code: Cardinal; Num, Denom: Integer);
+procedure AddNumber(Code: Cardinal; Num, Denom: Int64);
 
 var
   I, J: Integer;
@@ -685,7 +692,7 @@ var
 
   // number representation
   Nominator,
-  Denominator: Integer;
+  Denominator: Int64;
 
   // case mapping
   AMapping: TUCS4Array;
@@ -726,10 +733,10 @@ begin
           EndCode := StrToInt('$' + Line[0]);
 
           // register general category
-          AddRangeToCategories(StartCode, EndCode, AnsiString(Line[2]));
+          AddRangeToCategories(StartCode, EndCode, Line[2]);
 
           // register bidirectional category
-          AddRangeToCategories(StartCode, EndCode, AnsiString(Line[4]));
+          AddRangeToCategories(StartCode, EndCode, Line[4]);
 
           // mark the range as containing assigned code points
           AddRangeToCategories(StartCode, EndCode, ccAssigned);
@@ -768,7 +775,7 @@ begin
             if Line.Count < 3 then
               Continue;
             // 3) categorize the general character class
-            AddToCategories(StartCode, AnsiString(Line[2]));
+            AddToCategories(StartCode, Line[2]);
 
             if Line.Count < 4 then
               Continue;
@@ -778,7 +785,7 @@ begin
             if Line.Count < 5 then
               Continue;
             // 5) categorize the bidirectional character class
-            AddToCategories(StartCode, AnsiString(Line[4]));
+            AddToCategories(StartCode, Line[4]);
 
             if Line.Count < 6 then
               Continue;
@@ -822,15 +829,15 @@ begin
             StrToStrings(Line[8], '/', NumberStr, False);
             if NumberStr.Count = 1 then
             begin
-              Nominator := StrToInt(NumberStr.Strings[0]);
+              Nominator := StrToInt64(NumberStr.Strings[0]);
               Denominator := 1;
               AddNumber(StartCode, Nominator, Denominator);
             end
             else
             if NumberStr.Count = 2 then
             begin
-              Nominator := StrToInt(NumberStr.Strings[0]);
-              Denominator := StrToInt(NumberStr.Strings[1]);
+              Nominator := StrToInt64(NumberStr.Strings[0]);
+              Denominator := StrToInt64(NumberStr.Strings[1]);
               AddNumber(StartCode, Nominator, Denominator);
             end
             else

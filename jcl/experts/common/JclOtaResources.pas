@@ -266,7 +266,7 @@ resourcestring
   RsEMapFileNotFound = 'Map file "%s" for project "%s" not found.' +
     'No conversions of debug information were made';
   RsConvertedMapToJdbg = 'Converted MAP file "%s" (%d bytes) to .jdbg (%d bytes)';
-  RsInsertedJdbg = 'Converted MAP file "%s" (%d bytes) and inserted debug information (%d bytes) into the binary';
+  RsInsertedJdbg = 'Converted MAP file "%s" (%d bytes) and inserted debug information (%d bytes) into the binary "%s"';
   RsDeletedMapFile = 'Deleted %s file "%s"';
   RsEFailedToDeleteMapFile = 'Failed to delete %s file "%s"';
   RsEMapConversion = 'Failed to convert MAP file "%s"';

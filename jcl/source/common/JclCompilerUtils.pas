@@ -72,7 +72,6 @@ type
     FOutput: string;
     FOnAfterExecute: TJclBorlandCommandLineToolEvent;
     FOnBeforeExecute: TJclBorlandCommandLineToolEvent;
-    procedure OemTextHandler(const Text: string);
   protected
     procedure CheckOutputValid;
     function GetFileName: string;
@@ -108,7 +107,19 @@ type
     function GetExeName: string; override;
   end;
 
+  TJclBCC32C = class(TJclBorlandCommandLineTool)
+  public
+    class function GetPlatform: string; virtual;
+    function GetExeName: string; override;
+  end;
+
   TJclBCC64 = class(TJclBCC32)
+  public
+    class function GetPlatform: string; override;
+    function GetExeName: string; override;
+  end;
+
+  TJclBCC64X = class(TJclBCC64)
   public
     class function GetPlatform: string; override;
     function GetExeName: string; override;
@@ -176,6 +187,48 @@ type
     function GetExeName: string; override;
   end;
 
+  TJclDCCOSX64 = class(TJclDCC32)
+  public
+    class function GetPlatform: string; override;
+    function GetExeName: string; override;
+  end;
+
+  TJclDCCiOSSimulator = class(TJclDCC32)
+  public
+    class function GetPlatform: string; override;
+    function GetExeName: string; override;
+  end;
+
+  TJclDCCiOS32 = class(TJclDCC32)
+  public
+    class function GetPlatform: string; override;
+    function GetExeName: string; override;
+  end;
+
+  TJclDCCiOS64 = class(TJclDCC32)
+  public
+    class function GetPlatform: string; override;
+    function GetExeName: string; override;
+  end;
+
+  TJclDCCArm32 = class(TJclDCC32)
+  public
+    class function GetPlatform: string; override;
+    function GetExeName: string; override;
+  end;
+
+  TJclDCCArm64 = class(TJclDCC32)
+  public
+    class function GetPlatform: string; override;
+    function GetExeName: string; override;
+  end;
+
+  TJclDCCLinux64 = class(TJclDCC32)
+  public
+    class function GetPlatform: string; override;
+    function GetExeName: string; override;
+  end;
+
   {$IFDEF MSWINDOWS}
   TJclDCCIL = class(TJclDCC32)
   private
@@ -204,10 +257,19 @@ type
 const
   AsmExeName                = 'tasm32.exe';
   BCC32ExeName              = 'bcc32.exe';
+  BCC32CExeName             = 'bcc32c.exe';
   BCC64ExeName              = 'bcc64.exe';
+  BCC64XExeName             = 'bcc64x.exe';
   DCC32ExeName              = 'dcc32.exe';
   DCC64ExeName              = 'dcc64.exe';
   DCCOSX32ExeName           = 'dccosx.exe';
+  DCCOSX64ExeName           = 'dccosx64.exe';
+  DCCiOSSimulatorExeName    = 'dccios32.exe';
+  DCCiOS32ExeName           = 'dcciosarm.exe';
+  DCCiOS64ExeName           = 'dcciosarm64.exe';
+  DCCArm32ExeName           = 'dccaarm.exe';   //Android 32
+  DCCArm64ExeName           = 'dccaarm64.exe'; //Android 64
+  DCCLinux64ExeName         = 'dcclinux64.exe';
   DCCILExeName              = 'dccil.exe';
   Bpr2MakExeName            = 'bpr2mak.exe';
   MakeExeName               = 'make.exe';
@@ -775,46 +837,28 @@ begin
   Result := FOutputCallback;
 end;
 
-function TJclBorlandCommandLineTool.InternalExecute(
-  const CommandLine: string): Boolean;
+function TJclBorlandCommandLineTool.InternalExecute(const CommandLine: string): Boolean;
 var
   LaunchCommand: string;
+  Options: TJclExecuteCmdProcessOptions;
 begin
-  LaunchCommand := Format('%s %s', [FileName, StrAnsiToOem(AnsiString(CommandLine))]);
-  if Assigned(FOutputCallback) then
-  begin
-    OemTextHandler(LaunchCommand);
-    Result := JclSysUtils.Execute(LaunchCommand, OemTextHandler) = 0;
-  end
-  else
-  begin
-    Result := JclSysUtils.Execute(LaunchCommand, FOutput) = 0;
-    {$IFDEF MSWINDOWS}
-    FOutput := string(StrOemToAnsi(AnsiString(FOutput)));
-    {$ENDIF MSWINDOWS}
-  end;
-end;
+  LaunchCommand := Format('%s %s', [FileName, CommandLine]);
 
-procedure TJclBorlandCommandLineTool.OemTextHandler(const Text: string);
-var
-  AnsiText: string;
-begin
-  if Assigned(FOutputCallback) then
-  begin
-    {$IFDEF MSWINDOWS}
-    // Text is OEM under Windows
-    // Code below seems to crash older compilers at times, so we only do
-    // the casts when it's absolutely necessary, that is when compiling
-    // with a unicode compiler.
-    {$IFDEF UNICODE}
-    AnsiText := string(StrOemToAnsi(AnsiString(Text)));
-    {$ELSE}
-    AnsiText := StrOemToAnsi(Text);
-    {$ENDIF UNICODE}
-    {$ELSE ~MSWINDOWS}
-    AnsiText := Text;
-    {$ENDIF ~MSWINDOWS}
-    FOutputCallback(AnsiText);
+  Options := TJclExecuteCmdProcessOptions.Create(LaunchCommand);
+  try
+    if Assigned(FOutputCallback) then
+    begin
+      Options.OutputLineCallback := FOutputCallback;
+      FOutputCallback(LaunchCommand);
+      Result := ExecuteCmdProcess(Options) and (Options.ExitCode = 0);
+    end
+    else
+    begin
+      Result := ExecuteCmdProcess(Options) and (Options.ExitCode = 0);
+      FOutput := FOutput + Options.Output;
+    end;
+  finally
+    Options.Free;
   end;
 end;
 
@@ -835,6 +879,18 @@ begin
   Result := BDSPlatformWin32;
 end;
 
+//=== { TJclBCC32 } ============================================================
+
+function TJclBCC32C.GetExeName: string;
+begin
+  Result := BCC32CExeName;
+end;
+
+class function TJclBCC32C.GetPlatform: string;
+begin
+  Result := BDSPlatformWin32; // same name as bcc32, the IDE uses the Clang32Suffix suffix in value names
+end;
+
 //=== { TJclBCC64 } ============================================================
 
 function TJclBCC64.GetExeName: string;
@@ -845,6 +901,18 @@ end;
 class function TJclBCC64.GetPlatform: string;
 begin
   Result := BDSPlatformWin64;
+end;
+
+//=== { TJclBCC64X } ============================================================
+
+function TJclBCC64X.GetExeName: string;
+begin
+  Result := BCC64XExeName;
+end;
+
+class function TJclBCC64X.GetPlatform: string;
+begin
+  Result := BDSPlatformWin64x;
 end;
 
 //=== { TJclDCC32 } ============================================================
@@ -1262,6 +1330,90 @@ end;
 function TJclDCCOSX32.GetExeName: string;
 begin
   Result := DCCOSX32ExeName;
+end;
+
+//=== { TJclDCCOSX64 } =======================================================
+
+class function TJclDCCOSX64.GetPlatform: string;
+begin
+  Result := BDSPlatformOSX64;
+end;
+
+function TJclDCCOSX64.GetExeName: string;
+begin
+  Result := DCCOSX64ExeName;
+end;
+
+//=== { TJclDCCiOSSimulator } =======================================================
+
+class function TJclDCCiOSSimulator.GetPlatform: string;
+begin
+  Result := BDSPlatformiOSSimulator;
+end;
+
+function TJclDCCiOSSimulator.GetExeName: string;
+begin
+  Result := DCCiOSSimulatorExeName;
+end;
+
+//=== { TJclDCCiOS32 } =======================================================
+
+class function TJclDCCiOS32.GetPlatform: string;
+begin
+  Result := BDSPlatformiOSDevice32;
+end;
+
+function TJclDCCiOS32.GetExeName: string;
+begin
+  Result := DCCiOS32ExeName;
+end;
+
+//=== { TJclDCCiOS64 } =======================================================
+
+class function TJclDCCiOS64.GetPlatform: string;
+begin
+  Result := BDSPlatformiOSDevice64;
+end;
+
+function TJclDCCiOS64.GetExeName: string;
+begin
+  Result := DCCiOS64ExeName;
+end;
+
+//=== { TJclDCCArm32 } =======================================================
+
+class function TJclDCCArm32.GetPlatform: string;
+begin
+  Result := BDSPlatformAndroid32;
+end;
+
+function TJclDCCArm32.GetExeName: string;
+begin
+  Result := DCCArm32ExeName;
+end;
+
+//=== { TJclDCCArm64 } =======================================================
+
+class function TJclDCCArm64.GetPlatform: string;
+begin
+  Result := BDSPlatformAndroid64;
+end;
+
+function TJclDCCArm64.GetExeName: string;
+begin
+  Result := DCCArm64ExeName;
+end;
+
+//=== { TJclDCCLinux64 } =======================================================
+
+class function TJclDCCLinux64.GetPlatform: string;
+begin
+  Result := BDSPlatformLinux64;
+end;
+
+function TJclDCCLinux64.GetExeName: string;
+begin
+  Result := DCCLinux64ExeName;
 end;
 
 {$IFDEF MSWINDOWS}

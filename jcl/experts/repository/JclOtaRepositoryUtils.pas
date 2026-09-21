@@ -59,13 +59,13 @@ type
     FAuthor: string;
     FPage: string;
     FGalleryCategory: string;
-    FGlyph: Cardinal;
+    FGlyph: THandle;
     FItemType: TJclRepositoryItemType;
     FDesigner: string;
     FPersonality: string;
   public
     constructor Create(const AName, ADescription, AAuthor, APage, AGalleryCategory,
-      ADesigner, APersonality: string; AGlyph: Cardinal;
+      ADesigner, APersonality: string; AGlyph: THandle;
       AItemType: TJclRepositoryItemType); reintroduce; overload; virtual;
     constructor Create; reintroduce; overload; virtual; abstract;
     destructor Destroy; override;
@@ -84,7 +84,7 @@ type
     function GetAuthor: string;
     function GetComment: string;
     function GetPage: string;
-    function GetGlyph: Cardinal;
+    function GetGlyph: {$IFDEF WIN32}Cardinal{$ELSE}THandle{$ENDIF WIN32};
 
     { IOTARepositoryWizard60 }
     function GetDesigner: string;
@@ -193,7 +193,7 @@ uses
 //=== { TJclOTARepositoryExpertBase } ========================================
 
 constructor TJclOTARepositoryExpert.Create(const AName, ADescription, AAuthor, APage,
-  AGalleryCategory, ADesigner, APersonality: string; AGlyph: Cardinal;
+  AGalleryCategory, ADesigner, APersonality: string; AGlyph: THandle;
   AItemType: TJclRepositoryItemType);
 begin
   inherited Create(AName);
@@ -286,7 +286,7 @@ end;
 {$ENDIF COMPILER8_UP}
 
 //IOTARepositoryWizard.GetGlyph
-function TJclOTARepositoryExpert.GetGlyph: Cardinal;
+function TJclOTARepositoryExpert.GetGlyph: {$IFDEF WIN32}Cardinal{$ELSE}THandle{$ENDIF WIN32};
 begin
   Result := FGlyph;
 end;

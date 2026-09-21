@@ -2485,7 +2485,7 @@ type
   end;
 
   IJclExtendedArray = interface(IJclExtendedList)
-    ['{D43E8D18-26B3-41A2-8D52-ED7EA2FE1AB7}']
+    ['{A3693A89-3E57-41B3-9A92-F6CBB64F89AB}']
     function GetValue(Index: Integer): Extended;
     procedure SetValue(Index: Integer; const AValue: Extended);
     property Values[Index: Integer]: Extended read GetValue write SetValue; default;
@@ -2873,7 +2873,7 @@ type
   end;
 
   IJclAnsiStrAnsiStrMap = interface(IJclAnsiStrContainer)
-    ['{A4788A96-281A-4924-AA24-03776DDAAD8A}']
+    ['{B01D6C80-E120-4BC2-AA93-3DEE18A19B7A}']
     procedure Clear;
     function ContainsKey(const Key: AnsiString): Boolean;
     function ContainsValue(const Value: AnsiString): Boolean;

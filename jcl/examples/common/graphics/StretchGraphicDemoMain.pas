@@ -131,7 +131,7 @@ type
 
 procedure ProcessWMDropFiles(var Msg: TWMDropFiles; Callback: TWMDropFilesCallback; DropPoint: PPoint = nil); overload;
 var
-  i: Integer;
+  I: Integer;
   FileName: array[0..MAX_PATH] of Char;
 begin
   try
@@ -141,7 +141,7 @@ begin
     if Assigned(Callback) then
       for i := 0 to DragQueryFile(Msg.Drop, $FFFFFFFF, nil, 0) - 1 do
       begin
-        DragQueryFile(Msg.Drop, i, FileName, MAX_PATH);
+        DragQueryFile(Msg.Drop, I, FileName, Length(FileName));
         Callback(FileName);
       end;
     Msg.Result := 0;

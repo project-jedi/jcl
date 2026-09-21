@@ -105,7 +105,7 @@ end;
 
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
     RegisterProc: TWizardRegisterProc;
-    var TerminateProc: TWizardTerminateProc): Boolean stdcall;
+    var TerminateProc: TWizardTerminateProc): Boolean; stdcall;
 begin
   try
     TerminateProc := JclWizardTerminate;

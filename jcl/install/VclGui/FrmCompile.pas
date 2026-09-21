@@ -19,7 +19,7 @@ Contributor(s): -
   Florent Ouchet (outchy) - New installer core
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL
-home page, located at http://jvcl.sourceforge.net
+home page, located at https://github.com/project-jedi/jcl
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -272,8 +272,11 @@ end;
 procedure TFormCompile.CompilationProgress(const FileName: string;
   LineNumber: Integer);
 begin
-  Compiling(FileName);
-  CurrentLine := LineNumber;
+  if not SameText('.inc', ExtractFileExt(FileName)) then
+  begin
+    Compiling(FileName);
+    CurrentLine := LineNumber;
+  end;
 end;
 
 procedure TFormCompile.SetCurrentLine(Line: Cardinal);

@@ -1210,13 +1210,13 @@ type
   private
     FCursor: TJclLinkedList<T>.TLinkedListItem;
     FStart: TItrStart;
-    FOwnList: IJclList<T>;
+    FOwnList: TJclLinkedList<T>;
     FEqualityComparer: IJclEqualityComparer<T>;
   public
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function CreateEmptyIterator: TJclAbstractIterator; override;
   public
-    constructor Create(AOwnList: IJclList<T>; ACursor: TJclLinkedList<T>.TLinkedListItem; AValid: Boolean; AStart: TItrStart);
+    constructor Create(AOwnList: TJclLinkedList<T>; ACursor: TJclLinkedList<T>.TLinkedListItem; AValid: Boolean; AStart: TItrStart);
     { IJclIterator<T> }
     function Add(const AItem: T): Boolean;
     procedure Extract;
@@ -17313,7 +17313,7 @@ end;
 
 //=== { TJclLinkedListIterator<T> } ============================================================
 
-constructor TJclLinkedListIterator<T>.Create(AOwnList: IJclList<T>; ACursor: TJclLinkedList<T>.TLinkedListItem; AValid: Boolean; AStart: TItrStart);
+constructor TJclLinkedListIterator<T>.Create(AOwnList: TJclLinkedList<T>; ACursor: TJclLinkedList<T>.TLinkedListItem; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AValid);
   FCursor := ACursor;

@@ -2,9 +2,9 @@
 
 1. copy the following files from ftp://ftp.unicode.org/Public/X.Y.Z/ucd to this directory
 	CaseFolding.txt
-	SpecialCasing.txt
-	UnicodeData.txt
 	DerivedNormalizationProps.txt
 	PropList.txt
+	SpecialCasing.txt
+	UnicodeData.txt
 2. Set the current directory to this directory
 3. Execute make_jclunicode.bat

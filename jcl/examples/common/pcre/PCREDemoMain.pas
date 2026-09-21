@@ -246,15 +246,15 @@ end;
 
 procedure TfrmMain.WMDropFiles(var Message: TWMDropFiles);
 var
-  i:integer;
-  buf:array [0..MAX_PATH] of char;
+  I: Integer;
+  Buf: array [0..MAX_PATH] of Char;
 begin
-  i := DragQueryFile(Message.Drop, $FFFFFFFF, nil, 0);
-  if i > 0 then
+  I := DragQueryFile(Message.Drop, $FFFFFFFF, nil, 0);
+  if I > 0 then
   try
-    DragQueryFile(Message.Drop, 0, buf, sizeof(buf));
-    if FileExists(buf) then
-     LoadFromFile(buf);
+    DragQueryFile(Message.Drop, 0, Buf, Length(Buf));
+    if FileExists(Buf) then
+      LoadFromFile(Buf);
   finally
     DragFinish(Message.Drop);
   end;
