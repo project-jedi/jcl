@@ -377,6 +377,7 @@ function GetOSVersionString: string;
 {$IFDEF MSWINDOWS}
 function GetMacAddresses(const Machine: string; const Addresses: TStrings): Integer;
 {$ENDIF MSWINDOWS}
+{$IFDEF CPUINTEL}
 function ReadTimeStampCounter: Int64;
 {$IFDEF WIN64}
 {$EXTERNALSYM ReadTimeStampCounter}
@@ -1370,6 +1371,7 @@ function GetOSEnabledFeatures: TOSEnabledFeatures;
 {$ENDIF MSWINDOWS}
 function CPUID: TCpuInfo;
 function TestFDIVInstruction: Boolean;
+{$ENDIF CPUINTEL}
 
 // Memory Information
 {$IFDEF MSWINDOWS}
@@ -1476,7 +1478,10 @@ uses
   JclRegistry, JclWin32,
   {$ENDIF MSWINDOWS}
   {$ENDIF ~HAS_UNITSCOPE}
-  Jcl8087, JclIniFiles,
+  {$IFDEF CPUINTEL}
+  Jcl8087,
+  {$ENDIF CPUINTEL}
+  JclIniFiles,
   JclSysUtils, JclFileUtils, JclAnsiStrings, JclStrings;
 
 {$IFDEF FPC}
@@ -4594,7 +4599,9 @@ var
   glErr: Cardinal;
   bError: Boolean;
   sOpenGLVersion, sOpenGLVendor: AnsiString;
+  {$IFDEF CPUINTEL}
   Save8087CW: Word;
+  {$ENDIF}
 
   procedure FunctionFailedError(Name: string);
   begin
@@ -4640,9 +4647,13 @@ begin
 
     { To call for the version information string we must first have an active
       context established for use.  We can, of course, close this after use }
+    {$IFDEF CPUINTEL}
     Save8087CW := Get8087ControlWord;
+    {$ENDIF CPUINTEL}
     try
+      {$IFDEF CPUINTEL}
       Set8087CW($133F);
+      {$ENDIF CPUINTEL}
       hGLContext := 0;
       Result := False;
       bError := False;
@@ -4731,7 +4742,9 @@ begin
           wglDeleteContextFunc(hGLContext);
       end;
     finally
+      {$IFDEF CPUINTEL}
       Set8087CW(Save8087CW);
+      {$ENDIF CPUINTEL}
     end;
   finally
     if (OpenGlLib <> 0) then
@@ -5048,15 +5061,16 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
+{$IFDEF CPUINTEL}
 function ReadTimeStampCounter: Int64; assembler;
 asm
         DW      $310F
         // TSC in EDX:EAX
-        {$IFDEF CPU64}
+        {$IFDEF CPUX64}
         SHL     RDX, 32
         OR      RAX, RDX
         // Result in RAX
-        {$ENDIF CPU64}
+        {$ENDIF CPUX64}
 end;
 
 function GetIntelCacheDescription(const D: Byte): string;
@@ -5275,7 +5289,7 @@ function CPUID: TCpuInfo;
   begin
   {$ENDIF ~DELPHI64_TEMPORARY}
     asm
-      {$IFDEF CPU32}
+      {$IFDEF CPU386}
       PUSHFD
       POP     EAX
       MOV     ECX, EAX
@@ -5288,8 +5302,8 @@ function CPUID: TCpuInfo;
       AND     EAX, ID_FLAG
       XOR     EAX, ECX
       SETNZ   Result
-      {$ENDIF CPU32}
-      {$IFDEF CPU64}
+      {$ENDIF CPU386}
+      {$IFDEF CPUX64}
       {$IFDEF FPC}
         {$DEFINE DELPHI64_TEMPORARY}
       {$ENDIF FPC}
@@ -5320,7 +5334,7 @@ function CPUID: TCpuInfo;
       {$IFDEF FPC}
         {$UNDEF DELPHI64_TEMPORARY}
       {$ENDIF FPC}
-      {$ENDIF CPU64}
+      {$ENDIF CPUX64}
     end;
   {$IFNDEF DELPHI64_TEMPORARY}
   end;
@@ -5331,7 +5345,7 @@ function CPUID: TCpuInfo;
   begin
   {$ENDIF ~DELPHI64_TEMPORARY}
     asm
-      {$IFDEF CPU32}
+      {$IFDEF CPU386}
       // save context
       PUSH    EDI
       PUSH    EBX
@@ -5353,8 +5367,8 @@ function CPUID: TCpuInfo;
       // restore context
       POP  EBX
       POP  EDI
-      {$ENDIF CPU32}
-      {$IFDEF CPU64}
+      {$ENDIF CPU386}
+      {$IFDEF CPUX64}
       // save context
       PUSH    RBX
       // init parameters
@@ -5373,7 +5387,7 @@ function CPUID: TCpuInfo;
       MOV     Cardinal PTR [R11], EDX
       // restore context
       POP     RBX
-      {$ENDIF CPU64}
+      {$ENDIF CPUX64}
     end;
   {$IFNDEF DELPHI64_TEMPORARY}
   end;
@@ -6022,7 +6036,7 @@ begin
 end;
 
 function TestFDIVInstruction: Boolean;
-{$IFDEF CPU32}
+{$IFDEF CPU386}
 var
   TopNum: Double;
   BottomNum: Double;
@@ -6050,12 +6064,13 @@ begin
   end;
   Result := ISOK;
 end;
-{$ENDIF CPU32}
-{$IFDEF CPU64}
+{$ENDIF CPU386}
+{$IFDEF CPUX64}
 begin
   Result := True;
 end;
-{$ENDIF CPU64}
+{$ENDIF CPUX64}
+{$ENDIF CPUINTEL}
 
 //=== Alloc granularity ======================================================
 

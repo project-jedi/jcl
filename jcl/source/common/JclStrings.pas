@@ -2282,6 +2282,18 @@ end;
 
 procedure StrFillChar(var S; Count: SizeInt; C: Char);
 {$IFDEF SUPPORTS_UNICODE}
+{$IFDEF PUREPASCAL}
+var
+  P: PWideChar;
+begin
+  P := Pointer(@S);
+  while Count > 0 do
+  begin
+    Dec(Count);
+    P[Count] := C;
+  end;
+end;
+{$ELSE ~PUREPASCAL}
 asm
         // 32 --> EAX S
         //        EDX Count
@@ -2289,7 +2301,7 @@ asm
         // 64 --> RCX S
         //        RDX Count
         //        R8W C
-        {$IFDEF CPU32}
+        {$IFDEF CPU386}
         DEC     EDX
         JS      @@Leave
 @@Loop:
@@ -2297,8 +2309,8 @@ asm
         ADD     EAX, 2
         DEC     EDX
         JNS     @@Loop
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
+        {$ENDIF CPU386}
+        {$IFDEF CPUX64}
         DEC     RDX
         JS      @@Leave
 @@Loop:
@@ -2306,9 +2318,10 @@ asm
         ADD     RCX, 2
         DEC     RDX
         JNS     @@Loop
-        {$ENDIF CPU64}
+        {$ENDIF CPUX64}
 @@Leave:
 end;
+{$ENDIF ~PUREPASCAL}
 {$ELSE ~SUPPORTS_UNICODE}
 begin
   if Count > 0 then
@@ -4396,11 +4409,12 @@ end;
 
 function TJclStringBuilder.Remove(StartIndex, Length: SizeInt): TJclStringBuilder;
 begin
-  if (StartIndex < 0) or (Length < 0) or (StartIndex + Length >= FLength) then
+  if (StartIndex < 0) or (Length < 0) or (StartIndex + Length > FLength) then
     raise ArgumentOutOfRangeException.CreateRes(@RsArgumentOutOfRange);
   if Length > 0 then
   begin
-    MoveChar(FChars[StartIndex + Length], FChars[StartIndex], FLength - (StartIndex + Length));
+    if FLength > (StartIndex + Length) then
+      MoveChar(FChars[StartIndex + Length], FChars[StartIndex], FLength - (StartIndex + Length));
     Dec(FLength, Length);
   end;
   Result := Self;

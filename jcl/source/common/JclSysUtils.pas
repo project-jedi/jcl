@@ -338,6 +338,7 @@ type
   TDynamicAddressList = array [0..MaxInt div 16] of Pointer;
   PDynamicAddressList = ^TDynamicAddressList;
 
+{$IFDEF CPUINTEL}
 function GetDynamicMethodCount(AClass: TClass): Integer;
 function GetDynamicIndexList(AClass: TClass): PDynamicIndexList;
 function GetDynamicAddressList(AClass: TClass): PDynamicAddressList;
@@ -375,6 +376,7 @@ type
   end;
 
 function GetFieldTable(AClass: TClass): PFieldTable;
+{$ENDIF CPUINTEL}
 
 { method table }
 
@@ -393,7 +395,9 @@ type
    {Entries: array [1..65534] of TMethodEntry;}
   end;
 
+{$IFDEF CPUINTEL}
 function GetMethodTable(AClass: TClass): PMethodTable;
+{$ENDIF CPUINTEL}
 function GetMethodEntry(MethodTable: PMethodTable; Index: Integer): PMethodEntry;
 
 // Function to compare if two methods/event handlers are equal
@@ -402,11 +406,15 @@ function NotifyEventEquals(aMethod1, aMethod2: TNotifyEvent): boolean;
 
 // Class Parent
 procedure SetClassParent(AClass: TClass; NewClassParent: TClass);
+{$IFDEF CPUINTEL}
 function GetClassParent(AClass: TClass): TClass;
+{$ENDIF CPUINTEL}
 
 {$IFNDEF FPC}
+{$IFDEF CPUINTEL}
 function IsClass(Address: Pointer): Boolean;
 function IsObject(Address: Pointer): Boolean;
+{$ENDIF CPUINTEL}
 {$ENDIF ~FPC}
 
 function InheritsFromByName(AClass: TClass; const AClassName: string): Boolean;
@@ -1996,46 +2004,47 @@ begin
   SetVMTPointer(AClass, Index * SizeOf(Pointer), Method);
 end;
 
+{$IFDEF CPUINTEL}
 function GetDynamicMethodCount(AClass: TClass): Integer; assembler;
 asm
-        {$IFDEF CPU32}
+        {$IFDEF CPU386}
         // --> RAX AClass
         // <-- EAX Result
         MOV     EAX, [EAX].vmtDynamicTable
         TEST    EAX, EAX
         JE      @@Exit
         MOVZX   EAX, WORD PTR [EAX]
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
+        {$ENDIF CPU386}
+        {$IFDEF CPUX64}
         // --> RCX AClass
         // <-- EAX Result
         MOV     RAX, [RCX].vmtDynamicTable
         TEST    RAX, RAX
         JE      @@Exit
         MOVZX   RAX, WORD PTR [RAX]
-        {$ENDIF CPU64}
+        {$ENDIF CPUX64}
 @@Exit:
 end;
 
 function GetDynamicIndexList(AClass: TClass): PDynamicIndexList; assembler;
 asm
-        {$IFDEF CPU32}
+        {$IFDEF CPU386}
         // --> EAX AClass
         // <-- EAX Result
         MOV     EAX, [EAX].vmtDynamicTable
         ADD     EAX, 2
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
+        {$ENDIF CPU386}
+        {$IFDEF CPUX64}
         // --> RCX AClass
         // <-- RAX Result
         MOV     RAX, [RCX].vmtDynamicTable
         ADD     RAX, 2
-        {$ENDIF CPU64}
+        {$ENDIF CPUX64}
 end;
 
 function GetDynamicAddressList(AClass: TClass): PDynamicAddressList; assembler;
 asm
-        {$IFDEF CPU32}
+        {$IFDEF CPU386}
         // --> EAX AClass
         // <-- EAX Result
         MOV     EAX, [EAX].vmtDynamicTable
@@ -2043,8 +2052,8 @@ asm
         ADD     EAX, EDX
         ADD     EAX, EDX
         ADD     EAX, 2
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
+        {$ENDIF CPU386}
+        {$IFDEF CPUX64}
         // --> RCX AClass
         // <-- RAX Result
         MOV     RAX, [RCX].vmtDynamicTable
@@ -2052,13 +2061,13 @@ asm
         ADD     RAX, RDX
         ADD     RAX, RDX
         ADD     RAX, 2
-        {$ENDIF CPU64}
+        {$ENDIF CPUX64}
 end;
 
 function HasDynamicMethod(AClass: TClass; Index: Integer): Boolean; assembler;
 // Mainly copied from System.GetDynaMethod
 asm
-        {$IFDEF CPU32}
+        {$IFDEF CPU386}
         // --> EAX AClass
         //     EDX Index
         // <-- AL  Result
@@ -2088,8 +2097,8 @@ asm
         MOV     EAX, 1
 @@Exit:
         POP     EDI
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
+        {$ENDIF CPU386}
+        {$IFDEF CPUX64}
         // --> RCX AClass
         //     EDX Index
         // <-- AL  Result
@@ -2118,7 +2127,7 @@ asm
         POP     RAX
         MOV     RAX, 1
 @@Exit:
-        {$ENDIF CPU64}
+        {$ENDIF CPUX64}
 end;
 
 {$IFNDEF FPC}
@@ -2132,45 +2141,46 @@ end;
 
 function GetInitTable(AClass: TClass): PTypeInfo; assembler;
 asm
-        {$IFDEF CPU32}
+        {$IFDEF CPU386}
         // --> EAX AClass
         // <-- EAX Result
         MOV     EAX, [EAX].vmtInitTable
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
+        {$ENDIF CPU386}
+        {$IFDEF CPUX64}
         // --> RCX AClass
         // <-- RAX Result
         MOV     RAX, [RCX].vmtInitTable
-        {$ENDIF CPU64}
+        {$ENDIF CPUX64}
 end;
 
 function GetFieldTable(AClass: TClass): PFieldTable; assembler;
 asm
-        {$IFDEF CPU32}
+        {$IFDEF CPU386}
         // --> EAX AClass
         // <-- EAX Result
         MOV     EAX, [EAX].vmtFieldTable
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
+        {$ENDIF CPU386}
+        {$IFDEF CPUX64}
         // --> RCX AClass
         // <-- RAX Result
         MOV     RAX, [RCX].vmtFieldTable
-        {$ENDIF CPU64}
+        {$ENDIF CPUX64}
 end;
 
 function GetMethodTable(AClass: TClass): PMethodTable; assembler;
 asm
-        {$IFDEF CPU32}
+        {$IFDEF CPU386}
         // --> EAX AClass
         // <-- EAX Result
         MOV     EAX, [EAX].vmtMethodTable
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
+        {$ENDIF CPU386}
+        {$IFDEF CPUX64}
         // --> RCX AClass
         // <-- RAX Result
         MOV     RAX, [RCX].vmtMethodTable
-        {$ENDIF CPU64}
+        {$ENDIF CPUX64}
 end;
+{$ENDIF CPUINTEL}
 
 function GetMethodEntry(MethodTable: PMethodTable; Index: Integer): PMethodEntry;
 begin
@@ -2211,24 +2221,25 @@ begin
   // FlushInstructionCache{$IFDEF MSWINDOWS}(GetCurrentProcess, PatchAddress, SizeOf(Pointer)){$ENDIF};
 end;
 
+{$IFDEF CPUINTEL}
 function GetClassParent(AClass: TClass): TClass; assembler;
 asm
-        {$IFDEF CPU32}
+        {$IFDEF CPU386}
         // --> EAX AClass
         // <-- EAX Result
         MOV     EAX, [EAX].vmtParent
         TEST    EAX, EAX
         JE      @@Exit
         MOV     EAX, [EAX]
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
+        {$ENDIF CPU386}
+        {$IFDEF CPUX64}
         // --> RCX AClass
         // <-- RAX Result
         MOV     RAX, [RCX].vmtParent
         TEST    RAX, RAX
         JE      @@Exit
         MOV     RAX, [RAX]
-        {$ENDIF CPU64}
+        {$ENDIF CPUX64}
 @@Exit:
 end;
 
@@ -2259,6 +2270,7 @@ asm
 @Exit:
 end;
 {$ENDIF BORLAND}
+{$ENDIF CPUINTEL}
 
 function InheritsFromByName(AClass: TClass; const AClassName: string): Boolean;
 begin
