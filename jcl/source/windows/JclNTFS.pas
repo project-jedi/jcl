@@ -618,16 +618,26 @@ type
 {$STACKFRAMES OFF}
 
 function CallersCallerAddress: Pointer;
+{$IF DEFINED(ASMX86)}
 asm
-        {$IFDEF CPU32}
         MOV     EAX, [EBP]
         MOV     EAX, TStackFrame([EAX]).CallerAddress
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
+end;
+{$ELSEIF DEFINED(ASMX64)}
+asm
         MOV     RAX, [RBP]
         MOV     RAX, TStackFrame([RAX]).CallerAddress
-        {$ENDIF CPU64}
 end;
+{$ELSE ASMX86_OR_ASMX64}
+var
+  BackTrace: array[0..2] of Pointer;
+  Hash: DWORD;
+begin
+  Result := nil;
+  if CaptureStackBackTrace(0, Length(BackTrace), @BackTrace[0], Hash) >= 3 then
+    Result := BackTrace[2];
+end;
+{$IFEND ASMX86_OR_ASMX64}
 
 {$STACKFRAMES ON}
 
