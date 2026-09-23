@@ -736,7 +736,6 @@ ALERT_jedi_inc_incompatible
 
  {$DEFINE MSWINDOWS}
  {$DEFINE PIC}
- {$DEFINE PUREPASCAL}
 {$ENDIF CLR}
 
 // Delphi 2005 has a compiler internal failure when compiling the JCL with UNITVERSIONING enabled
