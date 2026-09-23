@@ -273,6 +273,408 @@ type
   //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
+  // map entry types
+  TJclIntfIntfMapEntry = record
+    Key: IInterface;
+    Value: IInterface;
+  end;
+
+  TJclIntfIntfMapEntryArray = array of TJclIntfIntfMapEntry;
+
+  TJclAnsiStrIntfMapEntry = record
+    Key: AnsiString;
+    Value: IInterface;
+  end;
+
+  TJclAnsiStrIntfMapEntryArray = array of TJclAnsiStrIntfMapEntry;
+
+  TJclIntfAnsiStrMapEntry = record
+    Key: IInterface;
+    Value: AnsiString;
+  end;
+
+  TJclIntfAnsiStrMapEntryArray = array of TJclIntfAnsiStrMapEntry;
+
+  TJclAnsiStrAnsiStrMapEntry = record
+    Key: AnsiString;
+    Value: AnsiString;
+  end;
+
+  TJclAnsiStrAnsiStrMapEntryArray = array of TJclAnsiStrAnsiStrMapEntry;
+
+  TJclWideStrIntfMapEntry = record
+    Key: WideString;
+    Value: IInterface;
+  end;
+
+  TJclWideStrIntfMapEntryArray = array of TJclWideStrIntfMapEntry;
+
+  TJclIntfWideStrMapEntry = record
+    Key: IInterface;
+    Value: WideString;
+  end;
+
+  TJclIntfWideStrMapEntryArray = array of TJclIntfWideStrMapEntry;
+
+  TJclWideStrWideStrMapEntry = record
+    Key: WideString;
+    Value: WideString;
+  end;
+
+  TJclWideStrWideStrMapEntryArray = array of TJclWideStrWideStrMapEntry;
+
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  TJclUnicodeStrIntfMapEntry = record
+    Key: UnicodeString;
+    Value: IInterface;
+  end;
+
+  TJclUnicodeStrIntfMapEntryArray = array of TJclUnicodeStrIntfMapEntry;
+  {$ENDIF SUPPORTS_UNICODE_STRING}
+
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  TJclIntfUnicodeStrMapEntry = record
+    Key: IInterface;
+    Value: UnicodeString;
+  end;
+
+  TJclIntfUnicodeStrMapEntryArray = array of TJclIntfUnicodeStrMapEntry;
+  {$ENDIF SUPPORTS_UNICODE_STRING}
+
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  TJclUnicodeStrUnicodeStrMapEntry = record
+    Key: UnicodeString;
+    Value: UnicodeString;
+  end;
+
+  TJclUnicodeStrUnicodeStrMapEntryArray = array of TJclUnicodeStrUnicodeStrMapEntry;
+  {$ENDIF SUPPORTS_UNICODE_STRING}
+
+  {$IFDEF CONTAINER_ANSISTR}
+  TJclStrIntfMapEntry = TJclAnsiStrIntfMapEntry;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TJclStrIntfMapEntry = TJclWideStrIntfMapEntry;
+  {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  TJclStrIntfMapEntry = TJclUnicodeStrIntfMapEntry;
+  {$ENDIF CONTAINER_UNICODESTR}
+
+  {$IFDEF CONTAINER_ANSISTR}
+  TJclIntfStrMapEntry = TJclIntfAnsiStrMapEntry;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TJclIntfStrMapEntry = TJclIntfWideStrMapEntry;
+  {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  TJclIntfStrMapEntry = TJclIntfUnicodeStrMapEntry;
+  {$ENDIF CONTAINER_UNICODESTR}
+
+  {$IFDEF CONTAINER_ANSISTR}
+  TJclStrStrMapEntry = TJclAnsiStrAnsiStrMapEntry;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TJclStrStrMapEntry = TJclWideStrWideStrMapEntry;
+  {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  TJclStrStrMapEntry = TJclUnicodeStrUnicodeStrMapEntry;
+  {$ENDIF CONTAINER_UNICODESTR}
+
+  TJclSingleIntfMapEntry = record
+    Key: Single;
+    Value: IInterface;
+  end;
+
+  TJclSingleIntfMapEntryArray = array of TJclSingleIntfMapEntry;
+
+  TJclIntfSingleMapEntry = record
+    Key: IInterface;
+    Value: Single;
+  end;
+
+  TJclIntfSingleMapEntryArray = array of TJclIntfSingleMapEntry;
+
+  TJclSingleSingleMapEntry = record
+    Key: Single;
+    Value: Single;
+  end;
+
+  TJclSingleSingleMapEntryArray = array of TJclSingleSingleMapEntry;
+
+  TJclDoubleIntfMapEntry = record
+    Key: Double;
+    Value: IInterface;
+  end;
+
+  TJclDoubleIntfMapEntryArray = array of TJclDoubleIntfMapEntry;
+
+  TJclIntfDoubleMapEntry = record
+    Key: IInterface;
+    Value: Double;
+  end;
+
+  TJclIntfDoubleMapEntryArray = array of TJclIntfDoubleMapEntry;
+
+  TJclDoubleDoubleMapEntry = record
+    Key: Double;
+    Value: Double;
+  end;
+
+  TJclDoubleDoubleMapEntryArray = array of TJclDoubleDoubleMapEntry;
+
+  TJclExtendedIntfMapEntry = record
+    Key: Extended;
+    Value: IInterface;
+  end;
+
+  TJclExtendedIntfMapEntryArray = array of TJclExtendedIntfMapEntry;
+
+  TJclIntfExtendedMapEntry = record
+    Key: IInterface;
+    Value: Extended;
+  end;
+
+  TJclIntfExtendedMapEntryArray = array of TJclIntfExtendedMapEntry;
+
+  TJclExtendedExtendedMapEntry = record
+    Key: Extended;
+    Value: Extended;
+  end;
+
+  TJclExtendedExtendedMapEntryArray = array of TJclExtendedExtendedMapEntry;
+
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TJclFloatIntfMapEntry = TJclSingleIntfMapEntry;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TJclFloatIntfMapEntry = TJclDoubleIntfMapEntry;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TJclFloatIntfMapEntry = TJclExtendedIntfMapEntry;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TJclIntfFloatMapEntry = TJclIntfSingleMapEntry;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TJclIntfFloatMapEntry = TJclIntfDoubleMapEntry;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TJclIntfFloatMapEntry = TJclIntfExtendedMapEntry;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TJclFloatFloatMapEntry = TJclSingleSingleMapEntry;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TJclFloatFloatMapEntry = TJclDoubleDoubleMapEntry;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TJclFloatFloatMapEntry = TJclExtendedExtendedMapEntry;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+
+  TJclIntegerIntfMapEntry = record
+    Key: Integer;
+    Value: IInterface;
+  end;
+
+  TJclIntegerIntfMapEntryArray = array of TJclIntegerIntfMapEntry;
+
+  TJclIntfIntegerMapEntry = record
+    Key: IInterface;
+    Value: Integer;
+  end;
+
+  TJclIntfIntegerMapEntryArray = array of TJclIntfIntegerMapEntry;
+
+  TJclIntegerIntegerMapEntry = record
+    Key: Integer;
+    Value: Integer;
+  end;
+
+  TJclIntegerIntegerMapEntryArray = array of TJclIntegerIntegerMapEntry;
+
+  TJclCardinalIntfMapEntry = record
+    Key: Cardinal;
+    Value: IInterface;
+  end;
+
+  TJclCardinalIntfMapEntryArray = array of TJclCardinalIntfMapEntry;
+
+  TJclIntfCardinalMapEntry = record
+    Key: IInterface;
+    Value: Cardinal;
+  end;
+
+  TJclIntfCardinalMapEntryArray = array of TJclIntfCardinalMapEntry;
+
+  TJclCardinalCardinalMapEntry = record
+    Key: Cardinal;
+    Value: Cardinal;
+  end;
+
+  TJclCardinalCardinalMapEntryArray = array of TJclCardinalCardinalMapEntry;
+
+  TJclInt64IntfMapEntry = record
+    Key: Int64;
+    Value: IInterface;
+  end;
+
+  TJclInt64IntfMapEntryArray = array of TJclInt64IntfMapEntry;
+
+  TJclIntfInt64MapEntry = record
+    Key: IInterface;
+    Value: Int64;
+  end;
+
+  TJclIntfInt64MapEntryArray = array of TJclIntfInt64MapEntry;
+
+  TJclInt64Int64MapEntry = record
+    Key: Int64;
+    Value: Int64;
+  end;
+
+  TJclInt64Int64MapEntryArray = array of TJclInt64Int64MapEntry;
+
+  TJclPtrIntfMapEntry = record
+    Key: Pointer;
+    Value: IInterface;
+  end;
+
+  TJclPtrIntfMapEntryArray = array of TJclPtrIntfMapEntry;
+
+  TJclIntfPtrMapEntry = record
+    Key: IInterface;
+    Value: Pointer;
+  end;
+
+  TJclIntfPtrMapEntryArray = array of TJclIntfPtrMapEntry;
+
+  TJclPtrPtrMapEntry = record
+    Key: Pointer;
+    Value: Pointer;
+  end;
+
+  TJclPtrPtrMapEntryArray = array of TJclPtrPtrMapEntry;
+
+  TJclIntfObjMapEntry = record
+    Key: IInterface;
+    Value: TObject;
+  end;
+
+  TJclIntfObjMapEntryArray = array of TJclIntfObjMapEntry;
+
+  TJclAnsiStrObjMapEntry = record
+    Key: AnsiString;
+    Value: TObject;
+  end;
+
+  TJclAnsiStrObjMapEntryArray = array of TJclAnsiStrObjMapEntry;
+
+  TJclWideStrObjMapEntry = record
+    Key: WideString;
+    Value: TObject;
+  end;
+
+  TJclWideStrObjMapEntryArray = array of TJclWideStrObjMapEntry;
+
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  TJclUnicodeStrObjMapEntry = record
+    Key: UnicodeString;
+    Value: TObject;
+  end;
+
+  TJclUnicodeStrObjMapEntryArray = array of TJclUnicodeStrObjMapEntry;
+  {$ENDIF SUPPORTS_UNICODE_STRING}
+
+  {$IFDEF CONTAINER_ANSISTR}
+  TJclStrObjMapEntry = TJclAnsiStrObjMapEntry;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TJclStrObjMapEntry = TJclWideStrObjMapEntry;
+  {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  TJclStrObjMapEntry = TJclUnicodeStrObjMapEntry;
+  {$ENDIF CONTAINER_UNICODESTR}
+
+  TJclSingleObjMapEntry = record
+    Key: Single;
+    Value: TObject;
+  end;
+
+  TJclSingleObjMapEntryArray = array of TJclSingleObjMapEntry;
+
+  TJclDoubleObjMapEntry = record
+    Key: Double;
+    Value: TObject;
+  end;
+
+  TJclDoubleObjMapEntryArray = array of TJclDoubleObjMapEntry;
+
+  TJclExtendedObjMapEntry = record
+    Key: Extended;
+    Value: TObject;
+  end;
+
+  TJclExtendedObjMapEntryArray = array of TJclExtendedObjMapEntry;
+
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TJclFloatObjMapEntry = TJclSingleObjMapEntry;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TJclFloatObjMapEntry = TJclDoubleObjMapEntry;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TJclFloatObjMapEntry = TJclExtendedObjMapEntry;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+
+  TJclIntegerObjMapEntry = record
+    Key: Integer;
+    Value: TObject;
+  end;
+
+  TJclIntegerObjMapEntryArray = array of TJclIntegerObjMapEntry;
+
+  TJclCardinalObjMapEntry = record
+    Key: Cardinal;
+    Value: TObject;
+  end;
+
+  TJclCardinalObjMapEntryArray = array of TJclCardinalObjMapEntry;
+
+  TJclInt64ObjMapEntry = record
+    Key: Int64;
+    Value: TObject;
+  end;
+
+  TJclInt64ObjMapEntryArray = array of TJclInt64ObjMapEntry;
+
+  TJclPtrObjMapEntry = record
+    Key: Pointer;
+    Value: TObject;
+  end;
+
+  TJclPtrObjMapEntryArray = array of TJclPtrObjMapEntry;
+
+  TJclObjObjMapEntry = record
+    Key: TObject;
+    Value: TObject;
+  end;
+
+  TJclObjObjMapEntryArray = array of TJclObjObjMapEntry;
+
+
+  {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
+  TJclMapEntry<TKey,TValue> = record
+    Key: TKey;
+    Value: TValue;
+  end;
+
+  TJclMapEntryArray<TKey,TValue> = array of TJclMapEntry<TKey,TValue>;
+  //DOM-IGNORE-END
+  {$ENDIF SUPPORTS_GENERICS}
+
   IJclLockable = interface
     ['{524AD65E-AE1B-4BC6-91C8-8181F0198BA9}']
     procedure ReadLock;
@@ -1864,6 +2266,1067 @@ type
     function HasRight: Boolean;
     function Left: T;
     function Right: T;
+  end;
+  //DOM-IGNORE-END
+  {$ENDIF SUPPORTS_GENERICS}
+
+  IJclIntfIntfSortedMapIterator = interface(IJclAbstractIterator)
+    ['{CAF455F9-851E-408F-97C8-2781CDE63DCE}']
+    function Add(const AEntry: TJclIntfIntfMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclIntfIntfMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclIntfIntfMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclIntfIntfSortedMapIterator): Boolean;
+    function Next: TJclIntfIntfMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclIntfIntfMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclIntfIntfMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclIntfIntfMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclAnsiStrIntfSortedMapIterator = interface(IJclAbstractIterator)
+    ['{BF0809BE-007A-4FAD-BFEA-29AB5E5948C6}']
+    function Add(const AEntry: TJclAnsiStrIntfMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclAnsiStrIntfMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclAnsiStrIntfMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclAnsiStrIntfSortedMapIterator): Boolean;
+    function Next: TJclAnsiStrIntfMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclAnsiStrIntfMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclAnsiStrIntfMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclAnsiStrIntfMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclIntfAnsiStrSortedMapIterator = interface(IJclAbstractIterator)
+    ['{229C5FEB-86D5-48DA-A6AC-FF6D12FFC005}']
+    function Add(const AEntry: TJclIntfAnsiStrMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclIntfAnsiStrMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclIntfAnsiStrMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclIntfAnsiStrSortedMapIterator): Boolean;
+    function Next: TJclIntfAnsiStrMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclIntfAnsiStrMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclIntfAnsiStrMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclIntfAnsiStrMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclAnsiStrAnsiStrSortedMapIterator = interface(IJclAbstractIterator)
+    ['{41D86675-BA6E-47A2-A47D-3ED95856A010}']
+    function Add(const AEntry: TJclAnsiStrAnsiStrMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclAnsiStrAnsiStrMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclAnsiStrAnsiStrMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclAnsiStrAnsiStrSortedMapIterator): Boolean;
+    function Next: TJclAnsiStrAnsiStrMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclAnsiStrAnsiStrMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclAnsiStrAnsiStrMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclAnsiStrAnsiStrMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclWideStrIntfSortedMapIterator = interface(IJclAbstractIterator)
+    ['{AF65E496-F3AD-45C4-B4C9-A153B4CBB05A}']
+    function Add(const AEntry: TJclWideStrIntfMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclWideStrIntfMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclWideStrIntfMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclWideStrIntfSortedMapIterator): Boolean;
+    function Next: TJclWideStrIntfMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclWideStrIntfMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclWideStrIntfMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclWideStrIntfMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclIntfWideStrSortedMapIterator = interface(IJclAbstractIterator)
+    ['{369DFE2E-BA79-4625-A476-B47D004AA612}']
+    function Add(const AEntry: TJclIntfWideStrMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclIntfWideStrMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclIntfWideStrMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclIntfWideStrSortedMapIterator): Boolean;
+    function Next: TJclIntfWideStrMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclIntfWideStrMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclIntfWideStrMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclIntfWideStrMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclWideStrWideStrSortedMapIterator = interface(IJclAbstractIterator)
+    ['{475964CE-5DCD-4FC7-BCF0-A9FCB1F620C9}']
+    function Add(const AEntry: TJclWideStrWideStrMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclWideStrWideStrMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclWideStrWideStrMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclWideStrWideStrSortedMapIterator): Boolean;
+    function Next: TJclWideStrWideStrMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclWideStrWideStrMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclWideStrWideStrMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclWideStrWideStrMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  IJclUnicodeStrIntfSortedMapIterator = interface(IJclAbstractIterator)
+    ['{C7781D0B-6370-436F-8FA0-4BFDAA472E35}']
+    function Add(const AEntry: TJclUnicodeStrIntfMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclUnicodeStrIntfMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclUnicodeStrIntfMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclUnicodeStrIntfSortedMapIterator): Boolean;
+    function Next: TJclUnicodeStrIntfMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclUnicodeStrIntfMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclUnicodeStrIntfMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclUnicodeStrIntfMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+  {$ENDIF SUPPORTS_UNICODE_STRING}
+
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  IJclIntfUnicodeStrSortedMapIterator = interface(IJclAbstractIterator)
+    ['{607194B2-B30E-4756-BE24-1CEB91699D9D}']
+    function Add(const AEntry: TJclIntfUnicodeStrMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclIntfUnicodeStrMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclIntfUnicodeStrMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclIntfUnicodeStrSortedMapIterator): Boolean;
+    function Next: TJclIntfUnicodeStrMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclIntfUnicodeStrMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclIntfUnicodeStrMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclIntfUnicodeStrMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+  {$ENDIF SUPPORTS_UNICODE_STRING}
+
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  IJclUnicodeStrUnicodeStrSortedMapIterator = interface(IJclAbstractIterator)
+    ['{81808F34-10FF-4A1F-894F-D39BBF8470AB}']
+    function Add(const AEntry: TJclUnicodeStrUnicodeStrMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclUnicodeStrUnicodeStrMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclUnicodeStrUnicodeStrMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclUnicodeStrUnicodeStrSortedMapIterator): Boolean;
+    function Next: TJclUnicodeStrUnicodeStrMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclUnicodeStrUnicodeStrMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclUnicodeStrUnicodeStrMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclUnicodeStrUnicodeStrMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+  {$ENDIF SUPPORTS_UNICODE_STRING}
+
+  {$IFDEF CONTAINER_ANSISTR}
+  IJclStrIntfSortedMapIterator = IJclAnsiStrIntfSortedMapIterator;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  IJclStrIntfSortedMapIterator = IJclWideStrIntfSortedMapIterator;
+  {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrIntfSortedMapIterator = IJclUnicodeStrIntfSortedMapIterator;
+  {$ENDIF CONTAINER_UNICODESTR}
+
+  {$IFDEF CONTAINER_ANSISTR}
+  IJclIntfStrSortedMapIterator = IJclIntfAnsiStrSortedMapIterator;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  IJclIntfStrSortedMapIterator = IJclIntfWideStrSortedMapIterator;
+  {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclIntfStrSortedMapIterator = IJclIntfUnicodeStrSortedMapIterator;
+  {$ENDIF CONTAINER_UNICODESTR}
+
+  {$IFDEF CONTAINER_ANSISTR}
+  IJclStrStrSortedMapIterator = IJclAnsiStrAnsiStrSortedMapIterator;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  IJclStrStrSortedMapIterator = IJclWideStrWideStrSortedMapIterator;
+  {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrStrSortedMapIterator = IJclUnicodeStrUnicodeStrSortedMapIterator;
+  {$ENDIF CONTAINER_UNICODESTR}
+
+  IJclSingleIntfSortedMapIterator = interface(IJclAbstractIterator)
+    ['{47E60630-92D9-4191-A979-120B8AE1FC1D}']
+    function Add(const AEntry: TJclSingleIntfMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclSingleIntfMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclSingleIntfMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclSingleIntfSortedMapIterator): Boolean;
+    function Next: TJclSingleIntfMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclSingleIntfMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclSingleIntfMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclSingleIntfMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclIntfSingleSortedMapIterator = interface(IJclAbstractIterator)
+    ['{B7BF321B-2652-47DE-89D5-813CD92C2B3E}']
+    function Add(const AEntry: TJclIntfSingleMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclIntfSingleMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclIntfSingleMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclIntfSingleSortedMapIterator): Boolean;
+    function Next: TJclIntfSingleMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclIntfSingleMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclIntfSingleMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclIntfSingleMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclSingleSingleSortedMapIterator = interface(IJclAbstractIterator)
+    ['{F136C49B-A120-4DC3-9014-3BC6C3EB7B0F}']
+    function Add(const AEntry: TJclSingleSingleMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclSingleSingleMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclSingleSingleMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclSingleSingleSortedMapIterator): Boolean;
+    function Next: TJclSingleSingleMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclSingleSingleMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclSingleSingleMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclSingleSingleMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclDoubleIntfSortedMapIterator = interface(IJclAbstractIterator)
+    ['{DC9C4736-782E-47CA-87A3-7AEDB3C6F777}']
+    function Add(const AEntry: TJclDoubleIntfMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclDoubleIntfMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclDoubleIntfMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclDoubleIntfSortedMapIterator): Boolean;
+    function Next: TJclDoubleIntfMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclDoubleIntfMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclDoubleIntfMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclDoubleIntfMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclIntfDoubleSortedMapIterator = interface(IJclAbstractIterator)
+    ['{E71488AB-C5CF-4B7E-B38A-DFBB01FBF8D8}']
+    function Add(const AEntry: TJclIntfDoubleMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclIntfDoubleMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclIntfDoubleMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclIntfDoubleSortedMapIterator): Boolean;
+    function Next: TJclIntfDoubleMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclIntfDoubleMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclIntfDoubleMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclIntfDoubleMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclDoubleDoubleSortedMapIterator = interface(IJclAbstractIterator)
+    ['{85B93232-2862-48F9-9EDA-808DE2B2521F}']
+    function Add(const AEntry: TJclDoubleDoubleMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclDoubleDoubleMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclDoubleDoubleMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclDoubleDoubleSortedMapIterator): Boolean;
+    function Next: TJclDoubleDoubleMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclDoubleDoubleMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclDoubleDoubleMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclDoubleDoubleMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclExtendedIntfSortedMapIterator = interface(IJclAbstractIterator)
+    ['{4CE090BE-C1DD-460E-A214-92C64A1EBE13}']
+    function Add(const AEntry: TJclExtendedIntfMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclExtendedIntfMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclExtendedIntfMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclExtendedIntfSortedMapIterator): Boolean;
+    function Next: TJclExtendedIntfMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclExtendedIntfMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclExtendedIntfMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclExtendedIntfMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclIntfExtendedSortedMapIterator = interface(IJclAbstractIterator)
+    ['{1FC3B773-DCF6-40FD-BB0B-98EFEF694888}']
+    function Add(const AEntry: TJclIntfExtendedMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclIntfExtendedMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclIntfExtendedMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclIntfExtendedSortedMapIterator): Boolean;
+    function Next: TJclIntfExtendedMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclIntfExtendedMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclIntfExtendedMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclIntfExtendedMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclExtendedExtendedSortedMapIterator = interface(IJclAbstractIterator)
+    ['{8997CAA4-CE69-4470-8CD6-47BB54643E14}']
+    function Add(const AEntry: TJclExtendedExtendedMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclExtendedExtendedMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclExtendedExtendedMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclExtendedExtendedSortedMapIterator): Boolean;
+    function Next: TJclExtendedExtendedMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclExtendedExtendedMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclExtendedExtendedMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclExtendedExtendedMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  {$IFDEF MATH_SINGLE_PRECISION}
+  IJclFloatIntfSortedMapIterator = IJclSingleIntfSortedMapIterator;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  IJclFloatIntfSortedMapIterator = IJclDoubleIntfSortedMapIterator;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  IJclFloatIntfSortedMapIterator = IJclExtendedIntfSortedMapIterator;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+
+  {$IFDEF MATH_SINGLE_PRECISION}
+  IJclIntfFloatSortedMapIterator = IJclIntfSingleSortedMapIterator;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  IJclIntfFloatSortedMapIterator = IJclIntfDoubleSortedMapIterator;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  IJclIntfFloatSortedMapIterator = IJclIntfExtendedSortedMapIterator;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+
+  {$IFDEF MATH_SINGLE_PRECISION}
+  IJclFloatFloatSortedMapIterator = IJclSingleSingleSortedMapIterator;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  IJclFloatFloatSortedMapIterator = IJclDoubleDoubleSortedMapIterator;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  IJclFloatFloatSortedMapIterator = IJclExtendedExtendedSortedMapIterator;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+
+  IJclIntegerIntfSortedMapIterator = interface(IJclAbstractIterator)
+    ['{BD3B48D3-EF75-44E7-B49C-A1140C359CEA}']
+    function Add(const AEntry: TJclIntegerIntfMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclIntegerIntfMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclIntegerIntfMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclIntegerIntfSortedMapIterator): Boolean;
+    function Next: TJclIntegerIntfMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclIntegerIntfMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclIntegerIntfMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclIntegerIntfMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclIntfIntegerSortedMapIterator = interface(IJclAbstractIterator)
+    ['{3E577A0B-CB05-4388-B503-0F58ECA298F4}']
+    function Add(const AEntry: TJclIntfIntegerMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclIntfIntegerMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclIntfIntegerMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclIntfIntegerSortedMapIterator): Boolean;
+    function Next: TJclIntfIntegerMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclIntfIntegerMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclIntfIntegerMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclIntfIntegerMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclIntegerIntegerSortedMapIterator = interface(IJclAbstractIterator)
+    ['{0C255B8C-A917-4DA9-A4E2-C3DBC11FFA25}']
+    function Add(const AEntry: TJclIntegerIntegerMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclIntegerIntegerMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclIntegerIntegerMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclIntegerIntegerSortedMapIterator): Boolean;
+    function Next: TJclIntegerIntegerMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclIntegerIntegerMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclIntegerIntegerMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclIntegerIntegerMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclCardinalIntfSortedMapIterator = interface(IJclAbstractIterator)
+    ['{51D7A4B5-5B9C-4AE1-AE33-DF56EB57B4FD}']
+    function Add(const AEntry: TJclCardinalIntfMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclCardinalIntfMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclCardinalIntfMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclCardinalIntfSortedMapIterator): Boolean;
+    function Next: TJclCardinalIntfMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclCardinalIntfMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclCardinalIntfMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclCardinalIntfMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclIntfCardinalSortedMapIterator = interface(IJclAbstractIterator)
+    ['{F3888CE0-C967-40B2-B725-296553AA1020}']
+    function Add(const AEntry: TJclIntfCardinalMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclIntfCardinalMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclIntfCardinalMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclIntfCardinalSortedMapIterator): Boolean;
+    function Next: TJclIntfCardinalMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclIntfCardinalMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclIntfCardinalMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclIntfCardinalMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclCardinalCardinalSortedMapIterator = interface(IJclAbstractIterator)
+    ['{38968885-9D36-4E6F-88AD-E79783236915}']
+    function Add(const AEntry: TJclCardinalCardinalMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclCardinalCardinalMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclCardinalCardinalMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclCardinalCardinalSortedMapIterator): Boolean;
+    function Next: TJclCardinalCardinalMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclCardinalCardinalMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclCardinalCardinalMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclCardinalCardinalMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclInt64IntfSortedMapIterator = interface(IJclAbstractIterator)
+    ['{7A5C332F-6826-42E3-8410-A6F54D9FF1EC}']
+    function Add(const AEntry: TJclInt64IntfMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclInt64IntfMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclInt64IntfMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclInt64IntfSortedMapIterator): Boolean;
+    function Next: TJclInt64IntfMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclInt64IntfMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclInt64IntfMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclInt64IntfMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclIntfInt64SortedMapIterator = interface(IJclAbstractIterator)
+    ['{8140AF97-0C29-42A9-A56E-E13DF348FADD}']
+    function Add(const AEntry: TJclIntfInt64MapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclIntfInt64MapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclIntfInt64MapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclIntfInt64SortedMapIterator): Boolean;
+    function Next: TJclIntfInt64MapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclIntfInt64MapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclIntfInt64MapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclIntfInt64MapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclInt64Int64SortedMapIterator = interface(IJclAbstractIterator)
+    ['{C9283EE0-6297-43AE-A960-B002313E9F70}']
+    function Add(const AEntry: TJclInt64Int64MapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclInt64Int64MapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclInt64Int64MapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclInt64Int64SortedMapIterator): Boolean;
+    function Next: TJclInt64Int64MapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclInt64Int64MapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclInt64Int64MapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclInt64Int64MapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclPtrIntfSortedMapIterator = interface(IJclAbstractIterator)
+    ['{137A2DBD-8B20-434D-8518-F130745F3BAC}']
+    function Add(const AEntry: TJclPtrIntfMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclPtrIntfMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclPtrIntfMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclPtrIntfSortedMapIterator): Boolean;
+    function Next: TJclPtrIntfMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclPtrIntfMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclPtrIntfMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclPtrIntfMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclIntfPtrSortedMapIterator = interface(IJclAbstractIterator)
+    ['{EA1E23CF-4EA4-43AF-8566-ABF26C6B04FF}']
+    function Add(const AEntry: TJclIntfPtrMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclIntfPtrMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclIntfPtrMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclIntfPtrSortedMapIterator): Boolean;
+    function Next: TJclIntfPtrMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclIntfPtrMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclIntfPtrMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclIntfPtrMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclPtrPtrSortedMapIterator = interface(IJclAbstractIterator)
+    ['{09927643-BC3A-4021-A5A3-C1483A810509}']
+    function Add(const AEntry: TJclPtrPtrMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclPtrPtrMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclPtrPtrMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclPtrPtrSortedMapIterator): Boolean;
+    function Next: TJclPtrPtrMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclPtrPtrMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclPtrPtrMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclPtrPtrMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclIntfObjSortedMapIterator = interface(IJclAbstractIterator)
+    ['{C6E6DF35-6FAF-4C0A-89C6-4BDF56D4299E}']
+    function Add(const AEntry: TJclIntfObjMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclIntfObjMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclIntfObjMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclIntfObjSortedMapIterator): Boolean;
+    function Next: TJclIntfObjMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclIntfObjMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclIntfObjMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclIntfObjMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclAnsiStrObjSortedMapIterator = interface(IJclAbstractIterator)
+    ['{EDBAE7CF-4E9A-49B4-A906-599CFC21B484}']
+    function Add(const AEntry: TJclAnsiStrObjMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclAnsiStrObjMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclAnsiStrObjMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclAnsiStrObjSortedMapIterator): Boolean;
+    function Next: TJclAnsiStrObjMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclAnsiStrObjMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclAnsiStrObjMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclAnsiStrObjMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclWideStrObjSortedMapIterator = interface(IJclAbstractIterator)
+    ['{19FB43BD-42E0-4B59-8EF8-D549A56A43FE}']
+    function Add(const AEntry: TJclWideStrObjMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclWideStrObjMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclWideStrObjMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclWideStrObjSortedMapIterator): Boolean;
+    function Next: TJclWideStrObjMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclWideStrObjMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclWideStrObjMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclWideStrObjMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  IJclUnicodeStrObjSortedMapIterator = interface(IJclAbstractIterator)
+    ['{AB709196-07D6-4D2A-8412-486A592D0B5C}']
+    function Add(const AEntry: TJclUnicodeStrObjMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclUnicodeStrObjMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclUnicodeStrObjMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclUnicodeStrObjSortedMapIterator): Boolean;
+    function Next: TJclUnicodeStrObjMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclUnicodeStrObjMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclUnicodeStrObjMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclUnicodeStrObjMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+  {$ENDIF SUPPORTS_UNICODE_STRING}
+
+  {$IFDEF CONTAINER_ANSISTR}
+  IJclStrObjSortedMapIterator = IJclAnsiStrObjSortedMapIterator;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  IJclStrObjSortedMapIterator = IJclWideStrObjSortedMapIterator;
+  {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrObjSortedMapIterator = IJclUnicodeStrObjSortedMapIterator;
+  {$ENDIF CONTAINER_UNICODESTR}
+
+  IJclSingleObjSortedMapIterator = interface(IJclAbstractIterator)
+    ['{AAB54344-B156-4254-93F3-3359BAA45092}']
+    function Add(const AEntry: TJclSingleObjMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclSingleObjMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclSingleObjMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclSingleObjSortedMapIterator): Boolean;
+    function Next: TJclSingleObjMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclSingleObjMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclSingleObjMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclSingleObjMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclDoubleObjSortedMapIterator = interface(IJclAbstractIterator)
+    ['{5385B002-AB1E-4E8E-8B8A-5C6EEBEAF0AE}']
+    function Add(const AEntry: TJclDoubleObjMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclDoubleObjMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclDoubleObjMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclDoubleObjSortedMapIterator): Boolean;
+    function Next: TJclDoubleObjMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclDoubleObjMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclDoubleObjMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclDoubleObjMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclExtendedObjSortedMapIterator = interface(IJclAbstractIterator)
+    ['{4E180C4C-2115-4B8B-B160-A46D8001E0C6}']
+    function Add(const AEntry: TJclExtendedObjMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclExtendedObjMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclExtendedObjMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclExtendedObjSortedMapIterator): Boolean;
+    function Next: TJclExtendedObjMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclExtendedObjMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclExtendedObjMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclExtendedObjMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  {$IFDEF MATH_SINGLE_PRECISION}
+  IJclFloatObjSortedMapIterator = IJclSingleObjSortedMapIterator;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  IJclFloatObjSortedMapIterator = IJclDoubleObjSortedMapIterator;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  IJclFloatObjSortedMapIterator = IJclExtendedObjSortedMapIterator;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+
+  IJclIntegerObjSortedMapIterator = interface(IJclAbstractIterator)
+    ['{969F91D4-F6B7-4EB0-BEEA-AF1F4A692830}']
+    function Add(const AEntry: TJclIntegerObjMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclIntegerObjMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclIntegerObjMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclIntegerObjSortedMapIterator): Boolean;
+    function Next: TJclIntegerObjMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclIntegerObjMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclIntegerObjMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclIntegerObjMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclCardinalObjSortedMapIterator = interface(IJclAbstractIterator)
+    ['{A0D3E96E-516D-4AAB-BA81-2DF320CF425C}']
+    function Add(const AEntry: TJclCardinalObjMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclCardinalObjMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclCardinalObjMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclCardinalObjSortedMapIterator): Boolean;
+    function Next: TJclCardinalObjMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclCardinalObjMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclCardinalObjMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclCardinalObjMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclInt64ObjSortedMapIterator = interface(IJclAbstractIterator)
+    ['{96509205-0D23-4DE0-BEA8-5042097F34A9}']
+    function Add(const AEntry: TJclInt64ObjMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclInt64ObjMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclInt64ObjMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclInt64ObjSortedMapIterator): Boolean;
+    function Next: TJclInt64ObjMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclInt64ObjMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclInt64ObjMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclInt64ObjMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclPtrObjSortedMapIterator = interface(IJclAbstractIterator)
+    ['{7E3528E0-A856-4E4F-BBE0-04C3483CF8D2}']
+    function Add(const AEntry: TJclPtrObjMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclPtrObjMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclPtrObjMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclPtrObjSortedMapIterator): Boolean;
+    function Next: TJclPtrObjMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclPtrObjMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclPtrObjMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclPtrObjMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+  IJclObjObjSortedMapIterator = interface(IJclAbstractIterator)
+    ['{600FA220-5520-4651-9003-ABB01913E697}']
+    function Add(const AEntry: TJclObjObjMapEntry): Boolean;
+    procedure Extract;
+    function GetEntry: TJclObjObjMapEntry;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclObjObjMapEntry): Boolean;
+    function IteratorEquals(const AIterator: IJclObjObjSortedMapIterator): Boolean;
+    function Next: TJclObjObjMapEntry;
+    function NextIndex: Integer;
+    function Previous: TJclObjObjMapEntry;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclObjObjMapEntry);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclObjObjMapEntry read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+
+
+  {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
+  IJclSortedMapIterator<TKey,TValue> = interface(IJclAbstractIterator)
+    ['{570920D8-05ED-4CA5-8355-6A899555EBC0}']
+    function Add(const AEntry: TJclMapEntry<TKey,TValue>): Boolean;
+    procedure Extract;
+    function GetEntry: TJclMapEntry<TKey,TValue>;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AEntry: TJclMapEntry<TKey,TValue>): Boolean;
+    function IteratorEquals(const AIterator: IJclSortedMapIterator<TKey,TValue>): Boolean;
+    function Next: TJclMapEntry<TKey,TValue>;
+    function NextIndex: Integer;
+    function Previous: TJclMapEntry<TKey,TValue>;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetEntry(const AEntry: TJclMapEntry<TKey,TValue>);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TJclMapEntry<TKey,TValue> read GetEntry;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
   //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
