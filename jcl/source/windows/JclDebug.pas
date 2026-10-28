@@ -229,6 +229,7 @@ type
     VA: DWORD; // VA relative to (module base address + $10000)
     LineNumber: Integer;
     UnitName: PJclMapString;
+    SourceName: PJclMapString; // source file the line number was emitted for
   end;
 
   TJclMapScanner = class(TJclAbstractMapParser)
@@ -240,7 +241,7 @@ type
     FSourceNames: array of TJclMapProcName;
     FLineNumbersCnt: Integer;
     FLineNumberErrors: Integer;
-    FNewUnitFileName: PJclMapString;
+    FCurrentUnitFileName: PJclMapString;
     FCurrentUnitName: PJclMapString;
     FProcNamesCnt: Integer;
     FSegmentCnt: Integer;
@@ -248,6 +249,7 @@ type
     function IndexOfSegment(Addr: DWORD): Integer;
   protected
     function MAPAddrToVA(const Addr: DWORD): DWORD;
+    procedure BuildSourceNames;
     procedure ClassTableItem(const Address: TJclMapAddress; Len: Integer; SectionName, GroupName: PJclMapString); override;
     procedure SegmentItem(const Address: TJclMapAddress; Len: Integer; GroupName, UnitName: PJclMapString); override;
     function CanHandlePublicsByName: Boolean; override;
@@ -1887,6 +1889,80 @@ begin
     Result := Addr;
 end;
 
+procedure TJclMapScanner.BuildSourceNames;
+var
+  i, LCount, LSegIndex, LLastSegIndex, LNameEnd: Integer;
+  LPCurrentLine: PJclMapLineNumber;
+  LPMapProcName: PJclMapProcName;
+  LPLastSourceName: PJclMapString;
+  LLastName, LName, LUnitName: string;
+begin
+  LCount := 0;
+  LLastSegIndex := Low(Integer);
+  LPLastSourceName := nil;
+
+  for i := 0 to High(FLineNumbers) do
+  begin
+    LPCurrentLine := @FLineNumbers[i];
+
+    if LPCurrentLine.SourceName = nil then
+      Continue;
+
+    // SourceNameFromAddr rejects an entry that starts in another unit, so a crossing needs an entry
+    // of its own even when the source file has not changed.}
+    LSegIndex := IndexOfSegment(LPCurrentLine.VA);
+    if LSegIndex = LLastSegIndex then
+    begin
+      // One block shares one pointer, so this skips most line numbers without converting anything.
+      // Separate blocks for the same file need the name comparison.}
+      if LPCurrentLine.SourceName = LPLastSourceName then
+        Continue;
+
+      LName := MapStringToStr(LPCurrentLine.SourceName);
+      if LName = LLastName then
+      begin
+        LPLastSourceName := LPCurrentLine.SourceName;
+        Continue;
+      end;
+    end
+    else
+      LName := MapStringToStr(LPCurrentLine.SourceName);
+
+    // A unit's line numbers end one past its last instruction, which is the next unit's first address,
+    // so two units can claim one address and the sort does not order them - the segment does.  UnitName
+    // points at a "<unit>(<source file>) segment <section>" heading here rather than at a segment line,
+    // hence the manual split.
+    LUnitName := MapStringToStr(LPCurrentLine.UnitName);
+    LNameEnd := Pos('(', LUnitName);
+    if LNameEnd > 0 then
+      SetLength(LUnitName, LNameEnd - 1);
+    if (LCount > 0) and (FSourceNames[LCount - 1].VA = LPCurrentLine.VA) then
+    begin
+      if (LSegIndex < 0) or (LUnitName <> MapStringCacheToModuleName(FSegments[LSegIndex].UnitName)) then
+        Continue;
+
+      Dec(LCount);
+    end;
+
+    LLastSegIndex := LSegIndex;
+    LPLastSourceName := LPCurrentLine.SourceName;
+    LLastName := LName;
+
+    if LCount >= Length(FSourceNames) then
+      SetLength(FSourceNames, LCount * 2 + 256);
+
+    LPMapProcName := @FSourceNames[LCount];
+    LPMapProcName.Segment := LPCurrentLine.Segment;
+    LPMapProcName.VA := LPCurrentLine.VA;
+    LPMapProcName.ProcName.RawValue := LPLastSourceName;
+    LPMapProcName.ProcName.CachedValue := LName;
+
+    Inc(LCount);
+  end;
+
+  SetLength(FSourceNames, LCount);
+end;
+
 class function TJclMapScanner.MapStringCacheToFileName(
   var MapString: TJclMapStringCache): string;
 begin
@@ -1992,7 +2068,7 @@ end;
 
 procedure TJclMapScanner.LineNumbersItem(LineNumber: Integer; const Address: TJclMapAddress);
 var
-  SegIndex, C: Integer;
+  SegIndex: Integer;
   VA: DWORD;
   Added: Boolean;
 begin
@@ -2023,17 +2099,9 @@ begin
     FLineNumbers[FLineNumbersCnt].VA := VA;
     FLineNumbers[FLineNumbersCnt].LineNumber := LineNumber;
     FLineNumbers[FLineNumbersCnt].UnitName := FCurrentUnitName;
+    FLineNumbers[FLineNumbersCnt].SourceName := FCurrentUnitFileName;
     Inc(FLineNumbersCnt);
     Added := True;
-    if FNewUnitFileName <> nil then
-    begin
-      C := Length(FSourceNames);
-      SetLength(FSourceNames, C + 1);
-      FSourceNames[C].Segment := FSegmentClasses[SegIndex].Segment;
-      FSourceNames[C].VA := VA;
-      FSourceNames[C].ProcName.RawValue := FNewUnitFileName;
-      FNewUnitFileName := nil;
-    end;
     Break;
   end;
   if not Added then
@@ -2042,7 +2110,7 @@ end;
 
 procedure TJclMapScanner.LineNumberUnitItem(UnitName, UnitFileName: PJclMapString);
 begin
-  FNewUnitFileName := UnitFileName;
+  FCurrentUnitFileName := UnitFileName;
   FCurrentUnitName := UnitName;
 end;
 
@@ -2295,7 +2363,7 @@ begin
   if FProcNames <> nil then
     SortProcNames(PJclMapProcNameArray(FProcNames), 0, Length(FProcNames) - 1);
   SortDynArray(FSegments, SizeOf(FSegments[0]), Sort_MapSegment);
-  SortDynArray(FSourceNames, SizeOf(FSourceNames[0]), Sort_MapProcName);
+  BuildSourceNames;
 end;
 
 procedure TJclMapScanner.SegmentItem(const Address: TJclMapAddress; Len: Integer;
@@ -3096,15 +3164,9 @@ begin
     for I := 0 to Length(FSourceNames) - 1 do
       if IsSegmentStored(FSourceNames[I].Segment) then
       begin
-        // FSourceNames[] is sorted by VA, so if the source file name is the same as the previous
-        // we don't need to store it because the VA will be matched by the previous entry.
-        // This removes a lot of "Generics.Collections.pas" entries.
         S := MapStringCacheToStr(FSourceNames[I].ProcName);
-        if (I = 0) or (FSourceNames[I - 1].ProcName.CachedValue <> S) then
-        begin
-          WriteValueOfs(FSourceNames[I].VA, L1);
-          WriteValueOfs(AddWord(S), L2);
-        end;
+        WriteValueOfs(FSourceNames[I].VA, L1);
+        WriteValueOfs(AddWord(S), L2);
       end;
     WriteValue(MaxInt);
 
@@ -3546,21 +3608,13 @@ begin
   begin
     Inc(StartAddr, Value);
     if Addr < StartAddr then
-    begin
-      if ItemAddr < ModuleStartAddr then
-        Name := 0
-      else
-        Found := True;
       Break;
-    end
-    else
-    begin
-      ItemAddr := StartAddr;
-      ReadValue(P, Value);
-      Inc(Name, Value);
-    end;
+    ItemAddr := StartAddr;
+    ReadValue(P, Value);
+    Inc(Name, Value);
+    Found := True;
   end;
-  if Found then
+  if Found and (ItemAddr >= ModuleStartAddr) then
     Result := DataToStr(Name)
   else
     Result := '';
@@ -5757,34 +5811,82 @@ begin
 end;
 
 {$IFDEF CPU64}
+procedure RtlCaptureContext(AContextRecord: PContext); stdcall; external kernel32 name 'RtlCaptureContext';
+function RtlLookupFunctionEntry(AControlPc: DWORD64; var AImageBase: DWORD64; AHistoryTable: Pointer): Pointer; stdcall;
+  external kernel32 name 'RtlLookupFunctionEntry';
+function RtlVirtualUnwind(AHandlerType: DWORD; AImageBase, AControlPc: DWORD64; AFunctionEntry: Pointer;
+  AContextRecord: PContext; var AHandlerData: Pointer; var AEstablisherFrame: DWORD64;
+  AContextPointers: Pointer): Pointer; stdcall; external kernel32 name 'RtlVirtualUnwind';
+
+// Returns the lowest address of the current thread's committed stack (NT_TIB64.StackLimit), as GetStackTop returns
+// its base.
+function GetStackLimit: DWORD64;
+asm
+        MOV     RAX, GS:[ABS 16]
+end;
+
+// The frames are walked here with RtlVirtualUnwind rather than with CaptureStackBackTrace, which ends the stack at the
+// first instruction pointer of 0.  A call through a nil pointer (an "Execution of address 0" access violation) leaves
+// exactly that:  Unwinding the exception dispatcher's frame restores the faulting context, whose RIP is 0, so the
+// trace stopped at KiUserExceptionDispatcher and lost every frame of the code that made the call.  An instruction
+// pointer without unwind information, such as 0 or any address outside the loaded modules, is taken to be in a leaf
+// function, whose return address is at the top of the stack, which is also what Windows does for one that is not 0.
 procedure TJclStackInfoList.CaptureBackTrace;
 const
-  InternalSkipFrames = 1; // skip this method
+  CMaxFrames = 128;
+  UNW_FLAG_NHANDLER = 0;
 var
-  BackTrace: array [0..127] of Pointer;
-  MaxFrames: Integer;
-  Hash: DWORD;
-  I: Integer;
-  StackInfo: TStackInfo;
-  CapturedFramesCount: Word;
+  LContextBuffer: array[0..SizeOf(TContext) + 15] of Byte;
+  LPContext: PContext;
+  LStackBase, LStackLimit, LImageBase, LEstablisherFrame, LReturnAddress: DWORD64;
+  LFunctionEntry, LHandlerData: Pointer;
+  LStep, LLevel: Integer;
+  LStackInfo: TStackInfo;
 begin
-  if JclCheckWinVersion(6, 0) then
-    MaxFrames := Length(BackTrace)
-  else
-  begin
-    // For XP and 2003 sum of FramesToSkip and FramesToCapture must be lower than 63
-    MaxFrames := 62 - InternalSkipFrames;
-  end;
+  // RtlCaptureContext requires a 16 byte aligned context record, which a local record is not guaranteed to be.
+  LPContext := PContext((TJclAddr(@LContextBuffer) + 15) and not TJclAddr(15));
+  RtlCaptureContext(LPContext);
 
-  ResetMemory(BackTrace, SizeOf(BackTrace));
-  CapturedFramesCount := CaptureStackBackTrace(InternalSkipFrames, MaxFrames, @BackTrace, Hash);
+  LStackBase := GetStackTop;
+  LStackLimit := GetStackLimit;
 
-  ResetMemory(StackInfo, SizeOf(StackInfo));
-  for I := 0 to CapturedFramesCount - 1 do
+  ResetMemory(LStackInfo, SizeOf(LStackInfo));
+  // The first unwind leaves this method, so the first address stored is the return address into the caller.  It is
+  // level 1, as CaptureStackBackTrace numbered it, so that IgnoreLevels skips the same frames as before.
+  LLevel := 1;
+  for LStep := 1 to CMaxFrames do
   begin
-    StackInfo.CallerAddr := TJclAddr(BackTrace[I]);
-    StackInfo.Level := I;
-    StoreToList(StackInfo); // skips all frames with a level less than "IgnoreLevels"
+    LFunctionEntry := RtlLookupFunctionEntry(LPContext.Rip, LImageBase, nil);
+    if LFunctionEntry <> nil then
+    begin
+      RtlVirtualUnwind(UNW_FLAG_NHANDLER, LImageBase, LPContext.Rip, LFunctionEntry, LPContext, LHandlerData,
+        LEstablisherFrame, nil);
+    end
+    else
+    begin
+      if (LPContext.Rsp < LStackLimit) or (LPContext.Rsp + SizeOf(DWORD64) > LStackBase) then
+        Break;
+      LPContext.Rip := PDWORD64(LPContext.Rsp)^;
+      Inc(LPContext.Rsp, SizeOf(DWORD64));
+    end;
+
+    // RIP 0 normally ends the stack, but after a call through a nil pointer the return address into the caller is at
+    // the top of the stack, and the next step takes it from there.  Anything there that is not an address in code with
+    // unwind information means the stack has ended.
+    if LPContext.Rip = 0 then
+    begin
+      if (LPContext.Rsp < LStackLimit) or (LPContext.Rsp + SizeOf(DWORD64) > LStackBase) then
+        Break;
+      LReturnAddress := PDWORD64(LPContext.Rsp)^;
+      if (LReturnAddress = 0) or (RtlLookupFunctionEntry(LReturnAddress, LImageBase, nil) = nil) then
+        Break;
+      Continue;
+    end;
+
+    LStackInfo.CallerAddr := TJclAddr(LPContext.Rip);
+    LStackInfo.Level := LLevel;
+    StoreToList(LStackInfo); // skips all frames with a level less than "IgnoreLevels"
+    Inc(LLevel);
   end;
 end;
 {$ENDIF CPU64}
