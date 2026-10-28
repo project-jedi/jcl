@@ -913,6 +913,7 @@ begin
     if Result^ = Chr then
       Exit;
     Inc(Result);
+    Dec(StrLen);
   end;
   Result := nil;
 end;

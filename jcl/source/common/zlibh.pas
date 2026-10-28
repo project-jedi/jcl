@@ -53,7 +53,11 @@ unit zlibh;
 
 {$HPPEMIT '#define __MACTYPES__'}
 {$IFDEF COMPILER10_UP}
+{$IFDEF RTL310_UP}
+{$HPPEMIT '#include <System.ZLib.hpp>'}
+{$ELSE ~RTL310_UP}
 {$HPPEMIT '#include <ZLib.hpp>'}
+{$ENDIF ~RTL310_UP}
 {$ELSE ~COMPILER10_UP}
 {$HPPEMIT '#include <zlib.h>'}
 {$ENDIF ~COMPILER10_UP}

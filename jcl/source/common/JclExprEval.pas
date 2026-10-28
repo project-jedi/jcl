@@ -444,6 +444,7 @@ type
     function IntegerDivide(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
     function Modulo(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
     function Negate(AValue: TExprNode): TExprNode; virtual; abstract;
+    function Power(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
 
     function Compare(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
     function CompareEqual(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
@@ -486,6 +487,7 @@ type
     function CompileExprLevel1(ASkip: Boolean): TExprNode; virtual;
     function CompileExprLevel2(ASkip: Boolean): TExprNode; virtual;
     function CompileExprLevel3(ASkip: Boolean): TExprNode; virtual;
+    function CompileExprLevel4(ASkip: Boolean): TExprNode; virtual;
     function CompileFactor: TExprNode; virtual;
     function CompileIdentFactor: TExprNode; virtual;
   public
@@ -505,6 +507,7 @@ type
     function EvalExprLevel1(ASkip: Boolean): TFloat; virtual;
     function EvalExprLevel2(ASkip: Boolean): TFloat; virtual;
     function EvalExprLevel3(ASkip: Boolean): TFloat; virtual;
+    function EvalExprLevel4(ASkip: Boolean): TFloat; virtual;
     function EvalFactor: TFloat; virtual;
     function EvalIdentFactor: TFloat; virtual;
   public
@@ -610,6 +613,7 @@ type
     function IntegerDivide(ALeft, ARight: TExprNode): TExprNode; override;
     function Modulo(ALeft, ARight: TExprNode): TExprNode; override;
     function Negate(AValue: TExprNode): TExprNode; override;
+    function Power(ALeft, ARight: TExprNode): TExprNode; override;
 
     function Compare(ALeft, ARight: TExprNode): TExprNode; override;
     function CompareEqual(ALeft, ARight: TExprNode): TExprNode; override;
@@ -980,6 +984,11 @@ uses
   Windows, // inline of AnsiSameText
   {$ENDIF ~HAS_UNITSCOPE}
   {$ENDIF SUPPORTS_INLINE}
+  {$IFDEF HAS_UNITSCOPE}
+  System.Math,
+  {$ELSE ~HAS_UNITSCOPE}
+  Math,
+  {$ENDIF ~HAS_UNITSCOPE}
   JclStrings;
 
 {$IFDEF RTL150_UP}
@@ -1221,20 +1230,33 @@ end;
 
 function TExprCompileParser.CompileExprLevel3(ASkip: Boolean): TExprNode;
 begin
+  Result := CompileExprLevel4(ASkip);
+
+  while True do
+    case Lexer.CurrTok of
+      etArrow:
+        Result := NodeFactory.Power(Result, CompileExprLevel4(True));
+    else
+      Break;
+    end;
+end;
+
+function TExprCompileParser.CompileExprLevel4(ASkip: Boolean): TExprNode;
+begin
   if ASkip then
     Lexer.NextTok;
 
   case Lexer.CurrTok of
     etPlus:
-      Result := CompileExprLevel3(True);
+      Result := CompileExprLevel4(True);
     etMinus:
-      Result := NodeFactory.Negate(CompileExprLevel3(True));
+      Result := NodeFactory.Negate(CompileExprLevel4(True));
     etIdentifier: // not, bnot
       if AnsiSameText(Lexer.TokenAsString, 'not') then
-        Result := NodeFactory.LogicalNot(CompileExprLevel3(True))
+        Result := NodeFactory.LogicalNot(CompileExprLevel4(True))
       else
       if AnsiSameText(Lexer.TokenAsString, 'bnot') then
-        Result := NodeFactory.BitwiseNot(CompileExprLevel3(True))
+        Result := NodeFactory.BitwiseNot(CompileExprLevel4(True))
       else
         Result := CompileFactor;
   else
@@ -1243,6 +1265,8 @@ begin
 end;
 
 function TExprCompileParser.CompileFactor: TExprNode;
+var
+  Number: TFloat;
 begin
   case Lexer.CurrTok of
     etIdentifier:
@@ -1256,8 +1280,14 @@ begin
       end;
     etNumber:
       begin
-        Result := NodeFactory.LoadConst(Lexer.TokenAsNumber);
+        Number := Lexer.TokenAsNumber;
         Lexer.NextTok;
+        while Lexer.CurrTok = etPercent do
+        begin
+          Number := Number / 100;
+          Lexer.NextTok;
+        end;
+        Result := NodeFactory.LoadConst(Number);
       end;
   else
     raise EJclExprEvalError.CreateRes(@RsExprEvalFactorExpected);
@@ -1388,7 +1418,7 @@ begin
       etIdentifier: // or, xor, bor, bxor
         if AnsiSameText(Lexer.TokenAsString, 'or') then
         begin
-          if (EvalExprLevel2(True) <> 0) or (Result <> 0) then // prevent boolean optimisations, EvalTerm must be called
+          if (EvalExprLevel2(True) <> 0) or (Result <> 0) then // prevent boolean optimizations, EvalTerm must be called
             Result := 1.0
           else
             Result := 0.0;
@@ -1433,7 +1463,7 @@ begin
         else
         if AnsiSameText(Lexer.TokenAsString, 'and') then
         begin
-          if (EvalExprLevel3(True) <> 0) and (Result <> 0) then // prevent boolean optimisations, EvalTerm must be called
+          if (EvalExprLevel3(True) <> 0) and (Result <> 0) then // prevent boolean optimizations, EvalTerm must be called
             Result := 1.0
           else
             Result := 0.0;
@@ -1456,25 +1486,39 @@ end;
 
 function TExprEvalParser.EvalExprLevel3(ASkip: Boolean): TFloat;
 begin
+  Result := EvalExprLevel4(ASkip);
+
+  while True do
+    case Lexer.CurrTok of
+      etArrow:
+        Result := Power(Result, EvalExprLevel4(True));
+    else
+      Break;
+    end;
+end;
+
+
+function TExprEvalParser.EvalExprLevel4(ASkip: Boolean): TFloat;
+begin
   if ASkip then
     Lexer.NextTok;
 
   case Lexer.CurrTok of
     etPlus:
-      Result := EvalExprLevel3(True);
+      Result := EvalExprLevel4(True);
     etMinus:
-      Result := -EvalExprLevel3(True);
+      Result := -EvalExprLevel4(True);
     etIdentifier: // not, bnot
       if AnsiSameText(Lexer.TokenAsString, 'not') then
       begin
-        if EvalExprLevel3(True) <> 0.0 then
+        if EvalExprLevel4(True) <> 0.0 then
           Result := 0.0
         else
           Result := 1.0;
       end
       else
       if AnsiSameText(Lexer.TokenAsString, 'bnot') then
-        Result := not Round(EvalExprLevel3(True))
+        Result := not Round(EvalExprLevel4(True))
       else
         Result := EvalFactor;
   else
@@ -1498,6 +1542,11 @@ begin
       begin
         Result := Lexer.TokenAsNumber;
         Lexer.NextTok;
+        while Lexer.CurrTok = etPercent do
+        begin
+          Result := Result / 100;
+          Lexer.NextTok;
+        end;
       end;
   else
     raise EJclExprEvalError.CreateRes(@RsExprEvalFactorExpected);
@@ -1925,6 +1974,11 @@ type
     procedure Execute; override;
   end;
 
+  TExprPowerVmOp = class(TExprBinaryVmOp)
+  public
+    procedure Execute; override;
+  end;
+
   TExprCompareVmOp = class(TExprBinaryVmOp)
   public
     procedure Execute; override;
@@ -2256,6 +2310,13 @@ end;
 procedure TExprDivideVmOp.Execute;
 begin
   FOutput := FLeft^ / FRight^;
+end;
+
+//=== { TExprPowerVmOp } ====================================================
+
+procedure TExprPowerVmOp.Execute;
+begin
+  FOutput := Power(FLeft^ , FRight^);
 end;
 
 //=== { TExprCompareVmOp } ===================================================
@@ -3162,6 +3223,11 @@ end;
 function TExprVirtMachNodeFactory.Negate(AValue: TExprNode): TExprNode;
 begin
   Result := AddNode(TExprUnaryVmNode.Create(TExprNegateVmOp, [AValue]));
+end;
+
+function TExprVirtMachNodeFactory.Power(ALeft, ARight: TExprNode): TExprNode;
+begin
+  Result := AddNode(TExprBinaryVmNode.Create(TExprPowerVmOp, [ALeft, ARight]));
 end;
 
 procedure TExprVirtMachNodeFactory.DoClean(AVirtMach: TExprVirtMach);

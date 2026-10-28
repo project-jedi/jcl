@@ -1,7 +1,7 @@
 {**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
-{ DUnit Test                                                                                  }
+{ DUnit Test                                                                                       }
 {                                                                                                  }
 { Last Update: 19-Jan-2002                                                                         }
 {                                                                                                  }
@@ -29,12 +29,29 @@ uses
   Classes,
   SysUtils,
   Math,
-  JclMath;
+  JclMath,
+  JclBase;
 
-{ TMathLogarithmicTest }
+
 
 type
-  TMathLogarithmicTest = class (TTestCase)
+  TMathHexConversionTest = class(TTestCase)
+  published
+    procedure _DoubleToHex;
+    procedure _HexToDouble;
+  end;
+
+  TMathAngleConversionTest = class(TTestCase)
+  published
+    procedure _DegToRad;
+    procedure _RadToDeg;
+    procedure _GradToRad;
+    procedure _RadToGrad;
+    procedure _DegToGrad;
+    procedure _GradToDeg;
+  end;
+
+  TMathLogarithmicTest = class(TTestCase)
   published
     procedure _LogBase10;
     procedure _LogBase2;
@@ -42,7 +59,7 @@ type
   end;
 
 type
-  TMathTranscendentalTest = class (TTestCase)
+  TMathTranscendentalTest = class(TTestCase)
   published
     procedure _ArcCos;
     procedure _ArcCot;
@@ -61,7 +78,7 @@ type
   end;
 
 type
-  TMathMiscTest = class (TTestCase)
+  TMathMiscTest = class(TTestCase)
   published
     procedure _Ackermann;
     procedure _Ceiling;
@@ -71,10 +88,13 @@ type
     procedure _GCD;
     procedure _ISqrt;
     procedure _LCM;
-    procedure _NormalizeA;
+    procedure _NearestHigherMultiple;
+    procedure _NearestLowerMultiple;
+    procedure _NormalizeAngle;
     procedure _Pythagoras;
     procedure _Sgn;
     procedure _Signe;
+    procedure _SwapOrd;
   end;
 
 type
@@ -227,19 +247,74 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TMathTranscendentalTest._ArcCot;
+var
+  x: Extended;
+
 begin
+  x := -0.98;
+
+  while x < 1 do
+  begin
+    // ArcCot not defined for 0
+    if x <> 0 then
+      CheckEquals(Math.ArcCot(X), JclMath.ArcCot(X), PrecisionTolerance);
+    x := x + 0.1;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TMathTranscendentalTest._ArcCsc;
+//var
+//  x: Extended;
+
 begin
+// Commented out because result is exact -1* the one from System.Math and
+// the implementations in JclMath and System.Math differ mathematically.
+// Reason still unknown as of now.
+//  x := -3.98;
+//
+//  while x < -1 do
+//  begin
+//    CheckEquals(Math.ArcCsc(X), JclMath.ArcCsc(X), PrecisionTolerance);
+//    x := x + 0.1;
+//  end;
+//
+//  x := 1.00;
+//
+//  while x < 4 do
+//  begin
+//    CheckEquals(Math.ArcCsc(X), JclMath.ArcCsc(X), PrecisionTolerance);
+//    x := x + 0.1;
+//  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TMathTranscendentalTest._ArcSec;
+//var
+//  x: Extended;
+//
 begin
+////  Commented out because results differ and System.Math and
+////  the implementations in JclMath and System.Math differ mathematically.
+////  Reason still unknown as of now.
+//
+//  x := -3.98;
+//
+//  while x < -1 do
+//  begin
+//    CheckEquals(Math.ArcSec(X), JclMath.ArcSec(X), PrecisionTolerance);
+//    x := x + 0.1;
+//  end;
+//
+//  x := 1.00;
+//
+//  while x < 4 do
+//  begin
+//    CheckEquals(Math.ArcSec(X), JclMath.ArcSec(X), PrecisionTolerance);
+//    x := x + 0.1;
+//  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -278,7 +353,24 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TMathTranscendentalTest._ArcTan2;
+var
+  x, y: Extended;
+
 begin
+  x := -Pi;
+  y := -1;
+
+  while y < 1 do
+  begin
+    while x < Pi do
+    begin
+      if x <> 0 then
+        CheckEquals(System.Math.ArcTan2(X, Y), JclMath.ArcTan2(X, Y), PrecisionTolerance);
+      x := x + 0.1;
+    end;
+
+    y := y + 0.1;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -300,19 +392,49 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TMathTranscendentalTest._Cot;
+var
+  x: Extended;
+
 begin
+  x := -Pi;
+
+  while x <= Pi do
+  begin
+    CheckEquals(Math.Cot(X), JclMath.Cot(X), PrecisionTolerance);
+    x := x + 0.1;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TMathTranscendentalTest._Csc;
+var
+  x: Extended;
+
 begin
+  x := -Pi;
+
+  while x <= Pi do
+  begin
+    CheckEquals(Math.Csc(X), JclMath.Csc(X), PrecisionTolerance);
+    x := x + 0.1;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TMathTranscendentalTest._Sec;
+var
+  x: Extended;
+
 begin
+  x := -Pi;
+
+  while x <= Pi do
+  begin
+    CheckEquals(Math.Sec(X), JclMath.Sec(X), PrecisionTolerance);
+    x := x + 0.1;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -342,7 +464,7 @@ begin
 
   while x <= Pi do
   begin
-    SinCos(x, s, c);
+    JclMath.SinCos(x, s, c);
 
     CheckEquals(System.Sin(X), s, PrecisionTolerance);
     CheckEquals(System.Cos(X), c, PrecisionTolerance);
@@ -405,6 +527,14 @@ end;
 
 procedure TMathMiscTest._Factorial;
 begin
+  CheckEquals(1, Factorial(0));
+  CheckEquals(1, Factorial(1));
+  CheckEquals(2, Factorial(2));
+  CheckEquals(6, Factorial(3));
+  CheckEquals(24, Factorial(4));
+  CheckEquals(120, Factorial(5));
+  CheckEquals(720, Factorial(6));
+  CheckEquals(8.68331761881189E36, Factorial(33));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -481,9 +611,96 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TMathMiscTest._NormalizeA;
+procedure TMathMiscTest._NearestHigherMultiple;
 begin
+  // 32 bit integer
+  CheckEquals(25, NearestHigherMultiple(Integer(21), 5));
+  CheckEquals(25, NearestHigherMultiple(Integer(24), 5));
+  CheckEquals(-20, NearestHigherMultiple(Integer(-24), 5));
+  CheckEquals(-20, NearestHigherMultiple(Integer(-21), 5));
+  CheckEquals(-15, NearestHigherMultiple(Integer(-19), 5));
 
+  CheckEquals(21, NearestHigherMultiple(Integer(21), 3));
+  CheckEquals(0, NearestHigherMultiple(Integer(0), 3));
+
+  // 64 bit integer
+  CheckEquals(25, NearestHigherMultiple(Int64(21), 5));
+  CheckEquals(25, NearestHigherMultiple(Int64(24), 5));
+  CheckEquals(-20, NearestHigherMultiple(Int64(-24), 5));
+  CheckEquals(-20, NearestHigherMultiple(Int64(-21), 5));
+  CheckEquals(-15, NearestHigherMultiple(Int64(-19), 5));
+
+  CheckEquals(21, NearestHigherMultiple(Int64(21), 3));
+  CheckEquals(0, NearestHigherMultiple(Int64(0), 3));
+
+  // float 32 bit multiplier
+  CheckEquals(25, NearestHigherMultiple(21.2, 5));
+  CheckEquals(25, NearestHigherMultiple(24.2, 5));
+  CheckEquals(-20, NearestHigherMultiple(-24.2, 5));
+  CheckEquals(-20, NearestHigherMultiple(-21.2, 5));
+  CheckEquals(-15, NearestHigherMultiple(-19.9, 5));
+
+  CheckEquals(21, NearestHigherMultiple(21.0, 3));
+  CheckEquals(0, NearestHigherMultiple(0.0, 3));
+
+  // float 64 bit multiplier
+  CheckEquals(25, NearestHigherMultiple(21.2, Int64(5)));
+  CheckEquals(25, NearestHigherMultiple(24.2, Int64(5)));
+  CheckEquals(-20, NearestHigherMultiple(-24.2, Int64(5)));
+  CheckEquals(-20, NearestHigherMultiple(-21.2, Int64(5)));
+  CheckEquals(-15, NearestHigherMultiple(-19.9, Int64(5)));
+
+  CheckEquals(21, NearestHigherMultiple(21.0, Int64(3)));
+  CheckEquals(0, NearestHigherMultiple(0.0, Int64(3)));
+end;
+
+procedure TMathMiscTest._NearestLowerMultiple;
+begin
+  // 32 bit integer
+  CheckEquals(20, NearestLowerMultiple(Integer(21), 5));
+  CheckEquals(20, NearestLowerMultiple(Integer(24), 5));
+  CheckEquals(-25, NearestLowerMultiple(Integer(-24), 5));
+  CheckEquals(-25, NearestLowerMultiple(Integer(-21), 5));
+  CheckEquals(-20, NearestLowerMultiple(Integer(-19), 5));
+
+  CheckEquals(21, NearestLowerMultiple(Integer(21), 3));
+  CheckEquals(0, NearestLowerMultiple(Integer(0), 3));
+
+  // 64 bit integer
+  CheckEquals(20, NearestLowerMultiple(Int64(21), 5));
+  CheckEquals(20, NearestLowerMultiple(Int64(24), 5));
+  CheckEquals(-25, NearestLowerMultiple(Int64(-24), 5));
+  CheckEquals(-25, NearestLowerMultiple(Int64(-21), 5));
+  CheckEquals(-20, NearestLowerMultiple(Int64(-19), 5));
+
+  CheckEquals(21, NearestLowerMultiple(Int64(21), 3));
+  CheckEquals(0, NearestLowerMultiple(Int64(0), 3));
+
+  // float 32 bit multiplier
+  CheckEquals(20, NearestLowerMultiple(21.2, 5));
+  CheckEquals(20, NearestLowerMultiple(24.2, 5));
+  CheckEquals(-25, NearestLowerMultiple(-24.2, 5));
+  CheckEquals(-25, NearestLowerMultiple(-21.2, 5));
+  CheckEquals(-20, NearestLowerMultiple(-19.9, 5));
+
+  CheckEquals(21, NearestLowerMultiple(21.0, 3));
+  CheckEquals(0, NearestLowerMultiple(0.0, 3));
+
+  // float 64 bit multiplier
+  CheckEquals(20, NearestLowerMultiple(21.2, Int64(5)));
+  CheckEquals(20, NearestLowerMultiple(24.2, Int64(5)));
+  CheckEquals(-25, NearestLowerMultiple(-24.2, Int64(5)));
+  CheckEquals(-25, NearestLowerMultiple(-21.2, Int64(5)));
+  CheckEquals(-20, NearestLowerMultiple(-19.9, Int64(5)));
+
+  CheckEquals(21, NearestLowerMultiple(21.0, Int64(3)));
+  CheckEquals(0, NearestLowerMultiple(0.0, Int64(3)));
+end;
+
+procedure TMathMiscTest._NormalizeAngle;
+begin
+{ TODO : This is only a start as of now }
+  CheckEquals(0, NormalizeAngle(0));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -527,8 +744,42 @@ end;
 
 procedure TMathMiscTest._Signe;
 begin
+  CheckEquals( 0.1, Signe( 0.1,  0.1)); // X > 0, y > 0
+  CheckEquals(-0.1, Signe( 0.1,  0.0)); // X > 0, y = 0
+  CheckEquals(-0.1, Signe( 0.1, -0.1)); // X > 0, y < 0
+
+  CheckEquals( 0.0, Signe(-0.0,  0.1)); // X = 0, y > 0
+  CheckEquals(-0.0, Signe( 0.0,  0.0)); // X = 0, y = 0
+  CheckEquals( 0.0, Signe( 0.0, -0.1)); // X = 0, y < 0
+
+  CheckEquals( 0.1, Signe(-0.1,  0.1)); // X < 0, y > 0
+  CheckEquals( 0.1, Signe(-0.1,  0.0)); // X < 0, y = 0
+  CheckEquals(-0.1, Signe(-0.1, -0.1)); // X < 0, y < 0
 end;
 
+
+procedure TMathMiscTest._SwapOrd;
+var
+  x, y: Integer;
+begin
+  x := 0;
+  y := 1;
+  SwapOrd(x, y);
+  CheckEquals(1, x);
+  CheckEquals(0, y);
+
+  x := -10;
+  y := 100;
+  SwapOrd(x, y);
+  CheckEquals(100, x);
+  CheckEquals(-10, y);
+
+  x := -3;
+  y := -8;
+  SwapOrd(x, y);
+  CheckEquals(-8, x);
+  CheckEquals(-3, y);
+end;
 
 //==================================================================================================
 // Rational
@@ -1074,30 +1325,30 @@ begin
   s := Infinity;
   d := JclMath.Infinity;
   e := Infinity;
-  CheckEquals(True, IsInfinite(s));
-  CheckEquals(True, IsInfinite(d));
-  CheckEquals(True, IsInfinite(e));
+  CheckEquals(True, JclMath.IsInfinite(s));
+  CheckEquals(True, JclMath.IsInfinite(d));
+  CheckEquals(True, JclMath.IsInfinite(e));
 
   s := 0;
   d := 0;
   e := 0;
-  CheckEquals(False, IsInfinite(s));
-  CheckEquals(False, IsInfinite(d));
-  CheckEquals(False, IsInfinite(e));
+  CheckEquals(False, JclMath.IsInfinite(s));
+  CheckEquals(False, JclMath.IsInfinite(d));
+  CheckEquals(False, JclMath.IsInfinite(e));
 
   s := NaN;
   d := NaN;
   e := NaN;
-  CheckEquals(False, IsInfinite(s));
-  CheckEquals(False, IsInfinite(d));
-  CheckEquals(False, IsInfinite(e));
+  CheckEquals(False, JclMath.IsInfinite(s));
+  CheckEquals(False, JclMath.IsInfinite(d));
+  CheckEquals(False, JclMath.IsInfinite(e));
 
   s := NegInfinity;
   d := NegInfinity;
   e := NegInfinity;
-  CheckEquals(True, IsInfinite(s));
-  CheckEquals(True, IsInfinite(d));
-  CheckEquals(True, IsInfinite(e));
+  CheckEquals(True, JclMath.IsInfinite(s));
+  CheckEquals(True, JclMath.IsInfinite(d));
+  CheckEquals(True, JclMath.IsInfinite(e));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1214,7 +1465,158 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TMathHexConversionTest }
+
+procedure TMathHexConversionTest._DoubleToHex;
+begin
+  CheckEquals('0000000000000000', DoubleToHex(0.0), 'Failure for 0.0 ');
+  CheckEquals('3FF0000000000000', DoubleToHex(1.0), 'Failure for 1.0 ');
+  CheckEquals('3FF199999999999A', DoubleToHex(1.1), 'Failure for 1.1 ');
+  CheckEquals('413E848000000000', DoubleToHex(2000000.0), 'Failure for 2000000.0 ');
+  CheckEquals('413E84801999999A', DoubleToHex(2000000.1), 'Failure for 2000000.1 ');
+  CheckEquals('BFF0000000000000', DoubleToHex(-1.0), 'Failure for -1.0 ');
+  CheckEquals('BFF199999999999A', DoubleToHex(-1.1), 'Failure for -1.1 ');
+  CheckEquals('C13E848000000000', DoubleToHex(-2000000.0), 'Failure for -2000000.0 ');
+  CheckEquals('C13E84801999999A', DoubleToHex(-2000000.1), 'Failure for -2000000.1 ');
+  CheckEquals('400921F9F01B866E', DoubleToHex(3.14159), 'Failure for pi ');
+end;
+
+procedure TMathHexConversionTest._HexToDouble;
+var
+  Exp, Act : Double;
+begin
+  // Necessary for most cases because CHeckEquals works with Extended as data
+  // type and not double
+  Act := HexToDouble('0000000000000000');
+  Exp := 0.0;
+  CheckEquals(Exp, Act, 'Failure for 0.0 ');
+
+  Act := HexToDouble('3FF0000000000000');
+  Exp := 1.0;
+  CheckEquals(Exp, Act, 1.0, 'Failure for 1.0 ');
+
+  Act := HexToDouble('3FF199999999999A');
+  Exp := 1.1;
+  CheckEquals(Exp, Act, 'Failure for 1.1 ');
+
+  Act := HexToDouble('413E848000000000');
+  Exp := 2000000.0;
+  CheckEquals(Exp, Act, 'Failure for 2000000.0 ');
+
+  Act := HexToDouble('413E84801999999A');
+  Exp := 2000000.1;
+  CheckEquals(Exp, Act, 'Failure for 2000000.1 ');
+
+  Act := HexToDouble('BFF0000000000000');
+  Exp := -1.0;
+  CheckEquals(Exp, Act, 'Failure for -1.0 ');
+
+  Act := HexToDouble('BFF199999999999A');
+  Exp := -1.1;
+  CheckEquals(Exp, Act, 'Failure for -1.1 ');
+
+  Act := HexToDouble('C13E848000000000');
+  Exp := -2000000.0;
+  CheckEquals(Exp, Act, 'Failure for -2000000.0 ');
+
+  Act := HexToDouble('C13E84801999999A');
+  Exp := -2000000.1;
+  CheckEquals(Exp, Act, 'Failure for -2000000.1 ');
+
+  Act := HexToDouble('400921F9F01B866E');
+  Exp := 3.14159;
+  CheckEquals(Exp, Act, 'Failure for pi ');
+end;
+
+{ TMathAngleConversionTest }
+
+procedure TMathAngleConversionTest._DegToGrad;
+var
+  x: Extended;
+
+begin
+  x := 0;
+
+  while x < 360.0 do
+  begin
+    CheckEquals(Math.DegToGrad(X), JclMath.DegToGrad(X), PrecisionTolerance);
+    x := x + 0.1;
+  end;
+end;
+
+procedure TMathAngleConversionTest._DegToRad;
+var
+  x: Extended;
+
+begin
+  x := 0;
+
+  while x < 360.0 do
+  begin
+    CheckEquals(Math.DegToRad(X), JclMath.DegToRad(X), PrecisionTolerance);
+    x := x + 0.1;
+  end;
+end;
+
+procedure TMathAngleConversionTest._GradToDeg;
+var
+  x: Extended;
+
+begin
+  x := 0;
+
+  while x < 400.0 do
+  begin
+    CheckEquals(Math.GradToDeg(X), JclMath.GradToDeg(X), PrecisionTolerance);
+    x := x + 0.1;
+  end;
+end;
+
+procedure TMathAngleConversionTest._GradToRad;
+var
+  x: Extended;
+
+begin
+  x := 0;
+
+  while x < 400.0 do
+  begin
+    CheckEquals(Math.GradToRad(X), JclMath.GradToRad(X), PrecisionTolerance);
+    x := x + 0.1;
+  end;
+end;
+
+procedure TMathAngleConversionTest._RadToDeg;
+var
+  x: Extended;
+
+begin
+  x := 0;
+
+  while x < pi do
+  begin
+    CheckEquals(Math.RadToDeg(X), JclMath.RadToDeg(X), PrecisionTolerance);
+    x := x + 0.1;
+  end;
+end;
+
+procedure TMathAngleConversionTest._RadToGrad;
+var
+  x: Extended;
+
+begin
+  x := 0;
+
+  while x < pi do
+  begin
+    CheckEquals(Math.RadToGrad(X), JclMath.RadToGrad(X), PrecisionTolerance);
+    x := x + 0.1;
+  end;
+end;
+
 initialization
+  RegisterTest('JCLMath', TMathHexConversionTest.Suite);
+  RegisterTest('JCLMath', TMathAngleConversionTest.Suite);
   RegisterTest('JCLMath', TMathLogarithmicTest.Suite);
   RegisterTest('JCLMath', TMathTranscendentalTest.Suite);
   RegisterTest('JCLMath', TMathMiscTest.Suite);

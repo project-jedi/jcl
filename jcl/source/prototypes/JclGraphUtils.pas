@@ -389,7 +389,7 @@ var
 begin
   ErrorCode := GetLastError;
   if (ErrorCode <> 0) and (FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, nil,
-    ErrorCode, LOCALE_USER_DEFAULT, Buf, SizeOf(Buf), nil) <> 0) then
+    ErrorCode, LOCALE_USER_DEFAULT, Buf, Length(Buf), nil) <> 0) then
     raise EOutOfResources.Create(Buf)
   else
     OutOfResources;
@@ -1996,7 +1996,7 @@ var
     else
       Result := M1;
   end;
-    
+
 begin
   if S = 0 then
   begin
@@ -2547,7 +2547,7 @@ begin
       Canvas.LineTo(X, Y);
       {$IFDEF VCL}
       if Codes2 <> [] then
-        // Draw end point if neccessary
+        // Draw end point if necessary
         Canvas.LineTo(X + 1, Y);
       {$ENDIF VCL}
     end;

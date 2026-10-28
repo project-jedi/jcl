@@ -608,7 +608,7 @@ begin
   IntegerHash.H2 := 1;
   IntegerHash.H3 := 2;
   IntegerHash.H4 := 3;
-  for I := 1 to Length(AString) - 1 do
+  for I := 1 to Length(AString) do
   begin
     C := Ord(JclAnsiStrings.CharUpper(AString[I]));
     IntegerHash.H1 := BytePermTable[IntegerHash.H1 xor C];

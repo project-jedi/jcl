@@ -284,7 +284,7 @@ Label_NormalText:
           if (cp + 1)^ = '*' then
             Break;
 
-        { must handle strings seperately; there can be no comments in strings }
+        { must handle strings separately; there can be no comments in strings }
         '''':
         begin
           Inc(cp);

@@ -60,23 +60,22 @@ uses
 *************************************************)
 
 {$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-  {$IFDEF UNITVERSIONING}
-    {$WEAKPACKAGEUNIT OFF}
-  {$ELSE ~UNITVERSIONING}
-    // d6 and d7 consider initialized variables to be initialization parts which goes against the "weakpackageunit" requirement
-    {$IF Defined(PCRE_LINKONREQUEST) and not Defined(COMPILER8_UP)}
-      {$WEAKPACKAGEUNIT OFF}
-    {$ELSE}
+  // External PCRE can be linked into the final exe/package by one of the three mutually exclusive options:
+  //   PCRE_STATICLINK --> embed the precompiled .OBJ files found in the windows\obj folder
+  //   PCRE_LINKDLL  --> static dll import, the DLL must be present when the application starts up
+  //   PCRE_LINKONREQUEST --> dynamic dll import, load the DLL only when asked to do so
+  //
+  // PCRE_LINKDLL requires WEAKPACKAGEUNIT to be active for packages to be usable properly but this is not 
+  // compatible with UNITVERSIONING because the latter needs an initialization section. 
+  // In that case we raise a fatal error.  
+  {$IFDEF PCRE_LINKDLL}
+    {$IFDEF UNITVERSIONING}
+      {$MESSAGE FATAL 'UNITVERSIONING cannot be active if PCRE_LINKDLL is requested'}
+    {$ELSE ~UNITVERSIONING}
       {$WEAKPACKAGEUNIT ON}
-    {$IFEND}
-  {$ENDIF ~UNITVERSIONING}
+    {$ENDIF ~UNITVERSIONING}
+  {$ENDIF PCRE_LINKDLL}
 {$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
-
-// (p3) this is the switch to change between static and dynamic linking.
-// It is set to dynamic by default. To disable simply insert a '.' before the '$'
-//
-// NOTE: if you enable static linking of DLL, this means that the pcre.dll *must*
-// be in the users path or an AV will occur at startup
 
 (*$HPPEMIT '#include "pcre.h"'*)
 

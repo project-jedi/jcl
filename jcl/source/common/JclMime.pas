@@ -397,9 +397,10 @@ end;
 procedure MimeEncodeFullLines(const InputBuffer: TDynByteArray; InputOffset: SizeInt;
   const InputByteCount: SizeInt; out OutputBuffer: TDynByteArray; OutputOffset: SizeInt);
 var
-  B, InnerLimit, OuterLimit: SizeInt;
-  InIndex: SizeInt;
-  OutIndex: SizeInt;
+  B: SizeInt;
+  InnerLimit, OuterLimit: TJclAddr;
+  InIndex: TJclAddr;
+  OutIndex: TJclAddr;
 begin
   { Do we have enough input to encode a full line? }
   if InputByteCount < MIME_DECODED_LINE_BREAK then
@@ -499,9 +500,10 @@ end;
 procedure MimeEncodeNoCRLF(const InputBuffer: TDynByteArray; InputOffset: SizeInt;
   const InputByteCount: SizeInt; out OutputBuffer: TDynByteArray; OutputOffset: SizeInt);
 var
-  B, InnerLimit, OuterLimit: SizeInt;
-  InIndex: SizeInt;
-  OutIndex: SizeInt;
+  B: SizeInt;
+  InnerLimit, OuterLimit: TJclAddr;
+  InIndex: TJclAddr;
+  OutIndex: TJclAddr;
 begin
   if InputByteCount = 0 then
     Exit;
@@ -536,7 +538,7 @@ begin
   end;
 
   { End of data & padding. }
-  case InputByteCount - OuterLimit of
+  case TJclAddr(InputByteCount) - OuterLimit of
     1:
       begin
         B := InputBuffer[InIndex + 0];
@@ -566,7 +568,7 @@ end;
 procedure MimeEncodeNoCRLF(const InputBuffer; const InputByteCount: SizeInt; out OutputBuffer);
 var
   B: Cardinal;
-  InnerLimit, OuterLimit: SizeInt;
+  InnerLimit, OuterLimit: TJclAddr;
   InPtr: PByte3;
   OutPtr: PByte4;
 begin
@@ -603,7 +605,7 @@ begin
   end;
 
   { End of data & padding. }
-  case InputByteCount - OuterLimit of
+  case TJclAddr(InputByteCount) - OuterLimit of
     1:
       begin
         B := InPtr^.B1;
@@ -661,13 +663,13 @@ function MimeDecodePartial(const InputBuffer: TDynByteArray; InputOffset: SizeIn
   var ByteBuffer: Cardinal; var ByteBufferSpace: Cardinal): SizeInt;
 var
   LByteBuffer, LByteBufferSpace, C: Cardinal;
-  InIndex, OuterLimit: SizeInt;
-  OutIndex: SizeInt;
+  InIndex, OuterLimit: TJclAddr;
+  OutIndex: TJclAddr;
 begin
   if InputByteCount > 0 then
     begin
       InIndex := InputOffset;
-      OuterLimit := InIndex + InputByteCount;
+      OuterLimit := InIndex + TJclAddr(InputByteCount);
       OutIndex := OutputOffset;
       LByteBuffer := ByteBuffer;
       LByteBufferSpace := ByteBufferSpace;
@@ -697,7 +699,7 @@ begin
       end;
       ByteBuffer := LByteBuffer;
       ByteBufferSpace := LByteBufferSpace;
-      Result := OutIndex - OutputOffset;
+      Result := OutIndex - TJclAddr(OutputOffset);
     end
   else
     Result := 0;

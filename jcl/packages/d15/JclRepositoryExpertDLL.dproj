@@ -5,7 +5,7 @@
 			<ProjectVersion>12.2</ProjectVersion>
 			<Config Condition="'$(Config)'==''">Release</Config>
 			<DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-			<DCC_Define>BCB;WIN32;CONDITIONALEXPRESSIONS;VER220;RELEASE</DCC_Define>
+			<DCC_Define>BCB;RELEASE</DCC_Define>
 			<Base>True</Base>
 			<Platform>Win32</Platform>
 			<AppType>Package</AppType>
@@ -29,7 +29,7 @@
 			<DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
 			<DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
 			<DCC_Description>JCL Package containing repository wizards</DCC_Description>
-			<DCC_Define>BCB;BCB;WIN32;CONDITIONALEXPRESSIONS;VER220;RELEASE;$(DCC_Define)</DCC_Define>
+			<DCC_Define>BCB;BCB;RELEASE;$(DCC_Define)</DCC_Define>
 			<DCC_WriteableConstants>true</DCC_WriteableConstants>
 			<DCC_OutputNeverBuildDcps>true</DCC_OutputNeverBuildDcps>
 			<DllSuffix>150</DllSuffix>
@@ -112,9 +112,9 @@
 						<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
 						<VersionInfo Name="AutoIncBuild">False</VersionInfo>
 						<VersionInfo Name="MajorVer">2</VersionInfo>
-						<VersionInfo Name="MinorVer">7</VersionInfo>
+						<VersionInfo Name="MinorVer">9</VersionInfo>
 						<VersionInfo Name="Release">0</VersionInfo>
-						<VersionInfo Name="Build">5300</VersionInfo>
+						<VersionInfo Name="Build">9331</VersionInfo>
 						<VersionInfo Name="Debug">False</VersionInfo>
 						<VersionInfo Name="PreRelease">False</VersionInfo>
 						<VersionInfo Name="Special">False</VersionInfo>
@@ -126,13 +126,13 @@
 					<VersionInfoKeys>
 						<VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
 						<VersionInfoKeys Name="FileDescription">JCL Package containing repository wizards</VersionInfoKeys>
-						<VersionInfoKeys Name="FileVersion">2.7.0.5300</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">2.9.0.9331</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName">JclRepositoryExpertDLL</VersionInfoKeys>
-						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2014 Project JEDI</VersionInfoKeys>
+						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2025 Project JEDI</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename">JclRepositoryExpertDLL150.dll</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
-						<VersionInfoKeys Name="ProductVersion">2.7 Build 5300</VersionInfoKeys>
+						<VersionInfoKeys Name="ProductVersion">2.9 Build 9331</VersionInfoKeys>
 					</VersionInfoKeys>
 					<Source>
 						<Source Name="MainSource">JclRepositoryExpertDLL.dpr</Source>

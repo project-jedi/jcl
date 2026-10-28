@@ -1,4 +1,4 @@
-﻿; This is a Doc-O-Matic version 6.5.1.1382 project file.
+; This is a Doc-O-Matic version 6.5.1.1382 project file.
 ; This file is maintained by Doc-O-Matic, do not edit manually.
 
 [*Control*]
@@ -54,9 +54,9 @@ File18=..\..\..\help\JclContainers.dtx
 File19=..\..\..\help\StrHashMap.dtx
 
 [General]
-Copyright=Copyright (C) 1999, 2014 Project JEDI
+Copyright=Copyright (C) 1999, 2025 Project JEDI
 Summary=Documentation of the JEDI Code Library Containers package
 Title=JEDI Code Library Containers package
-VersionBuild=5300
+VersionBuild=9331
 VersionMajor=2
-VersionMinor=7
+VersionMinor=9

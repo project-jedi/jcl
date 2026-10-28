@@ -39,6 +39,16 @@ begin
   end;
 end;
 
+procedure SELFCLASSNAME.AutoGrow;
+begin
+  SetCapacity(CalcGrowCapacity(FCapacity, Size + 1));
+end;
+
+procedure SELFCLASSNAME.AutoPack;
+begin
+  SetCapacity(CalcPackCapacity(FCapacity, Size + 1));
+end;
+
 procedure SELFCLASSNAME.Clear;
 var
   I: Integer;
@@ -117,6 +127,13 @@ begin
       if FTail = FCapacity then
         FTail := 0;
     end;
+  {$JPPEXPANDMACRO UNLOCK}
+end;
+
+procedure SELFCLASSNAME.Grow;
+begin
+  {$JPPDEFINE WRITE}{$JPPEXPANDMACRO LOCK}
+    SetCapacity(Size + 1);
   {$JPPEXPANDMACRO UNLOCK}
 end;
 

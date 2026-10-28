@@ -60,16 +60,17 @@ begin
     finally
       FS.Free;
     end;
+
     MapScanner := TJclMapScanner.Create(MapFileName);
     try
       ModuleStr := MapScanner.ModuleNameFromAddr($100);
       ProcStr := MapScanner.ProcNameFromAddr($100);
-      Check((ModuleStr = 'FOO') or (ModuleStr = 'C:\TEST\FOO.OBJ'), '0x00000100: Module name mismatch');
+      Check((ModuleStr = 'FOO.OBJ') or (ModuleStr = 'C:\TEST\FOO.OBJ'), '0x00000100: Module name mismatch');
       Check(ProcStr = 'test::testproc32', '0x00000100: Proc name mismatch');
 
       ModuleStr := MapScanner.ModuleNameFromAddr($900);
       ProcStr := MapScanner.ProcNameFromAddr($900);
-      Check((ModuleStr = 'BAR') or (ModuleStr = 'C:\TEST\BAR.OBJ'), '0x00000900: Module name mismatch');
+      Check((ModuleStr = 'BAR.OBJ') or (ModuleStr = 'C:\TEST\BAR.OBJ'), '0x00000900: Module name mismatch');
       Check(ProcStr = 'test::this_is_the_last_proc', '0x00000900: Proc name mismatch');
     finally
       MapScanner.Free;

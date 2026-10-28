@@ -129,12 +129,15 @@ implementation
 uses
   {$IFDEF HAS_UNITSCOPE}
   System.Classes,
+  {$IFDEF BORLAND}
+  Winapi.AccCtrl,
+  {$ENDIF BORLAND}
   {$ELSE ~HAS_UNITSCOPE}
   Classes,
-  {$ENDIF ~HAS_UNITSCOPE}
   {$IFDEF BORLAND}
   AccCtrl,
   {$ENDIF BORLAND}
+  {$ENDIF ~HAS_UNITSCOPE}
   JclRegistry, JclResources, JclStrings, JclSysInfo, JclWin32;
 
 //=== Access Control =========================================================

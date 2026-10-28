@@ -1,6 +1,6 @@
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION 2,7,0,5300
-PRODUCTVERSION 2,7,0,5300
+FILEVERSION 2,9,0,9331
+PRODUCTVERSION 2,9,0,9331
  FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
 #ifdef _DEBUG
  FILEFLAGS VS_FF_DEBUG
@@ -17,12 +17,12 @@ BEGIN
          BEGIN
               VALUE "CompanyName", "Project JEDI\0"
               VALUE "FileDescription", "JCL Debug IDE extension\0"
-              VALUE "FileVersion", "2.7.0.5300\0"
+              VALUE "FileVersion", "2.9.0.9331\0"
               VALUE "InternalName", "JclDebugExpert\0"
-              VALUE "LegalCopyright", "Copyright (C) 1999, 2014 Project JEDI\0"
+              VALUE "LegalCopyright", "Copyright (C) 1999, 2025 Project JEDI\0"
               VALUE "OriginalFilename", "JclDebugExpert180.bpl\0"
               VALUE "ProductName", "JEDI Code Library\0"
-              VALUE "ProductVersion", "2.7.0.5300\0"
+              VALUE "ProductVersion", "2.9.0.9331\0"
          END
     END
     BLOCK "VarFileInfo"

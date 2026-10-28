@@ -334,7 +334,7 @@ begin
   FilesCount := DragQueryFile(Message.Drop, MAXDWORD, nil, 0);
   for I := 0 to FilesCount - 1 do
   begin
-    if (DragQueryFile(Message.Drop, I, @FileName, SizeOf(FileName)) > 0) and
+    if (DragQueryFile(Message.Drop, I, @FileName, Length(FileName)) > 0) and
       IsValidPeFile(FileName) then
         OpenFile(FileName, True);
   end;

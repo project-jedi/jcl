@@ -217,111 +217,111 @@ var
   RootNode: TTreeNode;
 
   procedure SetNodeState(Node: TTreeNode; State: TPeModuleState);
-var
-  I: Integer;
-begin
-  PPeModuleNodeData(Node.Data)^.State := State;
-  Node.ImageIndex := ModuleImages[State].ImageIndex;
-  Node.SelectedIndex := ModuleImages[State].ImageIndex;
-  Node.StateIndex := ModuleImages[State].StateIndex;
-  if State in (MissingExportModules + ErrorModules) then
+  var
+    I: Integer;
   begin
-    if Node.Parent = RootNode then FAnyRootError := True;
-    I := FModulesList.IndexOf(Node.Text);
-    Assert(I >= 0);
-    FModulesList.Objects[I] := Pointer(State);
+    PPeModuleNodeData(Node.Data)^.State := State;
+    Node.ImageIndex := ModuleImages[State].ImageIndex;
+    Node.SelectedIndex := ModuleImages[State].ImageIndex;
+    Node.StateIndex := ModuleImages[State].StateIndex;
+    if State in (MissingExportModules + ErrorModules) then
+    begin
+      if Node.Parent = RootNode then FAnyRootError := True;
+      I := FModulesList.IndexOf(Node.Text);
+      Assert(I >= 0);
+      FModulesList.Objects[I] := Pointer(State);
+    end;
   end;
-end;
 
   function AddNode(Node: TTreeNode; const Text: string; State: TPeModuleState): TTreeNode;
-var
-  Data: PPeModuleNodeData;
-begin
-  Result := DependencyTreeView.Items.AddChild(Node, Text);
-  New(Data);
-  Result.Data := Data;
-  SetNodeState(Result, State);
-end;
+  var
+    Data: PPeModuleNodeData;
+  begin
+    Result := DependencyTreeView.Items.AddChild(Node, Text);
+    New(Data);
+    Result.Data := Data;
+    SetNodeState(Result, State);
+  end;
 
   procedure ScanModule(const ModuleName: string; Node: TTreeNode; Forwarded, ErrorsOnly: Boolean);
-var
-  ExeImage: TJclPeImage;
-  I, Found: Integer;
-  S: string;
-  TempNode: TTreeNode;
-  AddedNodes: array of TTreeNode;
-  AddedNodesCount: Integer;
-begin
-  ExeImage := FPeImagesCache[ModuleToFilename(ModuleName)];
-  case ExeImage.Status of
-    stOk:
-      if not ErrorsOnly then
-      begin
-        with ExeImage.ImportList do
+  var
+    ExeImage: TJclPeImage;
+    I, Found: Integer;
+    S: string;
+    TempNode: TTreeNode;
+    AddedNodes: array of TTreeNode;
+    AddedNodesCount: Integer;
+  begin
+    ExeImage := FPeImagesCache[ModuleToFilename(ModuleName)];
+    case ExeImage.Status of
+      stOk:
+        if not ErrorsOnly then
         begin
-          SetLength(AddedNodes, Count);
-          AddedNodesCount := 0;
-          CheckImports(FPeImagesCache);
-          SortList(ilName);
-          for I := 0 to Count - 1 do
+          with ExeImage.ImportList do
           begin
-            S := Items[I].Name;
-            Found := FModulesList.IndexOf(S);
-            if Found = -1 then
+            SetLength(AddedNodes, Count);
+            AddedNodesCount := 0;
+            CheckImports(FPeImagesCache);
+            SortList(ilName);
+            for I := 0 to Count - 1 do
             begin
-              Found := FModulesList.Add(S);
-              FModulesList.Objects[Found] := Pointer(modNoErrors);
-              if Items[I].TotalResolveCheck = icUnresolved then
-                TempNode := AddNode(Node, S, modExportMissing)
-              else
-                TempNode := AddNode(Node, S, modNoErrors);
-              AddedNodes[AddedNodesCount] := TempNode;
-              Inc(AddedNodesCount);
-            end else
-            begin
-              if Items[I].TotalResolveCheck = icUnresolved then
-                TempNode := AddNode(Node, S, modDupExportMissing)
-              else
-                TempNode := AddNode(Node, S, modDupNoErrors);
-              ScanModule(TempNode.Text, TempNode, False, True); // !
-            end;
-            PPeModuleNodeData(TempNode.Data)^.ImportDirectoryIndex := Items[I].ImportDirectoryIndex;
-          end;
-        end;
-        for I := 0 to AddedNodesCount - 1 do
-          ScanModule(AddedNodes[I].Text, AddedNodes[I], False, False);
-        with ExeImage.ExportList do
-        begin
-          CheckForwards(FPeImagesCache);
-          for I := 0 to ForwardedLibsList.Count - 1 do
-          begin
-            S := ForwardedLibsList[I];
-            Found := FModulesList.IndexOf(S);
-            if Found = -1 then
-            begin
-              Found := FModulesList.Add(S);
-              FModulesList.Objects[Found] := Pointer(modNoErrors);
-              if TJclPeResolveCheck(ForwardedLibsList.Objects[I]) = icUnresolved then
-                AddNode(Node, S, modFwdExportMissing)
-              else
-                AddNode(Node, S, modFwdNoErrors);
-            end else
-            begin
-              if TJclPeResolveCheck(ForwardedLibsList.Objects[I]) = icUnresolved then
-                TempNode := AddNode(Node, S, modDupFwdExportMissing)
-              else
-                TempNode := AddNode(Node, S, modDupFwdNoErrors);
-              ScanModule(TempNode.Text, TempNode, True, True); // !
+              S := Items[I].Name;
+              Found := FModulesList.IndexOf(S);
+              if Found = -1 then
+              begin
+                Found := FModulesList.Add(S);
+                FModulesList.Objects[Found] := Pointer(modNoErrors);
+                if Items[I].TotalResolveCheck = icUnresolved then
+                  TempNode := AddNode(Node, S, modExportMissing)
+                else
+                  TempNode := AddNode(Node, S, modNoErrors);
+                AddedNodes[AddedNodesCount] := TempNode;
+                Inc(AddedNodesCount);
+              end else
+              begin
+                if Items[I].TotalResolveCheck = icUnresolved then
+                  TempNode := AddNode(Node, S, modDupExportMissing)
+                else
+                  TempNode := AddNode(Node, S, modDupNoErrors);
+                ScanModule(TempNode.Text, TempNode, False, True); // !
+              end;
+              PPeModuleNodeData(TempNode.Data)^.ImportDirectoryIndex := Items[I].ImportDirectoryIndex;
             end;
           end;
+          for I := 0 to AddedNodesCount - 1 do
+            ScanModule(AddedNodes[I].Text, AddedNodes[I], False, False);
+          with ExeImage.ExportList do
+          begin
+            CheckForwards(FPeImagesCache);
+            for I := 0 to ForwardedLibsList.Count - 1 do
+            begin
+              S := ForwardedLibsList[I];
+              Found := FModulesList.IndexOf(S);
+              if Found = -1 then
+              begin
+                Found := FModulesList.Add(S);
+                FModulesList.Objects[Found] := Pointer(modNoErrors);
+                if TJclPeResolveCheck(ForwardedLibsList.Objects[I]) = icUnresolved then
+                  AddNode(Node, S, modFwdExportMissing)
+                else
+                  AddNode(Node, S, modFwdNoErrors);
+              end else
+              begin
+                if TJclPeResolveCheck(ForwardedLibsList.Objects[I]) = icUnresolved then
+                  TempNode := AddNode(Node, S, modDupFwdExportMissing)
+                else
+                  TempNode := AddNode(Node, S, modDupFwdNoErrors);
+                ScanModule(TempNode.Text, TempNode, True, True); // !
+              end;
+            end;
+          end;
         end;
-      end;
-    stNotFound:
-      if Forwarded then SetNodeState(Node, modFwdMissing) else SetNodeState(Node, modMissing);
-  else
-     if Forwarded then SetNodeState(Node, modFwdInvalid) else SetNodeState(Node, modInvalid);
+      stNotFound:
+        if Forwarded then SetNodeState(Node, modFwdMissing) else SetNodeState(Node, modMissing);
+    else
+       if Forwarded then SetNodeState(Node, modFwdInvalid) else SetNodeState(Node, modInvalid);
+    end;
   end;
-end;
 
 begin
   with DependencyTreeView do

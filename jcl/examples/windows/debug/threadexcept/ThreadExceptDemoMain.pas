@@ -105,7 +105,7 @@ procedure TMainForm.DoThreadSyncException(Thread: TJclDebugThread);
 begin
   MessageRichEdit.Lines.Add(Format('Exception in thread: %s', [Thread.ThreadInfo]));
   // Note: JclLastExceptStackList always returns list for *current* thread ID. To simplify getting the
-  // stack of thread where an exception occured JclLastExceptStackList returns stack of the thread instead
+  // stack of thread where an exception occurred JclLastExceptStackList returns stack of the thread instead
   // of current thread when called *within* the JclDebugThreadList.OnSyncException handler. This is the
   // *only* exception to the behavior of JclLastExceptStackList described above.
   JclLastExceptStackList.AddToStrings(MessageRichEdit.Lines, False, True, True);
