@@ -2826,8 +2826,9 @@ end;
 // Copied from System.pas (_IsClass function)
 
 function JclIsClass(const AnObj: TObject; const AClass: TClass): Boolean;
+{$IF DEFINED(ASMX86) OR DEFINED(ASMX64)}
 asm
-        {$IFDEF CPU32}
+        {$IFDEF CPUX86}
         // 32 --> EAX AnObj
         //        EDX AClass
         //    <-- AL  Result
@@ -2839,8 +2840,8 @@ asm
         JE      @@success
         MOV     EAX,[EAX].vmtParent
         TEST    EAX,EAX
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
+        {$ENDIF CPUX86}
+        {$IFDEF CPUX64}
         // 64 --> RCX AnObj
         //        RDX AClass
         //    <-- AL  Result
@@ -2853,13 +2854,18 @@ asm
         JE      @@success
         MOV     RAX,[RAX].vmtParent
         TEST    RAX,RAX
-        {$ENDIF CPU64}
+        {$ENDIF CPUX64}
         JNE     @@loop
         JMP     @@exit
 @@success:
         MOV     AL,1
 @@exit:
 end;
+{$ELSE ASMX86_OR_ASMX64}
+begin
+  Result := (AnObj <> nil) and AnObj.InheritsFrom(AClass);
+end;
+{$IFEND ASMX86_OR_ASMX64}
 
 function JclIsClassByName(const AnObj: TObject; const AClass: TClass): Boolean;
 var
