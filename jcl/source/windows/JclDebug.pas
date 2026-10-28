@@ -5811,34 +5811,82 @@ begin
 end;
 
 {$IFDEF CPU64}
+procedure RtlCaptureContext(AContextRecord: PContext); stdcall; external kernel32 name 'RtlCaptureContext';
+function RtlLookupFunctionEntry(AControlPc: DWORD64; var AImageBase: DWORD64; AHistoryTable: Pointer): Pointer; stdcall;
+  external kernel32 name 'RtlLookupFunctionEntry';
+function RtlVirtualUnwind(AHandlerType: DWORD; AImageBase, AControlPc: DWORD64; AFunctionEntry: Pointer;
+  AContextRecord: PContext; var AHandlerData: Pointer; var AEstablisherFrame: DWORD64;
+  AContextPointers: Pointer): Pointer; stdcall; external kernel32 name 'RtlVirtualUnwind';
+
+// Returns the lowest address of the current thread's committed stack (NT_TIB64.StackLimit), as GetStackTop returns
+// its base.
+function GetStackLimit: DWORD64;
+asm
+        MOV     RAX, GS:[ABS 16]
+end;
+
+// The frames are walked here with RtlVirtualUnwind rather than with CaptureStackBackTrace, which ends the stack at the
+// first instruction pointer of 0.  A call through a nil pointer (an "Execution of address 0" access violation) leaves
+// exactly that:  Unwinding the exception dispatcher's frame restores the faulting context, whose RIP is 0, so the
+// trace stopped at KiUserExceptionDispatcher and lost every frame of the code that made the call.  An instruction
+// pointer without unwind information, such as 0 or any address outside the loaded modules, is taken to be in a leaf
+// function, whose return address is at the top of the stack, which is also what Windows does for one that is not 0.
 procedure TJclStackInfoList.CaptureBackTrace;
 const
-  InternalSkipFrames = 1; // skip this method
+  CMaxFrames = 128;
+  UNW_FLAG_NHANDLER = 0;
 var
-  BackTrace: array [0..127] of Pointer;
-  MaxFrames: Integer;
-  Hash: DWORD;
-  I: Integer;
-  StackInfo: TStackInfo;
-  CapturedFramesCount: Word;
+  LContextBuffer: array[0..SizeOf(TContext) + 15] of Byte;
+  LPContext: PContext;
+  LStackBase, LStackLimit, LImageBase, LEstablisherFrame, LReturnAddress: DWORD64;
+  LFunctionEntry, LHandlerData: Pointer;
+  LStep, LLevel: Integer;
+  LStackInfo: TStackInfo;
 begin
-  if JclCheckWinVersion(6, 0) then
-    MaxFrames := Length(BackTrace)
-  else
-  begin
-    // For XP and 2003 sum of FramesToSkip and FramesToCapture must be lower than 63
-    MaxFrames := 62 - InternalSkipFrames;
-  end;
+  // RtlCaptureContext requires a 16 byte aligned context record, which a local record is not guaranteed to be.
+  LPContext := PContext((TJclAddr(@LContextBuffer) + 15) and not TJclAddr(15));
+  RtlCaptureContext(LPContext);
 
-  ResetMemory(BackTrace, SizeOf(BackTrace));
-  CapturedFramesCount := CaptureStackBackTrace(InternalSkipFrames, MaxFrames, @BackTrace, Hash);
+  LStackBase := GetStackTop;
+  LStackLimit := GetStackLimit;
 
-  ResetMemory(StackInfo, SizeOf(StackInfo));
-  for I := 0 to CapturedFramesCount - 1 do
+  ResetMemory(LStackInfo, SizeOf(LStackInfo));
+  // The first unwind leaves this method, so the first address stored is the return address into the caller.  It is
+  // level 1, as CaptureStackBackTrace numbered it, so that IgnoreLevels skips the same frames as before.
+  LLevel := 1;
+  for LStep := 1 to CMaxFrames do
   begin
-    StackInfo.CallerAddr := TJclAddr(BackTrace[I]);
-    StackInfo.Level := I;
-    StoreToList(StackInfo); // skips all frames with a level less than "IgnoreLevels"
+    LFunctionEntry := RtlLookupFunctionEntry(LPContext.Rip, LImageBase, nil);
+    if LFunctionEntry <> nil then
+    begin
+      RtlVirtualUnwind(UNW_FLAG_NHANDLER, LImageBase, LPContext.Rip, LFunctionEntry, LPContext, LHandlerData,
+        LEstablisherFrame, nil);
+    end
+    else
+    begin
+      if (LPContext.Rsp < LStackLimit) or (LPContext.Rsp + SizeOf(DWORD64) > LStackBase) then
+        Break;
+      LPContext.Rip := PDWORD64(LPContext.Rsp)^;
+      Inc(LPContext.Rsp, SizeOf(DWORD64));
+    end;
+
+    // RIP 0 normally ends the stack, but after a call through a nil pointer the return address into the caller is at
+    // the top of the stack, and the next step takes it from there.  Anything there that is not an address in code with
+    // unwind information means the stack has ended.
+    if LPContext.Rip = 0 then
+    begin
+      if (LPContext.Rsp < LStackLimit) or (LPContext.Rsp + SizeOf(DWORD64) > LStackBase) then
+        Break;
+      LReturnAddress := PDWORD64(LPContext.Rsp)^;
+      if (LReturnAddress = 0) or (RtlLookupFunctionEntry(LReturnAddress, LImageBase, nil) = nil) then
+        Break;
+      Continue;
+    end;
+
+    LStackInfo.CallerAddr := TJclAddr(LPContext.Rip);
+    LStackInfo.Level := LLevel;
+    StoreToList(LStackInfo); // skips all frames with a level less than "IgnoreLevels"
+    Inc(LLevel);
   end;
 end;
 {$ENDIF CPU64}
