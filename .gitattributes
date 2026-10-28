@@ -1,2 +1,5 @@
 *	text=auto
 *.pas	filter=rcs-keywords
+
+# applies post commit hook to dspec
+*.dspec filter=insert-hash
