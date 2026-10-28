@@ -406,7 +406,7 @@ function _BZ2_indexIntoF: Pointer;
 function BZ2_indexIntoF: Pointer; external;
 {$ENDIF CPU64}
 
-{$IFDEF CPU32}
+{$IFDEF CPU386}
 {$LINK ..\windows\obj\bzip2\win32\bzlib.obj}
 {$LINK ..\windows\obj\bzip2\win32\randtable.obj}
 {$LINK ..\windows\obj\bzip2\win32\crctable.obj}
@@ -414,8 +414,8 @@ function BZ2_indexIntoF: Pointer; external;
 {$LINK ..\windows\obj\bzip2\win32\decompress.obj}
 {$LINK ..\windows\obj\bzip2\win32\huffman.obj}
 {$LINK ..\windows\obj\bzip2\win32\blocksort.obj}
-{$ENDIF CPU32}
-{$IFDEF CPU64}
+{$ENDIF CPU386}
+{$IFDEF CPUX64}
 {$LINK ..\windows\obj\bzip2\win64\bzlib.obj}
 {$LINK ..\windows\obj\bzip2\win64\randtable.obj}
 {$LINK ..\windows\obj\bzip2\win64\crctable.obj}
@@ -423,7 +423,7 @@ function BZ2_indexIntoF: Pointer; external;
 {$LINK ..\windows\obj\bzip2\win64\decompress.obj}
 {$LINK ..\windows\obj\bzip2\win64\huffman.obj}
 {$LINK ..\windows\obj\bzip2\win64\blocksort.obj}
-{$ENDIF CPU64}
+{$ENDIF CPUX64}
 
 {$IFDEF CPU32}
 function _malloc(size: Longint): Pointer; cdecl;

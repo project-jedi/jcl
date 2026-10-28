@@ -30,14 +30,15 @@ uses
   {$ENDIF}
   Classes,
   SysUtils,
-  JclSysUtils,
-  JclStrings;
+  JclBase, JclSysUtils,
+  JclAnsiStrings, JclStrings;
 
 { TJclStringCharacterTestRoutines }
 
 type
   TJclStringCharacterTestRoutines = class(TTestCase)
   private
+    function ToChar(C: AnsiChar): Char;
   published
     procedure _CharEqualNoCase;
     procedure _CharIsAlpha;
@@ -186,6 +187,11 @@ end;
   { TJclStringManagment }
 
   TAnsiStringListTest = class (TTestCase)
+  {$IFDEF UNICODE}
+  protected
+    procedure CheckEquals(const expected: string; const actual: AnsiString; msg: string = ''); overload;
+    procedure CheckEquals(const expected: AnsiString; const actual: string; msg: string = ''); overload;
+  {$ENDIF UNICODE}
   published
     procedure _SetCommaTextCount;
     procedure _GetCommaTextCount;
@@ -210,13 +216,13 @@ implementation
 uses
   LibC;
 {$ENDIF LINUX}
-{$IFDEF WIN32}
+{$IFDEF MSWINDOWS}
 const
-  LibC = 'msvcrt40.dll';
+  LibC = {$IFDEF CPUINTEL}'msvcrt.dll'{$ELSE}'ucrtbase.dll'{$ENDIF ~CPUINTEL};
 
 function isalnum(C: Integer): LongBool; cdecl; external LibC;
 function isalpha(C: Integer): LongBool; cdecl; external LibC;
-{$ENDIF WIN32}
+{$ENDIF MSWINDOWS}
 
 //-----------------------------------------------------------------------------------------------
 // Generators
@@ -882,7 +888,11 @@ threadvar
 
 function RemoveValidator(const C: Char): Boolean;
 begin
+  {$IFDEF UNICODE}
+  Result := CharInSet(C, removeset);
+  {$ELSE ~UNICODE}
   Result := C in removeset;
+  {$ENDIF ~UNICODE}
 end;
 
 procedure TJclStringTransformation._StrRemoveChars;
@@ -908,7 +918,7 @@ begin
 
     for t := 1 to Length(sn) do
     begin
-      if not (sn[t] in removeset) then
+      if not RemoveValidator(sn[t]) then
         removeset := removeset + [Char(sn[t])];
 
       v := Pos(sn[t], s3);
@@ -931,7 +941,11 @@ threadvar
 
 function KeepValidator(const C: Char): Boolean;
 begin
+  {$IFDEF UNICODE}
+  Result := CharInSet(C, keepset);
+  {$ELSE ~UNICODE}
   Result := C in keepset;
+  {$ENDIF ~UNICODE}
 end;
 
 procedure TJclStringTransformation._StrKeepChars;
@@ -958,13 +972,13 @@ begin
 
     for t := 1 to length(sn) do
     begin
-      if not (sn[t] in keepset) then
+      if not KeepValidator(sn[t]) then
         keepset := keepset + [Char(sn[t])];
     end;
 
     for t := 1 to length(s) do
     begin
-      if s[t] in keepset then
+      if KeepValidator(s[t]) then
         s3 := s3 + s[t];
     end;
 
@@ -1170,19 +1184,20 @@ end;
 
 procedure TJclStringTransformation._StrToHex;
 var
-  s, sn: string;
+  s: AnsiString;
+  sn: string;
 
 begin
   CheckEquals(StrToHex(''),'','StrToHex');
 
   SN := '262A32543B';
   SetLength(S,20);
-  HexToBin(PChar(SN),PChar(S),20);
-  CheckEquals(StrToHex(SN),Copy(S,1,Length(SN) div 2),'StrToHex');
+  HexToBin(PChar(SN),PAnsiChar(S),20);
+  CheckEquals(StrToHex(SN),string(Copy(S,1,Length(SN) div 2)),'StrToHex');
 
   SN := 'FF2A2B2C2D1A2F';
-  HexToBin(PChar(SN),PChar(S),20);
-  CheckEquals(StrToHex(SN),Copy(S,1,Length(SN) div 2),'StrToHex');
+  HexToBin(PChar(SN),PAnsiChar(S),20);
+  CheckEquals(StrToHex(SN),string(Copy(S,1,Length(SN) div 2)),'StrToHex');
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1844,27 +1859,38 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function TJclStringCharacterTestRoutines.ToChar(C: AnsiChar): Char;
+begin
+  {$IFDEF UNICODE}
+  Result := string(AnsiString(C))[1] // Encoding conversion instead of flat cast
+  {$ELSE ~UNICODE}
+  Result := C
+  {$ENDIF ~UNICODE}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclStringCharacterTestRoutines._CharEqualNoCase;
 var
-  c1, c2: char;
+  c1, c2: AnsiChar;
 
 begin
   for c1 := #0 to #255 do
   for c2 := #0 to #255 do
-    Check(CharEqualNoCase(c1,c2) = (AnsiUpperCase(C1) = AnsiUpperCase(C2)),Format('CharEqualNoCase: C1: %s C2: %s',[c1,c2]));
+    Check(CharEqualNoCase(ToChar(c1),ToChar(c2)) = (AnsiUpperCase(ToChar(C1)) = AnsiUpperCase(ToChar(C2))),Format('CharEqualNoCase: C1: %s C2: %s',[c1,c2]));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclStringCharacterTestRoutines._CharIsAlpha;
 var
-  C: char;
+  C: AnsiChar;
 begin
   for C := #0 to #255 do
     CheckEquals(
       isalpha(Ord(C)) or (C in [#131, #138, #140, #142, #154, #156, #158, #159, #170, #181, #186, #192 .. #214,
                                 #216 .. #246, #248 .. #255]),
-      CharIsAlpha(C),
+      CharIsAlpha(ToChar(C)),
       'CharIsAlpha #' + IntToStr(Ord(C)));
 end;
 
@@ -1872,13 +1898,13 @@ end;
 
 procedure TJclStringCharacterTestRoutines._CharIsAlphaNum;
 var
-  C: char;
+  C: AnsiChar;
 begin
   for C := #0 to #255 do
     CheckEquals(
       isalnum(Ord(C)) or (C in [#131, #138, #140, #142, #154, #156, #158, #159, #170, #178, #179, #181, #185, #186,
                                 #192 .. #214, #216 .. #246, #248 .. #255]),
-      CharIsAlphaNum(C) ,
+      CharIsAlphaNum(ToChar(C)) ,
       'CharIsAlphaNum #' + IntToStr(Ord(C)));
 end;
 
@@ -1886,13 +1912,13 @@ end;
 
 procedure TJclStringCharacterTestRoutines._CharIsBlank;
 var
-  c1: char;
+  c1: AnsiChar;
 
 begin
   for c1 := #0 to #255 do
     CheckEquals(
       (c1 in [#9, ' ', #160]),
-      CharIsBlank(c1),
+      CharIsBlank(ToChar(c1)),
       'CharIsBlank #' + IntToStr(Ord(c1)));
 end;
 
@@ -1900,13 +1926,13 @@ end;
 
 procedure TJclStringCharacterTestRoutines._CharIsControl;
 var
-  c1: char;
+  c1: AnsiChar;
 
 begin
   for c1 := #0 to #255 do
     CheckEquals(
-      (c1 in [#0 .. #31, #127, #129, #141, #143, #144, #157]),
-      CharIsControl(c1),
+      (c1 in [#0 .. #31, #127, #129, #141, #143, #144, #157, #173]),
+      CharIsControl(ToChar(c1)),
       'CharIsControl #' + IntToStr(Ord(c1)));
 end;
 
@@ -1914,24 +1940,24 @@ end;
 
 procedure TJclStringCharacterTestRoutines._CharIsDelete;
 var
-  c1: char;
+  c1: AnsiChar;
 
 begin
   for c1 := #0 to #255 do
-    CheckEquals((ord(c1) = 8), CharIsDelete(c1), 'CharIsDelete #' + IntToStr(Ord(c1)));
+    CheckEquals((ord(c1) = 8), CharIsDelete(ToChar(c1)), 'CharIsDelete #' + IntToStr(Ord(c1)));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclStringCharacterTestRoutines._CharIsDigit;
 var
-  c1: char;
+  c1: AnsiChar;
 
 begin
   for c1 := #0 to #255 do
     CheckEquals(
       (c1 in ['0'..'9', #178 { power of 2 }, #179 {power of 3}, #185 {power of 1}]),
-      CharIsDigit(c1),
+      CharIsDigit(ToChar(c1)),
       'CharIsDigit #' + IntToStr(Ord(c1)));
 end;
 
@@ -1939,13 +1965,13 @@ end;
 
 procedure TJclStringCharacterTestRoutines._CharIsNumberChar;
 var
-  c1: char;
+  c1: AnsiChar;
 
 begin
   for c1 := #0 to #255 do
     CheckEquals(
       (c1 in ['0'..'9', '+', '-', {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}DecimalSeparator, #178 { power of 2 }, #179 {power of 3}, #185 {power of 1}]),
-      CharIsNumberChar(c1),
+      CharIsNumberChar(ToChar(c1)),
       'CharIsNumberChar #' + IntToStr(Ord(c1)));
 end;
 
@@ -1953,13 +1979,13 @@ end;
 
 procedure TJclStringCharacterTestRoutines._CharIsPrintable;
 var
-  c1: char;
+  c1: AnsiChar;
 
 begin
   for c1 := #0 to #255 do
     CheckEquals(
-      not (c1 in [#0 .. #31, #127, #129, #141, #143, #144, #157]),
-      CharIsPrintable(c1),
+      not (c1 in [#0 .. #31, #127, #129, #141, #143, #144, #157, #173]),
+      CharIsPrintable(ToChar(c1)),
       'CharIsPrintable #' + IntToStr(Ord(c1)));
 end;
 
@@ -1967,13 +1993,13 @@ end;
 
 procedure TJclStringCharacterTestRoutines._CharIsPunctuation;
 var
-  c1: char;
+  c1: AnsiChar;
 begin
   for c1 := #0 to #255 do
     CheckEquals(
       (c1 in [#123..#126, #130, #132 .. #135, #137, #139, #145 .. #151, #155, #161 .. #191, #215, #247,
               #91..#96, #38..#47, '@', #60..#63, '#','$','%','"','.',',','!',':','=',';']),
-      CharIsPunctuation(c1),
+      CharIsPunctuation(ToChar(c1)),
       'CharIsPunctuation #' + IntToStr(Ord(c1)));
 end;
 
@@ -1981,22 +2007,22 @@ end;
 
 procedure TJclStringCharacterTestRoutines._CharIsReturn;
 var
-  c1: char;
+  c1: AnsiChar;
 begin
   for c1 := #0 to #255 do
-    CheckEquals(((c1 = #13) or (c1 = #10)), CharIsReturn(c1), 'CharIsReturn #' + IntToStr(Ord(c1)));
+    CheckEquals(((c1 = #13) or (c1 = #10)), CharIsReturn(ToChar(c1)), 'CharIsReturn #' + IntToStr(Ord(c1)));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclStringCharacterTestRoutines._CharIsSpace;
 var
-  c1: char;
+  c1: AnsiChar;
 begin
   for c1 := #0 to #255 do
     CheckEquals(
       c1 in [#9, #10, #11, #12, #13, ' ', #160],
-      CharIsSpace(c1),
+      CharIsSpace(ToChar(c1)),
       'CharIsSpace #' + IntToStr(Ord(c1)));
 end;
 
@@ -2004,12 +2030,12 @@ end;
 
 procedure TJclStringCharacterTestRoutines._CharIsWhiteSpace;
 var
-  c1: char;
+  c1: AnsiChar;
 begin
   for c1 := #0 to #255 do
     CheckEquals(
       (c1 in [NativeTab, NativeLineFeed, NativeVerticalTab, NativeFormFeed, NativeCarriageReturn, NativeSpace]),
-      CharIsWhiteSpace(c1),
+      CharIsWhiteSpace(ToChar(c1)),
       'CharIsWhiteSpace #' + IntToStr(Ord(c1))
     );
 end;
@@ -2018,12 +2044,12 @@ end;
 
 procedure TJclStringCharacterTestRoutines._CharIsUpper;
 var
-  c1: char;
+  c1: AnsiChar;
 begin
   for c1 := #0 to #255 do
     CheckEquals(
       (c1 in ['A'..'Z', #138, #140, #142, #159, #192 .. #214, #216 .. #222]),
-      CharIsUpper(c1),
+      CharIsUpper(ToChar(c1)),
       'CharIsUpper #' + IntToStr(Ord(c1)));
 end;
 
@@ -2031,12 +2057,12 @@ end;
 
 procedure TJclStringCharacterTestRoutines._CharIsLower;
 var
-  c1: char;
+  c1: AnsiChar;
 begin
   for c1 := #0 to #255 do
     CheckEquals(
       (c1 in ['a' .. 'z', #131, #154, #156, #158, #170, #181, #186, #223 .. #246, #248 .. #255]),
-      CharIsLower(c1),
+      CharIsLower(ToChar(c1)),
       'CharIsLower #' + IntToStr(Ord(c1)));
 end;
 
@@ -2614,8 +2640,8 @@ end;
 procedure TJclStringTabSet._OptimalFill;
 var
   tabs: TJclTabSet;
-  tabCount: Integer;
-  spaceCount: Integer;
+  tabCount: SizeInt;
+  spaceCount: SizeInt;
 begin
   tabs := TJclTabSet.Create([17, 22, 32], False, 4);
   try
@@ -2846,9 +2872,13 @@ procedure TJclStringTabSet._ToString;
 var
   tabs: TJclTabSet;
 begin
-  tabs := nil;
-  CheckEquals('0 [] +2', tabs.ToString, 'nil-set, full');
-  CheckEquals('0', tabs.ToString(TabSetFormatting_Default), 'nil-set, default');
+  tabs := TJclTabSet.Create;
+  try
+    CheckEquals('0 [] +2', tabs.ToString, 'nil-set, full');
+    CheckEquals('0', tabs.ToString(TabSetFormatting_Default), 'nil-set, default');
+  finally
+    tabs.Free;
+  end;
 
   tabs := TJclTabSet.Create([15, 17, 20, 30], True, 4);
   try
@@ -2867,8 +2897,8 @@ end;
 procedure TJclStringTabSet._UpdatePosition;
 var
   tabs: TJclTabSet;
-  column: Integer;
-  line: Integer;
+  column: SizeInt;
+  line: SizeInt;
 begin
   tabs := TJclTabSet.Create([17, 22, 32], False, 4);
   try
@@ -2940,6 +2970,20 @@ begin
 end;
 
 { TAnsiStringListTest }
+
+{$IFDEF UNICODE}
+procedure TAnsiStringListTest.CheckEquals(const expected: string;
+  const actual: AnsiString; msg: string = '');
+begin
+  CheckEquals(expected, string(actual), msg);
+end;
+
+procedure TAnsiStringListTest.CheckEquals(const expected: AnsiString;
+  const actual: string; msg: string = '');
+begin
+  CheckEquals(string(expected), actual, msg);
+end;
+{$ENDIF UNICODE}
 
 procedure TAnsiStringListTest._GetCommaTextCount;
 var slJCL: TAnsiStringList;

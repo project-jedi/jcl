@@ -461,7 +461,7 @@ end;
 
 procedure _BlendLine(Src, Dst: PColor32; Count: Integer); assembler;
 asm
-  {$IFDEF CPU32}
+  {$IFDEF CPU386}
   // EAX <- Src
   // EDX <- Dst
   // ECX <- Count
@@ -540,8 +540,8 @@ asm
         POP     EBX
 
 @4:     RET
-  {$ENDIF CPU32}
-  {$IFDEF CPU64}
+  {$ENDIF CPU386}
+  {$IFDEF CPUX64}
   // RCX <- Src      EAX
   // RDX <- Dst      EDX
   // R8  <- Count    ECX
@@ -613,7 +613,7 @@ asm
 
 
 @4:     RET
-  {$ENDIF CPU64}
+  {$ENDIF CPUX64}
 end;
 
 procedure _BlendLineEx(Src, Dst: PColor32; Count: Integer; M: TColor32);
@@ -666,7 +666,7 @@ end;
 function SSE2_CombineReg(X, Y, W: TColor32): TColor32; assembler;
 asm
   // Result := W * (X - Y) + Y
- {$IFDEF CPU32}
+ {$IFDEF CPU386}
   // EAX - Color X
   // EDX - Color Y
   // ECX - Weight of X [0..255]
@@ -687,8 +687,8 @@ asm
         PSRLW     XMM1, 8
         PACKUSWB  XMM1, XMM0
         MOVD      EAX, XMM1
-  {$ENDIF CPU32}
-  {$IFDEF CPU64}
+  {$ENDIF CPU386}
+  {$IFDEF CPUX64}
   // RCX - Color X
   // RDX - Color Y
   // R8  - Weight of X [0..255]
@@ -709,7 +709,7 @@ asm
         PSRLW     XMM1, 8
         PACKUSWB  XMM1, XMM0
         MOVD      EAX, XMM1
-  {$ENDIF CPU64}
+  {$ENDIF CPUX64}
 end;
 
 procedure SSE2_CombineMem(F: TColor32; var B: TColor32; W: TColor32);
@@ -722,7 +722,7 @@ asm
   // blend foreground color (F) to a background color (B),
   // using alpha channel value of F
   // Result := Fa * (Frgb - Brgb) + Brgb
-  {$IFDEF CPU32}
+  {$IFDEF CPU386}
   // EAX <- F
   // EDX <- B
         PXOR      XMM3, XMM3
@@ -746,8 +746,8 @@ asm
         PSRLW     XMM2, 8
         PACKUSWB  XMM2, XMM3
         MOVD      EAX, XMM2
-  {$ENDIF CPU32}
-  {$IFDEF CPU64}
+  {$ENDIF CPU386}
+  {$IFDEF CPUX64}
   // RCX <- F
   // RDX <- B
         PXOR      XMM3, XMM3
@@ -771,7 +771,7 @@ asm
         PSRLW     XMM2, 8
         PACKUSWB  XMM2, XMM3
         MOVD      EAX, XMM2
-  {$ENDIF CPU64}
+  {$ENDIF CPUX64}
 end;
 
 procedure SSE2_BlendMem(F: TColor32; var B: TColor32);
@@ -784,7 +784,7 @@ asm
   // blend foreground color (F) to a background color (B),
   // using alpha channel value of F
   // Result := M * Fa * (Frgb - Brgb) + Brgb
-  {$IFDEF CPU32}
+  {$IFDEF CPU386}
   // EAX <- F
   // EDX <- B
   // ECX <- M
@@ -816,8 +816,8 @@ asm
         RET
 @1:     MOV       EAX, EDX
         POP       EBX
-  {$ENDIF CPU32}
-  {$IFDEF CPU64}
+  {$ENDIF CPU386}
+  {$IFDEF CPUX64}
   // RCX <- F
   // EDX <- B
   // R8 <- M
@@ -846,7 +846,7 @@ asm
         RET
 
 @1:     MOV       RAX, RDX
-  {$ENDIF CPU64}
+  {$ENDIF CPUX64}
 end;
 
 procedure SSE2_BlendMemEx(F: TColor32; var B: TColor32; M: TColor32);
@@ -856,7 +856,7 @@ end;
 
 procedure SSE2_BlendLine(Src, Dst: PColor32; Count: Integer); assembler;
 asm
-  {$IFDEF CPU32}
+  {$IFDEF CPU386}
   // EAX <- Src
   // EDX <- Dst
   // ECX <- Count
@@ -914,8 +914,8 @@ asm
         POP       ESI
 
 @4:     RET
-  {$ENDIF CPU32}
-  {$IFDEF CPU64}
+  {$ENDIF CPU386}
+  {$IFDEF CPUX64}
   // RCX <- Src
   // RDX <- Dst
   // R8  <- Count
@@ -967,12 +967,12 @@ asm
         JNZ       @1
 
 @4:     RET
-  {$ENDIF CPU64}
+  {$ENDIF CPUX64}
 end;
 
 procedure SSE2_BlendLineEx(Src, Dst: PColor32; Count: Integer; M: TColor32); assembler;
 asm
-  {$IFDEF CPU32}
+  {$IFDEF CPU386}
   // EAX <- Src
   // EDX <- Dst
   // ECX <- Count
@@ -1030,8 +1030,8 @@ asm
         POP       EDI
         POP       ESI
 @4:
-  {$ENDIF CPU32}
-  {$IFDEF CPU64}
+  {$ENDIF CPU386}
+  {$IFDEF CPUX64}
   // RCX <- Src
   // RDX <- Dst
   // R8  <- Count
@@ -1082,7 +1082,7 @@ asm
         DEC       R8
         JNZ       @1
 @4:
-  {$ENDIF CPU64}
+  {$ENDIF CPUX64}
 end;
 
 { MMX Detection and linking }

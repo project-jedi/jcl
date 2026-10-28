@@ -18,7 +18,10 @@
 
 unit TestJcl8087;
 
+{$I jcl.inc}
+
 interface
+{$IFDEF CPUINTEL}
 uses
   TestFramework,
   SysUtils,
@@ -39,9 +42,11 @@ type
     procedure Rounding;
     procedure Exceptions;
   end;
+{$ENDIF CPUINTEL}
 
 implementation
 
+{$IFDEF CPUINTEL}
 //==================================================================================================
 // TJcl8087Test
 //==================================================================================================
@@ -208,14 +213,5 @@ end;
 initialization
   RegisterTest('JCL8087', TJcl8087Test.Suite);
 
-
+{$ENDIF CPUINTEL}
 end.
-
-
-
-
-
-
-
-
-
