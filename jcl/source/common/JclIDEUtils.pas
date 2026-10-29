@@ -495,8 +495,6 @@ type
     function AddToLibraryBrowsingPath(const Path: string; APlatform: TJclBDSPlatform): Boolean;
     function FindFolderInPath(Folder: string; List: TStrings): Integer;
 
-    class function AdjustPathForWin64X(const Path: string): string;
-
     // package functions
       // install = package compile + registration
       // uninstall = unregistration + deletion
@@ -2101,12 +2099,6 @@ begin
     Result := False;
 end;
 
-class function TJclBorRADToolInstallation.AdjustPathForWin64X(
-  const Path: string): string;
-begin
-  Result := StringReplace(Path, '\win64', '\win64x', [rfIgnoreCase]);
-end;
-
 function TJclBorRADToolInstallation.AddToLibraryBrowsingPath(const Path: string; APlatform: TJclBDSPlatform): Boolean;
 var
   TempRawLibraryPath: TJclBorRADToolPath;
@@ -2120,14 +2112,8 @@ begin
     Result := True;
     RawLibraryBrowsingPath[APlatform] := TempRawLibraryPath;
 
-    case APlatform of
-      bpWin32:
-        if clBcc32c in CommandLineTools then
-          Result := Result and AddToLibraryBrowsingPath(Path, bpWin32c);
-      bpWin64:
-        if clBcc64x in CommandLineTools then
-          Result := Result and AddToLibraryBrowsingPath(AdjustPathForWin64X(Path), bpWin64x);
-    end;
+    if (APlatform = bpWin32) and (clBcc32c in CommandLineTools) then
+      Result := Result and AddToLibraryBrowsingPath(Path, bpWin32c);
   end
   else
     Result := False;
@@ -3784,14 +3770,8 @@ begin
     Result := True;
     RawCppBrowsingPath[APlatform] := TempRawCppPath;
 
-    case APlatform of
-      bpWin32:
-        if clBcc32c in CommandLineTools then
-          Result := Result and AddToCppBrowsingPath(Path, bpWin32c);
-      bpWin64:
-        if clBcc64x in CommandLineTools then
-          Result := Result and AddToCppBrowsingPath(Path, bpWin64x);
-    end;
+    if (APlatform = bpWin32) and (clBcc32c in CommandLineTools) then
+      Result := Result and AddToCppBrowsingPath(Path, bpWin32c);
   end
   else
     Result := False;
@@ -3810,14 +3790,8 @@ begin
     Result := True;
     RawCppSearchPath[APlatform] := TempRawCppPath;
 
-    case APlatform of
-      bpWin32:
-        if clBcc32c in CommandLineTools then
-          Result := Result and AddToCppSearchPath(Path, bpWin32c);
-      bpWin64:
-        if clBcc64x in CommandLineTools then
-          Result := Result and AddToCppSearchPath(AdjustPathForWin64X(Path), bpWin64x);
-    end;
+    if (APlatform = bpWin32) and (clBcc32c in CommandLineTools) then
+      Result := Result and AddToCppSearchPath(Path, bpWin32c);
   end
   else
     Result := False;
@@ -3836,14 +3810,8 @@ begin
     Result := True;
     RawCppLibraryPath[APlatform] := TempRawLibraryPath;
 
-    case APlatform of
-      bpWin32:
-        if clBcc32c in CommandLineTools then
-          Result := Result and AddToCppLibraryPath(Path, bpWin32c);
-      bpWin64:
-        if clBcc64x in CommandLineTools then
-          Result := Result and AddToCppLibraryPath(AdjustPathForWin64X(Path), bpWin64x);
-    end;
+    if (APlatform = bpWin32) and (clBcc32c in CommandLineTools) then
+      Result := Result and AddToCppLibraryPath(Path, bpWin32c);
   end
   else
     Result := False;
@@ -3862,14 +3830,8 @@ begin
     Result := True;
     RawCppIncludePath[APlatform] := TempRawIncludePath;
 
-    case APlatform of
-      bpWin32:
-        if clBcc32c in CommandLineTools then
-          Result := Result and AddToCppIncludePath(Path, bpWin32c);
-      bpWin64:
-        if clBcc64x in CommandLineTools then
-          Result := Result and AddToCppIncludePath(Path, bpWin64x);
-    end;
+    if (APlatform = bpWin32) and (clBcc32c in CommandLineTools) then
+      Result := Result and AddToCppIncludePath(Path, bpWin32c);
   end
   else
     Result := False;
@@ -4929,14 +4891,8 @@ begin
     Result := RemoveFromPath(TempRawCppPath, Path);
     RawCppBrowsingPath[APlatform] := TempRawCppPath;
 
-    case APlatform of
-      bpWin32:
-        if clBcc32c in CommandLineTools then
-          Result := Result and RemoveFromCppBrowsingPath(Path, bpWin32c);
-      bpWin64:
-        if clBcc64x in CommandLineTools then
-          Result := Result and RemoveFromCppBrowsingPath(Path, bpWin64x);
-    end;
+    if (APlatform = bpWin32) and (clBcc32c in CommandLineTools) then
+      Result := Result and RemoveFromCppBrowsingPath(Path, bpWin32c);
   end
   else
     Result := False;
@@ -4954,14 +4910,8 @@ begin
     Result := RemoveFromPath(TempRawCppPath, Path);
     RawCppSearchPath[APlatform] := TempRawCppPath;
 
-    case APlatform of
-      bpWin32:
-        if clBcc32c in CommandLineTools then
-          Result := Result and RemoveFromCppSearchPath(Path, bpWin32c);
-      bpWin64:
-        if clBcc64x in CommandLineTools then
-          Result := Result and RemoveFromCppSearchPath(AdjustPathForWin64X(Path), bpWin64x);
-    end;
+    if (APlatform = bpWin32) and (clBcc32c in CommandLineTools) then
+      Result := Result and RemoveFromCppSearchPath(Path, bpWin32c);
   end
   else
     Result := False;
@@ -4979,14 +4929,8 @@ begin
     Result := RemoveFromPath(TempRawLibraryPath, Path);
     RawCppLibraryPath[APlatform] := TempRawLibraryPath;
 
-    case APlatform of
-      bpWin32:
-        if clBcc32c in CommandLineTools then
-          Result := Result and RemoveFromCppLibraryPath(Path, bpWin32c);
-      bpWin64:
-        if clBcc64x in CommandLineTools then
-          Result := Result and RemoveFromCppLibraryPath(AdjustPathForWin64X(Path), bpWin64x);
-    end;
+    if (APlatform = bpWin32) and (clBcc32c in CommandLineTools) then
+      Result := Result and RemoveFromCppLibraryPath(Path, bpWin32c);
   end
   else
     Result := False;
@@ -5004,14 +4948,8 @@ begin
     Result := RemoveFromPath(TempRawIncludePath, Path);
     RawCppIncludePath[APlatform] := TempRawIncludePath;
 
-    case APlatform of
-      bpWin32:
-        if clBcc32c in CommandLineTools then
-          Result := Result and RemoveFromCppIncludePath(Path, bpWin32c);
-      bpWin64:
-        if clBcc64x in CommandLineTools then
-          Result := Result and RemoveFromCppIncludePath(Path, bpWin64x);
-    end;
+    if (APlatform = bpWin32) and (clBcc32c in CommandLineTools) then
+      Result := Result and RemoveFromCppIncludePath(Path, bpWin32c);
   end
   else
     Result := False;
