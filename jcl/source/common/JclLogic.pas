@@ -1506,7 +1506,7 @@ asm
   BT     RAX, RDX
   SETC   AL
 end;
-{$ENDIF ~PUREPASCAL}
+{$ENDIF CPU64}
 
 function TestBitBuffer(const Value; const Bit: Cardinal): Boolean;
 {$IFDEF PUREPASCAL}
