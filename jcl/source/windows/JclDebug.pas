@@ -680,7 +680,9 @@ type
     BaseOfStack: TJclAddr;
     FStackData: PPointer;
     FFramePointer: Pointer;
-    FModuleInfoList: TJclModuleInfoList;
+    {$IFDEF CPU32}
+    FModuleInfoList: TJclModuleInfoList; // used only to validate the addresses of the Win32 stack walk
+    {$ENDIF CPU32}
     FCorrectOnAccess: Boolean;
     FSkipFirstItem: Boolean;
     FDelayedTrace: Boolean;
@@ -691,15 +693,16 @@ type
     procedure CaptureBackTrace;
     {$ENDIF CPU64}
     function GetItems(Index: TJclListSize): TJclStackInfoItem;
-    function NextStackFrame(var StackFrame: PStackFrame; var StackInfo: TStackInfo): Boolean;
     procedure StoreToList(const StackInfo: TStackInfo);
+    {$IFDEF CPU32}
+    // Win32 stack walk. Win64 uses CaptureBackTrace, which needs neither these nor the modules list.
+    function NextStackFrame(var StackFrame: PStackFrame; var StackInfo: TStackInfo): Boolean;
     procedure TraceStackFrames;
     procedure TraceStackRaw;
-    {$IFDEF CPU32}
     procedure DelayStoreStack;
-    {$ENDIF CPU32}
     function ValidCallSite(CodeAddr: TJclAddr; out CallInstructionSize: Cardinal): Boolean;
     function ValidStackAddr(StackAddr: TJclAddr): Boolean;
+    {$ENDIF CPU32}
     function GetCount: Integer;
     procedure CorrectOnAccess(ASkipFirstItem: Boolean);
   public
@@ -5779,7 +5782,11 @@ begin
   else
     TopOfStack := TJclAddr(ATopOfStack);
 
+  {$IFDEF CPU32}
+  // Without stStaticModuleList this enumerates all the modules of the process at every stack list:
+  // Win64 must not pay for it, because CaptureBackTrace does not use it.
   FModuleInfoList := GlobalModulesList.CreateModulesList;
+  {$ENDIF CPU32}
   if AFirstCaller <> nil then
   begin
     Item := TJclStackInfoItem.Create;
@@ -5804,7 +5811,9 @@ destructor TJclStackInfoList.Destroy;
 begin
   if Assigned(FStackData) then
     FreeMem(FStackData);
+  {$IFDEF CPU32}
   GlobalModulesList.FreeModulesList(FModuleInfoList);
+  {$ENDIF CPU32}
   inherited Destroy;
   if (InterlockedDecrement(GlobalStackListLiveCount) = 0) and JclDebugFinalized then
     FreeJclDebugGlobals;
@@ -5897,10 +5906,13 @@ begin
   begin
     FInStackTracing := True;
     try
+      {$IFDEF CPU32}
+      // FStackData is assigned only by DelayStoreStack, which exists only in Win32
       if Raw then
         TraceStackRaw
       else
         TraceStackFrames;
+      {$ENDIF CPU32}
       if FCorrectOnAccess then
         CorrectExceptStackListTop(Self, FSkipFirstItem);
     finally
@@ -5949,6 +5961,7 @@ begin
   Result := TJclStackInfoItem(Get(Index));
 end;
 
+{$IFDEF CPU32}
 function TJclStackInfoList.NextStackFrame(var StackFrame: PStackFrame; var StackInfo: TStackInfo): Boolean;
 var
   CallInstructionSize: Cardinal;
@@ -6005,6 +6018,7 @@ begin
   end;
   Result := False;
 end;
+{$ENDIF CPU32}
 
 procedure TJclStackInfoList.StoreToList(const StackInfo: TStackInfo);
 var
@@ -6019,6 +6033,7 @@ begin
   end;
 end;
 
+{$IFDEF CPU32}
 procedure TJclStackInfoList.TraceStackFrames;
 var
   StackFrame: PStackFrame;
@@ -6620,7 +6635,6 @@ begin
   end;
 end;
 
-{$IFDEF CPU32}
 procedure TJclStackInfoList.DelayStoreStack;
 var
   StackPtr: PJclAddr;
@@ -6651,7 +6665,6 @@ begin
   FFramePointer := Pointer(TJclAddr(FFramePointer) + FStackOffset);
   TopOfStack := TopOfStack + FStackOffset;
 end;
-{$ENDIF CPU32}
 
 // Validate that the code address is a valid code site
 //
@@ -6756,15 +6769,18 @@ begin
     end;
   end;
 end;
+{$ENDIF CPU32}
 
 {$IFNDEF STACKFRAMES_ON}
 {$STACKFRAMES OFF}
 {$ENDIF ~STACKFRAMES_ON}
 
+{$IFDEF CPU32}
 function TJclStackInfoList.ValidStackAddr(StackAddr: TJclAddr): Boolean;
 begin
   Result := (BaseOfStack < StackAddr) and (StackAddr < TopOfStack);
 end;
+{$ENDIF CPU32}
 
 //=== Exception frame info routines ==========================================
 
