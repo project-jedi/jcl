@@ -18,7 +18,7 @@
 { All Rights Reserved.                                                                             }
 {                                                                                                  }
 { You may retrieve the latest version of this file at the Project JEDI's JCL home page,            }
-{ located at http://jcl.sourceforge.net                                                            }
+{ located at https://github.com/project-jedi/jcl                                                   }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -40,6 +40,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  JclBase,
   JclSysInfo,
   JclOtaResources;
 
@@ -113,9 +114,15 @@ type
   //                       rcRoundTowardZero); //=3
 
   TJclVectorFrame = packed record
+    {$IFDEF WIN64}
+    Reserved00: Word;                    // bytes from 0   to 1
+    Reserved01: Word;                    // bytes from 2   to 3
+    Reserved02: Byte;                    // byte 4
+    {$ELSE}
     FCW: Word;                           // bytes from 0   to 1
     FSW: Word;                           // bytes from 2   to 3
     FTW: Byte;                           // byte 4
+    {$ENDIF WIN64}
     Reserved1: Byte;                     // byte 5
     FOP: Word;                           // bytes from 6   to 7
     FpuIp: Cardinal;                     // bytes from 8   to 11
@@ -126,7 +133,11 @@ type
     Reserved3: Word;                     // bytes from 22  to 23
     MXCSR: Cardinal;                     // bytes from 24  to 27
     MXCSRMask: Cardinal;                 // bytes from 28  to 31
+    {$IFDEF WIN64}
+    Reserved03: TJclFPURegisters;        // bytes from 32  to 159
+    {$ELSE}
     FPURegisters: TJclFPURegisters;      // bytes from 32  to 159
+    {$ENDIF WIN64}
     XMMRegisters: TJclXMMRegisters;      // bytes from 160 to 415
     Reserved4: array [416..511] of Byte; // bytes from 416 to 511
   end;
@@ -759,6 +770,7 @@ begin
       XMMMatch := True;
   end;
 
+  {$IFDEF WIN32}
   RegisterPosition := AnsiPos('MM', LocalString);
   while (RegisterPosition > 0) do
   begin
@@ -850,6 +862,7 @@ begin
     LocalString := AnsiUpperCase(Expression);
     RegisterPosition := AnsiPos('MM', LocalString);
   end;
+  {$ENDIF WIN32}
 
   Result := True;
 end;
@@ -920,6 +933,7 @@ begin
     JclContext.ExtendedContext.SaveArea.MXCSRMask := $FFFFFFFF;
     Move(OTAXMMRegs,JclContext.ExtendedContext.SaveArea.XMMRegisters, SizeOf(TOTAXMMReg) * 8);
     OTAThreadContext := AThread.OTAThreadContext;
+    {$IFDEF WIN32}
     JclContext.ExtendedContext.SaveArea.FCW := OTAThreadContext.FloatSave.ControlWord;
     JclContext.ExtendedContext.SaveArea.FSW := OTAThreadContext.FloatSave.StatusWord;
     JclContext.ExtendedContext.SaveArea.FTW := OTAThreadContext.FloatSave.TagWord;
@@ -931,6 +945,7 @@ begin
     Move(OTAThreadContext.FloatSave.RegisterArea[50],JclContext.ExtendedContext.SaveArea.FPURegisters[5],SizeOf(Extended));
     Move(OTAThreadContext.FloatSave.RegisterArea[60],JclContext.ExtendedContext.SaveArea.FPURegisters[6],SizeOf(Extended));
     Move(OTAThreadContext.FloatSave.RegisterArea[70],JclContext.ExtendedContext.SaveArea.FPURegisters[7],SizeOf(Extended));
+    {$ENDIF WIN32}
   end;
   {$ELSE COMPILER9_UP}
   // get XMM registers
@@ -938,8 +953,9 @@ begin
   begin
     GetMem(ContextMemory, SizeOf(TJclContext) + 15);
     try
-      if (Cardinal(ContextMemory) and 15) <> 0 then
-        AlignedContext := PJclContext((Cardinal(ContextMemory) + 16) and $FFFFFFF0)
+      if (TJclAddr(ContextMemory) and 15) <> 0 then
+        // PAnsiChar: TJclAddr is signed and would cause an int overflow for half the address space
+        AlignedContext := PJclContext(TJclAddr(PAnsiChar(ContextMemory) + 16) and -16)
       else
         AlignedContext := ContextMemory;
       AlignedContext^.ScalarContext.ContextFlags := CONTEXT_EXTENDED_REGISTERS;

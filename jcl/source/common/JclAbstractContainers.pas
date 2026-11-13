@@ -96,6 +96,9 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; virtual; abstract;
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); virtual;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); virtual;
+    {$IFDEF SUPPORTS_GENERICS}
+    procedure FreeAndNilIfObject<T>(var Value: T);
+    {$ENDIF SUPPORTS_GENERICS}
   public
     constructor Create;
     { IJclBaseContainer }
@@ -635,6 +638,8 @@ type
     property HashConvert: THashConvert<T> read GetHashConvert write SetHashConvert;
   end;
 
+  TJclAbstractContainerBase_PObject = ^TObject;
+
   //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
@@ -784,12 +789,12 @@ uses
   {$IFDEF HAS_UNIT_ANSISTRINGS}
   System.AnsiStrings,
   {$ENDIF HAS_UNIT_ANSISTRINGS}
-  System.SysUtils,
+  System.SysUtils, System.TypInfo,
   {$ELSE ~HAS_UNITSCOPE}
   {$IFDEF HAS_UNIT_ANSISTRINGS}
   AnsiStrings,
   {$ENDIF HAS_UNIT_ANSISTRINGS}
-  SysUtils,
+  SysUtils, TypInfo,
   {$ENDIF ~HAS_UNITSCOPE}
   JclStringConversions, JclUnicode, JclAlgorithms;
 
@@ -1132,6 +1137,25 @@ begin
     raise EJclOperationNotSupportedError.Create;
   {$ENDIF ~THREADSAFE}
 end;
+
+{$IFDEF SUPPORTS_GENERICS}
+procedure TJclAbstractContainerBase.FreeAndNilIfObject<T>(var Value: T);
+{$IFNDEF RTL280_UP}
+var
+  Info: PTypeInfo;
+{$ENDIF ~RTL280_UP}
+begin
+  {$IFDEF RTL280_UP}
+  if GetTypeKind(T) = tkClass then
+  {$ELSE ~RTL280_UP}
+  Info := TypeInfo(T);
+  if Assigned(Info) and (Info.Kind = tkClass) then
+  {$ENDIF ~RTL280_UP}
+    FreeAndNil(TJclAbstractContainerBase_PObject(@Value)^)
+  else
+    Value := Default(T);
+end;
+{$ENDIF SUPPORTS_GENERICS}
 
 //=== { TJclAbstractIterator } ===============================================
 
@@ -2551,7 +2575,7 @@ begin
   if FOwnsItems then
   begin
     Result := Default(T);
-    FreeAndNil(AItem);
+    FreeAndNilIfObject<T>(AItem);
   end
   else
   begin

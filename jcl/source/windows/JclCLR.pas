@@ -1161,7 +1161,6 @@ end;
 
 destructor TJclClrTableStream.Destroy;
 begin
-  FreeAndNil(FTables);
   inherited Destroy;
 end;
 
@@ -1253,7 +1252,7 @@ constructor TJclPeMetadata.Create(const AImage: TJclPeImage);
       FStreams.Add(GetStreamClass(string(pStream.Name)).Create(Self, pStream));
 
       pStream := PClrStreamHeader(TJclAddr(@pStream.Name[0]) +
-        DWORD_PTR((StrLenA(PAnsiChar(@pStream.Name[0]) + 1 + 3) and not $3)));
+        TJclAddr(DWORD_PTR((StrLenA(PAnsiChar(@pStream.Name[0]) + 1 + 3) and not $3))));
     end;
     if FindStream(TJclClrTableStream, TJclClrStream(TableStream)) then
       TableStream.Update;

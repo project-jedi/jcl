@@ -27,6 +27,20 @@ copy ..\source\include\jcl.template.inc ..\source\include\jcld22win32.inc
 copy ..\source\include\jcl.template.inc ..\source\include\jcld22win64.inc
 copy ..\source\include\jcl.template.inc ..\source\include\jcld23win32.inc
 copy ..\source\include\jcl.template.inc ..\source\include\jcld23win64.inc
+copy ..\source\include\jcl.template.inc ..\source\include\jcld24win32.inc
+copy ..\source\include\jcl.template.inc ..\source\include\jcld24win64.inc
+copy ..\source\include\jcl.template.inc ..\source\include\jcld25win32.inc
+copy ..\source\include\jcl.template.inc ..\source\include\jcld25win64.inc
+copy ..\source\include\jcl.template.inc ..\source\include\jcld26win32.inc
+copy ..\source\include\jcl.template.inc ..\source\include\jcld26win64.inc
+copy ..\source\include\jcl.template.inc ..\source\include\jcld27win32.inc
+copy ..\source\include\jcl.template.inc ..\source\include\jcld27win64.inc
+copy ..\source\include\jcl.template.inc ..\source\include\jcld28win32.inc
+copy ..\source\include\jcl.template.inc ..\source\include\jcld28win64.inc
+copy ..\source\include\jcl.template.inc ..\source\include\jcld29win32.inc
+copy ..\source\include\jcl.template.inc ..\source\include\jcld29win64.inc
+copy ..\source\include\jcl.template.inc ..\source\include\jcld37win32.inc
+copy ..\source\include\jcl.template.inc ..\source\include\jcld37win64.inc
 
 
 copy ..\source\include\jcl.template.inc ..\source\include\jclfpc.inc

@@ -35,7 +35,7 @@ procedure LoadedModules(ModuleList: TJclSerializableModuleInfoList);
 var
   I: Integer;
   ProcessHandle: THandle;
-  FileName: array [0..Max_Path] of Char;
+  FileName: array [0..MAX_PATH] of Char;
   S, BinFileVersion, FileVersion, FileDescription: string;
   FileVersionInfo: TJclFileVersionInfo;
   ModuleInfoList: TJclModuleInfoList;
@@ -48,7 +48,7 @@ begin
     for I := 0 to ModuleInfoList.Count - 1 do
     begin
       ModuleBase := TJclAddr(ModuleInfoList.Items[I].StartAddr);
-      GetModuleFileNameEx(ProcessHandle, ModuleBase, FileName, SizeOf(FileName));
+      GetModuleFileNameEx(ProcessHandle, ModuleBase, FileName, Length(FileName));
       FileVersion := '';
       if (FileName <> '') and VersionResourceAvailable(FileName) then
       begin

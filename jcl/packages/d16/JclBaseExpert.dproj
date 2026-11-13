@@ -5,7 +5,7 @@
 			<ProjectVersion>13.4</ProjectVersion>
 			<Config Condition="'$(Config)'==''">Release</Config>
 			<DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-			<DCC_Define>BCB;WIN32;CONDITIONALEXPRESSIONS;VER230;RELEASE</DCC_Define>
+			<DCC_Define>BCB;RELEASE</DCC_Define>
 			<Base>True</Base>
 			<AppType>Package</AppType>
 			<FrameworkType>None</FrameworkType>
@@ -44,10 +44,10 @@
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
 			<VerInfo_MajorVer>2</VerInfo_MajorVer>
-			<VerInfo_Build>5300</VerInfo_Build>
+			<VerInfo_Build>9331</VerInfo_Build>
 			<VerInfo_Release>0</VerInfo_Release>
-			<VerInfo_MinorVer>7</VerInfo_MinorVer>
-			<VerInfo_Keys>CompanyName=Project JEDI;FileDescription=JCL Package containing common units for JCL Experts;FileVersion=2.7.0.5300;InternalName=JclBaseExpert;LegalCopyright=Copyright (C) 1999, 2014 Project JEDI;OriginalFilename=JclBaseExpert160.bpl;ProductName=JEDI Code Library;ProductVersion=2.7.0.5300</VerInfo_Keys>
+			<VerInfo_MinorVer>9</VerInfo_MinorVer>
+			<VerInfo_Keys>CompanyName=Project JEDI;FileDescription=JCL Package containing common units for JCL Experts;FileVersion=2.9.0.9331;InternalName=JclBaseExpert;LegalCopyright=Copyright (C) 1999, 2025 Project JEDI;OriginalFilename=JclBaseExpert160.bpl;ProductName=JEDI Code Library;ProductVersion=2.9.0.9331</VerInfo_Keys>
 			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
 			<VerInfo_Locale>1033</VerInfo_Locale>
 			<DCC_Namespace>System;System.Win;WinApi;Vcl;Vcl.Imaging;$(DCC_Namespace)</DCC_Namespace>
@@ -56,7 +56,7 @@
 			<DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
 			<DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
 			<DCC_Description>JCL Package containing common units for JCL Experts</DCC_Description>
-			<DCC_Define>BCB;BCB;WIN32;CONDITIONALEXPRESSIONS;VER230;RELEASE;$(DCC_Define)</DCC_Define>
+			<DCC_Define>BCB;BCB;RELEASE;$(DCC_Define)</DCC_Define>
 			<DCC_WriteableConstants>true</DCC_WriteableConstants>
 			<DCC_OutputNeverBuildDcps>true</DCC_OutputNeverBuildDcps>
 			<DllSuffix>160</DllSuffix>
@@ -152,9 +152,9 @@
 						<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
 						<VersionInfo Name="AutoIncBuild">False</VersionInfo>
 						<VersionInfo Name="MajorVer">2</VersionInfo>
-						<VersionInfo Name="MinorVer">7</VersionInfo>
+						<VersionInfo Name="MinorVer">9</VersionInfo>
 						<VersionInfo Name="Release">0</VersionInfo>
-						<VersionInfo Name="Build">5300</VersionInfo>
+						<VersionInfo Name="Build">9331</VersionInfo>
 						<VersionInfo Name="Debug">False</VersionInfo>
 						<VersionInfo Name="PreRelease">False</VersionInfo>
 						<VersionInfo Name="Special">False</VersionInfo>
@@ -166,13 +166,13 @@
 					<VersionInfoKeys>
 						<VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
 						<VersionInfoKeys Name="FileDescription">JCL Package containing common units for JCL Experts</VersionInfoKeys>
-						<VersionInfoKeys Name="FileVersion">2.7.0.5300</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">2.9.0.9331</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName">JclBaseExpert</VersionInfoKeys>
-						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2014 Project JEDI</VersionInfoKeys>
+						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2025 Project JEDI</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename">JclBaseExpert160.bpl</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
-						<VersionInfoKeys Name="ProductVersion">2.7.0.5300</VersionInfoKeys>
+						<VersionInfoKeys Name="ProductVersion">2.9.0.9331</VersionInfoKeys>
 					</VersionInfoKeys>
 					<Source>
 						<Source Name="MainSource">JclBaseExpert.dpk</Source>

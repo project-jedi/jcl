@@ -90,7 +90,7 @@ type
 
   (* JCLBINARYTREEITRINT(BASEITRCLASSNAME, PREORDERITRCLASSNAME, INORDERITRCLASSNAME, POSTORDERITRCLASSNAME,
                          STDITRINTERFACENAME, STDTREEITRINTERFACENAME, BINTREEITRINTERFACENAME,
-                         COLLECTIONINTERFACENAME, EQUALITYCOMPARERINTERFACENAME, NODETYPENAME,
+                         TREECLASSNAME, EQUALITYCOMPARERINTERFACENAME, NODETYPENAME,
                          CONSTKEYWORD, PARAMETERNAME, TYPENAME, GETTERFUNCTIONNAME, SETTERPROCEDURENAME) *)
   TJclBinaryTreeItrIntParams = class(TJclContainerInterfaceParams)
   protected
@@ -105,7 +105,7 @@ type
     property StdItrInterfaceName: string index taIteratorInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property StdTreeItrInterfaceName: string index taTreeIteratorInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property BinTreeItrInterfaceName: string index taBinaryTreeIteratorInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
-    property CollectionInterfaceName: string index taCollectionInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
+    property TreeClassName: string index taBinaryTreeClassName read GetTypeAttribute write SetTypeAttribute stored False;
     property EqualityComparerInterfaceName: string index taEqualityComparerInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property NodeTypeName: string index taBinaryTreeNodeTypeName read GetTypeAttribute write SetTypeAttribute stored False;
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;
@@ -155,7 +155,7 @@ type
   end;
 
   (* JCLBINARYTREEITRIMP(BASEITRCLASSNAME, PREORDERITRCLASSNAME, INORDERITRCLASSNAME, POSTORDERITRCLASSNAME,
-                         STDITRINTERFACENAME, COLLECTIONINTERFACENAME, EQUALITYCOMPARERINTERFACENAME,
+                         STDITRINTERFACENAME, TREECLASSNAME, EQUALITYCOMPARERINTERFACENAME,
                          NODETYPENAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE,
                          GETTERFUNCTIONNAME, SETTERPROCEDURENAME, RELEASERFUNCTIONNAME) *)
   TJclBinaryTreeItrImpParams = class(TJclContainerImplementationParams)
@@ -167,7 +167,7 @@ type
     property InOrderItrClassName: string index taBinaryTreeInOrderIteratorClassName read GetTypeAttribute write SetTypeAttribute stored False;
     property PostOrderItrClassName: string index taBinaryTreePostOrderIteratorClassName read GetTypeAttribute write SetTypeAttribute stored False;
     property StdItrInterfaceName: string index taIteratorInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
-    property CollectionInterfaceName: string index taCollectionInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
+    property TreeClassName: string index taBinaryTreeClassName read GetTypeAttribute write SetTypeAttribute stored False;
     property EqualityComparerInterfaceName: string index taEqualityComparerInterfaceName read GetTypeAttribute write SetTypeAttribute stored False;
     property NodeTypeName: string index taBinaryTreeNodeTypeName read GetTypeAttribute write SetTypeAttribute stored False;
     property ConstKeyword: string index taConstKeyword read GetTypeAttribute write SetTypeAttribute stored False;

@@ -253,7 +253,7 @@ begin
   if FOwnsKeys then
   begin
     Result := Default(TKey);
-    FreeAndNil(Key);
+    FreeAndNilIfObject<TKey>(Key);
   end
   else
   begin
@@ -267,7 +267,7 @@ begin
   if FOwnsValues then
   begin
     Result := Default(TValue);
-    FreeAndNil(Value);
+    FreeAndNilIfObject<TValue>(Value);
   end
   else
   begin

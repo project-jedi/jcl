@@ -49,3 +49,24 @@ Name: "IDE\Delphi21"; Description: "Install for RAD Studio XE7"; Types: full pre
 #ifdef Include_Delphi22
 Name: "IDE\Delphi22"; Description: "Install for RAD Studio XE8"; Types: full prefered; Check: IsDelphiInstalled(22)
 #endif
+#ifdef Include_Delphi23
+Name: "IDE\Delphi23"; Description: "Install for RAD Studio 10 Seattle"; Types: full prefered; Check: IsDelphiInstalled(23)
+#endif
+#ifdef Include_Delphi24
+Name: "IDE\Delphi24"; Description: "Install for RAD Studio 10.1 Berlin"; Types: full prefered; Check: IsDelphiInstalled(24)
+#endif
+#ifdef Include_Delphi25
+Name: "IDE\Delphi25"; Description: "Install for RAD Studio 10.2"; Types: full prefered; Check: IsDelphiInstalled(25)
+#endif
+#ifdef Include_Delphi26
+Name: "IDE\Delphi26"; Description: "Install for RAD Studio 10.3"; Types: full prefered; Check: IsDelphiInstalled(26)
+#endif
+#ifdef Include_Delphi27
+Name: "IDE\Delphi27"; Description: "Install for RAD Studio 10.4"; Types: full prefered; Check: IsDelphiInstalled(27)
+#endif
+#ifdef Include_Delphi28
+Name: "IDE\Delphi28"; Description: "Install for RAD Studio 11"; Types: full prefered; Check: IsDelphiInstalled(28)
+#endif
+#ifdef Include_Delphi29
+Name: "IDE\Delphi29"; Description: "Install for RAD Studio 12"; Types: full prefered; Check: IsDelphiInstalled(29)
+#endif

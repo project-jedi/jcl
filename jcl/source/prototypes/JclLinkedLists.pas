@@ -77,7 +77,7 @@ protected
     TLinkedListItem = TJclLinkedListItem<T>;
     TLinkedListIterator = TJclLinkedListIterator<T>;,,; AOwnsItems: Boolean,const ,AItem,T,GetItem,SetItem)*)
 
-  (*$JPPEXPANDMACRO JCLLINKEDLISTITRINT(TJclLinkedListIterator<T>,IJclIterator<T>,IJclList<T>,IJclEqualityComparer<T>,TJclLinkedList<T>.TLinkedListItem,const ,AItem,T,Default(T),GetItem,SetItem)*)
+  (*$JPPEXPANDMACRO JCLLINKEDLISTITRINT(TJclLinkedListIterator<T>,IJclIterator<T>,TJclLinkedList<T>,IJclEqualityComparer<T>,TJclLinkedList<T>.TLinkedListItem,const ,AItem,T,Default(T),GetItem,SetItem)*)
 
   // E = External helper to compare items
   // GetHashCode is never called
@@ -168,7 +168,7 @@ uses
 
 {$JPPEXPANDMACRO JCLLINKEDLISTIMP(TJclLinkedList<T>,TLinkedListItem,IJclCollection<T>,IJclList<T>,IJclIterator<T>,TLinkedListIterator,; AOwnsItems: Boolean,AOwnsItems,const ,AItem,T,Default(T),GetItem,SetItem,FreeItem)}
 
-(*$JPPEXPANDMACRO JCLLINKEDLISTITRIMP(TJclLinkedListIterator<T>,IJclIterator<T>,IJclList<T>,IJclEqualityComparer<T>,TJclLinkedList<T>.TLinkedListItem,const ,AItem,T,Default(T),GetItem,SetItem,(FownList as IJclItemOwner<T>).FreeItem(FCursor.Value);)*)
+(*$JPPEXPANDMACRO JCLLINKEDLISTITRIMP(TJclLinkedListIterator<T>,IJclIterator<T>,TJclLinkedList<T>,IJclEqualityComparer<T>,TJclLinkedList<T>.TLinkedListItem,const ,AItem,T,Default(T),GetItem,SetItem,(FownList as IJclItemOwner<T>).FreeItem(FCursor.Value);)*)
 
 //=== { TJclLinkedListE<T> } =================================================
 
