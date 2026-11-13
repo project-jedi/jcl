@@ -1708,11 +1708,7 @@ begin
 end;
 
 function CosH(X: Float): Float;
-{$IFDEF PUREPASCAL}
-begin
-  Result := 0.5 * (Exp(X) + Exp(-X));
-end;
-{$ELSE ~PUREPASCAL}
+{$IF DEFINED(ASMX86) OR DEFINED(ASMX64)}
 const
   RoundDown: Word = $177F;
   OneHalf: Float = 0.5;
@@ -1733,12 +1729,12 @@ begin
           FMULP   ST(1), ST(0)
           FSTCW   ControlWW
           {$IFDEF PIC}
-          {$IFDEF CPU32}
+          {$IFDEF CPUX86}
           FLDCW   [EAX].RoundDown
-          {$ENDIF CPU32}
-          {$IFDEF CPU64}
+          {$ENDIF CPUX86}
+          {$IFDEF CPUX64}
           FLDCW   [RAX].RoundDown
-          {$ENDIF CPU64}
+          {$ENDIF CPUX64}
           {$ELSE ~PIC}
           FLDCW   RoundDown
           {$ENDIF ~PIC}
@@ -1756,12 +1752,12 @@ begin
           FDIVRP  ST(1), ST(0)
           FADDP   ST(1), ST(0)
           {$IFDEF PIC}
-          {$IFDEF CPU32}
+          {$IFDEF CPUX86}
           FLD     [EAX].OneHalf
-          {$ENDIF CPU32}
-          {$IFDEF CPU64}
+          {$ENDIF CPUX86}
+          {$IFDEF CPUX64}
           FLD     [RAX].OneHalf
-          {$ENDIF CPU64}
+          {$ENDIF CPUX64}
           {$ELSE ~PIC}
           FLD     OneHalf
           {$ENDIF ~PIC}
@@ -1771,7 +1767,11 @@ begin
   end;
   {$ENDIF ~USE_MATH_UNIT}
 end;
-{$ENDIF ~PUREPASCAL}
+{$ELSE ASMX86_OR_ASMX64}
+begin
+  Result := 0.5 * (Exp(X) + Exp(-X));
+end;
+{$IFEND ASMX86_OR_ASMX64}
 
 function CotH(X: Float): Float;
 begin
@@ -1793,11 +1793,7 @@ begin
 end;
 
 function SinH(X: Float): Float;
-{$IFDEF PUREPASCAL}
-begin
-  Result := 0.5 * (JclMath.Exp(X) - JclMath.Exp(-X));
-end;
-{$ELSE ~PUREPASCAL}
+{$IF DEFINED(ASMX86) OR DEFINED(ASMX64)}
 const
   RoundDown: Word = $177F;
   OneHalf: Float = 0.5;
@@ -1818,12 +1814,12 @@ begin
           FMULP   ST(1), ST(0)
           FSTCW   ControlWW
           {$IFDEF PIC}
-          {$IFDEF CPU32}
+          {$IFDEF CPUX86}
           FLDCW   [EAX].RoundDown
-          {$ENDIF CPU32}
-          {$IFDEF CPU64}
+          {$ENDIF CPUX86}
+          {$IFDEF CPUX64}
           FLDCW   [RAX].RoundDown
-          {$ENDIF CPU64}
+          {$ENDIF CPUX64}
           {$ELSE ~PIC}
           FLDCW   RoundDown
           {$ENDIF ~PIC}
@@ -1841,12 +1837,12 @@ begin
           FDIVRP  ST(1), ST(0)
           FSUBP   ST(1), ST(0)
           {$IFDEF PIC}
-          {$IFDEF CPU32}
+          {$IFDEF CPUX86}
           FLD     [EAX].OneHalf
-          {$ENDIF CPU32}
-          {$IFDEF CPU64}
+          {$ENDIF CPUX86}
+          {$IFDEF CPUX64}
           FLD     [RAX].OneHalf
-          {$ENDIF CPU64}
+          {$ENDIF CPUX64}
           {$ELSE ~PIC}
           FLD     OneHalf
           {$ENDIF ~PIC}
@@ -1856,7 +1852,11 @@ begin
   end;
   {$ENDIF ~USE_MATH_UNIT}
 end;
-{$ENDIF ~PUREPASCAL}
+{$ELSE ASMX86_OR_ASMX64}
+begin
+  Result := 0.5 * (JclMath.Exp(X) - JclMath.Exp(-X));
+end;
+{$IFEND ASMX86_OR_ASMX64}
 
 function TanH(X: Float): Float;
 begin
@@ -2323,17 +2323,7 @@ begin
 end;
 
 function GCD(X, Y: Cardinal): Cardinal;
-{$IFDEF PUREPASCAL}
-begin
-  Result := X;
-  while Y <> 0 do
-  begin
-    X := Result;
-    Result := Y;
-    Y := X mod Y;
-  end;
-end;
-{$ELSE ~PUREPASCAL}
+{$IF DEFINED(ASMX86) OR DEFINED(ASMX64)}
 assembler;
 { Euclid's algorithm }
 asm
@@ -2343,9 +2333,9 @@ asm
    // 64 --> ECX X
    //        EDX Y
    //    <-- EAX Result
-        {$IFDEF CPU64}
+        {$IFDEF CPUX64}
         MOV     EAX, ECX
-        {$ENDIF CPU64}
+        {$ENDIF CPUX64}
         JMP     @01      // We start with EAX <- X, EDX <- Y, and check to see if Y=0
 @00:
         MOV     ECX, EDX // ECX <- EDX prepare for division
@@ -2356,36 +2346,33 @@ asm
         AND     EDX, EDX // test to see if EDX is zero, without changing EDX
         JNZ     @00      // when EDX is zero EAX has the Result
 end;
-{$ENDIF ~PUREPASCAL}
+{$ELSE ASMX86_OR_ASMX64}
+begin
+  Result := X;
+  while Y <> 0 do
+  begin
+    X := Result;
+    Result := Y;
+    Y := X mod Y;
+  end;
+end;
+{$IFEND ASMX86_OR_ASMX64}
 
 function ISqrt(const I: Smallint): Smallint;
-{$IFDEF PUREPASCAL}
-var
-  b, d: Smallint;
-begin
-  Result := -1;
-  d := -1;
-  b := 0;
-  repeat
-    Inc(Result);
-    Inc(d, 2);
-    b := b + d;
-  until b > I;
-end;
-{$ELSE ~PUREPASCAL}
+{$IF DEFINED(ASMX86) OR DEFINED(ASMX64)}
 assembler;
 asm
   // 32 --> AX I
   //    <-- AX Result
   // 64 --> CX I
   //    <-- AX Result
-        {$IFDEF CPU32}
+        {$IFDEF CPUX86}
         PUSH    EBX
         MOV     CX, AX  // load argument
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
+        {$ENDIF CPUX86}
+        {$IFDEF CPUX64}
         PUSH    RBX
-        {$ENDIF CPU64}
+        {$ENDIF CPUX64}
 
         MOV     AX, -1  // init Result
         CWD             // init odd numbers to -1
@@ -2398,14 +2385,27 @@ asm
         CMP     BX, CX  // perfect square > argument ?
         JBE     @LOOP   // until square greater than argument
 
-        {$IFDEF CPU32}
+        {$IFDEF CPUX86}
         POP     EBX
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
+        {$ENDIF CPUX86}
+        {$IFDEF CPUX64}
         POP     RBX
-        {$ENDIF CPU64}
+        {$ENDIF CPUX64}
 end;
-{$ENDIF ~PUREPASCAL}
+{$ELSE ASMX86_OR_ASMX64}
+var
+  b, d: Smallint;
+begin
+  Result := -1;
+  d := -1;
+  b := 0;
+  repeat
+    Inc(Result);
+    Inc(d, 2);
+    b := b + d;
+  until b > I;
+end;
+{$IFEND ASMX86_OR_ASMX64}
 
 function LCM(const X, Y: Cardinal): Cardinal;
 var
