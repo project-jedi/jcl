@@ -822,8 +822,17 @@ end;
 // stop at the first #0 character
 
 procedure StrSwapByteOrder(Str: PWideChar);
+{$IFDEF PUREPASCAL}
+begin
+  while Str^ <> #0 do
+  begin
+    Str^ := WideChar((Word(Str^) shr 8) or (Word(Str^) shl 8));
+    Inc(Str);
+  end;
+end;
+{$ELSE ~PUREPASCAL}
 asm
-       {$IFDEF CPU32}
+       {$IFDEF CPU386}
        // --> EAX Str
        PUSH    ESI
        PUSH    EDI
@@ -840,8 +849,8 @@ asm
 @@2:
        POP     EDI
        POP     ESI
-       {$ENDIF CPU32}
-       {$IFDEF CPU64}
+       {$ENDIF CPU386}
+       {$IFDEF CPUX64}
        // --> RCX Str
        XOR     RAX, RAX // clear high order byte to be able to use 64bit operand below
 @@1:
@@ -853,8 +862,9 @@ asm
        ADD     ECX, 2
        JMP     @@1
 @@2:
-       {$ENDIF CPU64}
+       {$ENDIF CPUX64}
 end;
+{$ENDIF ~PUREPASCAL}
 
 function StrNScanW(const Str1, Str2: PWideChar): SizeInt;
 // Determines where (in Str1) the first time one of the characters of Str2 appear.

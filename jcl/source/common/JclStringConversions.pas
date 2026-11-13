@@ -342,8 +342,17 @@ end;
 // EAX contains Source, EDX contains Target, ECX contains Count
 
 procedure ExpandASCIIString(const Source: PAnsiChar; Target: PWideChar; Count: SizeInt);
+{$IFDEF PUREPASCAL}
+begin
+  while Count > 0 do
+  begin
+    Dec(Count);
+    Target[Count] := WideChar(Source[Count]);
+  end;
+end;
+{$ELSE ~PUREPASCAL}
 asm
-       {$IFDEF CPU32}
+       {$IFDEF CPU386}
        // --> EAX Source
        //     EDX Target
        //     ECX Count
@@ -359,8 +368,8 @@ asm
        DEC     ECX
        JNZ     @@1
        POP     ESI
-       {$ENDIF CPU32}
-       {$IFDEF CPU64}
+       {$ENDIF CPU386}
+       {$IFDEF CPUX64}
        // --> RCX Source
        //     RDX Target
        //     R8  Count
@@ -375,9 +384,10 @@ asm
 @@2:
        DEC     R8
        JNS     @@1
-       {$ENDIF CPU64}
+       {$ENDIF CPUX64}
 @@Finish:
 end;
+{$ENDIF ~PUREPASCAL}
 
 const
   HalfShift: Integer = 10;

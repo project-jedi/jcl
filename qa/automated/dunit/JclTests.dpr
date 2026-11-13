@@ -27,7 +27,8 @@ uses
   TestJclContainer in 'units\TestJclContainer.pas',
   TestJclNotify in 'units\TestJclNotify.pas',
   TestJclExprEval in 'units\TestJclExprEval.pas',
-  TestJclDebug in 'units\TestJclDebug.pas';
+  TestJclDebug in 'units\TestJclDebug.pas',
+  TestJclLogic in 'units\TestJclLogic.pas';
 
 
 {$R *.res}

@@ -2206,7 +2206,7 @@ end;
 
 {$IFDEF ZLIB_STATICLINK}
 
-{$IFDEF CPU32}
+{$IFDEF CPU386}
 {$LINK ..\windows\obj\zlib\win32\adler32.obj} // OS: CHECKTHIS - Unix version may need forward slashes?
 {$LINK ..\windows\obj\zlib\win32\compress.obj}
 {$LINK ..\windows\obj\zlib\win32\crc32.obj}
@@ -2218,8 +2218,8 @@ end;
 {$LINK ..\windows\obj\zlib\win32\trees.obj}
 {$LINK ..\windows\obj\zlib\win32\uncompr.obj}
 {$LINK ..\windows\obj\zlib\win32\zutil.obj}
-{$ENDIF CPU32}
-{$IFDEF CPU64}
+{$ENDIF CPU386}
+{$IFDEF CPUX64}
 {$LINK ..\windows\obj\zlib\win64\adler32.obj}
 {$LINK ..\windows\obj\zlib\win64\compress.obj}
 {$LINK ..\windows\obj\zlib\win64\crc32.obj}
@@ -2231,7 +2231,7 @@ end;
 {$LINK ..\windows\obj\zlib\win64\trees.obj}
 {$LINK ..\windows\obj\zlib\win64\uncompr.obj}
 {$LINK ..\windows\obj\zlib\win64\zutil.obj}
-{$ENDIF CPU64}
+{$ENDIF CPUX64}
 
 // Core functions
 function zlibVersion;          external;

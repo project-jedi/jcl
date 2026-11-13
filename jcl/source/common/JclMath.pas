@@ -158,7 +158,9 @@ function DegToRad(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_I
 {$ENDIF SUPPORTS_EXTENDED}
 function DegToRad(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function DegToRad(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+{$IFDEF CPUINTEL}
 procedure FastDegToRad;
+{$ENDIF CPUINTEL}
 
 // Converts radians to degrees.
 {$IFDEF SUPPORTS_EXTENDED}
@@ -166,7 +168,9 @@ function RadToDeg(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_I
 {$ENDIF SUPPORTS_EXTENDED}
 function RadToDeg(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function RadToDeg(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+{$IFDEF CPUINTEL}
 procedure FastRadToDeg;
+{$ENDIF CPUINTEL}
 
 // Converts grads to radians.
 {$IFDEF SUPPORTS_EXTENDED}
@@ -174,7 +178,9 @@ function GradToRad(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_
 {$ENDIF SUPPORTS_EXTENDED}
 function GradToRad(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function GradToRad(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+{$IFDEF CPUINTEL}
 procedure FastGradToRad;
+{$ENDIF CPUINTEL}
 
 // Converts radians to grads.
 {$IFDEF SUPPORTS_EXTENDED}
@@ -182,7 +188,9 @@ function RadToGrad(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_
 {$ENDIF SUPPORTS_EXTENDED}
 function RadToGrad(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function RadToGrad(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+{$IFDEF CPUINTEL}
 procedure FastRadToGrad;
+{$ENDIF CPUINTEL}
 
 // Converts degrees to grads.
 {$IFDEF SUPPORTS_EXTENDED}
@@ -190,7 +198,9 @@ function DegToGrad(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_
 {$ENDIF SUPPORTS_EXTENDED}
 function DegToGrad(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function DegToGrad(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+{$IFDEF CPUINTEL}
 procedure FastDegToGrad;
+{$ENDIF CPUINTEL}
 
 // Converts grads to degrees.
 {$IFDEF SUPPORTS_EXTENDED}
@@ -198,7 +208,9 @@ function GradToDeg(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_
 {$ENDIF SUPPORTS_EXTENDED}
 function GradToDeg(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function GradToDeg(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+{$IFDEF CPUINTEL}
 procedure FastGradToDeg;
+{$ENDIF CPUINTEL}
 
 { Logarithmic }
 
@@ -910,7 +922,9 @@ uses
   {$IFDEF USE_MATH_UNIT}
   System.Math,
   {$ENDIF USE_MATH_UNIT}
+  {$IFDEF CPUINTEL}
   Jcl8087,
+  {$ENDIF CPUINTEL}
   JclResources,
   JclSynch;
 
@@ -1002,6 +1016,7 @@ end;
 
 // Expects degrees in ST(0), leaves radians in ST(0)
 // ST(0) := ST(0) * PI / 180
+{$IFDEF CPUINTEL}
 procedure FastDegToRad; assembler;
 asm
         {$IFDEF PIC}
@@ -1018,6 +1033,7 @@ asm
         FMULP
         FWAIT
 end;
+{$ENDIF CPUINTEL}
 
 // Converts radians to degrees.
 
@@ -1040,6 +1056,7 @@ end;
 
 // Expects radians in ST(0), leaves degrees in ST(0)
 // ST(0) := ST(0) * (180 / PI);
+{$IFDEF CPUINTEL}
 procedure FastRadToDeg; assembler;
 asm
         {$IFDEF PIC}
@@ -1056,6 +1073,7 @@ asm
         FMULP
         FWAIT
 end;
+{$ENDIF CPUINTEL}
 
 // Converts grads to radians.
 
@@ -1078,6 +1096,7 @@ end;
 
 // Expects grads in ST(0), leaves radians in ST(0)
 // ST(0) := ST(0) * PI / 200
+{$IFDEF CPUINTEL}
 procedure FastGradToRad; assembler;
 asm
         {$IFDEF PIC}
@@ -1094,6 +1113,7 @@ asm
         FMULP
         FWAIT
 end;
+{$ENDIF CPUINTEL}
 
 // Converts radians to grads.
 
@@ -1116,6 +1136,7 @@ end;
 
 // Expects radians in ST(0), leaves grads in ST(0)
 // ST(0) := ST(0) * (200 / PI);
+{$IFDEF CPUINTEL}
 procedure FastRadToGrad; assembler;
 asm
         {$IFDEF PIC}
@@ -1132,6 +1153,7 @@ asm
         FMULP
         FWAIT
 end;
+{$ENDIF CPUINTEL}
 
 // Converts degrees to grads.
 
@@ -1154,6 +1176,7 @@ end;
 
 // Expects Degrees in ST(0), leaves grads in ST(0)
 // ST(0) := ST(0) * (200 / 180);
+{$IFDEF CPUINTEL}
 procedure FastDegToGrad; assembler;
 asm
         {$IFDEF PIC}
@@ -1170,6 +1193,7 @@ asm
         FMULP
         FWAIT
 end;
+{$ENDIF CPUINTEL}
 
 // Converts grads to degrees.
 
@@ -1192,6 +1216,7 @@ end;
 
 // Expects grads in ST(0), leaves radians in ST(0)
 // ST(0) := ST(0) * PI / 200
+{$IFDEF CPUINTEL}
 procedure FastGradToDeg; assembler;
 asm
         {$IFDEF PIC}
@@ -1208,6 +1233,7 @@ asm
         FMULP
         FWAIT
 end;
+{$ENDIF CPUINTEL}
 
 procedure DomainCheck(Err: Boolean);
 begin
