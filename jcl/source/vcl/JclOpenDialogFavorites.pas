@@ -346,6 +346,8 @@ begin
   //CheckOSError(FileDialogCustomize.EndVisualGroup);
   CheckOSError(FileDialogCustomize.MakeProminent(CTRLID_COMBOBOX));
   CheckOSError(AFileDialog.Advise(Self, Unused));
+
+  DoShow;
 end;
 
 procedure TJclOpenDialogFavoritesHook.FileDialogCleanCombobox(
@@ -422,6 +424,7 @@ end;
 
 function TJclOpenDialogFavoritesHook.OnFileOk(const pfd: IFileDialog): HResult;
 begin
+  DoClose;
   Result := S_OK;
 end;
 
