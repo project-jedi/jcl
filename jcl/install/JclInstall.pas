@@ -182,14 +182,13 @@ type
     function GetProfilesTarget(Index: Integer): TJclBorRADToolInstallation;
     function GetTargetSupportsCBuilder: Boolean;
     function GetTargetSupportsDelphi: Boolean;
+    procedure SetTargetDCC;
   protected
     constructor Create(JclDistribution: TJclDistribution;
       InstallTarget: TJclBorRADToolInstallation; ATargetPlatform: TJclBDSPlatform;
       const AGUIPage: IJediInstallPage);
-    function CompileLibraryUnits(const SubDir: string; Debug: Boolean): Boolean; overload;
-    function CompileLibraryUnits(const SubDir: string; Debug: Boolean; Win64x: Boolean): Boolean; overload;
-    function CompilePackage(const Name: string): Boolean; overload;
-    function CompilePackage(const Name: string; Win64x: Boolean): Boolean; overload;
+    function CompileLibraryUnits(const SubDir: string; Debug: Boolean): Boolean;
+    function CompilePackage(const Name: string): Boolean;
     function CompileApplication(FileName: string): Boolean;
     function DeletePackage(const Name: string): Boolean;
     procedure ConfigureBpr2Mak(const PackageFileName: string);
@@ -677,18 +676,7 @@ begin
     or ((Target.VersionNumber >= 3) and TargetSupportsDelphi);
 
   if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 9) then
-  begin
-    case TargetPlatform of
-      bpWin32:
-        FTargetName := Format('%s %s', [FTargetName, Personality32Bit]);
-      bpWin64:
-        FTargetName := Format('%s %s', [FTargetName, Personality64Bit]);
-      bpOSX32:
-        raise EJclBorRADException.CreateRes(@RsEOSXPlatformNotValid);
-    else
-      raise EJclBorRADException.CreateRes(@RsEPlatformNotValid);
-    end;
-  end;
+    FTargetName := Format('%s %s', [FTargetName, GetPlatformStr]);
 
   FLibReleaseDir := MakePath(Distribution.LibReleaseDirMask);
   FLibDebugDir := MakePath(Distribution.LibDebugDirMask);
@@ -769,6 +757,8 @@ begin
       Result := 'Win32';
     bpWin64:
       Result := 'Win64';
+    bpWin64x:
+      Result := 'Win64x';
     bpOSX32:
       raise EJclBorRADException.CreateRes(@RsEOSXPlatformNotValid);
   else
@@ -804,7 +794,7 @@ end;
 function TJclInstallation.GetTargetSupportsCBuilder: Boolean;
 begin
   Result := ((bpBCBuilder32 in Target.Personalities) and (TargetPlatform = bpWin32)) or
-            ((bpBCBuilder64 in Target.Personalities) and (TargetPlatform = bpWin64));
+            ((bpBCBuilder64 in Target.Personalities) and (TargetPlatform in [bpWin64, bpWin64x]));
   if Result then
   begin
     // If we don't have a command line C++ compiler we can't compile
@@ -812,23 +802,33 @@ begin
     if TargetPlatform = bpWin32 then
       Result := clBcc32 in Target.CommandLineTools
     else if TargetPlatform = bpWin64 then
-      Result := [clBcc64, clBcc64x] * Target.CommandLineTools <> [];
+      Result := clBcc64 in Target.CommandLineTools
+    else if TargetPlatform = bpWin64x then
+      Result := clBcc64x in Target.CommandLineTools;
   end;
 end;
 
 function TJclInstallation.GetTargetSupportsDelphi: Boolean;
 begin
   Result := ((bpDelphi32 in Target.Personalities) and (TargetPlatform = bpWin32)) or
-            ((bpDelphi64 in Target.Personalities) and (TargetPlatform = bpWin64));
+            ((bpDelphi64 in Target.Personalities) and (TargetPlatform in [bpWin64, bpWin64x]));
   if Result then
   begin
     // If we don't have a command line C++ compiler we can't compile
     // (fake Delphi Personality from the Web Installer)
     if TargetPlatform = bpWin32 then
       Result := clDcc32 in Target.CommandLineTools
-    else if TargetPlatform = bpWin64 then
+    else if TargetPlatform in [bpWin64, bpWin64x] then
       Result := clDcc64 in Target.CommandLineTools;
   end;
+end;
+
+procedure TJclInstallation.SetTargetDCC;
+begin
+  if (Target is TJclBDSInstallation) and (Target.IDEVersionNumber >= 9) and (FTargetPlatform in [bpWin64, bpWin64x]) then
+    Target.DCC := (Target as TJclBDSInstallation).DCC64
+  else
+    Target.DCC := Target.DCC32;
 end;
 
 procedure TJclInstallation.MarkOptionBegin(Id: Integer);
@@ -1654,7 +1654,7 @@ var
           UnitList.Delete(UnitList.IndexOf('JclDotNet.pas'));
           UnitList.Delete(UnitList.IndexOf('JclNTFS.pas'));
           UnitList.Delete(UnitList.IndexOf('mscorlib_TLB.pas'));
-          if FTargetPlatform = bpWin64 then
+          if FTargetPlatform in [bpWin64, bpWin64x] then
           begin
             UnitList.Delete(UnitList.IndexOf('pcre.pas')); // compiler: 'PCRE not supported on WIN64: use standard header'
             UnitList.Delete(UnitList.IndexOf('JclPCRE.pas')); // uses pcre.pas => same "not supported" error
@@ -1683,7 +1683,7 @@ var
 
         Target.BCC.Options.Clear;
         Target.BCC.Options.Add('-c'); // compile only
-        if FTargetPlatform <> bpWin64 then
+        if FTargetPlatform = bpWin32 then
         begin
           Target.BCC.Options.Add('-Ve'); // compatibility
           Target.BCC.Options.Add('-b'); // enum to be at least 4 bytes
@@ -1706,7 +1706,7 @@ var
           Target.BCC.Options.Add('-g');
           Target.BCC.Options.Add('-fno-limit-debug-info');
           Target.BCC.Options.Add('-fborland-extensions');
-          Target.BCC.Options.Add('-nobuiltininc');
+          if FTargetPlatform = bpWin64 then Target.BCC.Options.Add('-nobuiltininc');
           Target.BCC.Options.Add('-fexceptions');
           Target.BCC.Options.Add('-fcxx-exceptions');
           Target.BCC.Options.Add('-mstackrealign');
@@ -1732,8 +1732,10 @@ var
       finally
         DeleteFile('jcl_a2z.cpp');
         DeleteFile('jcl_a2z.obj');
+        DeleteFile('jcl_a2z.o');
         DeleteFile('jcl_z2a.cpp');
         DeleteFile('jcl_z2a.obj');
+        DeleteFile('jcl_z2a.o');
         SetCurrentDir(SaveDir);
       end;
       if not Result and Assigned(GUI) then
@@ -1743,7 +1745,12 @@ var
     I: Integer;
   begin
     // As people may only buy Delphi (without C++ Builder), we must make sure that bcc(32-64) is available before accessing the property
-    if FTargetPlatform = bpWin64 then
+    if FTargetPlatform = bpWin64x then
+    begin
+      if clBcc64x in Target.CommandLineTools then
+        Target.BCC := (Target as TJclBDSInstallation).BCC64X
+    end
+    else if FTargetPlatform = bpWin64 then
     begin
       if clBcc64 in Target.CommandLineTools then 
         Target.BCC := (Target as TJclBDSInstallation).BCC64
@@ -1790,31 +1797,21 @@ var
     end;
   end;
 
-  function CompilePackages(Win64x: Boolean): Boolean; overload;
-  begin
-    Result := CompilePackage(FullPackageFileName(Target, JclPackage), Win64x)
-      and CompilePackage(FullPackageFileName(Target, JclContainersPackage), Win64x)
-      and CompilePackage(FullPackageFileName(Target, JclDeveloperToolsPackage), Win64x);
-
-    if Result and Target.SupportsVCL then
-      Result := Result and CompilePackage(FullPackageFileName(Target, JclVclPackage), Win64x);
-  end;
-
-  function CompilePackages: Boolean; overload;
+  function CompilePackages: Boolean;
   begin
     Result := True;
     if OptionChecked[joJCLPackages] then
     begin
       MarkOptionBegin(joJCLPackages);
+      
+      SetTargetDCC;
+      
+      Result := CompilePackage(FullPackageFileName(Target, JclPackage))
+        and CompilePackage(FullPackageFileName(Target, JclContainersPackage))
+        and CompilePackage(FullPackageFileName(Target, JclDeveloperToolsPackage));
 
-      if (Target is TJclBDSInstallation) and (Target.IDEVersionNumber >= 9) and (FTargetPlatform = bpWin64) then
-        Target.DCC := (Target as TJclBDSInstallation).DCC64
-      else
-        Target.DCC := Target.DCC32;
-
-      Result := CompilePackages(False);
-      if (TargetPlatform = bpWin64) and (clBcc64x in Target.CommandLineTools) then
-        Result := Result and CompilePackages(True);
+      if Result and Target.SupportsVCL then
+        Result := Result and CompilePackage(FullPackageFileName(Target, JclVclPackage));
 
       MarkOptionEnd(joJCLPackages, Result);
     end;
@@ -2526,6 +2523,8 @@ begin
   AProfilesManager := InstallCore.ProfilesManager;
   try
     Target.OutputCallback := WriteLog;
+    SetTargetDCC;
+
     if Assigned(GUI) then
       GUI.Status := Format(LoadResString(@RsLogUninstallingJCL), [TargetName]);
     if Assigned(GUIPage) then
@@ -2704,14 +2703,6 @@ begin
 end;
 
 function TJclInstallation.CompileLibraryUnits(const SubDir: string; Debug: Boolean): Boolean;
-begin
-  Result := CompileLibraryUnits(SubDir, Debug, False);
-
-  if (TargetPlatform = bpWin64) and (clBcc64x in Target.CommandLineTools) then
-    Result := Result and CompileLibraryUnits(SubDir, Debug, True);
-end;
-
-function TJclInstallation.CompileLibraryUnits(const SubDir: string; Debug: Boolean; Win64x: Boolean): Boolean;
 
   function CopyFiles(Files: TStrings; const TargetDir: string; Overwrite: Boolean = True): Boolean;
   var
@@ -2807,7 +2798,7 @@ begin
     case TargetPlatform of
       bpWin32:
         Compiler := Target.DCC32;
-      bpWin64:
+      bpWin64, bpWin64x:
         Compiler := (Target as TJclBDSInstallation).DCC64;
       bpOSX32:
         raise EJclBorRADException.CreateRes(@RsEOSXPlatformNotValid);
@@ -2864,11 +2855,8 @@ begin
 
     if TargetSupportsCBuilder then
     begin
-      if Win64x then
-      begin
-        UnitOutputDir := Target.AdjustPathForWin64X(UnitOutputDir);
+      if TargetPlatform = bpWin64x then
         Compiler.Options.Add('-jf:coffi');
-      end;
 
       Compiler.Options.Add('-D_RTLDLL' + DirSeparator + 'NO_STRICT' + DirSeparator + 'USEPACKAGES'); // $(SYSDEFINES)
 
@@ -2926,11 +2914,6 @@ begin
 end;
 
 function TJclInstallation.CompilePackage(const Name: string): Boolean;
-begin
-  Result := CompilePackage(Name, False);
-end;
-
-function TJclInstallation.CompilePackage(const Name: string; Win64x: Boolean): Boolean;
 var
   PackageFileName: string;
   DpkPackageFileName: string;
@@ -2944,12 +2927,8 @@ begin
   DcpPath := GetDcpPath;
   ExtraOptions := '';
 
-  if Win64x then
-  begin
-    // Do not adjust BplPath as the BPLs are not platform specific
-    DcpPath := Target.AdjustPathForWin64X(DcpPath);
+  if TargetPlatform = bpWin64x then
     ExtraOptions := '-jf:coffi';
-  end;
 
   if Assigned(GUIPage) then
     GUIPage.CompilationStart(ExtractFileName(Name));
@@ -3386,7 +3365,7 @@ var
   Inst: TJclInstallation;
 begin
   if Supported then
-  try
+  begin
     Inst := TJclInstallation.Create(Self, Target, bpWin32, nil);
     FTargetInstalls.Add(Inst);
     // Win64 "virtual" target
@@ -3396,7 +3375,11 @@ begin
       Inst := TJclInstallation.Create(Self, Target, bpWin64, nil);
       FTargetInstalls.Add(Inst);
     end;
-  except
+    if clBcc64x in Target.CommandLineTools then
+    begin
+      Inst := TJclInstallation.Create(Self, Target, bpWin64x, nil);
+      FTargetInstalls.Add(Inst);
+    end;
   end;
   Result := True;
 end;
@@ -3716,13 +3699,7 @@ begin
         begin
           AInstallation := TargetInstalls[I];
           AInstallationElem := XML.Root.Items.Add('Installation');
-
-          case AInstallation.TargetPlatform of
-            bpWin64:
-              AInstallationElem.Properties.Add('Target', AInstallation.Target.VersionNumberStr + '_x64');
-            else
-              AInstallationElem.Properties.Add('Target', AInstallation.Target.VersionNumberStr);
-          end;
+          AInstallationElem.Properties.Add('Target', AInstallation.Target.VersionNumberStr + '_' + AInstallation.GetPlatformStr);
           AInstallationElem.Properties.Add('TargetName', AInstallation.TargetName);
           AInstallationElem.Properties.Add('Enabled', AInstallation.Enabled);
           AInstallationElem.Properties.Add('InstallAttempted', I <= FNbInstalled);

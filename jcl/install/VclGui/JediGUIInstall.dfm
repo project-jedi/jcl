@@ -11,7 +11,6 @@ object InstallFrame: TInstallFrame
     Top = 0
     Width = 5
     Height = 421
-    Align = alRight
     MinSize = 150
     ResizeStyle = rsUpdate
     OnCanResize = SplitterCanResize
@@ -21,7 +20,7 @@ object InstallFrame: TInstallFrame
     Top = 0
     Width = 360
     Height = 421
-    Align = alRight
+    Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
     object LabelInstallationLog: TLabel
@@ -73,7 +72,7 @@ object InstallFrame: TInstallFrame
     Top = 0
     Width = 426
     Height = 421
-    Align = alClient
+    Align = alLeft
     BevelOuter = bvNone
     TabOrder = 1
     object LabelSelectComponents: TLabel

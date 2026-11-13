@@ -4,7 +4,7 @@ object MainForm: TMainForm
   ActiveControl = InstallBtn
   Caption = 'RsGUIJEDIInstaller'
   ClientHeight = 582
-  ClientWidth = 792
+  ClientWidth = 940
   Color = clBtnFace
   Constraints.MinHeight = 300
   Constraints.MinWidth = 500
@@ -25,14 +25,14 @@ object MainForm: TMainForm
   object StatusBevel: TBevel
     Left = 8
     Top = 549
-    Width = 369
+    Width = 517
     Height = 19
     Anchors = [akLeft, akRight, akBottom]
   end
   object Bevel1: TBevel
     Left = 8
     Top = 534
-    Width = 775
+    Width = 923
     Height = 9
     Anchors = [akLeft, akRight, akBottom]
     Shape = bsTopLine
@@ -40,7 +40,7 @@ object MainForm: TMainForm
   object StatusLabel: TLabel
     Left = 16
     Top = 551
-    Width = 353
+    Width = 501
     Height = 14
     Anchors = [akLeft, akRight, akBottom]
     AutoSize = False
@@ -48,7 +48,7 @@ object MainForm: TMainForm
   object TitlePanel: TPanel
     Left = 0
     Top = 0
-    Width = 792
+    Width = 940
     Height = 49
     Align = alTop
     BevelWidth = 2
@@ -56,7 +56,7 @@ object MainForm: TMainForm
     Color = 9981440
     TabOrder = 3
     object JediImage: TImage
-      Left = 664
+      Left = 812
       Top = 5
       Width = 116
       Height = 31
@@ -229,7 +229,7 @@ object MainForm: TMainForm
     end
   end
   object InstallBtn: TBitBtn
-    Left = 539
+    Left = 687
     Top = 545
     Width = 75
     Height = 25
@@ -266,7 +266,7 @@ object MainForm: TMainForm
     OnClick = InstallBtnClick
   end
   object QuitBtn: TBitBtn
-    Left = 707
+    Left = 855
     Top = 545
     Width = 75
     Height = 25
@@ -321,7 +321,7 @@ object MainForm: TMainForm
   object ProductsPageControl: TPageControl
     Left = 8
     Top = 56
-    Width = 775
+    Width = 923
     Height = 465
     Anchors = [akLeft, akTop, akRight, akBottom]
     Images = ImageList
@@ -330,7 +330,7 @@ object MainForm: TMainForm
     OnChange = ProductsPageControlChange
   end
   object ProgressBar: TProgressBar
-    Left = 380
+    Left = 528
     Top = 549
     Width = 141
     Height = 19
@@ -339,7 +339,7 @@ object MainForm: TMainForm
     Visible = False
   end
   object UninstallBtn: TBitBtn
-    Left = 624
+    Left = 772
     Top = 545
     Width = 75
     Height = 25
@@ -349,7 +349,7 @@ object MainForm: TMainForm
     OnClick = UninstallBtnClick
   end
   object InstallSelectedOnlyCheckBox: TCheckBox
-    Left = 384
+    Left = 532
     Top = 551
     Width = 129
     Height = 17
