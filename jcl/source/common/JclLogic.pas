@@ -1912,8 +1912,8 @@ end;
 
 function ReverseBytes(Value: Smallint): Smallint;
 {$IFDEF PUREPASCAL}
-asm
-  XCHG    AL, AH
+begin
+  Result := (Value shr 8) or (Value shl 8);
 end;
 {$ELSE ~PUREPASCAL}
 asm
