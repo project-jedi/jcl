@@ -1,0 +1,69 @@
+#!/bin/bash
+
+# Post commit hook to force all .dspec and .dspec.yaml files to always have current commit hash
+
+# Color codes for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Define the source folder to search
+# In this project
+SOURCE_FOLDER="./"
+
+echo -e "${YELLOW}Post-commit hook: Processing .dspec and .dspec.yaml files in ${SOURCE_FOLDER} folder${NC}"
+
+# Find all .dspec and .dspec.yaml files in the Source folder
+DSPEC_FILES=$(find "$SOURCE_FOLDER" \( -name "*.dspec" -o -name "*.dspec.yaml" \) -type f 2>/dev/null)
+
+if [ -z "$DSPEC_FILES" ]; then
+    echo -e "${YELLOW}No .dspec or .dspec.yaml files found in ${SOURCE_FOLDER} folder${NC}"
+    exit 0
+fi
+
+echo -e "${YELLOW}Found files:${NC}"
+echo "$DSPEC_FILES" | while read -r file; do
+    echo -e "  ${YELLOW}$file${NC}"
+done
+
+# Process each .dspec file
+echo "$DSPEC_FILES" | while read -r TARGET_FILE; do
+    echo -e "\n${YELLOW}Processing: ${TARGET_FILE}${NC}"
+    
+    # Check if the target file exists
+    if [ -f "$TARGET_FILE" ]; then
+        echo -e "${RED}Deleting ${TARGET_FILE}${NC}"
+        rm "$TARGET_FILE"
+        
+        # Verify deletion
+        if [ ! -f "$TARGET_FILE" ]; then
+            echo -e "${GREEN}File successfully deleted${NC}"
+        else
+            echo -e "${RED}Error: Failed to delete ${TARGET_FILE}${NC}"
+            exit 1
+        fi
+    else
+        echo -e "${YELLOW}File ${TARGET_FILE} does not exist, skipping deletion${NC}"
+    fi
+
+    # Force checkout the file from the repository
+    echo -e "${YELLOW}Force checking out ${TARGET_FILE} from HEAD${NC}"
+
+    # Use git checkout to restore the file from the latest commit
+    git checkout HEAD -- "$TARGET_FILE"
+
+    # Check if the checkout was successful
+    if [ $? -eq 0 ]; then
+        if [ -f "$TARGET_FILE" ]; then
+            echo -e "${GREEN}Successfully restored ${TARGET_FILE} from repository${NC}"
+        else
+            echo -e "${YELLOW}File ${TARGET_FILE} was not restored (may not exist in repository)${NC}"
+        fi
+    else
+        echo -e "${RED}Error: Failed to checkout ${TARGET_FILE}${NC}"
+        exit 1
+    fi
+done
+
+echo -e "\n${GREEN}Post-commit hook completed successfully${NC}"

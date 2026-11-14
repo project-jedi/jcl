@@ -1,0 +1,56 @@
+# DPM package spec file
+min dpm client version: 1.0.0
+metadata:
+  id: Jedi.JCL
+  version: 2.8.9330
+  description: The JEDI Code Library (JCL) consists of a set of thoroughly tested and fully documented utility functions and non-visual classes which can be instantly reused in your Delphi and C++ Builder projects.
+  authors:
+    - Various
+  projectUrl: https://github.com/project-jedi/jcl
+  repositoryUrl: https://github.com/project-jedi/jcl
+  repositoryCommit: '#HASH#'
+  license: MPL-1.1
+  copyright: Various
+  tags:
+    - jcl
+    - jedi
+  frameworks:
+    - vcl
+  readme: ../readme.md
+variables:
+  packagesource: /packages/d$libsuffixShort$
+targetPlatforms:
+  - compiler from: delphixe2
+    compiler to: delphi13.0
+    platforms:
+      - win32
+      - win64
+templates:
+  - name: default
+    source:
+      - src: source/**.pas
+      - src: source/include/**.inc
+      - src: source/**.res
+      - src: /source/windows/obj/**.*
+      - src: $packageSource$/Jcl.dproj
+      - src: $packageSource$/Jcl.dpk
+      - src: $packageSource$/Jcl.res
+      - src: $packageSource$/JclContainers.dproj
+      - src: $packageSource$/JclContainers.dpk
+      - src: $packageSource$/JclContainers.res
+      - src: $packageSource$/JclVcl.dproj
+      - src: $packageSource$/JclVcl.dpk
+      - src: $packageSource$/JclVcl.res
+    build:
+      - project: $packageSource$/Jcl.dproj
+        searchPaths:
+          - source/include/jedi
+          - source/include
+      - project: $packageSource$/JclContainers.dproj
+        searchPaths:
+          - source/include/jedi
+          - source/include
+      - project: $packageSource$/JclVcl.dproj
+        searchPaths:
+          - source/include/jedi
+          - source/include
