@@ -14,9 +14,11 @@ metadata:
   tags:
     - jcl
     - jedi
+  frameworks:
+    - vcl
   readme: ../readme.md
 variables:
-  packagesource: d$libsuffixShort$
+  packagesource: /packages/d$libsuffixShort$
 targetPlatforms:
   - compiler from: delphixe2
     compiler to: delphi13.0
@@ -30,18 +32,25 @@ templates:
       - src: source/include/**.inc
       - src: source/**.res
       - src: /source/windows/obj/**.*
-      - src: packages/$packageSource$/Jcl.dproj
-      - src: packages/$packageSource$/Jcl.dpk
-      - src: packages/$packageSource$/Jcl.res
-      - src: packages/$packageSource$/JclContainers.dproj
-      - src: packages/$packageSource$/JclContainers.dpk
-      - src: packages/$packageSource$/JclContainers.res
+      - src: $packageSource$/Jcl.dproj
+      - src: $packageSource$/Jcl.dpk
+      - src: $packageSource$/Jcl.res
+      - src: $packageSource$/JclContainers.dproj
+      - src: $packageSource$/JclContainers.dpk
+      - src: $packageSource$/JclContainers.res
+      - src: $packageSource$/JclVcl.dproj
+      - src: $packageSource$/JclVcl.dpk
+      - src: $packageSource$/JclVcl.res
     build:
-      - project: packages/$packageSource$/Jcl.dproj
+      - project: $packageSource$/Jcl.dproj
         searchPaths:
           - source/include/jedi
           - source/include
-      - project: packages/$packageSource$/JclContainers.dproj
+      - project: $packageSource$/JclContainers.dproj
+        searchPaths:
+          - source/include/jedi
+          - source/include
+      - project: $packageSource$/JclVcl.dproj
         searchPaths:
           - source/include/jedi
           - source/include
